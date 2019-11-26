@@ -231,7 +231,7 @@ android {
         resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
         resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
-        resolutionStrategy.force 'com.facebook.soloader:soloader:0.6.0'
+        resolutionStrategy.force 'com.facebook.soloader:soloader:0.8.0'
     }
 
     // Specifies 4 flavor dimensions.
@@ -520,7 +520,7 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
-    implementation 'com.facebook.soloader:soloader:0.6.0'
+    implementation 'com.facebook.soloader:soloader:0.8.0'
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
