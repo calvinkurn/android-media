@@ -62,11 +62,11 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     }
 
     override fun getRecyclerViewResourceId(): Int {
-        return R.id.recycler_view
+        return com.tokopedia.design.R.id.recycler_view
     }
 
     override fun getSearchInputViewResourceId(): Int {
-        return R.id.search_input_view
+        return com.tokopedia.abstraction.R.id.search_input_view
     }
 
     override fun initInjector() {
