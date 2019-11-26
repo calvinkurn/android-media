@@ -53,7 +53,7 @@ abstract class NotificationTransactionItemViewHolder(itemView: View, var listene
 
     override fun bind(element: TransactionItemNotification?, payloads: MutableList<Any>) {
         if (element == null || payloads.isEmpty()) return
-        when (payloads[0]) {
+        when (payloads.first()) {
             PAYLOAD_CHANGE_BACKGROUND -> bindNotificationBackgroundColor(element)
         }
     }
