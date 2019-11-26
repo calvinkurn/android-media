@@ -419,7 +419,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 seamlessLoginUsecase.generateSeamlessUrl(Uri.parse(bannedData?.appRedirection).toString(),
                         object : SeamlessLoginSubscriber {
                             override fun onUrlGenerated(url: String) {
-                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(bannedData?.appRedirection))
+                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                                 startActivity(browserIntent)
                             }
 
