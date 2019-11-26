@@ -32,7 +32,7 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
     val mSubCategoryList = MutableLiveData<Result<List<SubCategoryItem>>>()
     var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
-    var mSeamlessLogin = MutableLiveData<Result<String>>()
+    val mSeamlessLogin:MutableLiveData<Result<String>> by lazy {   MutableLiveData<Result<String>>()}
 
     fun fetchProductListing(params: RequestParams) {
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {

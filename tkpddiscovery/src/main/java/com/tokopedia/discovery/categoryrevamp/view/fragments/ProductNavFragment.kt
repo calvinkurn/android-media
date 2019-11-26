@@ -383,19 +383,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             }
 
         })
-
-        productNavViewModel.mSeamlessLogin.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    openUrlSeamlessly(it.data)
-                }
-
-                is Fail -> {
-                    onSeamlessError()
-                }
-            }
-        })
-
     }
 
 
@@ -418,6 +405,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     private fun showBannedDataScreen() {
         layout_banned_screen.show()
         swipe_refresh_layout.hide()
+        observeSeamlessLogin()
         catAnalyticsInstance.eventBukaView(bannedData?.appRedirection.toString(), mDepartmentId)
         if (bannedData != null && bannedData!!.displayButton && CategoryNavActivity.isBannedNavigationEnabled(activity as Context)) {
             category_btn_banned_navigation.show()
@@ -429,6 +417,20 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         txt_header.text = bannedData?.bannedMsgHeader
         txt_sub_header.text = bannedData?.bannedMessage
 
+    }
+
+    private fun observeSeamlessLogin() {
+        productNavViewModel.mSeamlessLogin.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    openUrlSeamlessly(it.data)
+                }
+
+                is Fail -> {
+                    onSeamlessError()
+                }
+            }
+        })
     }
 
     private fun initQuickFilter(list: ArrayList<Filter>) {
