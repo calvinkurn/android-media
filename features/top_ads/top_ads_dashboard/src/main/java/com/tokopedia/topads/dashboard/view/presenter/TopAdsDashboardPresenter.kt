@@ -32,6 +32,7 @@ import com.tokopedia.usecase.coroutines.Success
 
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -79,6 +80,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
                     override fun onCompleted() {}
 
                     override fun onError(e: Throwable) {
+                        Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_POPULATED_DATA#%s", e.localizedMessage)
                         view?.onErrorPopulateData(e)
                     }
 
@@ -108,7 +110,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
-                e.printStackTrace()
+                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_SHOP_INFO#%s", e.localizedMessage)
                 view?.onErrorGetShopInfo(e)
             }
 
@@ -184,6 +186,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
+                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", e.localizedMessage)
                 view?.onErrorGetStatisticsInfo(e)
             }
 
@@ -205,6 +208,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
+                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_TICKER#%s", e.localizedMessage)
                 view?.onErrorGetTicker(e)
             }
 
@@ -236,8 +240,8 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {}
-
             override fun onError(e: Throwable) {
+                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_AUTO_TOPADS_STATUS#%s", e.localizedMessage)
                 view?.onErrorGetAutoTopUpStatus(e)
             }
 

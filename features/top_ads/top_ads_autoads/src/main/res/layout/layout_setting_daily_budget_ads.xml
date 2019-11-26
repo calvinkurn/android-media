@@ -63,7 +63,7 @@
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/title"
                         android:padding="@dimen/dp_3"
-                        android:src="@drawable/ic_autoads_info_black" />
+                        app:srcCompat="@drawable/ic_autoads_info_black" />
 
                     <Switch
                         android:id="@+id/switch_ads"

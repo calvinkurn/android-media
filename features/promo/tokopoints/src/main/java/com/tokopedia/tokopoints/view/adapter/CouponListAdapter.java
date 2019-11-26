@@ -167,10 +167,14 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
                             holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.medium_green));
                             holder.progressTimer.setProgress((int) l / 1000);
-                            holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
-                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
-                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
-                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
+                            try {
+                                holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
+                                        holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
+                                        holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
+                                        holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
+                            } catch (Exception e){
+
+                            }
                         }
 
                         @Override

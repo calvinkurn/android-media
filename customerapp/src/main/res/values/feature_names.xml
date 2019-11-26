@@ -136,6 +136,10 @@
     <!-- Digital-Deals-->
     <string name="digital_deals">digital_deals</string>
 
+    <!-- Digital Emoney -->
+    <string name="title_digital_emoney">Electronic Money</string>
+    <string name="emoney_toolbar_title_etoll_check_balance">Cek Saldo</string>
+
     <!--ChatBot-->
     <string name="title_chat_bot">Chat Sekarang</string>
     <string name="title_module_chat_bot">Chat Sekarang</string>
