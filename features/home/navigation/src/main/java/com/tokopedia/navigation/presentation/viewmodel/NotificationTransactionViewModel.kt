@@ -36,7 +36,7 @@ interface NotificationTransactionContract {
 class NotificationTransactionViewModel @Inject constructor(
         private val notificationInfoTransactionUseCase: NotificationInfoTransactionUseCase,
         private var notificationTransactionUseCase: NotificationTransactionUseCase,
-        private var markReadNotificationUpdateItemUseCase: MarkReadNotificationUpdateItemUseCase,
+        private var markNotificationUseCase: MarkReadNotificationUpdateItemUseCase,
         private var notificationFilterUseCase: NotificationFilterUseCase,
         private var notificationFilterMapper : GetNotificationUpdateFilterMapper,
         private var notificationMapper: GetNotificationUpdateMapper,
@@ -71,11 +71,12 @@ class NotificationTransactionViewModel @Inject constructor(
     }
 
     override fun getTransactionNotification(lastNotificationId: String) {
-        val requestParams = NotificationTransactionUseCase.params(
+        val params = NotificationTransactionUseCase.params(
                 FIRST_INITIAL_PAGE,
                 variables,
                 lastNotificationId)
-        notificationTransactionUseCase.get(requestParams, {
+
+        notificationTransactionUseCase.get(params, {
             val data = notificationMapper.mapToNotifTransaction(it)
             _notification.postValue(data)
         }, {
@@ -84,7 +85,7 @@ class NotificationTransactionViewModel @Inject constructor(
     }
 
     override fun markReadNotification(notificationId: String) {
-        markReadNotificationUpdateItemUseCase.execute(
+        markNotificationUseCase.execute(
                 MarkReadNotificationUpdateItemUseCase.getRequestParams(notificationId),
                 NotificationUpdateActionSubscriber())
     }
