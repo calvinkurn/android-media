@@ -3,7 +3,6 @@ package com.tokopedia.similarsearch
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.similarsearch.di.scope.SimilarSearchModuleScope
 import com.tokopedia.usecase.coroutines.UseCase
 import dagger.Module
 import dagger.Provides

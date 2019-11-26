@@ -20,7 +20,6 @@ private fun getProductInfoGQLQuery() = """
      is_official
     }
     badges {
-      title
       image_url
     }
     category_id

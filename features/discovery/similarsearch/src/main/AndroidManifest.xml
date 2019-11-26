@@ -9,10 +9,10 @@
         android:largeHeap="true"
         android:supportsRtl="true">
 
-        <activity
-            android:name=".view.SimilarSearchActivity"
-            android:label="@string/title_similar_search"
-            android:theme="@style/noAnimTheme">
+<!--        <activity-->
+<!--            android:name=".view.SimilarSearchActivity"-->
+<!--            android:label="@string/title_similar_search"-->
+<!--            android:theme="@style/noAnimTheme">-->
 
 <!--            <intent-filter android:autoVerify="true">-->
 <!--                <action android:name="android.intent.action.VIEW" />-->
@@ -24,7 +24,7 @@
 <!--                    android:pathPattern="@string/path_similar_search_result"/>-->
 <!--            </intent-filter>-->
 
-        </activity>
+<!--        </activity>-->
 
         <activity
             android:name=".SimilarSearchActivity"

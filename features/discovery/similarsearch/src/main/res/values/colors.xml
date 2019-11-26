@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="warm_grey">#999999</color>
-    <color name="light_green1">#F3FEF3</color>
-    <color name="light_blue1">#ddebef</color>
-    <color name="light_red1">#ffe6e6</color>
-    <color name="light_yellow1">#f5f5cd</color>
-    <color name="black_87">#de000000</color>
 
     <color name="similar_search_selected_product_title_color">#f531353b</color>
     <color name="similar_search_wishlist_background_color">#f3f4f5</color>

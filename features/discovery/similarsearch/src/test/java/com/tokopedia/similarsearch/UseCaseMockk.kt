@@ -9,10 +9,6 @@ internal fun UseCase<*>.stubExecute(): MockKStubScope<Any?, Any?> {
     return io.mockk.coEvery { it.executeOnBackground() }
 }
 
-internal fun UseCase<*>.isNeverExecuted() {
-    return this.isExecuted(0)
-}
-
 internal fun UseCase<*>.isExecuted(executionCount: Int = 1) {
     val it = this
     io.mockk.coVerify(exactly = executionCount) { it.executeOnBackground() }

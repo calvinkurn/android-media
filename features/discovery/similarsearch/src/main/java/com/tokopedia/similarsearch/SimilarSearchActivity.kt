@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.discovery.common.constants.SearchConstant.SimilarSearch
 import com.tokopedia.discovery.common.constants.SearchConstant.SimilarSearch.QUERY
 import javax.inject.Inject
 import javax.inject.Named

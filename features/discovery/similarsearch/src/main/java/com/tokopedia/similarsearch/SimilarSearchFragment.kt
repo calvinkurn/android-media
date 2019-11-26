@@ -21,7 +21,6 @@ import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_PRODUCT_ID
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
-import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.purchase_platform.common.constant.ProductAction

@@ -2,7 +2,6 @@ package com.tokopedia.similarsearch
 
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
-import com.tokopedia.similarsearch.di.scope.SimilarSearchModuleScope
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase

@@ -2,12 +2,6 @@
     <string name="similar_search_app_name">similarsearch</string>
     <string name="title_similar_search">Produk Serupa</string>
 
-    <string name="view_similar_item">Lihat Barang Serupa</string>
-    <string name="press_to_see_similar">Tekan dan tahan produk pilihan Anda untuk melihat produk serupa.</string>
-    <string name="similar_product_not_found">Hasil produk serupa tidak dapat ditemukan. Silahkan pilih produk lain.</string>
-    <string name="title_product_not_found">Produk serupa tidak ditemukan</string>
-    <string name="produk_serupa">Produk Serupa</string>
-
     <string name="similar_search_original_product_review_count">(%s)</string>
     <string name="similar_search_original_product_buy">Beli</string>
     <string name="similar_search_original_product_add_to_cart">Tambah ke Keranjang</string>

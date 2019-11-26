@@ -1,7 +1,6 @@
 package com.tokopedia.similarsearch
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.similarsearch.di.scope.SimilarSearchModuleScope
 import dagger.Component
 
 @SimilarSearchModuleScope
