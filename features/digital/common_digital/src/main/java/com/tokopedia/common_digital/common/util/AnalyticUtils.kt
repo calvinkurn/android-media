@@ -36,5 +36,9 @@ class AnalyticUtils {
             return Pair(visibleIndexes.first, visibleIndexes.second - indexOffset)
         }
 
+        fun hasVisibleItems(indexes: Pair<Int, Int>): Boolean {
+            return indexes.first > -1 && indexes.second > -1
+        }
+
     }
 }
