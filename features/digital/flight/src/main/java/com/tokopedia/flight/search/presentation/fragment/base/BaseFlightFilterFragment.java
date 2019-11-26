@@ -61,11 +61,6 @@ public abstract class BaseFlightFilterFragment<T extends Visitable, F extends Ba
     }
 
     @Override
-    public int getRecyclerViewResourceId() {
-        return R.id.recycler_view;
-    }
-
-    @Override
     public RecyclerView getRecyclerView(View view) {
         RecyclerView recyclerView = super.getRecyclerView(view);
         RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
