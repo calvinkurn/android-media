@@ -65,10 +65,14 @@
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/digital/digitalproduct        @tokopedia/minion-mark
 /features/digital/common_travel         @tokopedia/minion-mark
-/features/digital/digital_homepage          @tokopedia/minion-mark
+/features/digital/common_digital        @tokopedia/minion-mark
+/features/digital/common_topup_bills    @tokopedia/minion-mark
+/features/digital/digital_homepage      @tokopedia/minion-mark
 /libraries/travel_calendar              @tokopedia/minion-mark
 /features/digital/travel_homepage       @tokopedia/minion-mark
-/features/digital/voucher_game       @tokopedia/minion-mark
+/features/digital/voucher_game          @tokopedia/minion-mark
+/features/digital/digital_emoney        @tokopedia/minion-mark
+/features/digital/imagepreviewslider    @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob
 /features/payment/payment_setting/              @tokopedia/minion-bob

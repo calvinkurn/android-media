@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        If the link is Ended with {id}, must end with "/"
+        Otherwise, do not put "/"
+    -->
+
+    <!--host-->
+    <string name="host_order_detail_umrah" translatable="false">order-details</string>
+
+    <!--Umrah Path-->
+    <string name="path_umrah_order_detail" translatable="false">/umroh/.*\</string>
+
+</resources>

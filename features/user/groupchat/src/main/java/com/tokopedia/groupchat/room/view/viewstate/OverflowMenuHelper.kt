@@ -61,7 +61,7 @@ class OverflowMenuHelper(
 
     private fun createMenuDialog(): View {
         val overflowMenuDialog = LayoutInflater.from(context).inflate(R.layout.layout_overflow_menu, null)
-        val recyclerView = overflowMenuDialog.findViewById<RecyclerView>(com.tokopedia.abstraction.R.id.recycler_view)
+        val recyclerView = overflowMenuDialog.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = menuAdapter
         recyclerView.addItemDecoration(OverflowMenuItemDecoration(context))
