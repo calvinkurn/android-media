@@ -317,7 +317,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun addToCart() {
-        if (!layout_shimmering.isVisible && !layout_loading.isVisible) showLoadingDialog()
+        if (bookingViewModel.getCartId().isNotEmpty()) showLoadingDialog()
         val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
         bookingViewModel.addToCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart),
                 GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
