@@ -250,8 +250,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             }.getSuccessData<FlightAddToCartData.Response>()
 
             flightBookingParam.cartId = addToCartData.addToCartData.id
-            pastVerifyParam = generateVerifyParam(bookingVerifyParam)
             bookingVerifyParam.cartItems[0].metaData.cartId = addToCartData.addToCartData.id
+            pastVerifyParam = generateVerifyParam(bookingVerifyParam)
             getCart(getCartQuery, getCartId(), true, bookingVerifyParam, verifyQuery, checkVoucherQuery)
         })
         {
