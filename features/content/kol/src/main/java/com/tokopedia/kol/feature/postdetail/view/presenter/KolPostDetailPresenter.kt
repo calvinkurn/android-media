@@ -344,7 +344,7 @@ class KolPostDetailPresenter @Inject constructor(
                         )
                     },
                     onError = {
-                        view.onErrorGetPostStatistic(it)
+                        view.onErrorGetPostStatistic(it, activityId, productIds)
                     }
             )
         }
