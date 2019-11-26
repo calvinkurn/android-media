@@ -32,7 +32,7 @@ class GetAffiliatedProductByIdsUseCase @Inject constructor(
 
     private val params: MutableMap<String, Any> = mutableMapOf()
 
-    private val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+    private val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
 
     //region query
     private val query by lazy {
