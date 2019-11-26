@@ -8,6 +8,8 @@ import com.tokopedia.purchase_platform.features.express_checkout.domain.usecase.
 import com.tokopedia.purchase_platform.features.express_checkout.domain.usecase.DoCheckoutExpressUseCase
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
+import com.tokopedia.purchase_platform.features.checkout.domain.usecase.CheckoutUseCase
+import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import org.junit.Before
 import org.junit.Test
@@ -42,6 +44,10 @@ class CheckoutVariantPresenterTest {
     lateinit var viewModelMapper: ViewModelMapper
     @Mock
     lateinit var userSessionInterface: UserSessionInterface
+    @Mock
+    lateinit var checkoutUseCase: CheckoutUseCase
+    @Mock
+    lateinit var editAddressUseCase: EditAddressUseCase
 
     private lateinit var presenter: CheckoutVariantPresenter
 
@@ -56,7 +62,9 @@ class CheckoutVariantPresenterTest {
                 atcDomainModelMapper,
                 checkoutDomainModelMapper,
                 viewModelMapper,
-                userSessionInterface
+                userSessionInterface,
+                checkoutUseCase,
+                editAddressUseCase
         )
         presenter.attachView(view)
     }

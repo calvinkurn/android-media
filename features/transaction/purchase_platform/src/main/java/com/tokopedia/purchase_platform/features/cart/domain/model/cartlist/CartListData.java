@@ -3,8 +3,9 @@ package com.tokopedia.purchase_platform.features.cart.domain.model.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
-import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
@@ -146,6 +147,20 @@ public class CartListData implements Parcelable {
     }
 
     public CartListData() {
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof CartListData) {
+            CartListData object = (CartListData) obj;
+            return object.isError == isError &&
+                    object.allSelected == allSelected &&
+                    object.shopGroupWithErrorDataList.equals(shopGroupWithErrorDataList) &&
+                    object.shopGroupAvailableDataList.equals(shopGroupAvailableDataList) &&
+                    object.isShowOnboarding == isShowOnboarding &&
+                    object.promoCouponActive == promoCouponActive;
+        }
+        return super.equals(obj);
     }
 
     @Override

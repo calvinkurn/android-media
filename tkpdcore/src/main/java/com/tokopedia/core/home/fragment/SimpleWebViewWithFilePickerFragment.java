@@ -26,6 +26,8 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.home.GeneralWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -200,9 +202,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
                 if (urlString.contains(String.format("%s=true", TkpdInboxRouter.IS_CHAT_BOT))) {
                     String messageId = urlString.toLowerCase().replace("tokopedia://topchat/", "")
                             .replace("?is_chat_bot=true", "");
-                    Intent intent = ((TkpdInboxRouter) getActivity().getApplicationContext())
-                            .getChatBotIntent(getActivity(), messageId);
-                    startActivity(intent);
+                    RouteManager.route(getActivity(), ApplinkConst.CHATBOT,messageId);
                     return true;
                 } else if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
                         && ((TkpdInboxRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url.toString())) {

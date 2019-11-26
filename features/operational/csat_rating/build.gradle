@@ -27,7 +27,7 @@ dependencies {
 project.ext {
     artifactId = 'csatrating'
     groupId = 'com.tokopedia.operational'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="csat_rating-release"
 }
 

@@ -469,7 +469,7 @@ public class ProductListFragment
                 && data.getExtras() != null
                 && data.getExtras().getInt(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, -1) != -1) {
             int position = data.getExtras().getInt(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, -1);
-            boolean isWishlist = data.getExtras().getBoolean(SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST, false);
+            boolean isWishlist = data.getExtras().getBoolean(SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST, false);
 
             updateWishlistFromPDP(position, isWishlist);
 
@@ -949,17 +949,6 @@ public class ProductListFragment
         if (recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);
         }
-    }
-
-    @Override
-    public List<Option> getQuickFilterOptions(DataValue dynamicFilterModel) {
-        ArrayList<Option> optionList = new ArrayList<>();
-
-        for (Filter filter : dynamicFilterModel.getFilter()) {
-            optionList.addAll(filter.getOptions());
-        }
-
-        return optionList;
     }
 
     @Override
