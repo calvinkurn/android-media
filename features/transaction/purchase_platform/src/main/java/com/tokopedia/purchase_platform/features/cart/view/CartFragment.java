@@ -2549,7 +2549,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void sendEventChangeInsuranceState(boolean isChecked) {
-
+        cartPageAnalytics.sendEventChangeInsuranceState(isChecked);
     }
 
     @Override

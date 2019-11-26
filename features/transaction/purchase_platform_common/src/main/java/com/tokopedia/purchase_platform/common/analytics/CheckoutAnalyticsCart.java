@@ -959,11 +959,38 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
     }
 
     public void sendEventDeleteInsurance() {
+
         sendEventCategoryActionLabel(
                 "",
                 "fin - cart page",
                 "ins - click delete from cart",
                 "cart page - macro insurance"
+        );
+    }
+
+    public void sendEventChangeInsuranceState(boolean isChecked) {
+
+        String eventLabel = "";
+
+        if (isChecked) {
+            eventLabel = "cart page - tick macro insurance";
+        } else {
+            eventLabel =  "cart page - untick macro insurance";
+        }
+
+        String eventAction = "";
+
+        if (isChecked) {
+            eventAction = "ins - click tick insurance for payment";
+        } else {
+            eventAction = "ins - click untick insurance for payment";
+        }
+
+        sendEventCategoryActionLabel(
+                "",
+                "fin - cart page",
+                eventAction,
+                eventLabel
         );
     }
 
