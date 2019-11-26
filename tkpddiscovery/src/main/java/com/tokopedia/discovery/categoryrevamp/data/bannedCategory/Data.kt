@@ -31,7 +31,6 @@ class Data : Serializable {
     @SerializedName("displayButton")
     var displayButton: Boolean = true
 
-
     @SerializedName("isBanned")
     var isBanned: Int = 0
 

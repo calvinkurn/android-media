@@ -116,7 +116,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
     lateinit var productNavViewModel: ProductNavViewModel
 
     @Inject
@@ -205,8 +204,8 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         categoryNavComponent.inject(this)
+        initView()
         if (bannedData == null || bannedData?.isBanned == 0) {
-            initView()
             observeData()
             setUpAdapter()
             setUpNavigation()
@@ -251,7 +250,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         product_recyclerview.adapter = productNavListAdapter
         product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
         productNavListAdapter?.addShimmer()
-
+        attachScrollListener()
     }
 
     private fun setQuickFilterAdapter(productCount: String) {
@@ -262,7 +261,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun attachScrollListener() {
-
         nested_recycler_view.setOnScrollChangeListener { v: NestedScrollView,
                                                          scrollX: Int,
                                                          scrollY: Int,
@@ -407,7 +405,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         swipe_refresh_layout.hide()
         observeSeamlessLogin()
         catAnalyticsInstance.eventBukaView(bannedData?.appRedirection.toString(), mDepartmentId)
-        if (bannedData != null && bannedData!!.displayButton && CategoryNavActivity.isBannedNavigationEnabled(activity as Context)) {
+        if (bannedData != null && bannedData?.displayButton == true && CategoryNavActivity.isBannedNavigationEnabled(activity as Context)) {
             category_btn_banned_navigation.show()
             category_btn_banned_navigation.setOnClickListener() {
                 catAnalyticsInstance.eventBukaClick(bannedData?.appRedirection.toString(), mDepartmentId)
@@ -465,11 +463,11 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
+            lifecycle.addObserver(productNavViewModel)
             fetchProductData(getProductListParamMap(getPage()))
             productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
             productNavViewModel.fetchQuickFilters(getQuickFilterParams())
         }
-        attachScrollListener()
     }
 
     private fun getQuickFilterParams(): RequestParams {
@@ -680,12 +678,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         pageCount = 0
     }
 
-
-    override fun onDetach() {
-        super.onDetach()
-        productNavViewModel.onDetach()
-    }
-
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
         catAnalyticsInstance.eventSortApplied(getDepartMentId(),
                 selectedSortName, sortValue)
@@ -749,7 +741,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     private fun onSeamlessError() {
         layout_banned_screen.show()
-        txt_header.text = "There is some error on server"
-        txt_sub_header.text = "try again"
+        txt_header.text = getString(R.string.category_server_error_header)
+        txt_sub_header.text = getString(R.string.try_again)
     }
 }

@@ -25,18 +25,18 @@ class SeamlessLoginUsecase @Inject constructor(
         private val userSession: UserSessionInterface,
         private val gson: Gson) {
 
-    fun generateSeamlessUrl(callbackUrl: String, listener: SeamlessLoginSubscriber){
+    fun generateSeamlessUrl(callbackUrl: String, listener: SeamlessLoginSubscriber?){
         if(!userSession.isLoggedIn){
-            listener.onUrlGenerated(callbackUrl)
+            listener?.onUrlGenerated(callbackUrl)
         }else {
             getKeygenUsecase.execute(
                     onSuccess = {
-                        listener.onUrlGenerated(
+                        listener?.onUrlGenerated(
                                 createData(callbackUrl, it.data.key)
                         )
                     },
                     onError = {
-                        listener.onError(it.message ?: "")
+                        listener?.onError(it.message ?: "")
                     }
             )
         }
@@ -84,5 +84,10 @@ class SeamlessLoginUsecase @Inject constructor(
         val encryptedUserData = AESUtils.encrypt(gson.toJson(userData), key = aesKey)
         seamlessUrl.appendQueryParameter(SeamlessLoginConstant.PARAM.DATA.value, encryptedUserData.encodeToUtf8())
         return seamlessUrl.build().toString().decodeToUtf8()
+    }
+
+    public fun unsubscribe(){
+        getKeygenUsecase
+
     }
 }
