@@ -16,6 +16,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -26,7 +27,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -36,6 +36,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reputation.common.view.AnimatedReputationView
@@ -263,17 +264,25 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
-        hideShimmering()
-        showLayout()
-
         productRevGetForm = data
-        data.productrevGetForm.also { response ->
-            reviewTracker.reviewOnViewTracker(response.orderID, productId.toString(10))
-            ImageHandler.loadImage(context, img_review, response.productData.productImageURL, R.drawable.ic_loading_image)
+        with(data.productrevGetForm) {
+            if (!validToReview) {
+                activity?.let {
+                    Toast.makeText(it, R.string.review_already_submit, Toast.LENGTH_LONG).show()
+                    it.finish()
+                }
+                return
+            }
 
-            shopId = response.shopData.shopID.toString(10)
-            orderId = response.orderID
-            txt_create.text = response.productData.productName
+            hideShimmering()
+            showLayout()
+
+            reviewTracker.reviewOnViewTracker(orderID, productId.toString())
+            img_review.loadImage(productData.productImageURL)
+
+            shopId = shopData.shopID.toString()
+            orderId = orderID
+            txt_create.text = productData.productName
         }
     }
 
