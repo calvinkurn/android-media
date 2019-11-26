@@ -337,20 +337,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name="com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc_tech_filter" />
-        </activity>
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.tokopedia.tkpd.provider"

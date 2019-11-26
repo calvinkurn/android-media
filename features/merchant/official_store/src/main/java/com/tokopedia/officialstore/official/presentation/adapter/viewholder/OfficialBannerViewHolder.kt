@@ -41,13 +41,13 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
     }
 
     override fun onPromoClick(position: Int) {
-        val bannerItem = elementBanner?.banner?.get(position)
-        officialStoreTracking?.eventClickBanner(
-                elementBanner?.categoryName.toEmptyStringIfNull(),
-                bannerItem?.bannerId.toEmptyStringIfNull(),
-                position,
-                bannerItem?.title.toEmptyStringIfNull(),
-                bannerItem?.imageUrl.toEmptyStringIfNull())
+        val bannerItem = elementBanner?.banner?.getOrNull(position)
+        bannerItem?.let {
+            officialStoreTracking?.eventClickBanner(
+                    elementBanner?.categoryName.toEmptyStringIfNull(),
+                    position,
+                    it)
+        }
 
         elementBanner?.banner?.let {
             RouteManager.route(itemView.context, it[position].applink)
@@ -70,13 +70,13 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
     override fun onPromoLoaded() {
         this.banner?.bannerIndicator?.visibility = View.VISIBLE
 
-        val bannerItem = elementBanner?.banner?.get(0)
-        officialStoreTracking?.eventImpressionBanner(
-                elementBanner?.categoryName.toEmptyStringIfNull(),
-                bannerItem?.bannerId.toEmptyStringIfNull(),
-                0,
-                bannerItem?.title.toEmptyStringIfNull(),
-                bannerItem?.imageUrl.toEmptyStringIfNull())
+        val bannerItem = elementBanner?.banner?.getOrNull(0)
+        bannerItem?.let {
+            officialStoreTracking?.eventImpressionBanner(
+                    elementBanner?.categoryName.toEmptyStringIfNull(),
+                    0,
+                    it)
+        }
     }
 
     companion object {
