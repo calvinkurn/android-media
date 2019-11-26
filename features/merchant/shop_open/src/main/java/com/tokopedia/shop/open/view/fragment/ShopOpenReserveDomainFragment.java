@@ -356,6 +356,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     private void errorToast(String message) {
         ToasterError.make(getView(), message, BaseToaster.LENGTH_INDEFINITE)
                 .setAction(com.tokopedia.abstraction.R.string.title_ok, v -> {
+                    //no op
                 })
                 .show();
     }

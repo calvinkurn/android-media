@@ -37,6 +37,8 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
@@ -210,23 +212,26 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         categoryNavViewModel.mBannedCheck.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    progressBar.visibility = View.GONE
-                    if (it.data.isBanned == IS_BANNED) {
-                        setEmptyView(it.data)
+                    progressBar.hide()
+                    if (it.data.appRedirectionURL != null && !it.data.appRedirectionURL?.equals("")!!) {
+                        RouteManager.route(this, it.data.appRedirectionURL)
+                        finish()
+                    } else if (it.data.isBanned == IS_BANNED) {
+                            setEmptyView(it.data)
                     } else {
-                        layout_banned_screen.visibility = View.GONE
-                        searchNavContainer?.visibility = View.VISIBLE
-                        if (it.data.isAdult == IS_ADULT) {
-                            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, departmentId)
-                        }
-                        initViewPager()
-                        loadSection()
-                        initSwitchButton()
-                        initBottomSheetListener()
+                            layout_banned_screen.hide()
+                            searchNavContainer?.show()
+                            if (it.data.isAdult == IS_ADULT) {
+                                AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, departmentId)
+                            }
+                            initViewPager()
+                            loadSection()
+                            initSwitchButton()
+                            initBottomSheetListener()
                     }
                 }
                 is Fail -> {
-                    progressBar.visibility = View.GONE
+                    progressBar.hide()
                     setEmptyView(null)
                 }
             }
@@ -235,14 +240,14 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun setEmptyView(data: Data?) {
-        layout_banned_screen.visibility = View.VISIBLE
-        searchNavContainer?.visibility = View.GONE
+        layout_banned_screen.show()
+        searchNavContainer?.hide()
         if (data == null) {
             txt_header.text = "There is some error on server"
             txt_no_data_description.text = "try again"
         } else {
-            txt_header.text = data?.bannedMsgHeader
-            txt_no_data_description.text = data?.bannedMessage
+            txt_header.text = data.bannedMsgHeader
+            txt_no_data_description.text = data.bannedMessage
         }
     }
 

@@ -64,7 +64,7 @@ class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFea
                         shop.shopId.toString().toEmptyStringIfNull(),
                         index + 1,
                         shop.name.toEmptyStringIfNull(),
-                        shop.imageUrl.toEmptyStringIfNull(),
+                        shop.url.toEmptyStringIfNull(),
                         shop.additionalInformation.toEmptyStringIfNull()
                 )
             }
@@ -76,7 +76,7 @@ class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFea
                             shop.shopId.toEmptyStringIfNull(),
                             position,
                             shop.name.toEmptyStringIfNull(),
-                            shop.imageUrl.toEmptyStringIfNull(),
+                            shop.url.toEmptyStringIfNull(),
                             shop.additionalInformation.toEmptyStringIfNull()
                     )
 

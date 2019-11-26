@@ -26,6 +26,9 @@ public class Data {
     @SerializedName("query_string")
     @Expose
     private String queryString;
+    @SerializedName("price_validation")
+    @Expose
+    private PriceValidation priceValidation;
 
     public List<ProductList> getProductList() {
         return productList;
@@ -45,5 +48,9 @@ public class Data {
 
     public String getQueryString() {
         return queryString;
+    }
+
+    public PriceValidation getPriceValidation() {
+        return priceValidation;
     }
 }
