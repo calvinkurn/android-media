@@ -8,53 +8,52 @@ import com.google.gson.annotations.SerializedName
 class DigitalQuickBuyItem(
         @SerializedName("id")
         @Expose
-        val id: Int? = null,
+        val id: Int = 0,
         @SerializedName("name")
         @Expose
-        val name: String? = null,
+        val name: String = "",
         @SerializedName("image_url")
         @Expose
-        val imageUrl: String? = null,
+        val imageUrl: String = "",
         @SerializedName("url")
         @Expose
-        val url: String? = null,
+        val url: String = "",
         @SerializedName("applink")
         @Expose
-        val applink: String? = null,
+        val applink: String = "",
         @SerializedName("title_1")
         @Expose
-        val title1st: String? = null,
+        val title1st: String = "",
         @SerializedName("desc_1")
         @Expose
-        val desc1st: String? = null,
+        val desc1st: String = "",
         @SerializedName("title_2")
         @Expose
-        val title2nd: String? = null,
+        val title2nd: String = "",
         @SerializedName("desc_2")
         @Expose
-        val desc2nd: String? = null,
+        val desc2nd: String = "",
         @SerializedName("tag_name")
         @Expose
-        val tagName: String? = null,
+        val tagName: String = "",
         @SerializedName("tag_type")
         @Expose
-        val tagType: Int,
+        val tagType: Int = 0,
         @SerializedName("price")
         @Expose
-        val price: String? = null,
+        val price: String = "",
         @SerializedName("original_price")
         @Expose
-        val originalPrice: String? = null,
+        val originalPrice: String = "",
         @SerializedName("price_prefix")
         @Expose
-        val pricePrefix: String? = null,
+        val pricePrefix: String = "",
         @SerializedName("template_id")
         @Expose
-        val templateId: Int? = null
+        val templateId: Int = 0
 ): Parcelable {
-
     constructor(parcel: Parcel) : this(
-            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readInt(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -68,10 +67,10 @@ class DigitalQuickBuyItem(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readValue(Int::class.java.classLoader) as? Int)
+            parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeValue(id)
+        parcel.writeInt(id)
         parcel.writeString(name)
         parcel.writeString(imageUrl)
         parcel.writeString(url)
@@ -85,7 +84,7 @@ class DigitalQuickBuyItem(
         parcel.writeString(price)
         parcel.writeString(originalPrice)
         parcel.writeString(pricePrefix)
-        parcel.writeValue(templateId)
+        parcel.writeInt(templateId)
     }
 
     override fun describeContents(): Int {

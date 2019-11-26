@@ -17,7 +17,7 @@ class DigitalHomePageSubscriptionViewHolder(itemView: View?, val onItemBindListe
         AbstractViewHolder<DigitalHomePageSubscriptionModel>(itemView) {
 
     override fun bind(element: DigitalHomePageSubscriptionModel) {
-        val layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         itemView.rv_digital_homepage_subscription.layoutManager = layoutManager
         if (element.isLoaded) {
             if (element.isSuccess) {

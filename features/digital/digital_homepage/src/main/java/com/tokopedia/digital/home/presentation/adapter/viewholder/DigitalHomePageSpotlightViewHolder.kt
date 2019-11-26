@@ -19,7 +19,7 @@ class DigitalHomePageSpotlightViewHolder(itemView: View?, val onItemBindListener
         AbstractViewHolder<DigitalHomePageSpotlightModel>(itemView) {
 
     override fun bind(element: DigitalHomePageSpotlightModel) {
-        val layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         itemView.rv_digital_homepage_spotlight.layoutManager = layoutManager
         if (element.isLoaded) {
             if (element.isSuccess) {

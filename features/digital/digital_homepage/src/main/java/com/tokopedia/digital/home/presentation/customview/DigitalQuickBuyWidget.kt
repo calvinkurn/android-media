@@ -42,7 +42,7 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
     }
 
     open fun renderProduct(element: DigitalQuickBuyItem) {
-        if (element.name.isNullOrEmpty()) {
+        if (element.name.isEmpty()) {
             product_name.visibility = View.GONE
         } else {
             product_name.visibility = View.VISIBLE
@@ -51,14 +51,14 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
     }
 
     open fun renderTitle(element: DigitalQuickBuyItem) {
-        if (element.title1st.isNullOrEmpty()) {
+        if (element.title1st.isEmpty()) {
             title.visibility = View.GONE
         } else {
             title.visibility = View.VISIBLE
             title.text = element.title1st
         }
 
-        if (element.desc1st.isNullOrEmpty()) {
+        if (element.desc1st.isEmpty()) {
             if ((hasPrice(element) || hasTagLabel(element))) {
                 title.maxLines = 2
             } else {
@@ -70,15 +70,15 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
     }
 
     open fun renderSubtitle(element: DigitalQuickBuyItem) {
-        if (element.desc1st.isNullOrEmpty()) {
+        if (element.desc1st.isEmpty()) {
             subtitle.visibility = View.GONE
         } else {
             subtitle.visibility = View.VISIBLE
             subtitle.text = element.desc1st
         }
 
-        if (element.title1st.isNullOrEmpty() &&
-                element.tagName.isNullOrEmpty()) {
+        if (element.title1st.isEmpty() &&
+                element.tagName.isEmpty()) {
             if (hasPrice(element) || hasTagLabel(element)) {
                 subtitle.maxLines = 2
             } else {
@@ -100,26 +100,26 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
     }
 
     open fun hasTagLabel(element: DigitalQuickBuyItem): Boolean {
-        return !element.tagName.isNullOrEmpty()
+        return element.tagName.isNotEmpty()
     }
 
     open fun hasPrice(element: DigitalQuickBuyItem): Boolean {
-        return element.price.isNullOrEmpty().not()
-                || element.pricePrefix.isNullOrEmpty().not()
-                || element.originalPrice.isNullOrEmpty().not()
+        return element.price.isNotEmpty()
+                || element.pricePrefix.isNotEmpty()
+                || element.originalPrice.isNotEmpty()
     }
 
     open fun renderPrice(element: DigitalQuickBuyItem) {
         if (hasPrice(element)) {
 
-            if (element.pricePrefix.isNullOrEmpty()) {
+            if (element.pricePrefix.isEmpty()) {
                 pricePrefix.visibility = View.GONE
             } else {
                 pricePrefix.visibility = View.VISIBLE
                 pricePrefix.text = element.pricePrefix
             }
 
-            if (element.originalPrice.isNullOrEmpty()) {
+            if (element.originalPrice.isEmpty()) {
                 strikeThroughPrice.visibility = View.GONE
             } else {
                 strikeThroughPrice.visibility = View.VISIBLE
@@ -127,7 +127,7 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
                 strikeThroughPrice.paintFlags = strikeThroughPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             }
 
-            if (element.price.isNullOrEmpty()) {
+            if (element.price.isEmpty()) {
                 price.visibility = View.GONE
             } else {
                 price.visibility = View.VISIBLE
@@ -144,7 +144,7 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
     open fun renderLabel(element: DigitalQuickBuyItem) {
         if (hasTagLabel(element)) {
             tagLine.visibility = View.VISIBLE
-            tagLine.setLabel(element.tagName ?: "")
+            tagLine.setLabel(element.tagName)
             when (element.tagType) {
                 1 -> tagLine.setLabelType(Label.GENERAL_LIGHT_RED)
                 2 -> tagLine.setLabelType(Label.GENERAL_LIGHT_GREEN)

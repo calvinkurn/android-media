@@ -18,7 +18,7 @@ class DigitalHomePageRecommendationViewHolder(itemView: View?, val onItemBindLis
         AbstractViewHolder<DigitalHomePageRecommendationModel>(itemView) {
 
     override fun bind(element: DigitalHomePageRecommendationModel) {
-        val layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         itemView.rv_digital_homepage_recommendation.layoutManager = layoutManager
         if (element.isLoaded) {
             if (element.isSuccess) {

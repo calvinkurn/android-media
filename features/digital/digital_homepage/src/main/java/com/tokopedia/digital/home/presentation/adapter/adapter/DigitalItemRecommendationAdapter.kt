@@ -29,7 +29,6 @@ class DigitalItemRecommendationAdapter(val items: List<RecommendationItemEntity>
     }
 
     private fun mapRecommendationData(data: RecommendationItemEntity): DigitalQuickBuyItem {
-        val price = if (data.productPrice > 0) data.productPrice else null
         return DigitalQuickBuyItem(
                 id = data.productId,
                 name = data.categoryName,
@@ -40,7 +39,7 @@ class DigitalItemRecommendationAdapter(val items: List<RecommendationItemEntity>
                 desc1st = data.clientNumber,
                 tagName = data.tag,
                 tagType = data.tagType,
-                price = price?.toString()
+                price = data.productPrice.toString()
         )
     }
 

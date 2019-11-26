@@ -3,7 +3,6 @@ package com.tokopedia.digital.widget.domain.interactor
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common_digital.R
 import com.tokopedia.common_digital.common.presentation.model.RecommendationEntity
 import com.tokopedia.digital.widget.view.model.Recommendation
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -21,7 +20,7 @@ class DigitalRecommendationUseCase(private val graphqlUseCase: GraphqlUseCase, @
     override fun createObservable(requestParams: RequestParams): Observable<List<Recommendation>> {
         val variables = HashMap<String, Any>()
         variables["device_id"] = requestParams.getInt(PARAM_REQUEST_ID, 0)
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.digital_recommendation_list), RecommendationEntity::class.java, variables)
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list), RecommendationEntity::class.java, variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
