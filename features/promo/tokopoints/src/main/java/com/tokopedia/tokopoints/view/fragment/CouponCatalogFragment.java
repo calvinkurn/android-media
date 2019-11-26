@@ -240,6 +240,9 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         if (getView() == null) {
             return;
         }
+        serverErrorView.setErrorButtonClickListener((view)->{
+            mPresenter.getCatalogDetail(code);
+        });
     }
 
     @Override
