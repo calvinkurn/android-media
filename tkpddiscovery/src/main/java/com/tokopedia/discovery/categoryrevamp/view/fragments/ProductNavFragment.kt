@@ -54,8 +54,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.utils.ImpresionTask
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -129,9 +127,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     @Inject
     lateinit var topAdsWishlishedUseCase: TopAdsWishlishedUseCase
-
-    @Inject
-    lateinit var seamlessLoginUsecase: SeamlessLoginUsecase
 
     lateinit var userSession: UserSession
 
@@ -389,6 +384,18 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
         })
 
+        productNavViewModel.mSeamlessLogin.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    openUrlSeamlessly(it.data)
+                }
+
+                is Fail -> {
+                    onSeamlessError()
+                }
+            }
+        })
+
     }
 
 
@@ -416,20 +423,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             category_btn_banned_navigation.show()
             category_btn_banned_navigation.setOnClickListener() {
                 catAnalyticsInstance.eventBukaClick(bannedData?.appRedirection.toString(), mDepartmentId)
-                seamlessLoginUsecase.generateSeamlessUrl(Uri.parse(bannedData?.appRedirection).toString(),
-                        object : SeamlessLoginSubscriber {
-                            override fun onUrlGenerated(url: String) {
-                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                startActivity(browserIntent)
-                            }
-
-                            override fun onError(msg: String) {
-                                layout_banned_screen.show()
-                                txt_header.text = "There is some error on server"
-                                txt_sub_header.text = "try again"
-                            }
-                        })
-
+                productNavViewModel.openBrowserSeamlessly(bannedData!!)
             }
         }
         txt_header.text = bannedData?.bannedMsgHeader
@@ -744,5 +738,16 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         subCategoryAdapter = null
         quickFilterAdapter = null
         super.onDestroyView()
+    }
+
+    private fun openUrlSeamlessly(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
+    }
+
+    private fun onSeamlessError() {
+        layout_banned_screen.show()
+        txt_header.text = "There is some error on server"
+        txt_sub_header.text = "try again"
     }
 }

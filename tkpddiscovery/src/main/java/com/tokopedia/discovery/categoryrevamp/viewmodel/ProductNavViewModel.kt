@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.categoryrevamp.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
@@ -9,6 +10,8 @@ import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryI
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,7 +23,8 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
                                               var subCategoryUseCaseV3: SubCategoryV3UseCase,
                                               var dynamicFilterUseCase: DynamicFilterUseCase,
                                               var quickFilterUseCase: QuickFilterUseCase,
-                                              var getProductListUseCase: GetProductListUseCase) : ViewModel() {
+                                              var getProductListUseCase: GetProductListUseCase,
+                                              var seamlessLoginUsecase: SeamlessLoginUsecase) : ViewModel() {
 
 
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
@@ -28,6 +32,7 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
     val mSubCategoryList = MutableLiveData<Result<List<SubCategoryItem>>>()
     var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
+    var mSeamlessLogin = MutableLiveData<Result<String>>()
 
     fun fetchProductListing(params: RequestParams) {
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
@@ -118,6 +123,19 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
         dynamicFilterUseCase.unsubscribe()
         quickFilterUseCase.unsubscribe()
         getProductListUseCase.unsubscribe()
+    }
+
+    fun openBrowserSeamlessly(bannedData: Data) {
+        seamlessLoginUsecase.generateSeamlessUrl(Uri.parse(bannedData.appRedirection).toString(),
+                object : SeamlessLoginSubscriber {
+                    override fun onUrlGenerated(url: String) {
+                        mSeamlessLogin.value = Success(url)
+                    }
+
+                    override fun onError(msg: String) {
+                        mSeamlessLogin.value = Fail(Throwable(msg))
+                    }
+                })
     }
 
 }
