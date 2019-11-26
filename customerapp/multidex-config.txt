@@ -1,1 +1,0 @@
-com/tokopedia/core/router/digitalmodule/passdata/DigitalCategoryDetailPassData.class
