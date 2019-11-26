@@ -46,6 +46,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
@@ -98,6 +99,8 @@ import com.tokopedia.mlp.router.MLPRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.notifications.CMPushNotificationManager;
+import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -174,7 +177,10 @@ import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.withdraw.WithdrawRouter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -214,7 +220,8 @@ public abstract class SellerRouterApplication extends MainApplication
         LinkerRouter,
         CharacterPerMinuteInterface,
         ResolutionRouter,
-        MLPRouter {
+        MLPRouter,
+        CMRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -230,6 +237,7 @@ public abstract class SellerRouterApplication extends MainApplication
         super.onCreate();
         initializeDagger();
         initializeRemoteConfig();
+        initCMPushNotification();
     }
 
     private void initializeRemoteConfig() {
@@ -240,6 +248,28 @@ public abstract class SellerRouterApplication extends MainApplication
         daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
+    }
+
+
+    private void initCMPushNotification() {
+        CMPushNotificationManager.getInstance().init(this);
+        refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
+    }
+
+    @Override
+    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
+        CMPushNotificationManager.getInstance().refreshTokenFromBackground(token, force);
+    }
+
+    @Override
+    public void refreshFCMFromInstantIdService(String token) {
+        CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(token, true);
+    }
+
+    @Override
+    public void refreshFCMTokenFromForegroundToCM() {
+        CMPushNotificationManager.getInstance()
+                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this), true);
     }
 
     public GMComponent getGMComponent() {
@@ -1182,21 +1212,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return "";
     }
 
-    @Override
-    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
-
-    }
-
-    @Override
-    public void refreshFCMFromInstantIdService(String token) {
-
-    }
-
-    @Override
-    public void refreshFCMTokenFromForegroundToCM() {
-
-    }
-
     public String getContactUsBaseURL() {
         return TkpdBaseURL.ContactUs.URL_HELP;
     }
@@ -1239,6 +1254,17 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getLoginIntent(Context context) {
         return LoginActivity.DeepLinkIntents.getCallingIntent(context);
+    }
+
+    @Override
+    public long getLongRemoteConfig(@NotNull String key, long defaultValue) {
+        return remoteConfig.getLong(key, defaultValue);
+    }
+
+    @Override
+    public String getUserId() {
+        UserSessionInterface userSession = new UserSession(this);
+        return userSession.getUserId();
     }
 
 }
