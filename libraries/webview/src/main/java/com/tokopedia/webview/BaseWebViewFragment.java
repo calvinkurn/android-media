@@ -8,9 +8,6 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +26,9 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
@@ -143,8 +143,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private View onCreateWebView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
         View view = inflater.inflate(getLayout(), container, false);
-        webView = view.findViewById(R.id.webview);
-        progressBar = view.findViewById(R.id.progressbar);
+        webView = view.findViewById(setWebView());
+        progressBar = view.findViewById(setProgressBar());
 
         CookieManager.getInstance().setAcceptCookie(true);
 
@@ -466,6 +466,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     public TkpdWebView getWebView() {
         return webView;
+    }
+
+    public int setWebView(){
+        return R.id.webview;
+    }
+
+    public int setProgressBar() {
+        return R.id.progressbar;
     }
 
     public void reloadPage(){
