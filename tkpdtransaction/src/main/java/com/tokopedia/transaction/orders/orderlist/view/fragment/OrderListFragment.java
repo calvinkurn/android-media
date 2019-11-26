@@ -3,6 +3,7 @@ package com.tokopedia.transaction.orders.orderlist.view.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -69,6 +71,8 @@ import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresen
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
+import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -126,6 +130,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     LinearLayout filterDate;
+    private ImageView filterImg;
+    private TextView filterText;
     RelativeLayout mainContent;
     private ImageView crossIcon;
     private EditText mulaiButton;
@@ -133,6 +139,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private UnifyButton terapkan;
     private RelativeLayout datePickerlayout;
     private RadioGroup radioGroup;
+    private RadioButtonUnify radio1;
     private DatePickerUnify datePickerUnify;
     private RefreshHandler refreshHandler;
     private boolean isLoading = false;
@@ -337,6 +344,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         simpleSearchView = view.findViewById(R.id.simpleSearchView);
         simpleSearchView.setSearchHint(getContext().getResources().getString(R.string.search_hint_text));
         filterDate = view.findViewById(R.id.filterDate);
+        filterImg = view.findViewById(R.id.filter_image);
+        filterText = view.findViewById(R.id.filter_text);
         surveyBtn = view.findViewById(R.id.survey_bom);
         surveyBtn.setOnClickListener(this);
         mainContent = view.findViewById(R.id.mainContent);
@@ -695,8 +704,25 @@ public class OrderListFragment extends BaseDaggerFragment implements
         if (v.getId() == R.id.survey_bom) {
             startActivityForResult(SaveDateBottomSheetActivity.getSurveyInstance(getContext(), OPEN_SURVEY_PAGE), SUBMIT_SURVEY_REQUEST);
         } else if (v.getId() == R.id.terapkan) {
-            startDate = selectedDateMap.get(MULAI_DARI);
-            endDate = selectedDateMap.get(SAMPAI);
+            if (radio1.isChecked()) {
+                startDate = defStartDate;
+                endDate = defEndDate;
+            } else {
+                try {
+                    startDate = format.format(format2.parse(mulaiButton.getText().toString()));
+                    endDate = format.format(format2.parse(sampaiButton.getText().toString()));
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            selectedDateMap.clear();
+            selectedDateMap.put(SAMPAI, endDate);
+            selectedDateMap.put(MULAI_DARI, startDate);
+
+            filterDate.getBackground().setColorFilter(getResources().getColor(R.color.tkpd_main_green),PorterDuff.Mode.SRC_ATOP);
+            filterImg.setColorFilter(getResources().getColor(R.color.white));
+            filterText.setTextColor(getResources().getColor(R.color.white));
             refreshHandler.startRefresh();
             orderListAnalytics.sendDateFilterSubmitEvent();
             changeDateBottomSheetDialog.dismiss();
@@ -708,6 +734,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             mulaiButton = categoryView.findViewById(R.id.et_start_date);
             sampaiButton = categoryView.findViewById(R.id.et_end_date);
             terapkan = categoryView.findViewById(R.id.terapkan);
+            radio1 = categoryView.findViewById(R.id.radio1);
             datePickerlayout = categoryView.findViewById(R.id.date_picker);
             radioGroup = categoryView.findViewById(R.id.radio_grp);
             terapkan.setOnClickListener(this);
@@ -718,8 +745,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            selectedDateMap.put(SAMPAI,defEndDate);
-            selectedDateMap.put(MULAI_DARI,defStartDate);
 
             crossIcon.setOnClickListener((View view)->{
                     changeDateBottomSheetDialog.dismiss();
@@ -727,19 +752,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
             changeDateBottomSheetDialog.setCustomContentView(categoryView, "", false);
             changeDateBottomSheetDialog.show();
 
-            radioGroup.setOnCheckedChangeListener((RadioGroup group, int checkedId)->{
-                    if (checkedId == R.id.radio2) {
-                        datePickerlayout.setVisibility(View.VISIBLE);
-                        selectedDateMap.clear();
-                        selectedDateMap.put(SAMPAI,customEndDate);
-                        selectedDateMap.put(MULAI_DARI,customStartDate);
+            radioGroup.setOnCheckedChangeListener((RadioGroup group, int checkedId) -> {
+                if (checkedId == R.id.radio2) {
+                    datePickerlayout.setVisibility(View.VISIBLE);
 
-                    } else {
-                        datePickerlayout.setVisibility(View.INVISIBLE);
-                        selectedDateMap.clear();
-                        selectedDateMap.put(SAMPAI,defEndDate);
-                        selectedDateMap.put(MULAI_DARI,defStartDate);
-                    }
+                } else {
+                    datePickerlayout.setVisibility(View.INVISIBLE);
+                }
             });
             mulaiButton.setOnClickListener((View view)-> {
                     showDatePicker(MULAI_DARI);
@@ -822,20 +841,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
             datePickerUnify.setTitle(SAMPAI);
         }
 
-        datePickerUnify.getDatePickerButton().setOnClickListener((View v)->{
+        datePickerUnify.getDatePickerButton().setOnClickListener((View v) -> {
             Integer[] date = datePickerUnify.getDate();
             date[1] = date[1] + 1;
-            String day = (date[0] < 10 ? "0" : "") + date[0];
-            String month = (date[1] < 10 ? "0" : "") + date[1];
-            String res = day + "/" + month + "/" + date[2];
-                selectedDateMap.put(title,res);
-                if (title.equalsIgnoreCase(SAMPAI)) {
-                    sampaiButton.setText(date[0] + " " + convertMonth(date[1]) + " " + date[2]);
-                } else {
-                    mulaiButton.setText(date[0] + " " + convertMonth(date[1]) + " " + date[2]);
-                }
-                datePickerUnify.dismiss();
-            });
+            if (title.equalsIgnoreCase(SAMPAI)) {
+                sampaiButton.setText(date[0] + " " + convertMonth(date[1]) + " " + date[2]);
+            } else {
+                mulaiButton.setText(date[0] + " " + convertMonth(date[1]) + " " + date[2]);
+            }
+            datePickerUnify.dismiss();
+        });
 
         datePickerUnify.setCloseClickListener(view -> {
             datePickerUnify.dismiss();
