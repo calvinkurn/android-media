@@ -427,7 +427,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void hideStatusBar() {
+    private void setupStatusBar() {
         //apply inset to allow recyclerview scrolling behind status bar
         fragmentContainer.setFitsSystemWindows(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
@@ -487,16 +487,24 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void configureStatusBarBasedOnFragment(Fragment fragment) {
-        if (getIsFragmentLightStatusBar(fragment)) {
-            requestStatusBarLight();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setupStatusBarInMarshmallowAbove(fragment);
         } else {
-            requestStatusBarDark();
+            setupStatusBar();
         }
     }
 
     private void scrollToTop(Fragment fragment) {
         if (fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
+        }
+    }
+
+    private void setupStatusBarInMarshmallowAbove(Fragment fragment) {
+        if (getIsFragmentLightStatusBar(fragment)) {
+            requestStatusBarLight();
+        } else {
+            requestStatusBarDark();
         }
     }
 
