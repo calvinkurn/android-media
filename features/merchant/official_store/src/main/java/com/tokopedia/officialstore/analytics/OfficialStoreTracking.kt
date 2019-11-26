@@ -158,7 +158,7 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun eventImpressionBanner(categoryName: String, bannerPosition: Int,
-                              bannerItem: com.tokopedia.officialstore.official.data.model.Banner) {
+                              bannerItem: com.tokopedia.officialstore.official.data.model.Banner?) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
@@ -168,11 +168,11 @@ class OfficialStoreTracking(context: Context) {
                 PROMO_VIEW, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
                 DataLayer.mapOf(
-                        "id", bannerItem.bannerId,
+                        "id", bannerItem?.bannerId,
                         "name", "/official-store/$categoryName - slider banner",
                         "position", "$bannerPosition",
-                        "creative", bannerItem.title,
-                        "creative_url", bannerItem.applink,
+                        "creative", bannerItem?.title,
+                        "creative_url", bannerItem?.applink,
                         "promo_id", null,
                         "promo_code", null
                         )

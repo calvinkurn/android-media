@@ -66,13 +66,15 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
     override fun onPromoDragStart() {}
 
     override fun onPromoScrolled(position: Int) {
-        val bannerItem = elementBanner?.banner?.get(position)
-        officialStoreTracking?.eventImpressionBanner(
-                elementBanner?.categoryName.toEmptyStringIfNull(),
-                bannerItem?.bannerId.toEmptyStringIfNull(),
-                position,
-                bannerItem?.title.toEmptyStringIfNull(),
-                bannerItem?.imageUrl.toEmptyStringIfNull())
+        if (position < elementBanner?.banner?.size!!) {
+            val bannerItem = elementBanner?.banner?.get(position)
+            officialStoreTracking?.eventImpressionBanner(
+                    elementBanner?.categoryName.toEmptyStringIfNull(),
+                    position,
+                    bannerItem
+            )
+        }
+    }
 
     override fun onPromoLoaded() {
         this.banner?.bannerIndicator?.visibility = View.VISIBLE
