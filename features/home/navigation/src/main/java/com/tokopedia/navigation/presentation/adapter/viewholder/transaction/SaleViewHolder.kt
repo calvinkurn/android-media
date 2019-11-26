@@ -13,8 +13,12 @@ import com.tokopedia.navigation.GlobalNavConstant.*
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.DrawerNotification
 import com.tokopedia.navigation.domain.model.SaleNotification
+import com.tokopedia.navigation.listener.TransactionMenuListener
 
-class SaleViewHolder(view: View): AbstractViewHolder<SaleNotification>(view) {
+class SaleViewHolder(
+        view: View,
+        val listener: TransactionMenuListener
+): AbstractViewHolder<SaleNotification>(view) {
 
     private val context = view.context
 
@@ -40,7 +44,7 @@ class SaleViewHolder(view: View): AbstractViewHolder<SaleNotification>(view) {
     override fun bind(element: SaleNotification) {
         if (element.id == PENJUALAN) {
             txtTitle.text = element.title
-            initListChildItem(element.childs)
+            initListChildItem(element)
         }
 
         btnLoadMore.setOnClickListener {
@@ -48,8 +52,8 @@ class SaleViewHolder(view: View): AbstractViewHolder<SaleNotification>(view) {
         }
     }
 
-    private fun initListChildItem(child: List<DrawerNotification.ChildDrawerNotification>) {
-        child.forEach { notif ->
+    private fun initListChildItem(element: DrawerNotification) {
+        element.childs.forEach { notif ->
             when(notif.id) {
                 PESANAN_BARU -> {
                     txtWaitingConfirm.text = notif.title
@@ -68,6 +72,7 @@ class SaleViewHolder(view: View): AbstractViewHolder<SaleNotification>(view) {
                     imgWaitingConfirm.setImageResource(notif.icon)
                     imgWaitingConfirm.setOnClickListener {
                         RouteManager.route(context, notif.applink)
+                        listener.sendTrackingData(element.title, notif.title)
                     }
                 }
                 SIAP_DIKIRIM -> {
@@ -87,6 +92,7 @@ class SaleViewHolder(view: View): AbstractViewHolder<SaleNotification>(view) {
                     imgOrderProcessed.setImageResource(notif.icon)
                     imgOrderProcessed.setOnClickListener {
                         RouteManager.route(context, notif.applink)
+                        listener.sendTrackingData(element.title, notif.title)
                     }
                 }
                 SEDANG_DIKIRIM -> {
@@ -106,6 +112,7 @@ class SaleViewHolder(view: View): AbstractViewHolder<SaleNotification>(view) {
                     imgGoodsSent.setImageResource(notif.icon)
                     imgGoodsSent.setOnClickListener {
                         RouteManager.route(context, notif.applink)
+                        listener.sendTrackingData(element.title, notif.title)
                     }
                 }
                 SAMPAI_TUJUAN -> {
@@ -125,6 +132,7 @@ class SaleViewHolder(view: View): AbstractViewHolder<SaleNotification>(view) {
                     imgGoodsReceive.setImageResource(notif.icon)
                     imgGoodsReceive.setOnClickListener {
                         RouteManager.route(context, notif.applink)
+                        listener.sendTrackingData(element.title, notif.title)
                     }
                 }
             }

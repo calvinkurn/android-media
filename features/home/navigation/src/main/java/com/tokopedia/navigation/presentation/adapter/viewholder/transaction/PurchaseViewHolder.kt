@@ -14,8 +14,12 @@ import com.tokopedia.navigation.GlobalNavConstant.*
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.DrawerNotification
 import com.tokopedia.navigation.domain.model.PurchaseNotification
+import com.tokopedia.navigation.listener.TransactionMenuListener
 
-class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotification>(view) {
+class PurchaseViewHolder(
+        val view: View,
+        val listener: TransactionMenuListener
+): AbstractViewHolder<PurchaseNotification>(view) {
 
     private val context = view.context
 
@@ -45,8 +49,8 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
     override fun bind(element: PurchaseNotification) {
         if (element.id == PEMBELIAN) {
             txtTitle.text = element.title
-            hasViewOther(element.childs)
-            initListChildItem(element.childs)
+            hasViewOther(element)
+            initListChildItem(element)
         }
 
         btnLoadMore.setOnClickListener {
@@ -54,18 +58,19 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
         }
     }
 
-    private fun hasViewOther(child: List<DrawerNotification.ChildDrawerNotification>) {
-        if (child.first().id == MENUNGGU_PEMBAYARAN) {
+    private fun hasViewOther(element: DrawerNotification) {
+        if (element.childs.first().id == MENUNGGU_PEMBAYARAN) {
             viewOther.show()
-            txtWaitingPayment.text = child.first().title
+            txtWaitingPayment.text = element.childs.first().title
             viewOther.setOnClickListener {
-                RouteManager.route(context, child.first().applink)
+                RouteManager.route(context, element.childs.first().applink)
+                listener.sendTrackingData(element.title, element.childs.first().title)
             }
         }
     }
 
-    private fun initListChildItem(child: List<DrawerNotification.ChildDrawerNotification>) {
-        child.forEach { notif ->
+    private fun initListChildItem(element: DrawerNotification) {
+        element.childs.forEach { notif ->
             when(notif.id) {
                 MENUNGGU_PEMBAYARAN -> {
                     txtWaitingPayment.text = notif.title
@@ -99,6 +104,7 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
                     imgWaitingConfirm.setImageResource(notif.icon)
                     imgWaitingConfirm.setOnClickListener {
                         RouteManager.route(context, notif.applink)
+                        listener.sendTrackingData(element.title, notif.title)
                     }
                 }
                 PESANAN_DIPROSES -> {
@@ -118,6 +124,7 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
                     imgOrderProcessed.setImageResource(notif.icon)
                     imgOrderProcessed.setOnClickListener {
                         RouteManager.route(context, notif.applink)
+                        listener.sendTrackingData(element.title, notif.title)
                     }
                 }
                 SEDANG_DIKIRIM -> {
@@ -137,6 +144,7 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
                     imgGoodsSent.setImageResource(notif.icon)
                     imgGoodsSent.setOnClickListener {
                         RouteManager.route(context, notif.applink)
+                        listener.sendTrackingData(element.title, notif.title)
                     }
                 }
                 SAMPAI_TUJUAN -> {
@@ -156,6 +164,7 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
                     imgGoodsReceive.setImageResource(notif.icon)
                     imgGoodsReceive.setOnClickListener {
                         RouteManager.route(context, notif.applink)
+                        listener.sendTrackingData(element.title, notif.title)
                     }
                 }
             }
