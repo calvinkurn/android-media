@@ -34,7 +34,7 @@ internal class SimilarSearchActivity: BaseSimpleActivity() {
     private fun injectDependencies() {
         DaggerSimilarSearchComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
-                .similarSearchUseCaseModule(createSimilarSearchUseCaseModule())
+                .getSimilarProductsUseCaseModule(createGetSimilarProductsUseCaseModule())
                 .similarSearchViewModelFactoryModule(createSimilarSearchViewModelFactoryModule())
                 .build()
                 .inject(this)
@@ -44,7 +44,7 @@ internal class SimilarSearchActivity: BaseSimpleActivity() {
         return (application as BaseMainApplication).baseAppComponent
     }
 
-    private fun createSimilarSearchUseCaseModule(): GetSimilarProductsUseCaseModule {
+    private fun createGetSimilarProductsUseCaseModule(): GetSimilarProductsUseCaseModule {
         val productId = getProductIdFromApplink()
 
         return GetSimilarProductsUseCaseModule(productId)

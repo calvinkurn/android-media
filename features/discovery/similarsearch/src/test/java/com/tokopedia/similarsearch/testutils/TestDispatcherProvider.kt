@@ -1,4 +1,4 @@
-package com.tokopedia.similarsearch
+package com.tokopedia.similarsearch.testutils
 
 import com.tokopedia.discovery.common.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher

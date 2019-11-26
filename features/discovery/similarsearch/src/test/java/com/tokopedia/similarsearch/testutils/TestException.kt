@@ -1,4 +1,4 @@
-package com.tokopedia.similarsearch
+package com.tokopedia.similarsearch.testutils
 
 /**
  * Exception used for Unit Test.

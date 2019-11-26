@@ -1,7 +1,9 @@
-package com.tokopedia.similarsearch
+package com.tokopedia.similarsearch.kotlinext
 
 import com.tokopedia.similarsearch.tracking.ECommerce.Companion.NONE_OTHER
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
+import com.tokopedia.similarsearch.testutils.shouldBe
+import com.tokopedia.similarsearch.testutils.shouldBeInstanceOf
 import com.tokopedia.similarsearch.utils.asObjectDataLayer
 import com.tokopedia.similarsearch.utils.safeCastRupiahToInt
 import org.spekframework.spek2.Spek

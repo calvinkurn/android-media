@@ -1,8 +1,12 @@
-package com.tokopedia.similarsearch
+package com.tokopedia.similarsearch.viewmodel
 
+import com.tokopedia.similarsearch.*
 import com.tokopedia.similarsearch.testinstance.getSimilarProductModelCommon
 import com.tokopedia.similarsearch.testinstance.getSimilarProductModelOriginalProductWishlisted
 import com.tokopedia.similarsearch.getsimilarproducts.GetSimilarProductsUseCase
+import com.tokopedia.similarsearch.testutils.InstantTaskExecutorRuleSpek
+import com.tokopedia.similarsearch.testutils.shouldBe
+import com.tokopedia.similarsearch.testutils.stubExecute
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase

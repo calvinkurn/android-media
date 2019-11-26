@@ -1,4 +1,4 @@
-package com.tokopedia.similarsearch
+package com.tokopedia.similarsearch.testutils
 
 internal inline fun <reified T> Any?.shouldBeInstanceOf() {
     if (this !is T) {

@@ -1,4 +1,4 @@
-package com.tokopedia.similarsearch
+package com.tokopedia.similarsearch.testutils
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor

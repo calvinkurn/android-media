@@ -1,10 +1,12 @@
-package com.tokopedia.similarsearch
+package com.tokopedia.similarsearch.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.discovery.common.State
 import com.tokopedia.similarsearch.divider.DividerViewModel
 import com.tokopedia.similarsearch.emptyresult.EmptyResultViewModel
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
+import com.tokopedia.similarsearch.testutils.shouldBe
+import com.tokopedia.similarsearch.testutils.shouldBeInstanceOf
 import com.tokopedia.similarsearch.title.TitleViewModel
 import com.tokopedia.similarsearch.utils.asObjectDataLayer
 

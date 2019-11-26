@@ -1,4 +1,4 @@
-package com.tokopedia.similarsearch
+package com.tokopedia.similarsearch.testutils
 
 import com.tokopedia.usecase.coroutines.UseCase
 import io.mockk.MockKStubScope

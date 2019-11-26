@@ -1,9 +1,14 @@
-package com.tokopedia.similarsearch
+package com.tokopedia.similarsearch.viewmodel
 
 import com.tokopedia.discovery.common.State
+import com.tokopedia.similarsearch.*
 import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
 import com.tokopedia.similarsearch.testinstance.getSimilarProductModelThreePage
 import com.tokopedia.similarsearch.testinstance.getSimilarProductModelTwoPage
+import com.tokopedia.similarsearch.testutils.InstantTaskExecutorRuleSpek
+import com.tokopedia.similarsearch.testutils.shouldBe
+import com.tokopedia.similarsearch.testutils.shouldBeInstanceOf
+import com.tokopedia.similarsearch.testutils.stubExecute
 import com.tokopedia.usecase.coroutines.UseCase
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
