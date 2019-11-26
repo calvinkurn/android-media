@@ -25,7 +25,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -237,10 +236,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
         })
 
-        rv_img_review.apply {
-            adapter = imageAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        }
+        rv_img_review?.adapter = imageAdapter
         imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
 
         btn_submit_review.setOnClickListener {
