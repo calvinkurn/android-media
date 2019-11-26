@@ -23,7 +23,6 @@ import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewMod
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
