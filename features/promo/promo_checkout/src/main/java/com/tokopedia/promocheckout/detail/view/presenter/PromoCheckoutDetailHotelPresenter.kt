@@ -1,6 +1,5 @@
 package com.tokopedia.promocheckout.detail.view.presenter
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
@@ -21,18 +20,11 @@ class PromoCheckoutDetailHotelPresenter(private val getDetailCouponMarketplaceUs
         checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, cartID), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
-                val errors = objects.getError(HotelCheckVoucher.Response::class.java)
-                if (!errors.isNullOrEmpty()) {
-                    val rawErrorMessage = errors[0].message
-                    val errorMessage = Gson().fromJson(rawErrorMessage.substring(1, rawErrorMessage.length - 1), HotelCheckVoucherError::class.java)
-                    view.onErrorCheckPromo(MessageErrorException(errorMessage.title))
+                val checkVoucherData = objects.getData<HotelCheckVoucher.Response>(HotelCheckVoucher.Response::class.java).response
+                if (checkVoucherData.isSuccess) {
+                    view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
                 } else {
-                    val checkVoucherData = objects.getData<HotelCheckVoucher.Response>(HotelCheckVoucher.Response::class.java).response
-                    if (checkVoucherData.isSuccess) {
-                        view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
-                    } else {
-                        view.onErrorCheckPromo(MessageErrorException(checkVoucherData.errorMessage))
-                    }
+                    view.onErrorCheckPromo(MessageErrorException(checkVoucherData.errorMessage))
                 }
             }
 
@@ -68,8 +60,7 @@ class PromoCheckoutDetailHotelPresenter(private val getDetailCouponMarketplaceUs
                     override fun onNext(response: GraphqlResponse?) {
                         view.hideLoading()
                         val dataDetailCheckoutPromo = response?.getData<DataPromoCheckoutDetail>(DataPromoCheckoutDetail::class.java)
-                        view.onSuccessGetDetailPromo(dataDetailCheckoutPromo?.promoCheckoutDetailModel
-                                ?: throw RuntimeException())
+                        view.onSuccessGetDetailPromo(dataDetailCheckoutPromo?.promoCheckoutDetailModel)
                     }
                 })
     }
@@ -77,9 +68,5 @@ class PromoCheckoutDetailHotelPresenter(private val getDetailCouponMarketplaceUs
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
         super.detachView()
-    }
-
-    companion object {
-        data class HotelCheckVoucherError(val id: String, val status: String, val title: String)
     }
 }

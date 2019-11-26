@@ -103,14 +103,14 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    override fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel) {
-        promoCheckoutDetailModel.let {
+    override fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel?) {
+        promoCheckoutDetailModel?.let {
             ImageHandler.LoadImage(imageBannerPromo, it.imageUrlMobile)
-            view?.titlePeriod?.text = promoCheckoutDetailModel.usage?.text
-            view?.titleMinTrans?.text = promoCheckoutDetailModel.minimumUsageLabel
-            if (TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsage)) {
+            view?.titlePeriod?.text = it.usage.text
+            view?.titleMinTrans?.text = it.minimumUsageLabel
+            if (TextUtils.isEmpty(it.minimumUsage)) {
                 view?.textMinTrans?.visibility = View.GONE
-                if (TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsageLabel)) {
+                if (TextUtils.isEmpty(it.minimumUsageLabel)) {
                     view?.titleMinTrans?.visibility = View.GONE
                     view?.imageMinTrans?.visibility = View.GONE
                 } else {
@@ -121,18 +121,18 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
                 view?.titleMinTrans?.visibility = View.VISIBLE
                 view?.imageMinTrans?.visibility = View.VISIBLE
                 view?.textMinTrans?.visibility = View.VISIBLE
-                view?.textMinTrans?.text = promoCheckoutDetailModel.minimumUsage
+                view?.textMinTrans?.text = it.minimumUsage
             }
             textTitlePromo?.text = it.title
             hideTimerView()
-            if ((it.usage?.activeCountDown ?: 0 > 0 &&
-                            it.usage?.activeCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
-                setActiveTimerUsage(it.usage?.activeCountDown?.toLong() ?: 0)
-            } else if ((it.usage?.expiredCountDown ?: 0 > 0 &&
-                            it.usage?.expiredCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
-                setExpiryTimerUsage(it.usage?.expiredCountDown?.toLong() ?: 0)
+            if ((it.usage.activeCountDown > 0 &&
+                            it.usage.activeCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                setActiveTimerUsage(it.usage.activeCountDown.toLong())
+            } else if ((it.usage.expiredCountDown > 0 &&
+                            it.usage.expiredCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                setExpiryTimerUsage(it.usage.expiredCountDown.toLong())
             }
-            view?.textPeriod?.text = it.usage?.usageStr
+            view?.textPeriod?.text = it.usage.usageStr
             webviewTnc?.settings?.javaScriptEnabled = true
             webviewTnc?.loadData(getFormattedHtml(it.tnc), "text/html", "UTF-8")
             enableOrDisableViews(it)
