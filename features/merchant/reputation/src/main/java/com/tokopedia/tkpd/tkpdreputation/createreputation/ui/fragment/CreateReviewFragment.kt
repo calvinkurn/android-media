@@ -242,6 +242,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        createReviewViewModel.getReputationDataForm.removeObservers(this)
+        createReviewViewModel.getSubmitReviewResponse.removeObservers(this)
+    }
+
     private fun getReviewData() {
         showShimmering()
         createReviewViewModel.getProductReputation(productId, reviewId)
