@@ -192,7 +192,13 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                     break;
                 case ACTIVE:
                     tokopediaPayViewModel.setLabelCentre(vccUserStatus.getTitle());
-                    tokopediaPayViewModel.setAmountCentre(vccUserStatus.getBody());
+                    String oplLimit;
+                    try {
+                        oplLimit = CurrencyFormatUtil.convertPriceValueToIdrFormat(Long.parseLong(vccUserStatus.getBody()), false);
+                    } catch (Exception e) {
+                        oplLimit = vccUserStatus.getBody();
+                    }
+                    tokopediaPayViewModel.setAmountCentre(oplLimit);
                     tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
                     break;
                 case REJECTED:
