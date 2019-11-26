@@ -269,7 +269,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
             if (!validToReview) {
                 activity?.let {
                     Toast.makeText(it, R.string.review_already_submit, Toast.LENGTH_LONG).show()
-                    it.finish()
+                    finishIfRoot()
                 }
                 return
             }
@@ -435,21 +435,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         stopLoading()
         showLayout()
         Handler(Looper.getMainLooper()).postDelayed({
-            activity?.run {
-                if (isTaskRoot) {
-                    val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
-
-                    setResult(Activity.RESULT_OK, intent)
-                    startActivity(intent)
-                } else {
-                    val intent = Intent()
-                    intent.putExtra(ARGS_RATING, reviewClickAt.toFloat())
-                    setResult(Activity.RESULT_OK, intent)
-                    onBackPressed()
-                }
-
-                finish()
-            }
+            finishIfRoot()
         }, 800)
     }
 
@@ -502,6 +488,21 @@ class CreateReviewFragment : BaseDaggerFragment() {
             }
         }
 
+    }
+
+    private fun finishIfRoot() {
+        activity?.run {
+            if (isTaskRoot) {
+                val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+                setResult(Activity.RESULT_OK, intent)
+                startActivity(intent)
+            } else {
+                val intent = Intent()
+                intent.putExtra(ARGS_RATING, reviewClickAt.toFloat())
+                setResult(Activity.RESULT_OK, intent)
+            }
+            finish()
+        }
     }
 
     class BackgroundCustomTarget(private val context: Context) : CustomTarget<Bitmap>() {
