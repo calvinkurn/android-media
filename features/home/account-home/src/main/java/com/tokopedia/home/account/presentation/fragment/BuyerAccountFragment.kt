@@ -184,6 +184,10 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         }
     }
 
+    override fun isLightThemeStatusBar(): Boolean {
+        return false
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.detachView()
