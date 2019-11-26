@@ -240,11 +240,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         if (tickers.isNotEmpty()) {
             val messages = ArrayList<TickerData>()
             for (item in tickers) {
-                var description: String = item.content
-                if (item.actionText.isNotEmpty() && item.actionLink.isNotEmpty()) {
-                    description += " [${item.actionText}]{${item.actionLink}}"
-                }
-                messages.add(TickerData(item.name, description,
+                messages.add(TickerData(item.name, item.content,
                         when (item.type) {
                             TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
                             TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
