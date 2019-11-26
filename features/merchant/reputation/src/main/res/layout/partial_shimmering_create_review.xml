@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/dp_8"
     android:background="@color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="@dimen/dp_8">
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/loader_img"
@@ -101,4 +101,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loader_review_question_2" />
 
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/loader_review_photo_1"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_64"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loader_review_input" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/loader_review_photo_2"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_64"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintStart_toEndOf="@+id/loader_review_photo_1"
+        app:layout_constraintTop_toBottomOf="@+id/loader_review_input" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/loader_review_photo_3"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_64"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintStart_toEndOf="@+id/loader_review_photo_2"
+        app:layout_constraintTop_toBottomOf="@+id/loader_review_input" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_64"
+            app:corners="@integer/corner_radius_shimmering" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
