@@ -63,6 +63,7 @@ object SomConsts {
     const val KEY_REASON_OTHER = "other_reason"
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"
+    const val KEY_UPLOAD_AWB = "upload_awb"
 
     const val VALUE_REASON_EMPTY_STOCK = "Stok Produk Kosong"
     const val VALUE_REASON_SHOP_CLOSED = "Toko Sedang Tutup"

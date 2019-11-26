@@ -32,6 +32,7 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     val acceptOrderResult = MutableLiveData<Result<SomAcceptOrder.Data>>()
     val rejectReasonResult = MutableLiveData<Result<SomReasonRejectData.Data>>()
     val rejectOrderResult = MutableLiveData<Result<SomRejectOrder.Data>>()
+    val editRefNumResult = MutableLiveData<Result<SomEditAwbResponse.Data>>()
 
     fun loadDetailOrder(detailQuery: String, orderId: String) {
         launch { getDetailOrder(detailQuery, orderId) }
@@ -47,6 +48,10 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
 
     fun rejectOrder(rejectOrderQuery: String, rejectOrderRequest: SomRejectRequest) {
         launch { doRejectOrder(rejectOrderQuery, rejectOrderRequest) }
+    }
+
+    fun editAwb(queryString: String) {
+        launch { doEditAwb(queryString) }
     }
 
     suspend fun getDetailOrder(rawQuery: String, orderId: String) {
@@ -107,6 +112,19 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
             rejectOrderResult.postValue(Success(rejectOrderData))
         }, onError = {
             rejectOrderResult.postValue(Fail(it))
+        })
+    }
+
+    suspend fun doEditAwb(queryString: String) {
+        launchCatchError(block = {
+            val editRefNum = withContext(Dispatchers.IO) {
+                val rejectRequest = GraphqlRequest(queryString, SomEditAwbResponse.Data::class.java)
+                graphqlRepository.getReseponse(listOf(rejectRequest))
+                        .getSuccessData<SomEditAwbResponse.Data>()
+            }
+            editRefNumResult.postValue(Success(editRefNum))
+        }, onError = {
+            editRefNumResult.postValue(Fail(it))
         })
     }
 

@@ -91,6 +91,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UPLOAD_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_PRODUCT_NAME
@@ -118,6 +119,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
     private var acceptOrderResponse = SomAcceptOrder.Data.AcceptOrder()
     private var rejectOrderResponse = SomRejectOrder.Data.RejectOrder()
+    private var editAwbResponse = SomEditAwbResponse.Data()
     private var rejectReasonResponse = listOf<SomReasonRejectData.Data.SomRejectReason>()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
     private var listRejectTypeData: ArrayList<SomRejectTypeData> = arrayListOf()
@@ -144,6 +146,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 }
             }
         }
+
+        private val PARAM_INPUT_ORDER_ID = "#orderId"
+        private val PARAM_INPUT_SHIPPING_REF = "#shippingRef"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -475,6 +480,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
         } else if (key.equals(KEY_UBAH_NO_RESI, true)) {
             setActionUbahNoResi()
+
+        } else if (key.equals(KEY_UPLOAD_AWB, true)) {
+            onInvalidResiUpload(detailResponse.shipment.awbUploadUrl)
         }
 
         /*else if (key.equals(KEY_REASON_EMPTY_STOCK, true)) {
@@ -543,7 +551,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
         viewBottomSheet.tf_cancel_notes?.setLabelStatic(true)
         viewBottomSheet.tf_cancel_notes?.setMessage(getString(R.string.change_no_resi_notes))
-        viewBottomSheet.tf_cancel_notes?.textFiedlLabelText?.text = getString(R.string.change_no_resi_notes)
+        //viewBottomSheet.tf_cancel_notes?.textFiedlLabelText?.text = getString(R.string.change_no_resi_notes)
         viewBottomSheet.tf_cancel_notes?.textFieldInput?.hint = getString(R.string.change_no_resi_hint)
 
         bottomSheetUnify.setFullPage(false)
@@ -557,25 +565,37 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             text = getString(R.string.change_no_resi_btn_ubah)
             setOnClickListener {
                 bottomSheetUnify.dismiss()
-                val orderRejectRequest = SomRejectRequest(
-                        orderId = detailResponse.orderId.toString(),
-                        rCode = "0",
-                        reason = viewBottomSheet.tf_cancel_notes?.textFieldInput?.text.toString()
-                )
-                doRejectOrder(orderRejectRequest)
+                doEditAwb(viewBottomSheet.tf_cancel_notes?.getEditableValue().toString())
             }
         }
     }
 
-    /*private fun createOptionsCourierProblems(): HashMap<String, String> {
-        val map = HashMap<String, String>()
-        map[KEY_COURIER_PROBLEM_OFFICE_CLOSED] = VALUE_COURIER_PROBLEM_OFFICE_CLOSED
-        map[KEY_COURIER_PROBLEM_UNMATCHED_COST] = VALUE_REASON_SHOP_CLOSED
-        map[KEY_REASON_COURIER_PROBLEM] = VALUE_REASON_COURIER_PROBLEM
-        map[KEY_REASON_BUYER_NO_RESPONSE] = VALUE_REASON_BUYER_NO_RESPONSE
-        map[KEY_REASON_OTHER] = VALUE_REASON_OTHER
-        return map
-    }*/
+    private fun doEditAwb(shippingRef: String) {
+        val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_edit_awb)
+        val queryString = rawQuery.replace(PARAM_INPUT_ORDER_ID, orderId, true)
+                .replace(PARAM_INPUT_SHIPPING_REF, shippingRef, true)
+        somDetailViewModel.editAwb(queryString)
+        observingEditAwb()
+    }
+
+    private fun observingEditAwb() {
+        somDetailViewModel.editRefNumResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    editAwbResponse = it.data
+                    if (editAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
+                        bottomSheetUnify.dismiss()
+                        showCommonToaster(editAwbResponse.mpLogisticEditRefNum.listMessage.first())
+                    } else {
+                        showToasterError(getString(R.string.global_error))
+                    }
+                }
+                is Fail -> {
+                    showToasterError(getString(R.string.global_error))
+                }
+            }
+        })
+    }
 
     override fun onShowBottomSheetInfo(title: String, resIdDesc: Int) {
         val bottomSheetUnify = BottomSheetUnify()
@@ -592,6 +612,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             clearHeader(false)
             setTitle(title)
             setOnDismissListener { this.dismiss() }
+            setCloseClickListener { this.dismiss() }
             setChild(childView)
         }
         bottomSheetUnify.show(fragmentManager, "")

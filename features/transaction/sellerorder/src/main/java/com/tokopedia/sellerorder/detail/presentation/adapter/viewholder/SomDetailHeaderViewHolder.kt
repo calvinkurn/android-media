@@ -99,6 +99,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     tickerShape = Ticker.SHAPE_FULL
                     tickerType = Ticker.TYPE_ERROR
                     closeButtonVisibility = View.GONE
+                    measureAllChildren = true
                     setOnClickListener { actionListener.onInvalidResiUpload(item.dataObject.awbUploadUrl) }
                 }
             } else {

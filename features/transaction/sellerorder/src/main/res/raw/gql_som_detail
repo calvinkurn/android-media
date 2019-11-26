@@ -47,6 +47,8 @@ query GetSOMDetail($orderID: String!, $lang: String!){
       is_same_day
       awb
       awb_upload_proof_text
+      awb_text_color
+      awb_upload_url
     }
     shipment_change{
       id
