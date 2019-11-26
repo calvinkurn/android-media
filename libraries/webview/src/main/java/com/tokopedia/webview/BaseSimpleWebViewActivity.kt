@@ -81,6 +81,10 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         val query = intentUri.query
         return if (query != null && query.contains("$KEY_URL=")) {
             url = query.substringAfter("$KEY_URL=").decode()
+            val slashIndex = url.indexOf("/&")
+            if (slashIndex > -1) {
+                url = url.substring(0, slashIndex + 1)
+            }
             if (!url.contains("$KEY_URL=")) {
                 return url
             }

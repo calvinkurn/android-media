@@ -35,9 +35,11 @@ class PartialMostHelpfulReviewView private constructor(private val view: View) {
                 val reviewData = reviews.first()
                 val imageData = if (reviewData.imageAttachments.size > 3) reviewData.imageAttachments.take(3) else reviewData.imageAttachments
                 if (!reviewData.likeDislike.isShowable) {
+                    txt_thumb_like.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
                     txt_thumb_like.hide()
                     txt_like_static.hide()
                 } else {
+                    txt_thumb_like.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_thumb), null, null, null)
                     txt_thumb_like.text = view.context.getString(R.string.review_like_pattern, reviewData.likeDislike.totalLike)
                     txt_thumb_like.show()
                     txt_like_static.show()
