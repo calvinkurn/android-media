@@ -284,9 +284,12 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
                     shopViewModel.isMyShop(shopId), position.toInt(),
                     CustomDimensionShopPage.create(shopId, goldOS.isOfficial == 1,
                             goldOS.isGold == 1))
+            startActivity(ShopNoteDetailActivity.createIntent(
+                    activity,
+                    shopId,
+                    shopNoteViewModel.shopNoteId.toString()
+            ))
         }
-
-        startActivity(ShopNoteDetailActivity.createIntent(activity, shopNoteViewModel.getShopNoteId().toString()))
     }
 
     private fun onSuccessGetReputation(speedFmt: String) {

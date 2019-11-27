@@ -17,7 +17,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
@@ -26,8 +25,11 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
+import com.tokopedia.loginregister.common.view.EmailExtension;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * @author by alvinatin on 11/06/18.
@@ -40,6 +42,7 @@ public class PartialRegisterInputView extends BaseCustomView {
     TextView tvMessage;
     TextView tvError;
     ButtonCompat btnAction;
+    EmailExtension emailExtension;
 
     TextInputEditText etPassword;
     TkpdHintTextInputLayout wrapperPassword;
@@ -51,6 +54,7 @@ public class PartialRegisterInputView extends BaseCustomView {
     private static Boolean isButtonValidatorActived = false;
 
     private PartialRegisterInputViewListener listener;
+    private List<String> emailExtensionList;
 
     public void setListener(PartialRegisterInputViewListener listener) {
         this.listener = listener;
@@ -156,8 +160,24 @@ public class PartialRegisterInputView extends BaseCustomView {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 setWrapperError(wrapper, null);
-                if(s != null && isButtonValidatorActived)
-                    validateValue(s.toString());
+                if(s != null) {
+                    if (isButtonValidatorActived) {
+                        validateValue(s.toString());
+                    }
+
+                    if (etInputEmailPhone.getText().toString().contains("@")) {
+                        emailExtension.setVisibility(View.VISIBLE);
+
+                        String[] charEmail = etInputEmailPhone.getText().toString().split("@");
+                        if (charEmail.length > 1) {
+                            emailExtension.filterExtensions(charEmail[1]);
+                        } else {
+                            emailExtension.updateExtensions(emailExtensionList);
+                        }
+                    } else {
+                        emailExtension.setVisibility(View.GONE);
+                    }
+                }
             }
 
             @Override
@@ -216,15 +236,24 @@ public class PartialRegisterInputView extends BaseCustomView {
         }
         etInputEmailPhone.setAdapter(adapter);
         etInputEmailPhone.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus)
-                ((AutoCompleteTextView)v).showDropDown();
-            else
-                ((AutoCompleteTextView)v).dismissDropDown();
+            if (hasFocus) {
+                ((AutoCompleteTextView) v).showDropDown();
+            } else {
+                ((AutoCompleteTextView) v).dismissDropDown();
+                emailExtension.setVisibility(View.GONE);
+            }
         });
     }
 
-    public ListAdapter getAdapterInputEmailPhone(){
-        return etInputEmailPhone.getAdapter();
+    public void setEmailExtension(EmailExtension emailExtension, List<String> emailExtensionList) {
+        this.emailExtensionList = emailExtensionList;
+        this.emailExtension = emailExtension;
+        this.emailExtension.setExtensions(emailExtensionList, (extension, position) -> {
+            String[] charEmail = etInputEmailPhone.getText().toString().split("@");
+
+            etInputEmailPhone.setText(String.format("%s@%s", charEmail[0], extension));
+            etInputEmailPhone.setSelection(etInputEmailPhone.getText().toString().trim().length());
+        });
     }
 
     private class ClickRegister implements OnClickListener {

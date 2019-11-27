@@ -73,6 +73,10 @@ class RegisterInitialViewModel @Inject constructor(
     val loginTokenGoogleResponse: LiveData<Result<LoginTokenPojo>>
         get() = mutableLoginTokenGoogleResponse
 
+    private val mutableLoginAfterSQResponse = MutableLiveData<Result<LoginTokenPojo>>()
+    val loginAfterSQResponse: LiveData<Result<LoginTokenPojo>>
+        get() = mutableLoginAfterSQResponse
+
     private val mutableGoToActivationPage = MutableLiveData<MessageErrorException>()
     val goToActivationPage: LiveData<MessageErrorException>
         get() = mutableGoToActivationPage
@@ -156,6 +160,19 @@ class RegisterInitialViewModel @Inject constructor(
                 )
         )
 
+    }
+
+    fun reloginAfterSQ(validateToken: String){
+        loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
+                userSession, validateToken),
+                LoginTokenSubscriber(
+                        userSession,
+                        onSuccessLoginAfterSQ(),
+                        onFailedLoginAfterSQ(),
+                        onFailedLoginAfterSQ(),
+                        { onFailedLoginAfterSQ() }
+                )
+        )
     }
 
     fun getUserInfo() {
@@ -284,6 +301,18 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onFailedLoginTokenGoogle(): (Throwable) -> Unit{
         return {
             mutableLoginTokenGoogleResponse.value = Fail(it)
+        }
+    }
+
+    private fun onSuccessLoginAfterSQ(): (LoginTokenPojo) -> Unit{
+        return {
+            mutableLoginAfterSQResponse.value = Success(it)
+        }
+    }
+
+    private fun onFailedLoginAfterSQ(): (Throwable) -> Unit{
+        return {
+            mutableLoginAfterSQResponse.value = Fail(it)
         }
     }
 

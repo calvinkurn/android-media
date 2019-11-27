@@ -14,7 +14,6 @@ import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl;
 import com.tokopedia.gm.common.data.source.GMCommonDataSource;
 import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
-import com.tokopedia.gm.common.domain.interactor.GetCashbackUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.picker.view.mapper.GetProductListMapper;
@@ -136,12 +135,6 @@ public class ProductListModule {
     @Provides
     public GMCommonRepository provideGMCommonRepository(GMCommonDataSource gmCommonDataSource) {
         return new GMCommonRepositoryImpl(gmCommonDataSource);
-    }
-
-    @ProductListScope
-    @Provides
-    public GetCashbackUseCase provideGetCashbackUseCase(GMCommonRepository gmCommonRepository) {
-        return new GetCashbackUseCase(gmCommonRepository);
     }
 
     @ProductListScope

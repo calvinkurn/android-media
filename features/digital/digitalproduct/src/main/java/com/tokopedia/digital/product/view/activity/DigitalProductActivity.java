@@ -13,8 +13,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
+import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
-import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -32,7 +32,6 @@ public class DigitalProductActivity extends BaseSimpleActivity
         implements DigitalProductFragment.ActionListener {
 
     private static final String KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied";
-    public static final String EXTRA_CATEGORY_PASS_DATA = "EXTRA_CATEGORY_PASS_DATA";
     private static final String EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR";
 
     private String titleToolbar;
@@ -40,12 +39,12 @@ public class DigitalProductActivity extends BaseSimpleActivity
 
     public static Intent newInstance(Context context, DigitalCategoryDetailPassData passData) {
         return new Intent(context, DigitalProductActivity.class)
-                .putExtra(EXTRA_CATEGORY_PASS_DATA, passData);
+                .putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData);
     }
 
     public static Intent newInstance(Context context, DigitalCategoryDetailPassData passData, int isCouponApplied) {
         return new Intent(context, DigitalProductActivity.class)
-                .putExtra(EXTRA_CATEGORY_PASS_DATA, passData)
+                .putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData)
                 .putExtra(PARAM_IS_COUPON_ACTIVE, isCouponApplied);
     }
 
@@ -85,7 +84,7 @@ public class DigitalProductActivity extends BaseSimpleActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        passData = getIntent().getExtras().getParcelable(EXTRA_CATEGORY_PASS_DATA);
+        passData = getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA);
         super.onCreate(savedInstanceState);
     }
 

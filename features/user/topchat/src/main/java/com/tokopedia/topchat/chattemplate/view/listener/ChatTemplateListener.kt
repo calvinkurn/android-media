@@ -6,5 +6,4 @@ package com.tokopedia.topchat.chattemplate.view.listener
 
 interface ChatTemplateListener {
     fun addTemplateString(message: String?)
-    fun goToSettingTemplate()
 }

@@ -10,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
@@ -41,6 +42,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -96,11 +101,16 @@ object DeeplinkDFMapper {
     private val DFM_SALDO_DEPOSIT = "saldo_deposit"
     private val DFM_OVOP2P = "ovop2p"
     private val DFM_SALDO_INTRO = "saldo_deposit"
+    private val DFM_OVO_PAY_WITH_QR = "df_ovo_pay_with_qr"
     private val DFM_REFERRAL = "im_referral"
     private val DFM_WALLET = "fintech_wallet"
     private val DFM_PROFILE = "profile"
+    private val DFM_AFFILIATE = "affiliate"
     private val DFM_CHAT_BOT = "chatbot"
     private val DFM_POWER_MERCHANT_SUBSCRIBE = "power_merchant_subscribe"
+    private val DFM_SETTING_NOTIF = "settingnotif"
+    private val DFM_PAYMENT_SETTING = "payment_setting"
+    private val DFM_PAYMENT_SETTING_SELLERAPP = "payment_setting_sellerapp"
 
     @JvmField
     val DFM_ONBOARDING = "onboarding"
@@ -148,15 +158,21 @@ object DeeplinkDFMapper {
             add(DFP({it.startsWith(OVO_WALLET)}, DFM_WALLET, R.string.applink_wallet_title))
             add(DFP({ it.startsWith(CONTACT_US_NATIVE) || it.startsWith(CONTACT_US) || it.startsWithPattern(TICKET_DETAIL) }, DFM_CONTACT_US, R.string.applink_title_contact_us))
             add(DFP({ it.startsWithPattern(PROFILE) }, DFM_PROFILE, R.string.applink_title_profile))
+            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DFM_AFFILIATE, R.string.applink_title_affiliate))
             add(DFP({it.startsWith(CHAT_BOT)}, DFM_CHAT_BOT, R.string.title_applink_chatbot))
             add(DFP({ it.startsWith(POWER_MERCHANT_SUBSCRIBE) }, DFM_POWER_MERCHANT_SUBSCRIBE, R.string.title_applink_pm_subscribe))
+            add(DFP({it.startsWith(OVO_PAY_WITH_QR_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
+            add(DFP({it.startsWith(OQR_PIN_URL_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
 
+            add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING, R.string.payment_settings_title))
+            add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_SETTING_NOTIF, R.string.notif_settings_title))
         }
     }
 
     private val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title))
+            add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING_SELLERAPP, R.string.payment_settings_title))
             add(DFP({ it.startsWith(TOPADS_DASHBOARD_SELLER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(TOPADS_AUTOADS) }, DFM_CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(REPORT_PRODUCT) }, DFM_SELLER_REPORT_PRODUCT, R.string.applink_report_title))
