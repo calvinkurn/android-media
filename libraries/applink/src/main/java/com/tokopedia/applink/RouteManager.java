@@ -62,7 +62,6 @@ public class RouteManager {
     private static @Nullable
     Intent buildInternalExplicitIntent(@NonNull Context context, @NonNull String deeplink) {
         Intent intent = buildInternalImplicitIntent(context, deeplink);
-
         List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(intent, 0);
         if (resolveInfos == null || resolveInfos.size() == 0) {
             // intent cannot be viewed in app
