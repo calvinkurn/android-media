@@ -52,6 +52,9 @@
     <string name="umrah_order_detail_activity_label">Detail Pesanan</string>
     <string name="umrah_order_detail_condition_agreement">Pelajari tentang kebijakan pembatalan &amp; refund</string>
     <string name="umrah_order_detail_condition_agreement_link">pembatalan &amp; refund</string>
+    <string name="umrah_order_detail_link_pusat_bantuan">Pusat Bantuan</string>
+    <string name="umrah_order_detail_old_value_quetion_mark">\?</string>
+    <string name="umrah_order_detail_new_value_quetion_mark"><![CDATA[\? <br>]]></string>
 
     <string name="my_umrah_widget_next_step_label">Selanjutnya:</string>
     <string name="umrah_search_filter_package_price">Harga Paket</string>
