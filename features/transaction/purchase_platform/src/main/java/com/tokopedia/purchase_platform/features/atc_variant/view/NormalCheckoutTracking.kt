@@ -27,6 +27,9 @@ class NormalCheckoutTracking {
         private const val VALUE_NONE_OTHER = "none / other"
 
         const val CATEGORY_FIN_PDP_INSURANCE = "fin - product detail page"
+        const val ACTION_FIN_PDP_CLICK_INFO = "click - ins - click info"
+        const val ACTION_FIN_PDP_INSURANCR_STATE = "click - ins - tick include insurance to cart"
+        const val LABEL_FIN_PDP_INSURANCE = "pdp page"
     }
 
     private var isTrackTradeIn = false
@@ -43,8 +46,8 @@ class NormalCheckoutTracking {
         val mapEvent = TrackAppUtils.gtmData(
                 "",
                 CATEGORY_FIN_PDP_INSURANCE,
-                "click - ins - click info",
-                "pdp page"
+                ACTION_FIN_PDP_CLICK_INFO,
+                LABEL_FIN_PDP_INSURANCE
         )
         mapEvent[KEY_PRODUCT_ID] = productId ?: ""
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
@@ -56,11 +59,10 @@ class NormalCheckoutTracking {
         } else {
             "pdp page - untick $title"
         }
-        val eventAction = "click - ins - tick include insurance to cart"
         val mapEvent = TrackAppUtils.gtmData(
                 "",
                 CATEGORY_FIN_PDP_INSURANCE,
-                eventAction,
+                ACTION_FIN_PDP_INSURANCR_STATE,
                 eventLabel
         )
         mapEvent[KEY_PRODUCT_ID] = productId ?: ""
