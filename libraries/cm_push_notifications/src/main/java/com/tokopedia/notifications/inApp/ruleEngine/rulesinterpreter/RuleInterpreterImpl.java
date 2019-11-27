@@ -71,7 +71,7 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
                                         checkIfFrequencyIsValid(inAppData, System.currentTimeMillis()) &&
                                         checkIfBehaviourRulesAreValid(inAppData))){
                                     iter.remove();
-                                    if(performdeletion(inAppData)) {
+                                    if(performDeletion(inAppData)) {
                                         RepositoryManager.getInstance().getStorageProvider().deleteRecord(inAppData.id);
                                     }
                                 }
@@ -138,7 +138,7 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
         }
     }
 
-    private boolean performdeletion(CMInApp inAppData){
+    private boolean performDeletion(CMInApp inAppData){
         if((inAppData.startTime != 0L && inAppData.endTime != 0L) || (!inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ))){
             return true;
         }
