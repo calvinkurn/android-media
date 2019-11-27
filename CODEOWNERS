@@ -68,6 +68,7 @@
 /libraries/travel_calendar              @tokopedia/minion-mark
 /features/digital/travel_homepage       @tokopedia/minion-mark
 /features/digital/voucher_game       @tokopedia/minion-mark
+/features/salam/umrah                   @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob
 /features/payment/payment_setting/              @tokopedia/minion-bob
