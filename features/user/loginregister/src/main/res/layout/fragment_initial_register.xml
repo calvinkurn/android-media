@@ -99,6 +99,7 @@
                 android:padding="@dimen/dp_20"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/sp_12"
+                android:layout_marginBottom="@dimen/dp_52"
                 tools:text="Sudah punya akun? Masuk"/>
 
         </LinearLayout>
