@@ -12,18 +12,29 @@ class NotificationFilterUseCase @Inject constructor(
         private val query: String,
         private val useCase: GraphqlUseCase<NotificationUpdateFilter>) {
 
-    private val params = RequestParams.EMPTY
-
-    fun get(onSuccess: (NotificationUpdateFilter) -> Unit, onError: (Throwable) -> Unit) {
+    fun get(requestParams: Map<String, Any>,
+            onSuccess: (NotificationUpdateFilter) -> Unit,
+            onError: (Throwable) -> Unit) {
         useCase.apply {
             setTypeClass(NotificationUpdateFilter::class.java)
-            setRequestParams(params.parameters)
+            setRequestParams(requestParams)
             setGraphqlQuery(query)
             execute({ result ->
                 onSuccess(result)
             }, { error ->
                 onError(error)
             })
+        }
+    }
+
+    companion object {
+        private const val PARAM_NOTIF_TYPE  = "typeOfNotif"
+        private const val TYPE_NOTIF_UPDATE = 2
+
+        fun params(): HashMap<String, Any> {
+            val variables = HashMap<String, Any>()
+            variables[PARAM_NOTIF_TYPE] = TYPE_NOTIF_UPDATE
+            return variables
         }
     }
 
