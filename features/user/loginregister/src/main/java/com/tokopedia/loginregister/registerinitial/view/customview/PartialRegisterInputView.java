@@ -54,7 +54,6 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     private static Boolean isButtonValidatorActived = false;
     private Boolean isExtensionSelected = false;
-    private Boolean isInputFocused = false;
 
     private PartialRegisterInputViewListener listener;
     private List<String> emailExtensionList;
@@ -128,6 +127,10 @@ public class PartialRegisterInputView extends BaseCustomView {
             @Override
             public void onClick(View v) {
                 showDefaultView();
+
+                if (emailExtension != null) {
+                    emailExtension.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -271,7 +274,7 @@ public class PartialRegisterInputView extends BaseCustomView {
             @Override
             public void onKeyboardShow() {
                 if (emailExtension != null && etInputEmailPhone != null) {
-                    if (etInputEmailPhone.getText().toString().contains("@") && !isExtensionSelected) {
+                    if (etInputEmailPhone.getText().toString().contains("@") && !isExtensionSelected && etInputEmailPhone.isFocused()) {
                         emailExtension.setVisibility(View.VISIBLE);
                     }
                 }
@@ -298,6 +301,10 @@ public class PartialRegisterInputView extends BaseCustomView {
         public void onClick(View v) {
             String id = etInputEmailPhone.getText().toString();
             listener.onActionPartialClick(id);
+
+            if (emailExtension != null) {
+                emailExtension.setVisibility(View.GONE);
+            }
         }
     }
 
