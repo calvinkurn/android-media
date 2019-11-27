@@ -767,7 +767,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
         } else if (isNullZipcode) {
             et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
-            Toast.makeText(context, "Hitting get district detail", Toast.LENGTH_SHORT).show()
+            presenter.getZipCodes(saveAddressDataModel?.districtId.toString())
         }
     }
 
@@ -854,6 +854,15 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             })
             finish()
         }
+    }
+
+    override fun showZipCodes(zipcodes: List<String>) {
+        saveAddressDataModel?.zipCodes = zipcodes
+        showZipCodes()
+    }
+
+    override fun showManualZipCodes() {
+
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {

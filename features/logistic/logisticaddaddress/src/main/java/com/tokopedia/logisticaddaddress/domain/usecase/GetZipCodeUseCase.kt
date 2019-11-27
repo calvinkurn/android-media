@@ -32,6 +32,10 @@ class GetZipCodeUseCase
                 .observeOn(scheduler.ui())
     }
 
+    fun unsubscribe() {
+        gql.unsubscribe()
+    }
+
 }
 
 val query_kero_get_district_details = """
