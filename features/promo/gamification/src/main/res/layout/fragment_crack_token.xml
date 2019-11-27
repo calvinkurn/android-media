@@ -1,208 +1,227 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/iv_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/bg_egg" />
-
-
-    <TextView
-        android:id="@+id/text_countdown_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/bg_countdown_timer"
-        android:paddingLeft="@dimen/dp_32"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_32"
-        android:paddingBottom="@dimen/dp_8"
-        android:textColor="#07e4fe"
-        android:textSize="@dimen/text_size_countdown_timer"
-        android:textStyle="bold"
-        android:visibility="gone"
-        tools:text="12:00:00"
-        tools:visibility="visible" />
-
-
-    <com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView
-        android:id="@+id/widget_token_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
-    <com.tokopedia.gamification.cracktoken.compoundview.WidgetEggSource
-        android:id="@+id/widget_remaining_token_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_24"
-        android:layout_marginBottom="@dimen/dp_24"
-        android:visibility="gone" />
-
-    <com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult
-        android:id="@+id/widget_reward"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenOnBoarding
-        android:id="@+id/widget_token_onboarding"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_64"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.tokopedia.gamification.cracktoken.compoundview.WidgetRewardCrackResult
-            android:id="@+id/widget_rewards"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/text_info_page"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/dp_36"
-            android:layout_marginRight="@dimen/dp_36"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:background="@drawable/bg_info_crack_egg"
-            android:gravity="center"
-            android:paddingLeft="@dimen/dp_32"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_32"
-            android:paddingBottom="@dimen/dp_8"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/text_size_info_crack_egg"
-            android:textStyle="bold"
-            android:visibility="gone"
-            tools:text="@string/default_info_token_text_crack"
-            tools:visibility="visible" />
-    </LinearLayout>
-
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/toolbar_color"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance">
-
         <FrameLayout
+            android:id="@+id/root_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="4">
+
+            <ImageView
+                android:id="@+id/iv_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/bg_egg" />
+
 
             <TextView
-                android:id="@+id/toolbar_title"
+                android:id="@+id/text_countdown_timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:fontFamily="sans-serif"
-                android:textSize="@dimen/sp_17"
-                android:textStyle="normal" />
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/bg_countdown_timer"
+                android:paddingLeft="@dimen/dp_32"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_32"
+                android:paddingBottom="@dimen/dp_8"
+                android:textColor="#07e4fe"
+                android:textSize="@dimen/text_size_countdown_timer"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="12:00:00"
+                tools:visibility="visible" />
 
-            <FrameLayout
-                android:id="@+id/fl_prize"
-                android:layout_width="wrap_content"
+
+            <com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView
+                android:id="@+id/widget_token_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.tokopedia.gamification.cracktoken.compoundview.WidgetEggSource
+                android:id="@+id/widget_remaining_token_view"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="@dimen/dp_64"
-                android:layout_marginRight="@dimen/dp_64"
-                android:visibility="gone">
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_24"
+                android:layout_marginBottom="@dimen/dp_24"
+                android:visibility="gone" />
 
-                <ImageView
-                    android:id="@+id/daily_prize"
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="@dimen/dp_32"
-                    tools:src="@drawable/ic_empty_egg" />
-            </FrameLayout>
+            <com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult
+                android:id="@+id/widget_reward"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-            <FrameLayout
-                android:id="@+id/fl_remaining_token"
-                android:layout_width="wrap_content"
+            <com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenOnBoarding
+                android:id="@+id/widget_token_onboarding"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginRight="@dimen/dp_16"
-                android:visibility="gone">
+                android:layout_marginTop="@dimen/dp_64"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/image_remaining_token"
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="@dimen/dp_32"
-                    android:layout_margin="@dimen/dp_8"
-                    tools:src="@drawable/ic_empty_egg" />
+                <com.tokopedia.gamification.cracktoken.compoundview.WidgetRewardCrackResult
+                    android:id="@+id/widget_rewards"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
 
                 <TextView
-                    android:id="@+id/tv_floating_counter"
-                    style="@style/TextView.Micro10"
-                    android:layout_width="@dimen/dp_22"
-                    android:layout_height="@dimen/dp_22"
-                    android:layout_gravity="top|end"
-                    android:background="@drawable/circle_red_shadow"
+                    android:id="@+id/text_info_page"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp_36"
+                    android:layout_marginRight="@dimen/dp_36"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:background="@drawable/bg_info_crack_egg"
                     android:gravity="center"
-                    android:textColor="@color/white"
-                    tools:text="99+" />
+                    android:paddingLeft="@dimen/dp_32"
+                    android:paddingTop="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_32"
+                    android:paddingBottom="@dimen/dp_8"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_info_crack_egg"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:text="@string/default_info_token_text_crack"
+                    tools:visibility="visible" />
+            </LinearLayout>
+
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/toolbar_color"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:subtitleTextAppearance="?subtitleTextAppearance"
+                app:titleTextAppearance="?titleTextAppearance">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/toolbar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif"
+                        android:textSize="@dimen/sp_17"
+                        android:textStyle="normal" />
+
+                    <FrameLayout
+                        android:id="@+id/fl_prize"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="@dimen/dp_64"
+                        android:layout_marginRight="@dimen/dp_64"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/daily_prize"
+                            android:layout_width="@dimen/dp_32"
+                            android:layout_height="@dimen/dp_32"
+                            tools:src="@drawable/ic_empty_egg" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/fl_remaining_token"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/image_remaining_token"
+                            android:layout_width="@dimen/dp_32"
+                            android:layout_height="@dimen/dp_32"
+                            android:layout_margin="@dimen/dp_8"
+                            tools:src="@drawable/ic_empty_egg" />
+
+                        <TextView
+                            android:id="@+id/tv_floating_counter"
+                            style="@style/TextView.Micro10"
+                            android:layout_width="@dimen/dp_22"
+                            android:layout_height="@dimen/dp_22"
+                            android:layout_gravity="top|end"
+                            android:background="@drawable/circle_red_shadow"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            tools:text="99+" />
+                    </FrameLayout>
+
+                </FrameLayout>
+
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <FrameLayout
+                android:id="@+id/tooltip_crack_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="@dimen/dp_48"
+                android:layout_marginEnd="@dimen/dp_32"
+                android:layout_marginRight="@dimen/dp_32"
+                android:clickable="true"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_8"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="@dimen/dp_40"
+                    android:layout_marginRight="@dimen/dp_40"
+                    app:srcCompat="@drawable/gf_ic_up" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/gf_tooltip_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:background="@drawable/gf_white_rounded_tooltip"
+                    android:padding="@dimen/dp_16"
+                    android:text="@string/daily_prize_tooltip_text"
+                    android:textColor="@color/clr_f531353b"
+                    app:typographyType="body_2" />
             </FrameLayout>
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
 
         </FrameLayout>
 
-
-    </androidx.appcompat.widget.Toolbar>
-
-    <FrameLayout
-        android:id="@+id/tooltip_crack_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="@dimen/dp_48"
-        android:layout_marginEnd="@dimen/dp_32"
-        android:layout_marginRight="@dimen/dp_32"
-        android:clickable="true"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_8"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:layout_marginRight="@dimen/dp_40"
-            app:srcCompat="@drawable/gf_ic_up" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/gf_tooltip_text"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_8"
-            android:background="@drawable/gf_white_rounded_tooltip"
-            android:padding="@dimen/dp_16"
-            android:textColor="@color/clr_f531353b"
-            android:text="@string/daily_prize_tooltip_text"
-            app:typographyType="body_2" />
-    </FrameLayout>
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-
-
-</FrameLayout>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white" />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
