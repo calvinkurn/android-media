@@ -208,8 +208,10 @@ class HomeModule {
     @Provides
     fun homePresenter(userSession: UserSessionInterface,
                       getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
-                      @Named("Main") coroutineDispatcher: CoroutineDispatcher): HomePresenter {
-        return HomePresenter(userSession, getShopInfoByDomainUseCase, coroutineDispatcher)
+                      @Named("Main") coroutineDispatcher: CoroutineDispatcher,
+                      homeUseCase: HomeUseCase,
+                      homeDataMapper: HomeDataMapper): HomePresenter {
+        return HomePresenter(userSession, getShopInfoByDomainUseCase, coroutineDispatcher, homeUseCase, homeDataMapper)
     }
 
     @Provides

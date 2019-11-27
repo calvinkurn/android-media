@@ -51,7 +51,9 @@ import kotlin.coroutines.CoroutineContext
 
 class HomePresenter(private val userSession: UserSessionInterface,
                     private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
-                    private val coroutineDispatcher: CoroutineDispatcher) :
+                    private val coroutineDispatcher: CoroutineDispatcher,
+                    private val homeUseCase: HomeUseCase,
+                    private val homeDataMapper: HomeDataMapper) :
         BaseDaggerPresenter<HomeContract.View?>(), HomeContract.Presenter, CoroutineScope {
 
     protected var compositeSubscription: CompositeSubscription
@@ -87,12 +89,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     @Inject
     lateinit var playCardHomeUseCase: PlayCardHomeUseCase
-
-    @Inject
-    lateinit var homeUseCase: HomeUseCase
-
-    @Inject
-    lateinit var homeDataMapper: HomeDataMapper
 
 
     private var isCache = true
