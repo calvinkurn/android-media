@@ -85,17 +85,20 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             }.getSuccessData<FlightCart.Response>().flightCart
 
             if (data.cartData.id.isNotBlank() && !data.meta.needRefresh) {
-                flightBookingParam.departureDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.cartData.flight.journeys[0].departureTime))
-                flightBookingParam.isDomestic = data.cartData.flight.isDomestic
-                flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
-                flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
-                if (flightPassengersData.value?.isEmpty() != false) flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
-                        data.cartData.flight.child, data.cartData.flight.infant)
-                flightPriceData.value = data.cartData.flight.priceDetail
-                flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
-                if (autoVerify) isStillLoading = true
-                flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
-                if (autoVerify && bookingVerifyParam != null && verifyQuery.isNotEmpty() && checkVoucherQuery.isNotEmpty()) verifyCartData(verifyQuery, bookingVerifyParam, checkVoucherQuery)
+                if (autoVerify && bookingVerifyParam != null && verifyQuery.isNotEmpty() && checkVoucherQuery.isNotEmpty()) {
+                    verifyCartData(verifyQuery, bookingVerifyParam, checkVoucherQuery)
+                    isStillLoading = true
+                } else {
+                    flightBookingParam.departureDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.cartData.flight.journeys[0].departureTime))
+                    flightBookingParam.isDomestic = data.cartData.flight.isDomestic
+                    flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
+                    flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
+                    if (flightPassengersData.value?.isEmpty() != false) flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
+                            data.cartData.flight.child, data.cartData.flight.infant)
+                    flightPriceData.value = data.cartData.flight.priceDetail
+                    flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
+                    flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
+                }
                 retryCount = 0
             } else {
                 if (data.meta.needRefresh && data.meta.maxRetry >= retryCount) {
