@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.view.adapter.viewholder.onboarding
+package com.tokopedia.interest_pick_common.view.adapter
 
 import android.graphics.Rect
 import androidx.recyclerview.widget.GridLayoutManager
@@ -9,9 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
-import kotlinx.android.synthetic.main.item_feed_onboarding.view.*
+import com.tokopedia.interest_pick_common.R
+import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
+import kotlinx.android.synthetic.main.item_new_interest_pick.view.*
 
 /**
  * @author by yoasfs on 2019-09-18
@@ -44,11 +44,11 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
         }
     }
 
-    private val list: MutableList<OnboardingDataViewModel> = arrayListOf()
+    private val list: MutableList<InterestPickDataViewModel> = mutableListOf()
     private var selectedListId : List<Int> = arrayListOf()
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): Holder {
-        return Holder(LayoutInflater.from(p0.context).inflate(R.layout.item_feed_onboarding, p0, false), listener)
+        return Holder(LayoutInflater.from(p0.context).inflate(R.layout.item_new_interest_pick, p0, false), listener)
     }
 
     override fun getItemCount(): Int {
@@ -59,14 +59,13 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        var data = list[position]
-        if (source.equals(SOURCE_FEED) && position == 5)  {
-            data = getOnboardingDataSeeAll()
-        }
+        val data = if(source.equals(SOURCE_FEED) && position == 5) {
+            getOnboardingDataSeeAll()
+        } else list[position]
         holder.bind(data, position, list)
     }
 
-    fun setList(list: List<OnboardingDataViewModel>) {
+    fun setList(list: List<InterestPickDataViewModel>) {
         this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
@@ -76,12 +75,12 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
 
         private val VAL_ICON_SIZE = 20
 
-        fun bind(item: OnboardingDataViewModel, positionInAdapter: Int, list: List<OnboardingDataViewModel>) {
+        fun bind(item: InterestPickDataViewModel, positionInAdapter: Int, list: List<InterestPickDataViewModel>) {
             initView(item, positionInAdapter)
             initViewListener(item, positionInAdapter, list)
         }
 
-        private fun initView(item: OnboardingDataViewModel, positionInAdapter: Int) {
+        private fun initView(item: InterestPickDataViewModel, positionInAdapter: Int) {
             itemView.tv_onboarding_item.text = item.name
             setBackgroundColor(item)
             if (!item.isLihatSemuaItem) {
@@ -95,7 +94,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
             }
         }
 
-        private fun initViewListener(item: OnboardingDataViewModel, positionInAdapter: Int, list: List<OnboardingDataViewModel>) {
+        private fun initViewListener(item: InterestPickDataViewModel, positionInAdapter: Int, list: List<InterestPickDataViewModel>) {
             itemView.setOnClickListener {
                 if (item.isLihatSemuaItem) {
                     listener.onLihatSemuaItemClicked(list.filter { it.isSelected })
@@ -107,7 +106,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
             }
         }
 
-        private fun setBackgroundColor(item: OnboardingDataViewModel) {
+        private fun setBackgroundColor(item: InterestPickDataViewModel) {
             if (item.isSelected) {
                 itemView.bg_selected.background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_interespick_selected)
                 itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.white))
@@ -123,16 +122,16 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
         }
     }
 
-    private fun getOnboardingDataSeeAll(): OnboardingDataViewModel {
-        return OnboardingDataViewModel(
+    private fun getOnboardingDataSeeAll(): InterestPickDataViewModel {
+        return InterestPickDataViewModel(
                 0,
-                OnboardingDataViewModel.defaultLihatSemuaText,
+                InterestPickDataViewModel.defaultLihatSemuaText,
                 "",
                 false,
                 true)
     }
 
-    fun getSelectedItems(): List<OnboardingDataViewModel> {
+    fun getSelectedItems(): List<InterestPickDataViewModel> {
         return list.filter { it.isSelected }
     }
 
@@ -150,8 +149,8 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
     }
 
     interface InterestPickItemListener {
-        fun onInterestPickItemClicked(item: OnboardingDataViewModel)
-        fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>)
-        fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>)
+        fun onInterestPickItemClicked(item: InterestPickDataViewModel)
+        fun onLihatSemuaItemClicked(selectedItemList: List<InterestPickDataViewModel>)
+        fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<InterestPickDataViewModel>)
     }
 }
