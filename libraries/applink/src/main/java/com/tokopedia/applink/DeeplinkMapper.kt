@@ -40,7 +40,8 @@ object DeeplinkMapper {
         val mappedDeepLink: String = when {
             deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> getRegisteredNavigationFromHttp(context, deeplink)
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
-                when {
+                val query = Uri.parse(deeplink).query
+                var tempDeeplink = when {
                     deeplink.startsWith(ApplinkConst.HOTEL, true) -> deeplink
                     deeplink.startsWith(ApplinkConst.DIGITAL, true) ->
                         getRegisteredNavigationDigital(context, deeplink)
@@ -56,7 +57,7 @@ object DeeplinkMapper {
                         getRegisteredHotlist(context, deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
-                    deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW,true) ->
+                    deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW, true) ->
                         getCreateReviewInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(deeplink)
@@ -68,25 +69,36 @@ object DeeplinkMapper {
                         val query = Uri.parse(deeplink).query
                         if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){
                             getRegisteredCategoryNavigation(getSegments(deeplink))
-                        } else if(query?.isNotEmpty() == true){
-                            var tempDL = deeplink
-                            if(deeplink.contains('?')) {
-                                tempDL = deeplink.substring(0, deeplink.indexOf('?'))
+                        } else if (query?.isNotEmpty() == true) {
+                            val tempDL = if (deeplink.contains('?')) {
+                                deeplink.substring(0, deeplink.indexOf('?'))
+                            } else {
+                                deeplink
                             }
-                            var navFromTokopedia = getRegisteredNavigationFromTokopedia(tempDL)
-                            if(navFromTokopedia.isNotEmpty()) {
-                                val questionMarkIndex = navFromTokopedia.indexOf("?")
-                                navFromTokopedia += if (questionMarkIndex == -1) { "?$query" } else { "&$query" }
-                            }
-                            navFromTokopedia
+                            getRegisteredNavigationFromTokopedia(tempDL)
                         } else getRegisteredNavigationFromTokopedia(deeplink)
                     }
                 }
+                tempDeeplink = createAppendDeeplinkWithQuery(tempDeeplink, query)
+                tempDeeplink
             }
             deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true) -> getRegisteredNavigationFromSellerapp(deeplink)
             else -> deeplink
         }
         return mappedDeepLink
+    }
+
+    private fun createAppendDeeplinkWithQuery(deeplink: String, query: String?): String {
+        return if (query?.isNotEmpty() == true && deeplink.isNotEmpty()) {
+            val questionMarkIndex = deeplink.indexOf("?")
+            deeplink + if (questionMarkIndex == -1) {
+                "?$query"
+            } else {
+                "&$query"
+            }
+        } else {
+            deeplink
+        }
     }
 
     /**

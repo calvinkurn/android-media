@@ -1,1 +1,1 @@
-com/tokopedia/common_digital/common/presentation/model/DigitalCategoryDetailPassData.class
+
