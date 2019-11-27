@@ -3,6 +3,7 @@ package com.tokopedia.flight.bookingV3.viewmodel
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
@@ -13,6 +14,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.common.constant.FlightErrorConstant
+import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
@@ -626,6 +628,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             promoEligibility.success = true
             return promoEligibility
         } catch (e: Exception) {
+            promoEligibility.success = false
+            if (!e.message.isNullOrEmpty()) promoEligibility.message = mapThrowableToFlightError(e.message ?: "").title
             return promoEligibility
         }
     }
@@ -746,6 +750,12 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         }
         flightPassengersData.value = passengerViewModels
         checkOutCart(query, price)
+    }
+
+    fun mapThrowableToFlightError(message: String): FlightError {
+        val gson = Gson()
+        val itemType = object : TypeToken<List<FlightError>>() {}.type
+        return gson.fromJson<List<FlightError>>(message, itemType)[0]
     }
 
     companion object {
