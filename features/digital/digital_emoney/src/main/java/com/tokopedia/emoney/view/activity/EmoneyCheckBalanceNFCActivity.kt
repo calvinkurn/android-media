@@ -329,6 +329,11 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         }
     }
 
+    private fun showErrorDeviceUnsupported(errorMessage: String) {
+        tapETollCardView.visibility = View.VISIBLE
+        tapETollCardView.showErrorDeviceUnsupportedState(errorMessage)
+    }
+
     override fun showCardLastBalance(emoneyInquiry: EmoneyInquiry) {
         emoneyAnalytics.onShowLastBalance()
         tapETollCardView.visibility = View.GONE
@@ -340,8 +345,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     private fun isDigitalSmartcardEnabled(): Boolean {
-//        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false)
-        return true
+        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false)
     }
 
     private fun directToNFCSettingsPage() {
@@ -389,7 +393,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                         }
                     }, getString(R.string.emoney_nfc_permission_rationale_message))
         } else {
-            showError(resources.getString(R.string.emoney_nfc_not_supported))
+            showErrorDeviceUnsupported(resources.getString(R.string.emoney_nfc_not_supported))
         }
     }
 

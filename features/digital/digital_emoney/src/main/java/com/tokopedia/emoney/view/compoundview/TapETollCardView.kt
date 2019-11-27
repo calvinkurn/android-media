@@ -90,6 +90,15 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         listener.tryAgainTopup(issuerId)
     }
 
+    fun showErrorDeviceUnsupportedState(errorMessage: String) {
+        textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
+        textTitle.setTextColor(resources.getColor(R.color.red_600))
+        textLabel.text = errorMessage
+        lottieAnimationView.visibility = View.GONE
+        imageviewError.visibility = View.VISIBLE
+        buttonTryAgain.visibility = View.GONE
+    }
+
     interface OnTapEtoll {
         fun tryAgainTopup(issuerId: Int)
     }
