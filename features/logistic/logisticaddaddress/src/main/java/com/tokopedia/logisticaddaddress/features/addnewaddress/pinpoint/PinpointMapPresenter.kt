@@ -84,6 +84,8 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
 
             AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess()
             AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed()
+        } else if (saveAddressDataModel.postalCode.isEmpty()) {
+            view.goToAddEditActivity(true, isMismatchSolved, false)
         } else {
             if (isChangesRequested) {
                 view.finishBackToAddEdit(false, isMismatchSolved)
