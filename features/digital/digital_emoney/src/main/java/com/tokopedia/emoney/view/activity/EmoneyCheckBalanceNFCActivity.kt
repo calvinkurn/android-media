@@ -368,26 +368,29 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
 
     override fun onResume() {
         super.onResume()
+        if (brizziInstance.nfcAdapter != null) {
+            if (!::permissionCheckerHelper.isInitialized) {
+                permissionCheckerHelper = PermissionCheckerHelper()
+            }
+            permissionCheckerHelper.checkPermission(this,
+                    PermissionCheckerHelper.Companion.PERMISSION_NFC,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
 
-        if (!::permissionCheckerHelper.isInitialized) {
-            permissionCheckerHelper = PermissionCheckerHelper()
+                        override fun onPermissionDenied(permissionText: String) {
+                            permissionCheckerHelper.onPermissionDenied(applicationContext, permissionText)
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper.onNeverAskAgain(applicationContext, permissionText)
+                        }
+
+                        override fun onPermissionGranted() {
+                            detectNFC()
+                        }
+                    }, getString(R.string.emoney_nfc_permission_rationale_message))
+        } else {
+            showError(resources.getString(R.string.emoney_nfc_not_supported))
         }
-        permissionCheckerHelper.checkPermission(this,
-                PermissionCheckerHelper.Companion.PERMISSION_NFC,
-                object : PermissionCheckerHelper.PermissionCheckListener {
-
-                    override fun onPermissionDenied(permissionText: String) {
-                        permissionCheckerHelper.onPermissionDenied(applicationContext, permissionText)
-                    }
-
-                    override fun onNeverAskAgain(permissionText: String) {
-                        permissionCheckerHelper.onNeverAskAgain(applicationContext, permissionText)
-                    }
-
-                    override fun onPermissionGranted() {
-                        detectNFC()
-                    }
-                }, getString(R.string.emoney_nfc_permission_rationale_message))
     }
 
     private fun navigatePageToDigitalProduct(passData: DigitalCategoryDetailPassData) {

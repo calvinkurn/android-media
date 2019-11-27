@@ -26,6 +26,7 @@
     <string name="emoney_activate" translatable="false">Aktifkan</string>
     <string name="emoney_cancel" translatable="false">Batalkan</string>
     <string name="emoney_nfc_permission_rationale_message" translatable="false">Aplikasi ini membutuhkan izin untuk mengakses NFC</string>
+    <string name="emoney_nfc_not_supported">Perangkat tidak didukung, aplikasi ini membutuhkan NFC</string>
     <string name="emoney_allow_nfc_permission">Izinkan</string>
     <string name="emoney_deny_nfc_permission">Tolak</string>
     <string name="emoney_nfc_permission_denied_message">Anda tidak memberikan izin akses untuk NFC</string>
