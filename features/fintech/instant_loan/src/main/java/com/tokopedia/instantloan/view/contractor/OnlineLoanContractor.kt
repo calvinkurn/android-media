@@ -23,11 +23,12 @@ interface OnlineLoanContractor {
         fun openWebView(url: String)
 
         fun searchLoanOnline()
-
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun isUserLoggedIn(): Boolean
         fun getFilterData()
+        fun isViewAttached(): Boolean
+        fun getView(): OnlineLoanContractor.View
     }
 }

@@ -1,12 +1,10 @@
 package com.tokopedia.instantloan.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.instantloan.data.model.response.GqlFilterDataResponse
 import com.tokopedia.instantloan.domain.interactor.GetFilterDataUseCase
+import com.tokopedia.instantloan.domain.subscriber.GetFilterDataSubscriber
 import com.tokopedia.instantloan.view.contractor.OnlineLoanContractor
 import com.tokopedia.user.session.UserSession
-import rx.Subscriber
 import javax.inject.Inject
 
 class OnlineLoanPresenter @Inject
@@ -28,26 +26,16 @@ constructor(private val mGetFilterDataUseCase: GetFilterDataUseCase) :
 
     override fun getFilterData() {
 
-        mGetFilterDataUseCase.execute(object : Subscriber<GraphqlResponse>() {
-            override fun onNext(graphqlResponse: GraphqlResponse?) {
-                if (isViewNotAttached) {
-                    return
-                }
-                val gqlFilterDataResponse = graphqlResponse?.getData(GqlFilterDataResponse::class.java) as GqlFilterDataResponse
-                view.setFilterDataForOnlineLoan(gqlFilterDataResponse.gqlFilterData)
+        mGetFilterDataUseCase.execute(GetFilterDataSubscriber(this))
 
-            }
+    }
 
-            override fun onCompleted() {
+    override fun isViewAttached(): Boolean {
+        return super.isViewAttached()
+    }
 
-            }
-
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
-
-        })
-
+    override fun getView(): OnlineLoanContractor.View {
+        return super.getView()
     }
 
     override fun isUserLoggedIn(): Boolean {

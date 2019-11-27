@@ -42,11 +42,12 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.kotlinMockito
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0")
+
 }
 
 project.ext {
