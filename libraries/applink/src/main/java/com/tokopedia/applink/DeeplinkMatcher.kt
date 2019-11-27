@@ -85,7 +85,7 @@ class DeeplinkMatcher() {
             add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 4, mapOf(0 to "product-review")) to PRODUCT_REVIEW)
             add(Pattern(EQ, 2, mapOf(0 to "myshop", 1 to "power-merchant")) to OTHER)
-            add(Pattern(EQ, 1, mapOf(0 to "mys-hop")) to OTHER)
+            add(Pattern(EQ, 1, mapOf(0 to "my-shop")) to OTHER)
             add(Pattern(EQ, 2, mapOf(0 to "myshop", 1 to "verify")) to OTHER)
             add(Pattern(EQ, 2, mapOf(0 to "terms", 1 to "aktivasi-powermerchant")) to OTHER)
             add(Pattern(EQ, 1, null) to SHOP)
