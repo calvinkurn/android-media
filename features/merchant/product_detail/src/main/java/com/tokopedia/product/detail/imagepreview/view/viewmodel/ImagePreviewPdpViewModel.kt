@@ -18,44 +18,50 @@ class ImagePreviewPdpViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
 
     fun addWishList(productId: String, onErrorAddWishList: ((errorMessage: String?) -> Unit)?, onSuccessAddWishlist: ((productId: String?) -> Unit)?) {
-        addWishListUseCase.createObservable(productId,
-                userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                onErrorAddWishList?.invoke(errorMessage)
-            }
+        if (productId.isNotEmpty() && productId.matches(Regex("^(?![a-zA-Z])([0-9])*\$"))) {
+            addWishListUseCase.createObservable(productId, userSessionInterface.userId, object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    onErrorAddWishList?.invoke(errorMessage)
+                }
 
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                // no op
-            }
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    // no op
+                }
 
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                // no op
-            }
+                override fun onSuccessRemoveWishlist(productId: String?) {
+                    // no op
+                }
 
-            override fun onSuccessAddWishlist(productId: String?) {
-                onSuccessAddWishlist?.invoke(productId)
-            }
-        })
+                override fun onSuccessAddWishlist(productId: String?) {
+                    onSuccessAddWishlist?.invoke(productId)
+                }
+            })
+        } else {
+            onErrorAddWishList?.invoke("")
+        }
     }
 
     fun removeWishList(productId: String, onSuccessRemoveWishlist: ((productId: String?) -> Unit)?, onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?) {
-        removeWishlistUseCase.createObservable(productId,
-                userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                // no op
-            }
+        if (productId.isNotEmpty() && productId.matches(Regex("^(?![a-zA-Z])([0-9])*\$"))) {
+            removeWishlistUseCase.createObservable(productId, userSessionInterface.userId, object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    // no op
+                }
 
-            override fun onSuccessAddWishlist(productId: String?) {
-                // no op
-            }
+                override fun onSuccessAddWishlist(productId: String?) {
+                    // no op
+                }
 
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                onErrorRemoveWishList?.invoke(errorMessage)
-            }
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    onErrorRemoveWishList?.invoke(errorMessage)
+                }
 
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                onSuccessRemoveWishlist?.invoke(productId)
-            }
-        })
+                override fun onSuccessRemoveWishlist(productId: String?) {
+                    onSuccessRemoveWishlist?.invoke(productId)
+                }
+            })
+        } else {
+            onErrorRemoveWishList?.invoke("")
+        }
     }
 }
