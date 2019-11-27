@@ -22,7 +22,6 @@ import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -455,7 +454,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 visibility = View.VISIBLE
                 setOnClickListener {
                     AddNewAddressAnalytics.eventClickButtonUnnamedRoad()
-                    goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true)
+                    goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true, isZipCodeNull = false)
                 }
             }
 
@@ -530,13 +529,13 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
             tkpdDialog.dismiss()
-            goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false)
+            goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false)
         }
         tkpdDialog.show()
         AddNewAddressAnalytics.eventViewFailedPinPointNotification()
     }
 
-    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean) {
+    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean) {
         val saveModel = if (isUnnamedRoad) presenter.getUnnamedRoadModelFormat() else presenter.getSaveAddressDataModel()
         Intent(context, AddEditAddressActivity::class.java).apply {
             if (isMismatch && !isMismatchSolved) {
@@ -547,6 +546,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             putExtra(AddressConstants.KERO_TOKEN, token)
             putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
             putExtra(AddressConstants.EXTRA_IS_UNNAMED_ROAD, isUnnamedRoad)
+            putExtra(AddressConstants.EXTRA_IS_NULL_ZIPCODE, isZipCodeNull)
             startActivityForResult(this, FINISH_FLAG)
         }
     }

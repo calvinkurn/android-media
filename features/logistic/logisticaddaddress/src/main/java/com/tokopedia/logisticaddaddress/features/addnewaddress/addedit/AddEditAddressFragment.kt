@@ -1,6 +1,5 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
@@ -34,7 +33,6 @@ import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
-import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
@@ -81,6 +79,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private var isMismatch: Boolean = false
     private var isMismatchSolved: Boolean = false
     private var isUnnamedRoad: Boolean = false
+    private var isNullZipcode: Boolean = false
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
     private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
@@ -119,6 +118,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     putParcelable(AddressConstants.KERO_TOKEN, extra.getParcelable(AddressConstants.KERO_TOKEN))
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
                     putBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD, extra.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD))
+                    putBoolean(AddressConstants.EXTRA_IS_NULL_ZIPCODE, extra.getBoolean(AddressConstants.EXTRA_IS_NULL_ZIPCODE, false))
                 }
             }
         }
@@ -126,10 +126,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            isMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)!!
-            saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
-            token = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
+        arguments?.let {
+            isMismatch = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)
+            saveAddressDataModel = it.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
+            token = it.getParcelable(AddressConstants.KERO_TOKEN)
             isLatitudeNotEmpty = saveAddressDataModel?.latitude?.isNotEmpty()
             isLatitudeNotEmpty?.let {
                 if (it) currentLat = saveAddressDataModel?.latitude?.toDouble()
@@ -140,8 +140,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 if (it) currentLong = saveAddressDataModel?.longitude?.toDouble()
             }
 
-            isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)!!
-            isUnnamedRoad = arguments?.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD) ?: false
+            isMismatchSolved = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
+            isUnnamedRoad = it.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD, false)
+            isNullZipcode = it.getBoolean(AddressConstants.EXTRA_IS_NULL_ZIPCODE, false)
         }
     }
 
@@ -764,6 +765,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         if (isUnnamedRoad) {
             et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
             et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
+        } else if (isNullZipcode) {
+            et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
+            Toast.makeText(context, "Hitting get district detail", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -831,7 +835,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 address1 += "${saveAddressDataModel?.selectedDistrict}"
                 saveAddressDataModel?.address1 = address1
                 saveAddressDataModel?.address2 = ""
-
             } else {
                 address1 += "${saveAddressDataModel?.formattedAddress}"
                 saveAddressDataModel?.address1 = address1
@@ -964,7 +967,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     override fun showFailedDialog() {
     }
 
-    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean) {
+    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean) {
     }
 
     override fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel) {
