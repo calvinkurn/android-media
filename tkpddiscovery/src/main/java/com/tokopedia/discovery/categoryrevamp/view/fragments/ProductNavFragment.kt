@@ -165,7 +165,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             val bundle = Bundle()
             bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, departmentid)
             bundle.putString(EXTRA_CATEGORY_DEPARTMENT_NAME, departmentName)
-            bundle.putSerializable(EXTRA_BANNED_DATA, data)
+            bundle.putParcelable(EXTRA_BANNED_DATA, data)
             fragment.arguments = bundle
             return fragment
         }
@@ -189,7 +189,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
                 mDepartmentId = it.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
                 mDepartmentName = it.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
-                bannedData = it.getSerializable(EXTRA_BANNED_DATA) as Data?
+                bannedData = it.getParcelable(EXTRA_BANNED_DATA) as Data?
             }
         }
     }
@@ -206,6 +206,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         categoryNavComponent.inject(this)
         initView()
         if (bannedData == null || bannedData?.isBanned == 0) {
+            setUpData()
             observeData()
             setUpAdapter()
             setUpNavigation()
@@ -215,6 +216,12 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         } else {
             showBannedDataScreen()
         }
+    }
+
+    private fun setUpData() {
+        fetchProductData(getProductListParamMap(getPage()))
+        productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
+        productNavViewModel.fetchQuickFilters(getQuickFilterParams())
     }
 
     override fun getAdapter(): BaseCategoryAdapter? {
@@ -459,13 +466,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         swipe_refresh_layout.visibility = View.VISIBLE
         userSession = UserSession(activity)
         gcmHandler = GCMHandler(activity)
-
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
-            fetchProductData(getProductListParamMap(getPage()))
-            productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
-            productNavViewModel.fetchQuickFilters(getQuickFilterParams())
         }
     }
 
