@@ -79,7 +79,8 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
             }
 
             // booking online - booking code
-            if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()) {
+            if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()
+                    || item.dataObject.onlineBookingState == 0) {
                 itemView.rl_booking_code.visibility = View.GONE
             } else {
                 itemView.rl_booking_code.visibility = View.VISIBLE

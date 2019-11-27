@@ -15,6 +15,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_AGENCY_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
+import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SP_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_PRODUCT_NAME
@@ -118,16 +122,27 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         switch_change_courier?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 cl_change_courier?.visibility = View.VISIBLE
+                val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_change_courier)
+                val queryString = rawQuery
+                        .replace(INPUT_ORDER_ID, currOrderId)
+                        .replace(INPUT_SHIPPING_REF, tf_no_resi?.textFieldInput?.text.toString())
+                        .replace(INPUT_AGENCY_ID, currShipmentId.toString())
+                        .replace(INPUT_SP_ID, currShipmentProductId)
                 btn_confirm_shipping?.setOnClickListener {
-                    processChangeCourier()
+                    processChangeCourier(queryString)
                 }
-                observingConfirmShipping()
+                observingChangeCourier()
 
             } else {
                 cl_change_courier?.visibility = View.GONE
+                val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_confirm_shipping)
+                val queryString = rawQuery
+                        .replace(INPUT_ORDER_ID, currOrderId)
+                        .replace(INPUT_SHIPPING_REF, tf_no_resi?.textFieldInput?.text.toString())
                 btn_confirm_shipping?.setOnClickListener {
-                    processConfirmShipping()
+                    processConfirmShipping(queryString)
                 }
+                observingConfirmShipping()
             }
         }
     }
@@ -143,14 +158,12 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         intentIntegrator.setCaptureActivity(customClass).initiateScan()
     }
 
-    private fun processConfirmShipping() {
-        val processConfirmShippingParam = SomConfirmShippingParam(orderId = currOrderId, shippingRef = tf_no_resi?.textFieldInput?.text.toString())
-        somConfirmShippingViewModel.processConfirmShipping(GraphqlHelper.loadRawString(resources, R.raw.gql_som_confirm_shipping), processConfirmShippingParam)
+    private fun processConfirmShipping(queryString: String) {
+        somConfirmShippingViewModel.confirmShipping(queryString)
     }
 
-    private fun processChangeCourier() {
-        val changeCourierParam = SomChangeCourierParam(orderId = currOrderId, shippingRef = tf_no_resi?.textFieldInput?.text.toString(), agencyId = currShipmentId, spId = currShipmentProductId.toInt())
-        somConfirmShippingViewModel.processChangeCourier(GraphqlHelper.loadRawString(resources, R.raw.gql_som_change_courier), changeCourierParam)
+    private fun processChangeCourier(queryString: String) {
+        somConfirmShippingViewModel.changeCourier(queryString)
     }
 
     private fun getCourierList() {
@@ -161,7 +174,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         somConfirmShippingViewModel.confirmShippingResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    confirmShippingResponseMsg = it.data.data.mpLogisticConfirmShipping.listMessage.first()
+                    confirmShippingResponseMsg = it.data.mpLogisticConfirmShipping.listMessage.first()
                     activity?.setResult(Activity.RESULT_OK, Intent().apply {
                         putExtra(RESULT_CONFIRM_SHIPPING, confirmShippingResponseMsg)
                     })
@@ -197,8 +210,9 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         somConfirmShippingViewModel.changeCourierResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    println("++ it = $it")
-                    changeCourierResponseMsg = it.data.data.mpLogisticChangeCourier.listMessage.first()
+                    if (it.data.mpLogisticChangeCourier.listMessage.isNotEmpty()) {
+                        changeCourierResponseMsg = it.data.mpLogisticChangeCourier.listMessage.first()
+                    }
                     activity?.setResult(Activity.RESULT_OK, Intent().apply {
                         putExtra(RESULT_CONFIRM_SHIPPING, changeCourierResponseMsg)
                     })

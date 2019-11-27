@@ -23,30 +23,28 @@ import javax.inject.Inject
 class SomConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                       private val graphqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
-    val confirmShippingResult = MutableLiveData<Result<SomConfirmShipping>>()
+    val confirmShippingResult = MutableLiveData<Result<SomConfirmShipping.Data>>()
     val courierListResult = MutableLiveData<Result<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>>()
-    val changeCourierResult = MutableLiveData<Result<SomChangeCourier>>()
+    val changeCourierResult = MutableLiveData<Result<SomChangeCourier.Data>>()
 
-    fun processConfirmShipping(confirmShippingQuery: String, confirmShippingParam: SomConfirmShippingParam) {
-        launch { doConfirmShipping(confirmShippingQuery, confirmShippingParam) }
+    fun confirmShipping(queryString: String) {
+        launch { doConfirmShipping(queryString) }
     }
 
     fun getCourierList(rawQuery: String) {
         launch { doGetCourierList(rawQuery) }
     }
 
-    fun processChangeCourier(rawQuery: String, inputs: SomChangeCourierParam) {
-        launch { doChangeCourier(rawQuery, inputs) }
+    fun changeCourier(queryString: String) {
+        launch { doChangeCourier(queryString) }
     }
 
-    suspend fun doConfirmShipping(confirmShippingQuery: String, confirmShippingParam: SomConfirmShippingParam) {
-        val confirmShippingParamInput = mapOf(SomConsts.PARAM_INPUT to confirmShippingParam)
-
+    suspend fun doConfirmShipping(queryString: String) {
         launchCatchError(block = {
             val confirmShippingData = withContext(Dispatchers.IO) {
-                val confirmShippingRequest = GraphqlRequest(confirmShippingQuery, CONFIRM_SHIPPING_RESP, confirmShippingParamInput)
+                val confirmShippingRequest = GraphqlRequest(queryString, SomConfirmShipping.Data::class.java)
                 graphqlRepository.getReseponse(listOf(confirmShippingRequest))
-                        .getSuccessData<SomConfirmShipping>()
+                        .getSuccessData<SomConfirmShipping.Data>()
             }
             confirmShippingResult.postValue(Success(confirmShippingData))
         }, onError = {
@@ -67,14 +65,12 @@ class SomConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispa
         })
     }
 
-    suspend fun doChangeCourier(rawQuery: String, inputs: SomChangeCourierParam) {
-        val changeCourierParamInput = mapOf(SomConsts.PARAM_INPUT to inputs)
-
+    suspend fun doChangeCourier(queryString: String) {
         launchCatchError(block = {
             val changeCourierData = withContext(Dispatchers.IO) {
-                val changeCourierRequest = GraphqlRequest(rawQuery, SomChangeCourier::class.java, changeCourierParamInput as Map<String, Any>?)
+                val changeCourierRequest = GraphqlRequest(queryString, SomChangeCourier.Data::class.java)
                 graphqlRepository.getReseponse(listOf(changeCourierRequest))
-                        .getSuccessData<SomChangeCourier>()
+                        .getSuccessData<SomChangeCourier.Data>()
             }
             changeCourierResult.postValue(Success(changeCourierData))
         }, onError = {

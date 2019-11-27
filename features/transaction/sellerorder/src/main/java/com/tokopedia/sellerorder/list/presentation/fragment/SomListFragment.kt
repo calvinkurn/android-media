@@ -397,6 +397,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     val resultRejectOrder = data.getParcelableExtra<SomRejectOrder.Data.RejectOrder>(RESULT_REJECT_ORDER)
                     refreshThenShowToasterOk(resultRejectOrder.message.first())
 
+                } else if (data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
+                    val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
+                    refreshThenShowToasterOk(resultConfirmShippingMsg)
                 }
             }
         } else if (requestCode == FLAG_CONFIRM_REQ_PICKUP && resultCode == Activity.RESULT_OK) {
@@ -404,13 +407,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
                     val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
                     refreshThenShowToasterOk(resultProcessReqPickup.listMessage.first())
-                }
-            }
-        } else if (requestCode == FLAG_CONFIRM_SHIPPING  && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
-                    val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
-                    refreshThenShowToasterOk(resultConfirmShippingMsg)
                 }
             }
         }

@@ -103,6 +103,9 @@ object SomConsts {
     const val RESULT_OK = "OK"
     const val RESULT_ERROR = "ERROR"
     const val INPUT_ORDER_ID = "#orderId"
+    const val INPUT_SHIPPING_REF = "#shippingRef"
+    const val INPUT_AGENCY_ID = "#agencyId"
+    const val INPUT_SP_ID = "#spId"
 
     const val RESULT_SCAN_BARCODE = "result_scan_barcode"
     const val LABEL_EMPTY = "-"

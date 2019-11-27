@@ -86,6 +86,8 @@ import kotlin.collections.HashMap
 import android.net.Uri
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_URL_UPLOAD
+import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
@@ -146,9 +148,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 }
             }
         }
-
-        private val PARAM_INPUT_ORDER_ID = "#orderId"
-        private val PARAM_INPUT_SHIPPING_REF = "#shippingRef"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -484,23 +483,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         } else if (key.equals(KEY_UPLOAD_AWB, true)) {
             onInvalidResiUpload(detailResponse.shipment.awbUploadUrl)
         }
-
-        /*else if (key.equals(KEY_REASON_EMPTY_STOCK, true)) {
-            // besok lanjut bikin adapter untuk beberapa layout khusus untuk reject order
-
-        } else if (key.equals(KEY_REASON_COURIER_PROBLEM, true)) {
-            showTextOnlyBottomSheet()
-            bottomSheetUnify.clearHeader(false)
-            bottomSheetUnify.clearClose(false)
-            bottomSheetUnify.setTitle(TITLE_COURIER_PROBLEM)
-            listRejectTypeData = arrayListOf()
-            val mapRadio = HashMap<String, String>()
-            mapRadio[KEY_REASON_OTHER] = VALUE_REASON_OTHER
-            listRejectTypeData.add(SomRejectTypeData(createOptionsCourierProblems(), BOTTOMSHEET_TEXT_RADIO_TYPE))
-            listRejectTypeData.add(SomRejectTypeData(mapRadio, BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE))
-            // somBottomSheetRejectOrderAdapter.listRejectTypeData = listRejectTypeData
-            // somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
-        }*/
     }
 
     private fun setActionRejectOrder() {
@@ -551,7 +533,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
         viewBottomSheet.tf_cancel_notes?.setLabelStatic(true)
         viewBottomSheet.tf_cancel_notes?.setMessage(getString(R.string.change_no_resi_notes))
-        //viewBottomSheet.tf_cancel_notes?.textFiedlLabelText?.text = getString(R.string.change_no_resi_notes)
         viewBottomSheet.tf_cancel_notes?.textFieldInput?.hint = getString(R.string.change_no_resi_hint)
 
         bottomSheetUnify.setFullPage(false)
@@ -572,8 +553,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
     private fun doEditAwb(shippingRef: String) {
         val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_edit_awb)
-        val queryString = rawQuery.replace(PARAM_INPUT_ORDER_ID, orderId, true)
-                .replace(PARAM_INPUT_SHIPPING_REF, shippingRef, true)
+        val queryString = rawQuery.replace(INPUT_ORDER_ID, orderId, true)
+                .replace(INPUT_SHIPPING_REF, shippingRef, true)
         somDetailViewModel.editAwb(queryString)
         observingEditAwb()
     }
