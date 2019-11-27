@@ -41,6 +41,9 @@ class ChatItemListViewHolder(
     private val label: Label = itemView.findViewById(R.id.user_label)
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
 
+    private val statusPinned = 1
+    private val statusUnpinned = 0
+
     override fun bind(element: ItemChatListPojo) {
         val attributes = element.attributes
         val data = attributes?.contact
@@ -62,13 +65,13 @@ class ChatItemListViewHolder(
             bindMessageState(attributes.lastReplyMessage)
             bindTimeStamp(attributes.lastReplyTimeStr)
             bindLabel(contact.tag)
-            bindPin(contact.tag)
+            bindPin(attributes.pinStatus)
         }
 
     }
 
-    private fun bindPin(tag: String) {
-        val shouldShowPin = tag == OFFICIAL_TAG && listener.isTabSeller()
+    private fun bindPin(pinStatus: Int) {
+        val shouldShowPin = pinStatus == statusPinned
         pin.showWithCondition(shouldShowPin)
     }
 
