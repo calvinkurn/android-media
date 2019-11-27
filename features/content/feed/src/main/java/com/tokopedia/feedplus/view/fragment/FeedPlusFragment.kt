@@ -129,7 +129,6 @@ import javax.inject.Inject
 
 class FeedPlusFragment : BaseDaggerFragment(),
         FeedPlus.View,
-        FeedPlus.View.Kol,
         FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
@@ -189,7 +188,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private val userIdInt: Int
         get() {
             try {
-                return Integer.valueOf(getUserSession().userId)
+                return Integer.valueOf(userSession.userId)
             } catch (ignored: NumberFormatException) {
                 return 0
             }
@@ -313,7 +312,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 presenter.fetchNextPage()
         }
 
-        val loginIdString = getUserSession().userId
+        val loginIdString = userSession.userId
         loginIdInt = if (TextUtils.isEmpty(loginIdString)) 0 else Integer.valueOf(loginIdString)
 
         newFeedReceiver = object : BroadcastReceiver() {
@@ -463,7 +462,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onSuccessGetFeedFirstPage(listFeed: ArrayList<Visitable<*>>) {
+    override fun onSuccessGetFeedFirstPage(listFeed: MutableList<Visitable<*>>) {
         parentFragment?.let {
             (it as FeedPlusContainerFragment).showCreatePostOnBoarding()
         }
@@ -548,7 +547,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
 
-    override fun onSuccessGetFeed(listFeed: ArrayList<Visitable<*>>) {
+    override fun onSuccessGetFeed(listFeed: MutableList<Visitable<*>>) {
         trackFeedImpression(listFeed)
 
         adapter.removeEmpty()
@@ -782,7 +781,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
-        if (getUserSession().isLoggedIn) {
+        if (userSession.isLoggedIn) {
             presenter.followKol(id, rowNumber, this)
         } else {
             onGoToLogin()
@@ -790,7 +789,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
-        if (getUserSession().isLoggedIn) {
+        if (userSession.isLoggedIn) {
             presenter.unfollowKol(id, rowNumber, this)
         } else {
             onGoToLogin()
@@ -800,7 +799,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                   activityType: String) {
-        if (getUserSession().isLoggedIn) {
+        if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
             trackCardPostElementClick(rowNumber, FeedAnalytics.Element.LIKE)
         } else {
@@ -810,7 +809,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                     activityType: String) {
-        if (getUserSession().isLoggedIn) {
+        if (userSession.isLoggedIn) {
             presenter.unlikeKol(id, rowNumber, this)
             trackCardPostElementClick(rowNumber, FeedAnalytics.Element.UNLIKE)
         } else {
@@ -833,22 +832,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         trackCardPostElementClick(rowNumber, FeedAnalytics.Element.COMMENT)
     }
 
-    override fun onLikeKolClicked(rowNumber: Int, id: Int) {
-        onLikeKolClicked(rowNumber, id, false, "")
-    }
-
-    override fun onUnlikeKolClicked(adapterPosition: Int, id: Int) {
-        onUnlikeKolClicked(adapterPosition, id, false, "")
-    }
-
     override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
     }
 
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
-    }
-
-    override fun onGoToKolComment(rowNumber: Int, id: Int) {
-        onGoToKolComment(rowNumber, id, false, "")
     }
 
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String,
@@ -887,72 +874,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
         presenter.sendVote(rowNumber, pollId, optionId)
-    }
-
-    override fun onErrorFollowKol(errorMessage: String, id: Int, status: Int, rowNumber: Int) {
-        ToasterError.make(view, errorMessage, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.title_try_again) { v ->
-                    if (status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
-                        presenter.unfollowKol(id, rowNumber, this@FeedPlusFragment)
-                    else
-                        presenter.followKol(id, rowNumber, this@FeedPlusFragment)
-                }
-                .show()
-    }
-
-    override fun onSuccessFollowUnfollowKol(rowNumber: Int) {
-        if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            header.followCta.isFollow = !header.followCta.isFollow
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
-        }
-    }
-
-    override fun onErrorLikeDislikeKolPost(errorMessage: String) {
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
-
-    }
-
-    override fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
-        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            val like = footer.like
-            like.isChecked = !like.isChecked
-            if (like.isChecked) {
-                try {
-                    val likeValue = Integer.valueOf(like.fmt) + 1
-                    like.fmt = likeValue.toString()
-                } catch (ignored: NumberFormatException) {
-                }
-
-                like.value = like.value + 1
-            } else {
-                try {
-                    val likeValue = Integer.valueOf(like.fmt) - 1
-                    like.fmt = likeValue.toString()
-                } catch (ignored: NumberFormatException) {
-                }
-
-                like.value = like.value - 1
-            }
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE)
-        }
-    }
-
-    override fun onFollowKolFromRecommendationClicked(rowNumber: Int, id: Int, position: Int) {
-        presenter.followKolFromRecommendation(id, rowNumber, position, this)
-    }
-
-    override fun onUnfollowKolFromRecommendationClicked(rowNumber: Int, id: Int, position: Int) {
-        presenter.unfollowKolFromRecommendation(id, rowNumber, position, this)
-    }
-
-    override fun onSuccessFollowKolFromRecommendation(rowNumber: Int, position: Int, isFollow: Boolean) {
-        if (adapter.getlist()[rowNumber] is FeedRecommendationViewModel) {
-            val (_, cards) = adapter.getlist()[rowNumber] as FeedRecommendationViewModel
-            cards[position].cta.isFollow = isFollow
-            adapter.notifyItemChanged(rowNumber, position)
-        }
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
@@ -1116,11 +1037,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 ) { v -> presenter.toggleFavoriteShop(rowNumber, adapterPosition, shopId) }
                 .show()
     }
-
-    override fun getUserSession(): UserSessionInterface {
-        return userSession
-    }
-
+    
     override fun sendMoEngageOpenFeedEvent() {
         val isEmptyFeed = !hasFeed()
         val value = DataLayer.mapOf(
@@ -1132,7 +1049,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onStop() {
         super.onStop()
-        if (activity != null && activity!!.isFinishing) {
+        activity?.run {
             unRegisterNewFeedReceiver()
         }
     }
@@ -1176,9 +1093,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val userIdInt = id.toIntOrZero()
 
             if (isFollow) {
-                onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition)
+                presenter.unfollowKolFromRecommendation(userIdInt, positionInFeed, adapterPosition, this)
             } else {
-                onFollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition)
+                presenter.followKolFromRecommendation(userIdInt, positionInFeed, adapterPosition, this)
             }
 
         } else if (type == FollowCta.AUTHOR_SHOP) {
@@ -1253,7 +1170,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String,
                                      isFollow: Boolean) {
-        if (getUserSession().isLoggedIn) {
+        if (userSession.isLoggedIn) {
             if (type == FollowCta.AUTHOR_USER) {
                 val userIdInt = id.toIntOrZero()
 
@@ -1290,7 +1207,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
 
                 override fun onReportClick() {
-                    if (getUserSession().isLoggedIn) {
+                    if (userSession.isLoggedIn) {
                         goToContentReport(postId)
                     } else {
                         onGoToLogin()
@@ -1311,14 +1228,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean) {
         if (isLiked) {
-            onUnlikeKolClicked(positionInFeed, id)
+            onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
-            onLikeKolClicked(positionInFeed, id)
+            onLikeKolClicked(positionInFeed, id, false, "")
         }
     }
 
     override fun onCommentClick(positionInFeed: Int, id: Int) {
-        onGoToKolComment(positionInFeed, id)
+        onGoToKolComment(positionInFeed, id, false, "")
     }
 
     override fun onShareClick(positionInFeed: Int, id: Int, title: String,
@@ -1660,7 +1577,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun trackFeedImpression(listFeed: ArrayList<Visitable<*>>) {
+    private fun trackFeedImpression(listFeed: MutableList<Visitable<*>>) {
         for (i in listFeed.indices) {
             val visitable = listFeed[i]
             val feedPosition = adapter.getlist().size + i
