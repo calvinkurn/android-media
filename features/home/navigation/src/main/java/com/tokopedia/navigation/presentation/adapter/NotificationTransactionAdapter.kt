@@ -40,9 +40,9 @@ class NotificationTransactionAdapter(
         when (child.id) {
             MENUNGGU_PEMBAYARAN -> child.badge = data.buyerOrder.paymentStatus.toInt()
             MENUNGGU_KONFIRMASI -> child.badge = data.buyerOrder.confirmed
-            PESANAN_DIPROSES    -> child.badge = data.buyerOrder.processed
-            SEDANG_DIKIRIM      -> child.badge = data.buyerOrder.shipped
-            SAMPAI_TUJUAN       -> child.badge = data.buyerOrder.arriveAtDestination
+            PESANAN_DIPROSES -> child.badge = data.buyerOrder.processed
+            SEDANG_DIKIRIM -> child.badge = data.buyerOrder.shipped
+            SAMPAI_TUJUAN -> child.badge = data.buyerOrder.arriveAtDestination
         }
     }
 
@@ -50,10 +50,10 @@ class NotificationTransactionAdapter(
             data: NotificationsModel,
             child: DrawerNotification.ChildDrawerNotification) {
         when (child.id) {
-            PESANAN_BARU    -> child.badge = data.sellerOrder.newOrder
-            SIAP_DIKIRIM    -> child.badge = data.sellerOrder.readyToShip
-            SEDANG_DIKIRIM  -> child.badge = data.sellerOrder.shipped
-            SAMPAI_TUJUAN   -> child.badge = data.sellerOrder.arriveAtDestination
+            PESANAN_BARU -> child.badge = data.sellerOrder.newOrder
+            SIAP_DIKIRIM -> child.badge = data.sellerOrder.readyToShip
+            SEDANG_DIKIRIM -> child.badge = data.sellerOrder.shipped
+            SAMPAI_TUJUAN -> child.badge = data.sellerOrder.arriveAtDestination
         }
     }
 
@@ -63,15 +63,6 @@ class NotificationTransactionAdapter(
                 removeElement(section)
             }
         }
-    }
-
-    fun removeTransaction() {
-        for (section in visitables) {
-            if (section is TransactionItemNotification) {
-                visitables.remove(section)
-            }
-        }
-        notifyDataSetChanged()
     }
 
 }
