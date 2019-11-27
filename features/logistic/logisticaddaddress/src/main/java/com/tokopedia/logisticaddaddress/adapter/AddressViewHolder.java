@@ -42,7 +42,7 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> {
     }
 
     private TextView addressName;
-    private TextView addressDetail;
+    private Typography addressDetail;
     private View editBtn, deleteBtn, defaultBtn;
     private Typography locationDesc;
     private ImageView locationImg;
