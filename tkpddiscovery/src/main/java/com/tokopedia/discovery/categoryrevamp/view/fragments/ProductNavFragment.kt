@@ -463,7 +463,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
-            lifecycle.addObserver(productNavViewModel)
             fetchProductData(getProductListParamMap(getPage()))
             productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
             productNavViewModel.fetchQuickFilters(getQuickFilterParams())

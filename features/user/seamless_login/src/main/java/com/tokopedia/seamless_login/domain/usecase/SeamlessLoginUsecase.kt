@@ -85,9 +85,4 @@ class SeamlessLoginUsecase @Inject constructor(
         seamlessUrl.appendQueryParameter(SeamlessLoginConstant.PARAM.DATA.value, encryptedUserData.encodeToUtf8())
         return seamlessUrl.build().toString().decodeToUtf8()
     }
-
-    public fun unsubscribe(){
-        getKeygenUsecase
-
-    }
 }

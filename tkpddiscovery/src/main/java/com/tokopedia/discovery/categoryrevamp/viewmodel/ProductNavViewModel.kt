@@ -22,7 +22,7 @@ class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCateg
                                               var dynamicFilterUseCase: DynamicFilterUseCase,
                                               var quickFilterUseCase: QuickFilterUseCase,
                                               var getProductListUseCase: GetProductListUseCase,
-                                              var seamlessLoginUsecase: SeamlessLoginUsecase?) : ViewModel(), LifecycleObserver {
+                                              var seamlessLoginUsecase: SeamlessLoginUsecase?) : ViewModel() {
 
 
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
@@ -130,13 +130,12 @@ class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCateg
 
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    internal fun onDestroy() {
+    override fun onCleared() {
+        super.onCleared()
         subCategoryUseCaseV3.unsubscribe()
         dynamicFilterUseCase.unsubscribe()
         quickFilterUseCase.unsubscribe()
         getProductListUseCase.unsubscribe()
         seamlessLoginUsecase = null
     }
-
 }
