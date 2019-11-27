@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.orders.orderdetails.view;
 
+import android.widget.TextView;
+
 import javax.inject.Inject;
 
 import com.google.android.gms.tagmanager.DataLayer;
@@ -450,4 +452,48 @@ public class OrderListAnalytics {
     }
 
 
+    public void sendProductViewEvent(String status, int order, String categoryName, String title, int position, String total) {
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT, PRODUCT_VIEW,
+                EVENT_CATEGORY, PRODUCT_EVENT_CATEGORY,
+                EVENT_ACTION, "view product list",
+                EVENT_LABEL, status,
+                ECOMMERCE, DataLayer.mapOf(
+                        CURRENCY_CODE, IDR,
+                        IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
+                                NAME, categoryName,
+                                ID, order,
+                                PRICE, total,
+                                LIST, categoryName,
+                                "category", categoryName,
+                                "brand", "none",
+                                "variant", "none",
+                                POSITION, position + 1
+                                )))));
+
+    }
+
+    public void sendProductClickDetailsEvent(Items items, int position) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT, PRODUCT_CLICK,
+                EVENT_CATEGORY, PRODUCT_EVENT_CATEGORY,
+                EVENT_ACTION, "click product",
+                EVENT_LABEL, "Success",
+                ECOMMERCE, DataLayer.mapOf(
+                        CURRENCY_CODE, IDR,
+                        CLICK, DataLayer.mapOf(
+                                ACTION_FIELD, DataLayer.mapOf(
+                                        LIST, items.getTitle(),
+                                        PRODUCTS, DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        NAME, items.getTitle(),
+                                                        ID, items.getId(),
+                                                        PRICE, items.getPrice(),
+                                                        "category", items.getCategory(),
+                                                        "brand", "none",
+                                                        "variant", "none",
+                                                        POSITION, position + 1
+                                                )))))));
+    }
 }
