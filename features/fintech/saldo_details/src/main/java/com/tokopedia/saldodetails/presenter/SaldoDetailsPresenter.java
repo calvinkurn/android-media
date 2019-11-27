@@ -261,8 +261,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 withdrawActivityBundle.putInt(IS_WITHDRAW_LOCK, statusWithDrawLock);
                 withdrawActivityBundle.putInt(MCL_LATE_COUNT, mclLateCount);
                 withdrawActivityBundle.putBoolean(IS_SELLER, isSeller());
-                withdrawActivityBundle.putLong(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, getView().getBuyerSaldoBalance());
-                withdrawActivityBundle.putLong(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, getView().getSellerSaldoBalance());
+                withdrawActivityBundle.putFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, getView().getBuyerSaldoBalance());
+                withdrawActivityBundle.putFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, getView().getSellerSaldoBalance());
                 launchWithdrawActivity(intent);
             }
         } else {

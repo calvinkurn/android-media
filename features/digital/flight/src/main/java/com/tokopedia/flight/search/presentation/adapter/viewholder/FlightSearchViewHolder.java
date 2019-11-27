@@ -48,7 +48,6 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         tvArrival = itemView.findViewById(R.id.arrival_time);
         tvAirline = itemView.findViewById(R.id.tv_airline);
         flightMultiAirlineView = itemView.findViewById(R.id.view_multi_airline);
-        airlineRefundableInfo = itemView.findViewById(R.id.airline_refundable_info);
         tvPrice = itemView.findViewById(R.id.total_price);
         tvDuration = itemView.findViewById(R.id.flight_time);
         savingPrice = itemView.findViewById(R.id.saving_price);
@@ -63,14 +62,13 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
     public void bind(final FlightJourneyViewModel flightJourneyViewModel) {
         tvDeparture.setText(String.format("%s %s", flightJourneyViewModel.getDepartureTime(), flightJourneyViewModel.getDepartureAirport()));
         tvArrival.setText(String.format("%s %s", flightJourneyViewModel.getArrivalTime(), flightJourneyViewModel.getArrivalAirport()));
-        tvPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightJourneyViewModel.getFare().getAdultNumeric()));
+        tvPrice.setText(flightJourneyViewModel.getFare().getAdult());
         setDuration(flightJourneyViewModel);
         setAirline(flightJourneyViewModel);
         View.OnClickListener detailClickListener = v -> onFlightSearchListener.onDetailClicked(flightJourneyViewModel, getAdapterPosition());
         tvPrice.setOnClickListener(detailClickListener);
         containerDetail.setOnClickListener(detailClickListener);
 
-        setRefundableInfo(flightJourneyViewModel);
         setSavingPrice(flightJourneyViewModel);
         setDiscountPriceTag(flightJourneyViewModel);
         setArrivalAddDay(flightJourneyViewModel);
@@ -168,21 +166,14 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         }
     }
 
-    private void setRefundableInfo(FlightJourneyViewModel flightJourneyViewModel) {
-        airlineRefundableInfo.setVisibility(View.VISIBLE);
-        airlineRefundableInfo.setText(flightJourneyViewModel.isRefundable().getValueRes());
-    }
-
     private void setBestPairingPrice(FlightJourneyViewModel flightJourneyViewModel) {
         if (flightJourneyViewModel.isBestPairing()) {
             bestPairingTag.setVisibility(View.VISIBLE);
             discountTag.setVisibility(View.GONE);
-            tvPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
-                    flightJourneyViewModel.getFare().getAdultNumericCombo()));
+            tvPrice.setText(flightJourneyViewModel.getFare().getAdultCombo());
         } else if (flightJourneyViewModel.getFare().getAdultNumericCombo() != 0) {
             bestPairingTag.setVisibility(View.GONE);
-            tvPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
-                    flightJourneyViewModel.getFare().getAdultNumericCombo()));
+            tvPrice.setText(flightJourneyViewModel.getFare().getAdultCombo());
         } else {
             bestPairingTag.setVisibility(View.GONE);
         }

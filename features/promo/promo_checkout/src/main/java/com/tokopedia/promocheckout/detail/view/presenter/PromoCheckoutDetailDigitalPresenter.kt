@@ -29,7 +29,7 @@ class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplace
                 if (checkVoucherData.voucherData.success) {
                     view.onSuccessCheckPromo(digitalCheckVoucherMapper.mapData(checkVoucherData.voucherData))
                 } else {
-                    view.onErrorCheckPromoStacking(com.tokopedia.network.exception.MessageErrorException(checkVoucherData.errors.getOrNull(0)?.status))
+                    view.onErrorCheckPromoStacking(com.tokopedia.network.exception.MessageErrorException(checkVoucherData.voucherData.message.text))
                 }
             }
 

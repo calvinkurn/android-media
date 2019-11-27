@@ -94,7 +94,7 @@ class PartialHeaderView private constructor(private val view: View,
             product_name.text = MethodChecker.fromHtml(data.basic.name)
             when {
                 data.freeOngkir.isFreeOngkirActive -> {
-                    ImageHandler.loadImage(context, img_free_ongkir, data.freeOngkir.freeOngkirImgUrl, R.drawable.ic_loading_image)
+                    ImageHandler.loadImageRounded2(context, img_free_ongkir, data.freeOngkir.freeOngkirImgUrl)
                     img_free_ongkir.visibility = View.VISIBLE
                 }
                 else -> img_free_ongkir.visibility = View.GONE

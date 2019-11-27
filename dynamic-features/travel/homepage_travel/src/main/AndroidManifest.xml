@@ -4,7 +4,7 @@
 
     <dist:module
         dist:instant="false"
-        dist:onDemand="true"
+        dist:onDemand="false"
         dist:title="@string/travel_subhomepage_app_name">
         <dist:fusing dist:include="true" />
     </dist:module>

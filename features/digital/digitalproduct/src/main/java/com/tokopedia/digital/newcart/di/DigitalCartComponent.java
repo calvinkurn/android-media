@@ -1,5 +1,6 @@
 package com.tokopedia.digital.newcart.di;
 
+import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.di.DigitalComponent;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -20,6 +21,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 @Component(dependencies = DigitalComponent.class, modules = DigitalCartModule.class)
 public interface DigitalCartComponent {
     DigitalAnalytics digitalAnalytics();
+
+    RechargeAnalytics rechargeAnalytics();
 
     HttpLoggingInterceptor httpLoggingInterceptor();
 

@@ -3,16 +3,25 @@ package com.tokopedia.webview;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.authentication.AuthConstant;
+import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.utils.URLGenerator;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -25,63 +34,84 @@ public class TkpdWebView extends WebView {
 
     private static final String PARAM_URL = "url";
     private static final String FORMAT_UTF_8 = "UTF-8";
+    private RemoteConfig remoteConfig;
 
-    public TkpdWebView(Context context) {
+    private @Nullable TkpdWebView.WebviewScrollListener scrollListener = null;
+
+    public TkpdWebView(@NonNull Context context) {
         super(context);
+        init(context);
     }
 
-    public TkpdWebView(Context context, AttributeSet attrs) {
+    public TkpdWebView(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
+        init(context);
     }
 
-    public TkpdWebView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TkpdWebView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context);
     }
 
-    public void loadUrlWithFlags(String url) {
-        loadUrl(generateUri(url));
+    public interface WebviewScrollListener {
+        void onTopReached();
+        void onEndReached();
+        void onHasScrolled();
     }
 
-    public void loadAuthUrlWithFlags(String url, String userId, String accessToken) {
-        if (TextUtils.isEmpty(userId)) {
-            loadUrl(generateUri(url));
+    private void init(Context context){
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
+        //set custom tracking, helpful for GA
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CUSTOMER_USER_AGENT_IN_WEBVIEW, true)) {
+            WebSettings webSettings = getSettings();
+            String userAgent = String.format("%s - Android %s","Tokopedia Webview", GlobalConfig.VERSION_NAME);
+            webSettings.setUserAgentString(userAgent);
+        }
+    }
+
+    public void setWebViewScrollListener(@Nullable TkpdWebView.WebviewScrollListener scrollListener) {
+        this.scrollListener = scrollListener;
+    }
+
+    /**
+     * load url with the header for identification and security
+     * isUseFlag=true will add custom query parameter
+     */
+    public void loadAuthUrl(@NonNull String url,@Nullable UserSessionInterface userSession, boolean isUseFlag) {
+        String urlToLoad;
+        if (isUseFlag) {
+            urlToLoad = generateUri(url);
         } else {
-            loadUrl(generateUri(url), AuthUtil.generateHeadersWithBearer(
-                    Uri.parse(url).getPath(),
+            urlToLoad = url;
+        }
+        if (userSession == null) {
+            loadUrl(urlToLoad);
+        } else {
+            String path = Uri.parse(url).getPath();
+            if (path == null) {
+                path = "";
+            }
+            loadUrl(urlToLoad, AuthHelper.getDefaultHeaderMapOld(
+                    path,
                     getQuery(Uri.parse(url).getQuery()),
                     "GET",
-                    AuthUtil.KEY.KEY_WSV4, userId, accessToken));
+                    AuthConstant.CONTENT_TYPE,
+                    AuthKey.KEY_WSV4,
+                    AuthConstant.DATE_FORMAT,
+                    userSession.getUserId(),
+                    userSession));
         }
     }
 
     /**
-     * use loadAuthUrl(String url, String userId, String accessToken) instead.
+     * load url with the header for identification and security
      */
-    @Deprecated
-    public void loadAuthUrl(String url, String userId) {
-        if (TextUtils.isEmpty(userId)) {
-            loadUrl(url);
-        } else {
-            loadUrl(url, AuthUtil.generateHeaders(
-                    Uri.parse(url).getPath(),
-                    getQuery(Uri.parse(url).getQuery()),
-                    "GET",
-                    AuthUtil.KEY.KEY_WSV4,
-                    AuthUtil.CONTENT_TYPE, userId,
-                    new UserSession(getContext())));
-        }
+    public void loadAuthUrl(@NonNull String url,@Nullable UserSessionInterface userSession) {
+        loadAuthUrl(url, userSession, false);
     }
 
-    public void loadAuthUrl(String url, String userId, String accessToken) {
-        if (TextUtils.isEmpty(userId)) {
-            loadUrl(url);
-        } else {
-            loadUrl(url, AuthUtil.generateHeadersWithBearer(
-                    Uri.parse(url).getPath(),
-                    getQuery(Uri.parse(url).getQuery()),
-                    "GET",
-                    AuthUtil.KEY.KEY_WSV4, userId, accessToken));
-        }
+    public void loadAuthUrlWithFlags(@NonNull String url,@Nullable UserSessionInterface userSession) {
+        loadAuthUrl(url, userSession, true);
     }
 
     private String getQuery(String query) {
@@ -120,12 +150,29 @@ public class TkpdWebView extends WebView {
         return url;
     }
 
+    @Override
+    protected void onScrollChanged(int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        TkpdWebView.WebviewScrollListener listener = scrollListener;
+        if (listener!= null) {
+            int height = (int) Math.floor(this.getContentHeight() * this.getScale());
+            int webViewHeight = this.getMeasuredHeight();
+            if (this.getScrollY() == 0) {
+                listener.onTopReached();
+            } else if (this.getScrollY() + webViewHeight >= height) {
+                listener.onEndReached();
+            } else if (this.getScaleY() > 0) {
+                listener.onHasScrolled();
+            }
+        }
+        super.onScrollChanged(scrollX, scrollY, oldScrollX, oldScrollY);
+    }
+
     private boolean isSeamlessUrl(String uri) {
         return uri.startsWith(URLGenerator.getBaseUrl());
     }
 
     @Override
-    public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
+    public void loadUrl(@NonNull String url, @NonNull Map<String, String> additionalHttpHeaders) {
         if(WebViewHelper.isUrlValid(url)){
             super.loadUrl(url, additionalHttpHeaders);
         }else {

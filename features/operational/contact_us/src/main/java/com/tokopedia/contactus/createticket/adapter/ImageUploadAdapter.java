@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core2.R;
+import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.model.ImageUpload;
 
 import java.io.File;
@@ -38,7 +38,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         public ViewHolder(View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.image_upload);
-            deleteButton = itemView.findViewById(R.id.delete_button);
+            deleteButton = itemView.findViewById(com.tokopedia.design.R.id.delete_button);
         }
     }
 
@@ -68,7 +68,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.listview_image_upload_delete, viewGroup, false));
+                .inflate(R.layout.contactus_listview_image_upload_delete, viewGroup, false));
     }
 
     @Override
@@ -111,9 +111,9 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     private void setBorder(ViewHolder holder, int position) {
         if (data.get(position).isSelected()) {
-            holder.image.setBackgroundColor(context.getResources().getColor(R.color.green_500));
+            holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.design.R.color.green_500));
         } else {
-            holder.image.setBackgroundColor(context.getResources().getColor(R.color.white));
+            holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.design.R.color.white));
         }
     }
 

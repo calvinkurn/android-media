@@ -84,7 +84,11 @@ class FeedShopPresenter @Inject constructor(
             )
         } else {
             getDynamicFeedUseCase.execute(
-                    GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_SHOP, shopId),
+                    GetDynamicFeedUseCase.createRequestParams(
+                            userId = getUserId(),
+                            cursor = cursor,
+                            source = GetDynamicFeedUseCase.SOURCE_SHOP,
+                            sourceId = shopId),
                     object : Subscriber<DynamicFeedDomainModel>() {
                         override fun onNext(t: DynamicFeedDomainModel?) {
                             t?.let {
@@ -110,7 +114,11 @@ class FeedShopPresenter @Inject constructor(
 
     override fun getFeed(shopId: String) {
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_SHOP, shopId),
+                GetDynamicFeedUseCase.createRequestParams(
+                        userId = getUserId(),
+                        cursor = cursor,
+                        source = GetDynamicFeedUseCase.SOURCE_SHOP,
+                        sourceId = shopId),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {

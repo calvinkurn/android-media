@@ -21,21 +21,15 @@ public interface ImageProductListFragmentView extends CustomerView {
 
     String getUserId();
 
-    void initTopAdsParams();
+    void onLoadMoreEmpty();
 
-    void unSetTopAdsEndlessListener();
-
-    void setHeaderTopAds(boolean hasHeader);
-
-    void appendProductList(List<Visitable> list);
+    void appendProductList(List<Visitable> list, boolean hasNextPage);
 
     void disableWishlistButton(String productId);
 
     void enableWishlistButton(String productId);
 
     String getQueryKey();
-
-    void setEmptyProduct();
 
     SearchParameter getSearchParameter();
 
@@ -46,4 +40,6 @@ public interface ImageProductListFragmentView extends CustomerView {
     void hideRefreshLayout();
 
     BaseAppComponent getBaseAppComponent();
+
+    String getEmptyResultMessage();
 }

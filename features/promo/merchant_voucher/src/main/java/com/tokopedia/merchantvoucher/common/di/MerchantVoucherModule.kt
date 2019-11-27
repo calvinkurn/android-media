@@ -3,7 +3,7 @@ package com.tokopedia.merchantvoucher.common.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import dagger.Module
 import dagger.Provides
 

@@ -14,8 +14,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.text.CopyPromoVoucher;
@@ -98,10 +99,8 @@ public class HotlistPromoView extends BaseCustomView {
     }
 
     private void openWebViewURL(String url, Context context) {
-        if (url != "" && context != null) {
-            Intent intent = new Intent(context, BannerWebView.class);
-            intent.putExtra("url", url);
-            context.startActivity(intent);
+        if (!url.equals("") && context != null) {
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url);
         }
     }
 

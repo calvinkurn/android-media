@@ -1,0 +1,30 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.hansel.preprocessor.module'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+
+    implementation rootProject.ext.firebase.messaging
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+
+}

@@ -35,7 +35,6 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
     private final AppCompatImageView imageAirline;
     private final TextView airlineName;
     private final TextView airlineCode;
-    private TextView refundableInfo;
     private View separatorInfoView;
     private TextView facilityInfoTextView;
     private TextView facilitySeparatorTextView;
@@ -45,7 +44,6 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         listInfo = (RecyclerView) itemView.findViewById(R.id.recycler_view_info);
         gridAmenity = (RecyclerView) itemView.findViewById(R.id.recycler_view_amenity);
         imageAirline = (AppCompatImageView) itemView.findViewById(R.id.airline_icon);
-        refundableInfo = (TextView) itemView.findViewById(R.id.airline_refundable_info);
         airlineName = (TextView) itemView.findViewById(R.id.airline_name);
         airlineCode = (TextView) itemView.findViewById(R.id.airline_code);
         separatorInfoView = (View) itemView.findViewById(R.id.separator_info);
@@ -69,17 +67,6 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),
                 ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_airline_default)
         );
-        setRefundableInfo(route);
-    }
-
-    private void setRefundableInfo(FlightDetailRouteViewModel route) {
-        if (route.isRefundable()) {
-            refundableInfo.setText(R.string.flight_label_refundable_info);
-            refundableInfo.setVisibility(View.VISIBLE);
-        } else {
-            refundableInfo.setText(R.string.flight_label_non_refundable_info);
-            refundableInfo.setVisibility(View.GONE);
-        }
     }
 
     public void setDefaultAmenities(FlightDetailRouteViewModel flightDetailRouteViewModel) {

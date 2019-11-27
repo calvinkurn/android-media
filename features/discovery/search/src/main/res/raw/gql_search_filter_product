@@ -1,9 +1,7 @@
 query SearchProduct(
- $params: String,
- $query: String!,
- $source: String
+ $params: String!
 ) {
-search_filter_product(query: $query, source: $source, extraParams: $params) {
+filter_sort_product(params: $params) {
       data {
         filter {
           title
@@ -16,32 +14,29 @@ search_filter_product(query: $query, source: $source, extraParams: $params) {
             name
             key
             icon
-            description
+            Description
             value
-            input_type
-            total_data
-            val_max
-            val_min
-            key_min
-            key_max
-            metric
-            is_popular
-            is_new
-            hex_color
+            inputType
+            totalData
+            valMax
+            valMin
+            isPopular
+            isNew
+            hexColor
             child {
               key
               value
               name
               icon
-              input_type
-              total_data
+              inputType
+              totalData
               child {
                 key
                 value
                 name
                 icon
-                input_type
-                total_data
+                inputType
+                totalData
               }
             }
           }
@@ -50,7 +45,8 @@ search_filter_product(query: $query, source: $source, extraParams: $params) {
           name
           key
           value
-          input_type
+          inputType
+          applyFilter
         }
      }
   }

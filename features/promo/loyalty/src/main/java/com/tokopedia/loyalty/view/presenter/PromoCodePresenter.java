@@ -247,7 +247,6 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
             @Override
             public void onError(Throwable e) {
-                view.sendTrackingOnCheckTrainVoucherError(e.getMessage());
                 e.printStackTrace();
                 view.hideProgressLoading();
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {

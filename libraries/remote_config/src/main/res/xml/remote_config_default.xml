@@ -259,6 +259,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_customer_hotel_enable_booking_for_today</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>nonb_1_ttl</key>
         <value>Bebas Beli Apa Saja</value>
     </entry>
@@ -326,6 +330,10 @@
     </entry>
     <entry>
         <key>android_customer_enable_cashshield</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_customer_travel_enable_cross_sell</key>
         <value>false</value>
     </entry>
     <entry>

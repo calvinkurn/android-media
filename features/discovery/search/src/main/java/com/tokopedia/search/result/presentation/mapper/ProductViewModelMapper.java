@@ -2,18 +2,17 @@ package com.tokopedia.search.result.presentation.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.search.result.domain.model.GuidedSearchModel;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
+import com.tokopedia.search.result.presentation.model.TickerViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,18 +30,12 @@ public class ProductViewModelMapper {
         if (searchProduct.getRelated() != null &&
                 !TextUtils.isEmpty(searchProduct.getRelated().getRelatedKeyword())) {
             productViewModel.setRelatedSearchModel(convertToRelatedSearchModel(searchProduct.getRelated()));
-        } else if (searchProductModel.getGuidedSearchModel() != null) {
-            productViewModel.setGuidedSearchViewModel(
-                    convertToGuidedSearchViewModel(
-                            searchProductModel.getGuidedSearchModel(),
-                            searchProduct.getQuery()
-                    )
-            );
         }
         productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProduct.getProducts()));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
         productViewModel.setQuery(searchProduct.getQuery());
         productViewModel.setShareUrl(searchProduct.getShareUrl());
+        productViewModel.setTickerModel(createTickerModel(searchProduct));
         productViewModel.setSuggestionModel(createSuggestionModel(searchProduct));
         productViewModel.setTotalData(searchProduct.getCount());
         productViewModel.setResponseCode(searchProduct.getResponseCode());
@@ -67,8 +60,11 @@ public class ProductViewModelMapper {
 
     private GlobalNavViewModel convertToViewModel(SearchProductModel.GlobalNavModel globalNavModel) {
         return new GlobalNavViewModel(
+                globalNavModel.getData().getSource(),
                 globalNavModel.getData().getTitle(),
                 globalNavModel.getData().getKeyword(),
+                globalNavModel.getData().getNavTemplate(),
+                globalNavModel.getData().getBackground(),
                 globalNavModel.getData().getSeeAllApplink(),
                 globalNavModel.getData().getSeeAllUrl(),
                 convertToViewModel(globalNavModel.getData().getGlobalNavItems())
@@ -81,11 +77,16 @@ public class ProductViewModelMapper {
         int position = 1;
         for (SearchProductModel.GlobalNavItem item : globalNavItems) {
             itemList.add(new GlobalNavViewModel.Item(
+                    item.getCategoryName(),
                     item.getName(),
                     item.getInfo(),
                     item.getImageUrl(),
                     item.getApplink(),
                     item.getUrl(),
+                    item.getSubtitle(),
+                    item.getStrikethrough(),
+                    item.getBackgroundUrl(),
+                    item.getLogoUrl(),
                     position
             ));
             position++;
@@ -108,28 +109,6 @@ public class ProductViewModelMapper {
         relatedSearchModel.setOtherRelated(otherRelatedList);
 
         return relatedSearchModel;
-    }
-
-    private GuidedSearchViewModel convertToGuidedSearchViewModel(GuidedSearchModel guidedSearchModel, String query) {
-        GuidedSearchViewModel model = new GuidedSearchViewModel();
-        List<GuidedSearchViewModel.Item> itemList = new ArrayList<>();
-
-        if (guidedSearchModel.getData() != null) {
-            for (int position = 0; position < guidedSearchModel.getData().size(); position++) {
-                itemList.add(mappingGuidedSearchItem(guidedSearchModel.getData().get(position), position, query));
-            }
-        }
-        model.setItemList(itemList);
-        return model;
-    }
-
-    private GuidedSearchViewModel.Item mappingGuidedSearchItem(GuidedSearchModel.GuidedSearchItem networkItem, int position, String query) {
-        GuidedSearchViewModel.Item viewModelItem = new GuidedSearchViewModel.Item();
-        viewModelItem.setKeyword(networkItem.getKeyword());
-        viewModelItem.setUrl(networkItem.getUrl());
-        viewModelItem.setPosition(position);
-        viewModelItem.setPreviousKey(query);
-        return viewModelItem;
     }
 
     private List<ProductItemViewModel> convertToProductItemViewModelList(int lastProductItemPositionFromCache, List<SearchProductModel.Product> productModels) {
@@ -233,6 +212,14 @@ public class ProductViewModelMapper {
 
     private FreeOngkirViewModel convertToFreeOngkirViewModel(SearchProductModel.FreeOngkir freeOngkir) {
         return new FreeOngkirViewModel(freeOngkir.isActive(), freeOngkir.getImageUrl());
+    }
+
+    private TickerViewModel createTickerModel(SearchProductModel.SearchProduct searchProduct) {
+        SearchProductModel.Ticker tickerModel = searchProduct.getTicker();
+        TickerViewModel tickerViewModel = new TickerViewModel();
+        tickerViewModel.setText(tickerModel.getText());
+        tickerViewModel.setQuery(tickerModel.getQuery());
+        return tickerViewModel;
     }
 
     private SuggestionViewModel createSuggestionModel(SearchProductModel.SearchProduct searchProduct) {

@@ -73,10 +73,12 @@ import javax.inject.Inject;
 
 
 public class OrderListFragment extends BaseDaggerFragment implements
+
         OrderListRecomListViewHolder.ActionListener, RefreshHandler.OnRefreshHandlerListener,
-        OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener,
+        OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener,QuickSingleFilterView.QuickFilterAnalytics,
         SearchInputView.ResetListener, OrderListViewHolder.OnMenuItemListener, View.OnClickListener,
         OrderListViewHolder.OnActionButtonListener {
+
 
     private static final String ORDER_CATEGORY = "orderCategory";
     private static final String ORDER_TAB_LIST = "TAB_LIST";
@@ -297,6 +299,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         filterDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                orderListAnalytics.sendDateFilterClickEvent();
                 startActivityForResult(SaveDateBottomSheetActivity.getDateInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
             }
         });
@@ -311,7 +314,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 startDate = data.getStringExtra(SaveDateBottomSheetActivity.START_DATE);
                 endDate = data.getStringExtra(SaveDateBottomSheetActivity.END_DATE);
                 refreshHandler.startRefresh();
-                orderListAnalytics.sendDateFilterClickEvent();
+                orderListAnalytics.sendDateFilterSubmitEvent();
             } else if (requestCode == SUBMIT_SURVEY_REQUEST) {
                 presenter.insertSurveyRequest(data.getIntExtra(SaveDateBottomSheetActivity.SURVEY_RATING, 3), data.getStringExtra(SaveDateBottomSheetActivity.SURVEY_COMMENT));
             }
@@ -342,6 +345,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         recyclerView.setAdapter(orderListAdapter);
         recyclerView.setHasFixedSize(false);
         quickSingleFilterView.setListener(this);
+        quickSingleFilterView.setquickFilterListener(this);
         simpleSearchView.setListener(this);
         simpleSearchView.setResetListener(this);
     }
@@ -519,7 +523,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void selectFilter(String typeFilter) {
         selectedFilter = typeFilter;
         refreshHandler.startRefresh();
-        orderListAnalytics.sendQuickFilterClickEvent(typeFilter);
     }
 
 
@@ -610,14 +613,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSearchSubmitted(String text) {
-        searchedString = text;
+
+            searchedString = text;
+            orderListAnalytics.sendSearchFilterClickEvent(text);
+
     }
 
     @Override
     public void onSearchTextChanged(String text) {
         if (text.length() >= MINIMUM_CHARATERS_HIT_API || text.length() == 0) {
             searchedString = text;
-            orderListAnalytics.sendSearchFilterClickEvent();
             filterDate.setVisibility(View.GONE);
             Handler handler = new Handler();
             handler.postDelayed(() -> refreshHandler.startRefresh(), KEYBOARD_SEARCH_WAITING_TIME);
@@ -628,6 +633,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void onSearchReset() {
         searchedString = "";
         refreshHandler.startRefresh();
+        orderListAnalytics.sendSearchFilterCancelClickEvent();
     }
 
     @Override
@@ -684,11 +690,15 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void setSelectFilterName(String selectFilterName) {
+        orderListAnalytics.sendQuickFilterClickEvent(selectFilterName);
+}
+
+
     public void handleActionButtonClick(@NotNull Order order, @Nullable ActionButton actionButton) {
         if (actionButton != null)
             this.actionButtonUri = actionButton.uri();
         this.selectedOrderId = order.id();
-
         switch (actionButton.label().toLowerCase()) {
             case ACTION_BUY_AGAIN:
             case ACTION_SUBMIT_CANCELLATION:
@@ -697,6 +707,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 break;
             case ACTION_TRACK_IT:
                 trackOrder();
+                orderListAnalytics.sendActionButtonClickEventList("click track", "");
                 break;
             case ACTION_DONE:
                 presenter.finishOrder(selectedOrderId, actionButtonUri);

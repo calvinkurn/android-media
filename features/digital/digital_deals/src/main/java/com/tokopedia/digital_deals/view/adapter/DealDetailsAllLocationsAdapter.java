@@ -8,9 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.model.Outlet;
+import com.tokopedia.digital_deals.view.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class DealDetailsAllLocationsAdapter extends RecyclerView.Adapter<DealDet
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         context = viewGroup.getContext();
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.redeem_locations_expandable_list_item, viewGroup, false));
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(com.tokopedia.digital_deals.R.layout.redeem_locations_expandable_list_item, viewGroup, false));
     }
 
     @Override
@@ -50,9 +49,9 @@ public class DealDetailsAllLocationsAdapter extends RecyclerView.Adapter<DealDet
 
         public ViewHolder(View itemView) {
             super(itemView);
-            outletName = itemView.findViewById(R.id.tv_location_name);
-            outletAddress = itemView.findViewById(R.id.tv_location_address);
-            viewMap = itemView.findViewById(R.id.iv_map);
+            outletName = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_location_name);
+            outletAddress = itemView.findViewById(com.tokopedia.digital_deals.R.id.tv_location_address);
+            viewMap = itemView.findViewById(com.tokopedia.digital_deals.R.id.iv_map);
             viewMap.setOnClickListener(this);
 
         }
@@ -77,7 +76,7 @@ public class DealDetailsAllLocationsAdapter extends RecyclerView.Adapter<DealDet
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.iv_map) {
+            if (v.getId() == com.tokopedia.digital_deals.R.id.iv_map) {
                 Utils.getSingletonInstance().openGoogleMapsActivity(context, outlets.get(getIndex()).getCoordinates());
             }
         }

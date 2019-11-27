@@ -58,6 +58,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <RelativeLayout
+                android:id="@+id/event_date_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -122,6 +123,16 @@
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/sp_14" />
             </RelativeLayout>
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/policy_ticker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:closeButtonVisibility="gone"
+                app:tickerShapeType="loose"
+                app:tickerType="announcement"
+                android:visibility="visible"
+                app:descriptionText="@string/ticker_info_description" />
+
 
             <FrameLayout
                 android:id="@+id/bookticket_fragment_holder"
@@ -143,63 +154,73 @@
         android:visibility="invisible"
         tools:targetApi="lollipop">
 
-        <TextView
-
-            android:id="@+id/tiket"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/ticket_info"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:text="TIKET:"
-            android:textColor="@color/black_70"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/ticketcount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/tiket"
-            android:layout_alignStart="@+id/tiket"
-            android:layout_below="@+id/tiket"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_3"
-            android:layout_toLeftOf="@+id/totalprice"
-            android:maxLines="1"
-            android:textColor="@color/green_nob"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="bold"
-            tools:text="1 x Festival" />
-
-        <TextView
-            android:id="@+id/total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:text="TOTAL:"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/sp_10"
-            android:textStyle="bold" />
+            android:weightSum="1"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/totalprice"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/ticketcount"
-            android:layout_below="@+id/total"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:textColor="@color/red_800"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="bold"
-            tools:text="TOTAL:" />
+            android:layout_weight="0.8"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tiket"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="TIKET:"
+                android:textColor="@color/black_70"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/ticketcount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_3"
+                android:layout_marginRight="@dimen/dp_8"
+                android:maxLines="1"
+                android:textColor="@color/green_nob"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold"
+                tools:text="1 x Festival" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="TOTAL:"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/sp_10"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/totalprice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/red_800"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold"
+                tools:text="TOTAL:" />
+        </LinearLayout>
+        </LinearLayout>
 
 
         <include
@@ -207,7 +228,7 @@
             layout="@layout/btn_lanjuktan_simple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ticketcount"
+            android:layout_below="@+id/ticket_info"
             android:layout_gravity="bottom"
             android:visibility="visible" />
 

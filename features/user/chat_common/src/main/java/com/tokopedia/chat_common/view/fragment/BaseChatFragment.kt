@@ -34,6 +34,7 @@ import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.URLEncoder
 import java.util.*
 
 /**
@@ -115,9 +116,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     open fun getParamInt(paramName: String, arguments: Bundle?,
                          savedInstanceState: Bundle?): Int {
         return when {
-            savedInstanceState != null -> savedInstanceState.getInt(paramName, 0)
-            arguments != null -> arguments.getInt(paramName, 0)
-            else -> 0
+            savedInstanceState != null -> savedInstanceState.getInt(paramName, -1)
+            arguments != null -> arguments.getInt(paramName, -1)
+            else -> -1
         }
     }
 
@@ -155,8 +156,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                 isBranchIOLink(url) -> handleBranchIOLinkClick(url)
                 RouteManager.isSupportApplink(activity, url) && !URLUtil.isNetworkUrl(url) -> RouteManager.route(activity, url)
                 else -> {
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                            url))
+                    val encodedUrl = URLEncoder.encode(url, "UTF-8")
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl))
                 }
             }
         }

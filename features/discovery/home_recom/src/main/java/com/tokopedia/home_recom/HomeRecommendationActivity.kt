@@ -29,7 +29,6 @@ import javax.annotation.RegEx
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
     companion object{
         const val PRODUCT_ID = "PRODUCT_ID"
-        private const val REF = "REF"
 
         @JvmStatic
         fun newInstance(context: Context) = Intent(context, HomeRecommendationActivity::class.java)
@@ -52,13 +51,13 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     override fun getNewFragment(): Fragment {
         return when{
             intent.data != null -> {
-                val ref = intent.data?.getQueryParameter("ref") ?: ""
                 if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(
                         if(isNumber(intent.data?.pathSegments?.get(0) ?: "")) intent.data?.pathSegments?.get(0) ?: ""
-                        else "", ref)
-                else RecommendationFragment.newInstance(intent.data?.lastPathSegment ?: "", ref)
+                        else "", intent.data?.getQueryParameter("ref") ?: "null", intent.data?.query ?: "")
+                else RecommendationFragment.newInstance(intent.data?.lastPathSegment ?: "", intent.data?.query ?: "", intent.data?.getQueryParameter("ref") ?: "")
             }
             else -> {
+                RouteManager.route(this, ApplinkConst.HOME)
                 RecommendationFragment.newInstance()
             }
         }
@@ -115,7 +114,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      */
     override fun onBackPressed() {
         if(!isSimilarProduct(intent?.data?.toString() ?: "")) {
-            if(intent?.data?.pathSegments?.size ?: 0 > 1 && isNumber(intent?.data?.pathSegments?.get(1) ?: "")){
+            if(intent?.data?.pathSegments?.isEmpty() == false && isNumber( intent.data?.pathSegments?.get(0) ?: "")){
                 RecommendationPageTracking.eventUserClickBackWithProductId()
             }else{
                 RecommendationPageTracking.eventUserClickBack()

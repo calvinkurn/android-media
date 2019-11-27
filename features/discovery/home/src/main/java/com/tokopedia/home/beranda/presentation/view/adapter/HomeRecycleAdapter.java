@@ -94,20 +94,14 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     }
 
     //mapping another visitable to visitables from home_query
-    public void setItems(List<Visitable> visitables, HeaderViewModel headerViewModel) {
+    public void setItems(List<Visitable> visitables) {
         this.visitables = visitables;
-        addHomeHeaderViewModel(headerViewModel);
         notifyDataSetChanged();
     }
 
     public void updateHomeQueryItems(List<Visitable> newVisitable) {
-        int headerHomePosition = hasHomeHeaderViewModel();
-        if (headerHomePosition != POSITION_UNDEFINED) {
-            newVisitable.add(headerHomePosition, getItems().get(headerHomePosition));
-        }
         clearItems();
         this.visitables = newVisitable;
-
         notifyDataSetChanged();
     }
 
@@ -170,14 +164,10 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     }
 
     private int removeGeolocation() {
-        switch (hasGeolocationViewModel()) {
-            case POSITION_GEOLOCATION_WITH_TICKER: {
-                this.visitables.remove(POSITION_GEOLOCATION_WITH_TICKER);
-                return POSITION_GEOLOCATION_WITH_TICKER;
-            }
-            case POSITION_GEOLOCATION_WITHOUT_TICKER: {
-                this.visitables.remove(POSITION_GEOLOCATION_WITHOUT_TICKER);
-                return POSITION_GEOLOCATION_WITHOUT_TICKER;
+        for(int i=0; i<visitables.size(); i++){
+            if(visitables.get(i) instanceof GeolocationPromptViewModel){
+                visitables.remove(i);
+                return i;
             }
         }
         return POSITION_UNDEFINED;

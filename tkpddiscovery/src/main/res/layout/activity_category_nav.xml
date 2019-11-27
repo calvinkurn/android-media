@@ -62,7 +62,7 @@
             android:id="@+id/icon_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_category_sort" />
+            app:srcCompat="@drawable/catalog_ic_sort" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/button_sort"
@@ -85,7 +85,7 @@
             android:id="@+id/icon_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_category_filter" />
+            app:srcCompat="@drawable/catalog_ic_filter" />
 
 
         <com.tokopedia.unifyprinciples.Typography
@@ -112,18 +112,18 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="@dimen/toolbar_height"
         app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="@dimen/toolbar_height"
             android:background="@color/white"
             app:layout_scrollFlags="scroll|enterAlways"
             app:titleTextColor="@color/black_70">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -133,7 +133,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:id="@+id/action_up_btn"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:paddingRight="@dimen/dp_5"
+                    android:paddingRight="@dimen/dp_16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/discovery_ic_back"
@@ -168,7 +168,7 @@
 
                     <ImageView
                         android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:paddingLeft="@dimen/dp_8"
                         app:srcCompat="@drawable/ic_category_filter" />
@@ -194,8 +194,7 @@
                     <ImageButton
                         android:id="@+id/image_button_close"
                         android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_height="match_parent"
                         android:layout_marginRight="@dimen/dp_8"
                         android:background="@null"
                         android:padding="@dimen/dp_8"

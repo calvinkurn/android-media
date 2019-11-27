@@ -14,6 +14,8 @@
     <string name="label_choose">Pilih</string>
     <string name="label_next">Selanjutnya</string>
     <string name="label_always_available">Selalu Tersedia</string>
+    <string name="label_always_active">Aktif</string>
+    <string name="label_always_nonactive">Nonaktif</string>
     <string name="courier_option">Atur Layanan Kurir</string>
     <string name="product_option">Lihat Produk</string>
     <string name="popup_label_static">Produk pertamamu siap</string>
@@ -122,6 +124,7 @@
 
     <string name="product_helper_product_brand">Nama merek membantu pembeli mencari produk Anda</string>
     <string name="product_helper_product_stock">Stock akan berkurang otomatis jika produk terbeli</string>
+    <string name="product_helper_product_stock_static">Jika status aktif, produkmu dapat dicari oleh calon pembeli</string>
 
     <string name="product_draft_product_has_been_saved_as_draft">Produk berhasil disimpan dalam draft</string>
     <string name="label_exit">Keluar</string>
@@ -135,6 +138,8 @@
     <string name="product_error_product_minimum_order_not_valid_2">Minimum pemesanan harus lebih kecil dari Maksimum pemesanan</string>
     <string name="product_error_product_maksimum_order_not_valid_2">Maksimum pemesanan harus lebih besar dari Minimum pemesanan</string>
     <string name="product_error_total_stock_not_valid">Jumlah stok harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="global_product_stock_error_maximum">Stok maksimal %1$s</string>
+    <string name="global_product_stock_error_minimum">Stok tidak boleh kosong</string>
     <string name="product_error_product_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
     <string name="product_error_product_pre_order_not_valid">Waktu Proses Preorder harus antara %1$s &#8212; %2$s</string>
     <string name="product_fix_previous_wholesale">Perbaiki error sebelumnya terlebih dahulu.</string>
@@ -195,4 +200,6 @@
     <string name="product_action_view_error">Lihat</string>
     <string name="product_category_locked">Kategori Terkunci</string>
     <string name="product_category_locked_description">Tidak dapat mengubah kategori dari produk yang sudah memiliki varian.</string>
+
+    <string name="product_stock_available_label">Tersedia</string>
 </resources>

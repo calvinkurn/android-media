@@ -30,6 +30,7 @@
     <string name="product_manage_filter_preorder">Preorder</string>
     <string name="product_manage_filter_all_showcase">Semua Etalase</string>
     <string name="product_manage_stock_empty">Kosong</string>
+    <string name="product_manage_stock_nonactive">Nonaktif</string>
     <string name="product_manage_label_change_search">Ubah pencarian produk Anda</string>
     <string name="product_manage_label_product_list_empty">Daftar Produk Kosong</string>
     <string name="product_manage_title_duplicate_product_menu">Duplikat</string>

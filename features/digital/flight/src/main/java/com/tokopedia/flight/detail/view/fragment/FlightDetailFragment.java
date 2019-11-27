@@ -53,7 +53,7 @@ public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteView
 
     @Override
     protected FlightDetailRouteTypeFactory getAdapterTypeFactory() {
-        return new FlightDetailAdapterTypeFactory(this);
+        return new FlightDetailAdapterTypeFactory(this, false);
     }
 
     @Override

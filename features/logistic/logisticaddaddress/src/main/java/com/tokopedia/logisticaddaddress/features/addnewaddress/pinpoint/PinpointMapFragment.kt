@@ -30,7 +30,6 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
-import com.tokopedia.logisticaddaddress.domain.model.Token
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
@@ -39,7 +38,8 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
@@ -58,22 +58,21 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var bottomSheetBehavior: BottomSheetBehavior<CoordinatorLayout>? = null
     val handler = Handler()
     private var UNNAMED_ROAD: String = "Unnamed Road"
-    private var isRequestingLocation: Boolean? = null
     private var isGetDistrict = false
     private val FINISH_FLAG = 1212
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var token: Token? = null
-    private var isPolygon: Boolean? = null
+    private var isPolygon: Boolean = false
     private var districtId: Int? = null
     private val GREEN_ARGB = 0x40388E3C
-    private var isMismatchSolved: Boolean? = null
-    private var isMismatch: Boolean? = null
+    private var isMismatchSolved: Boolean = false
+    private var isMismatch: Boolean = false
     private var zipCodes: MutableList<String>? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
     private var addNewAddressComponent: AddNewAddressComponent? = null
-    private var isChangesRequested: Boolean? = null
+    private var isChangesRequested: Boolean = false
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var continueWithLocation: Boolean? = false
 
@@ -101,13 +100,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         fun newInstance(extra: Bundle): PinpointMapFragment {
             return PinpointMapFragment().apply {
                 arguments = Bundle().apply {
-                    putDouble(AddressConstants.EXTRA_LAT, extra.getDouble(AddressConstants.EXTRA_LAT, MONAS_LAT))
-                    putDouble(AddressConstants.EXTRA_LONG, extra.getDouble(AddressConstants.EXTRA_LONG, MONAS_LONG))
-                    putBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, extra.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, true))
-                    putBoolean(AddressConstants.EXTRA_REQUEST_LOCATION, extra.getBoolean(AddressConstants.EXTRA_REQUEST_LOCATION))
+                    putDouble(AddressConstants.EXTRA_LAT, extra.getDouble(AddressConstants.EXTRA_LAT))
+                    putDouble(AddressConstants.EXTRA_LONG, extra.getDouble(AddressConstants.EXTRA_LONG))
+                    putBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, extra.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE))
                     putParcelable(AddressConstants.KERO_TOKEN, extra.getParcelable(AddressConstants.KERO_TOKEN))
                     putBoolean(AddressConstants.EXTRA_IS_POLYGON, extra.getBoolean(AddressConstants.EXTRA_IS_POLYGON))
-                    putInt(AddressConstants.EXTRA_DISTRICT_ID, extra.getInt(AddressConstants.EXTRA_DISTRICT_ID))
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH))
                     putParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
@@ -121,18 +118,17 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            currentLat = it.getDouble(AddressConstants.EXTRA_LAT)
-            currentLong = it.getDouble(AddressConstants.EXTRA_LONG)
-            isShowingAutocomplete = it.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE)
+            currentLat = it.getDouble(AddressConstants.EXTRA_LAT, MONAS_LAT)
+            currentLong = it.getDouble(AddressConstants.EXTRA_LONG, MONAS_LONG)
+            isShowingAutocomplete = it.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, true)
             token = it.getParcelable(AddressConstants.KERO_TOKEN)
-            isRequestingLocation = it.getBoolean(AddressConstants.EXTRA_REQUEST_LOCATION)
-            isPolygon = it.getBoolean(AddressConstants.EXTRA_IS_POLYGON)
-            isMismatchSolved = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
-            isMismatch = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)
+            isPolygon = it.getBoolean(AddressConstants.EXTRA_IS_POLYGON, false)
+            isMismatchSolved = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, false)
+            isMismatch = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH, false)
             saveAddressDataModel = it.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
-            districtId = saveAddressDataModel?.districtId
+            isChangesRequested = it.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED, false)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
-            isChangesRequested = it.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED)
+            districtId = saveAddressDataModel?.districtId
         }
     }
 
@@ -158,9 +154,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         getdistrict_container?.visibility = View.GONE
         invalid_container?.visibility = View.GONE
         whole_loading_container?.visibility = View.VISIBLE
-        isMismatch?.let {
-            if (!it) et_detail_address?.setText(saveAddressDataModel?.editDetailAddress)
-        }
+        if (!isMismatch) et_detail_address?.setText(saveAddressDataModel?.editDetailAddress)
     }
 
     private fun setViewListener() {
@@ -231,15 +225,14 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
         moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
 
-        this.isPolygon?.let {
-            if (this.isPolygon as Boolean) {
-                districtId?.let { districtId ->
-                    token?.let { token ->
-                        presenter.getDistrictBoundary(districtId, token.districtRecommendation, token.ut)
-                    }
+        if (this.isPolygon) {
+            districtId?.let { districtId ->
+                token?.let { token ->
+                    presenter.getDistrictBoundary(districtId, token.districtRecommendation, token.ut)
                 }
             }
         }
+
 
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetBehavior?.isHideable = false
@@ -380,21 +373,20 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.VISIBLE
 
-        this.isPolygon?.let {
-            if (this.isPolygon as Boolean) {
-                if (autofillDataUiModel.districtId != districtId) {
-                    continueWithLocation = false
-                    view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.invalid_district), it1, it2) } }
-                    AddNewAddressAnalytics.eventViewToasterAlamatTidakSesuaiDenganPeta()
-                } else {
-                    continueWithLocation = true
-                    updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
-                }
+        if (this.isPolygon) {
+            if (autofillDataUiModel.districtId != districtId) {
+                continueWithLocation = false
+                view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.invalid_district), it1, it2) } }
+                AddNewAddressAnalytics.eventViewToasterAlamatTidakSesuaiDenganPeta()
             } else {
                 continueWithLocation = true
                 updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
             }
+        } else {
+            continueWithLocation = true
+            updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
         }
+
     }
 
     override fun showOutOfReachDialog() {
@@ -437,7 +429,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             invalid_title?.text = getString(R.string.invalid_title)
             invalid_desc?.text = getString(R.string.invalid_desc)
             invalid_img?.setImageResource(R.drawable.ic_invalid_location)
-            invalid_button?.apply{
+            invalid_button?.apply {
                 visibility = View.VISIBLE
                 setOnClickListener {
                     AddNewAddressAnalytics.eventClickButtonUnnamedRoad()
@@ -502,10 +494,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     private fun doLoadAddEdit() {
         saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
-        this.isPolygon?.let {
-            if (this.isPolygon as Boolean) {
-                isMismatchSolved = true
-            }
+        if (this.isPolygon) {
+            isMismatchSolved = true
         }
 
         presenter.loadAddEdit(isMismatchSolved, isChangesRequested)

@@ -50,5 +50,6 @@
     <dimen name="tp_coupon_card_large">240dp</dimen>
     <dimen name="tp_coupon_card_medium">220dp</dimen>
     <dimen name="fontvs">12sp</dimen>
+    <dimen name="tp_cta_container_nonlogin">136dp</dimen>
 
 </resources>

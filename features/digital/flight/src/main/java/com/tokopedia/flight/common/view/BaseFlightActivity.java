@@ -99,8 +99,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
         if (getApplication() instanceof FlightModuleRouter) {
             if (((FlightModuleRouter) getApplication())
                     .isPromoNativeEnable()) {
-                startActivity(((FlightModuleRouter) getApplication())
-                        .getPromoListIntent(this));
+                RouteManager.route(this, ApplinkConst.PROMO_LIST);
             } else {
                 startActivity(((FlightModuleRouter) getApplication())
                         .getBannerWebViewIntent(this, FlightUrl.ALL_PROMO_LINK));

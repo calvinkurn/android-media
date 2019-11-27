@@ -26,4 +26,5 @@
     <color name="tp_toolbar_navigation_grey_color">#666666</color>
     <color name="tp_no_connection_title_color">#f531353b</color>
     <color name="tp_no_connection_subtitle_color">#ae31353b</color>
+    <color name="tp_nonlogin_container_color">#03ac0e</color>
 </resources>

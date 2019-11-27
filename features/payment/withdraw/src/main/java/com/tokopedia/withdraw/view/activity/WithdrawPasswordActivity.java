@@ -18,16 +18,14 @@ import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.view.fragment.WithdrawPasswordFragment;
-import com.tokopedia.withdraw.view.listener.ToolbarUpdater;
 
 import javax.inject.Inject;
 
-public class WithdrawPasswordActivity extends BaseSimpleActivity implements ToolbarUpdater {
+public class WithdrawPasswordActivity extends BaseSimpleActivity {
 
     public final static String BUNDLE_BANK = "bank";
     public final static String BUNDLE_WITHDRAW = "withdraw";
     public final static String BUNDLE_IS_SELLER_WITHDRAWAL = "isSellerWithdrawal";
-    public final static String BUNDLE_IS_PROGRAM_NAME = "programName";
 
     @Inject
     WithdrawAnalytics analytics;
@@ -100,15 +98,5 @@ public class WithdrawPasswordActivity extends BaseSimpleActivity implements Tool
     public void onBackPressed() {
         analytics.eventClickX();
         super.onBackPressed();
-    }
-
-    @Override
-    public void updateToolbar(String toolbarTitle, int toolbarIcon) {
-        Drawable upArrow = ContextCompat.getDrawable(this, toolbarIcon);
-        if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.clr_52565e), PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        }
-        updateTitle(toolbarTitle);
     }
 }

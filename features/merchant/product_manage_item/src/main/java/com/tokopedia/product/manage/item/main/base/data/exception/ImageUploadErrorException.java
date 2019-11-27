@@ -5,7 +5,7 @@ package com.tokopedia.product.manage.item.main.base.data.exception;
  */
 
 public class ImageUploadErrorException extends RuntimeException {
-    public ImageUploadErrorException(Throwable cause) {
-        super(cause);
+    public ImageUploadErrorException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

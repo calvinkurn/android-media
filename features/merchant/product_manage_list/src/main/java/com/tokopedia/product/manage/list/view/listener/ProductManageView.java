@@ -7,6 +7,8 @@ import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductU
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -19,7 +21,7 @@ public interface ProductManageView extends CustomerView {
 
     void onSuccessGetProductList(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage);
 
-    void onSuccessGetShopInfo(boolean goldMerchant, boolean officialStore, String shopDomain);
+    void onSuccessGetShopInfo(@NonNull boolean goldMerchant,@NonNull boolean officialStore, String shopDomain);
 
     void onErrorEditPrice(Throwable t, String productId, String price, String currencyId, String currencyText);
 

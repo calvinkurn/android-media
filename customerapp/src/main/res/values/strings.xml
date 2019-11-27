@@ -72,7 +72,7 @@
     <string name="payment_description_transfer_procedure">Mohon lakukan pembayaran pesanan Rp. %1$s ke %2$s %3$s sebelum %4$s. Untuk info lebih lanjut cek status pembayaran Anda.</string>
     <string name="wishlist_empty_title">Wishlist masih kosong</string>
     <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>
-    <string name="wishlist_check_cart">Lihat</string>
+    <string name="wishlist_check_cart">Cek Keranjang</string>
 
     <string name="flight_title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
     <string name="flight_phone_verification_header">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel.</string>
@@ -159,4 +159,11 @@
 
     <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
     <string name="saldo_detail_title_header_saldo_intro">Info Detail Saldo</string>
+    <string name="title_instantloan">Dana Instan</string>
+
+    <string name="title_im_referral">referral</string>
+    <string name="title_fintech_wallet">fintech_wallet</string>
+    <string name="title_activity_all_brands">Brands</string>
+    <string name="title_digital_deals">Deals</string>
+    <string name="title_activity_deals">Deals</string>
 </resources>

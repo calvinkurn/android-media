@@ -19,8 +19,8 @@ import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoWithScoreUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user_identification_common.domain.usecase.GetApprovalStatusUseCase;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
-import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase;
 
 import javax.inject.Inject;
 
