@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_260"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:gravity="center"
+            android:textColor="@color/white" />
+        <com.tokopedia.unifycomponents.CardUnify
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_160"
+            android:layout_marginRight="@dimen/dp_16">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/partial_umrah_home_page_search_spinner_shimmering" />
+
+                <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    android:id="@+id/btn_umrah_home_page_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_16"
+                    app:unifyButtonSize="large" />
+            </LinearLayout>
+        </com.tokopedia.unifycomponents.CardUnify>
+
+    </LinearLayout>
+</FrameLayout>

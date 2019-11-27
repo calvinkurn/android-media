@@ -1,0 +1,80 @@
+query UmrahProduct($slugName: String!){
+  umrahProduct(slugName: $slugName ){
+    id
+    slugName
+    title
+    availableSeat
+    banner
+    travelAgent{
+      id
+      name
+      logoUrl
+      permissionOfUmrah
+      permissionOfHajj
+    }
+    durationDays
+    productVariant:variant {
+      id
+      name
+      description
+      price
+    }
+    hotels{
+      id
+      name
+      checkIn   # rcf339
+      checkOut  # rcf339
+      imageUrl
+      rating
+      poiDistances
+    }
+    departureDate
+    returningDate
+    departureCity {
+      id
+        name
+      countryCode
+    }
+    transitCity{
+      id
+      name
+      countryCode
+    }
+    airlines{
+      id
+      name
+      departureCity{
+        name
+        countryCode
+      }
+      arrivalCity{
+        name
+        countryCode
+      }
+      date
+      details
+      logoUrl
+      type
+    }
+    itineraries{
+      day
+      description
+    }
+    featuredFacilities {
+      iconUrl
+      header
+    }
+    facilities
+    nonFacilities
+    terms
+    faq {
+      allContentsLink
+      contents {
+        header
+        snippet
+        link
+      }
+    }
+    additionalInformation
+  }
+}

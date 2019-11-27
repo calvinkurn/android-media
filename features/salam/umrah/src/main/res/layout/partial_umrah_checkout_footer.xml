@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white_65"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_12"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_12">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_agreement_condition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_36"
+        android:lineHeight="@dimen/dp_18"
+        android:text="@string/umrah_checkout_aggrement_condition"
+        app:layout_constraintLeft_toRightOf="@id/cb_umrah_checkout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        android:textColorLink="@color/green_500"
+        />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cb_umrah_checkout"
+        android:checked="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_footer_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/umrah_checkout_footer_title"
+        app:layout_constraintTop_toBottomOf="@id/tg_umrah_checkout_agreement_condition"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="@dimen/dp_24"
+        app:typographyType="small" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_total_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Rp5.500.000"
+        app:layout_constraintTop_toBottomOf="@id/tg_umrah_checkout_footer_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:typographyType="heading_4"
+        android:textColor="@color/Yellow_Y500"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_umrah_checkout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tg_umrah_checkout_agreement_condition"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="@string/umrah_checkout_footer_choose_payment"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="transaction"
+        android:layout_marginTop="@dimen/dp_24"
+        android:enabled="false"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

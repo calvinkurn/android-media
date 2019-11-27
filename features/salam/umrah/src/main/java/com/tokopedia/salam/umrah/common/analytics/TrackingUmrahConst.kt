@@ -12,3 +12,50 @@ val UMRAH_CLICK_ACTION_ORDER_DETAIL_BATALKAN_PESANAN = "click batalkan pesanan"
 val UMRAH_CLICK_ACTION_ORDER_DETAIL_BANTUAN = "click bantuan"
 val UMRAH_CLICK_ACTION_ORDER_DETAIL_BACK = "click back"
 
+val UMRAH_EVENT_CLICK_UMROH = "clickUmroh"
+val UMRAH_EVENT_PROMO_CLICK = "promoClick"
+val UMRAH_EVENT_PROMO_VIEW = "promoView"
+val UMRAH_EVENT_PRODUCT_VIEW = "productView"
+val UMRAH_EVENT_PRODUCT_CLICK = "productClick"
+
+
+val UMRAH_CATEGORY_HOME_PAGE = "homepage umroh"
+
+val UMRAH_CLICK_SEARCH_PACKET_UMRAH = "click cari paket umroh"
+val UMRAH_IMPRESSION_WIDGET_MY_UMRAH = "impression widget umroh saya"
+val UMRAH_CLICK_WIDGET_MY_UMRAH = "click widget umroh saya"
+val UMRAH_IMPRESSION_CATEGORY = "impression kategori"
+val UMRAH_CLICK_CATEGORY = "click kategori"
+val UMRAH_IMPRESSION_DYNAMIC_CONTENT = "impression dynamic content"
+val UMRAH_CLICK_DYNAMIC_CONTENT= "click dynamic content"
+val UMRAH_IMPRESSION_DREAM_FUND= "impression dana impian umroh"
+val UMRAH_CLICK_DREAM_FUND= "click dana impian umroh"
+
+
+val ECOMMERCE_LABEL = "ecommerce"
+val PRODUCTS_LABEL = "products"
+val PROMOTIONS_LABEL = "promotions"
+
+val ID = "id"
+val NAME = "name"
+val CREATIVE = "creative"
+val POSITION = "position"
+val WIDGET_MY_UMRAH = "widget umroh saya"
+val KATEGORI = "kategori"
+val DYNAMIC_CONTENT = "dynamic content"
+val CLICK = "click"
+val ACTION_FIELD = "actionField"
+val CURRENCY_CODE = "currencyCode"
+val CURRENCY = "IDR"
+val IMPRESSION = "impression"
+val PRICE = "price"
+val CATEGORY = "category"
+val PRODUCTS = "products"
+val LIST = "list"
+val DEPART_MONTH = "bulan keberangkatan:"
+val PRICE_TRACKING = "_harga:"
+val DEPART_CITY = "_kota keberangkatan:"
+val DREAM_FUND = "dana impian"
+val POSITION_DEFAULT = 1
+
+

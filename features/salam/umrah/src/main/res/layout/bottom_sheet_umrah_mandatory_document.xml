@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet_checkout_mandatory_document">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/umrah_ic_home_page_closed"
+        android:id="@+id/img_umrah_checkout_bottom_sheet_closed"
+        android:layout_margin="@dimen/dp_16"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_umrah_checkout_bottom_sheet_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/img_umrah_checkout_bottom_sheet_closed"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="heading_3"
+        android:text="@string/umrah_checkout_mandatory_document_bottom_sheet_title"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_mandatory_document_desc"
+        android:layout_below="@+id/tv_umrah_checkout_bottom_sheet_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_18"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:text="@string/umrah_checkout_mandatory_document_bottom_sheet_desc" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_below="@+id/tg_umrah_checkout_mandatory_document_desc"
+        android:id="@+id/rv_umrah_checkout_mandatory_document"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+</RelativeLayout>

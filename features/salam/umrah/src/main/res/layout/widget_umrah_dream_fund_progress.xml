@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:id="@+id/root_view_widget_umrah_dream_fund_progress"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.tokopedia.unifycomponents.ContainerUnify
+        app:container_color="GREEN"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:visibility="gone"
+            android:id="@+id/container_widget_umrah_dream_fund_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_widget_umrah_dream_fund_progress"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                app:srcCompat="@drawable/umrah_ic_homepage_dream_fund_progress" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_widget_umrah_dream_fund_progress_title"
+                app:layout_constraintTop_toTopOf="@id/iv_widget_umrah_dream_fund_progress"
+                app:layout_constraintLeft_toRightOf="@id/iv_widget_umrah_dream_fund_progress"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold"
+                android:textColor="@color/Neutral_N700_96"
+                android:text="@string/umrah_dream_fund_progress_title"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_marginStart="@dimen/dp_12" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_widget_umrah_dream_fund_progress_reach_est"
+                app:layout_constraintTop_toBottomOf="@id/tg_widget_umrah_dream_fund_progress_title"
+                app:layout_constraintLeft_toLeftOf="@id/tg_widget_umrah_dream_fund_progress_title"
+                app:typographyWeight="reguler"
+                app:typographyType="small"
+                android:textColor="@color/Neutral_N700_68"
+                tools:text="Perkiraan tercapai Juni 2019"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"/>
+
+            <ProgressBar
+                android:id="@+id/pb_widget_umrah_dream_fund_progress"
+                android:max="100"
+                android:progress="10"
+                app:layout_constraintTop_toBottomOf="@id/iv_widget_umrah_dream_fund_progress"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:progressDrawable="@drawable/umrah_dream_fund_progress_bar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_widget_umrah_dream_fund_progress_target_progress"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                android:textColor="@color/Neutral_N700_68"
+                app:layout_constraintTop_toBottomOf="@id/pb_widget_umrah_dream_fund_progress"
+                app:layout_constraintLeft_toLeftOf="@id/pb_widget_umrah_dream_fund_progress"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Target: Rp10.000.000"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_widget_umrah_dream_fund_progress_percentage"
+                android:background="@drawable/umrah_bg_dream_fund_progress_percentage"
+                app:typographyWeight="bold"
+                app:typographyType="small"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pb_widget_umrah_dream_fund_progress"
+                tools:text="50%"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_3"
+                android:paddingTop="@dimen/dp_3"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_13"
+                android:layout_marginEnd="@dimen/dp_16" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_widget_umrah_dream_fund_progress_arrow"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:srcCompat="@drawable/umrah_ic_right"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_28"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_20" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:id="@+id/container_widget_umrah_dream_fund_progress_shimmering"
+            android:visibility="visible"
+            layout="@layout/widget_umrah_dream_fund_progress_shimmering" />
+    </com.tokopedia.unifycomponents.ContainerUnify>
+</com.tokopedia.unifycomponents.CardUnify>

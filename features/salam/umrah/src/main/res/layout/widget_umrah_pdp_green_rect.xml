@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_view_widget_umrah_pdp_green_rect">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_widget_umrah_pdp_green_rect"
+        android:background="@drawable/umrah_bg_pdp_green_rect"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_widget_umrah_pdp_green_rect_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:textColor="@color/g_500"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            tools:text="Patuna Tour Travel"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:visibility="gone"
+            android:id="@+id/iv_widget_umrah_pdp_green_rect_first_line"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_5"
+            app:layout_constraintTop_toBottomOf="@id/tg_widget_umrah_pdp_green_rect_title"
+            app:layout_constraintLeft_toLeftOf="@id/tg_widget_umrah_pdp_green_rect_title"
+            android:src="@color/light_blue_300"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_widget_umrah_pdp_green_rect_first_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/iv_widget_umrah_pdp_green_rect_first_line"
+            app:layout_constraintTop_toTopOf="@id/iv_widget_umrah_pdp_green_rect_first_line"
+            tools:text="1 Jamaah"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_68"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:visibility="gone"
+            android:id="@+id/iv_widget_umrah_pdp_green_rect_second_line"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@id/tg_widget_umrah_pdp_green_rect_first_line"
+            app:layout_constraintLeft_toLeftOf="@id/iv_widget_umrah_pdp_green_rect_first_line"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@color/light_blue_300"
+            android:layout_marginBottom="@dimen/dp_12"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:visibility="gone"
+            android:id="@+id/tg_widget_umrah_pdp_green_rect_second_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/tg_widget_umrah_pdp_green_rect_first_line"
+            app:layout_constraintTop_toBottomOf="@id/tg_widget_umrah_pdp_green_rect_first_line"
+            tools:text="1 Jamaah"
+            android:layout_marginBottom="@dimen/dp_12"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3" />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_12"
+            app:layout_constraintTop_toBottomOf="@id/tg_widget_umrah_pdp_green_rect_first_line"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_widget_umrah_pdp_green_rect_action"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            android:src="@color/light_blue_300" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:visibility="visible"
+        layout="@layout/widget_umrah_pdp_green_rect_shimmering" />
+</androidx.constraintlayout.widget.ConstraintLayout>

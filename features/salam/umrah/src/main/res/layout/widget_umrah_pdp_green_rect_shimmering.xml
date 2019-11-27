@@ -1,0 +1,6 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/container_widget_umrah_pdp_green_rect_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_64"/>
+</merge>

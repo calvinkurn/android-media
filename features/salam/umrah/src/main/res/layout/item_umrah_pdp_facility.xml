@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item_umrah_pdp_facility_bullet"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Neutral_N700_96"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/umrah_pdp_facility_bullet" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item_umrah_pdp_facility_text"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/item_umrah_pdp_facility_bullet"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Neutral_N700_96"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Tiket Pesawat Internasional"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16">
+
+
+    </com.tokopedia.unifyprinciples.Typography>
+</androidx.constraintlayout.widget.ConstraintLayout>

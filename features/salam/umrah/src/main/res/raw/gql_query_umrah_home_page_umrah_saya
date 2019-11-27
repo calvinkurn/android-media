@@ -1,0 +1,11 @@
+{
+  umrahWidgetUmrahSayaList{
+    subHeader
+    header
+    nextActionText
+    mainButton{
+      text
+      link
+    }
+  }
+}

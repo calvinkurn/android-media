@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_list_payment_option_installment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_list_installment_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="1"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_list_installment_due_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="25 Agustus 2019"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+         />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_list_installment_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="Rp25.000.000"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        />
+
+</LinearLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/section_layout"
+        android:visibility="invisible"
+        >
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/umrah_bg_home_page_search" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/dp_10"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:gravity="center"
+                android:text="@string/umrah_home_page_bg_label"
+                android:textColor="@color/white"
+                app:typographyType="heading_2"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifycomponents.CardUnify
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_160"
+                android:layout_marginRight="@dimen/dp_16">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/partial_umrah_home_page_search_spinner" />
+
+                    <com.tokopedia.unifycomponents.UnifyButton
+                        android:id="@+id/btn_umrah_home_page_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_16"
+                        android:text="@string/umrah_home_page_search_label"
+                        app:unifyButtonSize="large" />
+                </LinearLayout>
+            </com.tokopedia.unifycomponents.CardUnify>
+
+        </LinearLayout>
+    </FrameLayout>
+    <include android:id="@+id/shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/partial_umrah_home_page_main_shimmering"
+        android:visibility="visible"
+        />
+</FrameLayout>

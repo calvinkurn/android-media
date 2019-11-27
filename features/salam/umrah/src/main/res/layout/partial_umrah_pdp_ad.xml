@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    app:layout_constraintCircleRadius="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/dp_8"
+    android:id="@+id/root_view_umrah_dream_fund"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_umrah_pdp_ad"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            app:srcCompat="@drawable/umrah_img_salam_png"
+            android:id="@+id/iv_umrah_salam"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_48"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_pdp_ad_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            android:ellipsize="end"
+            android:maxLines="2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/iv_umrah_salam"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_12"
+            android:textColor="@color/Neutral_N700_96"
+            android:text="@string/umrah_pdp_ad_title"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_72"
+            android:layout_marginEnd="@dimen/dp_72" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_umrah_pdp_ic_add_1"
+            app:layout_constraintTop_toBottomOf="@id/tg_umrah_pdp_ad_title"
+            app:layout_constraintLeft_toLeftOf="@id/tg_umrah_pdp_ad_title"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            app:srcCompat="@drawable/umrah_ic_pdp_add"
+            android:layout_marginTop="@dimen/dp_8" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintTop_toTopOf="@id/iv_umrah_pdp_ic_add_1"
+            app:layout_constraintBottom_toBottomOf="@id/iv_umrah_pdp_ic_add_1"
+            app:layout_constraintLeft_toRightOf="@id/iv_umrah_pdp_ic_add_1"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyWeight="reguler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/umrah_pdp_ad_guaranteed_security"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginStart="@dimen/dp_6" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_umrah_pdp_ic_add_2"
+            app:layout_constraintTop_toBottomOf="@id/iv_umrah_pdp_ic_add_1"
+            app:layout_constraintLeft_toLeftOf="@id/iv_umrah_pdp_ic_add_1"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            app:srcCompat="@drawable/umrah_ic_pdp_add"
+            android:layout_marginTop="@dimen/dp_8" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintTop_toTopOf="@id/iv_umrah_pdp_ic_add_2"
+            app:layout_constraintBottom_toBottomOf="@id/iv_umrah_pdp_ic_add_2"
+            app:layout_constraintLeft_toRightOf="@id/iv_umrah_pdp_ic_add_2"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyWeight="reguler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/umrah_pdp_ad_certainly_depart"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginStart="@dimen/dp_6" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_umrah_pdp_ic_add_3"
+            app:layout_constraintTop_toBottomOf="@id/iv_umrah_pdp_ic_add_2"
+            app:layout_constraintLeft_toLeftOf="@id/iv_umrah_pdp_ic_add_2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
+            app:srcCompat="@drawable/umrah_ic_pdp_add"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_16"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintTop_toTopOf="@id/iv_umrah_pdp_ic_add_3"
+            app:layout_constraintBottom_toBottomOf="@id/iv_umrah_pdp_ic_add_3"
+            app:layout_constraintLeft_toRightOf="@id/iv_umrah_pdp_ic_add_3"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyWeight="reguler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/umrah_pdp_ad_full_refund"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginStart="@dimen/dp_6" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
