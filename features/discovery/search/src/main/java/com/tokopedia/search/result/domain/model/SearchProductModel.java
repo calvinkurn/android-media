@@ -82,17 +82,9 @@ public class SearchProductModel {
         @SerializedName("errorMessage")
         @Expose
         private String errorMessage;
-        // TODO:: Delete this
-        public void setErrorMessage(String errorMessage) {
-            this.errorMessage = errorMessage;
-        }
         @SerializedName("lite_url")
         @Expose
         private String liteUrl;
-        // TODO:: Delete this
-        public void setLiteUrl(String liteUrl) {
-            this.liteUrl = liteUrl;
-        }
         @SerializedName("isFilter")
         @Expose
         private boolean isFilter;
@@ -132,8 +124,6 @@ public class SearchProductModel {
         @SerializedName("products")
         @Expose
         private List<Product> products = new ArrayList<>();
-
-        private String seamlessLiteUrl = "";
 
         public String getQuery() {
             return query;
@@ -205,14 +195,6 @@ public class SearchProductModel {
 
         public Related getRelated() {
             return related;
-        }
-
-        public void setSeamlessLiteUrl(String seamlessLiteUrl) {
-            this.seamlessLiteUrl = seamlessLiteUrl;
-        }
-
-        public String getSeamlessLiteUrl() {
-            return this.seamlessLiteUrl;
         }
     }
 

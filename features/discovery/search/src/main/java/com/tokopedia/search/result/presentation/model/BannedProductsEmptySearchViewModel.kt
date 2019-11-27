@@ -5,7 +5,7 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 
 data class BannedProductsEmptySearchViewModel(
         val errorMessage: String,
-        val encriptedLiteUrl: String
+        val liteUrl: String
 ): Visitable<ProductListTypeFactory> {
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {

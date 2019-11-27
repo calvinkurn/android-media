@@ -10,6 +10,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
+import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
@@ -34,10 +36,12 @@ import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.LabelGroup;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -76,6 +80,10 @@ final class ProductListPresenter
     AddWishListUseCase addWishlistActionUseCase;
     @Inject
     RemoveWishListUseCase removeWishlistActionUseCase;
+    @Inject
+    SeamlessLoginUsecase seamlessLoginUsecase;
+    @Inject
+    UserSessionInterface userSession;
     @Inject
     RemoteConfig remoteConfig;
 
@@ -742,14 +750,14 @@ final class ProductListPresenter
 
     private void getViewToHandleEmptySearchWithErrorMessage(SearchProductModel.SearchProduct searchProduct) {
         getView().removeLoading();
-        getView().setBannedProductsErrorMessage(createTobaccoErrorMessageAsList(searchProduct));
+        getView().setBannedProductsErrorMessage(createBannedProductsErrorMessageAsList(searchProduct));
         getView().trackEventImpressionBannedProducts(true);
         getView().setTotalSearchResultCount("0");
     }
 
-    private List<Visitable> createTobaccoErrorMessageAsList(SearchProductModel.SearchProduct searchProduct) {
+    private List<Visitable> createBannedProductsErrorMessageAsList(SearchProductModel.SearchProduct searchProduct) {
         List<Visitable> tobaccoErrorMessageAsList = new ArrayList<>();
-        tobaccoErrorMessageAsList.add(new BannedProductsEmptySearchViewModel(searchProduct.getErrorMessage(), searchProduct.getSeamlessLiteUrl()));
+        tobaccoErrorMessageAsList.add(new BannedProductsEmptySearchViewModel(searchProduct.getErrorMessage(), searchProduct.getLiteUrl()));
         return tobaccoErrorMessageAsList;
     }
 
@@ -824,7 +832,7 @@ final class ProductListPresenter
         }
 
         if (searchProduct.getErrorMessage() != null && !searchProduct.getErrorMessage().isEmpty()) {
-            list.add(createTobaccoTickerViewModel(searchProduct.getErrorMessage(), searchProduct.getSeamlessLiteUrl()));
+            list.add(createTobaccoTickerViewModel(searchProduct.getErrorMessage(), searchProduct.getLiteUrl()));
             getView().trackEventImpressionBannedProducts(false);
         }
 
@@ -886,10 +894,10 @@ final class ProductListPresenter
         return cpm.getTemplateId() == 4;
     }
 
-    private BannedProductsTickerViewModel createTobaccoTickerViewModel(String errorMessage, String encriptedLiteUrl) {
+    private BannedProductsTickerViewModel createTobaccoTickerViewModel(String errorMessage, String liteUrl) {
         String htmlErrorMessage = errorMessage
                 + " "
-                + "Gunakan <a href=\"" + encriptedLiteUrl + "\">browser</a>";
+                + "Gunakan <a href=\"" + liteUrl + "\">browser</a>";
 
         return new BannedProductsTickerViewModel(htmlErrorMessage);
     }
@@ -934,6 +942,41 @@ final class ProductListPresenter
 
     private void enrichWithRelatedSearchParam(RequestParams requestParams) {
         requestParams.putBoolean(SearchApiConst.RELATED, true);
+    }
+
+    @Override
+    public void onBannedProductsGoToBrowserClick(String liteUrl) {
+        if (userSession.isLoggedIn()) {
+            generateSeamlessLoginUrlForLoggedInUser(liteUrl);
+        }
+        else {
+            getViewToRedirectToBrowser(liteUrl);
+        }
+    }
+
+    private void generateSeamlessLoginUrlForLoggedInUser(String liteUrl) {
+        SeamlessLoginSubscriber seamlessLoginSubscriber = createSeamlessLoginSubscriber(liteUrl);
+        seamlessLoginUsecase.generateSeamlessUrl(liteUrl, seamlessLoginSubscriber);
+    }
+
+    private SeamlessLoginSubscriber createSeamlessLoginSubscriber(String liteUrl) {
+        return new SeamlessLoginSubscriber() {
+            @Override
+            public void onUrlGenerated(@NotNull String url) {
+                getViewToRedirectToBrowser(url);
+            }
+
+            @Override
+            public void onError(@NotNull String msg) {
+                getViewToRedirectToBrowser(liteUrl);
+            }
+        };
+    }
+
+    private void getViewToRedirectToBrowser(String url) {
+        if (getView() != null) {
+            getView().redirectToBrowser(url);
+        }
     }
 
     @Override

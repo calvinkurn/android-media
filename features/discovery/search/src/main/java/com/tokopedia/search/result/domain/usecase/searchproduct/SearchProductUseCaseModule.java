@@ -27,10 +27,7 @@ import rx.functions.Func1;
 
 @SearchScope
 @Module(includes = {
-        SearchProductMapperModule.class,
-        ResourcesModule.class,
-        GraphqlRepositoryModule.class,
-        UserSessionModule.class
+        SearchProductMapperModule.class
 })
 public class SearchProductUseCaseModule {
 
@@ -39,22 +36,14 @@ public class SearchProductUseCaseModule {
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
     UseCase<SearchProductModel> provideSearchProductFirstPageUseCase(
             @ApplicationContext Context context,
-            Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper,
-            SeamlessLoginUsecase seamlessLoginUsecase,
-            UserSessionInterface userSession
+            Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper
     ) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_search_product_first_page),
                 SearchProductModel.class
         );
 
-        return new SearchProductFirstPageGqlUseCase(
-                graphqlRequest,
-                new GraphqlUseCase(),
-                searchProductModelMapper,
-                seamlessLoginUsecase,
-                userSession
-        );
+        return new SearchProductFirstPageGqlUseCase(graphqlRequest, new GraphqlUseCase(), searchProductModelMapper);
     }
 
     @SearchScope

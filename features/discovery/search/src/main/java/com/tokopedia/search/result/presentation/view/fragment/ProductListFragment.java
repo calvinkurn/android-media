@@ -1228,10 +1228,17 @@ public class ProductListFragment
     }
 
     @Override
-    public void onGoToBrowserClicked(boolean isEmptySearch, @NotNull String encriptedLiteUrl) {
+    public void onGoToBrowserClicked(boolean isEmptySearch, @NotNull String liteUrl) {
         trackEventClickGoToBrowserBannedProducts(isEmptySearch);
 
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(encriptedLiteUrl));
+        if (presenter != null) {
+            presenter.onBannedProductsGoToBrowserClick(liteUrl);
+        }
+    }
+
+    @Override
+    public void redirectToBrowser(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(intent);
     }
 

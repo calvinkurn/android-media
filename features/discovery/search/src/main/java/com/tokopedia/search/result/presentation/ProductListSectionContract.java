@@ -115,6 +115,8 @@ public interface ProductListSectionContract {
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
 
         boolean isTickerHasDismissed();
+
+        void redirectToBrowser(String url);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
@@ -126,5 +128,7 @@ public interface ProductListSectionContract {
         void handleWishlistButtonClicked(final ProductItemViewModel productItem);
 
         void handleWishlistButtonClicked(final RecommendationItem recommendationItem);
+
+        void onBannedProductsGoToBrowserClick(String url);
     }
 }
