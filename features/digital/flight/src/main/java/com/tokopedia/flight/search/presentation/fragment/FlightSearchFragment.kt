@@ -151,8 +151,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                 REQUEST_CODE_SEE_DETAIL_FLIGHT -> {
                     if (data != null && data.hasExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED)) {
                         val selectedId: String = data.getStringExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED)
+                        val selectedTerm: String = data.getStringExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED_TERM)
                         if (!selectedId.isEmpty()) {
-                            onSelectedFromDetail(selectedId)
+                            onSelectedFromDetail(selectedId, selectedTerm)
                         }
                     }
                 }
@@ -567,7 +568,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         return emptyResultViewModel
     }
 
-    open fun onSelectedFromDetail(selectedId: String) {
+    open fun onSelectedFromDetail(selectedId: String, selectedTerm: String) {
         flightSearchPresenter.onSearchItemClicked(selectedId = selectedId)
     }
 

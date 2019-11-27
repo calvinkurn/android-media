@@ -172,8 +172,8 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         }
     }
 
-    override fun onSelectedFromDetail(selectedId: String) {
-        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, selectedId)
+    override fun onSelectedFromDetail(selectedId: String, selectedTerm: String) {
+        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, selectedId, selectedTerm)
     }
 
     override fun buildFilterModel(flightFilterModel: FlightFilterModel): FlightFilterModel {
