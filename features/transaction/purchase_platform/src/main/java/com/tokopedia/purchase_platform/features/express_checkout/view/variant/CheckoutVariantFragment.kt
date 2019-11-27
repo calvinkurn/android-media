@@ -955,7 +955,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun sendEventInsuranceInfoClicked() {
     }
 
-    override fun sendEventInsuranceSelectedStateChanged(isChecked: Boolean) {
+    override fun sendEventInsuranceSelectedStateChanged(isChecked: Boolean, title: String) {
     }
 
     override fun onNoCourierAvailable(message: String?) {

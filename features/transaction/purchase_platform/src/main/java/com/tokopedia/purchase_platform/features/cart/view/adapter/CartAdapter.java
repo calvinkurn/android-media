@@ -305,7 +305,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         super.onViewAttachedToWindow(holder);
         if(holder instanceof InsuranceCartShopViewHolder && !sendInsuranceImpressionEvent) {
             sendInsuranceImpressionEvent = true;
-            insuranceItemActionlistener.sendEventInsuranceImpression();
+            insuranceItemActionlistener.sendEventInsuranceImpression(((InsuranceCartShopViewHolder) holder).getProductTitle());
         }
     }
 

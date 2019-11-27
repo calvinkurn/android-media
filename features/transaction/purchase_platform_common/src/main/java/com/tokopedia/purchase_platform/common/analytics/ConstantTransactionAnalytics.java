@@ -68,6 +68,7 @@ public interface ConstantTransactionAnalytics {
         String RECOMMENDATION_PAGE = "recommendation page";
         String TRACK_SOM = "track seller order management";
         String FIN_INSURANCE_CART = "fin - cart page";
+        String FIN_INSURANCE_CHECKOUT = "fin - mp checkout";
     }
 
     interface EventAction {
@@ -332,8 +333,9 @@ public interface ConstantTransactionAnalytics {
 
         //Insurance
         String FIN_INSURANCE_CART_DELETE = "ins - click delete from cart";
-        String FIN_INSURANCE_IMPRESSION = "ins - impression insurance box in cart ";
+        String FIN_INSURANCE_CART_IMPRESSION = "ins - impression insurance box in cart ";
         String FIN_INSURANCE_STATE_CHANGE = "ins - click tick insurance for payment";
+        String FIN_INSURANCE_CHECKOUT_IMPRESSION = "ins - impression insurance box in checkout page";
     }
 
     interface EventLabel {

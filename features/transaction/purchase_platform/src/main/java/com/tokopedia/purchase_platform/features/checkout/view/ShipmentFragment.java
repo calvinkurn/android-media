@@ -3032,8 +3032,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void sendEventInsuranceImpression() {
+    public void sendEventInsuranceImpression(String title) {
 
+    }
+
+    @Override
+    public void sendEventInsuranceImpressionForShipment(String title) {
+        mTrackerPurchaseProtection.eventImpressionOfInsuranceProductOnCheckout(title);
     }
 
     @Override

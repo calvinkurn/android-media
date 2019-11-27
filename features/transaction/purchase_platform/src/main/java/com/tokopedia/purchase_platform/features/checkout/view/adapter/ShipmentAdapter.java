@@ -114,6 +114,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private String cartIds;
     private int lastServiceId;
     private String blackboxInfo;
+    private boolean sendInsuranceImpressionEvent = false;
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -261,6 +262,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         super.onViewRecycled(holder);
         if (holder instanceof ShipmentItemViewHolder) {
             ((ShipmentItemViewHolder) holder).unsubscribeDebouncer();
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if(holder instanceof InsuranceCartShopViewHolder && !sendInsuranceImpressionEvent) {
+            sendInsuranceImpressionEvent = true;
+            insuranceItemActionlistener.sendEventInsuranceImpressionForShipment(((InsuranceCartShopViewHolder) holder).getProductTitle());
         }
     }
 

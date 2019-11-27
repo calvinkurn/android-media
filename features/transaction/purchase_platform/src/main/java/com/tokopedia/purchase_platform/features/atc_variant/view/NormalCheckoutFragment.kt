@@ -1268,8 +1268,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         outState.putString(ApplinkConst.Transaction.EXTRA_NOTES, notes)
     }
 
-    override fun sendEventInsuranceSelectedStateChanged(isChecked: Boolean) {
-        normalCheckoutTracking.eventClickInsuranceState(productId, isChecked)
+    override fun sendEventInsuranceSelectedStateChanged(isChecked: Boolean, title: String) {
+        normalCheckoutTracking.eventClickInsuranceState(productId, isChecked, title)
     }
 
     override fun sendEventInsuranceInfoClicked() {

@@ -11,5 +11,6 @@ interface InsuranceItemActionListener {
     fun deleteMacroInsurance(insuranceCartDigitalProductList: ArrayList<InsuranceCartDigitalProduct>, showconfirmationDialog: Boolean)
     fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops, updateInsuranceProductApplicationDetailsArrayList: ArrayList<UpdateInsuranceProductApplicationDetails>)
     fun onInsuranceSelectStateChanges()
-    fun sendEventInsuranceImpression()
+    fun sendEventInsuranceImpression(title: String)
+    fun sendEventInsuranceImpressionForShipment(title: String)
 }

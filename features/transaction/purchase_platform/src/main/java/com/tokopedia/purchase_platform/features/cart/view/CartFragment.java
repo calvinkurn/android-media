@@ -2548,8 +2548,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void sendEventInsuranceImpression() {
-        cartPageAnalytics.sendEventInsuranceImpression();
+    public void sendEventInsuranceImpression(String title) {
+        cartPageAnalytics.sendEventInsuranceImpression(title);
+    }
+
+    @Override
+    public void sendEventInsuranceImpressionForShipment(String title) {
+
     }
 
     @Override

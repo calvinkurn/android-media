@@ -223,7 +223,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                         applicationDetailsView.hide()
                         itemView.tv_info_text.hide()
                     }
-                    listener.sendEventInsuranceSelectedStateChanged(isChecked)
+                    listener.sendEventInsuranceSelectedStateChanged(isChecked, insuranceCartDigitalProductViewModel.productInfo.title)
                     listener.onInsuranceSelectedStateChanged(originalData, isChecked)
                 }
 

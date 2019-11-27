@@ -968,12 +968,12 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void sendEventInsuranceImpression() {
+    public void sendEventInsuranceImpression(String title) {
         sendEventCategoryActionLabel(
                 "",
                 EventCategory.FIN_INSURANCE_CART,
-                EventAction.FIN_INSURANCE_IMPRESSION,
-                ""
+                EventAction.FIN_INSURANCE_CART_IMPRESSION,
+                String.format("cart - %s", title)
         );
     }
 

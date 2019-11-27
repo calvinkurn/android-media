@@ -403,6 +403,10 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
 
     }
 
+    public fun getProductTitle(): String {
+        return tvProductTitle.text.toString()
+    }
+
     companion object {
         @JvmField
         val TYPE_VIEW_INSURANCE_CART_SHOP = R.layout.insurance_cart_item_shop

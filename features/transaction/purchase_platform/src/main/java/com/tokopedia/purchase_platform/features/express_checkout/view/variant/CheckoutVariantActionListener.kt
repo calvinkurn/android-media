@@ -49,7 +49,7 @@ interface CheckoutVariantActionListener {
 
     fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean)
 
-    fun sendEventInsuranceSelectedStateChanged(isChecked: Boolean)
+    fun sendEventInsuranceSelectedStateChanged(isChecked: Boolean, title: String)
 
     fun onGetCompositeSubscriber(): CompositeSubscription?
 
