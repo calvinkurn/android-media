@@ -265,8 +265,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     private fun generateVerifyParam(bookingVerifyParam: FlightVerifyParam): String {
         val gson = Gson()
-        bookingVerifyParam.cartItems[0].configuration.price = 0
-        return gson.toJson(bookingVerifyParam)
+        val param = bookingVerifyParam.copy()
+        param.cartItems[0].configuration.price = 0
+        return gson.toJson(param)
     }
 
     fun validateFields(contactName: String, contactEmail: String, contactPhone: String): Boolean {
