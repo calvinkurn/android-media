@@ -587,7 +587,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
             override fun onDisablePromoDiscount() {
                 bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
-                bookingViewModel.onCancelAppliedVoucher(GraphqlHelper.loadRawString(resources, R.raw.promo_checkout_flight_cancel_voucher))
+                bookingViewModel.onCancelAppliedVoucher(GraphqlHelper.loadRawString(resources, com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher))
             }
 
             override fun onClickDetailPromo() {

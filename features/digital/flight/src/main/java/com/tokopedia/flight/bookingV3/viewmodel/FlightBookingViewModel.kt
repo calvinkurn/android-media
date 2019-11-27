@@ -1,6 +1,5 @@
 package com.tokopedia.flight.bookingV3.viewmodel
 
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -235,7 +234,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     flightVerifyResult.value = Fail(it)
                 }
             } else {
-                //atc -> getcart -> verify
                 refreshCartId(addToCartQuery, getCartQuery, checkVoucherQuery, idempotencyKey, bookingVerifyParam, query)
             }
         }
@@ -265,7 +263,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     private fun generateVerifyParam(bookingVerifyParam: FlightVerifyParam): String {
         val gson = Gson()
         return gson.toJson(bookingVerifyParam)
-        Log.d("pastverifyparam", pastVerifyParam)
     }
 
     fun validateFields(contactName: String, contactEmail: String, contactPhone: String): Boolean {
@@ -428,7 +425,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             passengerViewModels?.set(indexPassenger, passengerViewModel)
             flightPassengersData.value = passengerViewModels
         }
-        //calculatePriceHere
         addPassengerAmenitiesPrices()
     }
 
@@ -510,10 +506,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
         }
         flightAmenityPriceData.value = prices
-    }
-
-    fun updateOtherPriceData(priceDetail: List<FlightCart.PriceDetail>) {
-        flightOtherPriceData.value = priceDetail
     }
 
     fun updateFlightPriceData(priceDetail: List<FlightCart.PriceDetail>) {

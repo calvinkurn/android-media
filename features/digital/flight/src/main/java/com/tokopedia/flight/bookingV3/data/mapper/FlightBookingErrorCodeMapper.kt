@@ -14,7 +14,7 @@ class FlightBookingErrorCodeMapper {
                 1, 2, 3, 4, 8, 9, 13, 14, 15,
                 16, 31, 36, 37, 42, 53, 78, 79,
                 80, 84, 90, 92, 96, 97, 99, 226 -> FlightErrorConstant.INVALID_JSON
-                108 -> FlightErrorConstant.FAILED_ADD_FACILITY
+                108, 225 -> FlightErrorConstant.FAILED_ADD_FACILITY
                 28 -> FlightErrorConstant.ERROR_PROMO_CODE
                 86, 106, 107, 224, 227 -> FlightErrorConstant.FLIGHT_DUPLICATE_BOOKING
                 44 -> FlightErrorConstant.FLIGHT_STILL_IN_PROCESS
