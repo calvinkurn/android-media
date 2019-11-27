@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.ProductRecommendationViewHolder
+import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBenefitViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
@@ -34,11 +34,19 @@ class OfficialHomeAdapter(adapterTypeFactory: OfficialHomeAdapterTypeFactory):
         super.onBindViewHolder(holder, position, payloads)
     }
 
+    fun showLoadingBanner() {
+        visitables.add(OfficialHomeMapper.BANNER_POSITION, loadingModel)
+    }
+
+    fun removeLoading() {
+        visitables.remove(loadingModel)
+    }
+
     fun getVisitables(): MutableList<Visitable<*>> {
         return visitables
     }
 
     var twoSpanLayout = listOf(
-            ProductRecommendationViewHolder.LAYOUT
+            OfficialProductRecommendationViewHolder.LAYOUT
     )
 }

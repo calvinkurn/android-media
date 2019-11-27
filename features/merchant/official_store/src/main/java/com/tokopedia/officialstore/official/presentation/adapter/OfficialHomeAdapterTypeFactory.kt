@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.official.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
@@ -40,11 +41,15 @@ class OfficialHomeAdapterTypeFactory(
     }
 
     override fun type(productRecommendationTitleViewModel: ProductRecommendationTitleViewModel): Int {
-        return ProductRecommendationTitleViewHolder.LAYOUT
+        return OfficialProductRecommendationTitleViewHolder.LAYOUT
     }
 
     override fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int {
-        return ProductRecommendationViewHolder.LAYOUT
+        return OfficialProductRecommendationViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: LoadingModel): Int {
+        return OfficialLoadingBannerViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -55,8 +60,9 @@ class OfficialHomeAdapterTypeFactory(
             DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(parent, dcEventHandler)
             DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(parent, dcEventHandler)
             DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(parent, dcEventHandler)
-            ProductRecommendationTitleViewHolder.LAYOUT -> ProductRecommendationTitleViewHolder(parent)
-            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(parent, recommendationListener)
+            OfficialProductRecommendationTitleViewHolder.LAYOUT -> OfficialProductRecommendationTitleViewHolder(parent)
+            OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(parent, recommendationListener)
+            OfficialLoadingBannerViewHolder.LAYOUT -> OfficialLoadingBannerViewHolder(parent)
             HideViewHolder.LAYOUT -> HideViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

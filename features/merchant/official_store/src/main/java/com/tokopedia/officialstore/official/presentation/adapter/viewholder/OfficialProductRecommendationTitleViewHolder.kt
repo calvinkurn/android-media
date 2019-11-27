@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationTitleViewModel
 
-class ProductRecommendationTitleViewHolder(view: View): AbstractViewHolder<ProductRecommendationTitleViewModel>(view) {
+class OfficialProductRecommendationTitleViewHolder(view: View): AbstractViewHolder<ProductRecommendationTitleViewModel>(view) {
 
     private var textView: AppCompatTextView? = null
 

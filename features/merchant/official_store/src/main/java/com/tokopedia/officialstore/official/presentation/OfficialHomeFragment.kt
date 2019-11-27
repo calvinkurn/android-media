@@ -128,6 +128,7 @@ class OfficialHomeFragment :
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
+        adapter?.showLoadingBanner()
 
         return view
     }
@@ -172,6 +173,7 @@ class OfficialHomeFragment :
 
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(this, Observer {
+            adapter?.removeLoading()
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
