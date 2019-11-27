@@ -38,6 +38,7 @@ import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
@@ -80,8 +81,10 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }
     }
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var reviewTracker: ReputationTracking
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var reviewTracker: ReputationTracking
 
     private lateinit var animatedReviewPicker: AnimatedReputationView
     private lateinit var createReviewViewModel: CreateReviewViewModel
@@ -103,6 +106,9 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     private var reviewUserName: String = ""
     lateinit var imgAnimationView: LottieAnimationView
+
+    val getOrderId: String
+        get() = orderId
 
     override fun getScreenName(): String = ""
 
@@ -142,19 +148,19 @@ class CreateReviewFragment : BaseDaggerFragment() {
                     productRevGetForm = it.data
                     onSuccessGetReviewForm(it.data)
                 }
-                is CoroutineFail -> onErrorGetReviewForm()
+                is CoroutineFail -> onErrorGetReviewForm(it.throwable)
             }
         })
 
         createReviewViewModel.getSubmitReviewResponse.observe(this, Observer {
             when (it) {
-                is LoadingView -> showLoading()
+                is LoadingView -> progressBarReview.show()
                 is Fail -> {
                     stopLoading()
+                    showLayout()
                     showToasterError(it.fail.message ?: "")
                 }
                 is Success -> {
-                    stopLoading()
                     showToasterSuccess()
                     onSuccessSubmitReview()
                 }
@@ -175,7 +181,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 reviewTracker.reviewOnRatingChangedTracker(
                         orderId,
                         productId.toString(10),
-                        (position + 1).toString(10),
+                        (position).toString(10),
                         true
                 )
                 reviewClickAt = position
@@ -243,6 +249,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun getReviewData() {
+        showLoading()
         createReviewViewModel.getProductReputation(productId, reviewId)
     }
 
@@ -263,6 +270,9 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
+        stopLoading()
+        showLayout()
+
         data.productrevGetForm.also { response ->
             reviewTracker.reviewOnViewTracker(response.orderID, productId.toString(10))
             ImageHandler.loadImage(context, img_review, response.productData.productImageURL, R.drawable.ic_loading_image)
@@ -419,6 +429,8 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessSubmitReview() {
+        stopLoading()
+        showLayout()
         Handler(Looper.getMainLooper()).postDelayed({
             activity?.run {
                 if (isTaskRoot) {
@@ -439,6 +451,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
+        hideLayout()
         progressBarReview.show()
     }
 
@@ -446,26 +459,42 @@ class CreateReviewFragment : BaseDaggerFragment() {
         progressBarReview.hide()
     }
 
+    private fun hideLayout() {
+        btn_submit_container.hide()
+        create_review_container.hide()
+    }
+
+    private fun showLayout() {
+        btn_submit_container.show()
+        create_review_container.show()
+    }
+
     private fun showToasterError(message: String) {
         view?.let {
-            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
         }
     }
 
     private fun showToasterSuccess() {
         view?.let {
-            Toaster.make(it, getString(R.string.txt_success_submit_review, createReviewViewModel.userSessionInterface.name), Toaster.LENGTH_LONG)
+            Toaster.make(it, getString(R.string.txt_success_submit_review, createReviewViewModel.userSessionInterface.name), Toaster.toasterLength)
         }
     }
 
-    private fun onErrorGetReviewForm() {
-        NetworkErrorHelper.showEmptyState(context, review_root) {
-            getReviewData()
+    private fun onErrorGetReviewForm(throwable: Throwable) {
+        stopLoading()
+        if (throwable is MessageErrorException) {
+            showToasterError(throwable.message ?: "")
+        } else {
+            NetworkErrorHelper.showEmptyState(context, review_root) {
+                getReviewData()
+            }
         }
+
     }
 
     class BackgroundCustomTarget(private val context: Context) : CustomTarget<Bitmap>() {
-        var callback: ((Drawable)-> Unit)? = null
+        var callback: ((Drawable) -> Unit)? = null
         override fun onLoadCleared(placeholder: Drawable?) {}
 
         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {

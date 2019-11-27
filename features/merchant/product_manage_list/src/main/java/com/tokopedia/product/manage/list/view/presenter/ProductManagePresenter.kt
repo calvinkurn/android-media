@@ -1,15 +1,15 @@
 package com.tokopedia.product.manage.list.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
+import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
+import com.tokopedia.product.manage.list.constant.option.PictureStatusProductOption
+import com.tokopedia.product.manage.list.constant.option.SortProductOption
 import com.tokopedia.product.manage.list.data.ConfirmationProductData
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Response
 import com.tokopedia.product.manage.list.view.listener.ProductManageView
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
-import com.tokopedia.seller.product.manage.constant.CatalogProductOption
-import com.tokopedia.seller.product.manage.constant.ConditionProductOption
-import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption
-import com.tokopedia.seller.product.manage.constant.SortProductOption
 import java.util.*
 
 interface ProductManagePresenter : CustomerPresenter<ProductManageView> {

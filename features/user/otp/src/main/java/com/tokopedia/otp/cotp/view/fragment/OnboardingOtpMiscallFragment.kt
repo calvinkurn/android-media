@@ -16,7 +16,10 @@ import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.OTPAnalytics
 import com.tokopedia.otp.cotp.view.viewlistener.OnboardingOtpMiscall
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.permissionchecker.request
 import com.tokopedia.unifycomponents.UnifyButton
+import javax.inject.Inject
 
 class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.View {
 
@@ -24,13 +27,13 @@ class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.
     private lateinit var textStep2: TextView
     private lateinit var imgAnimationPreview: LottieAnimationView
     private lateinit var btnCallMe: UnifyButton
-
+    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var passModel: VerificationViewModel
 
     override fun getScreenName(): String = OTPAnalytics.Screen.SCREEN_COTP_MISCALL
 
     override fun initInjector() {
-
+        checkPermissionGetPhoneNumber()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,9 +42,6 @@ class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.
         textStep2 = view.findViewById(R.id.otp_onboarding_desc_2)
         imgAnimationPreview = view.findViewById(R.id.otp_onboarding_image_animation)
         btnCallMe = view.findViewById(R.id.call_me)
-
-        startAnimation()
-
         return view
     }
 
@@ -63,6 +63,8 @@ class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.
                 fragmentTransaction?.commit()
             }
         }
+
+        startAnimation()
     }
 
     override fun startAnimation() {
@@ -84,6 +86,24 @@ class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.
     override fun onPause() {
         super.onPause()
         stopAnimation()
+    }
+
+    private fun checkPermissionGetPhoneNumber(){
+        if (!::permissionCheckerHelper.isInitialized) {
+            permissionCheckerHelper = PermissionCheckerHelper()
+        }
+
+        activity?.let {
+            permissionCheckerHelper.request(it, getPermissions()) { }
+        }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CALL_LOG,
+                PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
+                PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE
+        )
     }
 
     companion object {
