@@ -26,6 +26,9 @@ public class GqlBoxInfoResponse implements Parcelable {
     @SerializedName("link_text_color")
     private String linkTextColor;
 
+    public GqlBoxInfoResponse() {
+    }
+
     public static final Creator<GqlBoxInfoResponse> CREATOR = new Creator<GqlBoxInfoResponse>() {
         @Override
         public GqlBoxInfoResponse createFromParcel(Parcel in) {

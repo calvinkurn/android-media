@@ -371,10 +371,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         renderList(list, hasNextPage)
     }
 
-    override fun onSuccessGetShopInfo(goldMerchant: Boolean, officialStore: Boolean, shopDomain: String?) {
+    override fun onSuccessGetShopInfo(goldMerchant: Boolean, officialStore: Boolean, shopDomain: String) {
         this.goldMerchant = goldMerchant
         isOfficialStore = officialStore
-        this.shopDomain = shopDomain ?: ""
+        this.shopDomain = shopDomain
     }
 
     override fun onErrorEditPrice(t: Throwable?, productId: String?, price: String?, currencyId: String?, currencyText: String?) {

@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -22,6 +23,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -35,7 +37,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -849,13 +850,10 @@ public class HotlistFragment extends BrowseSectionFragment
 
     @Override
     public void onBannerAdsClicked(String appLink) {
-        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
-        if (router.isSupportedDelegateDeepLink(appLink)) {
-            router.actionApplink(getActivity(), appLink);
-        } else if (appLink != "") {
-            Intent intent = new Intent(getContext(), BannerWebView.class);
-            intent.putExtra("url", appLink);
-            startActivity(intent);
+        if (URLUtil.isNetworkUrl(appLink)) {
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, appLink);
+        } else {
+            RouteManager.route(getActivity(), appLink);
         }
     }
 

@@ -44,8 +44,8 @@ public class BottomSheetInfo extends BottomSheetDialog {
     }
 
     private void init() {
-        View bottomSheetView = ((Activity) context).getLayoutInflater().inflate(R.layout
-                .bottom_sheet_info, null);
+        View bottomSheetView = ((Activity) context).getLayoutInflater().inflate(
+                R.layout.bottom_sheet_info, null);
         setContentView(bottomSheetView);
 
         warningRecyclerView = bottomSheetView.findViewById(R.id.warning_rv);

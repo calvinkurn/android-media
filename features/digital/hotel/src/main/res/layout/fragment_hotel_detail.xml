@@ -212,6 +212,8 @@
                                 android:id="@+id/iv_booking_logo"
                                 android:layout_width="@dimen/dp_20"
                                 android:layout_height="@dimen/dp_20"
+                                android:layout_alignTop="@+id/tv_hotel_rating_number"
+                                android:layout_alignBottom="@+id/tv_hotel_rating_number"
                                 android:layout_marginEnd="@dimen/dp_4"
                                 android:layout_marginRight="@dimen/dp_4"
                                 app:srcCompat="@drawable/ic_booking_logo" />
@@ -233,9 +235,12 @@
                                 android:id="@+id/tv_hotel_rating_detail"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_alignTop="@+id/tv_hotel_rating_number"
                                 android:layout_alignBottom="@+id/tv_hotel_rating_number"
+                                android:layout_marginTop="@dimen/dp_2"
                                 android:layout_toEndOf="@+id/tv_hotel_rating_number"
                                 android:layout_toRightOf="@+id/tv_hotel_rating_number"
+                                android:gravity="center"
                                 app:fontSize="micro"
                                 app:textViewTheme="lightPrimary"
                                 tools:text="Mengesankan" />

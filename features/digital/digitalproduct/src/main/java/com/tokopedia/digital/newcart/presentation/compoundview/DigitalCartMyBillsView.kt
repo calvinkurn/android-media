@@ -35,6 +35,8 @@ class DigitalCartMyBillsView : BaseCustomView {
         descriptionTextView = view.findViewById(R.id.tv_description)
     }
 
+    fun getSubscriptionCheckbox(): CheckBox = subscriptionCheckbox
+
     fun setDescription(description: String) {
         descriptionTextView.text = MethodChecker.fromHtml(description)
     }

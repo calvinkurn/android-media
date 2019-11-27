@@ -19,6 +19,8 @@ interface PromoCheckoutListContract {
         fun onSuccessCheckPromo(data: DataUiModel)
         fun onErrorCheckPromo(e: Throwable)
         fun onErrorEmptyPromo()
+        fun showProgressBar()
+        fun hideProgressBar()
     }
 
     interface Presenter : CustomerPresenter<View>{

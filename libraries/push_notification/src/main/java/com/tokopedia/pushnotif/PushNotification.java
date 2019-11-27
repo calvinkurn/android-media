@@ -20,6 +20,11 @@ import com.tokopedia.pushnotif.util.NotificationTracker;
  */
 
 public class PushNotification {
+    private static boolean isChatBotWindowOpen;
+
+    public static void setIsChatBotWindowOpen(boolean isChatBotWindowOpen) {
+        PushNotification.isChatBotWindowOpen = isChatBotWindowOpen;
+    }
 
     public static void notify(Context context, Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
@@ -34,6 +39,9 @@ public class PushNotification {
                 notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else if (notificationId == Constant.NotificationId.GROUPCHAT) {
                 notifyGroupChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else if (notificationId == Constant.NotificationId.CHAT_BOT) {
+                if (!isChatBotWindowOpen)
+                    notifyChatbot(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
@@ -41,6 +49,13 @@ public class PushNotification {
                 NotificationTracker.getInstance(context).trackDeliveredNotification(applinkNotificationModel);
             }
         }
+    }
+
+    private static void notifyChatbot(Context context, ApplinkNotificationModel applinkNotificationModel, int notificationId, NotificationManagerCompat notificationManagerCompat) {
+        Notification notifChat = new ChatNotificationFactory(context)
+                .createNotification(applinkNotificationModel, notificationId, notificationId);
+
+        notificationManagerCompat.notify(notificationId, notifChat);
     }
 
     private static void notifyTalk(Context context, ApplinkNotificationModel applinkNotificationModel,

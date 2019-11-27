@@ -3,8 +3,10 @@ package com.tokopedia.product.detail.view.fragment.partialview
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.partial_product_recom_3.view.*
 
 class PartialRecommendationThirdView private constructor(private val view: View,
@@ -26,5 +28,7 @@ class PartialRecommendationThirdView private constructor(private val view: View,
     override fun getRecyclerView(): RecyclerView = view.product_recom_3
 
     override fun getLayoutProgress(): View = view.loading_recom_3
+
+    override fun getSeeMore(): Typography = view.findViewById(R.id.see_more_recom_3)
 
 }

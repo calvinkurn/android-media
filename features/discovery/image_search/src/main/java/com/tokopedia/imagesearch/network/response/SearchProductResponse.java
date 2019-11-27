@@ -84,6 +84,8 @@ public class SearchProductResponse {
         private String query;
         @SerializedName("products")
         private List<Products> products;
+        @SerializedName("categories")
+        private List<Categories> categories;
 
         public String getSource() {
             return source;
@@ -115,6 +117,10 @@ public class SearchProductResponse {
 
         public void setProducts(List<Products> products) {
             this.products = products;
+        }
+
+        public List<Categories> getCategories() {
+            return categories;
         }
 
         public static class Products {
@@ -537,6 +543,22 @@ public class SearchProductResponse {
                 public void setShown(boolean shown) {
                     isShown = shown;
                 }
+            }
+        }
+
+        public static class Categories {
+            @SerializedName("id")
+            String id;
+
+            @SerializedName("name")
+            String name;
+
+            public String getId() {
+                return id;
+            }
+
+            public String getName() {
+                return name;
             }
         }
     }

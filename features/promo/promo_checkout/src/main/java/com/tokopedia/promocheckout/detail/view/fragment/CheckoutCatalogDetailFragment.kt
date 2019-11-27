@@ -26,7 +26,6 @@ import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
-import com.tokopedia.promocheckout.detail.model.userpoints.UserPointsResponse
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.detail.view.presenter.CheckoutCatalogDetailContract
 import com.tokopedia.promocheckout.detail.view.presenter.CheckoutCatalogDetailPresenter
@@ -144,7 +143,10 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         val buttonDismiss = viewRedeemCoupon.findViewById<TextView>(R.id.button1)
 
         when (resCode) {
-            couponRedemptionCode_LOW_POINT -> button.text = getString(R.string.promo_popup_ok)
+            couponRedemptionCode_LOW_POINT -> {
+                button.text = getString(R.string.promo_popup_ok)
+                buttonDismiss.visibility = View.GONE
+            }
             couponRedemptionCode_PROFILE_INCOMPLETE -> {
                 button.text = getString(R.string.promo_popup_button_positive_one)
                 buttonDismiss.text = getString(R.string.promo_popup_button_negative_one)
@@ -155,9 +157,11 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             }
             couponRedemptionCode_QUOTA_LIMIT_REACHED -> {
                 button.text = getString(R.string.promo_popup_ok)
+                buttonDismiss.visibility = View.GONE
             }
             else -> {
                 button.text = getString(R.string.promo_popup_ok)
+                buttonDismiss.visibility = View.GONE
             }
         }
 
@@ -333,6 +337,8 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
                 if (clashingInfoDetailUiModel != null) {
                     activity?.finish()
                 }
+                childFragmentManager.beginTransaction().remove(this).commit()
+                childFragmentManager.popBackStack()
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.profilerecommendation.view.adapter
 
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
@@ -12,6 +13,7 @@ import android.widget.TextView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.profilerecommendation.data.AuthorType
 import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecomAction
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardThumbnailViewModel
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardViewModel
@@ -142,6 +144,7 @@ class FollowRecomAdapter(
         private val btnFollow = itemView.findViewById<UnifyButton>(R.id.btn_follow)
         private val ivBadge = itemView.findViewById<ImageView>(R.id.iv_badge)
         private val tvHeader = itemView.findViewById<TextView>(R.id.tv_header)
+        private val layoutHolder: ConstraintLayout = itemView.findViewById(R.id.layouting)
 
         fun bind(element: FollowRecomCardViewModel, position: Int) {
             reset()
@@ -176,7 +179,7 @@ class FollowRecomAdapter(
                         imageView,
                         model.url
                 )
-                imageView.setOnClickListener { listener.onThumbnailClicked(model) }
+                imageView.setOnClickListener { listener.onThumbnailClicked(model, position, element.authorType) }
             }
             tvName.text = element.title
             tvDescription.text = element.description
@@ -194,6 +197,9 @@ class FollowRecomAdapter(
 
             setBadge(element.badgeUrl)
             setButtonFollow(element.isFollowed, element.textFollowTrue, element.textFollowFalse)
+            layoutHolder.addOnImpressionListener(element.impressHolder) {
+                listener.onFirstTimeCardShown(element, position)
+            }
         }
 
         private fun initViewListener(element: FollowRecomCardViewModel) {
@@ -284,6 +290,7 @@ class FollowRecomAdapter(
         fun onFollowButtonClicked(authorId: String, isFollowed: Boolean, actionToCall: FollowRecomAction)
         fun onFollowStateChanged(followCount: Int)
         fun onNameOrAvatarClicked(model: FollowRecomCardViewModel)
-        fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel)
+        fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel, itemPos: Int, authorType: AuthorType?)
+        fun onFirstTimeCardShown(element: FollowRecomCardViewModel, adapterPosition: Int)
     }
 }

@@ -16,6 +16,7 @@ import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
 import com.tokopedia.shop.common.constant.ShopUrl;
@@ -64,6 +65,12 @@ import static com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.QUER
 @ShopProductScope
 @Module(includes = ShopProductViewModelModule.class)
 public class ShopProductModule {
+
+    @ShopProductScope
+    @Provides
+    public NetworkRouter getNetworkRouter(@ApplicationContext Context context){
+        return (NetworkRouter)context;
+    }
 
     @ShopProductScope
     @Provides
@@ -178,8 +185,9 @@ public class ShopProductModule {
     // WishList
     @Provides
     public WishListAuthInterceptor provideWishListAuthInterceptor(@ApplicationContext Context context,
-                                                                  AbstractionRouter abstractionRouter) {
-        return new WishListAuthInterceptor(context, abstractionRouter);
+                                                                  NetworkRouter networkRouter,
+                                                                  UserSessionInterface userSessionInterface) {
+        return new WishListAuthInterceptor(context, networkRouter, userSessionInterface);
     }
 
     @ShopProductWishListFeaturedQualifier
@@ -253,8 +261,9 @@ public class ShopProductModule {
     // Product
     @Provides
     public ShopOfficialStoreAuthInterceptor provideShopOfficialStoreAuthInterceptor(@ApplicationContext Context context,
-                                                                                    AbstractionRouter abstractionRouter) {
-        return new ShopOfficialStoreAuthInterceptor(context, abstractionRouter);
+                                                                                    NetworkRouter networkRouter,
+                                                                                    UserSessionInterface userSessionInterface) {
+        return new ShopOfficialStoreAuthInterceptor(context, networkRouter,userSessionInterface );
     }
 
     @ShopProductQualifier

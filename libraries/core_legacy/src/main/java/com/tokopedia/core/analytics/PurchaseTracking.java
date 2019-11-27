@@ -1,10 +1,12 @@
 package com.tokopedia.core.analytics;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.track.TrackApp;
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import kotlin.Pair;
 
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_CAT;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID;
@@ -37,10 +41,12 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String LOGISTIC_TYPE = "logistic_type";
     public static final String ECOMMERCE = "ecommerce";
     public static final String EVENT_LABEL = "";
+    public static final String ITEMS = "items";
 
     public static final String USER_ID = "userId";
 
-    public static void marketplace(Context context, Purchase purchase) {
+    public static void marketplace(Context context, Pair<Purchase, Bundle> purchaseBundlePair) {
+        Purchase purchase = purchaseBundlePair.getFirst();
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
                 AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),
@@ -59,6 +65,38 @@ public class PurchaseTracking extends TrackingUtils {
         ));
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_FINISH_TX);
         TrackApp.getInstance().getGTM().clearEnhanceEcommerce();
+
+        marketplacev5(context, purchaseBundlePair);
+    }
+
+    private static void marketplacev5(Context context, Pair<Purchase, Bundle> purchaseBundlePair) {
+        Purchase purchase = purchaseBundlePair.getFirst();
+        Bundle ecommerceBundle = new Bundle();
+        ecommerceBundle.putString(AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory());
+        ecommerceBundle.putString(AppEventTracking.EVENT_ACTION, purchase.getEventAction());
+        ecommerceBundle.putString(AppEventTracking.EVENT_LABEL, purchase.getEventLabel());
+        ecommerceBundle.putString(Purchase.PAYMENT_ID, purchase.getPaymentId());
+        ecommerceBundle.putString(Purchase.PAYMENT_TYPE, purchase.getPaymentType());
+        ecommerceBundle.putString(Purchase.SHOP_ID, purchase.getShopId());
+        ecommerceBundle.putString(Purchase.LOGISTIC_TYPE, purchase.getLogisticType());
+        ecommerceBundle.putString(Purchase.CURRENT_SITE, purchase.getCurrentSite());
+        ecommerceBundle.putString(Purchase.USER_ID, purchase.getUserId());
+        Object transactionID = purchase.getTransactionID();
+        ecommerceBundle.putString(FirebaseAnalytics.Param.TRANSACTION_ID, transactionID instanceof String ? ((String) transactionID) : "");
+        Object affiliation = purchase.getAffiliation();
+        ecommerceBundle.putString(FirebaseAnalytics.Param.AFFILIATION, affiliation instanceof String ? ((String) affiliation) : "");
+        Object revenue = purchase.getRevenue();
+        ecommerceBundle.putDouble(FirebaseAnalytics.Param.VALUE, revenue instanceof String ? Double.parseDouble(((String) revenue)) : 0);
+        Object tax = purchase.getTax();
+        ecommerceBundle.putFloat(FirebaseAnalytics.Param.TAX, tax instanceof String ? Float.parseFloat(((String) tax)) : 0);
+        Object shipping = purchase.getShipping();
+        ecommerceBundle.putFloat(FirebaseAnalytics.Param.SHIPPING, shipping instanceof String ? Float.parseFloat(((String) shipping)) : 0);
+        ecommerceBundle.putString(FirebaseAnalytics.Param.CURRENCY, purchase.getCurrency());
+        Object couponCode = purchase.getCouponCode();
+        ecommerceBundle.putString(FirebaseAnalytics.Param.COUPON, couponCode instanceof String ? ((String) couponCode) : "");
+        ecommerceBundle.putParcelableArrayList(ITEMS, purchaseBundlePair.getSecond().getParcelableArrayList("products"));
+        TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE, ecommerceBundle);
+        TrackApp.getInstance().getGTM().sendScreenV5(AppScreen.SCREEN_FINISH_TX);
     }
 
     public static void digital(Context context, Purchase purchase) {

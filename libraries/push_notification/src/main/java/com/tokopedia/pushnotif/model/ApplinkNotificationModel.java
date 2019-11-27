@@ -21,6 +21,7 @@ public class ApplinkNotificationModel {
     private String targetApp;
     private String transactionId;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private String[] images;
 
     public String getDesc() {
         return desc;
@@ -148,5 +149,26 @@ public class ApplinkNotificationModel {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public String[] getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        String regexMatcher = "[\\[\"\\]\\\\]";
+        String delimiter = ",";
+        String commaSeparatedImages = images.replaceAll(regexMatcher, "");
+        if (!commaSeparatedImages.isEmpty()) {
+            this.images = commaSeparatedImages.split(delimiter);
+        }
+    }
+
+    public boolean hasImages() {
+        return this.images != null && this.images.length > 0;
+    }
+
+    public String getBigPictureImageUrl() {
+        return this.images[0];
     }
 }

@@ -27,7 +27,7 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
 
     fun startValidateCoupon(item: HachikoCatalogDetail) {
         val variables = HashMap<String, Any>()
-        variables["catalog_id"] = item.id?:0
+        variables["catalog_id"] = item.id ?: 0
         variables["is_gift"] = 0
         variables["gift_user_id"] = 0
         variables["gift_email"] = ""
@@ -57,8 +57,8 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
                 } else {
                     val errorsMessage = response.getError(PromoCouponPreValidateResponse::class.java)[0].message.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                     title = errorsMessage[0]
-                    message = errorsMessage[1]
-                    validateResponseCode = Integer.parseInt(errorsMessage[2])
+                    message = view.getAppContext()?.resources?.getString(R.string.promo_checkout_error_desc_redeem)
+                    validateResponseCode = Integer.parseInt(errorsMessage[1])
                 }
                 view.showValidationMessageDialog(item, title!!, message!!, validateResponseCode)
             }
@@ -67,7 +67,7 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
 
     fun startSaveCoupon(item: HachikoCatalogDetail) {
         val variables = HashMap<String, Any>()
-        variables["catalog_id"] = item.id?:0
+        variables["catalog_id"] = item.id ?: 0
         variables["is_gift"] = 0
 
         val request = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources,
@@ -97,7 +97,7 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
                         val title = errorsMessage[0]
                         var desc: String? = null
                         var validateResponseCode = 0
-
+                        desc = view.getAppContext()?.resources?.getString(R.string.promo_checkout_error_desc_redeem)
                         if (errorsMessage.size >= 2) {
                             desc = errorsMessage[1]
                         }
@@ -124,7 +124,7 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
         mGetCouponDetail!!.clearRequest()
         mGetCouponDetail.addRequest(request)
 
-        val graphqlRequestPoints = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources, R.raw.promo_gql_current_points),UserPointsResponse::class.java, false)
+        val graphqlRequestPoints = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources, R.raw.promo_gql_current_points), UserPointsResponse::class.java, false)
         mGetCouponDetail.addRequest(graphqlRequestPoints)
         mGetCouponDetail.execute(object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
@@ -155,7 +155,7 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
                 || pointDetailEntity.tokopoints.status == null
                 || pointDetailEntity.tokopoints.status.points == null) {
             //Need to handle error
-        } else if (pointDetailEntity.tokopoints.resultStatus.code =="200") {
+        } else if (pointDetailEntity.tokopoints.resultStatus.code == "200") {
             pointDetailEntity.tokopoints.status.points.rewardStr?.let { view.onSuccessPoints(it) }
         }
     }

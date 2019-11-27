@@ -45,6 +45,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import kotlinx.android.synthetic.main.fragment_recommendation.*
 import javax.inject.Inject
 
 /**
@@ -55,7 +56,7 @@ import javax.inject.Inject
  * @property viewModelFactory the factory for ViewModel provide by Dagger.
  * @property trackingQueue the queue util for handle tracking.
  * @property productId the productId of ProductDetail.
- * @property ref the ref code for know source page.
+ * @property queryParam the ref code for know source page.
  * @property lastClickLayoutType for handling last click product layout type.
  * @property lastParentPosition for handling last click product and get know parent position for nested recyclerView.
  * @property viewModelProvider the viewModelProvider by Dagger
@@ -78,6 +79,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var productId: String
+    private lateinit var queryParam: String
     private lateinit var ref: String
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
@@ -93,13 +95,15 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
         private const val SAVED_PRODUCT_ID = "saved_product_id"
         private const val SAVED_REF = "saved_ref"
+        private const val SAVED_QUERY_PARAM = "saved_query_param"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
-        fun newInstance(productId: String = "", source: String = "") = RecommendationFragment().apply {
+        fun newInstance(productId: String = "", source: String = "", ref: String = "null") = RecommendationFragment().apply {
             this.productId = productId
-            this.ref = source
+            this.queryParam = source
+            this.ref = ref
         }
     }
 
@@ -112,6 +116,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         clearProductInfoView()
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
+            queryParam = it.getString(SAVED_QUERY_PARAM) ?: ""
             ref = it.getString(SAVED_REF) ?: ""
         }
         activity?.let {
@@ -142,6 +147,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_PRODUCT_ID, productId)
         outState.putString(SAVED_REF, ref)
+        outState.putString(SAVED_QUERY_PARAM, queryParam)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -332,10 +338,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             if(productId.isNotBlank()) {
                 recommendationWidgetViewModel.getPrimaryProduct(productId)
                 recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
-                        ref,
+                        queryParam,
                         onErrorGetRecommendation = this::onErrorGetRecommendation)
             } else {
-                recommendationWidgetViewModel.getRecommendationList(arrayListOf(), ref, onErrorGetRecommendation = this::onErrorGetRecommendation)
+                recommendationWidgetViewModel.getRecommendationList(arrayListOf(), queryParam, onErrorGetRecommendation = this::onErrorGetRecommendation)
             }
         }
     }
@@ -451,7 +457,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 }
 
                 override fun onError(linkerError: LinkerError) {
-                    openIntentShare(productDetailData.name, context.getString(R.string.recom_home_recommendation), String.format(RECOMMENDATION_APP_LINK, "${productDetailData.id}"))
+                    openIntentShare(productDetailData.name, context.getString(R.string.recom_home_recommendation), String.format(RECOMMENDATION_APP_LINK, "${productDetailData.id}?${queryParam}"))
                 }
             }))
         }
@@ -471,7 +477,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         linkerData.imgUri = productDetailData.imageUrl
         linkerData.ogUrl = null
         linkerData.type = "Recommendation"
-        linkerData.uri =  "https://m.tokopedia.com/rekomendasi/${productDetailData.id}"
+        linkerData.uri =  "https://m.tokopedia.com/rekomendasi/${productDetailData.id}?$queryParam"
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData

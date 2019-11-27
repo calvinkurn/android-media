@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,18 +20,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.TokoPointsHomeNewActivity;
 import com.tokopedia.tokopoints.view.contract.CouponCatalogContract;
 import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
@@ -40,6 +45,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.ImageUtil;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.TkpdWebView;
 
 import java.util.Arrays;
@@ -53,6 +59,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static android.app.Activity.RESULT_OK;
+
 public class CouponCatalogFragment extends BaseDaggerFragment implements CouponCatalogContract.View, View.OnClickListener {
     private static final String FPM_DETAIL_TOKOPOINT = "ft_tokopoint_detail";
     private static final int CONTAINER_LOADER = 0;
@@ -63,6 +71,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private static final String LIST_TAG_START = "<li>";
     private static final String LIST_TAG_END = "</li>";
     private static final int MAX_POINTS_TO_SHOW = 4;
+    private static final int REQUEST_CODE_LOGIN = 1;
     private ViewFlipper mContainerMain;
     private ServerErrorView serverErrorView;
     private Subscription mSubscriptionCouponTimer;
@@ -71,6 +80,13 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private String mCouponName;
     public CountDownTimer mTimer;
     private PerformanceMonitoring fpmDetailTokopoint;
+    UserSession mUserSession;
+    private CatalogsValueEntity catalogsValueEntity;
+    private TextView pointValueText;
+    Typography pointValue;
+    Typography textUserPoint;
+    String code;
+    String userPoints;
 
     @Inject
     public CouponCatalogPresenter mPresenter;
@@ -83,6 +99,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        mUserSession = new UserSession(getAppContext());
         fpmDetailTokopoint = PerformanceMonitoring.start(FPM_DETAIL_TOKOPOINT);
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -131,7 +148,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
-        String code = getArguments().getString(CommonConstant.EXTRA_CATALOG_CODE);
+        code = getArguments().getString(CommonConstant.EXTRA_CATALOG_CODE);
         mPresenter.getCatalogDetail(code);
     }
 
@@ -189,6 +206,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
     @Override
     public void populateDetail(CatalogsValueEntity data) {
+        catalogsValueEntity = data;
         setCatalogToUi(data);
     }
 
@@ -419,7 +437,8 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
-        Typography textUserPoint = getView().findViewById(R.id.text_point_value);
+        userPoints = point;
+        textUserPoint = getView().findViewById(R.id.text_point_value);
         textUserPoint.setText(point);
     }
 
@@ -470,7 +489,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         Typography quota = getView().findViewById(R.id.text_quota_count);
-        Typography pointValue = getView().findViewById(R.id.text_point_value_coupon);
+        pointValue = getView().findViewById(R.id.text_point_value_coupon);
         Typography btnAction2 = getView().findViewById(R.id.button_action_2);
         ImageView imgBanner = getView().findViewById(R.id.img_banner);
 
@@ -663,10 +682,19 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             bottomSeparator.setVisibility(View.GONE);
         }
 
+        //hide gift section when user is in public page
+        if (!mUserSession.isLoggedIn()){
+            giftSectionMainLayout.setVisibility(View.GONE);
+            bottomSeparator.setVisibility(View.GONE);
+        }
+
         btnAction2.setOnClickListener(v -> {
             //call validate api the show dialog
-            mPresenter.startValidateCoupon(data);
-
+            if (mUserSession.isLoggedIn()) {
+                mPresenter.startValidateCoupon(data);
+            } else {
+                startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+            }
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                     AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
@@ -675,6 +703,10 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         });
 
 
+        pointValueText = getView().findViewById(R.id.text_point_value_label);
+        if (!mUserSession.isLoggedIn()) {
+            pointValueText.setText("Masuk untuk tukar Points");
+        }
         //start catalog status timer
         mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
@@ -772,5 +804,17 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, ValidateMerchantPinFragment.class.getCanonicalName())
                 .addToBackStack(ValidateMerchantPinFragment.class.getCanonicalName())
                 .commit();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_LOGIN) {
+            pointValueText.setText(getResources().getString(R.string.points_saya));
+            mPresenter.getCatalogDetail(code);
+            if (catalogsValueEntity.isDisabled()) {
+                mPresenter.startValidateCoupon(catalogsValueEntity);
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kol.feature.following_list.view.fragment.KolFollowingListFragment
+import com.tokopedia.kol.feature.following_list.view.fragment.ShopFollowingListFragment
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingListEmptyListener
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
@@ -81,10 +82,11 @@ class FollowingListActivity : BaseTabActivity(), KolFollowingListEmptyListener {
     }
 
     private fun getFavoritedShopTabItem(): FollowingListTabItem {
-        val fragment = (application as ProfileModuleRouter).getFavoritedShopFragment(userId)
+        val bundle = Bundle()
+        bundle.putInt(KolFollowingListActivity.ARGS_USER_ID, userId.toInt())
         return FollowingListTabItem(
                 getString(R.string.fl_shop_title),
-                fragment
+                ShopFollowingListFragment.createInstance(bundle)
         )
     }
 

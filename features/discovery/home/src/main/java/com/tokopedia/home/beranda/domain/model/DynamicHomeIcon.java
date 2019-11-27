@@ -59,6 +59,10 @@ public class DynamicHomeIcon {
         @SerializedName("url")
         private String url;
 
+        @Expose
+        @SerializedName("bu_identifier")
+        private String bu_identifier;
+
         public String getId() {
             return id;
         }
@@ -97,6 +101,14 @@ public class DynamicHomeIcon {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public String getBu_identifier() {
+            return bu_identifier;
+        }
+
+        public void setBu_identifier(String bu_identifier) {
+            this.bu_identifier = bu_identifier;
         }
     }
 
@@ -160,42 +172,5 @@ public class DynamicHomeIcon {
         public void setUrl(String url) {
             this.url = url;
         }
-    }
-
-    public Map<String, Object> getEnhanceImpressionDynamicIconHomePage() {
-        List<Object> list = convertEnhanceDynamicIcon();
-        return DataLayer.mapOf(
-                "event", "promoView",
-                "eventCategory", "homepage",
-                "eventAction", "impression on dynamic icon",
-                "eventLabel", "",
-                "ecommerce", DataLayer.mapOf(
-                        "promoView", DataLayer.mapOf(
-                                "promotions", DataLayer.listOf(
-                                        list.toArray(new Object[list.size()])
-                                )
-                        )
-                )
-        );
-    }
-
-    private List<Object> convertEnhanceDynamicIcon() {
-        List<Object> list = new ArrayList<>();
-
-        if (dynamicIcon != null) {
-            for (int i = 0; i < dynamicIcon.size(); i++) {
-                DynamicIcon item = dynamicIcon.get(i);
-                list.add(
-                        DataLayer.mapOf(
-                                "id", item.getId(),
-                                "name", "/ - dynamic icon",
-                                "creative", item.getName(),
-                                "creative_url", item.getImageUrl(),
-                                "position", String.valueOf(i + 1)
-                        )
-                );
-            }
-        }
-        return list;
     }
 }

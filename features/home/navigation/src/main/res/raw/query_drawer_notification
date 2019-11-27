@@ -26,6 +26,7 @@ query {
     }
     userSatisfactionSurvey
     buyerOrderStatus {
+      paymentStatus
       confirmed
       processed
       shipped

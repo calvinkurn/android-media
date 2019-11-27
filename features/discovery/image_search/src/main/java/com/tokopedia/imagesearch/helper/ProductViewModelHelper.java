@@ -37,6 +37,7 @@ public class ProductViewModelHelper {
     public static ProductViewModel convertToProductViewModel(Context context, SearchResultModel searchResultModel) {
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setProductList(convertToProductItemList(context, searchResultModel.getProductList()));
+        productViewModel.setCategoryFilterModel(searchResultModel.getCategoryFilterModel());
         productViewModel.setQuery(searchResultModel.getQuery());
         productViewModel.setShareUrl(searchResultModel.getShareUrl());
         productViewModel.setHasCatalog(false);
@@ -98,6 +99,7 @@ public class ProductViewModelHelper {
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgesList()));
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabelList()));
         productItem.setPosition(position);
+        productItem.setCategoryID(productModel.getCategoryId());
         productItem.setTopLabel(productModel.getTopLabel());
         productItem.setBottomLabel(productModel.getBottomLabel());
         return productItem;

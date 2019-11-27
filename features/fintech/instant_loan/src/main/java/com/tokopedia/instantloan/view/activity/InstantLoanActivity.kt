@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.*
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -21,7 +20,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.instantloan.InstantLoanComponentInstance
-import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.GqlLendingBannerData
@@ -33,7 +31,6 @@ import com.tokopedia.instantloan.network.InstantLoanUrl
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.HELP_URL
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.PAYMENT_METHODS_URL
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.SUBMISSION_HISTORY_URL
-import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.adapter.*
 import com.tokopedia.instantloan.view.contractor.InstantLoanLendingDataContractor
 import com.tokopedia.instantloan.view.fragment.DanaInstantFragment
@@ -43,6 +40,8 @@ import com.tokopedia.instantloan.view.presenter.InstantLoanLendingDataPresenter
 import com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
 import com.tokopedia.instantloan.view.ui.InstantLoanItem
 import com.tokopedia.instantloan.view.ui.PartnerDataPageItem
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_instant_loan.*
 import kotlinx.android.synthetic.main.il_other_financial_products.*
@@ -155,14 +154,15 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     fun renderBannerList(banners: ArrayList<GqlLendingBannerData>) {
-        mBannerPager = findViewById(R.id.view_pager_banner)
+        mBannerPager = findViewById(com.tokopedia.instantloan.R.id.view_pager_banner)
 
         mBannerPager.apply {
             offscreenPageLimit = 2
             adapter = BannerPagerAdapter(context, banners, context as BannerPagerAdapter.BannerClick)
-            setPadding(resources.getDimensionPixelOffset(R.dimen.il_margin_banner), 0, resources.getDimensionPixelOffset(R.dimen.il_margin_banner), 0)
+            setPadding(resources.getDimensionPixelOffset(com.tokopedia.instantloan.R.dimen.il_margin_banner), 0,
+                    resources.getDimensionPixelOffset(com.tokopedia.instantloan.R.dimen.il_margin_banner), 0)
             clipToPadding = false
-            pageMargin = resources.getDimensionPixelOffset(R.dimen.il_margin_medium)
+            pageMargin = resources.getDimensionPixelOffset(com.tokopedia.instantloan.R.dimen.il_margin_medium)
             addOnPageChangeListener(mBannerPageChangeListener)
         }
 
@@ -245,16 +245,16 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
         val testimonialList: ArrayList<TestimonialEntity> = ArrayList()
 
-        val testimonialItem1 = TestimonialEntity(getString(R.string.il_testimonial_review_1), getString(R.string.il_testimonial_name_1), InstantLoanUrl.COMMON_URL.USER_TESTIMONIAL_IMAGE_URL_1)
+        val testimonialItem1 = TestimonialEntity(getString(com.tokopedia.instantloan.R.string.il_testimonial_review_1), getString(com.tokopedia.instantloan.R.string.il_testimonial_name_1), InstantLoanUrl.COMMON_URL.USER_TESTIMONIAL_IMAGE_URL_1)
         testimonialList.add(testimonialItem1)
 
-        val testimonialItem2 = TestimonialEntity(getString(R.string.il_testimonial_review_2), getString(R.string.il_testimonial_name_2), InstantLoanUrl.COMMON_URL.USER_TESTIMONIAL_IMAGE_URL_2)
+        val testimonialItem2 = TestimonialEntity(getString(com.tokopedia.instantloan.R.string.il_testimonial_review_2), getString(com.tokopedia.instantloan.R.string.il_testimonial_name_2), InstantLoanUrl.COMMON_URL.USER_TESTIMONIAL_IMAGE_URL_2)
         testimonialList.add(testimonialItem2)
 
-        val testimonialItem3 = TestimonialEntity(getString(R.string.il_testimonial_review_3), getString(R.string.il_testimonial_name_3), InstantLoanUrl.COMMON_URL.USER_TESTIMONIAL_IMAGE_URL_3)
+        val testimonialItem3 = TestimonialEntity(getString(com.tokopedia.instantloan.R.string.il_testimonial_review_3), getString(com.tokopedia.instantloan.R.string.il_testimonial_name_3), InstantLoanUrl.COMMON_URL.USER_TESTIMONIAL_IMAGE_URL_3)
         testimonialList.add(testimonialItem3)
 
-        il_view_pager_testimonials.pageMargin = resources.getDimensionPixelOffset(R.dimen.il_margin_medium)
+        il_view_pager_testimonials.pageMargin = resources.getDimensionPixelOffset(com.tokopedia.instantloan.R.dimen.il_margin_medium)
         il_view_pager_testimonials.adapter = DanaInstanTestimonialsPagerAdapter(this, testimonialList)
         (il_view_pager_testimonials.adapter as DanaInstanTestimonialsPagerAdapter).notifyDataSetChanged()
 
@@ -402,28 +402,14 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (application is InstantLoanRouter) {
-            instantLoanEnabled = (application as InstantLoanRouter).isInstantLoanEnabled
-        }
-
+        val remoteConfig = FirebaseRemoteConfigImpl(this)
+        instantLoanEnabled = remoteConfig.getBoolean(RemoteConfigKey.SHOW_INSTANT_LOAN, true)
         if (intent != null && intent.extras != null) {
             val bundle = intent.extras
             val tabName = bundle!!.getString(TAB_NAME)
-
-            if (tabName != null) {
-                when (tabName) {
-                    TAB_INSTAN -> if (instantLoanEnabled) {
-                        activeTabPosition = DANA_INSTAN_TAB_POSITION
-                    } else {
-                        finish()
-                    }
-
-                    TAB_TANPA_AGUNAN ->
-                        activeTabPosition = PINJAMAN_ONLINE_TAB_POSITION
-
-                    else -> activeTabPosition = DANA_INSTAN_TAB_POSITION
-                }
-            }
+            setActiveTabPosition(tabName)
+        } else if (intent != null && intent.data != null) {
+            setActiveTabPosition(intent?.data?.lastPathSegment)
         } else {
             activeTabPosition = 1
         }
@@ -432,13 +418,29 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         tab?.select()
     }
 
+    private fun setActiveTabPosition(tabName: String?) {
+        if (tabName != null) {
+            when (tabName) {
+                TAB_INSTAN -> if (instantLoanEnabled) {
+                    activeTabPosition = DANA_INSTAN_TAB_POSITION
+                } else {
+                    finish()
+                }
+                TAB_TANPA_AGUNAN ->
+                    activeTabPosition = PINJAMAN_ONLINE_TAB_POSITION
+
+                else -> activeTabPosition = DANA_INSTAN_TAB_POSITION
+            }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         this.menu = menu
 
         if (onGoingLoanStatus && !menushown) {
             menushown = true
             val menuInflater = menuInflater
-            menuInflater.inflate(R.menu.instant_loan_menu, menu)
+            menuInflater.inflate(com.tokopedia.instantloan.R.menu.instant_loan_menu, menu)
             return true
         } else {
             return super.onCreateOptionsMenu(menu)
@@ -448,13 +450,13 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
 
-        if (id == R.id.submission_history) {
+        if (id == com.tokopedia.instantloan.R.id.submission_history) {
             openWebView(SUBMISSION_HISTORY_URL)
             return true
-        } else if (id == R.id.payment_method) {
+        } else if (id == com.tokopedia.instantloan.R.id.payment_method) {
             openWebView(String.format(PAYMENT_METHODS_URL, onGoingLoanId.toString()))
             return true
-        } else if (id == R.id.help) {
+        } else if (id == com.tokopedia.instantloan.R.id.help) {
             openWebView(HELP_URL)
             return true
         }
@@ -478,7 +480,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_instant_loan
+        return com.tokopedia.instantloan.R.layout.activity_instant_loan
     }
 
     private fun initInjector() {
@@ -487,10 +489,10 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun initializeView() {
-        tabLayout = findViewById(R.id.tabs)
-        heightWrappingViewPager = findViewById(R.id.pager)
-        partnerHeightWrappingViewPager = findViewById(R.id.view_pager_partner)
-        rvSeoLayout = findViewById(R.id.rv_lending_seo)
+        tabLayout = findViewById(com.tokopedia.instantloan.R.id.tabs)
+        heightWrappingViewPager = findViewById(com.tokopedia.instantloan.R.id.il_pager)
+        partnerHeightWrappingViewPager = findViewById(com.tokopedia.instantloan.R.id.view_pager_partner)
+        rvSeoLayout = findViewById(com.tokopedia.instantloan.R.id.rv_lending_seo)
     }
 
     private fun attachViewListener() {
@@ -504,8 +506,8 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun setupToolbar() {
-        toolbar = findViewById(R.id.toolbar)
-        toolbar.setNavigationIcon(R.drawable.ic_webview_back_button)
+        toolbar = findViewById(com.tokopedia.instantloan.R.id.toolbar)
+        toolbar.setNavigationIcon(com.tokopedia.instantloan.R.drawable.instant_loan_action_back_arrow_black)
         setSupportActionBar(toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -518,7 +520,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
             val window = window
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.design.R.color.white)
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
     }
@@ -532,7 +534,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun sendBannerImpressionEvent(position: Int) {
-        val bannerPagerAdapter = mBannerPager!!.adapter as BannerPagerAdapter?
+        val bannerPagerAdapter = mBannerPager.adapter as BannerPagerAdapter?
 
         if (bannerPagerAdapter != null &&
                 bannerPagerAdapter.bannerEntityList != null &&
@@ -546,11 +548,11 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun getPageTitle(position: Int): CharSequence {
-        return resources.getStringArray(R.array.values_title)[position]
+        return resources.getStringArray(com.tokopedia.instantloan.R.array.values_title)[position]
     }
 
     override fun onBannerClick(view: View, position: Int) {
-        val url = view.tag as String
+        val url = view.getTag(position) as String
         val eventLabel = url + " - " + position.toString()
         instantLoanAnalytics.eventLoanBannerClick(eventLabel)
         if (!TextUtils.isEmpty(url)) {
@@ -595,14 +597,14 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
 
-    object DeepLinkIntents {
-        @DeepLink(ApplinkConst.INSTANT_LOAN, ApplinkConst.INSTANT_LOAN_TAB)
+    /*object DeepLinkIntents {
+        //        @DeepLink(ApplinkConst.INSTANT_LOAN, ApplinkConst.INSTANT_LOAN_TAB)
         @JvmStatic
         fun getInstantLoanCallingIntent(context: Context, bundle: Bundle): Intent {
             val intent = Intent(context, InstantLoanActivity::class.java)
             intent.putExtras(bundle)
             return intent
         }
-    }
+    }*/
 }
 

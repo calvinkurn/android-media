@@ -307,24 +307,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             }
 
             registerButton.visibility = View.GONE
-            partialRegisterInputView.visibility = View.GONE
+            partialRegisterInputView.visibility = View.VISIBLE
             partialRegisterInputView.setButtonValidator(true)
             checkPermissionGetPhoneNumber()
-
-            if (!GlobalConfig.isSellerApp()) {
-                optionTitle.setText(R.string.register_option_title)
-            }else{
-                separator.visibility = View.GONE
-                optionTitle.setText(R.string.register_now)
-                optionTitle.typeface = Typeface.DEFAULT_BOLD
-                optionTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-                val layoutParams: RelativeLayout.LayoutParams = optionTitle.layoutParams as RelativeLayout.LayoutParams
-                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, 0)
-                layoutParams.setMargins(0, 32, 0, 0)
-                optionTitle.layoutParams = layoutParams
-                optionTitle.setPadding(0, 0, 0, 0)
-                optionTitle.setTextColor(ContextCompat.getColor(this, R.color.black_70))
-            }
+            optionTitle.setText(R.string.register_option_title)
 
             registerButton.setColor(Color.WHITE)
             registerButton.setBorderColor(MethodChecker.getColor(activity, R.color.black_38))
@@ -334,12 +320,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_EMAIL)
                 goToRegisterEmailPage()
 
-            }
-
-            if (GlobalConfig.isSellerApp()) {
-                registerButton.visibility = View.VISIBLE
-            } else {
-                partialRegisterInputView.visibility = View.VISIBLE
             }
 
             val sourceString = resources.getString(R.string
@@ -439,6 +419,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 it.finish()
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
                             .RESULT_CANCELED) {
+                logoutGoogleAccountIfExist()
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE
@@ -745,6 +726,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     override fun onErrorLoginGoogle(email: String): (e: Throwable) -> Unit {
+        logoutGoogleAccountIfExist()
         return {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
             onErrorRegister(errorMessage)
@@ -964,5 +946,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         context?.let {
             permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
         }
+    }
+
+    private fun logoutGoogleAccountIfExist() {
+        val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(context)
+        if (googleSignInAccount != null) mGoogleSignInClient.signOut()
     }
 }

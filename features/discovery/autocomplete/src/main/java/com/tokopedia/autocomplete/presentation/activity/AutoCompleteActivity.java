@@ -203,7 +203,7 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     public void eventDiscoveryVoiceSearch(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
                 AutocompleteEventTracking.Event.SEARCH,
                 AutocompleteEventTracking.Category.SEARCH,
                 AutocompleteEventTracking.Action.VOICE_SEARCH,

@@ -45,6 +45,10 @@ public class CMButton {
     @SerializedName("rd")
     @Expose
     public float cornerRadius;
+    @ColumnInfo(name = "id")
+    @SerializedName("id")
+    @Expose
+    private String id;
 
     public CMButton() {
 
@@ -120,5 +124,13 @@ public class CMButton {
 
     public void setCornerRadius(float cornerRadius) {
         this.cornerRadius = cornerRadius;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

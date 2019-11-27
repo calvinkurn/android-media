@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
@@ -31,7 +31,6 @@ import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.ChangePasswordRouter;
-import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -57,7 +56,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -84,6 +82,7 @@ import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
+import com.tokopedia.kol.feature.following_list.view.fragment.ShopFollowingListFragment;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
@@ -449,6 +448,10 @@ public abstract class SellerRouterApplication extends MainApplication
         ScreenTracking.screen(this, screenName);
     }
 
+    public void goToWebview(Context context, String url) {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url);
+    }
+
     @Override
     public void openImagePreview(Context context, ArrayList<String> images,
                                  int position) {
@@ -723,16 +726,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
-        return ChangePhoneNumberWarningActivity.newInstance(context, email, phoneNumber);
-    }
-
-    @Override
-    public Observable<TokoCashData> getTokoCashBalance() {
-        return null;
-    }
-
-    @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
         return DiscomActivity.newInstance(activity, token);
     }
@@ -791,6 +784,11 @@ public abstract class SellerRouterApplication extends MainApplication
         accessTokenRefresh.refreshToken();
     }
 
+    @Override
+    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
+
+    }
+
     public UserSession getSession() {
         return new UserSession(this);
     }
@@ -819,11 +817,6 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             context.startActivity(SellerappWebViewActivity.createIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL));
         }
-    }
-
-    @Override
-    public Intent getShopPageIntentByDomain(Context context, String domain) {
-        return ShopPageInternalRouter.getShopPageIntentByDomain(context, domain);
     }
 
     @Override
@@ -901,11 +894,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getCartIntent(Activity activity) {
         return null;
-    }
-
-    @Override
-    public void updateMarketplaceCartCounter(CartNotificationListener listener) {
-
     }
 
     @Override
@@ -988,10 +976,10 @@ public abstract class SellerRouterApplication extends MainApplication
                                              ProductVariantViewModel productVariant, int productPriceCurrency, double productPrice,
                                              int productStock, boolean officialStore, String productSku,
                                              boolean needRetainImage, ProductPictureViewModel productSizeChart, boolean hasOriginalVariantLevel1,
-                                             boolean hasOriginalVariantLevel2, boolean hasWholesale) {
+                                             boolean hasOriginalVariantLevel2, boolean hasWholesale, boolean isAddStatus) {
         return ProductVariantDashboardActivity.getIntent(context, productVariantByCatModelList, productVariant,
                 productPriceCurrency, productPrice, productStock, officialStore, productSku, needRetainImage, productSizeChart,
-                hasOriginalVariantLevel1, hasOriginalVariantLevel2, hasWholesale);
+                hasOriginalVariantLevel1, hasOriginalVariantLevel2, hasWholesale,isAddStatus);
     }
 
     @Override
@@ -1039,11 +1027,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
                                       String source) {
         return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
-    }
-
-    @Override
-    public int getCartCount(Context context) {
-        return 0;
     }
 
     @Override
@@ -1141,7 +1124,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @NonNull
     @Override
     public Fragment getFavoritedShopFragment(@NonNull String userId) {
-        return PeopleFavoritedShopFragment.createInstance(userId);
+        return ShopFollowingListFragment.createInstance(userId);
     }
 
     @Override
@@ -1195,28 +1178,8 @@ public abstract class SellerRouterApplication extends MainApplication
     public void onLoginSuccess() {
     }
 
-    @Override
-    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate) {
-    }
-
-    @Override
-    public Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest) {
-        return null;
-    }
-
-    @Override
-    public Intent getCheckoutIntent(Context context, String deviceid) {
-        return null;
-    }
-
     public String getDeviceId(Context context) {
         return "";
-    }
-    
-    @Override
-    public Intent getExpressCheckoutIntent(Activity activity,
-                                           com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam atcRequestParam) {
-        return null;
     }
 
     @Override
@@ -1278,9 +1241,4 @@ public abstract class SellerRouterApplication extends MainApplication
         return LoginActivity.DeepLinkIntents.getCallingIntent(context);
     }
 
-    @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context,
-                                            BottomSheets.BottomSheetDismissListener listener) {
-        //no op
-    }
 }

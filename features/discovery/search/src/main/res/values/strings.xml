@@ -27,18 +27,11 @@
     <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_add_wishlist">Sukses menambah wishlist</string>
 
-    <string name="label_shop_inactive">Sudah Tidak Aktif</string>
-    <string name="label_shop_close">Tutup</string>
-    <string name="label_following_shop">Following</string>
-    <string name="label_follow_shop">Follow</string>
     <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
     <string name="shop_total_count_found_in">\u0020ditemukan di\u0020</string>
     <string name="shop_total_count_shop">\u0020toko</string>
-    <string name="shop_total_count">%1$s ditemukan di %2$s toko</string>
     <string name="shop_has_no_product">Toko belum ada produk</string>
-    <string name="shop_total_transaction">%s terjual</string>
-    <string name="shop_total_favorite">%s pengikut</string>
     <string name="shop_product_item_price">Rp%s</string>
     <string name="shop_voucher_free_shipping">Gratis Ongkir</string>
     <string name="shop_voucher_cashback_percentage">Cashback %s%%</string>
@@ -55,6 +48,7 @@
     <string name="empty_search_content_template">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba keyword lain?</string>
     <string name="empty_search_button_text">Lakukan Pencarian Baru</string>
     <string name="msg_empty_search_with_filter_1">Oops, %s tidak ditemukan :(</string>
+    <string name="msg_empty_search_shop_title">Oops, toko tidak ditemukan :(</string>
     <string name="msg_empty_search_product_title">Oops, Produk Nggak Ditemukan</string>
     <string name="msg_empty_search_product_content">Coba kata kunci lain atau cek produk rekomendasi di bawah.</string>
     <string name="msg_empty_search_product_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
@@ -69,7 +63,6 @@
     <string name="related_search_title">Mungkin maksud Anda :</string>
     <string name="value_status_followed">\u2022 Following</string>
     <string name="image_product_desc">Produk</string>
-    <string name="global_nav_see_all_text">Lihat Semua</string>
     <string name="search_hint">Cari produk atau Toko</string>
     <string name="search_title">Pencarian</string>
 

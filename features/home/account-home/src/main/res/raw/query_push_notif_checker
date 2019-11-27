@@ -1,0 +1,6 @@
+query {
+	notifier_sendTroubleshooter(){
+	  	is_success
+	  	error_message
+	}
+}

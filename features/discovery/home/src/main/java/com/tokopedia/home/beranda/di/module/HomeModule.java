@@ -26,6 +26,8 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessVie
 import com.tokopedia.home.common.HomeAceApi;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase;
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule;
@@ -206,13 +208,18 @@ public class HomeModule {
 
     @Provides
     @HomeScope
-    protected HomeVisitableFactory provideHomeVisitableFactory() {
-        return new HomeVisitableFactoryImpl();
+    protected HomeVisitableFactory provideHomeVisitableFactory(UserSessionInterface userSessionInterface) {
+        return new HomeVisitableFactoryImpl(userSessionInterface);
     }
   
     @Provides
     @HomeScope
     protected StickyLoginUseCase provideStickyLoginUseCase(@ApplicationContext Context context, GraphqlRepository graphqlRepository) {
         return new StickyLoginUseCase(context.getResources(), graphqlRepository);
+    }
+
+    @Provides
+    RemoteConfig provideRemoteConfig(@ApplicationContext Context context) {
+        return new FirebaseRemoteConfigImpl(context);
     }
 }

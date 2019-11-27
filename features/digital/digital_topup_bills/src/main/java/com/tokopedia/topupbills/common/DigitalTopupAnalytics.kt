@@ -313,7 +313,7 @@ class DigitalTopupAnalytics {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
-    private fun getCategoryName(categoryId: Int): String {
+    fun getCategoryName(categoryId: Int): String {
         return when (categoryId) {
             TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA.toLowerCase()
             TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA.toLowerCase()

@@ -381,11 +381,19 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
+        <com.tokopedia.common.travel.widget.TravelCrossSellWidget
+            android:id="@+id/cross_sell_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/dp_8"
+            tools:visibility="visible"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
             android:background="@color/white"
             android:orientation="vertical">
 

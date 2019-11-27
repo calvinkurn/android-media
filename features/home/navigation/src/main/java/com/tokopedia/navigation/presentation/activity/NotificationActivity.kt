@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.PagerAdapter
 import android.view.LayoutInflater
@@ -53,6 +54,8 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
     @Inject
     lateinit var notifPreference: NotifPreference
+
+    private val handler = Handler()
 
     private var fragmentAdapter: NotificationFragmentAdapter? = null
     private val tabList = ArrayList<NotificationFragmentAdapter.NotificationFragmentItem>()
@@ -163,11 +166,11 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
     private fun showOnBoarding(position: Int) {
         val tag = javaClass.name + ".OnBoarding"
-
         if (position != INDEX_NOTIFICATION_UPDATE || hasBeenShown(tag)) return
-
-        val coachMarkItems = getCoachMarkItems()
-        getNotificationUpdate()?.showOnBoarding(coachMarkItems, tag)
+        handler.post {
+            val coachMarkItems = getCoachMarkItems()
+            getNotificationUpdate()?.showOnBoarding(coachMarkItems, tag)
+        }
     }
 
     private fun hasBeenShown(tag: String): Boolean {
@@ -198,7 +201,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         )
     }
 
-    private fun getNotificationSettingIconView(): View {
+    private fun getNotificationSettingIconView(): View? {
         return findViewById(R.id.notif_settting)
     }
 

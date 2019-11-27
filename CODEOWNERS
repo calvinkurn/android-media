@@ -19,10 +19,11 @@
 /features/discovery/similarsearch/      @tokopedia/minion-dave
 /features/discovery/autocomplete/       @tokopedia/minion-dave
 /features/digital/digital_browse/       @tokopedia/minion-dave
+/features/discovery/global_nav_widget/  @tokopedia/minion-dave
+/features/discovery/global_nav_widget_samples/  @tokopedia/minion-dave
 /tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
 /tkpdseller/        @tokopedia/minion-stuart
-/tkpdtokocash/      @tokopedia/minion-mark
 /tkpdabstraction/   @tokopedia/core-team
 /customerapp/       @tokopedia/core-team
 
@@ -53,6 +54,7 @@
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
 /features/top_ads/top_ads_autoads/     @tokopedia/minion-dave
+/features/top_ads/top_ads_detail_sheet/     @tokopedia/minion-dave
 
 /features/digital/flight/               @tokopedia/minion-mark
 /features/digital/train/                @tokopedia/minion-mark
@@ -70,10 +72,8 @@
 /features/payment/pms/                          @tokopedia/minion-bob
 /features/transaction/atc_common/               @tokopedia/minion-bob
 /features/transaction/checkout/                 @tokopedia/minion-bob
-/features/transaction/express_checkout/         @tokopedia/minion-bob
-/features/transaction/express_checkout_common/  @tokopedia/minion-bob
-/features/transaction/transactionanalytics/     @tokopedia/minion-bob
-/features/transaction/transactiondata/          @tokopedia/minion-bob
+/features/transaction/purchase_platform/        @tokopedia/minion-bob
+/features/transaction/purchase_platform_common/ @tokopedia/minion-bob
 /features/logistic/cod/                         @tokopedia/minion-bob
 /features/logistic/district_recommendation/     @tokopedia/minion-bob
 /features/logistic/logisticdata/                @tokopedia/minion-bob
@@ -83,6 +83,7 @@
 /features/logistic/tracking/                    @tokopedia/minion-bob
 /features/promo/promo_checkout/                 @tokopedia/minion-bob
 /features/promo/promo_checkout_common/          @tokopedia/minion-bob
+/features/logistic/logisticcart/                @tokopedia/minion-bob
 
 /features/user/chatbot/                         @tokopedia/minion-darth
 /features/user/chatbot_no_op/                   @tokopedia/minion-kevin
@@ -113,6 +114,7 @@
 
 /features/content/affiliate/            @tokopedia/minion-stuart
 /features/content/affiliate_common/     @tokopedia/minion-stuart
+/features/content/createpost/           @tokopedia/minion-stuart
 /features/content/explore/              @tokopedia/minion-stuart
 /features/content/feed/                 @tokopedia/minion-stuart
 /features/content/feed_component/       @tokopedia/minion-stuart
@@ -146,6 +148,8 @@
 /features/digital/digital_deals         @tokopedia/minion-darth
 /libraries/oms                          @tokopedia/minion-darth
 
+/features/fintech/wallet                @tokopedia/minion-solo
+/features/fintech/common_wallet         @tokopedia/minion-solo
 /features/fintech/instant_loan          @tokopedia/minion-solo
 /features/fintech/ovo_pay_with_qr       @tokopedia/minion-solo
 /features/fintech/saldo_details         @tokopedia/minion-solo
@@ -154,7 +158,6 @@
 /features/promo/tokopoints_notification @tokopedia/minion-solo
 /features/promo/gamification            @tokopedia/minion-solo
 /features/payment/withdraw/             @tokopedia/minion-solo
-/features/fintech/tokocash              @tokopedia/minion-solo
 /features/kyc                           @tokopedia/minion-yoda
 
 /features/im/challenges                 @tokopedia/minion-yoda

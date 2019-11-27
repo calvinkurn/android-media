@@ -11,7 +11,11 @@ import dagger.Component;
  */
 
 @LoginScope
-@Component(modules = LoginModule.class, dependencies = LoginRegisterComponent.class)
+@Component(modules = {
+        LoginModule.class,
+        LoginQueryModule.class,
+        LoginUseCaseModule.class
+}, dependencies = LoginRegisterComponent.class)
 public interface LoginComponent {
 
     public void inject(LoginActivity activity);

@@ -31,7 +31,8 @@
     <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>
     <string name="promo_hourly">Promo Perjam</string>
-    <string name="promote_topads">Iklan TopAds</string>
+    <string name="promote_topads">Iklankan</string>
+    <string name="rincian_topads">Rincian Iklan</string>
     <string name="no_stock">Stok Kosong</string>
     <string name="action_preorder">PREORDER</string>
     <string name="product_from">Produk</string>
@@ -135,5 +136,6 @@
     <string name="atc_done_see_cart">Lihat Keranjang</string>
     <string name="pdp_etalase_empty_default_value">Semua  Etalase</string>
     <string name="atc_free_ongkir_title">Produk berhasil ditambah ke keranjang. Dapatkan <b>gratis ongkir</b> untuk pembelian produk ini.</string>
+    <string name="recom_see_more_title">Lihat semua</string>
 
 </resources>

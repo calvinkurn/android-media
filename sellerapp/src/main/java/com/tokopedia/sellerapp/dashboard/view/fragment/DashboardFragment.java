@@ -42,7 +42,6 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.SellerRouter;
@@ -609,9 +608,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         tickerView.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
             @Override
             public void onClick(View view, String messageClick) {
-                Intent intent = new Intent(getActivity(), BannerWebView.class);
-                intent.putExtra("url", messageClick);
-                startActivity(intent);
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, messageClick);
             }
         });
         tickerView.setOnPageChangeListener(new TickerView.OnPageChangeListener() {

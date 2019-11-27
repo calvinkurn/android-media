@@ -17,13 +17,6 @@ public class ShopPageInternalRouter {
         return intent;
     }
 
-    public static Intent getShopPageIntentByDomain(Context context, String domain) {
-        Toast.makeText(context, "Shop Page by domain", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("http://www.getShopPageIntentByDomain.com"));
-        return intent;
-    }
-
     public static Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         Toast.makeText(context, "Shop Product List", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(Intent.ACTION_VIEW);

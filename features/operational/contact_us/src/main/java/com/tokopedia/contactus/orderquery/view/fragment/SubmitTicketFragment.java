@@ -25,9 +25,9 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
+import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.data.SubmitTicketInvoiceData;
@@ -114,7 +114,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         view.findViewById(R.id.img_tooltip).setOnClickListener(this);
         sendButton.setOnClickListener(this);
         view.findViewById(R.id.btn_tutup).setOnClickListener(this);
-        view.findViewById(R.id.btn_ok).setOnClickListener(this);
+        view.findViewById(com.tokopedia.design.R.id.btn_ok).setOnClickListener(this);
     }
 
     private TextWatcher watcher() {
@@ -240,7 +240,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         if (enabled) {
             sendButton.setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_greenbutton_solid));
         } else {
-            sendButton.setBackground(getResources().getDrawable(R.drawable.rounded_rectangle_grey_solid));
+            sendButton.setBackground(getResources().getDrawable(R.drawable.contactus_rounded_rectangle_grey_solid));
         }
     }
 
@@ -288,7 +288,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     }
 
     private void showImagePickerDialog() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
                 null, null);
@@ -323,7 +323,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         submitSuccess.setVisibility(View.GONE);
         getActivity().startActivity(new Intent(getActivity(), InboxListActivity.class));
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
-        manager.sendBroadcast(new Intent(ContactUsModuleRouter.ACTION_CLOSE_ACTIVITY));
+        manager.sendBroadcast(new Intent(ContactUsConstant.ACTION_CLOSE_ACTIVITY));
     }
 
     @Override
@@ -363,7 +363,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
             onSendClick();
         }else if(id==R.id.btn_tutup){
             ontutupClick();
-        }else if(id==R.id.btn_ok){
+        }else if(id==com.tokopedia.design.R.id.btn_ok){
             onOkClick();
         }
     }

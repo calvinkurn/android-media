@@ -1,27 +1,31 @@
 package com.tokopedia.digital_deals.view.activity;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.fragment.TrendingDealsFragment;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
+import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.TrendingDealsCallBacks;
-
+import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.locationmanager.DeviceLocation;
 import java.util.List;
 
-public class DealsHomeActivity extends DealsBaseActivity implements TrendingDealsCallBacks, DealsHomeFragment.OpenTrendingDeals, SelectLocationBottomSheet.SelectedLocationListener {
+public class DealsHomeActivity extends DealsBaseActivity implements TrendingDealsCallBacks, DealsHomeFragment.OpenTrendingDeals, SelectLocationBottomSheet.SelectedLocationListener, CurrentLocationCallBack {
 
 
     public static final int REQUEST_CODE_DEALSLOCATIONACTIVITY = 101;
@@ -35,27 +39,19 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     private String url;
     private int position;
 
-    @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS})
-    public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
-        Intent destination;
-        try {
-            String deepLink = extras.getString(DeepLink.URI);
-
-            Uri.Builder uri = Uri.parse(deepLink).buildUpon();
-            destination = new Intent(context, DealsHomeActivity.class)
-                    .setData(uri.build())
-                    .putExtras(extras);
-
-        } catch (Exception e) {
-            destination = new Intent(context, DealsHomeActivity.class);
-        }
-        return destination;
+    @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
     }
 
+    @Override
+    protected int getParentViewResourceID(){
+        return com.tokopedia.digital_deals.R.id.deals_home_parent_view;
+    }
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_base_simple_deals;
+        return com.tokopedia.digital_deals.R.layout.activity_base_simple_deals;
     }
 
     @Override
@@ -86,8 +82,9 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
         this.title = title;
         this.position = position;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.slide_in_left_brands, R.anim.slide_out_right_brands);
-        transaction.add(R.id.parent_view, TrendingDealsFragment.createInstance());
+        transaction.setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_left_brands,
+                com.tokopedia.digital_deals.R.anim.deals_slide_out_right_brands);
+        transaction.add(com.tokopedia.digital_deals.R.id.deals_home_parent_view, TrendingDealsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -96,5 +93,19 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     public void onLocationItemUpdated(boolean isLocationUpdated) {
         this.isLocationUpdated = isLocationUpdated;
         dealsHomeFragment.refreshHomePage(isLocationUpdated);
+    }
+
+    @Override
+    public void setDefaultLocationOnHomePage() {
+        dealsHomeFragment.setDefaultLocationName();
+    }
+
+    @Override
+    public void setCurrentLocation(DeviceLocation deviceLocation) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(this, TkpdCache.DEALS_LOCATION);
+        localCacheHandler.putString(Utils.KEY_LOCATION_LAT, String.valueOf(deviceLocation.getLatitude()));
+        localCacheHandler.putString(Utils.KEY_LOCATION_LONG, String.valueOf(deviceLocation.getLongitude()));
+        localCacheHandler.applyEditor();
+        dealsHomeFragment.setCurrentCoordinates();
     }
 }

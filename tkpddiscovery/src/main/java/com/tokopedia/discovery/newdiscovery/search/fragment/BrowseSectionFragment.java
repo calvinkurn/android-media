@@ -282,7 +282,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
             }
 
             @Override
-            public void onSortResult(Map<String, String> selectedSort, String selectedSortName) {
+            public void onSortResult(Map<String, String> selectedSort, String selectedSortName, String autoApplyFilter) {
                 handleSortResult(selectedSort, selectedSortName);
             }
         });

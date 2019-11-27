@@ -1,8 +1,10 @@
 package com.tokopedia.vouchergame.detail.view.fragment
 
 import androidx.lifecycle.Observer
+import android.app.Activity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -24,6 +26,7 @@ import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
@@ -82,7 +85,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         set(value) {
             field = value
             setInputFieldsError(!value)
-            toggleCheckoutButton()
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,6 +130,14 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                 }
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Scroll view to top
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CART_DIGITAL && !isEnquired) {
+            vg_detail_scroll_view.smoothScrollTo(0, vg_detail_scroll_view.top)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -186,7 +196,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
         checkout_view.setVisibilityLayout(false)
         checkout_view.setListener(this)
-        toggleCheckoutButton()
     }
 
     override fun processEnquiry(data: TelcoEnquiryData) {
@@ -317,7 +326,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         context?.run {
             if (value) {
                 input_field_label.text = getString(R.string.vg_input_field_error_message)
-                input_field_label.setTextColor(ContextCompat.getColor(this, R.color.red_600))
+                input_field_label.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.red_600))
             } else {
                 input_field_label.visibility = View.GONE
             }
@@ -416,7 +425,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
     }
 
-    override fun getScreenName(): String = getString(R.string.app_label)
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(VoucherGameDetailComponent::class.java).inject(this)
@@ -489,18 +498,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         enquireFields()
     }
 
-    private fun toggleCheckoutButton() {
-        checkout_view.setBuyButtonState(isEnquired)
-    }
-
     override fun onClickNextBuyButton() {
-        if (isEnquired) {
-            if (::voucherGameOperatorData.isInitialized) {
-                voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
-                        voucherGameOperatorData.name, product = selectedProduct)
-            }
-            processCheckout()
+        if (::voucherGameOperatorData.isInitialized) {
+            voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
+                    voucherGameOperatorData.name, product = selectedProduct)
         }
+        processCheckout()
     }
 
     private fun processCheckout() {
@@ -542,7 +545,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
         var inputFieldCount = 0
 
-        val ITEM_DECORATOR_SIZE = R.dimen.dp_6
+        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_6
         const val INFO_TOUCH_AREA_SIZE_PX = 20
 
         const val FULL_SCREEN_SPAN_SIZE = 1

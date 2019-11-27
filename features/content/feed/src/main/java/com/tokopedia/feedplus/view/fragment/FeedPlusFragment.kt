@@ -70,12 +70,12 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
-import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
+import com.tokopedia.feedplus.KEY_FEED
+import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_CURSOR
+import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
-import com.tokopedia.feedplus.view.activity.TransparentVideoActivity
 import com.tokopedia.feedplus.view.adapter.EntryPointAdapter
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
@@ -172,6 +172,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var loginIdInt: Int = 0
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
+    private var afterRefresh: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -245,7 +246,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             hideAdapterLoading()
             when (it) {
                 is Success -> onSuccessGetOnboardingData(it.data)
-                is Fail -> presenter.fetchFirstPage()
+                is Fail -> fetchFirstPage()
             }
         })
 
@@ -367,13 +368,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         return layoutManager?.findLastVisibleItemPosition()  == layoutManager?.findFirstVisibleItemPosition()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun onRefresh() {
         newFeed.visibility = View.GONE
         feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, true)
+        afterRefresh = true
     }
 
     override fun onDestroyView() {
@@ -386,19 +384,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun setLastCursorOnFirstPage(lastCursor: String) {
-        if (activity != null && activity!!.applicationContext != null) {
-            val cache = LocalCacheHandler(
-                    activity!!.applicationContext,
-                    KEY_FEED
-            )
+        activity?.applicationContext?.let {
+            val cache = LocalCacheHandler(it, KEY_FEED)
             cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor)
             cache.applyEditor()
         }
     }
 
-    override fun onOpenVideo(videoUrl: String, subtitle: String) {
-        val intent = TransparentVideoActivity.getIntent(activity, videoUrl, subtitle)
-        startActivity(intent)
+    override fun setFirstPageCursor(firstPageCursor: String) {
+        activity?.applicationContext?.let {
+            val cache = LocalCacheHandler(it, KEY_FEED)
+            cache.putString(KEY_FEED_FIRSTPAGE_CURSOR, firstPageCursor)
+            cache.applyEditor()
+        }
     }
 
     override fun onInfoClicked() {
@@ -425,7 +423,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         parentFragment?.let {
             (it as FeedPlusContainerFragment).showCreatePostOnBoarding()
         }
-        swipe_refresh_layout.setEnabled(true);
+        swipe_refresh_layout.isEnabled = true
         trackFeedImpression(listFeed)
 
         adapter.setList(listFeed)
@@ -478,7 +476,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         finishLoading()
         if (adapter.itemCount == 0) {
             NetworkErrorHelper.showEmptyState(activity, mainContent, errorMessage
-            ) { presenter.refreshPage() }
+            ) { fetchFirstPage() }
         } else {
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
         }
@@ -1442,7 +1440,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {
+    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String) {
+        val shop = postTagItem.shop.firstOrNull()
+        feedAnalytics.eventFeedAddToCart(
+                postTagItem.id,
+                postTagItem.text,
+                postTagItem.price,
+                1,
+                shop?.shopId?.toIntOrZero() ?: -1,
+                "",
+                authorType
+        )
         presenter.addPostTagItemToCart(postTagItem)
     }
 
@@ -1575,10 +1583,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
-
+        feedAnalytics.eventClickFeedInterestPick(item.name)
     }
 
     override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
+        feedAnalytics.eventClickFeedInterestPickSeeAll()
         activity?.let {
             val bundle = Bundle()
             bundle.putIntegerArrayList(FeedOnboardingFragment.EXTRA_SELECTED_IDS, ArrayList(selectedItemList.map { it.id }))
@@ -1588,12 +1597,27 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
         view?.showLoadingTransparent()
+        feedAnalytics.eventClickFeedCheckAccount(selectedItemList.size.toString())
         feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK, OPEN_INTERESTPICK_RECOM_PROFILE)
+    }
+
+    private fun fetchFirstPage() {
+        val firstPageCursor: String = if (afterRefresh) getFirstPageCursor() else ""
+        presenter.fetchFirstPage(firstPageCursor)
+        afterRefresh = false
+    }
+
+    private fun getFirstPageCursor(): String {
+        context?.let {
+            val cache = LocalCacheHandler(it, KEY_FEED)
+            return cache.getString(KEY_FEED_FIRSTPAGE_CURSOR, "")
+        }
+        return ""
     }
 
     private fun onSuccessGetOnboardingData(data: OnboardingViewModel) {
         if (!data.isEnableOnboarding) {
-            presenter.fetchFirstPage()
+            fetchFirstPage()
         } else {
             finishLoading()
             clearData()
@@ -1604,11 +1628,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
             parentFragment?.let {
                 (it as FeedPlusContainerFragment).hideAllFab(true)
             }
-            swipe_refresh_layout.setRefreshing(false);
-            swipe_refresh_layout.setEnabled(false);
+            swipe_refresh_layout.isRefreshing = false
+            swipe_refresh_layout.isEnabled = false
         }
     }
-
 
     private fun onSuccessSubmitInterestPickData(data : SubmitInterestResponseViewModel) {
         context?.let {
@@ -1837,10 +1860,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (context != null) {
             Toast.makeText(context, R.string.feed_after_post, Toast.LENGTH_LONG).show()
         }
-    }
-
-    override fun getUserVisibleHint(): Boolean {
-        return super.getUserVisibleHint()
     }
 
     companion object {

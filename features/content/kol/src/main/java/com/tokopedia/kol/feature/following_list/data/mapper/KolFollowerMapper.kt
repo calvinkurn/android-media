@@ -24,8 +24,8 @@ class KolFollowerMapper @Inject constructor() : Func1<GraphqlResponse, KolFollow
     private fun mapFollowersData(data: FollowerListData): KolFollowingResultViewModel {
         return KolFollowingResultViewModel(
                 !data.feedGetUserFollowers.meta.nextCursor.isEmpty(),
-                data.feedGetUserFollowers.meta.nextCursor,
                 mapFollowData(data.feedGetUserFollowers.data),
+                data.feedGetUserFollowers.meta.nextCursor,
                 "",
                 ""
         )

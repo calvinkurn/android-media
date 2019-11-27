@@ -3,6 +3,7 @@ package com.tokopedia.notifications.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.notifications.common.CMConstant
 
 data class ProductInfo(
 
@@ -28,7 +29,10 @@ data class ProductInfo(
         var productButtonMessage: String,
 
         @SerializedName("appLink")
-        var appLink: String? = null
+        var appLink: String? = null,
+
+        @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
+        var element_id: String? = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString()?.let { it } ?: "",
@@ -38,7 +42,9 @@ data class ProductInfo(
             parcel.readString()?.let { it } ?: "",
             parcel.readString()?.let { it } ?: "",
             parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
             parcel.readString()?.let { it } ?: "")
+
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productTitle)
@@ -49,6 +55,7 @@ data class ProductInfo(
         parcel.writeString(productMessage)
         parcel.writeString(productButtonMessage)
         parcel.writeString(appLink)
+        parcel.writeString(element_id)
     }
 
     override fun describeContents(): Int {

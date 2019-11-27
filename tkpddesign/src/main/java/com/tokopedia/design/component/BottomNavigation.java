@@ -282,7 +282,7 @@ public class BottomNavigation extends BottomNavigationView {
         // 1. get mMenuView
         BottomNavigationMenuView mMenuView = getBottomNavigationMenuView();
         // 2. change field mShiftingMode value in mMenuView
-        //setField(mMenuView.getClass(), mMenuView, "isShifting", enable);
+        setField(mMenuView.getClass(), mMenuView, "isShifting", enable);
 
         mMenuView.updateMenuView();
     }

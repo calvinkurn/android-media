@@ -450,7 +450,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun goToChangePhone(phone: String, email: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
     }

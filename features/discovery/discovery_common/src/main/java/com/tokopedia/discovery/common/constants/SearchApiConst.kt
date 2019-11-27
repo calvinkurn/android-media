@@ -50,6 +50,7 @@ class SearchApiConst {
         const val KEYWORD = "keyword"
         const val HINT = "hint"
         const val ACTIVE_TAB = "st"
+        const val ORIGIN_FILTER = "origin_filter" // which page filter params come from
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
         const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"
@@ -69,5 +70,7 @@ class SearchApiConst {
         const val DEFAULT_VALUE_OF_PARAMETER_BREADCRUMB = "false"
         const val DEFAULT_VALUE_OF_PARAMETER_START = "0"
         const val DEFAULT_VALUE_OF_PARAMETER_SC = "0"
+        const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE = "sort"
+        const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE = "filter"
     }
 }

@@ -29,4 +29,5 @@
     <string name="promo_checkout_catalogsubtitle">Cari tahu sekarang juga</string>
     <string name="promo_checkout_tnc"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="promo_checkout_mypoint">Points Saya</string>
+    <string name="promo_checkout_error_desc_redeem">Points Anda tidak terpotong.Permintaan gagal diverifikasi</string>
 </resources>

@@ -46,6 +46,8 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
     var rangeDateSelected: Long = 0
     var minDateLabel: String = ""
     var maxDateLabel: String = ""
+    var minSelectableDateFromToday: Int = 0
+    var canSelectSameDay: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +78,11 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
             if (it.getString(ARG_MAX_DATE_LABEL) != null)
                 maxDateLabel = it.getString(ARG_MAX_DATE_LABEL)
 
+            if (it.getInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY) != null)
+                minSelectableDateFromToday = it.getInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY)
+
+            if (it.getBoolean(ARG_CAN_SELECT_SAME_DAY) != null)
+                canSelectSameDay = it.getBoolean(ARG_CAN_SELECT_SAME_DAY)
         }
     }
 
@@ -128,7 +135,7 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
         nextYear.add(Calendar.YEAR, rangeYear)
 
         val yesterday = Calendar.getInstance()
-        yesterday.add(Calendar.DATE, 1)
+        yesterday.add(Calendar.DATE, minSelectableDateFromToday)
         yesterday.set(Calendar.HOUR_OF_DAY, 0)
         yesterday.set(Calendar.MINUTE, 0)
         yesterday.set(Calendar.SECOND, 0)
@@ -190,7 +197,7 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
                         minDate = date
                         maxDate = null
                         date_out.requestFocus()
-                    } else if (minDate != null && maxDate == null && date.after(minDate)) {
+                    } else if (minDate != null && maxDate == null && ((!canSelectSameDay && date.after(minDate)) || (canSelectSameDay && !date.before(minDate)))) {
                         date_out.setText(dateFormat.format(date))
                         maxDate = date
                         date_out.requestFocus()
@@ -236,10 +243,19 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
         const val ARG_MAX_DATE_LABEL = "arg_max_date_label"
         const val ARG_RANGE_YEAR = "arg_range_year"
         const val ARG_RANGE_DATE_SELECTED = "arg_range_date_selected"
+        const val ARG_MIN_SELECTABLE_DATE_FROM_TODAY = "arg_min_selectable_date_from_today"
+        const val ARG_CAN_SELECT_SAME_DAY = "arg_can_select_same_day"
+
+        const val DEFAULT_MIN_SELECTED_DATE_TODAY = 0
+        const val DEFAULT_MIN_SELECTED_DATE_PLUS_1_DAY = 1
+        const val DEFAULT_RANGE_DATE_SELECTED = 360
+        const val DEFAULT_RANGE_DATE_SELECTED_ONE_MONTH = 30
+        const val DEFAULT_RANGE_CALENDAR_YEAR = 1
 
         fun getInstance(minDate: String?, maxDate: String?, rangeYear: Int,
                         rangeDateSelected: Long, minDateLabel: String,
-                        maxDateLabel: String): SelectionRangeCalendarWidget =
+                        maxDateLabel: String, minSelectableDateFromToday: Int = 0,
+                        canSelectSameDay: Boolean = false): SelectionRangeCalendarWidget =
                 SelectionRangeCalendarWidget().also {
                     it.arguments = Bundle().apply {
                         putString(ARG_MIN_DATE, minDate)
@@ -248,6 +264,8 @@ open class SelectionRangeCalendarWidget : RoundedBottomSheetDialogFragment() {
                         putLong(ARG_RANGE_DATE_SELECTED, rangeDateSelected)
                         putString(ARG_MIN_DATE_LABEL, minDateLabel)
                         putString(ARG_MAX_DATE_LABEL, maxDateLabel)
+                        putInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY, minSelectableDateFromToday)
+                        putBoolean(ARG_CAN_SELECT_SAME_DAY, canSelectSameDay)
                     }
                 }
     }
