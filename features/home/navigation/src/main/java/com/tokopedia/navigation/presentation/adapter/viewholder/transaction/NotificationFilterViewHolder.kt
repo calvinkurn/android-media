@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder.transaction
 
 import android.view.View
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -20,7 +21,7 @@ class NotificationFilterViewHolder(
 ): AbstractViewHolder<NotificationFilterSectionWrapper>(view), NotificationUpdateFilterAdapter.FilterAdapterListener {
 
     private val context = view.context
-    private val container = view.findViewById<RecyclerView>(R.id.container_notification_filter)
+    private val container = view.findViewById<LinearLayout>(R.id.container_notification_filter)
     private val lstFilter = view.findViewById<RecyclerView>(R.id.filter_list)
     private var filterAdapter: NotificationUpdateFilterAdapter?= null
 
@@ -28,6 +29,7 @@ class NotificationFilterViewHolder(
         if (element.filters.isNotEmpty()) {
             container.show()
         }
+
         if (filterAdapter == null) {
             filterAdapter = NotificationUpdateFilterAdapter(
                     NotificationUpdateFilterSectionTypeFactoryImpl(),
@@ -35,7 +37,6 @@ class NotificationFilterViewHolder(
                     UserSession(context?.applicationContext))
             lstFilter.adapter = filterAdapter
             filterAdapter?.updateData(map(element.filters))
-            lstFilter.addItemDecoration(ChipFilterItemDivider(context))
         }
     }
 
