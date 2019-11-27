@@ -11,6 +11,7 @@ import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -34,15 +35,18 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
     private GraphqlUseCase graphqlUseCase;
     private Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper;
     private SeamlessLoginUsecase seamlessLoginUsecase;
+    private UserSessionInterface userSession;
 
     SearchProductFirstPageGqlUseCase(GraphqlRequest graphqlRequest,
                                      GraphqlUseCase graphqlUseCase,
                                      Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper,
-                                     SeamlessLoginUsecase seamlessLoginUsecase) {
+                                     SeamlessLoginUsecase seamlessLoginUsecase,
+                                     UserSessionInterface userSession) {
         this.graphqlRequest = graphqlRequest;
         this.graphqlUseCase = graphqlUseCase;
         this.searchProductModelMapper = searchProductModelMapper;
         this.seamlessLoginUsecase = seamlessLoginUsecase;
+        this.userSession = userSession;
     }
 
     @Override
@@ -101,7 +105,7 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
             return;
         }
 
-        if (hasTobaccoLiteUrl(searchProductModel)) {
+        if (hasTobaccoLiteUrl(searchProductModel) && userSession.isLoggedIn()) {
             continueWithSeamlessLogin(searchProductModelEmitter, searchProductModel);
         }
         else {
