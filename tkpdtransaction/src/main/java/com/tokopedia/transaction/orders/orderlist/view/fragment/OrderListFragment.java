@@ -139,7 +139,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private UnifyButton terapkan;
     private RelativeLayout datePickerlayout;
     private RadioGroup radioGroup;
-    private RadioButtonUnify radio1;
+    private RadioButtonUnify radio1,radio2;
     private DatePickerUnify datePickerUnify;
     private RefreshHandler refreshHandler;
     private boolean isLoading = false;
@@ -151,6 +151,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private String defEndDate = "";
     private String customStartDate = "";
     private String customEndDate = "";
+    private int state = 0;
 
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final String DATE_FORMAT_1 = "yyyy/MM/dd";
@@ -707,7 +708,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
             if (radio1.isChecked()) {
                 startDate = defStartDate;
                 endDate = defEndDate;
+                state = 0;
             } else {
+                state = 1;
                 try {
                     startDate = format.format(format2.parse(mulaiButton.getText().toString()));
                     endDate = format.format(format2.parse(sampaiButton.getText().toString()));
@@ -735,9 +738,20 @@ public class OrderListFragment extends BaseDaggerFragment implements
             sampaiButton = categoryView.findViewById(R.id.et_end_date);
             terapkan = categoryView.findViewById(R.id.terapkan);
             radio1 = categoryView.findViewById(R.id.radio1);
+            radio2 = categoryView.findViewById(R.id.radio2);
             datePickerlayout = categoryView.findViewById(R.id.date_picker);
             radioGroup = categoryView.findViewById(R.id.radio_grp);
             terapkan.setOnClickListener(this);
+            if (state == 1) {
+                radio2.setChecked(true);
+                datePickerlayout.setVisibility(View.VISIBLE);
+                radio1.setChecked(false);
+
+            } else {
+                radio2.setChecked(false);
+                radio1.setChecked(true);
+
+            }
             try {
                 sampaiButton.setText(format2.format(format.parse(selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate)));
                 mulaiButton.setText(format2.format(format.parse(selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate)));
