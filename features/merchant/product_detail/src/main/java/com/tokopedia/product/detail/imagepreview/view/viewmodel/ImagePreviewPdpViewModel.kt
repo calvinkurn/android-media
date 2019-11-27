@@ -17,8 +17,12 @@ class ImagePreviewPdpViewModel @Inject constructor(
         val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
+    private fun isProductIdValid(productId: String): Boolean {
+        return productId.isNotEmpty() && productId.matches(Regex(PATTERN_REGEX))
+    }
+
     fun addWishList(productId: String, onErrorAddWishList: ((errorMessage: String?) -> Unit)?, onSuccessAddWishlist: ((productId: String?) -> Unit)?) {
-        if (productId.isNotEmpty() && productId.matches(Regex("^(?![a-zA-Z])([0-9])*\$"))) {
+        if (isProductIdValid(productId)) {
             addWishListUseCase.createObservable(productId, userSessionInterface.userId, object : WishListActionListener {
                 override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                     onErrorAddWishList?.invoke(errorMessage)
@@ -42,7 +46,7 @@ class ImagePreviewPdpViewModel @Inject constructor(
     }
 
     fun removeWishList(productId: String, onSuccessRemoveWishlist: ((productId: String?) -> Unit)?, onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?) {
-        if (productId.isNotEmpty() && productId.matches(Regex("^(?![a-zA-Z])([0-9])*\$"))) {
+        if (isProductIdValid(productId)) {
             removeWishlistUseCase.createObservable(productId, userSessionInterface.userId, object : WishListActionListener {
                 override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                     // no op
@@ -63,5 +67,10 @@ class ImagePreviewPdpViewModel @Inject constructor(
         } else {
             onErrorRemoveWishList?.invoke("")
         }
+    }
+
+    companion object {
+        /** Regex pattern is only accepted when product id is numeric, example : "12331213" */
+        const val PATTERN_REGEX = "^(?![a-zA-Z])([0-9])*\$"
     }
 }
