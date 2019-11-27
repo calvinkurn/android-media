@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.activity.viewmodel
+package com.tokopedia.discovery2.viewmodel
 
 import android.app.Application
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel

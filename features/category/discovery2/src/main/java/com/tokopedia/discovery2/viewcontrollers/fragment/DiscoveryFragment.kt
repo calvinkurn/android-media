@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.activity.viewcontrollers.fragment
+package com.tokopedia.discovery2.viewcontrollers.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

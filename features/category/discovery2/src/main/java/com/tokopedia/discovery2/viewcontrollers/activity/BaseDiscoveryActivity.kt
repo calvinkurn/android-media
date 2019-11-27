@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.activity.viewcontrollers.activity
+package com.tokopedia.discovery2.viewcontrollers.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

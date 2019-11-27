@@ -1,9 +1,9 @@
-package com.tokopedia.discovery2.activity.viewcontrollers.activity
+package com.tokopedia.discovery2.viewcontrollers.activity
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.activity.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.discovery2.activity.viewmodel.DiscoveryViewModel
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 
 class DiscoveryActivity : BaseDiscoveryActivity<DiscoveryViewModel>() {
@@ -20,7 +20,7 @@ class DiscoveryActivity : BaseDiscoveryActivity<DiscoveryViewModel>() {
 
     override fun getViewModelType(): Class<DiscoveryViewModel> {
         return DiscoveryViewModel::class.java
-        TODO("Set Observers")
+//        TODO("Set Observers")
     }
 
     override fun initView() {
