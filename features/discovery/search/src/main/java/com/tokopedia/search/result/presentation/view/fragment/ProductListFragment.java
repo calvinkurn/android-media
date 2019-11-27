@@ -1238,6 +1238,8 @@ public class ProductListFragment
 
     @Override
     public void redirectToBrowser(String url) {
+        if (TextUtils.isEmpty(url)) return;
+
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(intent);
     }
