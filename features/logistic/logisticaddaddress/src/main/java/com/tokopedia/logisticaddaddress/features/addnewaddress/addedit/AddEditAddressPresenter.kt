@@ -53,8 +53,8 @@ class AddEditAddressPresenter
         zipCodeUseCase.execute(districtId)
                 .subscribe(
                         { response ->
-                            if (response.keroDistrictRecommendation.district.isNotEmpty()) {
-                                response.keroDistrictRecommendation.district[0].let {
+                            if (response.keroDistrictDetails.district.isNotEmpty()) {
+                                response.keroDistrictDetails.district[0].let {
                                     if (it.zipCode.isNotEmpty()) {
                                         view.showZipCodes(it.zipCode)
                                     } else {
