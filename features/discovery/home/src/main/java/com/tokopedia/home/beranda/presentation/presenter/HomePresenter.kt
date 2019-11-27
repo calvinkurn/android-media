@@ -10,7 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
-import com.tokopedia.home.beranda.data.repository.HomeRepository
+import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -51,9 +51,7 @@ import kotlin.coroutines.CoroutineContext
 
 class HomePresenter(private val userSession: UserSessionInterface,
                     private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
-                    private val coroutineDispatcher: CoroutineDispatcher,
-                    private val homeRepository: HomeRepository,
-                    private val homeDataMapper: HomeDataMapper) :
+                    private val coroutineDispatcher: CoroutineDispatcher) :
         BaseDaggerPresenter<HomeContract.View?>(), HomeContract.Presenter, CoroutineScope {
 
     protected var compositeSubscription: CompositeSubscription
@@ -90,10 +88,16 @@ class HomePresenter(private val userSession: UserSessionInterface,
     @Inject
     lateinit var playCardHomeUseCase: PlayCardHomeUseCase
 
+    @Inject
+    lateinit var homeUseCase: HomeUseCase
+
+    @Inject
+    lateinit var homeDataMapper: HomeDataMapper
+
 
     private var isCache = true
 
-    val homeLiveData: LiveData<HomeViewModel> = homeRepository.getHomeData().map {
+    val homeLiveData: LiveData<HomeViewModel> = homeUseCase.getHomeData().map {
         homeDataMapper.mapToHomeViewModel(it, isCache)
     }
 
@@ -181,7 +185,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         _updateNetworkLiveData.value = Resource.loading(null)
         lastRequestTimeSendGeolocation = System.currentTimeMillis()
         launchCatchError(coroutineContext, block = {
-            val resource = homeRepository.updateHomeData()
+            val resource = homeUseCase.updateHomeData()
             isCache = false
             _updateNetworkLiveData.value = resource
         }){
@@ -193,7 +197,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     override fun updateHomeData() {
         lastRequestTimeHomeData = System.currentTimeMillis()
         launchCatchError(coroutineContext, block = {
-            val resource = homeRepository.updateHomeData()
+            val resource = homeUseCase.updateHomeData()
             isCache = false
             _updateNetworkLiveData.value = resource
         }){

@@ -15,12 +15,12 @@ import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper
-import com.tokopedia.home.beranda.data.mapper.HomeMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
 import com.tokopedia.home.beranda.data.source.HomeDataSource
+import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase
@@ -63,13 +63,6 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun providehomeMapper(@ApplicationContext context: Context?,
-                                    homeVisitableFactory: HomeVisitableFactory?): HomeMapper {
-        return HomeMapper(context, homeVisitableFactory)
-    }
-
-    @HomeScope
-    @Provides
     fun pagingHandler(): PagingHandler {
         return PagingHandler()
     }
@@ -103,6 +96,10 @@ class HomeModule {
     fun homeRepository(homeDataSource: HomeDataSource, homeDao: HomeDao, homeRemoteDataSource: HomeRemoteDataSource): HomeRepository {
         return HomeRepositoryImpl(homeDataSource, homeDao, homeRemoteDataSource)
     }
+
+    @HomeScope
+    @Provides
+    fun homeUsecase(homeRepository: HomeRepository) = HomeUseCase(homeRepository)
 
 
     @Provides
@@ -211,10 +208,8 @@ class HomeModule {
     @Provides
     fun homePresenter(userSession: UserSessionInterface,
                       getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
-                      @Named("Main") coroutineDispatcher: CoroutineDispatcher,
-                      homeRepository: HomeRepository,
-                      homeDataMapper: HomeDataMapper): HomePresenter {
-        return HomePresenter(userSession, getShopInfoByDomainUseCase, coroutineDispatcher, homeRepository, homeDataMapper)
+                      @Named("Main") coroutineDispatcher: CoroutineDispatcher): HomePresenter {
+        return HomePresenter(userSession, getShopInfoByDomainUseCase, coroutineDispatcher)
     }
 
     @Provides

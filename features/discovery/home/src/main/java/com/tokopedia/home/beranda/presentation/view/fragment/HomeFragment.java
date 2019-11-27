@@ -43,11 +43,13 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.screen.IndexScreenTracking;
-import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.digital.common.analytic.DigitalEventTracking;
+import com.tokopedia.dynamicbanner.entity.PlayCard;
+import com.tokopedia.dynamicbanner.entity.PlayCardData;
+import com.tokopedia.dynamicbanner.entity.PlayCardDataWrapper;
 import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
@@ -76,6 +78,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
@@ -142,6 +145,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final String BERANDA_TRACE = "gl_beranda";
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
+    private static final int DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111;
     private static final int REQUEST_CODE_REVIEW = 999;
     private static final int VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1;
     private static final int DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10;
@@ -472,7 +476,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if(data != null){
                 if (data.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                     configureHomeFlag(data.getHomeFlag());
-                    setData(new ArrayList(data.getList()), data.isCache() ? HomePresenter.FLAG_FROM_CACHE : HomePresenter.FLAG_FROM_NETWORK);
+                    PlayCardViewModel play = new PlayCardViewModel();
+                    PlayCard playCard = new PlayCard();
+                    playCard.setImageUrl("");
+                    playCard.setShowLive(true);
+                    playCard.setShowTotalView(true);
+                    playCard.setTotalView("2,1 jt");
+
+                    play.setPlayCardHome(new PlayCardHome(new PlayCardDataWrapper(new PlayCardData(playCard))));
+                    List newList = new ArrayList(data.getList());
+                    newList.add(4, play);
+                    setData(newList, data.isCache() ? HomePresenter.FLAG_FROM_CACHE : HomePresenter.FLAG_FROM_NETWORK);
                     presenter.setCache(true);
                 } else {
                     showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(new Throwable()));
@@ -695,7 +709,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 : RouteManager.isSupportApplink(getActivity(), appLinkScheme)
                 ? RouteManager.getIntent(getActivity(), appLinkScheme).setData(Uri.parse(appLinkScheme))
                 : RouteManager.getIntent(getActivity(), ApplinkConst.WEBVIEW).putExtra("EXTRA_URL", appLinkScheme);
-        startActivityForResult(intent, IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE);
+        startActivityForResult(intent, DEFAULT_WALLET_APPLINK_REQUEST_CODE);
     }
 
     @Override
