@@ -17,7 +17,7 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_activity)
         supportFragmentManager.beginTransaction()
-                .replace(R.id.parent_view, HomeFragment(), "home")
+                .replace(R.id.parent_view, com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment(), "home")
                 .commit()
     }
 }

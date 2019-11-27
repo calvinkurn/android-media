@@ -2,6 +2,10 @@ package com.tokopedia.home.beranda.data.mapper;
 
 import android.content.Context;
 
+import com.tokopedia.dynamicbanner.entity.PlayCard;
+import com.tokopedia.dynamicbanner.entity.PlayCardData;
+import com.tokopedia.dynamicbanner.entity.PlayCardDataWrapper;
+import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory;
@@ -91,6 +95,15 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                     homeData.getHomeFlag().getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)
             ));
         }
+
+        PlayCardViewModel play = new PlayCardViewModel();
+        PlayCard playCard = new PlayCard();
+        playCard.setShowTotalView(true);
+        playCard.setShowLive(true);
+        playCard.setTotalView("2,1 jt");
+        playCard.setImageUrl("");
+        play.setPlayCardHome(new PlayCardHome(new PlayCardDataWrapper(new PlayCardData(playCard))));
+        list.add(play);
 
         if (homeData.getDynamicHomeChannel() != null
                 && homeData.getDynamicHomeChannel().getChannels() != null

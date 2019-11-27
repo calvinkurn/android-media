@@ -38,7 +38,6 @@ dependencies {
 //    implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.homeDependencyNoOp)
-    implementation project(rootProject.ext.features.loyalty)
 //    implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
@@ -48,7 +47,7 @@ dependencies {
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.productCard)
 //    implementation project(rootProject.ext.features.digitalproduct)
-    implementation project(rootProject.ext.features.tokopoints)
+//    implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.tokopointsNotification)
@@ -87,6 +86,10 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.miscDependencies.ucrop){
