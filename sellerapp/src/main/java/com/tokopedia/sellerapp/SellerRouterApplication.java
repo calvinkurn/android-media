@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
@@ -70,6 +71,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
+import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
@@ -143,7 +145,6 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.webview.SellerappWebViewActivity;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
-import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
@@ -1231,5 +1232,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getLoginIntent(Context context) {
         return LoginActivity.DeepLinkIntents.getCallingIntent(context);
+    }
+
+    @Override
+    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context,
+                                            BottomSheets.BottomSheetDismissListener listener) {
+        //no op
     }
 }

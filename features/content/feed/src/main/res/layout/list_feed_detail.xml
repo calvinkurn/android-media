@@ -17,13 +17,12 @@
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
-        android:background="@drawable/feed_container_rounded_corners_border"
-        tools:src="@drawable/product_no_photo_default" />
+        android:background="@drawable/feed_container_rounded_corners_border"/>
 
     <ImageView
         android:id="@+id/wishlist"
-        android:layout_width="@dimen/user_ava"
-        android:layout_height="@dimen/user_ava"
+        android:layout_width="@dimen/dp_35"
+        android:layout_height="@dimen/dp_35"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:elevation="5dp"
@@ -101,7 +100,7 @@
             android:background="@drawable/green_button_rounded"
             android:padding="@dimen/dp_5"
             android:textColor="@color/white"
-            android:textSize="@dimen/fontvvs"
+            android:textSize="@dimen/sp_10"
             tools:text="Cashback 4%"
             tools:visibility="gone" />
 
@@ -114,10 +113,10 @@
             android:layout_marginRight="@dimen/dp_5"
             android:layout_toEndOf="@id/cashback"
             android:layout_toRightOf="@id/cashback"
-            android:background="@drawable/cards_ui"
+            android:background="@drawable/feed_cards_ui"
             android:padding="@dimen/dp_5"
             android:text="@string/wholesale"
-            android:textSize="@dimen/fontvvs" />
+            android:textSize="@dimen/sp_10" />
 
         <TextView
             android:id="@+id/preorder"
@@ -128,16 +127,16 @@
             android:layout_marginRight="@dimen/dp_5"
             android:layout_toEndOf="@+id/wholesale"
             android:layout_toRightOf="@+id/wholesale"
-            android:background="@drawable/cards_ui"
+            android:background="@drawable/feed_cards_ui"
             android:padding="@dimen/dp_5"
-            android:text="@string/preorder"
-            android:textSize="@dimen/fontvvs"
+            android:text="@string/text_preorder"
+            android:textSize="@dimen/sp_10"
             tools:visibility="gone" />
 
         <ImageView
             android:id="@+id/free_return"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/icon_prod_size"
+            android:layout_height="@dimen/dp_18"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/preorder"
             android:layout_toRightOf="@id/preorder"
