@@ -26,7 +26,7 @@ public class FifthScreenState extends ScreenState {
 
     @Override
     public int getFifthEmoji() {
-        return  R.drawable.rating_active_5;
+        return  R.drawable.ic_rating_active_5;
     }
 
     @Override

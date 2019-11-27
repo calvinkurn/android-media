@@ -10,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
@@ -104,6 +105,7 @@ object DeeplinkDFMapper {
     private val DFM_REFERRAL = "im_referral"
     private val DFM_WALLET = "fintech_wallet"
     private val DFM_PROFILE = "profile"
+    private val DFM_AFFILIATE = "affiliate"
     private val DFM_CHAT_BOT = "chatbot"
     private val DFM_POWER_MERCHANT_SUBSCRIBE = "power_merchant_subscribe"
     private val DFM_SETTING_NOTIF = "settingnotif"
@@ -158,6 +160,7 @@ object DeeplinkDFMapper {
             add(DFP({it.startsWith(OVO_WALLET)}, DFM_WALLET, R.string.applink_wallet_title))
             add(DFP({ it.startsWith(CONTACT_US_NATIVE) || it.startsWith(CONTACT_US) || it.startsWithPattern(TICKET_DETAIL) }, DFM_CONTACT_US, R.string.applink_title_contact_us))
             add(DFP({ it.startsWithPattern(PROFILE) }, DFM_PROFILE, R.string.applink_title_profile))
+            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DFM_AFFILIATE, R.string.applink_title_affiliate))
             add(DFP({it.startsWith(CHAT_BOT)}, DFM_CHAT_BOT, R.string.title_applink_chatbot))
             add(DFP({ it.startsWith(POWER_MERCHANT_SUBSCRIBE) }, DFM_POWER_MERCHANT_SUBSCRIBE, R.string.title_applink_pm_subscribe))
             add(DFP({it.startsWith(OVO_PAY_WITH_QR_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))

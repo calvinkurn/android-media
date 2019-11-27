@@ -177,7 +177,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     @Inject
     lateinit var affiliatePreference: AffiliatePreference
-    
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -1611,7 +1611,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToDashboard() {
-        RouteManager.route(requireContext(), ApplinkConst.AFFILIATE_DASHBOARD)
+        RouteManager.route(requireContext(), ApplinkConstInternalContent.AFFILIATE_DASHBOARD)
         profileAnalytics.eventClickStatistic(userId.toString())
     }
 

@@ -41,7 +41,7 @@
             android:layout_marginRight="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
             android:background="@drawable/container_circle_corners_border"
-            tools:src="@drawable/ic_check_green_24dp" />
+            tools:src="@drawable/feed_ic_check_green_24dp" />
 
         <RelativeLayout
             android:layout_width="0dp"

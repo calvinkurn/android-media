@@ -8,7 +8,6 @@
     <color name="black_70">#b3000000</color>
     <color name="black_70b">#b3000000</color>
     <color name="black_87">#de000000</color>
-    <color name="black_tooltip">#96000000</color>
 
     <color name="shadow_color_1">#00CCCCCC</color>
     <color name="shadow_color_2">#10CCCCCC</color>
@@ -17,4 +16,6 @@
     <color name="shadow_color_5">#25CCCCCC</color>
     <color name="comment_hint_color">#2e000000</color>
     <color name="kol_purple_grey">#868486</color>
+
+    <color name="black_tooltip">#96000000</color>
 </resources>
