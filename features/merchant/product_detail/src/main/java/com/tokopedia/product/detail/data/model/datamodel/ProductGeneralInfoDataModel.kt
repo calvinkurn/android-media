@@ -8,7 +8,8 @@ data class ProductGeneralInfoDataModel(
         val name: String = "",
         val dataLayout: List<ComponentData> = listOf(),
         var title: String = "",
-        var applink: String = ""
+        var applink: String = "",
+        var description: String = ""
 ) : DynamicPDPDataModel {
 
     override fun name(): String = name

@@ -295,8 +295,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     fun loadRecommendation() {
         val product = (productInfoP1.value ?: return) as? Success ?: return
         launch {
-            if (GlobalConfig.isCustomerApp() &&
-                    loadTopAdsProduct.value == null) {
+            if (GlobalConfig.isCustomerApp()) {
                 try {
                     withContext(Dispatchers.IO) {
                         val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
@@ -306,7 +305,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 //                                productIds = arrayListOf(product.data.productInfo.basic.id.toString())
                                 productIds = arrayListOf()
                         )).toBlocking()
-                        loadTopAdsProduct.value = Success(recomData.first())
+                        loadTopAdsProduct.postValue(Success(recomData.first() ?: emptyList()))
                     }
                 } catch (e: Throwable) {
                     loadTopAdsProduct.value = Fail(e)
@@ -339,6 +338,16 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             //no op
         }) {
             it.debugTrace()
+        }
+    }
+
+
+    fun generateVariantString(): String {
+        return try {
+            p2General.value?.variantResp?.variant?.map { it.name }?.joinToString(separator = ", ")
+                    ?: ""
+        } catch (e: Throwable) {
+            ""
         }
     }
 

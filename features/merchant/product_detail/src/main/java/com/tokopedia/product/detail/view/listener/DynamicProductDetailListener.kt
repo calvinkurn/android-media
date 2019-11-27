@@ -7,6 +7,7 @@ import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.spesification.Specification
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tradein.model.TradeInParams
 
 interface DynamicProductDetailListener {
@@ -66,4 +67,16 @@ interface DynamicProductDetailListener {
      */
     fun openShopClicked()
 
+    /**
+     * ProductRecommendationViewHolder
+     */
+    fun onSeeAllRecomClicked(pageName: String, applink: String)
+    fun eventRecommendationClick(recomItem: RecommendationItem, position: Int, pageName: String, title: String)
+    fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String)
+
+    /**
+     * ProductGeneralInfoViewHolder
+     */
+    fun onDescriptioInfonClicked(name: String)
+    fun onInfoClicked(name: String)
 }

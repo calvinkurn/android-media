@@ -8,7 +8,7 @@ class DynamicProductDetailAdapter(
         private val adapterTypeFactory: DynamicProductDetailAdapterFactoryImpl
 ) : BaseListAdapter<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(adapterTypeFactory) {
 
-    fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel, payload: Int? = null) {
+    fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel, payload: Int) {
         val indexOfSnapshot = list.indexOf(snapshotData)
         notifyItemChanged(indexOfSnapshot, payload)
     }
@@ -18,22 +18,22 @@ class DynamicProductDetailAdapter(
         notifyItemChanged(indexOfShopInfo, payload)
     }
 
+    fun notifySocialProof(shopInfoData: ProductSocialProofDataModel) {
+        val indexOfShopInfo = list.indexOf(shopInfoData)
+        notifyItemChanged(indexOfShopInfo)
+    }
+
+
     fun notifyRecomAdapter(listOfData: List<ProductRecommendationDataModel>?) {
         listOfData?.run {
             forEach {
-                notifyItemChanged(list.indexOf(it))
+                if (it.recomWidgetData == null) {
+                    clearElement(it)
+                } else {
+                    notifyItemChanged(list.indexOf(it))
+                }
             }
         }
-    }
-
-    fun getRecommendationIndex(): Int {
-        val position = -1
-        list.forEachIndexed { index, visitable ->
-            if (visitable is ProductRecommendationDataModel) {
-                return@getRecommendationIndex index
-            }
-        }
-        return position
     }
 
     fun removeRecommendation(listOfData: List<ProductRecommendationDataModel>?) {

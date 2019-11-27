@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.view.util
 
+import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
@@ -21,16 +23,21 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
         private const val TRADE_IN = "trade_in"
         private const val SHOP_VOUCHER = "shop_voucher"
         private const val PRODUCT_LIST = "product_list"
+        private const val TOP_ADS_LAIN = "top_ads_lain"
+        private const val TOP_ADS_SUKA = "top_ads_suka"
+        private const val TOP_ADS_BERSAMA = "top_ads_bersama"
+        private const val TOP_ADS_PENCARIAN = "top_ads_pencarian"
         private const val PRODUCT_LAST_SEEN = "product_last_seen"
+        private const val PRODUCT_VARIANT_INFO = "variant"
     }
 
-    private val socialProofMap: ProductSocialProofDataModel?
+    val socialProofMap: ProductSocialProofDataModel?
         get() = mapOfData[SOCIAL_PROOF] as ProductSocialProofDataModel
 
     val snapShotMap: ProductSnapshotDataModel
         get() = mapOfData[PRODUCT_SNAPSHOT] as ProductSnapshotDataModel
 
-    private val shopInfoMap: ProductShopInfoDataModel?
+    val shopInfoMap: ProductShopInfoDataModel?
         get() = mapOfData[SHOP_INFO] as ProductShopInfoDataModel
 
     val productInfoMap: ProductInfoDataModel?
@@ -54,8 +61,11 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
     val productLastSeenMap: ProductLastSeenDataModel?
         get() = mapOfData[PRODUCT_LAST_SEEN] as ProductLastSeenDataModel
 
+    val productVariantInfoMap: ProductGeneralInfoDataModel?
+        get() = mapOfData[PRODUCT_VARIANT_INFO] as ProductGeneralInfoDataModel
+
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
-        it == PRODUCT_LIST
+        it == TOP_ADS_LAIN || it == TOP_ADS_BERSAMA || it == TOP_ADS_PENCARIAN || it == TOP_ADS_SUKA
     }.map {
         it.value as ProductRecommendationDataModel
     }
@@ -145,28 +155,42 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
         listProductRecomMap?.run {
             forEach {
                 when (it.name) {
-                    "pdp_1" -> {
+                    TOP_ADS_SUKA -> {
                         data.getOrNull(0)?.let { recom ->
                             it.recomWidgetData = recom
                         }
                     }
-                    "pdp_2" -> {
+                    TOP_ADS_PENCARIAN -> {
                         data.getOrNull(1)?.let { recom ->
                             it.recomWidgetData = recom
                         }
                     }
-                    "pdp_3" -> {
+                    TOP_ADS_BERSAMA -> {
                         data.getOrNull(2)?.let { recom ->
                             it.recomWidgetData = recom
                         }
                     }
-                    "pdp_4" -> {
+                    TOP_ADS_LAIN -> {
                         data.getOrNull(3)?.let { recom ->
                             it.recomWidgetData = recom
                         }
                     }
                 }
             }
+        }
+    }
+
+    fun updateVariantInfo(productVariant: ProductVariant, selectedOptionString: String) {
+
+        productVariantInfoMap?.run {
+            description =
+                    if (selectedOptionString.isEmpty()) {
+                        "Pilih " +
+                                productVariant.variant.map { it.name }.joinToStringWithLast(separator = ", ",
+                                        lastSeparator = " dan ")
+                    } else {
+                        selectedOptionString
+                    }
         }
     }
 

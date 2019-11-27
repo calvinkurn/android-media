@@ -7,7 +7,7 @@ object DynamicProductDetailMapper {
 
     fun mapIntoVisitable(data: List<Component>): MutableList<DynamicPDPDataModel> {
         val listOfComponent: MutableList<DynamicPDPDataModel> = mutableListOf()
-        data.forEachIndexed { _, component ->
+        data.forEachIndexed { index, component ->
             when (component.type) {
                 "product_snapshot" -> {
                     listOfComponent.add(ProductSnapshotDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
@@ -37,7 +37,7 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductGeneralInfoDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
                 }
                 "product_list" -> {
-                    listOfComponent.add(ProductRecommendationDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductRecommendationDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName, position = index))
                 }
                 "shop_voucher" -> {
                     listOfComponent.add(ProductMerchantVoucherDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
@@ -49,7 +49,7 @@ object DynamicProductDetailMapper {
 
     fun hashMapLayout(data: List<DynamicPDPDataModel>): Map<String, DynamicPDPDataModel> {
         return data.associateBy({
-            if (it.type() != it.name()) it.type() else it.name()
+            if (it.type() != it.name()) it.name() else it.type()
         }, {
             it
         })

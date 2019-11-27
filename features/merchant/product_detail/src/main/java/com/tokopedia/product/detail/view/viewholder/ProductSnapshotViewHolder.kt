@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder
 
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager

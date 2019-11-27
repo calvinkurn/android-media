@@ -9,12 +9,18 @@ import kotlinx.android.synthetic.main.item_dynamic_trade_in.view.*
 
 class ProductTradeinViewHolder(val view: View, val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductTradeinDataModel>(view) {
 
+    var shouldCheckTradein = true
+
     companion object {
         val LAYOUT = R.layout.item_dynamic_trade_in
     }
 
     override fun bind(element: ProductTradeinDataModel) {
-        view.tv_trade_in.tradeInReceiver.checkTradeIn(element.tradeInParams, false)
+        if (shouldCheckTradein) {
+            view.tv_trade_in.tradeInReceiver.checkTradeIn(element.tradeInParams, false)
+            shouldCheckTradein = false
+        }
+
         view.setOnClickListener {
             listener.onTradeinClicked(element.tradeInParams)
         }

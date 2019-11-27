@@ -75,7 +75,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val childFragmentManager: F
             ProductSocialProofViewHolder.LAYOUT -> ProductSocialProofViewHolder(view, listener)
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)
             ProductDiscussionViewHolder.LAYOUT -> ProductDiscussionViewHolder(view, listener)
-            ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view)
+            ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view, listener)
             ProductMostHelpfulReviewViewHolder.LAYOUT -> ProductMostHelpfulReviewViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
