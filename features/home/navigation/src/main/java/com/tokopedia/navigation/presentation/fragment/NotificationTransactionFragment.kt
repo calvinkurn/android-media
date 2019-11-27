@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -49,6 +50,7 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     private val viewModel by lazy { viewModelProvider.get(NotificationTransactionViewModel::class.java) }
 
     private val _adapter by lazy { adapter as NotificationTransactionAdapter }
+    private lateinit var longerTextDialog: BottomSheetDialogFragment
 
     //last notification id
     private var cursor = ""
@@ -66,24 +68,35 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.errorMessage.observe(this, onViewError())
+
         viewModel.infoNotification.observe(this, Observer {
             if (NotificationMapper.isHasShop(it)) {
                 _adapter.addElement(sellerMenu())
             }
-            viewModel.getNotificationFilter()
             _adapter.updateValue(it.notifications)
+
+            //get filter data
+            viewModel.getNotificationFilter()
         })
+
         viewModel.filterNotification.observe(this, Observer {
             _adapter.addElement(it)
 
             //get notification
             getNotification(cursor)
         })
+
         viewModel.notification.observe(this, Observer {
-            _notification.add(it.list.first()) //flag
+            /* flag for showing filter */
+            if (it.list.isNotEmpty()) {
+                _notification.add(it.list.first())
+            }
+
+            /* hide filter item if there's no notification */
             if (_notification.isEmpty()) {
                 _adapter.hideFilterItem()
             }
+
             onSuccessNotificationData(it)
         })
     }
@@ -121,13 +134,17 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     private fun onSuccessNotificationData(notification: TransactionNotification) {
+        //pagination
         val pagination = notification.paging.hasNext
         if (pagination && !notification.list.isEmpty()) {
             cursor = (notification.list.last().notificationId)
         }
+
+        //for notification filtering
         if (isNotificationFilter) {
-            _adapter.removeTransaction()
+
         }
+
         _adapter.addElement(notification.list)
     }
 
@@ -138,37 +155,49 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
 
     override fun updateFilter(filter: HashMap<String, Int>) {
         viewModel.updateNotificationFilter(filter)
-        isNotificationFilter = true
         cursor = ""
+        isNotificationFilter = true
         getNotification(cursor)
     }
 
-    override fun getAnalytic(): NotificationUpdateAnalytics = NotificationUpdateAnalytics()
+    override fun getAnalytic(): NotificationUpdateAnalytics {
+        /* Trackers from Update Notification:
+         * for tracking atc to pdp,
+         * tracking impression of product recommendation */
+        return NotificationUpdateAnalytics()
+    }
 
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
 
-    override fun showTextLonger(element: TransactionItemNotification) {}
+    override fun showTextLonger(element: TransactionItemNotification) {
+        val bundle = Bundle().apply {
+            with(element) {
+                putString(PARAM_CONTENT_IMAGE, contentUrl)
+                putString(PARAM_CONTENT_IMAGE_TYPE, typeLink.toString())
+                putString(PARAM_CTA_APPLINK, appLink)
+                putString(PARAM_CONTENT_TEXT, body)
+                putString(PARAM_CONTENT_TITLE, title)
+                putString(PARAM_BUTTON_TEXT, btnText)
+                putString(PARAM_TEMPLATE_KEY, templateKey)
+            }
+        }
 
-    override fun sentFilterAnalytic(analyticData: String) {
-        analytics.trackClickFilterRequest(analyticData)
+        if (!::longerTextDialog.isInitialized) {
+            longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
+        } else {
+            longerTextDialog.arguments = bundle
+        }
+
+        if (!longerTextDialog.isAdded) {
+            longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
+        }
     }
-
-    override fun sendTrackingData(parent: String, child: String) {
-        analytics.sendTrackTransactionTab(parent, child)
-    }
-
-    override fun trackNotificationImpression(element: TransactionItemNotification) {
-        analytics.saveNotificationImpression(element)
-    }
-
-    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
-
-    override fun getRecyclerViewResourceId() = R.id.lstNotification
-
-    override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return NotificationTransactionFactoryImpl(this, this, this)
+        return NotificationTransactionFactoryImpl(
+                notificationUpdateListener = this,
+                notificationFilterListener = this,
+                transactionMenuListener = this)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
@@ -184,11 +213,34 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
                 .inject(this)
     }
 
-    override fun onItemClicked(t: Visitable<*>?) {}
+    override fun sentFilterAnalytic(analyticData: String) {
+        analytics.trackClickFilterRequest(analyticData)
+    }
+
+    override fun sendTrackingData(parent: String, child: String) {
+        analytics.sendTrackTransactionTab(parent, child)
+    }
+
+    override fun trackNotificationImpression(element: TransactionItemNotification) {
+        analytics.saveNotificationImpression(element)
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
+    override fun getRecyclerViewResourceId() = R.id.lstNotification
+    override fun hasInitialSwipeRefresh(): Boolean = true
+    override fun onItemClicked(t: Visitable<*>?) = Unit
     override fun getScreenName() = SCREEN_NAME
 
     companion object {
-        const val SCREEN_NAME = "Notification Transaction"
+        private const val SCREEN_NAME = "Notification Transaction"
+
+        private const val PARAM_CONTENT_TITLE = "content title"
+        private const val PARAM_CONTENT_TEXT = "content text"
+        private const val PARAM_CONTENT_IMAGE = "content image"
+        private const val PARAM_CONTENT_IMAGE_TYPE = "content image type"
+        private const val PARAM_CTA_APPLINK = "cta applink"
+        private const val PARAM_BUTTON_TEXT = "button text"
+        private const val PARAM_TEMPLATE_KEY = "template key"
     }
 
 }
