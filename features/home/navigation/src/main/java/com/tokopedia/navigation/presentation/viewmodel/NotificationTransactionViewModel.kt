@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
@@ -43,13 +44,13 @@ class NotificationTransactionViewModel @Inject constructor(
         dispatcher: DispatcherProvider
 ): BaseViewModel(dispatcher.io()), NotificationTransactionContract {
 
-    private val _notification = MutableLiveData<TransactionNotification>()
+    private val _notification = MediatorLiveData<TransactionNotification>()
     val notification: LiveData<TransactionNotification> get() = _notification
 
-    private val _infoNotification = MutableLiveData<NotificationEntity>()
+    private val _infoNotification = MediatorLiveData<NotificationEntity>()
     val infoNotification: LiveData<NotificationEntity> get() = _infoNotification
 
-    private val _filterNotification = MutableLiveData<NotificationFilterSectionWrapper>()
+    private val _filterNotification = MediatorLiveData<NotificationFilterSectionWrapper>()
     val filterNotification: LiveData<NotificationFilterSectionWrapper> get() = _filterNotification
 
     private val _errorMessage = MutableLiveData<String>()
@@ -58,13 +59,29 @@ class NotificationTransactionViewModel @Inject constructor(
     //filtering variables
     var variables: HashMap<String, Any> = HashMap()
 
+    //last noitifcation id
+    private val _lastNotificationId = MutableLiveData<String>()
+    val lastNotificationId: LiveData<String> get() = _lastNotificationId
+
     init {
         getInfoStatusNotification()
+
+        _filterNotification.addSource(_infoNotification) {
+            getNotificationFilter()
+        }
+
+        _notification.addSource(_filterNotification) {
+            getTransactionNotification(_lastNotificationId.value?: "")
+        }
+    }
+
+    fun setLastNotificationId(id: String) {
+        _lastNotificationId.postValue(id)
     }
 
     override fun getInfoStatusNotification() {
         notificationInfoTransactionUseCase.get({ data ->
-            _infoNotification.postValue(data)
+            _infoNotification.value = data
         }, {
             onErrorMessage(it)
         })
@@ -91,7 +108,8 @@ class NotificationTransactionViewModel @Inject constructor(
     }
 
     override fun getNotificationFilter() {
-        notificationFilterUseCase.get({
+        val params = NotificationFilterUseCase.params()
+        notificationFilterUseCase.get(params, {
             val notificationFilter = NotificationFilterSectionWrapper(notificationFilterMapper.mapToFilter(it))
             _filterNotification.postValue(notificationFilter)
         }, {

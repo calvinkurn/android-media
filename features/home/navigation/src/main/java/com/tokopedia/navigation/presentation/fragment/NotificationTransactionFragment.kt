@@ -71,26 +71,20 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         onListLastScroll(view)
 
         viewModel.errorMessage.observe(this, onViewError())
-
         viewModel.infoNotification.observe(this, Observer {
             if (NotificationMapper.isHasShop(it)) {
                 _adapter.addElement(sellerMenu())
             }
             _adapter.updateValue(it.notifications)
-
-            //get filter data
-            viewModel.getNotificationFilter()
         })
-
         viewModel.filterNotification.observe(this, Observer {
             _adapter.addElement(it)
-
-            //get notification
-            getNotification(cursor)
         })
-
         viewModel.notification.observe(this, Observer {
             onSuccessNotificationData(it)
+        })
+        viewModel.lastNotificationId.observe(this, Observer {
+            viewModel.getTransactionNotification(it)
         })
     }
 
@@ -121,7 +115,7 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     private fun getNotification(position: String) {
-        viewModel.getTransactionNotification(position)
+        viewModel.setLastNotificationId(position)
     }
 
     private fun onViewError() = Observer<String> { message ->
