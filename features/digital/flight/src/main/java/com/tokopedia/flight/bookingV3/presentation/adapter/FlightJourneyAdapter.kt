@@ -50,10 +50,10 @@ class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder
                     tv_refundable_info.text = "Refundable"
                 } else {
                     iv_refundable.setImageResource(R.drawable.ic_flight_booking_non_refundable)
-                    tv_refundable_info.text = "Non-Refundable"
+                    tv_refundable_info.text = "Non-refundable"
                 }
 
-                tv_flight_route_detail.setOnClickListener {
+                this.setOnClickListener {
                     listener?.onClickRouteDetail(journey.journeyId)
                 }
 

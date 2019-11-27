@@ -80,7 +80,7 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
             val color = itemView.resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500)
             var fullText = String.format("%s. ", description)
             if (tncUrl != null && tncUrl.length > 0) {
-                fullText += "Pelajari"
+                fullText += "Selengkapnya"
             }
             val stopIndex = fullText.length
             val descriptionStr = SpannableStringBuilder(fullText)
@@ -95,7 +95,7 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
                     ds.color = color
-                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+                    ds.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
                 }
             }
             descriptionStr.setSpan(clickableSpan, description.length + 2, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

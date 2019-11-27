@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/dp_4"
             android:paddingLeft="@dimen/dp_4"
-            android:text="Detail"
+            android:text="@string/flight_label_see_detail"
             android:textColor="@color/Green_G500"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent"

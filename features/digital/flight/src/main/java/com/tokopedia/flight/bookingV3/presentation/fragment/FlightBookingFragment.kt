@@ -742,7 +742,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 layout_full_page_error.tv_error_title.text = FlightBookingErrorCodeMapper.getErrorTitle(errorCode)
                 layout_full_page_error.tv_error_subtitle.text = FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode)
                 layout_full_page_error.button_error_action.text = getString(R.string.flight_booking_action_refind_ticket)
-                layout_full_page_error.button_error_action.setOnClickListener { finishActivityToHomepage() }
+                layout_full_page_error.button_error_action.setOnClickListener { finishActivityToSearchPage() }
             } else {
                 lateinit var dialog: DialogUnify
                 when (errorCode) {
@@ -752,7 +752,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_refind_ticket))
                         dialog.setPrimaryCTAClickListener {
                             dialog.dismiss()
-                            finishActivityToHomepage()
+                            finishActivityToSearchPage()
                         }
                     }
                     FlightErrorConstant.FAILED_ADD_FACILITY -> {

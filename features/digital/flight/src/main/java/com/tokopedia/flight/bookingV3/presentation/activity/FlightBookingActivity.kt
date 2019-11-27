@@ -3,6 +3,7 @@ package com.tokopedia.flight.bookingV3.presentation.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -61,6 +62,8 @@ class FlightBookingActivity: BaseFlightActivity(), HasComponent<FlightBookingCom
             } else finish()
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean = true
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 6

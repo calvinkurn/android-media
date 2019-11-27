@@ -101,7 +101,7 @@
     <string name="flight_label_normal_price">Harga Normal</string>
     <string name="flight_label_saving_price">Hemat</string>
     <string name="flight_booking_finish_transaction_label">Selesaikan Pesanan Anda Dalam</string>
-    <string name="flight_booking_contact_information">Data Pemesan</string>
+    <string name="flight_booking_contact_information">Data pemesan</string>
     <string name="flight_booking_contact_sublabel">(untuk e-tiket)</string>
     <string name="flight_booking_contact_information_subtitle">E-tiket dan informasi mengenai pemesanan akan dikitim ke kontak ini</string>
     <string name="flight_booking_contact_name_hint">Nama Lengkap (sesuai KTP/Paspor/Lainnya)</string>
@@ -111,7 +111,7 @@
     <string name="flight_booking_contact_phone_number_label">Nomor Telepon</string>
     <string name="flight_booking_contact_information_card">Pastikan email dan nomor telepon kontak kamu benar. e-tiket akan dikirim ke email dan nomor telepon yang tertera pada informasi kontak.</string>
     <string name="flight_booking_price_detail">Rincian Harga</string>
-    <string name="flight_booking_passenger_data_label">Data Penumpang</string>
+    <string name="flight_booking_passenger_data_label">Data penumpang</string>
     <string name="flight_booking_passenger_data_same_as_contact">Sama dengan pemesan</string>
     <string name="flight_booking_passenger_data_subtitle">E-tiket dan informasi mengenai pemesanan akan dikirim ke kontak ini.</string>
     <string name="flight_booking_submit_button_label">Lanjut</string>
@@ -169,7 +169,7 @@
     <string name="flight_label_duration_transit">%1$s (%2$s transit)</string>
     <string name="flight_label_duration_direct">%1$s (langsung)</string>
     <string name="flight_label_duration_add_day">(+%1$d Hari)</string>
-    <string name="flight_label_see_detail">Lihat detail</string>
+    <string name="flight_label_see_detail">Lihat Detail</string>
     <string name="flight_label_transit">Transit di %1$s • %2$s</string>
     <string name="flight_label_currency">Rp%1$s</string>
     <string name="flight_booking_passenger_adult_title">Penumpang Dewasa</string>
@@ -179,7 +179,7 @@
     <string name="flight_booking_passenger_child_subtitle">Usia 2 - 12 tahun</string>
     <string name="flight_booking_passenger_infant_subtitle">Usia dibawah 2 tahun</string>
     <string name="flight_booking_passenger_first_name_empty_error">Nama depan harus diisi</string>
-    <string name="flight_bookingpassenger_title_error">Titel Penumpang harus dipilih</string>
+    <string name="flight_bookingpassenger_title_error">Sapaan belum diisi</string>
     <string name="flight_booking_passenger_birthdate_empty_error">Tanggal lahir harus diisi</string>
     <string name="flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years">Umur penumpang dewasa harus lebih besar dari 12 tahun</string>
     <string name="flight_booking_passenger_birthdate_child_shoud_more_than_two_years">Umur penumpang anak harus lebih besar dari 2 tahun</string>
