@@ -10,7 +10,6 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
@@ -115,9 +114,7 @@
                 android:id="@+id/list_template"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_3"
-                android:layout_marginTop="@dimen/dp_3"
-                android:layout_marginRight="@dimen/dp_3"
+                android:layout_marginTop="@dimen/dp_2"
                 android:clipToPadding="false"
                 android:paddingStart="@dimen/dp_16"
                 android:paddingEnd="@dimen/dp_16"

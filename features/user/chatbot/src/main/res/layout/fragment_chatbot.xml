@@ -115,15 +115,13 @@
                 android:id="@+id/list_template"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_3"
-                android:layout_marginTop="@dimen/dp_3"
-                android:layout_marginRight="@dimen/dp_3"
+                android:layout_marginTop="@dimen/dp_2"
                 android:clipToPadding="false"
                 android:paddingStart="@dimen/dp_16"
                 android:paddingEnd="@dimen/dp_16"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:orientation="horizontal"
-                tools:scrollbars="horizontal"/>
+                tools:scrollbars="horizontal" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_quick_reply"
@@ -220,8 +218,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/dp_8"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -239,7 +236,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:tickerShapeType="full"/>
+        app:tickerShapeType="full" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
