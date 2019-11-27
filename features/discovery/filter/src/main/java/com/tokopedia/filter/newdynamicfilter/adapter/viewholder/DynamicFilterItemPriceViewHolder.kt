@@ -14,7 +14,6 @@ import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.NumberParseHelper
-import com.tokopedia.filter.newdynamicfilter.adapter.ExpandableItemSelectedListAdapter
 import com.tokopedia.filter.newdynamicfilter.adapter.PricePillsAdapter
 import com.tokopedia.filter.newdynamicfilter.adapter.viewholder.decoration.LinearHorizontalSpacingDecoration
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterView

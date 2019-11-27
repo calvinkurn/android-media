@@ -14,7 +14,7 @@ open class DynamicFilterDetailViewHolder(itemView: View, private val filterDetai
     protected var checkBox: CheckBox = itemView.findViewById(R.id.filter_detail_item_checkbox)
 
     open fun bind(option: Option) {
-        itemView.setOnClickListener { checkBox.setChecked(!checkBox.isChecked()) }
+        itemView.setOnClickListener { checkBox.isChecked = !checkBox.isChecked }
         OptionHelper.bindOptionWithCheckbox(option, checkBox, filterDetailView)
     }
 }

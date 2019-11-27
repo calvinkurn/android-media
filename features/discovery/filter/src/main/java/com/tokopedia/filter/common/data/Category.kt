@@ -8,18 +8,18 @@ import java.util.ArrayList
 class Category : MultiLevelExpIndListAdapter.ExpIndData {
 
     override var children: List<MultiLevelExpIndListAdapter.ExpIndData> = ArrayList()
-    var id: String? = null
-    var name: String? = null
-    var iconImageUrl: String? = null
-    var hasChild: Boolean? = null
+    var id: String = ""
+    var name: String = ""
+    var iconImageUrl: String = ""
+    var hasChild: Boolean = false
     var indentation: Int = 0
-    var key: String? = null
+    var key: String = ""
 
     val isAnnotation: Boolean
         get() = Option.KEY_ANNOTATION_ID.equals(key)
 
     override var isGroup: Boolean
-        get() = hasChild!!
+        get() = hasChild
         set(value) {
             hasChild = value
         }
@@ -29,7 +29,7 @@ class Category : MultiLevelExpIndListAdapter.ExpIndData {
     }
 
     override fun toString(): String {
-        return id.toString()
+        return id
     }
 
     fun addChildren(children: List<Category>, indentation: Int) {

@@ -33,7 +33,7 @@ object FilterDetailActivityRouter {
             DynamicFilterColorActivity
                     .moveTo(activity,
                             filter.title,
-                            filter.options,
+                            filter.filterOptions,
                             filter.search.searchable == 1,
                             filter.search.placeholder, isUsingTracking, trackingData)
 
@@ -41,7 +41,7 @@ object FilterDetailActivityRouter {
             DynamicFilterOfferingActivity
                     .moveTo(activity,
                             filter.title,
-                            filter.options,
+                            filter.filterOptions,
                             filter.search.searchable == 1,
                             filter.search.placeholder, isUsingTracking, trackingData)
 
@@ -49,7 +49,7 @@ object FilterDetailActivityRouter {
             DynamicFilterRatingActivity
                     .moveTo(activity,
                             filter.title,
-                            filter.options,
+                            filter.filterOptions,
                             filter.search.searchable == 1,
                             filter.search.placeholder, isUsingTracking, trackingData)
 
@@ -57,7 +57,7 @@ object FilterDetailActivityRouter {
             DynamicFilterDetailBrandActivity
                     .moveTo(activity,
                             filter.title,
-                            filter.options,
+                            filter.filterOptions,
                             filter.search.searchable == 1,
                             filter.search.placeholder, isUsingTracking, trackingData)
 
@@ -67,7 +67,7 @@ object FilterDetailActivityRouter {
             DynamicFilterDetailGeneralActivity
                     .moveTo(activity,
                             filter.title,
-                            filter.options,
+                            filter.filterOptions,
                             filter.search.searchable == 1,
                             filter.search.placeholder, isUsingTracking, trackingData)
         }
@@ -114,7 +114,7 @@ object FilterDetailActivityRouter {
                                trackingData: FilterTrackingData?) {
         DynamicFilterCategoryActivity
                 .moveTo(activity,
-                        filter.options,
+                        filter.filterOptions,
                         defaultCategoryRootId,
                         defaultCategoryId,
                         isUsingTracking,

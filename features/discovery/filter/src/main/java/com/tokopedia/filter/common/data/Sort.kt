@@ -10,23 +10,23 @@ class Sort() : Parcelable {
 
     @SerializedName("name")
     @Expose
-    lateinit var name: String
+    var name: String = ""
 
     @SerializedName("key")
     @Expose
-    lateinit var key: String
+    var key: String = ""
 
     @SerializedName("value")
     @Expose
-    lateinit var value: String
+    var value: String = ""
 
     @SerializedName(value = "input_type", alternate = [ "inputType" ])
     @Expose
-    lateinit var inputType: String
+    private var inputType: String = ""
 
     @SerializedName("applyFilter")
     @Expose
-    lateinit var applyFilter: String
+    var applyFilter: String = ""
 
     override fun toString(): String {
         return name

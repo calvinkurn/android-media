@@ -2,6 +2,7 @@ package com.tokopedia.filter.common.manager
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import androidx.fragment.app.Fragment
 
 import com.tokopedia.applink.RouteManager
@@ -29,10 +30,11 @@ class FilterSortManager {
         private const val SORT_REQUEST_CODE = 1233
         private const val FILTER_REQUEST_CODE = 4320
 
-        fun openFilterPage(trackingData: FilterTrackingData, fragment: Fragment?, callerScreenName: String, queryParams: HashMap<String, String>) {
+        @JvmStatic
+        fun openFilterPage(trackingData: FilterTrackingData?, fragment: Fragment?, callerScreenName: String?, queryParams: HashMap<String, String>?) {
             if (fragment == null) return
 
-            FilterTracking.eventOpenFilterPage(trackingData)
+            trackingData?.let { FilterTracking.eventOpenFilterPage(it) }
 
             val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalDiscovery.FILTER)
             intent.putExtra(EXTRA_CALLER_SCREEN_NAME, callerScreenName)
@@ -45,6 +47,7 @@ class FilterSortManager {
             }
         }
 
+        @JvmStatic
         fun openSortActivity(fragment: Fragment?, sort: ArrayList<Sort>, selectedSort: HashMap<String, String>?): Boolean {
             if (!isSortDataAvailable(sort) || fragment == null) {
                 return false
@@ -67,19 +70,24 @@ class FilterSortManager {
             return sort != null && sort.isNotEmpty()
         }
 
-        fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent, callback: Callback) {
+        @JvmStatic
+        fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?, callback: Callback) {
             if (resultCode == Activity.RESULT_OK) {
                 if (requestCode == SORT_REQUEST_CODE) {
-                    val selectedSort = getMapFromIntent(data, EXTRA_SELECTED_SORT)
-                    val selectedSortName = data.getStringExtra(EXTRA_SELECTED_SORT_NAME)
-                    val autoApplyFilterParams = data.getStringExtra(EXTRA_AUTO_APPLY_FILTER)
-                    callback.onSortResult(selectedSort, selectedSortName, autoApplyFilterParams)
+                    val selectedSort = data?.let { getMapFromIntent(it, EXTRA_SELECTED_SORT) }
+                    val selectedSortName = data?.getStringExtra(EXTRA_SELECTED_SORT_NAME)
+                    val autoApplyFilterParams = data?.getStringExtra(EXTRA_AUTO_APPLY_FILTER)
+                    if (selectedSort != null && selectedSortName != null && autoApplyFilterParams != null) {
+                        callback.onSortResult(selectedSort, selectedSortName, autoApplyFilterParams)
+                    }
 
                 } else if (requestCode == FILTER_REQUEST_CODE) {
-                    val queryParams = getMapFromIntent(data, EXTRA_QUERY_PARAMETERS)
-                    val selectedFilters = getMapFromIntent(data, EXTRA_SELECTED_FILTERS)
-                    val selectedOptions = data.getParcelableArrayListExtra<Option>(EXTRA_SELECTED_OPTIONS)
-                    callback.onFilterResult(queryParams, selectedFilters, selectedOptions)
+                    val queryParams = data?.let { getMapFromIntent(it, EXTRA_QUERY_PARAMETERS) }
+                    val selectedFilters = data?.let { getMapFromIntent(it, EXTRA_SELECTED_FILTERS) }
+                    val selectedOptions = data?.getParcelableArrayListExtra<Option>(EXTRA_SELECTED_OPTIONS)
+                    if (queryParams != null && selectedFilters != null && selectedOptions != null) {
+                        callback.onFilterResult(queryParams, selectedFilters, selectedOptions)
+                    }
 
                 }
             }

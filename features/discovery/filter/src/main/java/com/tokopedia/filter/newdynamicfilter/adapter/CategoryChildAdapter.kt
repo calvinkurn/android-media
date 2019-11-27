@@ -59,7 +59,7 @@ class CategoryChildAdapter(private val clickListener: OnItemClickListener) : Mul
                 categoryName.setTextColor(colorTextNormal)
                 dropdown.setImageResource(R.drawable.carret_up)
                 dropdown.visibility = View.VISIBLE
-            } else if (category.hasChild!!) {
+            } else if (category.hasChild) {
                 categoryName.setTextColor(colorTextNormal)
                 dropdown.setImageResource(R.drawable.carret_down)
                 dropdown.visibility = View.VISIBLE

@@ -170,7 +170,7 @@ class FilterControllerTest {
 
     private fun createFilterWithOptions(optionList: List<Option>) : Filter {
         val filter = Filter()
-        filter.options = optionList
+        filter.filterOptions = optionList
         return filter
     }
 

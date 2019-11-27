@@ -177,7 +177,7 @@ open class FilterController {
 
     private fun loopOptionsInFilterList(action: (filter: Filter, option: Option) -> Unit) {
         for(filter in filterList)
-            for(option in filter.options)
+            for(option in filter.filterOptions)
                 action(filter, option)
     }
 
@@ -221,7 +221,7 @@ open class FilterController {
     private fun getPopularOptionList(filter: Filter): List<Option> {
         val checkedOptions = ArrayList<Option>()
 
-        for (option in filter.options) {
+        for (option in filter.filterOptions) {
             if (option.isPopular) {
                 checkedOptions.add(option)
             }
@@ -282,7 +282,7 @@ open class FilterController {
     private fun getCustomSelectedOptionList(filter: Filter, isDisplayed:(Option) -> Boolean): List<Option> {
         val checkedOptions = ArrayList<Option>()
 
-        for (option in filter.options) {
+        for (option in filter.filterOptions) {
             if(isDisplayed(option)) {
                 checkedOptions.add(option)
             }

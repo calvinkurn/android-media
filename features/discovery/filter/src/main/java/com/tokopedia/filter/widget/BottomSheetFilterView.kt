@@ -94,7 +94,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     fun setFilterResultCount(formattedResultCount: String) {
-        buttonFinish?.text = String.format(getContext().getString(R.string.bottom_sheet_filter_finish_button_template_text), formattedResultCount)
+        buttonFinish?.text = String.format(context.getString(R.string.bottom_sheet_filter_finish_button_template_text), formattedResultCount)
         loadingView?.visibility = View.GONE
     }
 
@@ -120,9 +120,9 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     private fun launchFilterCategoryPage(filter: Filter) {
         val categoryId = filterController.getFilterValue(SearchApiConst.SC)
         val selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId)
-        val selectedCategoryRootId = if (selectedCategory != null) selectedCategory.categoryRootId else ""
+        val selectedCategoryRootId = selectedCategory?.categoryRootId ?: ""
 
-        trackingData?.let { FilterTracking.eventNavigateToFilterDetail(it, getResources().getString(R.string.title_category)) }
+        trackingData?.let { FilterTracking.eventNavigateToFilterDetail(it, resources.getString(R.string.title_category)) }
         trackingData?.let {
             FilterDetailActivityRouter.launchCategoryActivity(callback.activity,
                 filter, selectedCategoryRootId, categoryId, true, it)
@@ -221,11 +221,11 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
         filterController = FilterController()
         val dynamicFilterTypeFactory = BottomSheetDynamicFilterTypeFactoryImpl(this)
         filterMainAdapter = DynamicFilterAdapter(dynamicFilterTypeFactory)
-        filterMainRecyclerView.setLayoutManager(LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false))
+        filterMainRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         val dividerItemDecoration = DividerItemDecoration(filterMainRecyclerView.context, DividerItemDecoration.VERTICAL)
         dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.bg_line_separator))
         filterMainRecyclerView.addItemDecoration(dividerItemDecoration)
-        filterMainRecyclerView.setAdapter(filterMainAdapter)
+        filterMainRecyclerView.adapter = filterMainAdapter
         filterMainRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -265,9 +265,9 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
 
             }
         })
-        buttonClose?.setOnClickListener({ closeView() })
-        buttonFinish?.setOnClickListener({ closeView() })
-        buttonReset?.setOnClickListener({ resetAllFilter() })
+        buttonClose?.setOnClickListener { closeView() }
+        buttonFinish?.setOnClickListener { closeView() }
+        buttonReset?.setOnClickListener { resetAllFilter() }
     }
 
     override fun onPriceSliderRelease(minValue: Int, maxValue: Int) {
@@ -298,11 +298,11 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     fun onBackPressed(): Boolean {
-        if (isBottomSheetShown) {
+        return if (isBottomSheetShown) {
             closeView()
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 

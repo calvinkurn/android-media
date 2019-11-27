@@ -10,27 +10,27 @@ class LevelTwoCategory() : Parcelable {
 
     @SerializedName("name")
     @Expose
-    lateinit var name: String
+    var name: String = ""
 
     @SerializedName("key")
     @Expose
-    lateinit var key: String
+    var key: String = ""
 
     @SerializedName("value")
     @Expose
-    lateinit var value: String
+    var value: String = ""
 
     @SerializedName(value = "input_type", alternate = [ "inputType" ])
     @Expose
-    lateinit var inputType: String
+    private var inputType: String = ""
 
     @SerializedName(value = "total_data", alternate = [ "totalData" ])
     @Expose
-    lateinit var totalData: String
+    private var totalData: String = ""
 
     @SerializedName("child")
     @Expose
-    lateinit var levelThreeCategoryList: List<LevelThreeCategory>
+    var levelThreeCategoryList: List<LevelThreeCategory> = listOf()
 
     override fun describeContents(): Int {
         return 0

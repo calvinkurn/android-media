@@ -5,8 +5,6 @@ import android.text.TextUtils
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
-import java.util.ArrayList
-
 /**
  * Created by henrypriyono on 1/5/18.
  */
@@ -34,7 +32,7 @@ object FilterTracking {
             trackingMap.put(FilterEventTracking.CustomDimension.CATEGORY_ID, trackingData.categoryId)
         }
 
-        TrackApp.getInstance().getGTM().sendGeneralEvent(trackingMap)
+        TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
     }
 
     fun eventApplyFilterDetail(trackingData: FilterTrackingData, filterName: String) {
@@ -50,7 +48,7 @@ object FilterTracking {
             trackingMap.put(FilterEventTracking.CustomDimension.CATEGORY_ID, trackingData.categoryId)
         }
 
-        TrackApp.getInstance().getGTM().sendGeneralEvent(trackingMap)
+        TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
     }
 
     fun eventBackFromFilterDetail(trackingData: FilterTrackingData, filterName: String) {
@@ -66,7 +64,7 @@ object FilterTracking {
             trackingMap.put(FilterEventTracking.CustomDimension.CATEGORY_ID, trackingData.categoryId)
         }
 
-        TrackApp.getInstance().getGTM().sendGeneralEvent(trackingMap)
+        TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
     }
 
     fun eventNavigateToFilterDetail(trackingData: FilterTrackingData, filterName: String) {
@@ -81,7 +79,7 @@ object FilterTracking {
             trackingMap.put(FilterEventTracking.CustomDimension.CATEGORY_ID, trackingData.categoryId)
         }
 
-        TrackApp.getInstance().getGTM().sendGeneralEvent(trackingMap)
+        TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
     }
 
     fun eventOpenFilterPage(trackingData: FilterTrackingData) {
@@ -96,7 +94,7 @@ object FilterTracking {
             trackingMap.put(FilterEventTracking.CustomDimension.CATEGORY_ID, trackingData.categoryId)
         }
 
-        TrackApp.getInstance().getGTM().sendGeneralEvent(trackingMap)
+        TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
     }
 
     fun eventApplyFilter(trackingData: FilterTrackingData,
@@ -114,7 +112,7 @@ object FilterTracking {
             trackingMap.put(FilterEventTracking.CustomDimension.CATEGORY_ID, trackingData.categoryId)
         }
 
-        TrackApp.getInstance().getGTM().sendGeneralEvent(trackingMap)
+        TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
     }
 
     private fun generateFilterEventLabel(selectedFilter: Map<String, String>?): String {

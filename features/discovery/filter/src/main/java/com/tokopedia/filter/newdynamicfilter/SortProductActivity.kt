@@ -93,7 +93,7 @@ class SortProductActivity : BaseActivity() {
         overridePendingTransition(android.R.anim.fade_in, R.anim.push_down)
     }
 
-    private inner class ListAdapter(sortList: List<Sort>?, private var selectedKey: String?, private var selectedValue: String?, internal var clickListener: OnItemClickListener?) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
+    private inner class ListAdapter(sortList: List<Sort>?, private var selectedKey: String?, private var selectedValue: String?, var clickListener: OnItemClickListener?) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
         private var sortList: List<Sort>? = null
 
         init {

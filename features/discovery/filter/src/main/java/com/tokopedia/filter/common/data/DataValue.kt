@@ -10,8 +10,8 @@ import java.util.ArrayList
 
 class DataValue() : Parcelable {
 
-    lateinit var selected: String
-    lateinit var selectedOb: String
+    private var selected: String = ""
+    private var selectedOb: String = ""
 
     @SerializedName("filter")
     @Expose

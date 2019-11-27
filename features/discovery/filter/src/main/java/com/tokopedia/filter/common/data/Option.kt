@@ -10,23 +10,23 @@ class Option() : Parcelable {
 
     @SerializedName("name")
     @Expose
-    lateinit var name: String
+    var name: String = ""
 
     @SerializedName("key")
     @Expose
-    lateinit var key: String
+    var key: String = ""
 
     @SerializedName("value")
     @Expose
-    lateinit var value: String
+    var value: String = ""
 
     @SerializedName(value = "input_type", alternate = [ "inputType" ])
     @Expose
-    lateinit var inputType: String
+    var inputType: String = ""
 
     @SerializedName(value = "hex_color", alternate = [ "hexColor" ])
     @Expose
-    var hexColor: String? = null
+    var hexColor: String = ""
 
     @SerializedName("metric")
     @Expose
@@ -34,23 +34,23 @@ class Option() : Parcelable {
 
     @SerializedName(value = "total_data", alternate = [ "totalData" ])
     @Expose
-    lateinit var totalData: String
+    private var totalData: String = ""
 
     @SerializedName(value = "val_min", alternate = [ "valMin" ])
     @Expose
-    lateinit var valMin: String
+    var valMin: String = ""
 
     @SerializedName(value = "val_max", alternate = [ "valMax" ])
     @Expose
-    lateinit var valMax: String
+    var valMax: String = ""
 
     @SerializedName("icon")
     @Expose
-    lateinit var iconUrl: String
+    var iconUrl: String = ""
 
     @SerializedName(value = "description", alternate = [ "Description" ])
     @Expose
-    lateinit var description: String
+    var description: String = ""
 
     @SerializedName(value = "is_popular", alternate = [ "isPopular" ])
     @Expose
@@ -62,7 +62,7 @@ class Option() : Parcelable {
 
     @SerializedName("child")
     @Expose
-    lateinit var levelTwoCategoryList: List<LevelTwoCategory>
+    var levelTwoCategoryList: List<LevelTwoCategory> = listOf()
 
     var inputState = ""
 
@@ -133,26 +133,26 @@ class Option() : Parcelable {
 
     companion object {
 
-        val KEY_PRICE_MIN = "pmin"
-        val KEY_PRICE_MAX = "pmax"
-        val KEY_PRICE_MIN_MAX_RANGE = "pmin-pmax"
-        val KEY_PRICE_WHOLESALE = "wholesale"
-        val KEY_PRICE_RANGE_1 = "price_range_1"
-        val KEY_PRICE_RANGE_2 = "price_range_2"
-        val KEY_PRICE_RANGE_3 = "price_range_3"
-        val KEY_CATEGORY = "sc"
-        val KEY_OFFICIAL = "official"
-        val KEY_RATING = "rt"
-        val KEY_ANNOTATION_ID = "annotation_id"
+        const val KEY_PRICE_MIN = "pmin"
+        const val KEY_PRICE_MAX = "pmax"
+        const val KEY_PRICE_MIN_MAX_RANGE = "pmin-pmax"
+        const val KEY_PRICE_WHOLESALE = "wholesale"
+        const val KEY_PRICE_RANGE_1 = "price_range_1"
+        const val KEY_PRICE_RANGE_2 = "price_range_2"
+        const val KEY_PRICE_RANGE_3 = "price_range_3"
+        const val KEY_CATEGORY = "sc"
+        const val KEY_OFFICIAL = "official"
+        const val KEY_RATING = "rt"
+        const val KEY_ANNOTATION_ID = "annotation_id"
 
-        val INPUT_TYPE_TEXTBOX = "textbox"
-        val INPUT_TYPE_CHECKBOX = "checkbox"
-        val UID_FIRST_SEPARATOR_SYMBOL = "*"
-        val UID_SECOND_SEPARATOR_SYMBOL = "?"
-        val METRIC_INTERNATIONAL = "International"
+        const val INPUT_TYPE_TEXTBOX = "textbox"
+        const val INPUT_TYPE_CHECKBOX = "checkbox"
+        const val UID_FIRST_SEPARATOR_SYMBOL = "*"
+        const val UID_SECOND_SEPARATOR_SYMBOL = "?"
+        const val METRIC_INTERNATIONAL = "International"
 
-        val RATING_ABOVE_FOUR_NAME = "4 Keatas"
-        val RATING_ABOVE_FOUR_VALUE = "4,5"
+        const val RATING_ABOVE_FOUR_NAME = "4 Keatas"
+        const val RATING_ABOVE_FOUR_VALUE = "4,5"
 
         @JvmField
         val CREATOR: Parcelable.Creator<Option> = object : Parcelable.Creator<Option> {

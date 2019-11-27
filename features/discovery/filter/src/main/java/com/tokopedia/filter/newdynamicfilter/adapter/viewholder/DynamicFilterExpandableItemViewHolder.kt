@@ -28,7 +28,7 @@ class DynamicFilterExpandableItemViewHolder(itemView: View, private var filterVi
         recyclerView.adapter = adapter
 
         title.text = filter.title
-        titleContainer.setOnClickListener { view -> filterView.onExpandableItemClicked(filter) }
+        titleContainer.setOnClickListener { filterView.onExpandableItemClicked(filter) }
 
         adapter.setSelectedOptionsList(filterView.getSelectedOptions(filter))
     }

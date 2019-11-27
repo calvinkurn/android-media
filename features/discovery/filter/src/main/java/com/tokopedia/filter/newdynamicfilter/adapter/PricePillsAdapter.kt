@@ -46,7 +46,7 @@ class PricePillsAdapter(private val callback: Callback?) : RecyclerView.Adapter<
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var pricePillItem: TextView = itemView.findViewById(R.id.price_pill_item)
+        private var pricePillItem: TextView = itemView.findViewById(R.id.price_pill_item)
         var context: Context = itemView.context
 
         fun bind(pricePillOption: Option, position: Int) {

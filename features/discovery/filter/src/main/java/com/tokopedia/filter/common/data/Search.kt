@@ -13,7 +13,7 @@ class Search() : Parcelable {
     var searchable: Int = 0
     @SerializedName("placeholder")
     @Expose
-    lateinit var placeholder: String
+    var placeholder: String = ""
 
     override fun describeContents(): Int {
         return 0

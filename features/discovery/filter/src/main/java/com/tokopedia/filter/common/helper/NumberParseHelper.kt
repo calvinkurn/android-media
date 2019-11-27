@@ -2,10 +2,10 @@ package com.tokopedia.filter.common.helper
 
 object NumberParseHelper {
     fun safeParseInt(text: String): Int {
-        try {
-            return Integer.parseInt(text)
+        return try {
+            Integer.parseInt(text)
         } catch (e: NumberFormatException) {
-            return 0
+            0
         }
 
     }

@@ -29,7 +29,7 @@ import org.parceler.Parcels
 
 class DynamicFilterCategoryActivity : AppCompatActivity(), CategoryParentAdapter.OnItemClickListener, CategoryChildAdapter.OnItemClickListener {
 
-    internal var categoryList: List<Category>? = null
+    private var categoryList: List<Category>? = null
     private var rootRecyclerView: RecyclerView? = null
     private var childRecyclerView: RecyclerView? = null
     private var buttonClose: View? = null
@@ -61,8 +61,8 @@ class DynamicFilterCategoryActivity : AppCompatActivity(), CategoryParentAdapter
     }
 
     private fun bindView() {
-        rootRecyclerView = findViewById(R.id.category_root_recyclerview) as RecyclerView
-        childRecyclerView = findViewById(R.id.category_child_recyclerview) as RecyclerView
+        rootRecyclerView = findViewById(R.id.category_root_recyclerview)
+        childRecyclerView = findViewById(R.id.category_child_recyclerview)
         buttonClose = findViewById(R.id.top_bar_close_button)
         buttonClose?.setOnClickListener {
             onBackPressed()
@@ -78,9 +78,9 @@ class DynamicFilterCategoryActivity : AppCompatActivity(), CategoryParentAdapter
         categoryList?.let { categoryParentAdapter?.setDataList(it) }
 
         val rootLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        rootRecyclerView?.setLayoutManager(rootLayoutManager)
+        rootRecyclerView?.layoutManager = rootLayoutManager
 
-        rootRecyclerView?.setAdapter(categoryParentAdapter)
+        rootRecyclerView?.adapter = categoryParentAdapter
         val defaultRootPosition = defaultCategoryRootId?.let { categoryParentAdapter?.getPositionById(it) }
         if (defaultRootPosition != null) {
             rootLayoutManager.scrollToPositionWithOffset(defaultRootPosition, DEFAULT_OFFSET)
@@ -92,9 +92,9 @@ class DynamicFilterCategoryActivity : AppCompatActivity(), CategoryParentAdapter
         defaultRootPosition?.let { categoryList?.get(it)?.children }?.let { categoryChildAdapter?.addAll(it) }
 
         val childLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        childRecyclerView?.setLayoutManager(childLayoutManager)
+        childRecyclerView?.layoutManager = childLayoutManager
 
-        childRecyclerView?.setAdapter(categoryChildAdapter)
+        childRecyclerView?.adapter = categoryChildAdapter
 
         if (!TextUtils.isEmpty(defaultCategoryId)) {
             defaultCategoryId?.let { categoryChildAdapter?.toggleSelectedChildbyId(it) }
@@ -110,15 +110,15 @@ class DynamicFilterCategoryActivity : AppCompatActivity(), CategoryParentAdapter
     }
 
     override fun onChildClicked(category: Category) {
-        if (category.hasChild!!) {
-            categoryChildAdapter?.toggleSelectedChildbyId(category.id.toString())
+        if (category.hasChild) {
+            categoryChildAdapter?.toggleSelectedChildbyId(category.id)
         } else {
             if (isUsingTracking) {
                 trackingData?.let {
                     FilterTracking.eventFilterJourney(
                             it,
-                            getResources().getString(R.string.title_category),
-                            category.name.toString(), true, true, category.isAnnotation)
+                            resources.getString(R.string.title_category),
+                            category.name, true, true, category.isAnnotation)
                 }
             }
             applyFilter(category)
@@ -136,15 +136,15 @@ class DynamicFilterCategoryActivity : AppCompatActivity(), CategoryParentAdapter
 
     companion object {
 
-        val REQUEST_CODE = 221
-        val EXTRA_SELECTED_CATEGORY_ID = "EXTRA_SELECTED_CATEGORY_ID"
-        val EXTRA_SELECTED_CATEGORY_ROOT_ID = "EXTRA_SELECTED_CATEGORY_ROOT_ID"
-        val EXTRA_SELECTED_CATEGORY_NAME = "EXTRA_SELECTED_CATEGORY_NAME"
+        const val REQUEST_CODE = 221
+        const val EXTRA_SELECTED_CATEGORY_ID = "EXTRA_SELECTED_CATEGORY_ID"
+        const val EXTRA_SELECTED_CATEGORY_ROOT_ID = "EXTRA_SELECTED_CATEGORY_ROOT_ID"
+        const val EXTRA_SELECTED_CATEGORY_NAME = "EXTRA_SELECTED_CATEGORY_NAME"
 
-        private val EXTRA_DEFAULT_CATEGORY_ID = "EXTRA_DEFAULT_CATEGORY_ID"
-        private val EXTRA_DEFAULT_CATEGORY_ROOT_ID = "EXTRA_DEFAULT_CATEGORY_ROOT_ID"
-        private val EXTRA_OPTION_LIST = "EXTRA_OPTION_LIST"
-        private val DEFAULT_OFFSET = 170
+        private const val EXTRA_DEFAULT_CATEGORY_ID = "EXTRA_DEFAULT_CATEGORY_ID"
+        private const val EXTRA_DEFAULT_CATEGORY_ROOT_ID = "EXTRA_DEFAULT_CATEGORY_ROOT_ID"
+        private const val EXTRA_OPTION_LIST = "EXTRA_OPTION_LIST"
+        private const val DEFAULT_OFFSET = 170
 
         fun moveTo(activity: AppCompatActivity?,
                    optionList: List<Option>,
