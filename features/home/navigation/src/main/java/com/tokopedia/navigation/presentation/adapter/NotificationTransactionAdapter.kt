@@ -58,11 +58,17 @@ class NotificationTransactionAdapter(
     }
 
     fun hideFilterItem() {
-        for (section in visitables) {
-            if (section is NotificationFilterSectionWrapper) {
-                removeElement(section)
-            }
+        visitables.removeAll {
+            it is NotificationFilterSectionWrapper
         }
+        notifyDataSetChanged()
+    }
+
+    fun removeItem() {
+        visitables.removeAll {
+            it is TransactionItemNotification
+        }
+        notifyDataSetChanged()
     }
 
 }
