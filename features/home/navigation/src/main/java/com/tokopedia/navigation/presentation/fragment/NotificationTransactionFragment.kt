@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -55,8 +57,10 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     //last notification id
     private var cursor = ""
 
-    //flag for notification transaction
-    private val _notification = mutableListOf<TransactionItemNotification>()
+    /*
+    * last item of recyclerview;
+    * for tracking purpose*/
+    private var lastListItem = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_notification_transaction, container, false)
@@ -64,6 +68,8 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        onListLastScroll(view)
+
         viewModel.errorMessage.observe(this, onViewError())
 
         viewModel.infoNotification.observe(this, Observer {
@@ -84,17 +90,33 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         })
 
         viewModel.notification.observe(this, Observer {
-            /* flag for showing filter */
-            if (it.list.isNotEmpty()) {
-                _notification.add(it.list.first())
-            }
-
-            /* hide filter item if there's no notification */
-            if (_notification.isEmpty()) {
-                _adapter.hideFilterItem()
-            }
-
             onSuccessNotificationData(it)
+        })
+    }
+
+    override fun onPause() {
+        trackScrollListToBottom()
+        super.onPause()
+    }
+
+    override fun onDestroyView() {
+        trackScrollListToBottom()
+        super.onDestroyView()
+    }
+
+    private fun onListLastScroll(view: View) {
+        super.getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {}
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val layoutManager = (recyclerView.layoutManager)
+                    if (layoutManager != null && layoutManager is LinearLayoutManager) {
+                        val temp = layoutManager.findLastVisibleItemPosition()
+                        if (temp > lastListItem) lastListItem = temp
+                    }
+                }
+            }
         })
     }
 
@@ -141,8 +163,12 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     override fun itemClicked(notification: TransactionItemNotification, adapterPosition: Int) {
-        adapter.notifyItemChanged(adapterPosition, NotificationTransactionItemViewHolder.PAYLOAD_CHANGE_BACKGROUND)
+        val payloadBackground = NotificationTransactionItemViewHolder.PAYLOAD_CHANGE_BACKGROUND
+        adapter.notifyItemChanged(adapterPosition, payloadBackground)
         viewModel.markReadNotification(notification.notificationId)
+
+        //tracking
+        analytics.trackNotificationClick(notification)
     }
 
     override fun updateFilter(filter: HashMap<String, Int>) {
@@ -203,6 +229,12 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
+    }
+
+    private fun trackScrollListToBottom() {
+        if (lastListItem > 0) {
+            analytics.trackScrollBottom(lastListItem.toString())
+        }
     }
 
     override fun sentFilterAnalytic(analyticData: String) {
