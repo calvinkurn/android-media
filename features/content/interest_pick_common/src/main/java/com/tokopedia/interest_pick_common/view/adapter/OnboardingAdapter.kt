@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.interest_pick_common.R
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
-import kotlinx.android.synthetic.main.item_interest_pick.view.*
+import kotlinx.android.synthetic.main.item_new_interest_pick.view.*
 
 /**
  * @author by yoasfs on 2019-09-18
@@ -48,7 +48,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
     private var selectedListId : List<Int> = arrayListOf()
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): Holder {
-        return Holder(LayoutInflater.from(p0.context).inflate(R.layout.item_interest_pick, p0, false), listener)
+        return Holder(LayoutInflater.from(p0.context).inflate(R.layout.item_new_interest_pick, p0, false), listener)
     }
 
     override fun getItemCount(): Int {
