@@ -350,12 +350,8 @@ class KolPostDetailPresenter @Inject constructor(
         }
     }
 
-    private fun mapRelatedPost(data: List<FeedPostRelated.Datum>): List<RelatedPostItemViewModel> {
-        val list = ArrayList<RelatedPostItemViewModel>()
-        for (item in data) {
-            list.add(RelatedPostItemViewModel(item))
-        }
-        return list
+    private fun mapRelatedPost(data: List<FeedPostRelated.Datum>): List<RelatedPostItemViewModel> = data.map {
+        RelatedPostItemViewModel(it)
     }
 
 }

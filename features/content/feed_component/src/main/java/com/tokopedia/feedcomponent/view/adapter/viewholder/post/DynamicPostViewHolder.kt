@@ -330,34 +330,24 @@ open class DynamicPostViewHolder(v: View,
 
             if (template.like) {
                 itemView.likeGroup.show()
-//                itemView.likeIcon.show()
-//                itemView.likeText.show()
                 itemView.likeIcon.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
                 itemView.likeText.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
                 bindLike(footer.like)
             } else {
                 itemView.likeGroup.hide()
-//                itemView.likeIcon.hide()
-//                itemView.likeText.hide()
             }
 
             if (template.comment) {
                 itemView.commentGroup.show()
-//                itemView.commentIcon.show()
-//                itemView.commentText.show()
                 itemView.commentIcon.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
                 itemView.commentText.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
                 bindComment(footer.comment)
             } else {
                 itemView.commentGroup.hide()
-//                itemView.commentIcon.hide()
-//                itemView.commentText.hide()
             }
 
             if (template.share) {
                 itemView.shareGroup.show()
-//                itemView.shareIcon.show()
-//                itemView.shareText.show()
                 itemView.shareText.text = footer.share.text
                 itemView.shareIcon.setOnClickListener {
                     listener.onShareClick(
@@ -382,8 +372,6 @@ open class DynamicPostViewHolder(v: View,
 
             } else {
                 itemView.shareGroup.hide()
-//                itemView.shareIcon.hide()
-//                itemView.shareText.hide()
             }
 
             if (template.stats) {
