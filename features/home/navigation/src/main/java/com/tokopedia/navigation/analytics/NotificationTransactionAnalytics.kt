@@ -16,6 +16,8 @@ class NotificationTransactionAnalytics @Inject constructor() {
         private const val EVENT_CATEGORY = "transaction tab"
 
         private const val EVENT_TRANSACTION_VIEW_ACTION = "view on transaction notif"
+        private const val EVENT_TRANSACTION_CLICK_ACTION = "click on transaction notif"
+        private const val EVENT_TRANSACTION_SCROLL_ACTION = "scroll on transaction notif"
         private const val EVENT_TRANSACTION_TAB_ACTION = "click on transaction process"
         private const val EVENT_TRANSACTION_FILTER_ACTION = "click on transaction filter"
 
@@ -52,20 +54,34 @@ class NotificationTransactionAnalytics @Inject constructor() {
     }
 
     //10D
-    fun test() {
+    fun trackNotificationClick(notification: TransactionItemNotification) {
+        val label = notification.getImpressionTrackLabel(LABEL_LOCATION)
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT,
+                EVENT_CATEGORY,
+                EVENT_TRANSACTION_CLICK_ACTION,
+                label
+        ))
+    }
 
+    //10E
+    fun trackScrollBottom(notifItemPosition: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT,
+                EVENT_CATEGORY,
+                EVENT_TRANSACTION_SCROLL_ACTION,
+                notifItemPosition
+        ))
     }
 
     private fun trackNotificationImpression(notification: TransactionItemNotification) {
         val label = notification.getImpressionTrackLabel(LABEL_LOCATION)
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        EVENT_IMPRESSION_IRIS,
-                        EVENT_CATEGORY,
-                        EVENT_TRANSACTION_VIEW_ACTION,
-                        label
-                )
-        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_IMPRESSION_IRIS,
+                EVENT_CATEGORY,
+                EVENT_TRANSACTION_VIEW_ACTION,
+                label
+        ))
     }
 
 }
