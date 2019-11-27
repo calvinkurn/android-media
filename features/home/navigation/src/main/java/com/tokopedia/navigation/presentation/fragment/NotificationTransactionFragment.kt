@@ -55,9 +55,6 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     //last notification id
     private var cursor = ""
 
-    //flag filter
-    private var isNotificationFilter = false
-
     //flag for notification transaction
     private val _notification = mutableListOf<TransactionItemNotification>()
 
@@ -140,11 +137,6 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
             cursor = (notification.list.last().notificationId)
         }
 
-        //for notification filtering
-        if (isNotificationFilter) {
-
-        }
-
         _adapter.addElement(notification.list)
     }
 
@@ -156,7 +148,7 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     override fun updateFilter(filter: HashMap<String, Int>) {
         viewModel.updateNotificationFilter(filter)
         cursor = ""
-        isNotificationFilter = true
+        _adapter.removeItem()
         getNotification(cursor)
     }
 
