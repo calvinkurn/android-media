@@ -13,7 +13,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedcomponent.view.subscriber.TrackPostClickSubscriber;
-import com.tokopedia.feedplus.FeedPlusConstant;
+import com.tokopedia.feedplus.FeedPlusConstantKt;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel;
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase;
@@ -280,7 +280,7 @@ public class FeedPlusPresenter
     }
 
     private String getUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : FeedPlusConstant.NON_LOGIN_USER_ID;
+        return userSession.isLoggedIn() ? userSession.getUserId() : FeedPlusConstantKt.NON_LOGIN_USER_ID;
     }
 
     private void getFirstPageFeed(String firstPageCursor) {
