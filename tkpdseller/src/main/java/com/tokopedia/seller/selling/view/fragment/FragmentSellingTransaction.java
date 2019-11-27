@@ -327,7 +327,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
             @Override
             public void onRefresh(View view) {
                 if (GlobalConfig.isSellerApp()) {
-                    DrawerGetNotificationService.startService(MainApplication.getAppContext(), true);
+                    DrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
                 }
                 presenter.onRefreshView();
             }

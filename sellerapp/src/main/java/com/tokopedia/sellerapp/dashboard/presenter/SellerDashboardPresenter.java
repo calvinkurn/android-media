@@ -101,7 +101,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             @Override
             public void onNext(Boolean aBoolean) {
                 getShopInfoWithScore();
-                getNotification();
+                getNotification(true);
             }
         });
     }
@@ -115,7 +115,8 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
                 new GetApprovalStatusSubscriber(getView().getApprovalStatusListener()));
     }
 
-    public void getNotification() {
+    public void getNotification(boolean isRefresh) {
+        newNotificationUseCase.setRefresh(isRefresh);
         newNotificationUseCase.execute(NotificationUseCase.getRequestParam(true), getNotificationSubscriber());
     }
 

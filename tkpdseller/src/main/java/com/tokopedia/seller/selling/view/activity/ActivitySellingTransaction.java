@@ -4,16 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import com.google.android.material.tabs.TabLayout;
 import androidx.legacy.app.FragmentPagerAdapter;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
@@ -34,7 +31,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
@@ -87,19 +83,6 @@ public class ActivitySellingTransaction extends TkpdActivity
     private TextView sellerTickerView;
     private String[] CONTENT;
     private List<Fragment> fragmentList;
-    private BroadcastReceiver drawerGetNotificationReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (null == context || null == intent.getAction()) {
-                return;
-            }
-
-            if (intent.getAction().equals(DrawerGetNotificationService.BROADCAST_GET_NOTIFICATION)
-                    && intent.getBooleanExtra(DrawerGetNotificationService.GET_NOTIFICATION_SUCCESS, false)){
-                updateDrawerData();
-            }
-        }
-    };
 
     @DeepLink(ApplinkConst.SELLER_OPPORTUNITY)
     public static Intent getCallingIntentSellerOpportunity(Context context, Bundle extras) {
@@ -279,29 +262,6 @@ public class ActivitySellingTransaction extends TkpdActivity
     protected void onResume() {
         super.onResume();
         setDrawerPosition(mViewPager.getCurrentItem());
-        if (GlobalConfig.isSellerApp()) {
-            registerBroadcastReceiver();
-            DrawerGetNotificationService.startService(this,true);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (GlobalConfig.isSellerApp())
-            unregisterBroadcastReceiver();
-    }
-
-    private void registerBroadcastReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(DrawerGetNotificationService.BROADCAST_GET_NOTIFICATION);
-        LocalBroadcastManager.getInstance(this).registerReceiver(drawerGetNotificationReceiver, intentFilter);
-    }
-
-    private void unregisterBroadcastReceiver() {
-        LocalBroadcastManager
-                .getInstance(this)
-                .unregisterReceiver(drawerGetNotificationReceiver);
     }
 
     protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {

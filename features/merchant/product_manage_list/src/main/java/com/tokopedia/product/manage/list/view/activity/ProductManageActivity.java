@@ -1,14 +1,11 @@
 package com.tokopedia.product.manage.list.view.activity;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -17,8 +14,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
@@ -33,19 +28,6 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
 
     public static final String TAG = ProductManageActivity.class.getSimpleName();
     public UserSessionInterface userSession;
-    private BroadcastReceiver drawerGetNotificationReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (null == context || null == intent.getAction()) {
-                return;
-            }
-
-            if (intent.getAction().equals(DrawerGetNotificationService.BROADCAST_GET_NOTIFICATION)
-                    && intent.getBooleanExtra(DrawerGetNotificationService.GET_NOTIFICATION_SUCCESS, false)){
-                updateDrawerData();
-            }
-        }
-    };
 
     @DeepLink(ApplinkConst.PRODUCT_MANAGE)
     public static Intent getApplinkIntent(Context context, Bundle extras) {
@@ -70,34 +52,6 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
     public void onStart() {
         super.onStart();
         checkLogin();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (GlobalConfig.isSellerApp()) {
-            registerBroadcastReceiver();
-            DrawerGetNotificationService.startService(this,true);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (GlobalConfig.isSellerApp())
-            unregisterBroadcastReceiver();
-    }
-
-    private void registerBroadcastReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(DrawerGetNotificationService.BROADCAST_GET_NOTIFICATION);
-        LocalBroadcastManager.getInstance(this).registerReceiver(drawerGetNotificationReceiver, intentFilter);
-    }
-
-    private void unregisterBroadcastReceiver() {
-        LocalBroadcastManager
-                .getInstance(this)
-                .unregisterReceiver(drawerGetNotificationReceiver);
     }
 
     private void checkLogin() {

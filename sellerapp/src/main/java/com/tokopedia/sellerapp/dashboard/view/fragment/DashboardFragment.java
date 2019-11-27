@@ -359,7 +359,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Override
     public void onResume() {
         super.onResume();
-        sellerDashboardPresenter.refreshShopInfo();
+        sellerDashboardPresenter.getShopInfoWithScore();
+        sellerDashboardPresenter.getNotification(false);
     }
 
     @Override

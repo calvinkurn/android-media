@@ -202,7 +202,7 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
     @Override
     public void loadData() {
         if (GlobalConfig.isSellerApp()) {
-            DrawerGetNotificationService.startService(MainApplication.getAppContext(), true);
+            DrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
         }
         try {
             MenuCount.clear();

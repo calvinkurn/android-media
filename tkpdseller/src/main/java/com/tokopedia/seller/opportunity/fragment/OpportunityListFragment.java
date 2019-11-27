@@ -274,7 +274,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             @Override
             public void onRefresh(View view) {
                 if (GlobalConfig.isSellerApp()) {
-                    DrawerGetNotificationService.startService(MainApplication.getAppContext(), true);
+                    DrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
                 }
                 resetOpportunityList();
             }

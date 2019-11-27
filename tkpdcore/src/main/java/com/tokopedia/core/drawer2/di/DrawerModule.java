@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -12,6 +13,7 @@ import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
 import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
+import com.tokopedia.core.drawer2.domain.interactor.DeleteNotificationCacheUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.GetChatNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
@@ -72,10 +74,19 @@ public class DrawerModule {
                                                          PostExecutionThread postExecutionThread,
                                                          NotificationUseCase
                                                                  notificationUseCase,
+                                                         DeleteNotificationCacheUseCase
+                                                                 deleteNotificationCacheUseCase,
                                                          GetChatNotificationUseCase
-                                                                 getChatNotificationUseCase) {
-        return new NewNotificationUseCase(threadExecutor, postExecutionThread,
-                notificationUseCase, getChatNotificationUseCase);
+                                                                 getChatNotificationUseCase,
+                                                         LocalCacheHandler drawerCache) {
+        return new NewNotificationUseCase(
+                threadExecutor,
+                postExecutionThread,
+                notificationUseCase,
+                deleteNotificationCacheUseCase,
+                getChatNotificationUseCase,
+                drawerCache
+        );
     }
 
     @DrawerScope

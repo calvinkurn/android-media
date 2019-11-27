@@ -18,6 +18,7 @@ import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
 import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
+import com.tokopedia.core.drawer2.domain.interactor.DeleteNotificationCacheUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.GetChatNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
@@ -206,10 +207,19 @@ public class SellerDashboardModule {
                                                          PostExecutionThread postExecutionThread,
                                                          NotificationUseCase
                                                                  notificationUseCase,
+                                                         DeleteNotificationCacheUseCase
+                                                                 deleteNotificationCacheUseCase,
                                                          GetChatNotificationUseCase
-                                                                 getChatNotificationUseCase) {
-        return new NewNotificationUseCase(threadExecutor, postExecutionThread,
-                notificationUseCase, getChatNotificationUseCase);
+                                                                 getChatNotificationUseCase,
+                                                         LocalCacheHandler localCacheHandler) {
+        return new NewNotificationUseCase(
+                threadExecutor,
+                postExecutionThread,
+                notificationUseCase,
+                deleteNotificationCacheUseCase,
+                getChatNotificationUseCase,
+                localCacheHandler
+        );
     }
 
     @DeleteCacheScope
