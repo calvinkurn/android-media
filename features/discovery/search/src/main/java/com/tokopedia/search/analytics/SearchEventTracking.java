@@ -9,6 +9,7 @@ public interface SearchEventTracking {
         String CLICK_WISHLIST = "clickWishlist";
         String CLICK_TOP_NAV = "clickTopNav";
         String VIEW_SEARCH_RESULT_IRIS = "viewSearchResultIris";
+        String CLICK_SEARCH_RESULT_IRIS = "clickSearchResultIris";
     }
 
     interface Category {

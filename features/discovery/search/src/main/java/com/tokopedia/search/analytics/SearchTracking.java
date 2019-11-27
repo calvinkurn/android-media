@@ -583,7 +583,7 @@ public class SearchTracking {
 
     public static void trackEventClickGoToBrowserBannedProductsWithResult(String keyword) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
+                SearchEventTracking.Event.CLICK_SEARCH_RESULT_IRIS,
                 SearchEventTracking.Category.SEARCH_RESULT,
                 SearchEventTracking.Action.CLICK_BANNED_PRODUCT_TICKER_RELATED,
                 keyword
