@@ -187,15 +187,16 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
 
     override fun executeBrizzi(refresh: Boolean, intent: Intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            var osName = ""
+            var abiName = ""
             val abis = mutableListOf<String>()
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                osName = Build.CPU_ABI
+                abiName = Build.CPU_ABI
             } else {
                 abis.addAll(Build.SUPPORTED_ABIS)
             }
-            if (osName == "arm64-v8a" || osName == "armeabi-v7a" ||
-                    abis.contains("arm64-v8a") || abis.contains("armeabi-v7a")) {
+
+            if (abiName == ARCHITECTURE_ARM64 || abiName == ARCHITECTURE_ARM32 ||
+                    abis.contains(ARCHITECTURE_ARM64) || abis.contains(ARCHITECTURE_ARM32)) {
                 brizziViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
                 brizziViewModel.tokenBrizzi.observe(this, Observer { token ->
                     brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
@@ -470,6 +471,9 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
 
         const val ISSUER_ID_EMONEY = 1
         const val ISSUER_ID_BRIZZI = 2
+
+        const val ARCHITECTURE_ARM64 = "arm64-v8a"
+        const val ARCHITECTURE_ARM32 = "armeabi-v7a"
 
         const val OPERATOR_NAME_EMONEY = "emoney"
         const val OPERATOR_NAME_BRIZZI = "brizzi"
