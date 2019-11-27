@@ -6,9 +6,10 @@ import com.tokopedia.purchase_platform.common.data.model.response.insurance.enti
 import java.util.ArrayList
 
 interface InsuranceItemActionListener {
-    fun sendEventDeleteInsurance()
-    fun sendEventChangeInsuranceState(isChecked: Boolean)
+    fun sendEventDeleteInsurance(insuranceTitle: String)
+    fun sendEventChangeInsuranceState(isChecked: Boolean, insuranceTitle: String)
     fun deleteMacroInsurance(insuranceCartDigitalProductList: ArrayList<InsuranceCartDigitalProduct>, showconfirmationDialog: Boolean)
     fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops, updateInsuranceProductApplicationDetailsArrayList: ArrayList<UpdateInsuranceProductApplicationDetails>)
     fun onInsuranceSelectStateChanges()
+    fun sendEventInsuranceImpression()
 }

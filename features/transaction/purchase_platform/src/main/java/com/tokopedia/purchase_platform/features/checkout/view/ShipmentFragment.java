@@ -3012,12 +3012,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void sendEventChangeInsuranceState(boolean isChecked) {
+    public void sendEventChangeInsuranceState(boolean isChecked, String title) {
 
     }
 
     @Override
-    public void sendEventDeleteInsurance() {
+    public void sendEventDeleteInsurance(String title) {
 
     }
 
@@ -3028,6 +3028,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onInsuranceSelectStateChanges() {
+
+    }
+
+    @Override
+    public void sendEventInsuranceImpression() {
 
     }
 

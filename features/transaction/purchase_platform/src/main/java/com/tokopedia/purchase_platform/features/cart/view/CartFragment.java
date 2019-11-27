@@ -2543,13 +2543,18 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void sendEventDeleteInsurance() {
-        cartPageAnalytics.sendEventDeleteInsurance();
+    public void sendEventDeleteInsurance(String insuranceTitle) {
+        cartPageAnalytics.sendEventDeleteInsurance(insuranceTitle);
     }
 
     @Override
-    public void sendEventChangeInsuranceState(boolean isChecked) {
-        cartPageAnalytics.sendEventChangeInsuranceState(isChecked);
+    public void sendEventInsuranceImpression() {
+        cartPageAnalytics.sendEventInsuranceImpression();
+    }
+
+    @Override
+    public void sendEventChangeInsuranceState(boolean isChecked, String insuranceTitle) {
+        cartPageAnalytics.sendEventChangeInsuranceState(isChecked, insuranceTitle);
     }
 
     @Override

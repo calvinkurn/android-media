@@ -67,6 +67,7 @@ public interface ConstantTransactionAnalytics {
         String RECENT_VIEW = "recent view";
         String RECOMMENDATION_PAGE = "recommendation page";
         String TRACK_SOM = "track seller order management";
+        String FIN_INSURANCE_CART = "fin - cart page";
     }
 
     interface EventAction {
@@ -328,6 +329,11 @@ public interface ConstantTransactionAnalytics {
         String REMOVE_WISHLIST_LAST_SEEN = "remove wishlist - last seen - login";
         String ADD_WISHLIST_WISHLIST = "add wishlist - wishlist - login";
         String REMOVE_WISHLIST_WISHLIST = "remove wishlist - wishlist - login";
+
+        //Insurance
+        String FIN_INSURANCE_CART_DELETE = "ins - click delete from cart";
+        String FIN_INSURANCE_IMPRESSION = "ins - impression insurance box in cart ";
+        String FIN_INSURANCE_STATE_CHANGE = "ins - click tick insurance for payment";
     }
 
     interface EventLabel {

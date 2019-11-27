@@ -89,6 +89,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private CartWishlistAdapter cartWishlistAdapter;
     private CartRecentViewAdapter cartRecentViewAdapter;
     private int cartSelectAllViewHolderPosition = -1;
+    private boolean sendInsuranceImpressionEvent = false;
 
     @Inject
     public CartAdapter(ActionListener actionListener,
@@ -298,6 +299,17 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holderView.bind(data);
         }
     }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if(holder instanceof InsuranceCartShopViewHolder && !sendInsuranceImpressionEvent) {
+            sendInsuranceImpressionEvent = true;
+            insuranceItemActionlistener.sendEventInsuranceImpression();
+        }
+    }
+
+
 
     @Override
     public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
