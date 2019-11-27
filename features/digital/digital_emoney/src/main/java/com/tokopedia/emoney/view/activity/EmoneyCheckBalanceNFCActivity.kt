@@ -186,14 +186,30 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     override fun executeBrizzi(refresh: Boolean, intent: Intent) {
-        brizziViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
-        brizziViewModel.tokenBrizzi.observe(this, Observer { token ->
-            brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
-            brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            var osName = ""
+            val abis = mutableListOf<String>()
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                osName = Build.CPU_ABI
+            } else {
+                abis.addAll(Build.SUPPORTED_ABIS)
+            }
+            if (osName == "arm64-v8a" || osName == "armeabi-v7a" ||
+                    abis.contains("arm64-v8a") || abis.contains("armeabi-v7a")) {
+                brizziViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
+                brizziViewModel.tokenBrizzi.observe(this, Observer { token ->
+                    brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
+                    brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
 
-            briBrizzi = BrizziCheckBalance(brizziInstance, this)
-            briBrizzi.processTagIntent(intent)
-        })
+                    briBrizzi = BrizziCheckBalance(brizziInstance, this)
+                    briBrizzi.processTagIntent(intent)
+                })
+            } else {
+                showError(resources.getString(R.string.emoney_device_isnot_supported))
+            }
+        } else {
+            showError(resources.getString(R.string.emoney_device_isnot_supported))
+        }
     }
 
     private fun getOperatorName(issuerId: Int): String {
