@@ -16,10 +16,10 @@
 
             <com.tokopedia.common.travel.widget.CountdownTimeView
                 android:id="@+id/countdown_timeout"
-                app:layout_constraintTop_toTopOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_flight_booking_route_summary"
@@ -49,9 +49,9 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_4"
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_4"
                 android:text="@string/flight_booking_contact_sublabel"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_traveller_info_title"
@@ -111,15 +111,15 @@
             <Switch
                 android:id="@+id/switch_traveller_as_passenger"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_24"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
+                android:thumb="@drawable/bg_flight_switch_thumb"
+                android:track="@drawable/bg_flight_switch_track_selector"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_traveller_as_passenger"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_traveller_as_passenger"
-                android:thumb="@drawable/bg_flight_switch_thumb"
-                android:track="@drawable/bg_flight_switch_track_selector"/>
+                app:layout_constraintTop_toTopOf="@+id/tv_traveller_as_passenger" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_passengers_info"
@@ -175,6 +175,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintBottom_toBottomOf="@id/tv_total_payment"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_total_payment"
                 app:typographyType="heading_3"
@@ -185,8 +186,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="@+id/tv_total_payment_amount"
-                app:layout_constraintTop_toBottomOf="@+id/tv_total_payment_amount"
-                >
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_payment_amount">
+
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_see_detail_price"
                     android:layout_width="wrap_content"
@@ -195,21 +196,18 @@
                     android:text="@string/flight_label_see_detail"
                     android:textColor="@color/Green_G500"
                     app:typographyType="body_3"
-                    app:typographyWeight="bold"
-                    />
+                    app:typographyWeight="bold" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_see_detail_price_arrow"
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
-                    app:layout_constraintTop_toTopOf="@+id/tv_see_detail_price"
+                    android:layout_gravity="center_vertical"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_see_detail_price"
                     app:layout_constraintEnd_toEndOf="@+id/tv_total_payment_amount"
-                    tools:src="@drawable/ic_system_action_arrow_down_normal_24"
-                    android:layout_marginTop="@dimen/dp_2"
-                    android:layout_gravity="center_vertical"/>
+                    app:layout_constraintTop_toTopOf="@+id/tv_see_detail_price"
+                    tools:src="@drawable/ic_system_action_arrow_down_normal_24" />
             </LinearLayout>
-
 
 
             <View
@@ -268,6 +266,6 @@
     <include
         android:id="@+id/layout_full_page_error"
         layout="@layout/layout_flight_booking_v3_error"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </RelativeLayout>

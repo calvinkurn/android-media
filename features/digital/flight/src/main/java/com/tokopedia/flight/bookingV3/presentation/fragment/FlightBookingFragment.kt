@@ -251,7 +251,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun renderErrorToast(resId: Int) {
         view?.let {
-            Toaster.showErrorWithAction(it, getString(resId), Snackbar.LENGTH_LONG, "OK", View.OnClickListener { /* do nothing */ })
+            Toaster.showErrorWithAction(it, getString(resId), Snackbar.LENGTH_LONG, "Oke", View.OnClickListener { /* do nothing */ })
         }
     }
 
@@ -836,6 +836,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         }
                     }
                 }
+                dialog.setCancelable(false)
+                dialog.setOverlayClose(false)
                 dialog.setTitle(FlightBookingErrorCodeMapper.getErrorTitle(errorCode))
                 dialog.setDescription(FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode))
                 dialog.show()

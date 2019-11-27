@@ -121,7 +121,7 @@
     <string name="flight_booking_contact_name_max_length_error">Nama kontak maksimal 20 karakter</string>
     <string name="flight_booking_contact_name_alpha_space_error">Nama harus terdiri alfabet dan space</string>
     <string name="flight_booking_contact_email_empty_error">Email kontak tidak boleh kosong</string>
-    <string name="flight_booking_contact_email_invalid_error">Email kontak tidak valid</string>
+    <string name="flight_booking_contact_email_invalid_error">Pastikan format e-mail sudah benar</string>
     <string name="flight_booking_contact_phone_empty_error">Telepon Kontak tidak boleh kosong</string>
     <string name="flight_booking_contact_phone_invalid_error">Telepon Kontak tidak valid</string>
     <string name="flight_booking_contact_phone_max_length_error">Telepon Kontak maksimal 13 digit</string>
@@ -239,8 +239,9 @@
     <string name="flight_label_child_review">(Anak)</string>
     <string name="flight_label_infant_review">(Bayi)</string>
     <string name="activity_label_flight_review">Rincian Pesanan</string>
+    <string name="flight_booking_dialog_loading_title">Tunggu sebentar, ya</string>
     <string name="flight_booking_passenger_toolbar_title">Data Penumpang</string>
-    <string name="flight_booking_passenger_not_fullfilled_error">Silakan melengkapi Data Penumpang untuk melanjutkan</string>
+    <string name="flight_booking_passenger_not_fullfilled_error">Lengkapi data penumpang untuk lanjut bayar</string>
     <string name="flight_booking_dialog_price_change_title">Harga Tiket Telah Berubah</string>
     <string name="flight_booking_dialog_price_change_description">Telah terjadi perubahan harga dari pihak maskapai, ini adalah harga terbaru.</string>
     <string name="flight_booking_dialog_price_change_prev_price_label">Harga Sebelumnya</string>
