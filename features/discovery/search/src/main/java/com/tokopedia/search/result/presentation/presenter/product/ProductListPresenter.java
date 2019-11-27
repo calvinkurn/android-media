@@ -756,9 +756,9 @@ final class ProductListPresenter
     }
 
     private List<Visitable> createBannedProductsErrorMessageAsList(SearchProductModel.SearchProduct searchProduct) {
-        List<Visitable> tobaccoErrorMessageAsList = new ArrayList<>();
-        tobaccoErrorMessageAsList.add(new BannedProductsEmptySearchViewModel(searchProduct.getErrorMessage(), searchProduct.getLiteUrl()));
-        return tobaccoErrorMessageAsList;
+        List<Visitable> bannedProductsErrorMessageAsList = new ArrayList<>();
+        bannedProductsErrorMessageAsList.add(new BannedProductsEmptySearchViewModel(searchProduct.getErrorMessage(), searchProduct.getLiteUrl()));
+        return bannedProductsErrorMessageAsList;
     }
 
     private void getViewToShowEmptySearch(ProductViewModel productViewModel) {
@@ -832,7 +832,7 @@ final class ProductListPresenter
         }
 
         if (searchProduct.getErrorMessage() != null && !searchProduct.getErrorMessage().isEmpty()) {
-            list.add(createTobaccoTickerViewModel(searchProduct.getErrorMessage(), searchProduct.getLiteUrl()));
+            list.add(createBannedProductsTickerViewModel(searchProduct.getErrorMessage(), searchProduct.getLiteUrl()));
             getView().trackEventImpressionBannedProducts(false);
         }
 
@@ -894,7 +894,7 @@ final class ProductListPresenter
         return cpm.getTemplateId() == 4;
     }
 
-    private BannedProductsTickerViewModel createTobaccoTickerViewModel(String errorMessage, String liteUrl) {
+    private BannedProductsTickerViewModel createBannedProductsTickerViewModel(String errorMessage, String liteUrl) {
         String htmlErrorMessage = errorMessage
                 + " "
                 + "Gunakan <a href=\"" + liteUrl + "\">browser</a>";
