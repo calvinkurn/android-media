@@ -60,7 +60,7 @@ dependencies {
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     testImplementation 'junit:junit:4.12'
-//    implementation rootProject.ext.miscDependencies.rootbeer
+    implementation rootProject.ext.miscDependencies.rootbeer
 }
 
 project.ext {
