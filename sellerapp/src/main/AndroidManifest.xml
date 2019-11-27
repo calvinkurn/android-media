@@ -261,6 +261,7 @@
             android:screenOrientation="portrait"
             android:label="@string/title_header_saldo_intro"
             android:theme="@style/Theme.White.PopupTransparent"
+            tools:replace="android:label"
             android:launchMode="singleTask"/>
 
         <activity
