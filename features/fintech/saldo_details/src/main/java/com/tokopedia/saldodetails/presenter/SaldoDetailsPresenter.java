@@ -250,8 +250,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         UserSessionInterface userSession = new UserSession(context);
         if (userSession.hasPassword()) {
 
-            float sellerBalance = getView().getSellerSaldoBalance();
-            float buyerBalance = getView().getBuyerSaldoBalance();
+            long sellerBalance = getView().getSellerSaldoBalance();
+            long buyerBalance = getView().getBuyerSaldoBalance();
 
             long minSaldoLimit = 10000;
             if (sellerBalance < minSaldoLimit && buyerBalance < minSaldoLimit) {
@@ -261,8 +261,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 withdrawActivityBundle.putInt(IS_WITHDRAW_LOCK, statusWithDrawLock);
                 withdrawActivityBundle.putInt(MCL_LATE_COUNT, mclLateCount);
                 withdrawActivityBundle.putBoolean(IS_SELLER, isSeller());
-                withdrawActivityBundle.putFloat(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, getView().getBuyerSaldoBalance());
-                withdrawActivityBundle.putFloat(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, getView().getSellerSaldoBalance());
+                withdrawActivityBundle.putLong(BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT, getView().getBuyerSaldoBalance());
+                withdrawActivityBundle.putLong(BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT, getView().getSellerSaldoBalance());
                 launchWithdrawActivity(intent);
             }
         } else {

@@ -1,6 +1,5 @@
 package com.tokopedia.flight.cancellation.di;
 
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationChooseReasonFragment;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationDetailFragment;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragment;
@@ -20,7 +19,6 @@ import dagger.Component;
 @FlightCancellationScope
 @Component(modules = FlightCancellationModule.class, dependencies = FlightComponent.class)
 public interface FlightCancellationComponent {
-    FlightModuleRouter flightModuleRouter();
 
     UserSessionInterface userSessionInterface();
 

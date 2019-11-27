@@ -9,9 +9,6 @@ import androidx.room.RoomDatabase;
 import android.content.Context;
 import androidx.annotation.NonNull;
 
-import com.tokopedia.flight.country.database.CountryPhoneCodeDao;
-import com.tokopedia.flight.country.database.CountryPhoneCodeTable;
-
 /**
  * Created by nabillasabbaha on 15/08/18.
  */

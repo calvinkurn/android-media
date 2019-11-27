@@ -9,7 +9,7 @@ import java.util.List;
 public class AutoApplyStackData implements Parcelable {
 
     private int promoCodeId;
-    private List<VoucherOrdersItemData> voucherOrders = new ArrayList<>();
+    private List<VoucherOrdersItemData> voucherOrdersItemDataList = new ArrayList<>();
     private int discountAmount;
     private String titleDescription;
     private String stateGlobalPromo;
@@ -32,12 +32,12 @@ public class AutoApplyStackData implements Parcelable {
         this.promoCodeId = promoCodeId;
     }
 
-    public List<VoucherOrdersItemData> getVoucherOrders() {
-        return voucherOrders;
+    public List<VoucherOrdersItemData> getVoucherOrdersItemDataList() {
+        return voucherOrdersItemDataList;
     }
 
-    public void setVoucherOrders(List<VoucherOrdersItemData> voucherOrders) {
-        this.voucherOrders = voucherOrders;
+    public void setVoucherOrdersItemDataList(List<VoucherOrdersItemData> voucherOrdersItemDataList) {
+        this.voucherOrdersItemDataList = voucherOrdersItemDataList;
     }
 
     public int getDiscountAmount() {

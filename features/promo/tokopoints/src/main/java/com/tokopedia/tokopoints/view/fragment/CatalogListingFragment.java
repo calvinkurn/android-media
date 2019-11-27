@@ -31,13 +31,15 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
+
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
@@ -181,7 +183,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getContext();
     }
 
     @Override
@@ -222,8 +224,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         pager.setAdapter(new CatalogBannerPagerAdapter(getContext(), banners, mPresenter));
         //adding bottom dots(Page Indicator)
         final CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator);
-        pageIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-        pageIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.white_two));
+        pageIndicator.setFillColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.tkpd_main_green));
+        pageIndicator.setPageColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.white_two));
         pageIndicator.setViewPager(pager, 0);
         getView().findViewById(R.id.container_pager).setVisibility(View.VISIBLE);
         mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
@@ -452,7 +454,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             }
         } else if (source.getId() == R.id.text_membership_label
                 || source.getId() == R.id.bottom_view_membership) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW,CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership));
 
             AnalyticsTrackerUtil.sendEvent(source.getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -551,7 +553,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public void openWebView(String url) {
-        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+        if (getContext() != null)
+        getContext().startActivity(RouteManager.getIntent(getActivityContext(),url));
     }
 
     @Override
@@ -574,7 +577,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
                 if (mSumToken == 0) {
                     textCount.setVisibility(View.GONE);
-                    textMessage.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_30),
+                    textMessage.setPadding(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30),
                             0,
                             0,
                             0);

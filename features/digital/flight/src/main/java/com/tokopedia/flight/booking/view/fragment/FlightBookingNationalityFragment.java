@@ -9,12 +9,12 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.common.travel.presentation.presenter.PhoneCodePickerPresenterImpl;
 import com.tokopedia.common.travel.presentation.presenter.PhoneCodePickerView;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingNationalityAdapterTypeFactory;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 
 import javax.inject.Inject;
 

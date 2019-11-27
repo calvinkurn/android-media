@@ -1,0 +1,12 @@
+query OfficialStoreBanners($page: String) {
+  slides(device: 4) {
+		slides(page: $page) {
+          id
+          title
+          image_url
+          topads_view_url
+          redirect_url
+          applink
+        }
+    }
+}

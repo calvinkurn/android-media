@@ -19,9 +19,8 @@ class TopChatChatMenuFactory : ChatMenuFactory {
 
     override fun createChatMenuItems(): List<ChatMenu> {
         return listOf(
-                ChatMenu(icon = R.drawable.ic_attach_grey, title = "Link Produk"),
-                ChatMenu(icon = R.drawable.ic_image_picker_grey, title = "Gambar")
+                ChatMenu(icon = R.drawable.ic_attach_grey, title = "Link Produk", label = "product"),
+                ChatMenu(icon = R.drawable.ic_image_picker_grey, title = "Gambar", label = "image")
         )
     }
-
 }

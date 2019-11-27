@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
+import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeFactory;
 
 import java.util.Arrays;
 import java.util.List;

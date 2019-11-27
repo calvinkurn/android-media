@@ -39,8 +39,6 @@ interface DynamicFeedContract {
 
         fun unlikeKol(id: Int, rowNumber: Int, columnNumber: Int)
 
-        fun trackPostClick(uniqueTrackingId: String, redirectLink: String)
-
-        fun trackPostClickUrl(url:String)
+        fun trackAffiliate(url: String)
     }
 }

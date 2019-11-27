@@ -3,10 +3,10 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.officialstore.activity.ReactNativeBrandListOsActivity"
+            android:name=".reactnative.ReactNativeOfficialStoreCategoryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.officialstore.activity.ReactNativeOfficialStoreCategoryActivity"
+            android:name=".brandlist.activity.ReactNativeBrandListOsActivity"
             android:screenOrientation="portrait" />
     </application>
 
