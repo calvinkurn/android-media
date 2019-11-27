@@ -57,17 +57,8 @@ class NotificationTransactionAdapter(
         }
     }
 
-    fun hideFilterItem() {
-        visitables.removeAll {
-            it is NotificationFilterSectionWrapper
-        }
-        notifyDataSetChanged()
-    }
-
     fun removeItem() {
-        visitables.removeAll {
-            it is TransactionItemNotification
-        }
+        visitables.removeAll { it is TransactionItemNotification }
         notifyDataSetChanged()
     }
 
