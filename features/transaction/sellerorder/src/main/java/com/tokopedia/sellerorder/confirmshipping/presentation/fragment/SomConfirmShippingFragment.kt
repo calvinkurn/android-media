@@ -19,6 +19,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_AGENCY_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SP_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_PRODUCT_NAME
@@ -37,6 +38,8 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.fragment_som_confirm_shipping.*
 import javax.inject.Inject
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_CHANGE_COURIER
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_CONFIRMATION_SHIPPING
 
 /**
  * Created by fwidjaja on 2019-11-15.
@@ -50,6 +53,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     private var currShipmentName = ""
     private var currShipmentProductId = "0"
     private var currShipmentProductName = ""
+    private var currIsChangeShipping = false
     private var confirmShippingResponseMsg = ""
     private var courierListResponse = listOf<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>()
     private var changeCourierResponseMsg = ""
@@ -69,6 +73,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     putInt(PARAM_CURR_SHIPMENT_ID, bundle.getInt(PARAM_CURR_SHIPMENT_ID))
                     putString(PARAM_CURR_SHIPMENT_NAME, bundle.getString(PARAM_CURR_SHIPMENT_NAME))
                     putString(PARAM_CURR_SHIPMENT_PRODUCT_NAME, bundle.getString(PARAM_CURR_SHIPMENT_PRODUCT_NAME))
+                    putBoolean(PARAM_CURR_IS_CHANGE_SHIPPING, bundle.getBoolean(PARAM_CURR_IS_CHANGE_SHIPPING))
                 }
             }
         }
@@ -80,6 +85,9 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
             currOrderId = arguments?.getString(PARAM_ORDER_ID).toString()
             currShipmentName = arguments?.getString(PARAM_CURR_SHIPMENT_NAME).toString()
             currShipmentProductName = arguments?.getString(PARAM_CURR_SHIPMENT_PRODUCT_NAME).toString()
+            arguments?.getBoolean(PARAM_CURR_IS_CHANGE_SHIPPING)?.let {
+                currIsChangeShipping = it
+            }
             arguments?.getInt(PARAM_CURR_SHIPMENT_ID)?.let {
                 currShipmentId = it
             }
@@ -110,6 +118,16 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         }
         label_choosen_courier?.text = currShipmentName
         label_choosen_courier_service?.text = currShipmentProductName
+
+        if (currIsChangeShipping) {
+            activity?.title = TITLE_CHANGE_COURIER
+            switch_change_courier?.isChecked = true
+            setBtnToChangeCourier()
+        } else {
+            activity?.title = TITLE_CONFIRMATION_SHIPPING
+            switch_change_courier?.isChecked = false
+            setBtnToConfirmShipping()
+        }
     }
 
     private fun setupListeners() {
@@ -118,33 +136,47 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
             requestBarcodeScanner(activity as Activity, SomScanResiActivity::class.java)
         }
 
+        if (currIsChangeShipping) {
+            switch_change_courier?.isSelected = true
+            setBtnToChangeCourier()
+        } else {
+            setBtnToConfirmShipping()
+        }
+
         // set onchange switch
         switch_change_courier?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                cl_change_courier?.visibility = View.VISIBLE
-                val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_change_courier)
-                val queryString = rawQuery
-                        .replace(INPUT_ORDER_ID, currOrderId)
-                        .replace(INPUT_SHIPPING_REF, tf_no_resi?.textFieldInput?.text.toString())
-                        .replace(INPUT_AGENCY_ID, currShipmentId.toString())
-                        .replace(INPUT_SP_ID, currShipmentProductId)
-                btn_confirm_shipping?.setOnClickListener {
-                    processChangeCourier(queryString)
-                }
-                observingChangeCourier()
-
+                setBtnToChangeCourier()
             } else {
-                cl_change_courier?.visibility = View.GONE
-                val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_confirm_shipping)
-                val queryString = rawQuery
-                        .replace(INPUT_ORDER_ID, currOrderId)
-                        .replace(INPUT_SHIPPING_REF, tf_no_resi?.textFieldInput?.text.toString())
-                btn_confirm_shipping?.setOnClickListener {
-                    processConfirmShipping(queryString)
-                }
-                observingConfirmShipping()
+                setBtnToConfirmShipping()
             }
         }
+    }
+
+    private fun setBtnToChangeCourier() {
+        cl_change_courier?.visibility = View.VISIBLE
+        val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_change_courier)
+        val queryString = rawQuery
+                .replace(INPUT_ORDER_ID, currOrderId)
+                .replace(INPUT_SHIPPING_REF, tf_no_resi?.textFieldInput?.text.toString())
+                .replace(INPUT_AGENCY_ID, currShipmentId.toString())
+                .replace(INPUT_SP_ID, currShipmentProductId)
+        btn_confirm_shipping?.setOnClickListener {
+            processChangeCourier(queryString)
+        }
+        observingChangeCourier()
+    }
+
+    private fun setBtnToConfirmShipping() {
+        cl_change_courier?.visibility = View.GONE
+        val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_confirm_shipping)
+        val queryString = rawQuery
+                .replace(INPUT_ORDER_ID, currOrderId)
+                .replace(INPUT_SHIPPING_REF, tf_no_resi?.textFieldInput?.text.toString())
+        btn_confirm_shipping?.setOnClickListener {
+            processConfirmShipping(queryString)
+        }
+        observingConfirmShipping()
     }
 
     override fun getScreenName(): String = ""

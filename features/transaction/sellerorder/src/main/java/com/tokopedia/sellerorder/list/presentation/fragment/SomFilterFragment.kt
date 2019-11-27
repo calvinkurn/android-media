@@ -18,6 +18,7 @@ import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
@@ -107,9 +108,9 @@ class SomFilterFragment : BaseDaggerFragment() {
 
     private fun setListeners() {
         btn_terapkan?.setOnClickListener {
-            val listOrderParam = currentFilterParams
+            println("++ currentFilterParams = $currentFilterParams")
             activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(PARAM_LIST_ORDER, listOrderParam)
+                putExtra(PARAM_LIST_ORDER, currentFilterParams)
             })
             activity?.finish()
         }
@@ -158,7 +159,7 @@ class SomFilterFragment : BaseDaggerFragment() {
         et_start_date.setText(currentFilterParams?.startDate)
         et_end_date.setText(currentFilterParams?.endDate)
 
-        et_start_date?.setOnClickListener { showDatePicker(START_DATE) }
+        et_start_date?.setOnClickListener { showDatePicker(START_DATE, et_start_date) }
         et_end_date?.setOnClickListener { showDatePicker(END_DATE) }
     }
 
@@ -313,7 +314,10 @@ class SomFilterFragment : BaseDaggerFragment() {
     }
 
     fun onResetClicked() {
-        currentFilterParams = SomListOrderParam()
+        currentFilterParams = SomListOrderParam(
+                startDate = getCalculatedFormattedDate("dd/MM/yyyy", -90),
+                endDate = Date().toFormattedString("dd/MM/yyyy")
+        )
         renderCourierList()
         renderOrderType()
         renderStatusList()

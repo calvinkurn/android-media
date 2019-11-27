@@ -27,23 +27,14 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.convertStrObjToHashMap
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
-import com.tokopedia.sellerorder.common.util.SomConsts.BOTTOMSHEET_TEXT_RADIO_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_COURIER_PROBLEM_OFFICE_CLOSED
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_COURIER_PROBLEM_UNMATCHED_COST
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_BUYER_NO_RESPONSE
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_COURIER_PROBLEM
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_EMPTY_STOCK
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_OTHER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.QUERY_INVOICE_URL_UPLOAD_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_COLON
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_END
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_START
@@ -53,12 +44,9 @@ import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_ATUR_TOKO_TUTUP
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PRODUK_KOSONG
-import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OFFICE_CLOSED
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OTHERS
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
-import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
-import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_SHOP_CLOSED
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
@@ -89,11 +77,14 @@ import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_URL_UPLOAD
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UPLOAD_AWB
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_PRODUCT_NAME
@@ -101,9 +92,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_UBAH_RESI
-import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailShippingViewHolder
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
@@ -367,6 +356,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
                 } else if (buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true)) {
                     setActionConfirmShipping()
+
+                } else if (buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true)) {
+                    setActionSeeComplaint(buttonResp.url)
                 }
             }
 
@@ -391,6 +383,12 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
         } else {
             rl_btn_detail?.visibility = View.GONE
+        }
+    }
+
+    private fun setActionSeeComplaint(url: String) {
+        btn_primary?.setOnClickListener {
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         }
     }
 
@@ -443,13 +441,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
     private fun setActionConfirmShipping() {
         btn_primary?.setOnClickListener {
-            Intent(activity, SomConfirmShippingActivity::class.java).apply {
-                putExtra(PARAM_ORDER_ID, orderId)
-                putExtra(PARAM_CURR_SHIPMENT_ID, detailResponse.shipment.id)
-                putExtra(PARAM_CURR_SHIPMENT_NAME, detailResponse.shipment.name)
-                putExtra(PARAM_CURR_SHIPMENT_PRODUCT_NAME, detailResponse.shipment.productName)
-                startActivityForResult(this, FLAG_CONFIRM_SHIPPING)
-            }
+            createIntentConfirmShipping(false)
         }
     }
 
@@ -481,7 +473,27 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             setActionUbahNoResi()
 
         } else if (key.equals(KEY_UPLOAD_AWB, true)) {
-            onInvalidResiUpload(detailResponse.shipment.awbUploadUrl)
+            if (detailResponse.shipment.awbUploadUrl.isNotEmpty()) {
+                onInvalidResiUpload(detailResponse.shipment.awbUploadUrl)
+            }
+
+        } else if (key.equals(KEY_CHANGE_COURIER, true)) {
+            setActionChangeCourier()
+        }
+    }
+
+    private fun setActionChangeCourier() {
+        createIntentConfirmShipping(true)
+    }
+
+    private fun createIntentConfirmShipping(isChangeShipping: Boolean) {
+        Intent(activity, SomConfirmShippingActivity::class.java).apply {
+            putExtra(PARAM_ORDER_ID, orderId)
+            putExtra(PARAM_CURR_SHIPMENT_ID, detailResponse.shipment.id)
+            putExtra(PARAM_CURR_SHIPMENT_NAME, detailResponse.shipment.name)
+            putExtra(PARAM_CURR_SHIPMENT_PRODUCT_NAME, detailResponse.shipment.productName)
+            putExtra(PARAM_CURR_IS_CHANGE_SHIPPING, isChangeShipping)
+            startActivityForResult(this, FLAG_CONFIRM_SHIPPING)
         }
     }
 
@@ -518,8 +530,18 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                     rCode = "0",
                     reason = viewBottomSheet.tf_cancel_notes?.textFieldInput?.text.toString()
             )
-            doRejectOrder(orderRejectRequest)
+            if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_cancel_notes?.textFieldInput?.text.toString())) {
+                doRejectOrder(orderRejectRequest)
+            } else {
+                showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+            }
         }
+    }
+
+    private fun checkReasonRejectIsNotEmpty(reason: String): Boolean {
+        var isNotEmpty = true
+        if (reason.isEmpty()) isNotEmpty = false
+        return isNotEmpty
     }
 
     private fun setActionUbahNoResi() {
@@ -657,7 +679,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             }
             orderRejectRequest.listPrd = strListPrd
             orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
-            doRejectOrder(orderRejectRequest)
+            if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_cancel_notes?.textFieldInput?.text.toString())) {
+                doRejectOrder(orderRejectRequest)
+            } else {
+                showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+            }
         }
 
         bottomSheetUnify.setFullPage(true)
@@ -716,7 +742,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                     closedNote = viewBottomSheet.tf_shop_closed_notes?.textFieldInput?.text.toString(),
                     closeEnd = viewBottomSheet.tf_end_shop_closed?.textFieldInput?.text.toString()
             )
-            doRejectOrder(orderRejectRequest)
+            if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_cancel_notes?.textFieldInput?.text.toString())) {
+                doRejectOrder(orderRejectRequest)
+            } else {
+                showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+            }
         }
     }
 
@@ -749,7 +779,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             orderRejectRequest.orderId = detailResponse.orderId.toString()
             orderRejectRequest.rCode = rCode
             orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
-            doRejectOrder(orderRejectRequest)
+            if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString())) {
+                doRejectOrder(orderRejectRequest)
+            } else {
+                showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+            }
         }
 
         bottomSheetUnify.setFullPage(true)
@@ -779,7 +813,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                     rCode = reasonCode
                     reason = tf_extra_notes?.textFieldInput?.text.toString()
                 }
-                doRejectOrder(orderRejectRequest)
+                if (checkReasonRejectIsNotEmpty(tf_extra_notes?.textFieldInput?.text.toString())) {
+                    doRejectOrder(orderRejectRequest)
+                } else {
+                    showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+                }
             }
         }
 
@@ -812,7 +850,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                     rCode = reasonCode
                     reason = tf_extra_notes?.textFieldInput?.text.toString()
                 }
-                doRejectOrder(orderRejectRequest)
+                if (checkReasonRejectIsNotEmpty(tf_extra_notes?.textFieldInput?.text.toString())) {
+                    doRejectOrder(orderRejectRequest)
+                } else {
+                    showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+                }
             }
         }
 

@@ -7,6 +7,7 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_PRODUCT_NAME
@@ -29,6 +30,7 @@ class SomConfirmShippingActivity: BaseSimpleActivity(), HasComponent<SomConfirmS
             bundle.putInt(PARAM_CURR_SHIPMENT_ID, 0)
             bundle.putString(PARAM_CURR_SHIPMENT_NAME, "")
             bundle.putString(PARAM_CURR_SHIPMENT_PRODUCT_NAME, "")
+            bundle.putBoolean(PARAM_CURR_IS_CHANGE_SHIPPING, false)
         }
         return SomConfirmShippingFragment.newInstance(bundle)
     }

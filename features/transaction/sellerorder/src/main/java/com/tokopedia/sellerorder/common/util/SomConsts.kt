@@ -13,8 +13,12 @@ object SomConsts {
     const val PARAM_CURR_SHIPMENT_ID = "shipment_id"
     const val PARAM_CURR_SHIPMENT_NAME = "shipment_name"
     const val PARAM_CURR_SHIPMENT_PRODUCT_NAME = "shipment_product_name"
+    const val PARAM_CURR_IS_CHANGE_SHIPPING = "is_change_shipping"
     const val PARAM_SHOP_ID = "shop_id"
     const val PARAM_IS_FROM_FINTECH = "is_from_fintech"
+    const val PARAM_BOOKING_CODE = "bookingCode"
+    const val PARAM_BOOKING_TYPE = "bookingType"
+    const val PARAM_BOOKING_MESSAGE_LIST = "message"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"
@@ -55,6 +59,7 @@ object SomConsts {
     const val KEY_TRACK_SELLER = "track_seller"
     const val KEY_REQUEST_PICKUP = "request_pickup"
     const val KEY_CONFIRM_SHIPPING = "confirm_shipping"
+    const val KEY_VIEW_COMPLAINT_SELLER = "view_complaint_seller"
 
     const val KEY_REASON_EMPTY_STOCK = "empty_stock"
     const val KEY_REASON_SHOP_CLOSED = "shop_closed"
@@ -64,6 +69,7 @@ object SomConsts {
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"
     const val KEY_UPLOAD_AWB = "upload_awb"
+    const val KEY_CHANGE_COURIER = "change_courier"
 
     const val VALUE_REASON_EMPTY_STOCK = "Stok Produk Kosong"
     const val VALUE_REASON_SHOP_CLOSED = "Toko Sedang Tutup"
@@ -89,6 +95,8 @@ object SomConsts {
     const val TITLE_UBAH_RESI = "Ubah Nomor Resi"
     const val TITLE_KURIR_PENGIRIMAN = "Kurir Pengiriman"
     const val TITLE_JENIS_LAYANAN = "Jenis Layanan"
+    const val TITLE_CHANGE_COURIER = "Ganti Kurir"
+    const val TITLE_CONFIRMATION_SHIPPING = "Konfirmasi Pengiriman"
 
     const val BOTTOMSHEET_TEXT_ONLY_TYPE = "text_only"
     const val BOTTOMSHEET_TEXT_RADIO_TYPE = "text_radio"

@@ -6,6 +6,7 @@
     <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
     <string name="title_som_confirm_shipping">Konfirmasi Pengiriman</string>
     <string name="title_som_scan_barcode">Scan Resi</string>
+    <string name="title_som_booking_code">Detail Kode Booking</string>
     <string name="hint_search_product">Cari produk atau invoice</string>
     <string name="response_due">Batas Response</string>
     <string name="seller_info">Seller Info</string>
@@ -129,6 +130,7 @@
     <string name="cancel_order_notes_hint">Keterangan</string>
     <string name="cancel_order_notes_max">Maksimum 512 Karakter</string>
     <string name="change_courier_label">Ganti Kurir Pengiriman</string>
+    <string name="cancel_order_notes_empty_warning">Harap isi Alasan Penolakan</string>
 
     <string name="courier_service_label">Paket Pengiriman</string>
     <string name="courier_choosen_example">JNE</string>

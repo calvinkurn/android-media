@@ -147,7 +147,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
                 .putExtras(extras);*/
 
         return RouteManager.getIntent(context, ApplinkConstInternalOrder.DELIVERED)
-                .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_DONE);
+                .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
     }
 
     public static Intent getIntentAllTransaction(Context context, Bundle extras) {
