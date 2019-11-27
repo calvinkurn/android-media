@@ -370,6 +370,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initCMPushNotification();
         initIris();
         initTetraDebugger();
+        DeeplinkHandlerActivity.createApplinkDelegateInBackground();
     }
 
     private void initDaggerInjector() {

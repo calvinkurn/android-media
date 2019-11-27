@@ -278,6 +278,13 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         finish();
     }
 
+    public static void createApplinkDelegateInBackground(){
+        Observable.fromCallable(() -> {
+            getApplinkDelegateInstance();
+            return true;
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
