@@ -25,6 +25,7 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
+import com.tokopedia.loginregister.common.utils.KeyboardHandler;
 import com.tokopedia.loginregister.common.view.EmailExtension;
 
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +53,8 @@ public class PartialRegisterInputView extends BaseCustomView {
     RegisterAnalytics registerAnalytics = new RegisterAnalytics();
 
     private static Boolean isButtonValidatorActived = false;
+    private Boolean isExtensionSelected = false;
+    private Boolean isInputFocused = false;
 
     private PartialRegisterInputViewListener listener;
     private List<String> emailExtensionList;
@@ -165,8 +168,9 @@ public class PartialRegisterInputView extends BaseCustomView {
                         validateValue(s.toString());
                     }
 
-                    if (etInputEmailPhone.getText().toString().contains("@")) {
+                    if (etInputEmailPhone.getText().toString().contains("@") && emailExtension != null) {
                         emailExtension.setVisibility(View.VISIBLE);
+                        isExtensionSelected = false;
 
                         String[] charEmail = etInputEmailPhone.getText().toString().split("@");
                         if (charEmail.length > 1) {
@@ -175,7 +179,9 @@ public class PartialRegisterInputView extends BaseCustomView {
                             emailExtension.updateExtensions(emailExtensionList);
                         }
                     } else {
-                        emailExtension.setVisibility(View.GONE);
+                        if (emailExtension != null) {
+                            emailExtension.setVisibility(View.GONE);
+                        }
                     }
                 }
             }
@@ -240,7 +246,6 @@ public class PartialRegisterInputView extends BaseCustomView {
                 ((AutoCompleteTextView) v).showDropDown();
             } else {
                 ((AutoCompleteTextView) v).dismissDropDown();
-                emailExtension.setVisibility(View.GONE);
             }
         });
     }
@@ -257,6 +262,33 @@ public class PartialRegisterInputView extends BaseCustomView {
             }
             etInputEmailPhone.setSelection(etInputEmailPhone.getText().toString().trim().length());
             this.emailExtension.setVisibility(View.GONE);
+            isExtensionSelected = true;
+        });
+    }
+
+    public void initKeyboardListener(View view) {
+        new KeyboardHandler(view, new KeyboardHandler.OnKeyBoardVisibilityChangeListener() {
+            @Override
+            public void onKeyboardShow() {
+                if (emailExtension != null && etInputEmailPhone != null) {
+                    if (etInputEmailPhone.getText().toString().contains("@") && !isExtensionSelected) {
+                        emailExtension.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onKeyboardHide() {
+                if (emailExtension != null) {
+                    emailExtension.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        etInputEmailPhone.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus && emailExtension != null) {
+                emailExtension.setVisibility(View.GONE);
+            }
         });
     }
 
