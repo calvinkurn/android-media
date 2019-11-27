@@ -105,11 +105,11 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
             return;
         }
 
-        if (hasTobaccoLiteUrl(searchProductModel) && userSession.isLoggedIn()) {
+        if (hasTobaccoLiteUrl(searchProductModel)) {
             continueWithSeamlessLogin(searchProductModelEmitter, searchProductModel);
         }
         else {
-            continueWithoutSeamlessLogin(searchProductModelEmitter, searchProductModel);
+            completeEmitter(searchProductModelEmitter, searchProductModel);
         }
     }
 
@@ -122,9 +122,14 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
             Emitter<SearchProductModel> searchProductModelEmitter, SearchProductModel searchProductModel
     ) {
         String liteUrl = searchProductModel.getSearchProduct().getLiteUrl();
-        SeamlessLoginSubscriber seamlessLoginSubscriber = createSeamlessLoginSubscriber(searchProductModelEmitter, searchProductModel);
 
-        seamlessLoginUsecase.generateSeamlessUrl(liteUrl, seamlessLoginSubscriber);
+        if (userSession.isLoggedIn()) {
+            SeamlessLoginSubscriber seamlessLoginSubscriber = createSeamlessLoginSubscriber(searchProductModelEmitter, searchProductModel);
+            seamlessLoginUsecase.generateSeamlessUrl(liteUrl, seamlessLoginSubscriber);
+        }
+        else {
+            completeEmitterWithSeamlessLiteUrl(searchProductModelEmitter, searchProductModel, liteUrl);
+        }
     }
 
     private SeamlessLoginSubscriber createSeamlessLoginSubscriber(
@@ -133,24 +138,24 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
         return new SeamlessLoginSubscriber() {
             @Override
             public void onUrlGenerated(@NotNull String url) {
-                searchProductModel.getSearchProduct().setSeamlessLiteUrl(url);
-
-                searchProductModelEmitter.onNext(searchProductModel);
-                searchProductModelEmitter.onCompleted();
+                completeEmitterWithSeamlessLiteUrl(searchProductModelEmitter, searchProductModel, url);
             }
 
             @Override
             public void onError(@NotNull String msg) {
                 String liteUrl = searchProductModel.getSearchProduct().getLiteUrl();
-                searchProductModel.getSearchProduct().setSeamlessLiteUrl(liteUrl);
-
-                searchProductModelEmitter.onNext(searchProductModel);
-                searchProductModelEmitter.onCompleted();
+                completeEmitterWithSeamlessLiteUrl(searchProductModelEmitter, searchProductModel, liteUrl);
             }
         };
     }
 
-    private void continueWithoutSeamlessLogin(
+    private void completeEmitterWithSeamlessLiteUrl(Emitter<SearchProductModel> searchProductModelEmitter, SearchProductModel searchProductModel, String url) {
+        searchProductModel.getSearchProduct().setSeamlessLiteUrl(url);
+
+        completeEmitter(searchProductModelEmitter, searchProductModel);
+    }
+
+    private void completeEmitter(
             Emitter<SearchProductModel> searchProductModelEmitter, SearchProductModel searchProductModel
     ) {
         searchProductModelEmitter.onNext(searchProductModel);
