@@ -271,7 +271,7 @@
     <string name="label_promo">Promo</string>
     <string name="label_total_nilai_promo">Total Nilai Promo</string>
 
-    <string name="clash_bottomsheet_title">Oops.. terjadi konflik promo</string>
+    <string name="clash_bottomsheet_title">Oops, cuma bisa pilih 1 promo</string>
     <string name="clash_bottomsheet_subtitle">Pilih Voucher yang akan digunakan</string>
     <string name="clash_bottomsheet_subtitle_new">Pilih promo yang akan digunakan</string>
     <string name="clash_bottomsheet_latest_voucher">Voucher Baru Dipilih</string>

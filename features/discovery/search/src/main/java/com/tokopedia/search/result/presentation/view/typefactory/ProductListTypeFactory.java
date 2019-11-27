@@ -4,11 +4,18 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.search.result.presentation.model.*;
+import com.tokopedia.topads.sdk.domain.model.CpmModel;
 
 public interface ProductListTypeFactory extends SearchSectionTypeFactory {
     int type(ProductItemViewModel productItem);
 
-    int type(HeaderViewModel headerViewModel);
+    int type(CpmViewModel cpmViewModel);
+
+    int type(TickerViewModel tickerViewModel);
+
+    int type(SuggestionViewModel suggestionViewModel);
+
+    int type(QuickFilterViewModel quickFilterViewModel);
 
     int type(TopAdsViewModel topAdsViewModel);
 

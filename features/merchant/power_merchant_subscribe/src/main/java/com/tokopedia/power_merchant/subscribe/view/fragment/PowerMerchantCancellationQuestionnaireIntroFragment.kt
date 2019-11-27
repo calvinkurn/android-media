@@ -13,11 +13,10 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
-
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireRateModel
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireStepperModel
-import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire_intro.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire_intro.view.*
 import kotlinx.android.synthetic.main.pm_cancellation_questionnaire_button_layout.view.*
@@ -92,7 +91,7 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
             button_next.text = if (parentActivity.isFinalPage()) {
                 getString(R.string.label_send_answer)
             } else {
-                getString(R.string.label_next)
+                getString(com.tokopedia.abstraction.R.string.label_next)
             }
             button_next.setOnClickListener {
                 stepperModel?.let {

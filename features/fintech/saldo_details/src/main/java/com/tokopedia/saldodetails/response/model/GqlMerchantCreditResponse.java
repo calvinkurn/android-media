@@ -37,7 +37,7 @@ public class GqlMerchantCreditResponse implements Parcelable {
     private boolean showBox;
 
     @SerializedName("box_info")
-    private GqlBoxInfoResponse boxInfo;
+    private GqlBoxInfoResponse boxInfo = new GqlBoxInfoResponse();
 
     public static final Creator<GqlMerchantCreditResponse> CREATOR = new Creator<GqlMerchantCreditResponse>() {
         @Override
@@ -165,4 +165,5 @@ public class GqlMerchantCreditResponse implements Parcelable {
     public void setBoxInfo(GqlBoxInfoResponse boxInfo) {
         this.boxInfo = boxInfo;
     }
+
 }

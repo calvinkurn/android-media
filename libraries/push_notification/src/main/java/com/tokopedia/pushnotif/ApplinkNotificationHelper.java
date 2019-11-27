@@ -94,7 +94,7 @@ public class ApplinkNotificationHelper {
                     return Constant.NotificationId.RESOLUTION;
                 case CHATBOT:
                     return Constant.NotificationId.CHAT_BOT;
-                case "review":
+                case "product-review":
                     return Constant.NotificationId.REVIEW;
                 default:
                     return Constant.NotificationId.GENERAL;
