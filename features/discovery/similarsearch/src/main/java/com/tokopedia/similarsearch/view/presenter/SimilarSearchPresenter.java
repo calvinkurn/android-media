@@ -3,12 +3,14 @@ package com.tokopedia.similarsearch.view.presenter;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.similarsearch.analytics.SimilarSearchTracking;
 import com.tokopedia.similarsearch.domain.GetSimilarProductUseCase;
 import com.tokopedia.similarsearch.model.ProductsItem;
 import com.tokopedia.similarsearch.view.SimilarSearchContract;
 import com.tokopedia.similarsearch.view.SimilarSearchFragment;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -28,13 +30,20 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
     GetSimilarProductUseCase getSimilarProductUseCase;
 
     private WishListActionListener wishListListener;
+    private UserSessionInterface userSession;
 
 
     @Inject
-    public SimilarSearchPresenter(AddWishListUseCase addWishlistActionUseCase, RemoveWishListUseCase removeWishlistActionUseCase, GetSimilarProductUseCase getSimilarProductUseCase) {
+    public SimilarSearchPresenter(
+            AddWishListUseCase addWishlistActionUseCase,
+            RemoveWishListUseCase removeWishlistActionUseCase,
+            GetSimilarProductUseCase getSimilarProductUseCase,
+            UserSessionInterface userSession
+    ) {
         this.addWishlistActionUseCase = addWishlistActionUseCase;
         this.removeWishlistActionUseCase = removeWishlistActionUseCase;
         this.getSimilarProductUseCase = getSimilarProductUseCase;
+        this.userSession = userSession;
     }
 
     @Override
@@ -87,13 +96,21 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
         if (getView().isUserHasLogin()) {
             getView().disableWishlistButton(adapterPosition);
             if (productItem.isWishListed()) {
-                removeWishlist(String.valueOf(productItem.getId()), getView().getUserId(), adapterPosition);
+                removeWishlist(productItem);
             } else {
-                addWishlist(String.valueOf(productItem.getId()), getView().getUserId(), adapterPosition);
+                addWishlist(productItem);
             }
         } else {
+            trackWishlistNonLogin(productItem);
             launchLoginActivity(String.valueOf(productItem.getId()));
         }
+    }
+
+    private void trackWishlistNonLogin(ProductsItem productsItem) {
+        WishlistTrackingModel wishlistTrackingModel = createWishlistTrackingModel(productsItem);
+        wishlistTrackingModel.setAddWishlist(!productsItem.isWishListed());
+
+        SimilarSearchTracking.eventSuccessWishlistSimilarProduct(wishlistTrackingModel);
     }
 
     private void launchLoginActivity(String productId) {
@@ -102,17 +119,39 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
         getView().launchLoginActivity(extras);
     }
 
-    private void addWishlist(String productId, String userId, int adapterPosition) {
-        SimilarSearchTracking.eventAddWishList(productId);
-        addWishlistActionUseCase.createObservable(productId, userId,
-                wishListListener);
+    private void addWishlist(ProductsItem productsItem) {
+        trackSuccessAddWishlist(productsItem);
+        addWishlistActionUseCase.createObservable(String.valueOf(productsItem.getId()), getView().getUserId(), wishListListener);
     }
 
+    private void trackSuccessAddWishlist(ProductsItem productsItem) {
+        WishlistTrackingModel wishlistTrackingModel = createWishlistTrackingModel(productsItem);
+        wishlistTrackingModel.setAddWishlist(true);
 
-    private void removeWishlist(String productId, String userId, int adapterPosition) {
-        SimilarSearchTracking.eventRemoveWishList(productId);
-        removeWishlistActionUseCase.createObservable(productId,
-                userId, wishListListener);
+        SimilarSearchTracking.eventSuccessWishlistSimilarProduct(wishlistTrackingModel);
+    }
+
+    private WishlistTrackingModel createWishlistTrackingModel(ProductsItem productsItem) {
+        WishlistTrackingModel wishlistTrackingModel = new WishlistTrackingModel();
+
+        wishlistTrackingModel.setProductId(String.valueOf(productsItem.getId()));
+        wishlistTrackingModel.setTopAds(false);
+        wishlistTrackingModel.setKeyword(getView().getQueryKey());
+        wishlistTrackingModel.setUserLoggedIn(userSession.isLoggedIn());
+
+        return wishlistTrackingModel;
+    }
+
+    private void removeWishlist(ProductsItem productsItem) {
+        trackSuccessRemoveWishlist(productsItem);
+        removeWishlistActionUseCase.createObservable(String.valueOf(productsItem.getId()), getView().getUserId(), wishListListener);
+    }
+
+    private void trackSuccessRemoveWishlist(ProductsItem productsItem) {
+        WishlistTrackingModel wishlistTrackingModel = createWishlistTrackingModel(productsItem);
+        wishlistTrackingModel.setAddWishlist(false);
+
+        SimilarSearchTracking.eventSuccessWishlistSimilarProduct(wishlistTrackingModel);
     }
 
     public void setWishListListener(SimilarSearchFragment wishListListener) {

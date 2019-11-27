@@ -13,7 +13,10 @@
     <string name="name_confirmation">Apakah nama lengkap Anda sudah benar?</string>
     <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
     <string name="error_name_too_short">Nama lengkap terlalu pendek, minimum 3 karakter</string>
-    <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 128 karakter</string>
+    <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 35 karakter</string>
+    <string name="error_name_min_3">Minimum 3 karakter</string>
+    <string name="error_name_max_35">Maksimal 35 karakter</string>
+    <string name="error_name_same_with_previous">Nama tidak boleh sama</string>
     <string name="name_confirmation_yes">Ya, benar</string>
     <string name="name_confirmation_no">Tidak</string>
     <string name="error_minimal_name">Minimum 3 karakter</string>
@@ -25,7 +28,12 @@
     <string name="term_pl">https://m.tokopedia.com/terms.pl?device=android&amp;flag_app=1</string>
     <string name="bottom_info_terms_and_privacy">Dengan mendaftar, saya menyetujui \n &lt;font
         color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt; serta &lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
-
+    <string name="change_name_note">Kamu hanya dapat mengubah nama satu kali. Pastikan nama sudah benar.</string>
+    <string name="change_name_fullname">Nama Lengkap</string>
+    <string name="change_name_visible_on_public_note">Nama akan terlihat oleh publik</string>
+    <string name="change_name_visible_on_another_user">Nama dapat dilihat oleh pengguna lainnya</string>
+    <string name="change_name_change_success">Nama lengkap berhasil diubah</string>
+  
     <!-- PROFILE COMPLETION -->
     <string name="title_profile_completion">Lengkapi Profil</string>
 

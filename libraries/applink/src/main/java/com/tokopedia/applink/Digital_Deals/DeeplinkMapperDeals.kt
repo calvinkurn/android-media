@@ -1,6 +1,7 @@
 package com.tokopedia.applink.Digital_Deals
 
 import android.net.Uri
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL
@@ -20,13 +21,13 @@ object DeeplinkMapperDeals {
                 ""
             // tokopedia://deals/{id}
             uri.pathSegments.size == 1->
-                "$GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG${uri.pathSegments[0]}/"
+                UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.pathSegments[0])
             //tokopedia://deals/brand/{slug}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "brand" ->
-                "$GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS${uri.pathSegments[1]}/"
+                UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL, uri.pathSegments[1])
             //tokopedia://deals/allbrands/{isVoucher}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "allbrands"->
-                "$GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL${uri.pathSegments[1]}/"
+                UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS, uri.pathSegments[1])
             //tokopedia://deals/category/page
             uri.pathSegments.size == 2->
                 ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY

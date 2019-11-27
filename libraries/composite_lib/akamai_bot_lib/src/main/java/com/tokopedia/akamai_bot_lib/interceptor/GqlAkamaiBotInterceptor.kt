@@ -55,7 +55,7 @@ class GqlAkamaiBotInterceptor : Interceptor {
     private fun isPlaintext(buffer: Buffer): Boolean {
         try {
             val prefix = Buffer()
-            val byteCount = if (buffer.size() < 64) buffer.size() else 64
+            val byteCount = if (buffer.size < 64) buffer.size else 64
             buffer.copyTo(prefix, 0, byteCount)
             for (i in 0..15) {
                 if (prefix.exhausted()) {
@@ -79,7 +79,7 @@ class GqlAkamaiBotInterceptor : Interceptor {
     }
 
     private fun readFromBuffer(buffer: Buffer, charset: Charset): String {
-        val bufferSize = buffer.size()
+        val bufferSize = buffer.size
         val maxBytes = Math.min(bufferSize, 250000L)
         var body = ""
         try {

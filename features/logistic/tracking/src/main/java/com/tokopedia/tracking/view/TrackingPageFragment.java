@@ -296,6 +296,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
                     tickerPagerAdapter.setPagerDescriptionClickEvent((charSequence, o) -> {
                         RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
                     });
+                    tickerInfoCourier.addPagerView(tickerPagerAdapter, tickerDataList);
 
                 } else {
                     AdditionalInfoUiModel additionalInfoUiModel = additionalInfoUiModelList.get(0);
@@ -403,8 +404,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private View.OnClickListener onLiveTrackingClickedListener() {
         return view -> {
             mAnalytics.eventClickOrderTrackingClickButtonLiveTracking();
-            startActivity(
-                    SimpleWebViewActivity.createIntent(getActivity(), mTrackingUrl));
+            String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, mTrackingUrl);
+            RouteManager.route(getActivity(), applink);
         };
     }
 

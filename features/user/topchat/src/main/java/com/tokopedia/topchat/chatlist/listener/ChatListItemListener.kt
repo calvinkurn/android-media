@@ -14,4 +14,7 @@ interface ChatListItemListener {
     fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun increaseNotificationCounter()
     fun decreaseNotificationCounter()
+    fun trackChangeReadStatus(element: ItemChatListPojo)
+    fun trackDeleteChat(element: ItemChatListPojo)
+    fun isTabSeller(): Boolean
 }

@@ -52,6 +52,7 @@ import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
+import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.usecase.coroutines.Fail
@@ -113,18 +114,16 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-//            R.id.menu_chat_search -> {
-//                RouteManager.route(activity, ApplinkConstInternalMarketplace.CHAT_SEARCH)
-//                true
-//            }
             R.id.menu_chat_filter -> {
                 chatListAnalytics.eventClickFilterChat()
                 showFilterDialog()
                 true
             }
-//            R.id.menu_chat_setting -> {
-//                true
-//            }
+            R.id.menu_chat_setting -> {
+                val intent = ChatSettingActivity.getIntent(context, isTabSeller())
+                startActivity(intent)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -164,6 +163,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
             if (url.isNullOrEmpty()) return@Observer
             broadCastButton.setOnClickListener {
+                chatListAnalytics.eventClickBroadcastButton()
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
             }
         })
@@ -551,7 +551,15 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         activityContract?.loadNotificationCounter()
     }
 
-    private fun isTabSeller(): Boolean {
+    override fun trackChangeReadStatus(element: ItemChatListPojo) {
+        chatListAnalytics.trackChangeReadStatus(element)
+    }
+
+    override fun trackDeleteChat(element: ItemChatListPojo) {
+        chatListAnalytics.trackDeleteChat(element)
+    }
+
+    override fun isTabSeller(): Boolean {
         return sightTag == PARAM_TAB_SELLER
     }
 

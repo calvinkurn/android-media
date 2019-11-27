@@ -24,9 +24,9 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topchat.R;
+import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity;
-import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingTypeFactoryImpl;
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
@@ -66,12 +66,16 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     @Inject
     TemplateChatSettingPresenter presenter;
+
+    @Inject
+    ChatTemplateAnalytics analytic;
+
     private ItemTouchHelper mItemTouchHelper;
     private Snackbar snackbarError;
 
     private Snackbar snackbarInfo;
     private BottomSheetView bottomSheetView;
-    private Boolean isSeller;
+    private Boolean isSeller = false;
 
     public static TemplateChatFragment createInstance(Bundle extras) {
         TemplateChatFragment fragment = new TemplateChatFragment();
@@ -142,6 +146,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
             @Override
             public void onClick(View view) {
                 boolean b = switchTemplate.isChecked();
+                analytic.trackOnCheckedChange(b);
                 presenter.switchTemplateAvailability(b);
                 if (b) {
                     templateContainer.setVisibility(View.VISIBLE);
@@ -208,8 +213,10 @@ public class TemplateChatFragment extends BaseDaggerFragment
             bundle.putStringArrayList(InboxMessageConstant.PARAM_ALL, adapter.getListString());
             if (message == null) {
                 bundle.putInt(InboxMessageConstant.PARAM_MODE, CREATE);
+                analytic.trackAddTemplateChat();
             } else {
                 bundle.putInt(InboxMessageConstant.PARAM_MODE, EDIT);
+                analytic.trackEditTemplateChat();
             }
             bundle.putBoolean(PARAM_IS_SELLER, isSeller);
             intent.putExtras(bundle);

@@ -19,6 +19,7 @@ abstract class BaseChatMenuViewHolder(val listener: ChatMenuListener, itemView: 
         fun onClickAttachProduct()
         fun onClickImagePicker()
         fun createChatMenuFactory(): ChatMenuFactory
+        fun trackChatMenuClicked(label: String)
     }
 
     fun bind(chatMenu: ChatMenu) {
@@ -26,8 +27,9 @@ abstract class BaseChatMenuViewHolder(val listener: ChatMenuListener, itemView: 
         menuTitle?.text = chatMenu.title
 
         itemView.setOnClickListener {
-            listener.closeChatMenu()
             onItemClick()
+            listener.trackChatMenuClicked(chatMenu.label)
+            listener.closeChatMenu()
         }
     }
 

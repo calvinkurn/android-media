@@ -49,6 +49,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="-20dp"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:layout_scrollFlags="scroll|snap"
@@ -60,6 +61,7 @@
             android:id="@+id/status_bar_bg2"
             android:background="@color/green_600"
             android:layout_width="match_parent"
+            android:layout_marginTop="-5dp"
             android:layout_height="@dimen/dp_25"/>
 
         <com.tokopedia.design.component.Tabs
@@ -73,7 +75,7 @@
             app:tabIndicatorHeight="@dimen/dp_1"
             app:tabSelectedTextColor="@color/tkpd_main_green"
             app:tabTextColor="@color/font_black_disabled_38"
-            app:tabTextAppearance="@style/Tabs.Secondary"
+            app:tabTextAppearance="@style/FeedTabLayoutTextStyle"
             app:tabIndicatorColor="@color/tkpd_main_green"
             android:theme="@style/ThemeOverlay.AppCompat.Light"/>
 

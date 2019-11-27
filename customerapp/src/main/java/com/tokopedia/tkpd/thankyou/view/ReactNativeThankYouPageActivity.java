@@ -114,14 +114,12 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     @Override
     public void onBackPressed() {
-        if (isDigital()) {
-            FragmentManager manager = getSupportFragmentManager();
+        FragmentManager manager = getSupportFragmentManager();
 
-            if (manager != null) {
-                AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-                rating.setDialogDismissListener(() -> closeThankyouPage());
-                rating.showDialog(manager, this);
-            }
+        if (isDigital() && manager != null) {
+            AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+            rating.setDialogDismissListener(this::closeThankyouPage);
+            rating.showDialog(manager, this);
         } else {
             closeThankyouPage();
         }

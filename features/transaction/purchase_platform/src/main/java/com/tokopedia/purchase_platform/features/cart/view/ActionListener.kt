@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
 
@@ -29,11 +30,19 @@ interface ActionListener {
 
     fun onShowAllItem(appLink: String)
 
-    fun onAddToWishlist(productId: String)
+    fun onAddDisabledItemToWishlist(productId: String)
+
+    fun onAddLastSeenToWishlist(productId: String)
+
+    fun onAddWishlistToWishlist(productId: String)
 
     fun onAddRecommendationToWishlist(productId: String)
 
-    fun onRemoveFromWishlist(productId: String)
+    fun onRemoveDisabledItemFromWishlist(productId: String)
+
+    fun onRemoveLastSeenFromWishlist(productId: String)
+
+    fun onRemoveWishlistFromWishlist(productId: String)
 
     fun onRemoveRecommendationFromWishlist(productId: String)
 
@@ -50,4 +59,12 @@ interface ActionListener {
     fun onSimilarProductUrlClicked(similarProductUrl: String)
 
     fun onSelectAllClicked()
+
+    fun onDeleteAllDisabledProduct();
+
+    fun onDeleteDisabledItem(data: CartItemData)
+
+    fun onSeeErrorProductsClicked()
+
+    fun onTickerDescriptionUrlClicked(url: String)
 }

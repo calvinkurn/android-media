@@ -374,6 +374,7 @@
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;
 }
+-dontwarn kotlinx.coroutines.flow.**inlined**
 
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
@@ -401,3 +402,7 @@
 -dontwarn org.junit.**
 
 -keep public class com.google.android.material.bottomnavigation.** { *; }
+
+-keepclassmembers public class com.google.android.material.bottomsheet.BottomSheetDialog {
+    private <fields>;
+}

@@ -12,10 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
@@ -42,6 +39,7 @@ class ChatItemListViewHolder(
     private val unreadCounter: Typography = itemView.findViewById(R.id.unread_counter)
     private val time: Typography = itemView.findViewById(R.id.time)
     private val label: Label = itemView.findViewById(R.id.user_label)
+    private val pin: ImageView = itemView.findViewById(R.id.ivPin)
 
     override fun bind(element: ItemChatListPojo) {
         val attributes = element.attributes
@@ -64,8 +62,14 @@ class ChatItemListViewHolder(
             bindMessageState(attributes.lastReplyMessage)
             bindTimeStamp(attributes.lastReplyTimeStr)
             bindLabel(contact.tag)
+            bindPin(contact.tag)
         }
 
+    }
+
+    private fun bindPin(tag: String) {
+        val shouldShowPin = tag == OFFICIAL_TAG && listener.isTabSeller()
+        pin.showWithCondition(shouldShowPin)
     }
 
     private fun onChatItemClicked(chat: ItemChatListPojo) {
@@ -102,6 +106,7 @@ class ChatItemListViewHolder(
     }
 
     private fun delete(element: ItemChatListPojo) {
+        listener.trackDeleteChat(element)
         listener.deleteChat(element, adapterPosition)
     }
 
@@ -130,7 +135,7 @@ class ChatItemListViewHolder(
 
     private fun responseSuccessChangeStateRead(list: List<ChatStateItem>, element: ItemChatListPojo) {
         for (state in list) {
-            if (element.msgId == state.msgID.toString() && state.isSuccess == 1) {
+            if (element.hasTheSameMsgId(state) && state.isSuccess()) {
                 changeStateMarkAsRead(element)
             }
         }
@@ -142,13 +147,14 @@ class ChatItemListViewHolder(
                 readStatus = STATE_CHAT_READ
                 bindReadState(readStatus, unreads)
                 listener.decreaseNotificationCounter()
+                listener.trackChangeReadStatus(element)
             }
         }
     }
 
     private fun responseSuccessChangeStateUnread(list: List<ChatStateItem>, element: ItemChatListPojo) {
         for (state in list) {
-            if (element.msgId == state.msgID.toString() && state.isSuccess == 1) {
+            if (element.hasTheSameMsgId(state) && state.isSuccess()) {
                 changeStateMarkAsUnread(element)
             }
         }
@@ -160,6 +166,7 @@ class ChatItemListViewHolder(
                 readStatus = STATE_CHAT_UNREAD
                 bindReadState(readStatus, unreads)
                 listener.increaseNotificationCounter()
+                listener.trackChangeReadStatus(element)
             }
         }
     }
@@ -277,6 +284,7 @@ class ChatItemListViewHolder(
         const val PAYLOAD_TYPING_STATE = 3207
         const val PAYLOAD_STOP_TYPING_STATE = 5431
 
+        const val BUYER_TAG = "Pengguna"
         const val SELLER_TAG = "Penjual"
         const val OFFICIAL_TAG = "Official"
     }

@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -34,6 +34,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
@@ -43,15 +44,18 @@ dependencies {
     implementation rootProject.ext.viewDependencies.appIntro
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
 project.ext {
     artifactId = 'tokopoints'
     groupId = 'com.tokopedia.promo'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "tokopoints-release"
 }
 

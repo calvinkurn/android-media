@@ -2,25 +2,21 @@ package com.tokopedia.home_recom
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.MenuItem
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
 import com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
-import com.tokopedia.trackingoptimizer.TrackingQueue
-import javax.annotation.RegEx
+
 /**
  * Created by lukas on 21/05/2019
  *
@@ -71,7 +67,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      * @return boolean
      */
     private fun isSimilarProduct(url: String): Boolean{
-        return url.contains("/d/")
+        return url.contains("/d/") || url.contains("/d?") || url.contains("/d")
     }
 
     /**

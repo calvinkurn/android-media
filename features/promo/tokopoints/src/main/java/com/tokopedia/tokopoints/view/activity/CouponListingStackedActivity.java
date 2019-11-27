@@ -34,6 +34,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment.REQUEST_CODE_STACKED_ADAPTER;
+import static com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment.REQUEST_CODE_STACKED_IN_ADAPTER;
 import static com.tokopedia.tokopoints.view.util.CommonConstant.TAB_SETUP_DELAY_MS;
 
 public class CouponListingStackedActivity extends BaseSimpleActivity implements StackedCouponActivityContract.View, HasComponent<TokoPointComponent> {
@@ -49,6 +51,11 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
     StackedCouponActivityPresenter mPresenter;
 
     @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar_coupon_listing_tokopoint;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_label_my_coupon_new));
@@ -56,6 +63,10 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
         mPresenter.attachView(this);
         mContainerMain = findViewById(R.id.container);
         serverErrorView = findViewById(R.id.server_error_view);
+        serverErrorView.setErrorButtonClickListener((view) -> {
+            mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
+            showLoading();
+        });
         initViews();
         UserSessionInterface userSession = new UserSession(this);
         if (userSession.isLoggedIn()) {
@@ -104,6 +115,8 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
             mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
             showLoading();
+        } else if ((requestCode == REQUEST_CODE_STACKED_IN_ADAPTER || requestCode == REQUEST_CODE_STACKED_ADAPTER) && resultCode == RESULT_OK) {
+            mAdapter.getRegisteredFragment(mPagerFilter.getCurrentItem()).onActivityResult(requestCode,resultCode,data);
         } else {
             finish();
         }

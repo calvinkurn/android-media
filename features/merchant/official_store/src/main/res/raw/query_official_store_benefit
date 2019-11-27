@@ -1,0 +1,11 @@
+query OfficialStoreBenefits {
+  OfficialStoreBenefits {
+    benefits{
+      id
+      label
+      iconUrl
+      position
+      redirectUrl
+    }
+  }
+}

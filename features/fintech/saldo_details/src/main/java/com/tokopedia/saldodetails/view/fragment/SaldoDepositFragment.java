@@ -8,9 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -26,6 +23,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -60,7 +61,6 @@ import javax.inject.Inject;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK;
 
-//import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
@@ -106,9 +106,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private boolean isSellerEnabled;
     private SaldoTransactionHistoryFragment saldoHistoryFragment;
 
-    private float sellerSaldoBalance;
-    private float buyerSaldoBalance;
-    private float totalSaldoBalance;
+    private long sellerSaldoBalance;
+    private long buyerSaldoBalance;
+    private long totalSaldoBalance;
     private LinearLayout saldoTypeLL;
     private LinearLayout merchantDetailLL;
 
@@ -120,7 +120,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private LinearLayout merchantStatusLL;
     private long CHECK_VISIBILITY_DELAY = 700;
 
-    private ConstraintLayout layoutTicker;
+    private View layoutTicker;
     private TextView tvTickerMessage;
     private ImageView ivDismissTicker;
     private int mclLateCount = 0;
@@ -507,22 +507,20 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void onFirstTimeLaunched() {
-
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         showMclBlockTickerFirebaseFlag = remoteConfig.getBoolean(APP_ENABLE_SALDO_LOCK, false);
-
         saldoDetailsPresenter.getSaldoBalance();
         saldoDetailsPresenter.getTickerWithdrawalMessage();
         saldoDetailsPresenter.getMCLLateCount();
     }
 
     @Override
-    public float getSellerSaldoBalance() {
+    public long getSellerSaldoBalance() {
         return sellerSaldoBalance;
     }
 
     @Override
-    public float getBuyerSaldoBalance() {
+    public long getBuyerSaldoBalance() {
         return buyerSaldoBalance;
     }
 
@@ -620,7 +618,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         if (showMclBlockTickerFirebaseFlag) {
             String tickerMsg = getString(com.tokopedia.design.R.string.saldolock_tickerDescription);
-            int startIndex = tickerMsg.indexOf("Bayar Sekarang");
+            int startIndex = tickerMsg.indexOf(getResources().getString(com.tokopedia.saldodetails.R.string.tickerClickableText));
             String late = Integer.toString(mclLateCount);
             tickerMsg = String.format(getResources().getString(com.tokopedia.design.R.string.saldolock_tickerDescription), late);
             SpannableString ss = new SpannableString(tickerMsg);
@@ -678,13 +676,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setBuyerSaldoBalance(float balance, String text) {
+    public void setBuyerSaldoBalance(long balance, String text) {
         buyerSaldoBalance = balance;
         buyerBalanceTV.setText(text);
     }
 
     @Override
-    public void setSellerSaldoBalance(float amount, String formattedAmount) {
+    public void setSellerSaldoBalance(long amount, String formattedAmount) {
         sellerSaldoBalance = amount;
         sellerBalanceTV.setText(formattedAmount);
     }

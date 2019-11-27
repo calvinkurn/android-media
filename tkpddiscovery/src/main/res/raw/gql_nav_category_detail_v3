@@ -11,15 +11,18 @@ query CategoryDetailQueryV3($identifier: String!, $intermediary: Boolean!, $safe
       tree
       parent
       url
+      redirectionURL
+      appRedirectionURL
       applinks
       redirectTo
       iconImageURL
       hidden
       view
       intermediary
- 			isBanned
-        bannedMsg
-        bannedMsgHeader
+      isAdult
+ 	  isBanned
+      bannedMsg
+      bannedMsgHeader
       appRedirection
       brandCurated
       titleTag

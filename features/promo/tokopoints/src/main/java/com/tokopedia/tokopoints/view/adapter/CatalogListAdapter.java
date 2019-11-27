@@ -128,9 +128,9 @@ public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
             StringBuilder upperText = new StringBuilder();
 
             if (item.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), R.color.red_150));
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), com.tokopedia.design.R.color.red_150));
             } else {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), R.color.black_38));
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), com.tokopedia.design.R.color.black_38));
             }
 
             for (int i = 0; i < item.getUpperTextDesc().size(); i++) {
@@ -162,16 +162,16 @@ public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
         //disabling the coupons if not eligible for current membership
         if (item.isDisabled()) {
             ImageUtil.dimImage(holder.imgBanner);
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), R.color.black_54));
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.design.R.color.black_54));
         } else {
             ImageUtil.unDimImage(holder.imgBanner);
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), R.color.orange_red));
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.design.R.color.orange_red));
         }
 
         if (item.isDisabledButton()) {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.black_12));
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), com.tokopedia.abstraction.R.color.black_12));
         } else {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.white));
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), com.tokopedia.design.R.color.white));
         }
 
         if (item.getPointsSlash() <= 0) {
