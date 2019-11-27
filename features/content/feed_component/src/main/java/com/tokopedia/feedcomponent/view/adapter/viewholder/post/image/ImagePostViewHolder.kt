@@ -45,6 +45,6 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
     interface ImagePostListener {
         fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }
 }

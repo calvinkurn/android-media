@@ -2,15 +2,15 @@ package com.tokopedia.chatbot.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.core.app.NotificationManagerCompat
 import android.widget.ImageView
 import android.widget.TextView
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
@@ -18,22 +18,29 @@ import com.tokopedia.chatbot.view.fragment.ChatbotFragment
 import com.tokopedia.pushnotif.Constant
 import com.tokopedia.pushnotif.PushNotification
 
+
 /**
  * @author by nisie on 23/11/18.
  */
 class ChatbotActivity : BaseChatToolbarActivity() {
 
+
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
+        val list = UriUtil.destructureUri(ApplinkConstInternalGlobal.CHAT_BOT+"/{id}",intent.data,true)
+        if(!list.isNullOrEmpty()){
+            bundle.putString(MESSAGE_ID,list[0])
         }
+        bundle.putString(DEEP_LINK_URI,intent.data.toString())
         val fragment = ChatbotFragment()
         fragment.arguments = bundle
         return fragment
     }
 
     companion object {
+
+        const val MESSAGE_ID = "message_id"
+        const val DEEP_LINK_URI = "deep_link_uri"
 
         @JvmStatic
         fun getCallingIntent(messageId: String, context: Context): Intent {
@@ -63,18 +70,6 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         }
     }
 
-    object DeepLinkIntents {
-        @JvmStatic
-        @DeepLink(ApplinkConst.CHATBOT)
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return Intent(context, ChatbotActivity::class.java)
-                    .setData(uri.build())
-                    .putExtras(extras)
-        }
-
-    }
-
     override fun onResume() {
         super.onResume()
         PushNotification.setIsChatBotWindowOpen(true)
@@ -86,7 +81,8 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         PushNotification.setIsChatBotWindowOpen(false)
     }
 
-   fun upadateToolbar(profileName: String?, profileImage: String?) {
+
+    fun upadateToolbar(profileName: String?, profileImage: String?) {
         ImageHandler.loadImageCircle2(this, findViewById<ImageView>(R.id.user_avatar), profileImage)
         (findViewById<TextView>(R.id.title)).text = profileName
     }

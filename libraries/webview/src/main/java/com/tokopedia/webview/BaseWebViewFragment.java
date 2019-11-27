@@ -8,9 +8,6 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +26,9 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
@@ -52,6 +52,7 @@ import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
 public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private static final int MAX_PROGRESS = 100;
+    private static final int HALF_PROGRESS = 50;
     private static final int PICTURE_QUALITY = 60;
 
     public TkpdWebView webView;
@@ -74,8 +75,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     protected String url = "";
     public static final String TOKOPEDIA_STRING = "tokopedia";
     protected boolean isTokopediaUrl;
-    private boolean allowOverride = true;
+    boolean allowOverride = true;
     private boolean needLogin = false;
+
+    // last check overrideUrlLoading
+    // true means it has move to native page
+    boolean hasMoveToNativePage = false;
+
+    // check if webview load is greater than threshold (50%)
+    boolean webViewHasContent = false;
 
     private UserSession userSession;
     View mView;
@@ -127,6 +135,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView = mView.findViewById(R.id.webview);
         boolean overrideUrlLoading = shouldOverrideUrlLoading(webView, url);
         if (overrideUrlLoading) {
+            hasMoveToNativePage = true;
             getActivity().finish();
             return null;
         } else {
@@ -252,6 +261,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             if (newProgress == MAX_PROGRESS) {
                 onLoadFinished();
             }
+            if (newProgress >= HALF_PROGRESS && !webViewHasContent) {
+                webViewHasContent = true;
+            }
             super.onProgressChanged(view, newProgress);
         }
 
@@ -338,14 +350,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            return BaseWebViewFragment.this.shouldOverrideUrlLoading(view, url);
+        public boolean shouldOverrideUrlLoading(WebView view, String requestUrl) {
+            if (hasCheckOverrideAtInitialization(requestUrl)) return false;
+            boolean overrideUrl = BaseWebViewFragment.this.shouldOverrideUrlLoading(view, requestUrl);
+            checkActivityFinish();
+            return overrideUrl;
         }
 
         @RequiresApi(Build.VERSION_CODES.N)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            return BaseWebViewFragment.this.shouldOverrideUrlLoading(view, request.getUrl().toString());
+            return shouldOverrideUrlLoading(webView, request.getUrl().toString());
+        }
+
+        boolean hasCheckOverrideAtInitialization(String requestUrl){
+            return (allowOverride && requestUrl.equals(url));
         }
 
         @Override
@@ -392,6 +411,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 Intent destination = new Intent(Intent.ACTION_VIEW);
                 destination.setData(Uri.parse(url));
                 startActivity(destination);
+                hasMoveToNativePage = true;
                 return true;
             } catch (ActivityNotFoundException e) {
                 return false;
@@ -401,6 +421,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (isNotNetworkUrl) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
             if (intent!= null) {
+                hasMoveToNativePage = true;
                 startActivity(intent);
                 return true;
             } else {
@@ -408,12 +429,24 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 // ask user to update app
             }
         }
-        return RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
+        hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
+        return hasMoveToNativePage;
     }
 
-    boolean goToLoginGoogle(@NonNull String url){
-        String query = Uri.parse(url).getQueryParameter("login_type");
-        if (query != null && query.equals("plus")) {
+    private void checkActivityFinish(){
+        if (hasMoveToNativePage && !webViewHasContent && getActivity()!= null) {
+            getActivity().finish();
+        }
+    }
+
+    private boolean goToLoginGoogle(@NonNull String url){
+        String loginType;
+        try {
+            loginType = Uri.parse(url).getQueryParameter("login_type");
+        } catch (Exception e) {
+            return false;
+        }
+        if ("plus".equals(loginType)) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), ApplinkConst.LOGIN);
             if (intent != null) {
                 intent.putExtra("auto_login", true);
@@ -426,6 +459,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected void onLoadFinished() {
+        // webview is blank, but it already goes to native page, so this activity is safe to close.
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
@@ -433,6 +467,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     public TkpdWebView getWebView() {
         return webView;
+    }
+
+    public int setWebView(){
+        return R.id.webview;
+    }
+
+    public int setProgressBar() {
+        return R.id.progressbar;
     }
 
     public void reloadPage(){

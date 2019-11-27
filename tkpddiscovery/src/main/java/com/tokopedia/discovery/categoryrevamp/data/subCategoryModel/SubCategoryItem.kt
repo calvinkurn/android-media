@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class SubCategoryItem(
 
-        @field:SerializedName("isForAdult")
-        val isForAdult: Int? = null,
+        @field:SerializedName("isAdult")
+        val isAdult: Int? = null,
 
         @field:SerializedName("applinks")
         val applinks: String? = null,
@@ -15,6 +15,12 @@ data class SubCategoryItem(
 
         @field:SerializedName("id")
         val id: Int? = null,
+
+        @field:SerializedName("redirectionURL")
+        val redirectionURL: String? = null,
+
+        @field:SerializedName("appRedirectionURL")
+        val appRedirectionURL: String? = null,
 
         @field:SerializedName("thumbnailImage")
         val thumbnailImage: String? = null,

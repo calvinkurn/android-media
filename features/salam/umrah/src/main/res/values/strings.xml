@@ -1,0 +1,23 @@
+<resources>
+
+    <string name="umrah_order_detail_status_label">Status</string>
+    <string name="umrah_order_detail_detail_title">Detail Umroh</string>
+    <string name="umrah_order_detail_show_detail">Lihat Detail</string>
+
+    <string name="umrah_my_umrah_show_detail">Lihat Detail</string>
+    <string name="umrah_order_detail_jamaah_info_label">Informasi Jemaah</string>
+    <string name="umrah_common_booking_code_label">Kode Booking</string>
+    <string name="umrah_order_detail_show_label">LIHAT</string>
+    <string name="umrah_order_detail_show_e_voucher_label">Lihat E-Voucher</string>
+    <string name="umrah_order_detail_payment_info_label">Informasi Pembayaran</string>
+    <string name="my_umrah_widget_next_step_label">Selanjutnya:</string>
+    <string name="umrah_order_detail_activity_label">Detail Pesanan</string>
+    <string name="umrah_order_detail_ticker_example">Dana Pembayaran akan dikembalikan ke \n Saldo Tokopedia/OVO/Limit Kartu Kredit</string>
+    <string name="umrah_order_detail_link_pusat_bantuan">Pusat Bantuan</string>
+    <string name="umrah_order_detail_old_value_quetion_mark">\?</string>
+    <string name="umrah_order_detail_new_value_quetion_mark"><![CDATA[\? <br>]]></string>
+    <string name="umrah_order_detail_condition_agreement">Pelajari tentang kebijakan pembatalan &amp; refund</string>
+    <string name="umrah_order_detail_condition_agreement_link">pembatalan &amp; refund</string>
+
+
+</resources>
