@@ -130,6 +130,7 @@ public class DigitalProductActivity extends BaseSimpleActivity
                 passData.isFromWidget(),
                 passData.isCouponApplied(),
                 passData.getAdditionalETollBalance(),
-                passData.getAdditionalETollLastUpdatedDate());
+                passData.getAdditionalETollLastUpdatedDate(),
+                passData.getAdditionalETollOperatorName());
     }
 }
