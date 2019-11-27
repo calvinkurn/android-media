@@ -862,7 +862,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     override fun showManualZipCodes() {
-
+        et_kode_pos_mismatch.apply {
+            setOnClickListener(null)
+            onFocusChangeListener = null
+            addTextChangedListener(null)
+            isFocusable = true
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
