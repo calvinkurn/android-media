@@ -326,14 +326,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun loadData(page: Int) {
-        context?.let {
-            productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(resources, R.raw.gql_get_deposit), userSession.shopId)
-            productManagePresenter.getGoldMerchantStatus()
-            productManagePresenter.getProductList(page, searchInputView.searchText,
-                    productManageFilterModel.catalogProductOption, productManageFilterModel.conditionProductOption,
-                    productManageFilterModel.etalaseProductOption, productManageFilterModel.pictureStatusOption,
-                    sortProductOption, productManageFilterModel.categoryId)
-        }
+        productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(resources, R.raw.gql_get_deposit), userSession.shopId)
+        productManagePresenter.getGoldMerchantStatus()
+        productManagePresenter.getProductList(page, searchInputView.searchText,
+                productManageFilterModel.catalogProductOption, productManageFilterModel.conditionProductOption,
+                productManageFilterModel.etalaseProductOption, productManageFilterModel.pictureStatusOption,
+                sortProductOption, productManageFilterModel.categoryId)
     }
 
     override fun renderList(list: MutableList<ProductManageViewModel>, hasNextPage: Boolean) {
