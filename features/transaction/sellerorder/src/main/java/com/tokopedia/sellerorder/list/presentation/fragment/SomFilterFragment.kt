@@ -159,7 +159,7 @@ class SomFilterFragment : BaseDaggerFragment() {
         et_start_date.setText(currentFilterParams?.startDate)
         et_end_date.setText(currentFilterParams?.endDate)
 
-        et_start_date?.setOnClickListener { showDatePicker(START_DATE, et_start_date) }
+        et_start_date?.setOnClickListener { showDatePicker(START_DATE) }
         et_end_date?.setOnClickListener { showDatePicker(END_DATE) }
     }
 
