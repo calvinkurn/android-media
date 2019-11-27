@@ -47,9 +47,6 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.digital.common.analytic.DigitalEventTracking;
-import com.tokopedia.dynamicbanner.entity.PlayCard;
-import com.tokopedia.dynamicbanner.entity.PlayCardData;
-import com.tokopedia.dynamicbanner.entity.PlayCardDataWrapper;
 import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
@@ -78,7 +75,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
@@ -476,17 +472,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if(data != null){
                 if (data.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                     configureHomeFlag(data.getHomeFlag());
-                    PlayCardViewModel play = new PlayCardViewModel();
-                    PlayCard playCard = new PlayCard();
-                    playCard.setImageUrl("");
-                    playCard.setShowLive(true);
-                    playCard.setShowTotalView(true);
-                    playCard.setTotalView("2,1 jt");
-
-                    play.setPlayCardHome(new PlayCardHome(new PlayCardDataWrapper(new PlayCardData(playCard))));
-                    List newList = new ArrayList(data.getList());
-                    newList.add(4, play);
-                    setData(newList, data.isCache() ? HomePresenter.FLAG_FROM_CACHE : HomePresenter.FLAG_FROM_NETWORK);
+                    setData(new ArrayList(data.getList()), data.isCache() ? HomePresenter.FLAG_FROM_CACHE : HomePresenter.FLAG_FROM_NETWORK);
                     presenter.setCache(true);
                 } else {
                     showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(new Throwable()));
