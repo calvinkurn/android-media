@@ -149,7 +149,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         return inflater.inflate(R.layout.fragment_add_edit_new_address, container, false)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         getView = view
         savedInstanceState?.let {
@@ -920,14 +919,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         super.onLowMemory()
     }
 
-    override fun onConnected(p0: Bundle?) {
-    }
+    override fun onConnected(p0: Bundle?) {}
 
-    override fun onConnectionSuspended(p0: Int) {
-    }
+    override fun onConnectionSuspended(p0: Int) {}
 
-    override fun onConnectionFailed(p0: ConnectionResult) {
-    }
+    override fun onConnectionFailed(p0: ConnectionResult) {}
 
     override fun onGetDistrict(districtAddress: Address) {
         val provinceName = districtAddress.provinceName
