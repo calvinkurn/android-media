@@ -219,6 +219,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         swipeToRefresh?.setOnRefreshListener{
             updateBottomMargin()
             endlessRecyclerViewScrollListener?.resetState()
+            menu?.findItem(R.id.manage)?.isVisible = false
             viewModel.getWishlistData(searchView?.searchText ?: "")
         }
     }
