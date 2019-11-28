@@ -16,6 +16,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.WidgetGridItem;
+import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -452,47 +453,47 @@ public class OrderListAnalytics {
     }
 
 
-    public void sendProductViewEvent(String status, int order, String categoryName, String title, int position, String total) {
+    public void sendProductViewEvent(Order order, String categoryName, int position, String total) {
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
                 EVENT_CATEGORY, PRODUCT_EVENT_CATEGORY,
                 EVENT_ACTION, "view product list",
-                EVENT_LABEL, status,
+                EVENT_LABEL, order.status(),
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
                                 NAME, categoryName,
-                                ID, order,
+                                ID, order.getOrderId(),
                                 PRICE, total,
-                                LIST, categoryName,
-                                "category", categoryName,
-                                "brand", "none",
-                                "variant", "none",
+                                LIST, "/orderlist "+order.status(),
+                                KEY_CATEGORY, NONE,
+                                BRAND, NONE,
+                                VARIANT, NONE,
                                 POSITION, position + 1
                                 )))));
 
     }
 
-    public void sendProductClickDetailsEvent(Items items, int position) {
+    public void sendProductClickDetailsEvent(Items items, int position, String status) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
                 EVENT_CATEGORY, PRODUCT_EVENT_CATEGORY,
-                EVENT_ACTION, "click product",
-                EVENT_LABEL, "Success",
+                EVENT_ACTION, PRODUCT_EVENT_ACTION,
+                EVENT_LABEL, status,
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
-                                        LIST, items.getTitle(),
+                                        LIST, "/orderList "+status,
                                         PRODUCTS, DataLayer.listOf(
                                                 DataLayer.mapOf(
                                                         NAME, items.getTitle(),
                                                         ID, items.getId(),
                                                         PRICE, items.getPrice(),
-                                                        "category", items.getCategory(),
-                                                        "brand", "none",
-                                                        "variant", "none",
+                                                        KEY_CATEGORY, NONE,
+                                                        BRAND, NONE,
+                                                        VARIANT, NONE,
                                                         POSITION, position + 1
                                                 )))))));
     }

@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
+import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 
@@ -27,16 +28,18 @@ import java.util.List;
 public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Items> itemsList;
     private Context context;
+    private Status status;
     private OrderListDetailPresenter presenter;
     private boolean isOrderTradeIn;
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
     public OrderListAnalytics orderListAnalytics;
 
-    public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter, boolean isTradeIn) {
+    public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter, boolean isTradeIn, Status status) {
         this.context = context;
         this.itemsList = itemsList;
         this.presenter = presenter;
         this.isOrderTradeIn = isTradeIn;
+        this.status = status;
         orderListAnalytics = new OrderListAnalytics();
     }
 
@@ -149,7 +152,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    orderListAnalytics.sendProductClickDetailsEvent(items,getIndex());
+                    orderListAnalytics.sendProductClickDetailsEvent(items, getIndex(), status.status());
                     RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(items.getId()));
                 }
             });
