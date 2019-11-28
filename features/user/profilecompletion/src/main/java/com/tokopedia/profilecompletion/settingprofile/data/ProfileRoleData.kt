@@ -20,5 +20,8 @@ data class ProfileRoleData(
     var isAllowedChangeGender: Boolean = false,
     @SerializedName("chancesChangeName")
     @Expose
-    var chancesChangeName: Boolean = false
+    var chancesChangeName: Int = 0,
+    @SerializedName("chancesChangeGender")
+    @Expose
+    var chancesChangeGender: Int = 0
 )
