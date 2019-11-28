@@ -37,10 +37,13 @@ import com.tokopedia.navigation.presentation.adapter.viewholder.transaction.Noti
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationTransactionComponent
 import com.tokopedia.navigation.presentation.view.listener.NotificationTransactionItemListener
 import com.tokopedia.navigation.presentation.viewmodel.NotificationTransactionViewModel
+import com.tokopedia.navigation.util.endLess
 import com.tokopedia.navigation.util.viewModelProvider
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
+
+typealias LongerTextDialog = NotificationUpdateLongerTextFragment
 
 class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
         NotificationTransactionItemListener,
@@ -101,19 +104,11 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     private fun onListLastScroll(view: View) {
-        super.getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {}
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val layoutManager = (recyclerView.layoutManager)
-                    if (layoutManager != null && layoutManager is LinearLayoutManager) {
-                        val temp = layoutManager.findLastVisibleItemPosition()
-                        if (temp > lastListItem) lastListItem = temp
-                    }
-                }
+        super.getRecyclerView(view).endLess {
+            if (it > lastListItem) {
+                lastListItem = it
             }
-        })
+        }
     }
 
     private fun getNotification(position: String) {
@@ -193,7 +188,7 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         }
 
         if (!::longerTextDialog.isInitialized) {
-            longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
+            longerTextDialog = LongerTextDialog.createInstance(bundle)
         } else {
             longerTextDialog.arguments = bundle
         }

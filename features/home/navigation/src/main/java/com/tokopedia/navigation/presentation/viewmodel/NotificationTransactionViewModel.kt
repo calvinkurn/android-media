@@ -34,6 +34,8 @@ interface NotificationTransactionContract {
     fun getNotificationFilter()
 }
 
+typealias FilterWrapper = NotificationFilterSectionWrapper
+
 class NotificationTransactionViewModel @Inject constructor(
         private val notificationInfoTransactionUseCase: NotificationInfoTransactionUseCase,
         private var notificationTransactionUseCase: NotificationTransactionUseCase,
@@ -113,7 +115,7 @@ class NotificationTransactionViewModel @Inject constructor(
     override fun getNotificationFilter() {
         val params = NotificationFilterUseCase.params()
         notificationFilterUseCase.get(params, {
-            val notificationFilter = NotificationFilterSectionWrapper(notificationFilterMapper.mapToFilter(it))
+            val notificationFilter = FilterWrapper(notificationFilterMapper.mapToFilter(it))
             _filterNotification.postValue(notificationFilter)
         }, {
             onErrorMessage(it)
