@@ -179,7 +179,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun verifyCartData(query: String, totalPrice: Int, contactName: String,
                        contactEmail: String, contactPhone: String, contactCountry: String,
-                       checkVoucherQuery: String, addToCartQuery: String, idempotencyKey: String, getCartQuery: String) {
+                       checkVoucherQuery: String, addToCartQuery: String, idempotencyKey: String,
+                       getCartQuery: String) {
 
         if (validateFields(contactName, contactEmail, contactPhone)) {
             val promoCode = (flightPromoResult.value as FlightPromoViewEntity).promoData.promoCode
