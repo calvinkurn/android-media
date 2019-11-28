@@ -129,6 +129,7 @@ class OfficialHomeFragment :
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
         adapter?.showLoadingBanner()
+        OfficialHomeMapper.mappingLoadingBanner(adapter)
 
         return view
     }
@@ -173,7 +174,7 @@ class OfficialHomeFragment :
 
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(this, Observer {
-            adapter?.removeLoading()
+            // adapter?.removeLoading()
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false

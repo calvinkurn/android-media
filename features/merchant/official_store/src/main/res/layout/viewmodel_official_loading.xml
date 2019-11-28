@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
-        android:id="@+id/avatar"
+    <include layout="@layout/viewmodel_official_loading_banner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

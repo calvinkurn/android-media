@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.official.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
@@ -22,6 +23,7 @@ class OfficialHomeMapper {
         val BANNER_POSITION = 0
         val BENEFIT_POSITION = 1
         val FEATURE_SHOP_POSITION = 2
+        val loadingModel: LoadingModel? = null
 
         fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?) {
             notifyElement(BANNER_POSITION, OfficialBannerViewModel(banner.banners,
@@ -68,6 +70,14 @@ class OfficialHomeMapper {
                 adapter?.getVisitables()?.add(ProductRecommendationViewModel(it, listener))
             }
             adapter?.notifyItemRangeInserted(adapter.lastIndex, productRecommendation.recommendationItemList.size)
+        }
+
+        fun mappingLoadingBanner(adapter: OfficialHomeAdapter?) {
+            loadingModel?.let {
+                adapter?.getVisitables()?.set(BANNER_POSITION, loadingModel)
+                adapter?.notifyItemChanged(BANNER_POSITION)
+            }
+//            notifyElement(BANNER_POSITION, , adapter)
         }
 
         fun notifyElement(position: Int, element: Visitable<*>, adapter: OfficialHomeAdapter?) {
