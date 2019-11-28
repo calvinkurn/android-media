@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import com.google.android.material.textfield.TextInputLayout
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -25,6 +24,7 @@ import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.logisticaddaddress.AddressConstants
@@ -39,7 +39,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecorati
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetPresenter
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
@@ -48,6 +47,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocompl
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.user.session.UserSessionInterface
@@ -298,43 +298,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 }
             }
 
-            et_kode_pos_mismatch.apply {
-                setOnFocusChangeListener { _, hasFocus ->
-                    if (hasFocus) {
-                        eventShowZipCodes()
-                    } else {
-                        rv_kodepos_chips_mismatch.visibility = View.GONE
-                    }
-                }
-                setOnClickListener {
-                    eventShowZipCodes()
-                }
-                addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
-                                                   after: Int) {
-                    }
-
-                    override fun onTextChanged(s: CharSequence, start: Int, before: Int,
-                                               count: Int) {
-                        if (s.isNotEmpty()) {
-                            setWrapperError(et_kode_pos_mismatch_wrapper, null)
-                            val input = "$s"
-                            val zipCodesDisplay = mutableListOf<String>()
-
-                            saveAddressDataModel?.zipCodes?.forEach {
-                                if (it.contains(input, ignoreCase = true)) {
-                                    zipCodesDisplay.add(it)
-                                }
-                            }
-                            zipCodeChipsAdapter.zipCodes = zipCodesDisplay
-                            zipCodeChipsAdapter.notifyDataSetChanged()
-                        }
-                    }
-
-                    override fun afterTextChanged(s: Editable) {
-                    }
-                })
-            }
+            et_kode_pos_mismatch.setOnClickListener { eventShowZipCodes() }
 
             setOnTouchLabelAddress(ANA_NEGATIVE)
 
@@ -549,7 +513,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             field += "no ponsel"
         }
 
-        if (et_phone?.text?.length?: 0 < MINIMUM_CHARACTER) {
+        if (et_phone?.text?.length ?: 0 < MINIMUM_CHARACTER) {
             validated = false
             setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char))
             if (field.isNotEmpty()) field += ", "
@@ -559,8 +523,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         if (!validated) {
             if (isMismatch) {
                 AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(field)
-            }
-            else {
+            } else {
                 AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(field)
             }
         }
@@ -845,6 +808,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         saveAddressDataModel?.addressName = et_label_address.text.toString()
         saveAddressDataModel?.receiverName = et_receiver_name.text.toString()
         saveAddressDataModel?.phone = et_phone.text.toString()
+        saveAddressDataModel?.postalCode = et_kode_pos_mismatch.text.toString()
     }
 
     override fun onSuccessAddAddress(saveAddressDataModel: SaveAddressDataModel) {
@@ -862,12 +826,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     override fun showManualZipCodes() {
-        et_kode_pos_mismatch.apply {
-            setOnClickListener(null)
-            onFocusChangeListener = null
-            addTextChangedListener(null)
-            isFocusable = true
-        }
+        et_kode_pos_mismatch.isFocusableInTouchMode = true
+        et_kode_pos_mismatch.isFocusable = true
+        et_kode_pos_mismatch.setOnClickListener(null)
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
