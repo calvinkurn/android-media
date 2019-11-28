@@ -101,7 +101,7 @@
     <string name="flight_label_normal_price">Harga Normal</string>
     <string name="flight_label_saving_price">Hemat</string>
     <string name="flight_booking_finish_transaction_label">Selesaikan Pesanan Anda Dalam</string>
-    <string name="flight_booking_contact_information">Data pemesan</string>
+    <string name="flight_booking_contact_information">Data Pemesan</string>
     <string name="flight_booking_contact_sublabel">(untuk e-tiket)</string>
     <string name="flight_booking_contact_information_subtitle">E-tiket dan informasi mengenai pemesanan akan dikitim ke kontak ini</string>
     <string name="flight_booking_contact_name_hint">Nama Lengkap (sesuai KTP/Paspor/Lainnya)</string>
@@ -111,7 +111,7 @@
     <string name="flight_booking_contact_phone_number_label">Nomor Telepon</string>
     <string name="flight_booking_contact_information_card">Pastikan email dan nomor telepon kontak kamu benar. e-tiket akan dikirim ke email dan nomor telepon yang tertera pada informasi kontak.</string>
     <string name="flight_booking_price_detail">Rincian Harga</string>
-    <string name="flight_booking_passenger_data_label">Data penumpang</string>
+    <string name="flight_booking_passenger_data_label">Data Penumpang</string>
     <string name="flight_booking_passenger_data_same_as_contact">Sama dengan pemesan</string>
     <string name="flight_booking_passenger_data_subtitle">E-tiket dan informasi mengenai pemesanan akan dikirim ke kontak ini.</string>
     <string name="flight_booking_submit_button_label">Lanjut</string>
