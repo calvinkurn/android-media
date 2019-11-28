@@ -2,13 +2,13 @@ package com.tokopedia.search.result.presentation.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,7 +32,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
-import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
@@ -61,6 +60,7 @@ import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListe
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
+import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -111,7 +111,8 @@ public class ProductListFragment
         GlobalNavListener,
         BannerAdsListener,
         EmptyStateListener,
-        RecommendationListener {
+        RecommendationListener,
+        BannedProductsRedirectToBrowserListener {
 
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final String SHOP = "shop";
@@ -266,6 +267,7 @@ public class ProductListFragment
                 this, this,
                 this, this,
                 this, this, this,
+                this,
                 topAdsConfig);
         adapter = new ProductListAdapter(this, productListTypeFactory);
         recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
@@ -877,6 +879,21 @@ public class ProductListFragment
     }
 
     @Override
+    public void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList) {
+        adapter.appendItems(bannedProductsErrorMessageAsList);
+    }
+
+    @Override
+    public void trackEventImpressionBannedProducts(boolean isEmptySearch) {
+        if (isEmptySearch) {
+            SearchTracking.trackEventImpressionBannedProductsEmptySearch(getQueryKey());
+        }
+        else {
+            SearchTracking.trackEventImpressionBannedProductsWithResult(getQueryKey());
+        }
+    }
+
+    @Override
     public void reloadData() {
         if (adapter == null || getSearchParameter() == null) {
             return;
@@ -1199,55 +1216,6 @@ public class ProductListFragment
     }
 
     @Override
-    public void showErrorMessage(boolean isFullScreenMessage, String errorMessage) {
-        if (getView() == null) return;
-
-        if (isFullScreenMessage) {
-            showFullScreenErrorMessage(getView(), errorMessage);
-        }
-        else {
-            showSnackbarErroMessage(errorMessage);
-        }
-    }
-
-    private void showFullScreenErrorMessage(@NotNull View rootView, String errorMessage) {
-        View relativeLayoutErrorMessageContainer  = rootView.findViewById(R.id.relativeLayoutErrorMessageContainer);
-
-        if (relativeLayoutErrorMessageContainer != null) {
-            relativeLayoutErrorMessageContainer.setVisibility(View.VISIBLE);
-
-            TextView textViewErrorMessage = relativeLayoutErrorMessageContainer.findViewById(R.id.custom_text_view_empty_content_text);
-
-            if (textViewErrorMessage != null) {
-                textViewErrorMessage.setText(errorMessage);
-            }
-
-            View actionButton  = rootView.findViewById(R.id.custom_button_add_promo);
-            actionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showSearchInputView();
-                }
-            });
-        }
-    }
-
-    private void showSnackbarErroMessage(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-    }
-
-    @Override
-    public void hideErrorMessage() {
-        if (getView() == null) return;
-
-        View relativeLayoutErrorMessageContainer  = getView().findViewById(R.id.relativeLayoutErrorMessageContainer);
-
-        if (relativeLayoutErrorMessageContainer != null) {
-            relativeLayoutErrorMessageContainer.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
     public void showFreeOngkirShowCase(boolean hasFreeOngkirBadge) {
         if (getActivity() != null) {
             FreeOngkirShowCaseDialog.show(getActivity(), hasFreeOngkirBadge);
@@ -1257,5 +1225,31 @@ public class ProductListFragment
     @Override
     protected String getFilterTrackingCategory() {
         return FilterEventTracking.Category.FILTER_PRODUCT;
+    }
+
+    @Override
+    public void onGoToBrowserClicked(boolean isEmptySearch, @NotNull String liteUrl) {
+        trackEventClickGoToBrowserBannedProducts(isEmptySearch);
+
+        if (presenter != null) {
+            presenter.onBannedProductsGoToBrowserClick(liteUrl);
+        }
+    }
+
+    @Override
+    public void redirectToBrowser(String url) {
+        if (TextUtils.isEmpty(url)) return;
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
+    }
+
+    private void trackEventClickGoToBrowserBannedProducts(boolean isEmptySearch) {
+        if (isEmptySearch) {
+            SearchTracking.trackEventClickGoToBrowserBannedProductsEmptySearch(getQueryKey());
+        }
+        else {
+            SearchTracking.trackEventClickGoToBrowserBannedProductsWithResult(getQueryKey());
+        }
     }
 }
