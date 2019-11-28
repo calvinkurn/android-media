@@ -44,6 +44,10 @@ public class DrawerNotification {
             return title;
         }
 
+        public String getNewLineTitle() {
+            return title.replace(" ", "\n");
+        }
+
         public void setTitle(String title) {
             this.title = title;
         }

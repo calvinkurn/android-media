@@ -88,7 +88,7 @@ class PurchaseViewHolder(
                     }
                 }
                 MENUNGGU_KONFIRMASI -> {
-                    txtWaitingConfirm.text = notif.title
+                    txtWaitingConfirm.text = notif.newLineTitle
                     if (notif.badge != null) {
                         if (notif.badge == 0) {
                             txtCounterWaitingConfirm.hide()
@@ -108,7 +108,7 @@ class PurchaseViewHolder(
                     }
                 }
                 PESANAN_DIPROSES -> {
-                    txtOrderProcessed.text = notif.title
+                    txtOrderProcessed.text = notif.newLineTitle
                     if (notif.badge != null) {
                         if (notif.badge == 0) {
                             txtCounterOrderProcessed.hide()
@@ -128,7 +128,7 @@ class PurchaseViewHolder(
                     }
                 }
                 SEDANG_DIKIRIM -> {
-                    txtGoodsSent.text = notif.title
+                    txtGoodsSent.text = notif.newLineTitle
                     if (notif.badge != null) {
                         if (notif.badge == 0) {
                             txtCounterGoodsSent.hide()
@@ -148,7 +148,7 @@ class PurchaseViewHolder(
                     }
                 }
                 SAMPAI_TUJUAN -> {
-                    txtGoodsReceive.text = notif.title
+                    txtGoodsReceive.text = notif.newLineTitle
                     if (notif.badge != null) {
                         if (notif.badge == 0) {
                             txtCounterGoodsReceive.hide()

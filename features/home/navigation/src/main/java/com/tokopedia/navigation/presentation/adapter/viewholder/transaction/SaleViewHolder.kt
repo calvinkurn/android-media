@@ -56,7 +56,7 @@ class SaleViewHolder(
         element.childs.forEach { notif ->
             when(notif.id) {
                 PESANAN_BARU -> {
-                    txtWaitingConfirm.text = notif.title
+                    txtWaitingConfirm.text = notif.newLineTitle
                     if (notif.badge != null) {
                         if (notif.badge == 0) {
                             txtCounterWaitingConfirm.hide()
@@ -76,7 +76,7 @@ class SaleViewHolder(
                     }
                 }
                 SIAP_DIKIRIM -> {
-                    txtOrderProcessed.text = notif.title
+                    txtOrderProcessed.text = notif.newLineTitle
                     if (notif.badge != null) {
                         if (notif.badge == 0) {
                             txtCounterOrderProcessed.hide()
@@ -96,7 +96,7 @@ class SaleViewHolder(
                     }
                 }
                 SEDANG_DIKIRIM -> {
-                    txtGoodsSent.text = notif.title
+                    txtGoodsSent.text = notif.newLineTitle
                     if (notif.badge != null) {
                         if (notif.badge == 0) {
                             txtCounterGoodsSent.hide()
@@ -116,7 +116,7 @@ class SaleViewHolder(
                     }
                 }
                 SAMPAI_TUJUAN -> {
-                    txtGoodsReceive.text = notif.title
+                    txtGoodsReceive.text = notif.newLineTitle
                     if (notif.badge != null) {
                         if (notif.badge == 0) {
                             txtCounterGoodsReceive.hide()
