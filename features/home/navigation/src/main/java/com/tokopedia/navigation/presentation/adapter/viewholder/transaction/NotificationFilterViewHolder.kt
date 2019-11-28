@@ -25,7 +25,9 @@ class NotificationFilterViewHolder(
     private var filterAdapter: NotificationUpdateFilterAdapter?= null
 
     override fun bind(element: NotificationFilterSectionWrapper) {
-        container.show() //TODO should check first of notification list
+        if (listener.isHasNotification()) {
+            container.show()
+        }
 
         if (userSession.hasShop()) {
             lstFilter.show()
@@ -67,6 +69,7 @@ class NotificationFilterViewHolder(
     interface NotifFilterListener {
         fun updateFilter(filter: HashMap<String, Int>)
         fun sentFilterAnalytic(analyticData: String)
+        fun isHasNotification(): Boolean
     }
 
 }

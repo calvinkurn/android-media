@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -178,8 +179,6 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         return NotificationUpdateAnalytics()
     }
 
-    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
-
     override fun showTextLonger(element: TransactionItemNotification) {
         val bundle = Bundle().apply {
             with(element) {
@@ -231,6 +230,10 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         }
     }
 
+    override fun isHasNotification(): Boolean {
+        return viewModel.hasNotification.value?: false
+    }
+
     override fun sentFilterAnalytic(analyticData: String) {
         analytics.trackClickFilterRequest(analyticData)
     }
@@ -243,6 +246,7 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         analytics.saveNotificationImpression(element)
     }
 
+    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
     override fun getRecyclerViewResourceId() = R.id.lstNotification
     override fun hasInitialSwipeRefresh(): Boolean = true

@@ -59,9 +59,13 @@ class NotificationTransactionViewModel @Inject constructor(
     //filtering variables
     var variables: HashMap<String, Any> = HashMap()
 
-    //last noitifcation id
+    //last notification id
     private val _lastNotificationId = MutableLiveData<String>()
     val lastNotificationId: LiveData<String> get() = _lastNotificationId
+
+    //check if user has notification
+    private val _hasNotification = MutableLiveData<Boolean>()
+    val hasNotification: LiveData<Boolean> get() = _hasNotification
 
     init {
         _filterNotification.addSource(_infoNotification) {
@@ -93,6 +97,7 @@ class NotificationTransactionViewModel @Inject constructor(
 
         notificationTransactionUseCase.get(params, {
             val data = notificationMapper.mapToNotifTransaction(it)
+            _hasNotification.postValue(data.list.isNotEmpty())
             _notification.postValue(data)
         }, {
             onErrorMessage(it)
