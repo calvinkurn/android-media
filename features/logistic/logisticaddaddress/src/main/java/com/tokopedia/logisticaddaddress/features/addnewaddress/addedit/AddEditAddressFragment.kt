@@ -186,6 +186,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
+        et_kode_pos_mismatch.setText(saveAddressDataModel?.postalCode ?: "")
         et_phone.setText(userSession.phoneNumber)
 
         if (!isMismatch && !isMismatchSolved) {
