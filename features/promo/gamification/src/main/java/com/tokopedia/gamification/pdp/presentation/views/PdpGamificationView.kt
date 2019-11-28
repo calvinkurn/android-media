@@ -1,27 +1,29 @@
 package com.tokopedia.gamification.pdp.presentation.views
 
 import android.content.Context
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.pdp.data.LiveDataResult
+import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
-import com.tokopedia.gamification.pdp.data.di.scopes.GamificationPdpScope
+import com.tokopedia.gamification.pdp.data.di.modules.AppModule
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapter
-import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewmodels.PdpDialogViewModel
 import com.tokopedia.unifyprinciples.Typography
+import javax.inject.Inject
 
-class PdpGamificationView  {
+class PdpGamificationView {
 
     init {
 //        initViews()
@@ -39,9 +41,10 @@ class PdpGamificationView  {
 
     private lateinit var adapter: PdpGamificationAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
-    private val dataList = ArrayList<Visitable<Any>>()
+    private val dataList = ArrayList<Visitable<*>>()
 
-    @GamificationPdpScope
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: PdpDialogViewModel
 
     fun getLayout() = R.layout.dialog_pdp_gamification
@@ -55,11 +58,28 @@ class PdpGamificationView  {
         viewFlipper = root.findViewById(R.id.viewFlipper)
         tvTitle = root.findViewById(R.id.tvTitle)
 
-        adapter = PdpGamificationAdapter(PdpGamificationAdapterTypeFactory(), dataList)
-
-
+        setupRv()
         setListeners()
-        getRecommendationParams()
+        tvTitle.postDelayed({
+            getRecommendationParams()
+        }, 5 * 1000L)
+
+    }
+
+    private fun setupRv() {
+//        adapter = PdpGamificationAdapter(PdpGamificationAdapterTypeFactory(), dataList)
+        adapter = PdpGamificationAdapter(dataList)
+        val layoutManager = GridLayoutManager(context, 2)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter
+
+        scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                viewModel.getProducts()
+            }
+
+        }
+        recyclerView.addOnScrollListener(scrollListener)
     }
 
     fun showDialog(context: Context) {
@@ -74,31 +94,36 @@ class PdpGamificationView  {
 
 
     private fun injectComponents() {
-        DaggerPdpComponent.builder()
-                .build().inject(this)
+        val component = DaggerPdpComponent.builder()
+                .appModule(AppModule(context))
+                .build()
+        component.inject(this)
+
+
+        if (context is AppCompatActivity) {
+            val viewModelProvider = ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
+            viewModel = viewModelProvider[PdpDialogViewModel::class.java]
+        }
     }
 
     private fun setListeners() {
-        val layoutManager = GridLayoutManager(context, 2)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter
-
-        scrollListener = object:EndlessRecyclerViewScrollListener(layoutManager){
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.getProducts()
-            }
-
-        }
-        recyclerView.addOnScrollListener(scrollListener)
 
         viewModel.productLiveData.observe(context as AppCompatActivity, Observer {
-
+            when(it.status){
+                LiveDataResult.STATUS.SUCCESS-> {
+                    if(it.data!=null) {
+                        dataList.addAll(it.data)
+                    }
+                }
+                LiveDataResult.STATUS.ERROR->{
+                    //Do nothing
+                }
+            }
         })
 
         viewModel.recommendationLiveData.observe(context as AppCompatActivity, Observer {
             //Do nothing
         })
-
 
     }
 

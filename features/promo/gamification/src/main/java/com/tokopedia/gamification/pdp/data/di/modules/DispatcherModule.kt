@@ -22,7 +22,7 @@ class DispatcherModule {
 
     companion object {
         const val MAIN = "MAIN"
-        const val IO = "MAIN"
+        const val IO = "IO"
     }
 
 }

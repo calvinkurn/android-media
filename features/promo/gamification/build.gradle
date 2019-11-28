@@ -51,6 +51,11 @@ dependencies {
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {

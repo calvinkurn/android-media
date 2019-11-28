@@ -22,7 +22,7 @@ class GqlQueryModule {
     @Provides
     @Named(GAMING_RECOMMENDATION_PARAM_QUERY)
     fun provideGamingRecommendationParamRawQuery(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gami_recommend_params)
     }
 
 

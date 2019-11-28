@@ -136,6 +136,7 @@
                         android:layout_gravity="end|center_vertical"
                         android:layout_marginEnd="@dimen/dp_64"
                         android:layout_marginRight="@dimen/dp_64"
+                        tools:visibility="visible"
                         android:visibility="gone">
 
                         <ImageView

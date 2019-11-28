@@ -22,6 +22,6 @@ class GamingRecommendationParamUseCase @Inject constructor(
     }
 
     object Params {
-        const val PAGE_NAME = "PageName"
+        const val PAGE_NAME = "pageName"
     }
 }
