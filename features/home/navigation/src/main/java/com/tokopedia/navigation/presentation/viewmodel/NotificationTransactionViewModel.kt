@@ -80,7 +80,7 @@ class NotificationTransactionViewModel @Inject constructor(
     }
 
     fun setLastNotificationId(id: String) {
-        _lastNotificationId.postValue(id)
+        _lastNotificationId.value = id
     }
 
     override fun getInfoStatusNotification() {
@@ -99,7 +99,7 @@ class NotificationTransactionViewModel @Inject constructor(
 
         notificationTransactionUseCase.get(params, {
             val data = notificationMapper.mapToNotifTransaction(it)
-            _hasNotification.postValue(data.list.isNotEmpty())
+            _hasNotification.value = data.list.isNotEmpty()
             _notification.postValue(data)
         }, {
             onErrorMessage(it)
@@ -116,7 +116,7 @@ class NotificationTransactionViewModel @Inject constructor(
         val params = NotificationFilterUseCase.params()
         notificationFilterUseCase.get(params, {
             val notificationFilter = FilterWrapper(notificationFilterMapper.mapToFilter(it))
-            _filterNotification.postValue(notificationFilter)
+            _filterNotification.value = notificationFilter
         }, {
             onErrorMessage(it)
         })
