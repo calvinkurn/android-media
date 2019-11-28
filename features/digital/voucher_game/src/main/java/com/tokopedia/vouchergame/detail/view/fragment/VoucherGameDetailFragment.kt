@@ -431,7 +431,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
-                    R.raw.query_voucher_game_product_detail),
+                    com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
                     voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
         }
     }

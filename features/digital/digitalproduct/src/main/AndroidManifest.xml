@@ -66,6 +66,11 @@
                     android:path="@string/path_telco_cart" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".productV2.presentation.activity.DigitalProductActivity"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

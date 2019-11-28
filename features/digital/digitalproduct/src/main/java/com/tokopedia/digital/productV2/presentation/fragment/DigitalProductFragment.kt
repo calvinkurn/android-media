@@ -1,0 +1,136 @@
+package com.tokopedia.digital.productV2.presentation.fragment
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common_digital.common.util.AnalyticUtils
+import com.tokopedia.digital.R
+import com.tokopedia.digital.productV2.di.DigitalProductComponent
+import com.tokopedia.digital.productV2.presentation.adapter.DigitalProductAdapterFactory
+import com.tokopedia.digital.productV2.presentation.viewmodel.DigitalProductViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
+
+class DigitalProductFragment: BaseListFragment<Visitable<*>, DigitalProductAdapterFactory>() {
+
+    @Inject
+    lateinit var trackingUtil: DigitalHomeTrackingUtil
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var viewModel: DigitalProductViewModel
+
+    private var menuId: Int = 0
+    private var categoryId: String = ""
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_digital_product, container, false)
+        return view
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            viewModel = viewModelProvider.get(DigitalProductViewModel::class.java)
+        }
+
+        arguments?.let {
+            menuId = it.getInt(EXTRA_PARAM_MENU_ID)
+            categoryId = it.getString(EXTRA_PARAM_CATEGORY_ID, "")
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val recyclerView = getRecyclerView(view) as VerticalRecyclerView
+        recyclerView.clearItemDecoration()
+        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        getComponent(DigitalProductComponent::class.java).inject(this)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        viewModel.operatorCluster.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    clearAllData()
+                    renderList(it.data)
+                    trackSearchResultCategories(it.data)
+                }
+                is Fail -> {
+                    showGetListError(it.throwable)
+                }
+            }
+        })
+
+        viewModel.productList.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    clearAllData()
+                    renderList(it.data)
+                    trackSearchResultCategories(it.data)
+                }
+                is Fail -> {
+                    showGetListError(it.throwable)
+                }
+            }
+        })
+    }
+
+    override fun loadData(page: Int) {
+        clearAllData()
+    }
+
+    override fun getAdapterTypeFactory(): DigitalProductAdapterFactory {
+        return DigitalProductAdapterFactory(this)
+    }
+
+    override fun onItemClicked(t: Visitable<*>?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun getOperatorCluster(menuId: Int) {
+        viewModel.getOperatorCluster(GraphqlHelper.loadRawString(resources, R.raw.query_category_operator_select_group), viewModel.createParams(menuId))
+    }
+
+    private fun getProductList(menuId: Int, operator: String) {
+        viewModel.getProductList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input), viewModel.createParams(menuId, operator))
+    }
+
+    companion object {
+        const val EXTRA_PARAM_MENU_ID = "EXTRA_PARAM_MENU_ID"
+        const val EXTRA_PARAM_CATEGORY_ID = "EXTRA_PARAM_CATEGORY_ID"
+
+        fun newInstance(menuId: Int, categoryId: String): DigitalProductFragment {
+            val fragment = DigitalProductFragment()
+            val bundle = Bundle()
+            bundle.putInt(EXTRA_PARAM_MENU_ID, menuId)
+            bundle.putString(EXTRA_PARAM_CATEGORY_ID, categoryId)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+}
