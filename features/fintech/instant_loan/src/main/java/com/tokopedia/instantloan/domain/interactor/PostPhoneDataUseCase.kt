@@ -14,7 +14,8 @@ import com.tokopedia.usecase.RequestParams
 import okhttp3.Interceptor
 import java.util.*
 
-class PostPhoneDataUseCase(interceptor: Interceptor, context: Context) : RestRequestSupportInterceptorUseCase(interceptor, context) {
+class PostPhoneDataUseCase(interceptor: Interceptor, context: Context) :
+        RestRequestSupportInterceptorUseCase(interceptor, context) {
     private var body: JsonObject? = null
 
     override fun buildRequest(requestParams: RequestParams): List<RestRequest> {

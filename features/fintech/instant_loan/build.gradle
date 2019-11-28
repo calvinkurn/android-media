@@ -31,12 +31,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.viewDependencies.appIntro
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation (rootProject.ext.miscDependencies.imagecropper){
-        exclude group: "com.android.support"
-    }
     implementation rootProject.ext.viewDependencies.appIntro
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
@@ -58,4 +53,3 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-

@@ -1,6 +1,5 @@
 package com.tokopedia.instantloan.ddcollector
 
-import java.util.*
 import java.util.concurrent.ExecutionException
 
 class InfoCollectServiceImpl : InfoCollectService {

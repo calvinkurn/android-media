@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 class GetLendingDataUseCase @Inject constructor(@ApplicationContext context: Context) {
 
-    val graphqlUseCase = GraphqlUseCase()
-    val mContext = context
+    private val graphqlUseCase = GraphqlUseCase()
+    private val mContext = context
 
     fun unsubscribe() {
         graphqlUseCase.unsubscribe()

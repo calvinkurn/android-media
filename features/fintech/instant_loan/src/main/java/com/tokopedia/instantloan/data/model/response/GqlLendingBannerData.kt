@@ -11,5 +11,4 @@ data class GqlLendingBannerData(
 
         @SerializedName("UrlImage")
         var bannerImageUrl: String
-
 )

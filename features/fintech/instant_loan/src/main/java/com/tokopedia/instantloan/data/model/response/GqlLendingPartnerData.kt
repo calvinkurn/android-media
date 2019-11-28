@@ -44,6 +44,4 @@ data class GqlLendingPartnerData(
                         return arrayOfNulls(size)
                 }
         }
-
-
 }
