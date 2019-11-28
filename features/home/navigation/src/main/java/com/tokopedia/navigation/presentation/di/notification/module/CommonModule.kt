@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.navigation.analytics.NotificationTransactionAnalytics
+import com.tokopedia.navigation.util.CacheManager
 import com.tokopedia.navigation.util.coroutines.AppDispatcherProvider
 import com.tokopedia.navigation.util.coroutines.DispatcherProvider
 import com.tokopedia.user.session.UserSession
@@ -32,6 +33,11 @@ import dagger.Provides
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @Provides
+    fun provideCacheManager(@ApplicationContext context: Context): CacheManager {
+        return CacheManager(context)
     }
 
 }
