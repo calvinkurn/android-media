@@ -14,6 +14,7 @@ import com.tokopedia.home_wishlist.model.action.*
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.util.SingleObserverLiveEvent
+import com.tokopedia.home_wishlist.util.Status
 import com.tokopedia.home_wishlist.util.WishlistLiveData
 import com.tokopedia.home_wishlist.view.ext.copy
 import com.tokopedia.home_wishlist.view.ext.default
@@ -78,7 +79,7 @@ open class WishlistViewModel @Inject constructor(
 
     val wishlistLiveData: LiveData<List<WishlistDataModel>> get() = wishlistData
     val isInBulkModeState: LiveData<Boolean> get() = isInBulkMode
-    val isWishlistEmptyState: LiveData<Boolean> get() = isWishlistEmpty
+    val isWishlistState: LiveData<Status> get() = wishlistState
     val isWishlistErrorInFirstPageState: LiveData<Boolean> get() = isWishlistErrorInFirstPage
 
     val addToCartActionData = SingleObserverLiveEvent<Event<AddToCartActionData>>()
@@ -91,11 +92,12 @@ open class WishlistViewModel @Inject constructor(
     val bulkSelectCountActionData = SingleObserverLiveEvent<Event<Int>>().apply { value = Event(0) }
 
     private val isInBulkMode = SingleObserverLiveEvent<Boolean>().default(false)
-    private val isWishlistEmpty = SingleObserverLiveEvent<Boolean>().default(false)
+    private val wishlistState = SingleObserverLiveEvent<Status>().default(Status.LOADING)
     private val isWishlistErrorInFirstPage = SingleObserverLiveEvent<Boolean>().default(false)
 
 
     private fun loadInitialPage(){
+        wishlistState.value = Status.LOADING
         wishlistData.value = listOf(LoadingDataModel())
     }
 
@@ -125,14 +127,14 @@ open class WishlistViewModel @Inject constructor(
             }
 
             if(data.items.isEmpty()){
-                isWishlistEmpty.value = true
+                wishlistState.value = Status.EMPTY
 
                 wishlistData.value = listOf(
                         if(keyword.isEmpty()) EmptyWishlistDataModel() else EmptySearchWishlistDataModel(keyword)
                 )
                 getRecommendationOnEmptyWishlist(0)
             } else {
-                isWishlistEmpty.value = false
+                wishlistState.value = Status.SUCCESS
 
                 var visitableWishlist = mappingWishlistToVisitable(data.items)
 
@@ -517,7 +519,7 @@ open class WishlistViewModel @Inject constructor(
                                 updateBulkMode(false)
                                 wishlistData.value = listOf(EmptyWishlistDataModel())
                                 getRecommendationOnEmptyWishlist(0)
-                                isWishlistEmpty.value = true
+                                wishlistState.value = Status.EMPTY
                             } else {
                                 wishlistData.value = updatedList
                                 updateBulkMode(false)

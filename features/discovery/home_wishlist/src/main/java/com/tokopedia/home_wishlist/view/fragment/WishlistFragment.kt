@@ -275,13 +275,12 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun observeWishlistState() {
-        viewModel.isWishlistEmptyState.observe(viewLifecycleOwner, Observer { isEmpty ->
-
-            if(isEmpty) hideSearchView()
+        viewModel.isWishlistState.observe(viewLifecycleOwner, Observer { state ->
+            if(state.isEmpty()) hideSearchView()
             else showSearchView()
 
             val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
-            (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(!isEmpty)
+            (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(!state.isEmpty())
 
             endlessRecyclerViewScrollListener?.let {
                 recyclerView?.removeOnScrollListener(it)
@@ -290,7 +289,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                 override fun getCurrentPage(): Int = 1
 
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    if(isEmpty){
+                    if(state.isEmpty()){
                         updateBottomMargin()
                         viewModel.getRecommendationOnEmptyWishlist(page + 1)
                     }else{
@@ -300,7 +299,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             }
             recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
 
-            menu?.findItem(R.id.manage)?.isVisible = !isEmpty
+            menu?.findItem(R.id.manage)?.isVisible = !state.isEmpty() && !state.isLoading()
         })
 
 
@@ -322,6 +321,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private fun observeBulkModeState() {
         viewModel.isInBulkModeState.observe(viewLifecycleOwner, Observer { isInBulkMode ->
             if (isInBulkMode) {
+                updateBottomMargin()
                 menu?.findItem(R.id.cancel)?.isVisible = true
                 menu?.findItem(R.id.manage)?.isVisible = false
 
@@ -444,7 +444,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     override fun onProductImpression(dataModel: WishlistDataModel, position: Int) {
         when (dataModel) {
             is WishlistItemDataModel -> WishlistTracking.impressionProduct(trackingQueue, dataModel.productItem, position.toString())
-            is RecommendationItemDataModel -> WishlistTracking.impressionRecommendation(trackingQueue, dataModel.recommendationItem, position)
+            is RecommendationItemDataModel -> WishlistTracking.impressionEmptyWishlistRecommendation(trackingQueue, dataModel.recommendationItem, position)
             is RecommendationCarouselItemDataModel -> WishlistTracking.impressionRecommendation(trackingQueue, dataModel.recommendationItem, position)
         }
     }

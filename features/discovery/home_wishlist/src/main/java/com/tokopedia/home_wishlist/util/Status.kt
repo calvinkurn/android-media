@@ -5,17 +5,19 @@ package com.tokopedia.home_wishlist.util
  */
 
 enum class Status{
-    LOADING, ERROR, EMPTY;
+    LOADING, ERROR, EMPTY, SUCCESS;
 
     override fun toString(): String {
         return when(this){
             LOADING -> "loading"
             ERROR -> "error"
+            SUCCESS -> "success"
             else -> "empty"
         }
     }
 
     fun isLoading() = this == LOADING
     fun isError() = this == ERROR
+    fun isSuccess() = this == SUCCESS
     fun isEmpty() = this == EMPTY
 }

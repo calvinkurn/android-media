@@ -59,6 +59,8 @@ object WishlistTracking {
 
     private const val EVENT_WISHLIST_PAGE = "wishlist page"
     private const val IMPRESSION_LIST = "/wishlist"
+    private const val IMPRESSION_EMPTY_LIST = "/wishlist - rekomendasi untuk anda - empty_wishlist - %s"
+    private const val IMPRESSION_EMPTY_LIST_TOPADS = "/wishlist - rekomendasi untuk anda - empty_wishlist - %s - product topads"
     private const val IMPRESSION_LIST_RECOMMENDATION = "/wishlist - rekomendasi untuk anda - %s%s"
 
     private const val EVENT_ACTION_REMOVE_WISHLIST = "remove wishlist - wishlist - login"
@@ -182,7 +184,7 @@ object WishlistTracking {
     }
 
     fun clickBuy(wishlistItem: WishlistItem, cartId: String){
-        getTracker().sendGeneralEvent(
+        getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT, EVENT_CLICK_WISHLIST,
                         EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
@@ -297,6 +299,26 @@ object WishlistTracking {
                                 convertRecommendationItemToDataImpressionObject(
                                         item = item,
                                         list = IMPRESSION_LIST,
+                                        position = position
+                                )
+                        )
+                )
+        )
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    fun impressionEmptyWishlistRecommendation(trackingQueue: TrackingQueue, item: RecommendationItem, position: Int){
+        val map = DataLayer.mapOf(
+                EVENT, EVENT_PRODUCT_VIEW,
+                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
+                EVENT_LABEL, VALUE_EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                        ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
+                                convertRecommendationItemToDataImpressionObject(
+                                        item = item,
+                                        list = String.format(if(item.isTopAds) IMPRESSION_EMPTY_LIST_TOPADS else IMPRESSION_EMPTY_LIST, item.recommendationType),
                                         position = position
                                 )
                         )

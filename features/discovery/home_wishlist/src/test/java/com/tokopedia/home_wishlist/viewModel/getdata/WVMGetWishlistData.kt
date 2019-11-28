@@ -1,7 +1,6 @@
 package com.tokopedia.home_wishlist.viewModel.getdata
 
 import com.tokopedia.home_wishlist.InstantTaskExecutorRuleSpek
-import com.tokopedia.home_wishlist.data.repository.WishlistRepository
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.WishlistEntityData
@@ -90,7 +89,7 @@ class WVMGetWishlistData : Spek({
                 Assert.assertEquals(true, wishlistViewmodel.isWishlistErrorInFirstPageState.value)
             }
             Then("Expect isWishlistEmptyState is false") {
-                Assert.assertEquals(false, wishlistViewmodel.isWishlistEmptyState.value)
+                Assert.assertEquals(false, wishlistViewmodel.isWishlistState.value)
             }
             Then("Expect wishlistLiveData has only 1 error viewmodel") {
                 Assert.assertEquals(1, wishlistViewmodel.wishlistLiveData.value!!.size)
@@ -127,7 +126,7 @@ class WVMGetWishlistData : Spek({
                 Assert.assertEquals(false, wishlistViewmodel.isWishlistErrorInFirstPageState.value)
             }
             Then("Expect isWishlistEmptyState is false") {
-                Assert.assertEquals(true, wishlistViewmodel.isWishlistEmptyState.value)
+                Assert.assertEquals(true, wishlistViewmodel.isWishlistState.value)
             }
             Then("Expect wishlistLiveData has 6 data, 1 empty wishlist, 1 recom title model and 4 recommendation") {
                 Assert.assertEquals(6, wishlistViewmodel.wishlistLiveData.value!!.size)
@@ -213,7 +212,7 @@ class WVMGetWishlistData : Spek({
             }
 
             Then("Expect isWishlistEmptyState is false") {
-                Assert.assertEquals(true, wishlistViewmodel.isWishlistEmptyState.value)
+                Assert.assertEquals(true, wishlistViewmodel.isWishlistState.value)
             }
             Then("Expect wishlistLiveData has 6 data, 1 empty wishlist, 1 recom title model and 4 recommendation") {
                 Assert.assertEquals(6, wishlistViewmodel.wishlistLiveData.value!!.size)

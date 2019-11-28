@@ -15,7 +15,7 @@ import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistEmptyViewModel
 public class WishlistEmptyViewHolder extends AbstractViewHolder<WishlistEmptyViewModel> {
 
     @LayoutRes
-    public static int LAYOUT = R.layout.layout_new_wishlist_empty_state;
+    public static int LAYOUT = R.layout.layout_wishlist_empty_state;
     private OnWishlistActionButtonClicked actionButtonClicked;
     private Button button;
 
