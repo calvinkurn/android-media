@@ -2,12 +2,12 @@ package com.tokopedia.digital.productV2.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.digital.productV2.presentation.adapter.DigitalProductAdapterFactory
+import com.tokopedia.common.topupbills.data.product.CatalogOperator
 
 /**
- * Created by resakemal on 12/08/19.
+ * Created by resakemal on 28/11/19.
  */
-class CatalogOperatorCluster(
+class DigitalProductOperatorCluster(
 
         @SerializedName("componentID")
         @Expose
@@ -29,14 +29,11 @@ class CatalogOperatorCluster(
         var operators: List<CatalogOperatorGroup> = listOf()
 
 ) {
-        fun type(typeFactory: DigitalProductAdapterFactory): Int {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
 
         class Response(
                 @SerializedName("rechargeCatalogOperatorSelectGroup")
                 @Expose
-                val response: CatalogOperatorCluster = CatalogOperatorCluster()
+                val response: DigitalProductOperatorCluster = DigitalProductOperatorCluster()
         )
 
         class CatalogOperatorGroup(

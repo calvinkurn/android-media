@@ -1,4 +1,4 @@
-package com.tokopedia.vouchergame.detail.widget
+package com.tokopedia.common.topupbills.widget
 
 import android.content.Context
 import android.os.Handler
@@ -10,28 +10,28 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethod
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.vouchergame.R
-import com.tokopedia.vouchergame.detail.data.VoucherGameEnquiryFields
 import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
  * Created by resakemal on 20/08/19.
  */
-open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                                 defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr), VoucherGameInputDropdownBottomSheet.OnClickListener {
+open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
+                                                                defStyleAttr: Int = 0)
+    : BaseCustomView(context, attrs, defStyleAttr), TopupBillsInputDropdownBottomSheet.OnClickListener {
 
     private var listener: ActionListener? = null
 
     private var isDropdown = false
     private var dropdownBottomSheet = BottomSheetUnify()
-    private var dropdownView: VoucherGameInputDropdownBottomSheet? = null
+    private var dropdownView: TopupBillsInputDropdownBottomSheet? = null
     private var fragmentManager: FragmentManager? = null
 
     init {
@@ -41,7 +41,7 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
 
         btn_clear_input.setOnClickListener {
             ac_input.setText("")
-            listener?.onFinishInput()
+            listener?.onFinishInput("")
             error_label.visibility = View.GONE
         }
 
@@ -70,21 +70,20 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
 
         ac_input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                listener?.onFinishInput()
+                listener?.onFinishInput("")
                 clearFocus()
             }
             false
         }
         ac_input.setKeyImeChangeListener { _, event ->
             if (event.keyCode == KeyEvent.KEYCODE_BACK) {
-                listener?.onFinishInput()
+                listener?.onFinishInput("")
                 clearFocus()
             }
         }
 
         iv_input_dropdown.gone()
 
-        dropdownBottomSheet.setTitle(resources.getString(R.string.vg_input_field_dropdown_title))
         dropdownBottomSheet.setFullPage(true)
         dropdownBottomSheet.clearAction()
         dropdownBottomSheet.setCloseClickListener {
@@ -130,19 +129,19 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
         this.listener = listener
     }
 
-    override fun onItemClicked(item: VoucherGameEnquiryFields.DataCollection) {
+    override fun onItemClicked(item: TopupBillsInputDropdownData) {
         ac_input.setText(item.value)
         dropdownBottomSheet.dismiss()
     }
 
-    fun setupDropdownBottomSheet(data: List<VoucherGameEnquiryFields.DataCollection>, fragmentManager: FragmentManager?) {
+    fun setupDropdownBottomSheet(data: List<TopupBillsInputDropdownData>) {
         isDropdown = true
         iv_input_dropdown.visible()
 
-        dropdownView = VoucherGameInputDropdownBottomSheet(context, listener = this)
+        dropdownView = TopupBillsInputDropdownBottomSheet(context, listener = this)
         dropdownView?.setData(data)
 
-        this.fragmentManager = fragmentManager
+        this.fragmentManager = (context as AppCompatActivity).supportFragmentManager
         dropdownBottomSheet.setChild(dropdownView)
     }
 
@@ -165,7 +164,7 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
     }
 
     interface ActionListener {
-        fun onFinishInput()
+        fun onFinishInput(input: String)
     }
 
     companion object {

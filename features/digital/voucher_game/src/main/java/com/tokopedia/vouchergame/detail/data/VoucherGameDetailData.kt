@@ -2,29 +2,17 @@ package com.tokopedia.vouchergame.detail.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common.topupbills.data.product.CatalogData
 
 /**
  * Created by resakemal on 12/08/19.
  */
-class VoucherGameDetailData(
+class VoucherGameDetailData: CatalogData() {
+        override var product: VoucherGameProductData = VoucherGameProductData()
 
-        @SerializedName("needEnquiry")
-        @Expose
-        val needEnquiry: Boolean = true,
-        @SerializedName("isShowingProduct")
-        @Expose
-        val isShowingProduct: Boolean = true,
-        @SerializedName("enquiryFields")
-        @Expose
-        val enquiryFields: List<VoucherGameEnquiryFields> = listOf(),
-        @SerializedName("product")
-        @Expose
-        var product: VoucherGameProductData = VoucherGameProductData()
-
-) {
-        class Response(
+        class Response {
                 @SerializedName("rechargeCatalogProductInput")
                 @Expose
                 val response: VoucherGameDetailData = VoucherGameDetailData()
-        )
+        }
 }

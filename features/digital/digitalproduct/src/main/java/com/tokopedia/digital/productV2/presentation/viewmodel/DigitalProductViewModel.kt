@@ -2,8 +2,8 @@ package com.tokopedia.digital.productV2.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.digital.productV2.model.CatalogData
-import com.tokopedia.digital.productV2.model.CatalogOperatorCluster
+import com.tokopedia.digital.productV2.model.DigitalProductData
+import com.tokopedia.digital.productV2.model.DigitalProductOperatorCluster
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -23,13 +23,13 @@ class DigitalProductViewModel  @Inject constructor(
         val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    val operatorCluster = MutableLiveData<Result<CatalogOperatorCluster>>()
-    val productList = MutableLiveData<Result<CatalogData>>()
+    val operatorCluster = MutableLiveData<Result<DigitalProductOperatorCluster>>()
+    val productList = MutableLiveData<Result<DigitalProductData>>()
 
     fun getOperatorCluster(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false){
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default){
-                val graphqlRequest = GraphqlRequest(rawQuery, CatalogOperatorCluster.Response::class.java, mapParam)
+                val graphqlRequest = GraphqlRequest(rawQuery, DigitalProductOperatorCluster.Response::class.java, mapParam)
                 val graphQlCacheStrategy : GraphqlCacheStrategy
                 if(isLoadFromCloud) {
                     graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
@@ -37,7 +37,7 @@ class DigitalProductViewModel  @Inject constructor(
                     graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                 }
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
-            }.getSuccessData<CatalogOperatorCluster.Response>()
+            }.getSuccessData<DigitalProductOperatorCluster.Response>()
             operatorCluster.value = Success(data.response)
         }){
             operatorCluster.value = Fail(it)
@@ -47,7 +47,7 @@ class DigitalProductViewModel  @Inject constructor(
     fun getProductList(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false){
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default){
-                val graphqlRequest = GraphqlRequest(rawQuery, CatalogOperatorCluster.Response::class.java, mapParam)
+                val graphqlRequest = GraphqlRequest(rawQuery, DigitalProductOperatorCluster.Response::class.java, mapParam)
                 val graphQlCacheStrategy : GraphqlCacheStrategy
                 if(isLoadFromCloud) {
                     graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
@@ -55,7 +55,7 @@ class DigitalProductViewModel  @Inject constructor(
                     graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                 }
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
-            }.getSuccessData<CatalogOperatorCluster.Response>()
+            }.getSuccessData<DigitalProductOperatorCluster.Response>()
             operatorCluster.value = Success(data.response)
         }){
             operatorCluster.value = Fail(it)

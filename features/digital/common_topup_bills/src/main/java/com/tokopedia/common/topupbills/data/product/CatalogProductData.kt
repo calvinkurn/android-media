@@ -1,28 +1,20 @@
-package com.tokopedia.digital.productV2.model
+package com.tokopedia.common.topupbills.data.product
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapterFactory
-
 /**
  * Created by resakemal on 26/11/19.
  */
-class CatalogProductData(
+open class CatalogProductData(
 
         @SerializedName("id")
         @Expose
         val id: String = "",
         @SerializedName("attributes")
         @Expose
-        val attributes: Attributes = Attributes(),
-        var position: Int = 0,
-        var selected: Boolean = false
+        val attributes: Attributes = Attributes()
 
-): Visitable<VoucherGameDetailAdapterFactory> {
-
-        override fun type(typeFactory: VoucherGameDetailAdapterFactory) = typeFactory.type(this)
-
+) {
         class Attributes(
                 @SerializedName("desc")
                 @Expose

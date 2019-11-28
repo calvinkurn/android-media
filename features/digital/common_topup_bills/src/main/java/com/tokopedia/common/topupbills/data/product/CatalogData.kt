@@ -1,4 +1,4 @@
-package com.tokopedia.digital.productV2.model
+package com.tokopedia.common.topupbills.data.product
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by resakemal on 26/11/19.
  */
-class CatalogData(
+open class CatalogData(
 
         @SerializedName("needEnquiry")
         @Expose
@@ -16,10 +16,10 @@ class CatalogData(
         val isShowingProduct: Boolean = true,
         @SerializedName("enquiryFields")
         @Expose
-        val enquiryFields: List<CatalogProductInput> = listOf(),
+        open val enquiryFields: List<CatalogProductInput> = listOf(),
         @SerializedName("product")
         @Expose
-        var product: CatalogProduct = CatalogProduct()
+        open val product: CatalogProduct = CatalogProduct()
 
 ) {
         class Response(

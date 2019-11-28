@@ -1,34 +1,20 @@
 package com.tokopedia.vouchergame.detail.data
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.common.topupbills.data.product.CatalogProduct
+import com.tokopedia.common.topupbills.data.product.CatalogProductData
 import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapterFactory
 
 /**
  * Created by resakemal on 13/08/19.
  */
-class VoucherGameProductData(
+open class VoucherGameProductData: CatalogProduct(){
+        override var dataCollections: List<DataCollection> = listOf()
 
-        @SerializedName("name")
-        @Expose
-        val name: String = "",
-        @SerializedName("text")
-        @Expose
-        val text: String = "",
-        @SerializedName("dataCollections")
-        @Expose
-        var dataCollections: List<DataCollection> = listOf()
+        class DataCollection(name: String, products: List<CatalogProductData>): CatalogProduct.DataCollection(name, products), Visitable<VoucherGameDetailAdapterFactory> {
 
-) {
-        class DataCollection(
-                @SerializedName("name")
-                @Expose
-                val name: String = "",
-                @SerializedName("products")
-                @Expose
-                var products: List<VoucherGameProduct> = listOf()
-        ): Visitable<VoucherGameDetailAdapterFactory> {
                 override fun type(typeFactory: VoucherGameDetailAdapterFactory) = typeFactory.type(this)
+
+                override var products: List<VoucherGameProduct> = listOf()
         }
 }

@@ -1,10 +1,13 @@
-package com.tokopedia.digital.productV2.model
+package com.tokopedia.common.topupbills.data.product
 
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Created by resakemal on 28/11/19.
+ */
 class CatalogOperatorAttributes(
         @SerializedName("name")
         @Expose
