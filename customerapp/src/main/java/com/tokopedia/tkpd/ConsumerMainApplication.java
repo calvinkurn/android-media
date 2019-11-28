@@ -42,7 +42,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.cpm.CharacterPerMinuteActivityLifecycleCallbacks;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.logger.LogWrapper;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -157,9 +157,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
         registerActivityLifecycleCallbacks(callback);
 
-        LogWrapper.init(this);
-        if (LogWrapper.instance != null) {
-            LogWrapper.instance.setLogentriesToken(TimberWrapper.LOGENTRIES_TOKEN);
+        LogManager.init(this);
+        if (LogManager.instance != null) {
+            LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
         }
         TimberWrapper.init(this);
 

@@ -21,7 +21,7 @@ class BottomChatMenuFragment : BottomSheetDialogFragment() {
     private lateinit var chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener
     private lateinit var chatMenuFactory: ChatMenuFactory
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
 
         val parentFragment = parentFragment

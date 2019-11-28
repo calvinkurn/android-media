@@ -262,7 +262,9 @@ class AffiliateDashboardFragment :
                     String.format(getString(R.string.profile_share_title)),
                     bmivShare.getTempFileUri()
             ).also {
-                it.show(fragmentManager)
+                fragmentManager?.run {
+                    it.show(this)
+                }
             }
         }
     }

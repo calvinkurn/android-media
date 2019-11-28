@@ -946,7 +946,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
 
         bottomSheet = ValuePropositionBottomSheet.newInstance(title, desc, url)
-        bottomSheet.show(fragmentManager, "pdp_bs")
+        fragmentManager?.run {
+            bottomSheet.show(this, "pdp_bs")
+        }
     }
 
     private fun isViewVisible(view: View): Boolean {
@@ -1073,7 +1075,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         setupByConfiguration(newConfig)
     }
@@ -1208,7 +1210,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                                 goToAtcExpress()
                             }
                         }
-                        errorBottomsheets.show(fragmentManager, "")
+                        fragmentManager?.run {
+                            errorBottomsheets.show(this, "")
+                        }
                     }
                 } else if (resultCode == RESULT_CODE_NAVIGATE_TO_OCS) {
                     goToNormalCheckout()
@@ -1280,9 +1284,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 shouldShowCartAnimation = true
                 updateCartNotification()
             }
-            addToCartDoneBottomSheet.show(
-                    fragmentManager, "TAG"
-            )
+            fragmentManager?.run {
+                addToCartDoneBottomSheet.show(this, "TAG")
+            }
         }
     }
 
@@ -1901,7 +1905,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(if (isAppBarCollapsed) R.menu.menu_product_detail_dark else
             R.menu.menu_product_detail_light, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -1910,7 +1914,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         activity?.let {
             handlingMenuPreparation(menu)
             // handling cart counter
@@ -2042,7 +2046,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item?.itemId) {
             android.R.id.home -> {
                 activity?.onBackPressed(); true

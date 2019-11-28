@@ -166,4 +166,6 @@
     <string name="title_activity_all_brands">Brands</string>
     <string name="title_digital_deals">Deals</string>
     <string name="title_activity_deals">Deals</string>
+
+    <string name="saldo_webview_title">Tokopedia</string>
 </resources>

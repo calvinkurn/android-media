@@ -70,7 +70,7 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
         setHasOptionsMenu(true)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         context?.let { GraphqlClient.init(it) }
     }
@@ -141,12 +141,12 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_bm_create, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_bm_create, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         val item = menu?.findItem(R.id.add_bm)
         item?.setVisible(hasMessage)
         item?.isEnabled = validToCreate
@@ -154,8 +154,8 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
         super.onPrepareOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.add_bm){
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.add_bm){
             if (validToCreate)
                 gotoCreateBroadcast()
             return validToCreate

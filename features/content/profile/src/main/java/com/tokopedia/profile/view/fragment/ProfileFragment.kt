@@ -1822,7 +1822,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 shareTitle,
                 imageUri
         ).also {
-            it.show(fragmentManager)
+            fragmentManager?.run {
+                it.show(this)
+            }
         }
 
         return bottomSheet.data
