@@ -41,7 +41,7 @@ class GetZipCodeUseCase
 
 val query_kero_get_district_details = """
 query KeroDistrictQuery(${'$'}query: String, ${'$'}page: String){
-  kero_get_district_details(query: ${'$'}query, page: ${'$'}page) {
+  keroGetDistrictDetails(query: ${'$'}query, page: ${'$'}page) {
     district {
       district_id
       district_name
