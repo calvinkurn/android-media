@@ -81,8 +81,8 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
         }
 
         dialog.setSecondaryCTAClickListener {
-            super.onBackPressed()
             trackingUmrahUtil.getClickBackCheckoutTracker()
+            super.onBackPressed()
         }
     }
 }
