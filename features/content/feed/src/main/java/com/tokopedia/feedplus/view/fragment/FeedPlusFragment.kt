@@ -860,7 +860,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.feed_delete_post))
         dialog.setDesc(getString(R.string.feed_after_delete_cant))
-        dialog.setBtnOk(getString(R.string.action_delete))
+        dialog.setBtnOk(getString(R.string.button_delete))
         dialog.setBtnCancel(getString(R.string.cancel))
         dialog.setOnOkClickListener {
             presenter.deletePost(id, rowNumber)
