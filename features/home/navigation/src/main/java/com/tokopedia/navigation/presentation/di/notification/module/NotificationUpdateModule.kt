@@ -18,10 +18,6 @@ class NotificationUpdateModule {
     @NotificationUpdateScope
     @Provides
     fun provideNotifPreference(@ApplicationContext context: Context): NotifPreference = NotifPreference(context)
-
-    @NotificationUpdateScope
-    @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
     
     @NotificationUpdateScope
     @Provides
