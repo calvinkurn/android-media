@@ -26,19 +26,14 @@ class NotificationTransactionViewModelTest {
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     @Mock lateinit var filterNotificationUseCase: NotificationFilterUseCase
-
     @Mock lateinit var observerFilterNotification: Observer<NotificationFilterSectionWrapper>
-    @Mock lateinit var observerError: Observer<String>
-
     @Captor lateinit var captorFilterNotification: ArgumentCaptor<NotificationFilterSectionWrapper>
-    @Captor lateinit var captorError: ArgumentCaptor<String>
 
     lateinit var viewModel: NotificationTransactionViewModel
-
     private val dispatcherProvider = TestDispatcherProvider()
     private val filterMapper = GetNotificationUpdateFilterMapper()
 
-    var mockFilterNoitification = NotificationUpdateFilter()
+    private var mockFilterNotification = NotificationUpdateFilter()
 
     @Before fun setUp() {
         MockitoAnnotations.initMocks(this)
@@ -52,7 +47,6 @@ class NotificationTransactionViewModelTest {
                 dispatcherProvider
         )
         viewModel.filterNotification.observeForever(observerFilterNotification)
-        viewModel.errorMessage.observeForever(observerError)
     }
 
     @Test fun `should return filter of notification`() = runBlocking {
@@ -67,13 +61,13 @@ class NotificationTransactionViewModelTest {
                 .onChanged(captorFilterNotification.capture())
 
         assertEquals(
-                mockFilterNoitification,
+                mockFilterNotification,
                 captorFilterNotification.allValues.first())
     }
 
     private fun onSuccessGetFilterNotification(): (NotificationUpdateFilter) -> Unit {
         return {
-            mockFilterNoitification = it
+            mockFilterNotification = it
         }
     }
 
