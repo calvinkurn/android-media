@@ -341,8 +341,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
         room_detail_button.setOnClickListener {
             progressDialog.show()
-            room_detail_button.isEnabled = false
             if (userSessionInterface.isLoggedIn) {
+                room_detail_button.isEnabled = false
                 trackingHotelUtil.hotelChooseRoomDetails(hotelRoom, roomIndex, addToCartParam)
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {

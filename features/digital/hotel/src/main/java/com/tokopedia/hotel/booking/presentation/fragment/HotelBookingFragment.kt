@@ -69,7 +69,6 @@ class HotelBookingFragment : HotelBaseFragment() {
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     lateinit var hotelCart: HotelCart
-    lateinit var appliedVoucher: HotelCart.AppliedVoucher
     var hotelBookingPageModel = HotelBookingPageModel()
     var promoCode = ""
     internal var destinationType: String = ""
@@ -103,7 +102,6 @@ class HotelBookingFragment : HotelBaseFragment() {
             when (it) {
                 is Success -> {
                     hotelCart = it.data.response
-                    appliedVoucher = it.data.appliedVoucher
                     initView()
                 }
                 is Fail -> {
@@ -122,7 +120,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                         val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
                         taskStackBuilder.addNextIntent(intentHome)
 
-                        val intentHotelHome = RouteManager.getIntent(this, ApplinkConst.TRAVEL_SUBHOMEPAGE)
+                        val intentHotelHome = RouteManager.getIntent(this, ApplinkConstInternalTravel.DASHBOARD_HOTEL)
                         taskStackBuilder.addNextIntent(intentHotelHome)
 
                         val checkoutData = PaymentPassData()
@@ -237,7 +235,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         setupRoomInfo(hotelCart.property, hotelCart.cart)
         setupRoomRequestForm(hotelCart.cart)
         setupContactDetail(hotelCart.cart)
-        setupPayNowPromoTicker(hotelCart, appliedVoucher)
+        setupPayNowPromoTicker(hotelCart)
         setupInvoiceSummary(hotelCart.cart, hotelCart.property)
         setupImportantNotes(hotelCart.property)
 
@@ -442,16 +440,15 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
     }
 
-    private fun setupPayNowPromoTicker(cart: HotelCart,
-                                       appliedVoucher: HotelCart.AppliedVoucher) {
+    private fun setupPayNowPromoTicker(cart: HotelCart) {
         if (cart.property.rooms.isNotEmpty() && cart.property.isDirectPayment) {
             booking_pay_now_promo_container.visibility = View.VISIBLE
 
-            promoCode = appliedVoucher.code
+            promoCode = cart.appliedVoucher.code
             if (promoCode.isNotEmpty()) {
                 setupPromoTicker(TickerCheckoutView.State.ACTIVE,
-                        appliedVoucher.titleDescription,
-                        appliedVoucher.message)
+                        cart.appliedVoucher.titleDescription,
+                        cart.appliedVoucher.message)
                 trackingHotelUtil.hotelApplyPromo(promoCode)
             } else {
                 setupPromoTicker(TickerCheckoutView.State.EMPTY,
@@ -462,7 +459,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             booking_pay_now_promo_ticker.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
                 override fun onClickUsePromo() {
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
-                    intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, appliedVoucher.isCoupon)
+                    intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, cart.appliedVoucher.isCoupon)
                     intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
                     startActivityForResult(intent, COUPON_EXTRA_LIST_ACTIVITY_RESULT)
                 }

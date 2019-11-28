@@ -497,11 +497,15 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private fun setupGlobalSearchWidget() {
         // setup hotel global search widget
-        widget_hotel_global_search.title = hotelName
-        widget_hotel_global_search.globalSearchListener = this
-        widget_hotel_global_search.setPreferencesData(hotelHomepageModel.checkInDate,
-                hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, hotelHomepageModel.roomCount)
-        widget_hotel_global_search.buildView()
+        // add condition if checkin date & checkout date isNotEmpty, to prevent crash access hotel detail from applink
+        if (hotelHomepageModel.checkInDate.isNotEmpty() &&
+                hotelHomepageModel.checkOutDate.isNotEmpty()) {
+            widget_hotel_global_search.title = hotelName
+            widget_hotel_global_search.globalSearchListener = this
+            widget_hotel_global_search.setPreferencesData(hotelHomepageModel.checkInDate,
+                    hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, hotelHomepageModel.roomCount)
+            widget_hotel_global_search.buildView()
+        }
     }
 
     private fun openImagePreview(index: Int) {

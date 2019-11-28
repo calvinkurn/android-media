@@ -18,16 +18,16 @@ data class HotelCart (
 
         @SerializedName("property")
         @Expose
-        val property: HotelPropertyData = HotelPropertyData()
+        val property: HotelPropertyData = HotelPropertyData(),
+
+        @SerializedName("appliedVoucher")
+        @Expose
+        var appliedVoucher: AppliedVoucher = AppliedVoucher()
 ) {
         data class Response (
                 @SerializedName("propertyGetCart")
                 @Expose
-                val response: HotelCart = HotelCart(),
-
-                @SerializedName("appliedVoucher")
-                @Expose
-                var appliedVoucher: AppliedVoucher = AppliedVoucher()
+                val response: HotelCart = HotelCart()
         )
 
         data class AppliedVoucher (
