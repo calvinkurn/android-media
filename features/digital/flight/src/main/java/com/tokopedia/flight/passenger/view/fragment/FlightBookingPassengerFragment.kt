@@ -169,6 +169,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             til_nationality.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
             til_passport_issuer_country.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
+            fragment_layout.setOnTouchListener { view, motionEvent ->
+                clearAllKeyboardFocus()
+                true
+            }
         }
     }
 
