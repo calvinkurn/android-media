@@ -7,13 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
  */
 
 data class FragmentViewModel(
-        var totalPayment: Long? = 0,
-        var lastQuantity: Int? = 0,
-        var lastPrice: Int? = 0,
         var isStateChanged: Boolean? = false, // True if there are error or user activity (change qty / change courier / change note / change variant / check insurance)
-        var viewModels: ArrayList<Visitable<*>> = ArrayList(),
-        var hasGenerateFingerprintPublicKey: Boolean = false,
-        var fingerprintPublicKey: String? = null
+        var viewModels: ArrayList<Visitable<*>> = ArrayList()
 ) {
 
     fun getProductViewModel(): ProductViewModel? {
@@ -36,52 +31,4 @@ data class FragmentViewModel(
         return null
     }
 
-    fun getVariantTypeViewModel(): ArrayList<TypeVariantViewModel> {
-        var variantTypeViewModels = ArrayList<TypeVariantViewModel>()
-        for (visitable in viewModels) {
-            if (visitable is TypeVariantViewModel) {
-                variantTypeViewModels.add(visitable)
-            }
-        }
-
-        return variantTypeViewModels
-    }
-
-    fun getInsuranceRecommendationViewModel(): InsuranceRecommendationViewModel? {
-        for (visitable in viewModels) {
-            if (visitable is InsuranceRecommendationViewModel) {
-                return visitable
-            }
-        }
-
-        return null
-    }
-
-    fun getNoteViewModel(): NoteViewModel? {
-        for (visitable in viewModels) {
-            if (visitable is NoteViewModel) {
-                return visitable
-            }
-        }
-
-        return null
-    }
-
-    fun getIndex(visitable: Visitable<*>): Int {
-        return viewModels.indexOf(visitable)
-    }
-
-    fun getSelectedProductChild(): ProductChild? {
-        if (getProductViewModel()?.productChildrenList?.isNotEmpty() == true) {
-            val productChildrenList = getProductViewModel()?.productChildrenList
-            if (productChildrenList != null) {
-                for (productChild: ProductChild in productChildrenList) {
-                    if (productChild.isSelected) {
-                        return productChild
-                    }
-                }
-            }
-        }
-        return null
-    }
 }
