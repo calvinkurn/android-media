@@ -1,15 +1,12 @@
 package com.tokopedia.search.analytics;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.SearchEvent;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -560,6 +557,42 @@ public class SearchTracking {
                 SearchEventTracking.Category.EVENT_TOP_NAV_SEARCH_SRP,
                 SearchEventTracking.Action.CLICK_SEARCH_BOX,
                 "");
+    }
+
+    public static void trackEventImpressionBannedProductsEmptySearch(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.IMPRESSION_BANNED_PRODUCT_TICKER_EMPTY,
+                keyword
+        );
+    }
+
+    public static void trackEventClickGoToBrowserBannedProductsEmptySearch(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.CLICK_SEARCH_RESULT_IRIS,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.CLICK_BANNED_PRODUCT_TICKER_EMPTY,
+                keyword
+        );
+    }
+
+    public static void trackEventImpressionBannedProductsWithResult(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.IMPRESSION_BANNED_PRODUCT_TICKER_RELATED,
+                keyword
+        );
+    }
+
+    public static void trackEventClickGoToBrowserBannedProductsWithResult(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.CLICK_SEARCH_RESULT_IRIS,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.CLICK_BANNED_PRODUCT_TICKER_RELATED,
+                keyword
+        );
     }
 
     public static void trackMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category) {
