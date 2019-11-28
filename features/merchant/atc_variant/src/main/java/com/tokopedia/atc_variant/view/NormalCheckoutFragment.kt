@@ -30,7 +30,6 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_variant.R
 import com.tokopedia.atc_variant.data.request.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -56,7 +55,6 @@ import com.tokopedia.atc_variant.model.ProductInfoAndVariant
 import com.tokopedia.atc_variant.model.ProductInfoAndVariantContainer
 import com.tokopedia.atc_variant.view.adapter.CheckoutVariantAdapter
 import com.tokopedia.atc_variant.view.adapter.CheckoutVariantAdapterTypeFactory
-import com.tokopedia.atc_variant.view.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.atc_variant.view.presenter.NormalCheckoutViewModel
 import com.tokopedia.atc_variant.view.viewmodel.*
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.EXTRA_IS_ONE_CLICK_SHIPMENT
@@ -1129,7 +1127,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     override fun isLoadMoreEnabledByDefault() = false
 
     override fun getAdapterTypeFactory(): CheckoutVariantAdapterTypeFactory {
-        return NormalCheckoutAdapterTypeFactory(this)
+        return CheckoutVariantAdapterTypeFactory(this)
     }
 
     override fun loadData(page: Int) {

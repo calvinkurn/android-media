@@ -3,13 +3,13 @@ package com.tokopedia.atc_variant.domain.usecase
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_variant.R
+import com.tokopedia.atc_variant.data.request.AddInsuranceProductToCartRequest
+import com.tokopedia.atc_variant.data.request.AddMarketPlaceToCartRequest
+import com.tokopedia.atc_variant.data.response.AddInsuranceProductToCartGqlResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.AddInsuranceProductToCartRequest
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.AddMarketPlaceToCartRequest
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.AddInsuranceProductToCartGqlResponse
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject

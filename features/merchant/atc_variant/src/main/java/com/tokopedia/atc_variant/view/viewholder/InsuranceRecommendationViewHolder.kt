@@ -17,11 +17,8 @@ import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.purchase_platform.common.view.model.InsuranceApplicationValueViewModel
 import com.tokopedia.purchase_platform.common.view.model.InsuranceProductApplicationDetailsViewModel
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.InsuranceRecommendationViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.transaction.insurance.utils.*
 import kotlinx.android.synthetic.main.item_insurance_recommendation_product_page.view.*
 import java.util.*

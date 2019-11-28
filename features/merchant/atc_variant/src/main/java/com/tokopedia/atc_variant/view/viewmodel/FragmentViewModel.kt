@@ -1,34 +1,20 @@
 package com.tokopedia.atc_variant.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
-import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.AtcResponseModel
 
 /**
  * Created by Irfan Khoirul on 09/01/19.
  */
 
 data class FragmentViewModel(
-        var atcResponseModel: AtcResponseModel? = null,
         var totalPayment: Long? = 0,
         var lastQuantity: Int? = 0,
         var lastPrice: Int? = 0,
         var isStateChanged: Boolean? = false, // True if there are error or user activity (change qty / change courier / change note / change variant / check insurance)
-        var shippingCourierViewModels: MutableList<ShippingCourierViewModel>? = null,
         var viewModels: ArrayList<Visitable<*>> = ArrayList(),
         var hasGenerateFingerprintPublicKey: Boolean = false,
         var fingerprintPublicKey: String? = null
 ) {
-
-    fun getProfileViewModel(): ProfileViewModel? {
-        for (visitable in viewModels) {
-            if (visitable is ProfileViewModel) {
-                return visitable
-            }
-        }
-
-        return null
-    }
 
     fun getProductViewModel(): ProductViewModel? {
         for (visitable in viewModels) {
@@ -61,29 +47,9 @@ data class FragmentViewModel(
         return variantTypeViewModels
     }
 
-    fun getSummaryViewModel(): SummaryViewModel? {
-        for (visitable in viewModels) {
-            if (visitable is SummaryViewModel) {
-                return visitable
-            }
-        }
-
-        return null
-    }
-
     fun getInsuranceRecommendationViewModel(): InsuranceRecommendationViewModel? {
         for (visitable in viewModels) {
             if (visitable is InsuranceRecommendationViewModel) {
-                return visitable
-            }
-        }
-
-        return null
-    }
-
-    fun getInsuranceViewModel(): InsuranceViewModel? {
-        for (visitable in viewModels) {
-            if (visitable is InsuranceViewModel) {
                 return visitable
             }
         }

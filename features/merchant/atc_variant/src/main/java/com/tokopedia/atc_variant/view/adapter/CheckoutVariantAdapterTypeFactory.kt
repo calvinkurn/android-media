@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.atc_variant.view.CheckoutVariantActionListener
 import com.tokopedia.atc_variant.view.viewholder.*
 import com.tokopedia.atc_variant.view.viewmodel.*
@@ -36,7 +37,7 @@ open class CheckoutVariantAdapterTypeFactory(val listener: CheckoutVariantAction
     }
 
     override fun type(viewModel: LoadingModel): Int {
-        return LoadingViewHolder.LAYOUT
+        return HideViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
@@ -46,7 +47,7 @@ open class CheckoutVariantAdapterTypeFactory(val listener: CheckoutVariantAction
             QuantityViewHolder.LAYOUT -> QuantityViewHolder(view, listener)
             TypeVariantViewHolder.LAYOUT -> TypeVariantViewHolder(view, listener)
             InsuranceRecommendationViewHolder.LAYOUT -> InsuranceRecommendationViewHolder(view, listener)
-            LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
+            HideViewHolder.LAYOUT -> HideViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }
 
