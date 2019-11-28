@@ -44,7 +44,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private static final String LABEL_HOLD = "Sedang Diproses";
     private static final String LABEL_BLOCKED = "Layanan Terblokir";
     private static final String LABEL_DEACTIVATED = "Dinonaktifkan";
-    private static final String LABEL_KYC_PENDING = "Selasekan Pengajuan Aplikasimu";
+    private static final String LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu";
     private Context context;
 
     @Inject
@@ -126,7 +126,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         } else {
             TokopediaPayBSModel bsDataRight = new TokopediaPayBSModel();
-            tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus().getTitle());
+            tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus() == null ? "" : accountModel.getVccUserStatus().getTitle());
             tokopediaPayViewModel.setRightSaldo(false);
             tokopediaPayViewModel.setIconUrlRight(accountModel.getVccUserStatus().getIcon());
             tokopediaPayViewModel.setVccUserStatus(accountModel.getVccUserStatus().getStatus());
