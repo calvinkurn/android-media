@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
         android:layout_marginTop="@dimen/dp_24"
-        android:background="@drawable/bg_btn_green"
+        android:background="@drawable/bg_af_btn_green"
         android:fontFamily="sans-serif-medium"
         android:text="@string/text_empty_start_recommendation_btn"
         android:textAllCaps="false"

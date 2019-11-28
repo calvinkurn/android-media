@@ -4,6 +4,14 @@ apply plugin: 'io.fabric'
 if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
+
+if (hasProperty('buildScan')) {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
+}
+
 apply plugin: 'io.hansel.preprocessor'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
@@ -265,7 +273,6 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.gamification)
-    implementation project(rootProject.ext.features.affiliate)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.feed)
