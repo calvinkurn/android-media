@@ -119,6 +119,7 @@ abstract class NotificationTransactionItemViewHolder(itemView: View, var listene
     }
 
     private fun convertTypeUser(element: TransactionItemNotification) {
+        label.hide()
         val labelIndex = element.label
 
         if (labelIndex == BUYER_TYPE && element.hasShop) {
@@ -145,8 +146,6 @@ abstract class NotificationTransactionItemViewHolder(itemView: View, var listene
                     it.setColor(getColorResource(R.color.Green_G200))
                 }
             }
-        } else if (labelIndex == BUYER_TYPE) {
-            label.hide()
         }
     }
 
