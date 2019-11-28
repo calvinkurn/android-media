@@ -17,6 +17,7 @@ import com.tokopedia.purchase_platform.common.data.api.CartResponseConverter
 import com.tokopedia.purchase_platform.common.data.api.CommonPurchaseApiUrl
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.AKAMAI_CART_ENABLE
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -112,7 +113,7 @@ class PurchasePlatformNetworkModule {
                     chain.proceed(newRequest.build())
                 }
                 .addInterceptor(cartApiInterceptor)
-        if (remoteConfig.getBoolean("android_akamai_cart_enable", false)) {
+        if (remoteConfig.getBoolean(AKAMAI_CART_ENABLE, false)) {
             builder.addInterceptor(AkamaiBotInterceptor())
         }
         if (GlobalConfig.isAllowDebuggingTools()) {
