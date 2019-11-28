@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.view.presenter
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -39,7 +40,7 @@ import rx.Subscriber
  */
 
 class FeedPlusPresenter @Inject
-internal constructor(private val context: Context,
+internal constructor(@ApplicationContext private val context: Context,
                      private val userSession: UserSessionInterface,
                      private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
                      private val likeKolPostUseCase: LikeKolPostUseCase,
