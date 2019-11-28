@@ -997,8 +997,12 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTrackingEventSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category) {
+    public void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category) {
         SearchTracking.trackMoEngageSearchAttempt(query, hasProductList, category);
+    }
+
+    @Override
+    public void sendTrackingGTMEventSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category) {
         SearchTracking.trackGTMEventSearchAttempt(query, hasProductList, category);
     }
 

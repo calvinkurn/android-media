@@ -886,7 +886,8 @@ final class ProductListPresenter
 
     private void getViewToSendTrackingOnFirstTimeLoad(ProductViewModel productViewModel) {
         JSONArray afProdIds = new JSONArray();
-        HashMap<String, String> category = new HashMap<>();
+        HashMap<String, String> moengageTrackingCategory = new HashMap<>();
+        HashMap<String, String> gtmTrackingCategory = new HashMap<>();
         ArrayList<String> prodIdArray = new ArrayList<>();
 
         if (productViewModel.getProductList().size() > 0) {
@@ -894,16 +895,15 @@ final class ProductListPresenter
                 if (i < 3) {
                     prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
                     afProdIds.put(productViewModel.getProductList().get(i).getProductID());
-                } else {
-                    break;
+                    moengageTrackingCategory.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
                 }
-                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
 
+                gtmTrackingCategory.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
             }
         }
 
-        getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, productViewModel.getQuery(), prodIdArray);
-        getView().sendTrackingEventSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
+        getView().sendTrackingEventMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
+        getView().sendTrackingGTMEventSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), gtmTrackingCategory);
         getView().setFirstTimeLoad(false);
     }
 
