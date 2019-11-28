@@ -18,6 +18,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
+import com.tokopedia.topchat.chatlist.widget.LongClickMenu
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -40,6 +41,8 @@ class ChatItemListViewHolder(
     private val time: Typography = itemView.findViewById(R.id.time)
     private val label: Label = itemView.findViewById(R.id.user_label)
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
+
+    private val menu = LongClickMenu()
 
     override fun bind(element: ItemChatListPojo) {
         val attributes = element.attributes
@@ -85,14 +88,13 @@ class ChatItemListViewHolder(
     }
 
     private fun showLongClickMenu(element: ItemChatListPojo) {
-        Menus(itemView.context, R.style.BottomFilterDialogTheme).apply {
-            setTitle(" ")
-            itemMenuList = createChatLongClickMenu(element)
+        menu.apply {
+            setItemMenuList(createChatLongClickMenu(element))
             setOnItemMenuClickListener { itemMenus, _ ->
                 handleChatMenuClick(itemMenus, element)
                 dismiss()
             }
-        }.show()
+        }.show(listener.getSupportChildFragmentManager(), LongClickMenu.TAG)
     }
 
     private fun handleChatMenuClick(itemMenus: Menus.ItemMenus, element: ItemChatListPojo) {

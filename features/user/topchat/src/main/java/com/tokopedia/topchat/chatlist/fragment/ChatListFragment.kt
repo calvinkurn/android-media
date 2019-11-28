@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -561,6 +562,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     override fun isTabSeller(): Boolean {
         return sightTag == PARAM_TAB_SELLER
+    }
+
+    override fun getSupportChildFragmentManager(): FragmentManager {
+        return childFragmentManager
     }
 
     companion object {
