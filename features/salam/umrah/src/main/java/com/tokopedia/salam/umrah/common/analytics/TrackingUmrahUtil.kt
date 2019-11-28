@@ -2,6 +2,7 @@ package com.tokopedia.salam.umrah.common.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
+import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.homepage.data.Products
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategories
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategoriesFeatured
@@ -114,7 +115,7 @@ class TrackingUmrahUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun umrahImpressionUmrahSayaTracker(headerTitle: String, myUmrahEntity: MyUmrahEntity, position: Int){
+    fun umrahImpressionUmrahSayaTracker(headerTitle: String, myUmrahEntity: MyUmrahEntity, position: Int) {
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = UMRAH_EVENT_PROMO_VIEW
         map[EVENT_CATEGORY] = UMRAH_CATEGORY_HOME_PAGE
@@ -129,7 +130,7 @@ class TrackingUmrahUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun umrahImpressionDanaImpianTracker(){
+    fun umrahImpressionDanaImpianTracker() {
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = UMRAH_EVENT_PROMO_VIEW
         map[EVENT_CATEGORY] = UMRAH_CATEGORY_HOME_PAGE
@@ -137,14 +138,14 @@ class TrackingUmrahUtil {
         map[EVENT_LABEL] = ""
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 UMRAH_EVENT_PROMO_VIEW, DataLayer.mapOf(
-                PROMOTIONS_LABEL,getListDanaImpian()
+                PROMOTIONS_LABEL, getListDanaImpian()
         )
         )
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun umrahClickDanaImpianTracker(){
+    fun umrahClickDanaImpianTracker() {
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = UMRAH_EVENT_PROMO_CLICK
         map[EVENT_CATEGORY] = UMRAH_CATEGORY_HOME_PAGE
@@ -160,7 +161,7 @@ class TrackingUmrahUtil {
 
     }
 
-    fun umrahClickUmrahSayaTracker(state: String, myUmrahEntity: MyUmrahEntity, position: Int){
+    fun umrahClickUmrahSayaTracker(state: String, myUmrahEntity: MyUmrahEntity, position: Int) {
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = UMRAH_EVENT_PROMO_CLICK
         map[EVENT_CATEGORY] = UMRAH_CATEGORY_HOME_PAGE
@@ -175,7 +176,7 @@ class TrackingUmrahUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun umrahImpressionCategoryTracker(umrahCategories: UmrahCategories, position: Int){
+    fun umrahImpressionCategoryTracker(umrahCategories: UmrahCategories, position: Int) {
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = UMRAH_EVENT_PROMO_VIEW
         map[EVENT_CATEGORY] = UMRAH_CATEGORY_HOME_PAGE
@@ -183,14 +184,14 @@ class TrackingUmrahUtil {
         map[EVENT_LABEL] = ""
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 UMRAH_EVENT_PRODUCT_VIEW, DataLayer.mapOf(
-                PROMOTIONS_LABEL,getListCategoriEntity(umrahCategories, position)
+                PROMOTIONS_LABEL, getListCategoriEntity(umrahCategories, position)
         )
         )
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun umrahClickCategoryTracker(umrahCategories: UmrahCategories, position: Int){
+    fun umrahClickCategoryTracker(umrahCategories: UmrahCategories, position: Int) {
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = UMRAH_EVENT_PROMO_CLICK
         map[EVENT_CATEGORY] = UMRAH_CATEGORY_HOME_PAGE
@@ -205,7 +206,7 @@ class TrackingUmrahUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun umrahImpressionFeaturedCategoryTracker(headerTitle : String, element: UmrahCategoriesFeatured){
+    fun umrahImpressionFeaturedCategoryTracker(headerTitle: String, element: UmrahCategoriesFeatured) {
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = UMRAH_EVENT_PRODUCT_VIEW
         map[EVENT_CATEGORY] = UMRAH_CATEGORY_HOME_PAGE
@@ -219,7 +220,7 @@ class TrackingUmrahUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun umrahClickFeaturedCategoryTracker(headerTitle: String, positionDC : Int, products: Products, position: Int){
+    fun umrahClickFeaturedCategoryTracker(headerTitle: String, positionDC: Int, products: Products, position: Int) {
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = UMRAH_EVENT_PRODUCT_CLICK
         map[EVENT_CATEGORY] = UMRAH_CATEGORY_HOME_PAGE
@@ -243,13 +244,13 @@ class TrackingUmrahUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    private fun getListMyUmrahEntity(myUmrahEntity: MyUmrahEntity, position: Int): List<Any>{
+    private fun getListMyUmrahEntity(myUmrahEntity: MyUmrahEntity, position: Int): List<Any> {
         val list = ArrayList<Map<String, Any>>()
 
         val map = HashMap<String, Any>()
         map[ID] = position
-        map[NAME]  = "$UMRAH_CATEGORY_HOME_PAGE - $WIDGET_MY_UMRAH"
-        map[CREATIVE] = myUmrahEntity.header
+        map[NAME] = "$UMRAH_CATEGORY_HOME_PAGE - $WIDGET_MY_UMRAH"
+        map[CREATIVE] = myUmrahEntity.nextActionText
         map[POSITION] = position
 
         list.add(map)
@@ -258,12 +259,12 @@ class TrackingUmrahUtil {
 
     }
 
-    private fun getListDanaImpian(): List<Any>{
+    private fun getListDanaImpian(): List<Any> {
         val list = ArrayList<Map<String, Any>>()
 
         val map = HashMap<String, Any>()
         map[ID] = POSITION_DEFAULT
-        map[NAME]  = "$UMRAH_CATEGORY_HOME_PAGE - $DREAM_FUND"
+        map[NAME] = "$UMRAH_CATEGORY_HOME_PAGE - $DREAM_FUND"
         map[CREATIVE] = ""
         map[POSITION] = POSITION_DEFAULT
 
@@ -273,13 +274,13 @@ class TrackingUmrahUtil {
 
     }
 
-    private fun getListCategoriEntity(umrahCategories: UmrahCategories, position: Int): List<Any>{
+    private fun getListCategoriEntity(umrahCategories: UmrahCategories, position: Int): List<Any> {
         val list = ArrayList<Map<String, Any>>()
 
         val map = HashMap<String, Any>()
 
         map[ID] = umrahCategories.id
-        map[NAME]  = "$UMRAH_CATEGORY_HOME_PAGE - $KATEGORI"
+        map[NAME] = "$UMRAH_CATEGORY_HOME_PAGE - $KATEGORI"
         map[CREATIVE] = umrahCategories.coverImageURL
         map[POSITION] = position
 
@@ -289,18 +290,113 @@ class TrackingUmrahUtil {
 
     }
 
-    private fun getListCategoryFeaturedImpression(categoryName:String, items: List<Products>):List<Any>{
+    private fun getListCategoryFeaturedImpression(categoryName: String, items: List<Products>): List<Any> {
         val featuredCategories = mutableListOf<Any>()
         for ((index, item) in items.withIndex()) {
             featuredCategories.add(DataLayer.mapOf(
                     ID, item.id,
-                    NAME,item.title ,
+                    NAME, item.title,
                     PRICE, item.originalPrice,
                     CATEGORY, categoryName,
                     POSITION, index
             ))
         }
         return featuredCategories
+    }
+
+    fun getListDetailPilgrimsCheckoutTracker() {
+        val map = mutableMapOf<String, Any?>()
+        map[EVENT] = UMRAH_EVENT_CLICK_UMROH
+        map[EVENT_CATEGORY] = UMRAH_CLICK_CHECKOUT_CATEGORY
+        map[EVENT_ACTION] = UMRAH_CLICK_CHECKOUT_LIST_DETAIL_PILGRIMS
+        map[EVENT_LABEL] = ""
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun getContactCustomerCheckoutTracker() {
+        val map = mutableMapOf<String, Any?>()
+        map[EVENT] = UMRAH_EVENT_CLICK_UMROH
+        map[EVENT_CATEGORY] = UMRAH_CLICK_CHECKOUT_CATEGORY
+        map[EVENT_ACTION] = UMRAH_CLICK_CHECKOUT_CUSTOMER_CONTACT
+        map[EVENT_LABEL] = ""
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun getListPilgrimsCheckoutTracker() {
+        val map = mutableMapOf<String, Any?>()
+        map[EVENT] = UMRAH_EVENT_CLICK_UMROH
+        map[EVENT_CATEGORY] = UMRAH_CLICK_CHECKOUT_CATEGORY
+        map[EVENT_ACTION] = UMRAH_CLICK_CHECKOUT_LIST_PILGRIMS
+        map[EVENT_LABEL] = ""
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun getPaymentTypeCheckoutTracker(paymentType: String) {
+        val map = mutableMapOf<String, Any?>()
+        map[EVENT] = UMRAH_EVENT_CLICK_UMROH
+        map[EVENT_CATEGORY] = UMRAH_CLICK_CHECKOUT_CATEGORY
+        map[EVENT_ACTION] = UMRAH_CLICK_CHECKOUT_PAYMENT_TYPE
+        map[EVENT_LABEL] = paymentType
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun getInstallmentTypeCheckoutTracker(title: String) {
+        val map = mutableMapOf<String, Any?>()
+        map[EVENT] = UMRAH_EVENT_CLICK_UMROH
+        map[EVENT_CATEGORY] = UMRAH_CLICK_CHECKOUT_CATEGORY
+        map[EVENT_ACTION] = UMRAH_CLICK_CHECKOUT_INSTALLMENT_TYPE
+        map[EVENT_LABEL] = title
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun getClickBackCheckoutTracker() {
+        val map = mutableMapOf<String, Any?>()
+        map[EVENT] = UMRAH_EVENT_CLICK_UMROH
+        map[EVENT_CATEGORY] = UMRAH_CLICK_CHECKOUT_CATEGORY
+        map[EVENT_ACTION] = UMRAH_CLICK_BACK
+        map[EVENT_LABEL] = ""
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun getCheckoutTracker(position: Int, product: UmrahProductModel.UmrahProduct, quantity: Int) {
+        val map = mutableMapOf<String, Any?>()
+        map[EVENT] = CHECKOUT
+        map[EVENT_CATEGORY] = UMRAH_CLICK_CHECKOUT_CATEGORY
+        map[EVENT_ACTION] = UMRAH_CLICK_CHECKOUT_CHOOSE_PAYMENT
+        map[EVENT_LABEL] = ""
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(
+                CHECKOUT, DataLayer.mapOf(
+                ACTION_FIELD, DataLayer.mapOf(
+                STEP, position,
+                OPTION, UMRAH_CLICK_CHECKOUT_CHOOSE_PAYMENT),
+                PRODUCTS, getListCheckoutProduct(product,quantity)
+        )
+        )
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun getListCheckoutProduct(product: UmrahProductModel.UmrahProduct, quantity:Int): List<Any> {
+        val list = ArrayList<Map<String, Any>>()
+
+        val map = HashMap<String, Any>()
+        product.apply {
+            map[ID] = id
+            map[NAME] = title
+            map[CREATIVE] = originalPrice
+            map[QUANTITY] = quantity
+        }
+
+        list.add(map)
+
+        return DataLayer.listOf(*list.toTypedArray<Any>())
+
     }
 
 }

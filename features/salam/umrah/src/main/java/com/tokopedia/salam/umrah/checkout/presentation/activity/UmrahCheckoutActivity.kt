@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.checkout.di.DaggerUmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.fragment.UmrahCheckoutFragment
+import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.di.UmrahComponentInstance
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -23,6 +24,9 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
 
     lateinit var userSession: UserSessionInterface
         @Inject set
+
+    @Inject
+    lateinit var trackingUmrahUtil: TrackingUmrahUtil
 
     override fun getNewFragment(): Fragment? = UmrahCheckoutFragment.getInstance(
             intent.getStringExtra(EXTRA_SLUG_NAME),
@@ -61,5 +65,10 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
                 .putExtra(EXTRA_TOTAL_PASSENGER, totalPassenger)
                 .putExtra(EXTRA_DEPART_DATE, departDate)
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        trackingUmrahUtil.getClickBackCheckoutTracker()
     }
 }

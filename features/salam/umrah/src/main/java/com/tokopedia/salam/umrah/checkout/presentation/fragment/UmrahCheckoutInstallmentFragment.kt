@@ -14,15 +14,21 @@ import com.tokopedia.salam.umrah.checkout.data.Schemes
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutInstallmentActivity
 import com.tokopedia.salam.umrah.checkout.presentation.adapter.UmrahCheckoutInstallmentAdapter
+import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.util.CommonParam
 import kotlinx.android.synthetic.main.fragment_umrah_checkout_installment.*
+import javax.inject.Inject
 
-class UmrahCheckoutInstallmentFragment : BaseDaggerFragment(){
+class UmrahCheckoutInstallmentFragment : BaseDaggerFragment(), UmrahCheckoutInstallmentAdapter.UmrahInstallmentListener {
 
     lateinit var schemes : ArrayList<Schemes>
+
+    @Inject
+    lateinit var trackingUmrahUtil: TrackingUmrahUtil
+
     var defaultOptionSchemes = 0
 
-    private val umrahCheckoutInstallmentAdapter by lazy { UmrahCheckoutInstallmentAdapter(context!!) }
+    private val umrahCheckoutInstallmentAdapter by lazy { UmrahCheckoutInstallmentAdapter(context!!, this) }
 
     override fun getScreenName(): String = ""
 
@@ -79,5 +85,9 @@ class UmrahCheckoutInstallmentFragment : BaseDaggerFragment(){
         }
 
 
+    }
+
+    override fun onInstallment(position: Int) {
+        trackingUmrahUtil.getInstallmentTypeCheckoutTracker(schemes.get(position).title)
     }
 }

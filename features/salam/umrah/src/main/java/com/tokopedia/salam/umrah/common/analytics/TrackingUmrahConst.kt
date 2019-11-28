@@ -32,6 +32,16 @@ val UMRAH_IMPRESSION_DREAM_FUND= "impression dana impian umroh"
 val UMRAH_CLICK_DREAM_FUND= "click dana impian umroh"
 
 
+val UMRAH_CLICK_CHECKOUT_CATEGORY = "checkout page umroh"
+val UMRAH_CLICK_CHECKOUT_LIST_DETAIL_PILGRIMS = "click lihat detail daftar jamaah"
+val UMRAH_CLICK_CHECKOUT_CUSTOMER_CONTACT = "click kontak pemesan"
+val UMRAH_CLICK_CHECKOUT_LIST_PILGRIMS = "click lihat daftar jamaah"
+val UMRAH_CLICK_CHECKOUT_PAYMENT_TYPE = "click pilih tipe pembayaran"
+val UMRAH_CLICK_CHECKOUT_INSTALLMENT_TYPE = "click pilih tipe cicilan"
+val UMRAH_CLICK_CHECKOUT_CHOOSE_PAYMENT = "click pilih pembayaran"
+val UMRAH_CLICK_BACK = "click back"
+
+
 val ECOMMERCE_LABEL = "ecommerce"
 val PRODUCTS_LABEL = "products"
 val PROMOTIONS_LABEL = "promotions"
@@ -57,5 +67,9 @@ val PRICE_TRACKING = "_harga:"
 val DEPART_CITY = "_kota keberangkatan:"
 val DREAM_FUND = "dana impian"
 val POSITION_DEFAULT = 1
+val CHECKOUT = "checkout"
+val STEP = "step"
+val OPTION = "option"
+val QUANTITY = "quantity"
 
 

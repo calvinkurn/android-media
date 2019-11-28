@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.item_umrah_checkout_payment_option_radio.v
  * @author by firman on 5/11/19
  */
 
-class UmrahCheckoutInstallmentAdapter (context: Context): RecyclerView.Adapter<UmrahCheckoutInstallmentAdapter.UmrahCheckoutInstallmentViewHolder>(){
+class UmrahCheckoutInstallmentAdapter (context: Context, val umrahInstallmentListener: UmrahInstallmentListener ): RecyclerView.Adapter<UmrahCheckoutInstallmentAdapter.UmrahCheckoutInstallmentViewHolder>(){
 
     private val umrahCheckoutDueDateAdapter by lazy { UmrahCheckoutDueDateAdapter() }
 
@@ -58,6 +58,7 @@ class UmrahCheckoutInstallmentAdapter (context: Context): RecyclerView.Adapter<U
 
                 tv_umrah_checkout_bottom_sheet_payment_option.setText(spannable, TextView.BufferType.SPANNABLE)
                 radio_umrah_checkout_bottom_sheet_payment_option.setOnClickListener {
+                    umrahInstallmentListener.onInstallment(position)
                     lastCheckedPosition = adapterPosition
                     notifyDataSetChanged()
                     if (radio_umrah_checkout_bottom_sheet_payment_option.isChecked)
@@ -92,5 +93,9 @@ class UmrahCheckoutInstallmentAdapter (context: Context): RecyclerView.Adapter<U
     fun setList(list: List<Schemes>){
         listBottomSheet = list
         notifyDataSetChanged()
+    }
+
+    interface UmrahInstallmentListener {
+        fun onInstallment(position: Int)
     }
 }

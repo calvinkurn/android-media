@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -40,6 +39,7 @@ import com.tokopedia.salam.umrah.checkout.presentation.adapter.*
 import com.tokopedia.salam.umrah.checkout.presentation.adapter.viewholder.UmrahPilgrimsEmptyViewHolder
 import com.tokopedia.salam.umrah.checkout.presentation.adapter.viewholder.UmrahPilgrimsFilledViewHolder
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutViewModel
+import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.data.*
 import com.tokopedia.salam.umrah.common.util.CommonParam
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
@@ -75,18 +75,21 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
     @Inject
     lateinit var umrahCheckoutViewModel: UmrahCheckoutViewModel
 
+    @Inject
+    lateinit var trackingUmrahUtil: TrackingUmrahUtil
+
     lateinit var progressDialog: ProgressDialog
     lateinit var slugName: String
     lateinit var variantId: String
     lateinit var departDate: String
 
-    val idTermCondition = "TNC_CHECKOUT"
+    private val idTermCondition = "TNC_CHECKOUT"
     val REQUEST_FILTER_PILGRIMS = 0x10
     val REQUEST_FILTER_PAYMENT = 0x11
 
-    var pilgrimCount = 0
-    var price = 0
-    var totalPrice = 0
+    private var pilgrimCount = 0
+    private var price = 0
+    private var totalPrice = 0
 
 
     private val umrahCheckoutPilgrimsListAdapter by lazy { UmrahCheckoutPilgrimsListAdapter(this, this) }
@@ -183,6 +186,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         hideLoadingBar()
 
         data.apply {
+
             productModel = checkoutPDP
             renderHeader(checkoutPDP)
             userData = user
@@ -202,11 +206,13 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
         tg_umrah_checkout_order_description_pilgrims.makeLinks(
                 Pair(getString(R.string.umrah_checkout_order_description_pilgrims_click), View.OnClickListener {
+                    trackingUmrahUtil.getListDetailPilgrimsCheckoutTracker()
                     val mandatoryDocuments = mappingMandatoryDocument()
                     showMandatoryDocument(context!!, mandatoryDocuments)
                 })
         )
         container_widget_umrah_checkout_rect.setOnClickListener {
+            trackingUmrahUtil.getContactCustomerCheckoutTracker()
             showBottonSheetCheckout(data.user)
         }
 
@@ -233,6 +239,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         progressDialog.show()
 
         if(validateData()){
+            trackingUmrahUtil.getCheckoutTracker(DEFAULT_OPTION_CHECKOUT_STEP, productModel,pilgrimCount)
             val checkoutResultParams = UmrahCheckoutResultParams(
                     metaData = mapToCheckoutMetaData()
             )
@@ -251,9 +258,9 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     private fun validateData(): Boolean{
         var isValid = false
-        if (cb_umrah_checkout.isChecked && userData.id.isNotEmpty() && userData.email.isNotEmpty() &&
+        if (cb_umrah_checkout.isChecked && userData.id.isNotEmpty() && userData.name.isNotEmpty() && userData.email.isNotEmpty() &&
                 userData.phoneNumber.isNotEmpty() && productModel.id.isNotEmpty() && price>0 && variantId.isNotEmpty() &&
-                mapPilgrimstoMetaData().isNotEmpty())
+                pilgrimsValidation())
             isValid = true
 
         return isValid
@@ -279,19 +286,30 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         return convertToJsonMetaData(mappedCheckoutMetaData)
     }
 
+    private fun pilgrimsValidation():Boolean{
+        var isValid = false
+        if(listDataPilgrims.isNotEmpty()){
+            for(i in 0 until listDataPilgrims.size){
+                isValid = (listDataPilgrims[i].firstName.isNotEmpty() && listDataPilgrims[i].lastName.isNotEmpty()
+                        && listDataPilgrims[i].dateBirth.isNotEmpty() && listDataPilgrims[i].title.isNotEmpty())
+            }
+        }
+        return isValid
+    }
+
     private fun convertToJsonMetaData(umrahCheckoutMetaDataParams: UmrahCheckoutMetaDataParams): String{
         val gson = Gson()
         return gson.toJson(umrahCheckoutMetaDataParams)
     }
 
     private fun mapPilgrimstoMetaData():List<Pilgrims>{
-       return listDataPilgrims.map {
-           with(it){
-               return@map Pilgrims(
-                       title,firstName,lastName,dateBirth
-               )
-           }
-       }
+        return listDataPilgrims.map {
+            with(it){
+                return@map Pilgrims(
+                        title,firstName,lastName,dateBirth
+                )
+            }
+        }
     }
 
     private fun renderHeader(data: UmrahProductModel.UmrahProduct) {
@@ -319,6 +337,9 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     private fun renderFooter(price:Int){
         tg_umrah_total_price.text = getRupiahFormat(price)
+        cb_umrah_checkout.setOnCheckedChangeListener { _ , _ ->
+            renderButtonCheckout()
+        }
     }
 
     private fun renderButtonCheckout(){
@@ -455,6 +476,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         }
 
         rb_umrah_checkout_down_payment.setOnClickListener {
+            trackingUmrahUtil.getPaymentTypeCheckoutTracker(CHECKOUT_INSTALLMENT)
             if (rb_umrah_checkout_down_payment.isChecked) {
                 rb_umrah_checkout_full_paid.isChecked = false
                 rb_umrah_checkout_down_payment.isChecked = true
@@ -463,6 +485,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         }
 
         rb_umrah_checkout_full_paid.setOnClickListener {
+            trackingUmrahUtil.getPaymentTypeCheckoutTracker(CHECKOUT_FULL_PAID)
             if (rb_umrah_checkout_down_payment.isChecked) {
                 rb_umrah_checkout_full_paid.isChecked = true
                 rb_umrah_checkout_down_payment.isChecked = false
@@ -476,7 +499,6 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(context).apply {
             setCustomContentView(inflatingViewCheckout(context, R.layout.bottom_sheet_umrah_checkout_contact, user, this), "", false)
             img_umrah_checkout_bottom_sheet_closed.setOnClickListener { dismiss() }
-
         }
         bottomSheet.show()
     }
@@ -529,6 +551,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     email = et_umrah_checkout_bottom_sheet_contact_email.text.toString()
                     phoneNumber = et_umrah_checkout_bottom_sheet_contact_phone.text.toString()
                 }
+                renderButtonCheckout()
                 bottomSheetDialog.dismiss()
             }
         }
@@ -588,6 +611,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
     }
 
     override fun onPilgrimsClick(position: Int) {
+        trackingUmrahUtil.getListPilgrimsCheckoutTracker()
         startActivityForResult(UmrahCheckoutPilgrimsActivity.createIntent(context!!, listDataPilgrims.get(position))
                 , REQUEST_FILTER_PILGRIMS)
     }
@@ -631,6 +655,9 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         const val DEFAULT_OPTION_INSTALLMENT_PAYMENT = 1
         const val EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA"
         const val REQUEST_CODE_CHECKOUT = 105
+        const val CHECKOUT_FULL_PAID = "Bayar Penuh"
+        const val CHECKOUT_INSTALLMENT = "Uang Muka"
+        const val DEFAULT_OPTION_CHECKOUT_STEP = 1
 
 
         var optionSchemes = 0

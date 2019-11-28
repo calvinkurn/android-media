@@ -14,16 +14,20 @@ import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutPilgrims
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutPilgrimsActivity
+import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.util.CommonParam
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDateGregorianID
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDateGregorian
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDay
 import kotlinx.android.synthetic.main.fragment_umrah_checkout_pilgrims.*
 import java.util.*
-
+import javax.inject.Inject
 
 
 class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment(){
+
+    @Inject
+    lateinit var trackingUmrahUtil: TrackingUmrahUtil
 
     lateinit var pilgrimsData : UmrahCheckoutPilgrims
     var dateBirth = ""
