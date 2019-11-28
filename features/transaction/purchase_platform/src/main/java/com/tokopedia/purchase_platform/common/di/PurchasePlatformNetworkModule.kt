@@ -112,7 +112,7 @@ class PurchasePlatformNetworkModule {
                     chain.proceed(newRequest.build())
                 }
                 .addInterceptor(cartApiInterceptor)
-        if (remoteConfig.getBoolean("akamai", true)) {
+        if (remoteConfig.getBoolean("android_akamai_cart_enable", false)) {
             builder.addInterceptor(AkamaiBotInterceptor())
         }
         if (GlobalConfig.isAllowDebuggingTools()) {
