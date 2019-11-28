@@ -324,7 +324,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        delayScrollToFirstShopSubscription.unsubscribe();
+        if (delayScrollToFirstShopSubscription != null) {
+            delayScrollToFirstShopSubscription.unsubscribe();
+        }
         shipmentPresenter.detachView();
     }
 
