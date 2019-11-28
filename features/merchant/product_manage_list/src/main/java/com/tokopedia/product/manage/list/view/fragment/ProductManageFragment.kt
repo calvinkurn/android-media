@@ -748,8 +748,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 onSetCashbackClicked(productManageViewModel)
             } else if (itemId == R.id.set_promo_ads_product_menu) {
                 onPromoTopAdsClicked(productManageViewModel)
+            } else if (itemId == R.id.set_featured_product) {
+                onSetFeaturedProductClicked()
             }
         }
+    }
+
+    private fun onSetFeaturedProductClicked() {
+
     }
 
     private fun onPromoTopAdsClicked(productManageViewModel: ProductManageViewModel) {
