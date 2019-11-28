@@ -1337,6 +1337,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE)
     }
 
+    override fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+        //Not used
+    }
+
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.TAG)
