@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -37,6 +36,8 @@ import com.tokopedia.navigation.presentation.adapter.viewholder.transaction.Noti
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationTransactionComponent
 import com.tokopedia.navigation.presentation.view.listener.NotificationTransactionItemListener
 import com.tokopedia.navigation.presentation.viewmodel.NotificationTransactionViewModel
+import com.tokopedia.navigation.util.viewModelProvider
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
 
@@ -47,9 +48,9 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var analytics: NotificationTransactionAnalytics
+    @Inject lateinit var userSession: UserSessionInterface
 
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(NotificationTransactionViewModel::class.java) }
+    private lateinit var viewModel: NotificationTransactionViewModel
 
     private val _adapter by lazy { adapter as NotificationTransactionAdapter }
     private lateinit var longerTextDialog: BottomSheetDialogFragment
@@ -58,18 +59,18 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     private var cursor = ""
 
     /*
-    * last item of recyclerview;
+    * last item of recyclerView;
     * for tracking purpose*/
     private var lastListItem = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = viewModelProvider(viewModelFactory)
         return inflater.inflate(R.layout.fragment_notification_transaction, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onListLastScroll(view)
-
         viewModel.errorMessage.observe(this, onViewError())
         viewModel.infoNotification.observe(this, Observer {
             if (NotificationMapper.isHasShop(it)) {
@@ -131,14 +132,12 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     override fun loadData(page: Int) {
-        //first data and mandatory menu is buyer on first item
-        _adapter.clearAllElements()
         renderList(buyerMenu(), false)
         viewModel.getInfoStatusNotification()
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view).layoutManager) {
+        return object : EndlessRecyclerViewScrollListener(super.getRecyclerView(view).layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 getNotification(page.toString())
@@ -209,7 +208,8 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         return NotificationTransactionFactoryImpl(
                 notificationUpdateListener = this,
                 notificationFilterListener = this,
-                transactionMenuListener = this)
+                transactionMenuListener = this,
+                userSession = userSession)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
