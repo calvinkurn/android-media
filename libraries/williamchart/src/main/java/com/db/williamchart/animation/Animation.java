@@ -380,21 +380,23 @@ public class Animation {
 		// Update next values to be drawn
 		float[] posUpdate = new float[2];
 		float timeNormalized;
-		for (int i = 0; i < nSets; i++)
+		try{
+			for (int i = 0; i < nSets; i++)
 
-			for (int j = 0; j < nEntries; j++) {
+				for (int j = 0; j < nEntries; j++) {
 
-				timeNormalized = normalizeTime(j);
+					timeNormalized = normalizeTime(j);
 
-				if (mAlphaSpeed != -1 && mEasing.getState() != BaseEasingMethod.UPDATE) // Set alpha
-					data.get(i).setAlpha(mEasing.next(timeNormalized) * mAlphaSpeed * mSetsAlpha[i]);
+					if (mAlphaSpeed != -1 && mEasing.getState() != BaseEasingMethod.UPDATE) // Set alpha
+						data.get(i).setAlpha(mEasing.next(timeNormalized) * mAlphaSpeed * mSetsAlpha[i]);
 
-				if (!getEntryUpdate(i, j, timeNormalized, posUpdate)) {
-					posUpdate[0] = data.get(i).getEntry(j).getX();
-					posUpdate[1] = data.get(i).getEntry(j).getY();
+					if (!getEntryUpdate(i, j, timeNormalized, posUpdate)) {
+						posUpdate[0] = data.get(i).getEntry(j).getX();
+						posUpdate[1] = data.get(i).getEntry(j).getY();
+					}
+					data.get(i).getEntry(j).setCoordinates(posUpdate[0], posUpdate[1]);
 				}
-				data.get(i).getEntry(j).setCoordinates(posUpdate[0], posUpdate[1]);
-			}
+		}catch (Exception e){}
 
 		// Sets the next update or finishes the animation
 		if (mCurrentGlobalDuration < mGlobalDuration && !mCancelled) {
@@ -419,11 +421,7 @@ public class Animation {
 	 * @return value from 0 to 1 telling the next step.
 	 */
 	private float normalizeTime(int index) {
-		try{
-			return (float) mCurrentDuration[index] / mDuration;
-		}catch (Exception e){
-			return 1;
-		}
+		return (float) mCurrentDuration[index] / mDuration;
 	}
 
 
@@ -446,9 +444,8 @@ public class Animation {
 	 * @return x display value where point will be drawn
 	 */
 	private boolean getEntryUpdate(int i, int j, float normalizedTime, float[] pos) {
-
 		return mPathMeasures[i][j].getPosTan(
-				  mPathMeasures[i][j].getLength() * mEasing.next(normalizedTime), pos, null);
+				mPathMeasures[i][j].getLength() * mEasing.next(normalizedTime), pos, null);
 	}
 
 
