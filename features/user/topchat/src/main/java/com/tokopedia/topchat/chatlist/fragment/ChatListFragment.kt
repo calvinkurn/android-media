@@ -51,6 +51,7 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
+import com.tokopedia.topchat.chatlist.widget.FilterMenu
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
@@ -90,6 +91,8 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
+
+    private var filterMenu = FilterMenu()
 
     private lateinit var broadCastButton: FloatingActionButton
 
@@ -366,18 +369,17 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 else itemMenus.add(Menus.ItemMenus(title, false))
             }
 
-            Menus(it, R.style.BottomFilterDialogTheme).apply {
-                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                setTitle(getString(R.string.label_filter))
-                itemMenuList = itemMenus
-                setOnItemMenuClickListener { menus, pos ->
-                    chatListAnalytics.eventClickListFilterChat(menus.title.toLowerCase())
-                    filterChecked = pos - 1
+            val title = getString(R.string.label_filter)
+            filterMenu.apply {
+                setTitle(title)
+                setItemMenuList(itemMenus)
+                setOnItemMenuClickListener { menu, pos ->
+                    chatListAnalytics.eventClickListFilterChat(menu.title.toLowerCase())
+                    filterChecked = pos
                     loadInitialData()
                     dismiss()
                 }
-                show()
-            }
+            }.show(childFragmentManager, FilterMenu.TAG)
         }
     }
 
