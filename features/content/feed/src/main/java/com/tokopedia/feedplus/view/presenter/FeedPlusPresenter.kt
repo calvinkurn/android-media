@@ -371,7 +371,7 @@ internal constructor(private val context: Context,
         getDynamicFeedFirstPageUseCase.execute(
                 GetDynamicFeedFirstPageUseCase.createRequestParams(
                         userId, "",
-                        GetDynamicFeedUseCase.SOURCE_FEEDS, firstPageCursor,
+                        GetDynamicFeedUseCase.FeedV2Source.Feeds, firstPageCursor,
                         userSession.isLoggedIn),
                 object : Subscriber<DynamicFeedFirstPageDomainModel>() {
                     override fun onCompleted() {
@@ -434,7 +434,7 @@ internal constructor(private val context: Context,
                 GetDynamicFeedUseCase.createRequestParams(
                         userId,
                         currentCursor,
-                        GetDynamicFeedUseCase.SOURCE_FEEDS),
+                        GetDynamicFeedUseCase.FeedV2Source.Feeds),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onCompleted() {
 
