@@ -291,7 +291,8 @@ public class FeedPlusPresenter
         getDynamicFeedFirstPageUseCase.execute(
                 GetDynamicFeedFirstPageUseCase.Companion.createRequestParams(
                         getUserId(), "",
-                        GetDynamicFeedUseCase.SOURCE_FEEDS, firstPageCursor,
+                        GetDynamicFeedUseCase.FeedV2Source.Feeds,
+                        firstPageCursor,
                         userSession.isLoggedIn()),
                 new Subscriber<DynamicFeedFirstPageDomainModel>() {
                     @Override
@@ -370,7 +371,8 @@ public class FeedPlusPresenter
                 GetDynamicFeedUseCase.Companion.createRequestParams(
                         getUserId(),
                         currentCursor,
-                        GetDynamicFeedUseCase.SOURCE_FEEDS),
+                        GetDynamicFeedUseCase.FeedV2Source.Feeds
+                ),
                 new Subscriber<DynamicFeedDomainModel>() {
                     @Override
                     public void onCompleted() {

@@ -100,6 +100,8 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
         for (FlightCancellationViewModel item : getView().getSelectedCancellationViewModel()) {
             if (item.getPassengerViewModelList().contains(passengerViewModel)) {
                 return true;
+            } else if (passengerViewModel.getStatusString() != null && passengerViewModel.getStatusString().length() > 0) {
+                return true;
             }
         }
         return false;

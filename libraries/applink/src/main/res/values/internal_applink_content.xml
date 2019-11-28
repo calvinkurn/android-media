@@ -15,4 +15,11 @@
     <string name="path_profile_detail" translatable="false">/.*\</string>
 
     <string name="applink_title_profile">Profile</string>
+    <string name="applink_title_affiliate">Affiliate</string>
+
+    <string name="host_affiliate" translatable="false">affiliate</string>
+    <string name="path_af_dashboard" translatable="false">/dashboard</string>
+    <string name="path_af_education" translatable="false">/education</string>
+    <string name="path_af_explore" translatable="false">/explore</string>
+
 </resources>
