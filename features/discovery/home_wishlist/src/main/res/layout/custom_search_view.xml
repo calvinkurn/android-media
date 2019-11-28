@@ -29,7 +29,7 @@
         android:background="@null"
         android:ellipsize="end"
         android:gravity="center_vertical"
-        android:hint="@string/wishlist_search_product"
+        android:hint="@string/wishlist_hint_search"
         android:imeOptions="actionSearch"
         android:inputType="text"
         android:maxLines="1"

@@ -36,6 +36,7 @@ import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDat
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
+import com.tokopedia.home_wishlist.util.GravitySnapHelper
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
 import com.tokopedia.home_wishlist.view.custom.CustomAppBarLayoutBehavior
@@ -156,8 +157,8 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         super.onViewCreated(view, savedInstanceState)
         initView()
         hideSearchView()
-        viewModel.getWishlistData(shouldShowInitialPage = true)
         observeData()
+        viewModel.getWishlistData(shouldShowInitialPage = true)
     }
 
     override fun onPause() {
@@ -259,6 +260,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private fun initRecyclerView(){
         recyclerView?.layoutManager = staggeredGridLayoutManager
         recyclerView?.adapter = adapter
+        GravitySnapHelper(Gravity.TOP, true).attachToRecyclerView(recyclerView)
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -272,6 +274,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         observeBulkModeState()
         observeWishlistState()
         observeAction()
+        updateBottomMargin()
     }
 
     private fun observeWishlistState() {
@@ -299,7 +302,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             }
             recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
 
-            menu?.findItem(R.id.manage)?.isVisible = !state.isEmpty() && !state.isLoading()
+            menu?.findItem(R.id.manage)?.isVisible = state.isSuccess()
         })
 
 

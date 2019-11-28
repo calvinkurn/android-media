@@ -4,6 +4,7 @@
     <item
         android:id="@+id/manage"
         android:title="@string/label_manage"
+        android:visible="false"
         app:showAsAction="always" />
     <item
         android:id="@+id/cancel"

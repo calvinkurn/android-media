@@ -4,6 +4,7 @@
         <activity
             android:name=".WishlistActivity"
             android:label="@string/wishlist"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
