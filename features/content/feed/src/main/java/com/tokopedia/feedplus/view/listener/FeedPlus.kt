@@ -49,6 +49,16 @@ interface FeedPlus {
 
         fun onErrorGetFeedFirstPage(errorMessage: String)
 
+        fun onErrorFollowKol(errorMessage: String, id: Int, status: Int, rowNumber: Int)
+
+        fun onSuccessFollowUnfollowKol(rowNumber: Int)
+
+        fun onErrorLikeDislikeKolPost(errorMessage: String)
+
+        fun onSuccessLikeDislikeKolPost(rowNumber: Int)
+
+        fun onSuccessFollowKolFromRecommendation(rowNumber: Int, position: Int, isFollow: Boolean)
+
         fun onSearchShopButtonClicked()
 
         fun showSnackbar(s: String)
@@ -121,19 +131,19 @@ interface FeedPlus {
 
         fun setCursor(cursor: String)
 
-        fun followKol(id: Int, rowNumber: Int, kolListener: View.Kol)
+        fun followKol(id: Int, rowNumber: Int)
 
-        fun unfollowKol(id: Int, rowNumber: Int, kolListener: View.Kol)
+        fun unfollowKol(id: Int, rowNumber: Int)
 
-        fun likeKol(id: Int, rowNumber: Int, kolListener: View.Kol)
+        fun likeKol(id: Int, rowNumber: Int)
 
-        fun unlikeKol(id: Int, rowNumber: Int, kolListener: View.Kol)
+        fun unlikeKol(id: Int, rowNumber: Int)
 
         fun sendVote(rowNumber: Int, pollId: String, optionId: String)
 
-        fun followKolFromRecommendation(id: Int, rowNumber: Int, position: Int, kolListener: View.Kol)
+        fun followKolFromRecommendation(id: Int, rowNumber: Int, position: Int)
 
-        fun unfollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int, kolListener: View.Kol)
+        fun unfollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int)
 
         fun toggleFavoriteShop(rowNumber: Int, shopId: String)
 

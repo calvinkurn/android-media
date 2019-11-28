@@ -261,14 +261,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun initInjector() {
-        if (activity != null && activity!!.application != null) {
-            DaggerFeedPlusComponent.builder()
-                    .baseAppComponent(
-                            (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                    )
-                    .build()
-                    .inject(this)
-        }
+        DaggerFeedPlusComponent.builder()
+                .baseAppComponent(
+                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                )
+                .build()
+                .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -782,7 +780,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
-            presenter.followKol(id, rowNumber, this)
+            presenter.followKol(id, rowNumber)
         } else {
             onGoToLogin()
         }
@@ -790,7 +788,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
-            presenter.unfollowKol(id, rowNumber, this)
+            presenter.unfollowKol(id, rowNumber)
         } else {
             onGoToLogin()
         }
@@ -800,7 +798,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                   activityType: String) {
         if (userSession.isLoggedIn) {
-            presenter.likeKol(id, rowNumber, this)
+            presenter.likeKol(id, rowNumber)
             trackCardPostElementClick(rowNumber, FeedAnalytics.Element.LIKE)
         } else {
             onGoToLogin()
@@ -810,7 +808,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                     activityType: String) {
         if (userSession.isLoggedIn) {
-            presenter.unlikeKol(id, rowNumber, this)
+            presenter.unlikeKol(id, rowNumber)
             trackCardPostElementClick(rowNumber, FeedAnalytics.Element.UNLIKE)
         } else {
             onGoToLogin()
@@ -876,6 +874,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         presenter.sendVote(rowNumber, pollId, optionId)
     }
 
+    override fun onSuccessFollowKolFromRecommendation(rowNumber: Int, position: Int, isFollow: Boolean) {
+        if (adapter.getlist()[rowNumber] is FeedRecommendationViewModel) {
+            val (_, cards) = adapter.getlist()[rowNumber] as FeedRecommendationViewModel
+            cards[position].cta.isFollow = isFollow
+            adapter.notifyItemChanged(rowNumber, position)
+        }
+    }
+
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
         if (rowNumber != DEFAULT_VALUE
                 && adapter.getlist().size > rowNumber
@@ -890,6 +896,54 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             comment.value = comment.value + totalNewComment
             adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_COMMENT)
+        }
+    }
+
+    override fun onErrorFollowKol(errorMessage: String, id: Int, status: Int, rowNumber: Int) {
+        Toaster.make(view!!, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+            if (status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
+                presenter.unfollowKol(id, rowNumber)
+            else
+                presenter.followKol(id, rowNumber )
+        })
+    }
+
+    override fun onSuccessFollowUnfollowKol(rowNumber: Int) {
+        if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
+            val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+            header.followCta.isFollow = !header.followCta.isFollow
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
+        }
+    }
+
+    override fun onErrorLikeDislikeKolPost(errorMessage: String) {
+        Toaster.make(view!!, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+
+    }
+
+    override fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
+        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
+            val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+            val like = footer.like
+            like.isChecked = !like.isChecked
+            if (like.isChecked) {
+                try {
+                    val likeValue = Integer.valueOf(like.fmt) + 1
+                    like.fmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                like.value = like.value + 1
+            } else {
+                try {
+                    val likeValue = Integer.valueOf(like.fmt) - 1
+                    like.fmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                like.value = like.value - 1
+            }
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE)
         }
     }
 
@@ -1037,7 +1091,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 ) { v -> presenter.toggleFavoriteShop(rowNumber, adapterPosition, shopId) }
                 .show()
     }
-    
+
     override fun sendMoEngageOpenFeedEvent() {
         val isEmptyFeed = !hasFeed()
         val value = DataLayer.mapOf(
@@ -1093,9 +1147,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val userIdInt = id.toIntOrZero()
 
             if (isFollow) {
-                presenter.unfollowKolFromRecommendation(userIdInt, positionInFeed, adapterPosition, this)
+                presenter.unfollowKolFromRecommendation(userIdInt, positionInFeed, adapterPosition)
             } else {
-                presenter.followKolFromRecommendation(userIdInt, positionInFeed, adapterPosition, this)
+                presenter.followKolFromRecommendation(userIdInt, positionInFeed, adapterPosition)
             }
 
         } else if (type == FollowCta.AUTHOR_SHOP) {
