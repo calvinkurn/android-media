@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
 import android.app.Activity
-import com.google.android.gms.common.Feature
 import com.tokopedia.abstraction.R
+import com.tokopedia.abstraction.common.utils.TKPDMapParam
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.ResponseErrorException
@@ -14,8 +14,11 @@ import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProd
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
+import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.*
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -28,14 +31,8 @@ import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
-import rx.Scheduler
 import rx.Subscriber
-import rx.android.plugins.RxAndroidPlugins
-import rx.android.plugins.RxAndroidSchedulersHook
-import rx.plugins.RxJavaHooks
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
-import javax.annotation.meta.When
 
 class CartListPresenterTest : Spek({
 
@@ -61,18 +58,9 @@ class CartListPresenterTest : Spek({
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
-        override fun getMainThreadScheduler(): Scheduler {
-            return Schedulers.trampoline()
-        }
-    })
-
-    RxJavaHooks.setOnIOScheduler { Schedulers.trampoline() }
-
     Feature("get cart list") {
 
         val cartListPresenter by memoized {
-            println("new")
             CartListPresenter(
                     getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
                     checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase,
@@ -88,51 +76,42 @@ class CartListPresenterTest : Spek({
         Scenario("initial load") {
 
             Given("empty response") {
-                println("given 2")
-                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
+                every { getCartListSimplifiedUseCase.createObservable() } returns Observable.just(emptyCartListData)
             }
 
             Given("attach view") {
-                println("given 2-2")
                 cartListPresenter.attachView(view)
             }
 
             When("process initial get cart data") {
-                println("do 2")
                 cartListPresenter.processInitialGetCartData("", true, false)
             }
 
-            Then("check") {
-                println("check 2")
+            Then("should render success") {
                 verifyOrder {
                     view.renderLoadGetCartData()
                     view.renderLoadGetCartDataFinish()
                     view.renderInitialGetCartListDataSuccess(emptyCartListData)
                     view.stopCartPerformanceTrace()
                 }
-                confirmVerified(view)
             }
         }
 
         Scenario("refresh load") {
 
             Given("empty response") {
-                println("given 3")
-                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
+                every { getCartListSimplifiedUseCase.createObservable() } returns Observable.just(emptyCartListData)
             }
 
             Given("attach view") {
-                println("given 3-2")
                 cartListPresenter.attachView(view)
             }
 
             When("process initial get cart data") {
-                println("do 3")
                 cartListPresenter.processInitialGetCartData("", false, false)
             }
 
-            Then("check") {
-                println("check 3")
+            Then("should render success") {
                 verifyOrder {
                     view.showProgressLoading()
                     view.hideProgressLoading()
@@ -140,7 +119,6 @@ class CartListPresenterTest : Spek({
                     view.renderInitialGetCartListDataSuccess(emptyCartListData)
                     view.stopCartPerformanceTrace()
                 }
-                confirmVerified(view)
             }
         }
 
@@ -150,8 +128,7 @@ class CartListPresenterTest : Spek({
             val errorMessage = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
 
             Given("throw error") {
-                println("given 1")
-                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(ResponseErrorException("testing"))
+                every { getCartListSimplifiedUseCase.createObservable() } returns Observable.error(ResponseErrorException("testing"))
                 every { getRecentViewUseCase.createObservable(any(), any()) } answers {
                     Observable.just(GraphqlResponse(
                             mapOf(GqlRecentViewResponse::class.java to GqlRecentViewResponse()), emptyMap(), false))
@@ -160,19 +137,16 @@ class CartListPresenterTest : Spek({
             }
 
             Given("attach view") {
-                println("given 1-2")
                 every { view.activity } returns context
                 every { context.getString(R.string.default_request_error_internal_server) } returns errorMessage
                 cartListPresenter.attachView(view)
             }
 
             When("process initial get cart data") {
-                println("do 1")
                 cartListPresenter.processInitialGetCartData("", true, true)
             }
 
-            Then("check") {
-                println("check 1")
+            Then("should render error") {
                 verifyOrder {
                     view.renderLoadGetCartData()
                     view.renderLoadGetCartDataFinish()
@@ -181,6 +155,394 @@ class CartListPresenterTest : Spek({
                     view.stopCartPerformanceTrace()
                 }
                 confirmVerified(view)
+            }
+        }
+    }
+
+    Feature("update and reload cart list") {
+
+        val cartListPresenter by memoized {
+            CartListPresenter(
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase,
+                    compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
+                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
+                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
+                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase
+            )
+        }
+
+        Scenario("success update and reload empty") {
+
+            val emptyCartListData = UpdateAndRefreshCartListData()
+
+            Given("empty data") {
+                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+                every { view.allAvailableCartDataList } returns arrayListOf()
+                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
+            }
+
+            When("update and reload cart") {
+                cartListPresenter.processToUpdateAndReloadCartData()
+            }
+
+            Then("should hide loading") {
+                verifyOrder {
+                    view.allAvailableCartDataList
+                    val tkpdMapParam = TKPDMapParam<String, String>()
+                    tkpdMapParam["carts"] = "[]"
+                    view.getGeneratedAuthParamNetwork(tkpdMapParam)
+                    view.hideProgressLoading()
+                }
+            }
+        }
+
+        Scenario("success update and reload") {
+
+            val cartListData = UpdateAndRefreshCartListData()
+
+            Given("cart data") {
+                cartListData.cartListData = CartListData()
+                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(cartListData)
+            }
+
+            Given("attach view") {
+                val cartItemData = CartItemData()
+                val updatedData = CartItemData.UpdatedData()
+                cartItemData.originData = CartItemData.OriginData()
+                updatedData.remark = ""
+                cartItemData.updatedData = updatedData
+
+                cartListPresenter.attachView(view)
+                every { view.allAvailableCartDataList } returns arrayListOf(cartItemData)
+                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
+            }
+
+            When("update and reload cart") {
+                cartListPresenter.processToUpdateAndReloadCartData()
+            }
+
+            Then("should render success") {
+                verifyOrder {
+                    view.allAvailableCartDataList
+                    val tkpdMapParam = TKPDMapParam<String, String>()
+                    tkpdMapParam["carts"] = "[{\"cart_id\":0,\"quantity\":0,\"notes\":\"\"}]"
+                    view.getGeneratedAuthParamNetwork(tkpdMapParam)
+                    view.hideProgressLoading()
+                    view.renderLoadGetCartDataFinish()
+                    view.renderInitialGetCartListDataSuccess(cartListData.cartListData)
+                }
+            }
+        }
+    }
+
+    Feature("delete cart item") {
+
+        val cartListPresenter by memoized {
+            CartListPresenter(
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase,
+                    compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
+                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
+                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
+                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase
+            )
+        }
+
+        Scenario("remove all cart data") {
+
+            val emptyCartListData = CartListData()
+
+            Given("success delete") {
+                val deleteAndRefreshCartListData = DeleteAndRefreshCartListData()
+                deleteAndRefreshCartListData.deleteCartData = DeleteCartData.Builder().success(true).build()
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteAndRefreshCartListData)
+            }
+
+            Given("empty cart list data") {
+                every { getCartListSimplifiedUseCase.createObservable() } returns Observable.just(emptyCartListData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
+            }
+
+            When("process delete cart item") {
+                val cartItemData = CartItemData()
+                cartItemData.originData = CartItemData.OriginData()
+                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
+            }
+
+            Then("should success delete and render success") {
+                verifyOrder {
+                    view.showProgressLoading()
+                    val tkpdMapParam = TKPDMapParam<String, String>()
+                    tkpdMapParam["params"] = "{\"cart_ids\":[0],\"add_wishlist\":0}"
+                    view.getGeneratedAuthParamNetwork(tkpdMapParam)
+                    view.hideProgressLoading()
+                    view.renderLoadGetCartDataFinish()
+                    view.cartId
+                    view.showProgressLoading()
+                    view.hideProgressLoading()
+                    view.renderLoadGetCartDataFinish()
+                    view.renderInitialGetCartListDataSuccess(emptyCartListData)
+                    view.stopCartPerformanceTrace()
+                }
+            }
+        }
+
+        Scenario("remove some cart data") {
+
+            Given("success delete") {
+                val deleteAndRefreshCartListData = DeleteAndRefreshCartListData()
+                deleteAndRefreshCartListData.deleteCartData = DeleteCartData.Builder().success(true).build()
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteAndRefreshCartListData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
+            }
+
+            When("process delete cart item") {
+                val firstCartItemData = CartItemData()
+                firstCartItemData.originData = CartItemData.OriginData()
+                val secondCartItemData = CartItemData()
+                secondCartItemData.originData = CartItemData.OriginData()
+                secondCartItemData.originData.cartId = 1
+
+                cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
+                        arrayListOf(firstCartItemData), arrayListOf(), false, false)
+            }
+
+            Then("should success delete") {
+                verifyOrder {
+                    view.showProgressLoading()
+                    val tkpdMapParam = TKPDMapParam<String, String>()
+                    tkpdMapParam["params"] = "{\"cart_ids\":[0],\"add_wishlist\":0}"
+                    view.getGeneratedAuthParamNetwork(tkpdMapParam)
+                    view.hideProgressLoading()
+                    view.renderLoadGetCartDataFinish()
+                    view.onDeleteCartDataSuccess(arrayListOf(0))
+                }
+            }
+        }
+
+        Scenario("fail remove cart data") {
+
+            val errorMessage = "fail testing delete"
+
+            Given("fail delete") {
+                val deleteAndRefreshCartListData = DeleteAndRefreshCartListData()
+                deleteAndRefreshCartListData.deleteCartData = DeleteCartData.Builder().success(false).message(errorMessage).build()
+                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteAndRefreshCartListData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+                every { view.getGeneratedAuthParamNetwork(any()) } answers {value}
+            }
+
+            When("process delete cart item") {
+                val cartItemData = CartItemData()
+                cartItemData.originData = CartItemData.OriginData()
+                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
+            }
+
+            Then("should show error message") {
+                verifyOrder {
+                    view.showProgressLoading()
+                    val tkpdMapParam = TKPDMapParam<String, String>()
+                    tkpdMapParam["params"] = "{\"cart_ids\":[0],\"add_wishlist\":0}"
+                    view.getGeneratedAuthParamNetwork(tkpdMapParam)
+                    view.hideProgressLoading()
+                    view.renderLoadGetCartDataFinish()
+                    view.showToastMessageRed(errorMessage)
+                }
+            }
+        }
+    }
+
+    Feature("calculate subtotal") {
+
+        val cartListPresenter by memoized {
+            CartListPresenter(
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase,
+                    compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
+                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
+                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
+                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase
+            )
+        }
+
+        val firstItemFirst = CartItemHolderData()
+        val firstItemFirstData = CartItemData()
+        val firstItemFirstOriginData = CartItemData.OriginData()
+        firstItemFirstOriginData.pricePlan = 1000.0
+        firstItemFirstOriginData.parentId = "0"
+        firstItemFirstOriginData.productId = "1"
+        firstItemFirstData.originData = firstItemFirstOriginData
+        val firstItemFirstUpdatedData = CartItemData.UpdatedData()
+        firstItemFirstUpdatedData.quantity = 1
+        firstItemFirstData.updatedData = firstItemFirstUpdatedData
+        firstItemFirst.cartItemData = firstItemFirstData
+
+        val firstItemSecond = CartItemHolderData()
+        val firstItemSecondData = CartItemData()
+        val firstItemSecondOriginData = CartItemData.OriginData()
+        firstItemSecondOriginData.pricePlan = 40.0
+        firstItemSecondOriginData.parentId = "0"
+        firstItemSecondOriginData.productId = "2"
+        firstItemSecondData.originData = firstItemSecondOriginData
+        val firstItemSecondUpdatedData = CartItemData.UpdatedData()
+        firstItemSecondUpdatedData.quantity = 2
+        firstItemSecondData.updatedData = firstItemSecondUpdatedData
+        firstItemSecond.cartItemData = firstItemSecondData
+
+        val secondItemFirst = CartItemHolderData()
+        val secondItemFirstData = CartItemData()
+        val secondItemFirstOriginData = CartItemData.OriginData()
+        secondItemFirstOriginData.pricePlan = 200.0
+        secondItemFirstOriginData.parentId = "0"
+        secondItemFirstOriginData.productId = "3"
+        secondItemFirstData.originData = secondItemFirstOriginData
+        val secondItemFirstUpdatedData = CartItemData.UpdatedData()
+        secondItemFirstUpdatedData.quantity = 3
+        secondItemFirstData.updatedData = secondItemFirstUpdatedData
+        secondItemFirst.cartItemData = secondItemFirstData
+
+        val secondItemSecond = CartItemHolderData()
+        val secondItemSecondData = CartItemData()
+        val secondItemSecondOriginData = CartItemData.OriginData()
+        secondItemSecondOriginData.pricePlan = 1.0
+        secondItemSecondOriginData.parentId = "0"
+        secondItemSecondOriginData.productId = "4"
+        secondItemSecondData.originData = secondItemSecondOriginData
+        val secondItemSecondUpdatedData = CartItemData.UpdatedData()
+        secondItemSecondUpdatedData.quantity = 4
+        secondItemSecondData.updatedData = secondItemSecondUpdatedData
+        secondItemSecond.cartItemData = secondItemSecondData
+
+        val firstShop = CartShopHolderData()
+        val firstShopData = ShopGroupAvailableData()
+        firstShop.shopGroupAvailableData = firstShopData
+        firstShopData.cartItemHolderDataList = arrayListOf(firstItemFirst, secondItemFirst)
+
+        val secondShop = CartShopHolderData()
+        val secondShopData = ShopGroupAvailableData()
+        secondShop.shopGroupAvailableData = secondShopData
+        secondShopData.cartItemHolderDataList = arrayListOf(firstItemSecond, secondItemSecond)
+
+        val cartShops = arrayListOf(firstShop, secondShop)
+
+        Scenario("no item selected") {
+
+            Given("uncheck all items") {
+                firstItemFirst.isSelected = false
+                secondItemFirst.isSelected = false
+                firstShop.isAllSelected = false
+                firstShop.isPartialSelected = false
+
+                firstItemSecond.isSelected = false
+                secondItemSecond.isSelected = false
+                secondShop.isAllSelected = false
+                secondShop.isPartialSelected = false
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+                every { view.allAvailableCartDataList } answers  {
+                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+            }
+
+            Then("") {
+                verifyOrder {
+                    view.updateCashback(0.0)
+                    view.allAvailableCartDataList
+                    view.renderDetailInfoSubTotal("0", "-", false, true, false)
+                }
+            }
+        }
+
+        Scenario("some item selected") {
+
+            Given("uncheck some items") {
+                firstItemFirst.isSelected = true
+                secondItemFirst.isSelected = false
+                firstShop.isAllSelected = false
+                firstShop.isPartialSelected = true
+
+                firstItemSecond.isSelected = false
+                secondItemSecond.isSelected = true
+                secondShop.isAllSelected = false
+                secondShop.isPartialSelected = true
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+                every { view.allAvailableCartDataList } answers  {
+                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+            }
+
+            Then("") {
+                verifyOrder {
+                    view.updateCashback(0.0)
+                    view.allAvailableCartDataList
+                    view.renderDetailInfoSubTotal("5", "Rp1.004", false, false, false)
+                }
+            }
+        }
+
+        Scenario("all item selected") {
+
+            Given("check all items") {
+                firstItemFirst.isSelected = true
+                secondItemFirst.isSelected = true
+                firstShop.isAllSelected = true
+                firstShop.isPartialSelected = false
+
+                firstItemSecond.isSelected = true
+                secondItemSecond.isSelected = true
+                secondShop.isAllSelected = true
+                secondShop.isPartialSelected = false
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+                every { view.allAvailableCartDataList } answers  {
+                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+            }
+
+            Then("") {
+                verifyOrder {
+                    view.updateCashback(0.0)
+                    view.allAvailableCartDataList
+                    view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
+                }
             }
         }
     }
