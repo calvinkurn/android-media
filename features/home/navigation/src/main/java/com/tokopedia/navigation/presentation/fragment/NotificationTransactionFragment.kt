@@ -43,9 +43,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
 
-typealias LongerTextDialog = NotificationUpdateLongerTextFragment
-
-class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
         NotificationTransactionItemListener,
         NotificationFilterViewHolder.NotifFilterListener,
         TransactionMenuListener {
@@ -188,7 +186,7 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         }
 
         if (!::longerTextDialog.isInitialized) {
-            longerTextDialog = LongerTextDialog.createInstance(bundle)
+            longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
         } else {
             longerTextDialog.arguments = bundle
         }
