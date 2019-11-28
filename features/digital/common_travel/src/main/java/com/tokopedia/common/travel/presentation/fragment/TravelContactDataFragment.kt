@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.travel.R
 import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
@@ -134,6 +135,15 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
         }
 
         contact_data_button.setOnClickListener { onSaveButtonClicked() }
+
+        layout_fragment.setOnTouchListener { view, motionEvent ->
+            clearAllKeyboardFocus()
+            true
+        }
+    }
+
+    fun clearAllKeyboardFocus() {
+        KeyboardHandler.hideSoftKeyboard(activity)
     }
 
     private fun autofillView(contact: TravelContactListModel.Contact?) {
