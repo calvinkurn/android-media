@@ -163,19 +163,6 @@ public abstract class MainApplication extends MainRouterApplication{
     private void upgradeSecurityProvider() {
         try {
             ProviderInstaller.installIfNeeded(this);
-//                    , new ProviderInstaller.ProviderInstallListener() {
-//                @Override
-//                public void onProviderInstalled() {
-//                    // Do nothing
-//                    Log.d("Oka", "Provider Installer success");
-//                }
-//
-//                @Override
-//                public void onProviderInstallFailed(int i, Intent intent) {
-//                    // Do nothing
-//                    Log.d("Oka", "Provider Installer failed");
-//                }
-//            });
         } catch (GooglePlayServicesRepairableException e) {
             GoogleApiAvailability.getInstance().showErrorNotification(this, e.getConnectionStatusCode());
         } catch (Throwable t) {
