@@ -84,6 +84,8 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 2, mapOf(0 to "rekomendasi", 2 to "d")) to SIMILAR_PRODUCT)
             add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
+            add(Pattern(EQ, 2, mapOf(0 to "myshop", 1 to "power-merchant")) to OTHER)
+            add(Pattern(EQ, 2, mapOf(0 to "terms", 1 to "aktivasi-powermerchant")) to OTHER)
             add(Pattern(EQ, 1, null) to SHOP)
             add(Pattern(EQ, 2, null) to PRODUCT)
         }
