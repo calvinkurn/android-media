@@ -3,14 +3,15 @@ package com.tokopedia.atc_variant.view.viewholder
 import android.view.View
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.atc_variant.R
 import com.tokopedia.atc_variant.view.CheckoutVariantActionListener
+import com.tokopedia.atc_variant.view.adapter.VariantOptionAdapter
 import com.tokopedia.atc_variant.view.viewmodel.OptionVariantViewModel
 import com.tokopedia.atc_variant.view.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.atc_variant.view.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.atc_variant.view.viewmodel.TypeVariantViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.purchase_platform.R
 import kotlinx.android.synthetic.main.item_variant_detail_product_page.view.*
 
 /**
@@ -63,7 +64,6 @@ class TypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionL
                 itemView.tv_variant_guideline.visible()
             }
 
-            listener.onBindVariantUpdateProductViewModel()
         }
     }
 

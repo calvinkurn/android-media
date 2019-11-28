@@ -5,9 +5,9 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.NoteViewModel
+import com.tokopedia.atc_variant.R
+import com.tokopedia.atc_variant.view.CheckoutVariantActionListener
+import com.tokopedia.atc_variant.view.viewmodel.NoteViewModel
 import kotlinx.android.synthetic.main.item_note_detail_product_page.view.*
 
 /**

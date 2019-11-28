@@ -4,16 +4,16 @@ import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.atc_variant.R
+import com.tokopedia.atc_variant.view.CheckoutVariantActionListener
+import com.tokopedia.atc_variant.view.MAX_QUANTITY
+import com.tokopedia.atc_variant.view.viewmodel.ProductChild
+import com.tokopedia.atc_variant.view.viewmodel.ProductViewModel
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.express_checkout.data.constant.MAX_QUANTITY
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProductChild
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProductViewModel
 import kotlinx.android.synthetic.main.item_product_detail_product_page.view.*
 
 /**

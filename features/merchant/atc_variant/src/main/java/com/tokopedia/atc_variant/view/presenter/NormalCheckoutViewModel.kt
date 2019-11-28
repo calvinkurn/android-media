@@ -10,6 +10,10 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_variant.data.request.AddInsuranceProductToCartRequest
+import com.tokopedia.atc_variant.data.request.AddMarketPlaceToCartRequest
+import com.tokopedia.atc_variant.data.request.InsuranceRecommendationRequest
+import com.tokopedia.atc_variant.data.response.AddInsuranceProductToCartGqlResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -24,11 +28,6 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.AddInsuranceProductToCartRequest
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.AddMarketPlaceToCartRequest
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.InsuranceRecommendationRequest
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.AddInsuranceProductToCartGqlResponse
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceRecommendationGqlResponse
 import com.tokopedia.atc_variant.di.RawQueryKeyConstant
 import com.tokopedia.atc_variant.domain.usecase.AddInsuranceProductUsecase
 import com.tokopedia.atc_variant.model.*

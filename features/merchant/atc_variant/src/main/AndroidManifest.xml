@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.purchase_platform">
+    package="com.tokopedia.atc_variant">
 
     <application
         android:allowBackup="true"

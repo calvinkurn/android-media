@@ -2,7 +2,7 @@ package com.tokopedia.atc_variant.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
-import com.tokopedia.purchase_platform.R
+import com.tokopedia.atc_variant.R
 
 /**
  * Created by Irfan Khoirul on 30/01/19.

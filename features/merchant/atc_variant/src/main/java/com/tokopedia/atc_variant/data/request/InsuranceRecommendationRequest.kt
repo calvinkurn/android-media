@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request
+package com.tokopedia.atc_variant.data.request
 
 import com.google.gson.annotations.SerializedName
 

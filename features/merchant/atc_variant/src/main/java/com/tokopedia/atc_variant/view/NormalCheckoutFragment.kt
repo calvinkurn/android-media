@@ -23,10 +23,12 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_variant.R
+import com.tokopedia.atc_variant.data.request.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.component.ToasterError
@@ -52,18 +54,13 @@ import com.tokopedia.atc_variant.model.Fail
 import com.tokopedia.atc_variant.model.InsuranceRecommendationContainer
 import com.tokopedia.atc_variant.model.ProductInfoAndVariant
 import com.tokopedia.atc_variant.model.ProductInfoAndVariantContainer
+import com.tokopedia.atc_variant.view.adapter.CheckoutVariantAdapter
 import com.tokopedia.atc_variant.view.adapter.CheckoutVariantAdapterTypeFactory
 import com.tokopedia.atc_variant.view.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.atc_variant.view.presenter.NormalCheckoutViewModel
 import com.tokopedia.atc_variant.view.viewmodel.*
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.EXTRA_IS_ONE_CLICK_SHIPMENT
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceRecommendationGqlResponse
-import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
-import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.AtcResponseModel
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantItemDecorator
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.adapter.CheckoutVariantAdapter
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.track.TrackApp
@@ -813,7 +810,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             }
             activity?.run {
                 if (isOcs) {
-                    val intent = ShipmentActivity.createInstance(this, ShipmentFormRequest.BundleBuilder().build())
+                    val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.CHECKOUT)
+                    intent.putExtra(EXTRA_IS_ONE_CLICK_SHIPMENT, true)
+                    intent.putExtras(ShipmentFormRequest.BundleBuilder().build().bundle)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                 } else {
                     val cartUriString = ApplinkConst.CART
@@ -846,7 +846,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 val shipmentFormRequest = ShipmentFormRequest.BundleBuilder()
                         .deviceId(deviceid)
                         .build()
-                val intent = ShipmentActivity.createInstance(context, shipmentFormRequest)
+                val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.CHECKOUT)
+                intent.putExtra(EXTRA_IS_ONE_CLICK_SHIPMENT, true)
+                intent.putExtras(shipmentFormRequest.bundle)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
                 startActivity(intent)
             }
         }, onRetryWhenError = {
@@ -1273,26 +1277,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         isInsuranceSelected = isSelected
     }
 
-    override fun showData(viewModels: ArrayList<Visitable<*>>) { /* no op we use onSuccess */
+    override fun onItemClicked(t: Visitable<*>?) {
+        // No op
     }
-
-    override fun navigateCheckoutToPayment(paymentPassData: PaymentPassData) {}
-    override fun showBottomSheetError(title: String, message: String, action: String, enableRetry: Boolean) {}
-    override fun showErrorNotAvailable(message: String) {}
-    override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel) {}
-    override fun onNeedToNotifySingleItem(position: Int) {}
-    override fun onItemClicked(t: Visitable<*>?) {}
-    override fun onClickEditProfile() {}
-    override fun onClickEditDuration() {}
-    override fun onClickEditCourier() {}
-    override fun onNeedToRemoveSingleItem(position: Int) {}
-    override fun onNeedToNotifyAllItem() {}
-    override fun onClickInsuranceInfo(insuranceInfo: String) {}
-    override fun onSummaryChanged(summaryViewModel: SummaryViewModel?) {}
-    override fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel) {}
-    override fun onNeedToValidateButtonBuyVisibility() {}
-    override fun onNeedToRecalculateRatesAfterChangeTemplate() {}
-    override fun onNeedToUpdateOnboardingStatus() {}
-    override fun onBindVariantUpdateProductViewModel() {}
 
 }

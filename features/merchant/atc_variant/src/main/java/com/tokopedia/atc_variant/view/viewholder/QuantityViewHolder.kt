@@ -6,11 +6,9 @@ import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.atc_variant.R
 import com.tokopedia.atc_variant.view.CheckoutVariantActionListener
 import com.tokopedia.atc_variant.view.viewmodel.QuantityViewModel
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.QuantityViewModel
 import kotlinx.android.synthetic.main.item_quantity_detail_product_page.view.*
 import rx.Observable
 import rx.Subscriber
@@ -88,7 +86,6 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
             }
             setupPlusButton(element)
             validateQuantity(element)
-            actionListener.onNeedToValidateButtonBuyVisibility()
         }
     }
 
@@ -127,7 +124,6 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
         if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
             actionListener.onChangeQuantity(element)
         }
-        actionListener.onNeedToValidateButtonBuyVisibility()
     }
 
     private fun validateQuantity(element: QuantityViewModel): Boolean {
@@ -137,12 +133,12 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
         if (element.orderQuantity <= 0 || element.orderQuantity < element.minOrderQuantity) {
             error = element.errorProductMinQuantity.replace(QUANTITY_PLACEHOLDER, "${element.minOrderQuantity}", false)
             if (error.isEmpty()) {
-                error = String.format(itemView.context.getString(R.string.min_order_x), element.minOrderQuantity)
+                error = String.format(itemView.context.getString(R.string.atc_variant_min_order_x), element.minOrderQuantity)
             }
         } else if (element.orderQuantity > element.maxOrderQuantity) {
             error = element.errorProductMaxQuantity.replace(QUANTITY_PLACEHOLDER, "${element.maxOrderQuantity}", false)
             if (error.isEmpty()) {
-                error = String.format(itemView.context.getString(R.string.max_order_x), element.maxOrderQuantity)
+                error = String.format(itemView.context.getString(R.string.atc_variant_max_order_x), element.maxOrderQuantity)
             }
         }
 
