@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
@@ -118,11 +119,10 @@ abstract class NotificationTransactionItemViewHolder(itemView: View, var listene
     }
 
     private fun convertTypeUser(element: TransactionItemNotification) {
-        label.visibility = View.GONE
         val labelIndex = element.label
 
         if (labelIndex == BUYER_TYPE && element.hasShop) {
-            getStringResource(R.string.buyer_label)?.apply {
+            getStringResource(R.string.buyer_label).apply {
                 label.text = this
                 label.setTextColor(getColorResource(R.color.Neutral_N200))
                 label.visibility = View.VISIBLE
@@ -134,7 +134,7 @@ abstract class NotificationTransactionItemViewHolder(itemView: View, var listene
                 }
             }
         } else if (labelIndex == SELLER_TYPE) {
-            getStringResource(R.string.seller_label)?.apply {
+            getStringResource(R.string.seller_label).apply {
                 label.text = this
                 label.setTextColor(getColorResource(R.color.Green_G500))
                 label.visibility = View.VISIBLE
@@ -145,6 +145,8 @@ abstract class NotificationTransactionItemViewHolder(itemView: View, var listene
                     it.setColor(getColorResource(R.color.Green_G200))
                 }
             }
+        } else if (labelIndex == BUYER_TYPE) {
+            label.hide()
         }
     }
 
