@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.*
+import android.view.Menu
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
@@ -48,9 +49,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -59,17 +64,15 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.product.Category
-import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
-import com.tokopedia.product.detail.common.data.model.product.ProductParams
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductShopInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSocialProofDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.spesification.Specification
 import com.tokopedia.product.detail.data.util.*
@@ -85,11 +88,14 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
+import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
+import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
+import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
@@ -97,6 +103,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -106,6 +113,11 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.customview.TradeInTextView
 import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
+import com.tokopedia.transaction.common.dialog.UnifyDialog
+import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
+import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -165,6 +177,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private lateinit var stickyLoginView: StickyLoginView
     private lateinit var pdpHashMapUtil: DynamicProductDetailHashMap
     private var loadingProgressDialog: ProgressDialog? = null
+    val errorBottomsheets: ErrorBottomsheets by lazy {
+        ErrorBottomsheets()
+    }
 
 
     //Performance Monitoring
@@ -180,7 +195,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getRecyclerView(view).addOnScrollListener(onScrollListener)
         initPerformanceMonitoring()
         initRecyclerView(view)
         initializePartialView()
@@ -216,6 +230,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
+        actionButtonView.visibility = false
         updateStickyContent()
     }
 
@@ -238,9 +253,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
         super.onPrepareOptionsMenu(menu)
+        // handling menu toolbar / cart counter / settings / etc
+
         activity?.let {
             handlingMenuPreparation(menu)
-            // handling cart counter
         }
     }
 
@@ -276,9 +292,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         return R.id.rv_pdp
     }
 
-//    override fun getSwipeRefreshLayoutResourceId(): Int {
-//        return R.id.swipeRefreshPdp
-//    }
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipeRefreshPdp
+    }
 
     override fun getAdapterTypeFactory(): DynamicProductDetailAdapterFactoryImpl = adapterFactory
 
@@ -356,7 +372,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     }
 
                     activity?.invalidateOptionsMenu()
-
                     adapter.notifyDataSetChanged()
                 }
                 is Fail -> {
@@ -366,14 +381,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         })
 
         viewModel.p2Login.observe(this, Observer {
-//            if (::performanceMonitoringFull.isInitialized)
-//                performanceMonitoringP2Login.stopTrace()
-//
-//            pdpHashMapUtil.updateDataP2Login(it)
-//            it.pdpAffiliate?.let { renderAffiliate(it) }
-//            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOADS_WISHLIST)
-            dynamicAdapter.notifyShopInfo(pdpHashMapUtil.shopInfoMap ?: ProductShopInfoDataModel() ,2)
-            dynamicAdapter.notifySocialProof(pdpHashMapUtil.socialProofMap ?: ProductSocialProofDataModel())
+            if (::performanceMonitoringFull.isInitialized)
+                performanceMonitoringP2Login.stopTrace()
+
+            pdpHashMapUtil.updateDataP2Login(it)
+            it.pdpAffiliate?.let { renderAffiliate(it) }
+            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOADS_WISHLIST)
+
         })
 
         viewModel.p2ShopDataResp.observe(this, Observer {
@@ -435,7 +449,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
             onSuccessGetProductVariantInfo(it.variantResp)
 
-                pdpHashMapUtil.updateDataP2General(it)
+            pdpHashMapUtil.updateDataP2General(it)
 
             viewModel.getProductInfoP1?.run {
                 productDetailTracking.eventBranchItemView(this, viewModel.userId)
@@ -445,14 +459,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         })
 
         viewModel.productInfoP3resp.observe(this, Observer {
-//            if (::performanceMonitoringFull.isInitialized)
-//                performanceMonitoringFull.stopTrace()
-//
-//            shouldShowCodP3 = it.userCod
-//            pdpHashMapUtil.snapShotMap.shouldShowCod =
-//                    shouldShowCodP1 && shouldShowCodP2Shop && shouldShowCodP3
-//
-//            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOADS_COD)
+            if (::performanceMonitoringFull.isInitialized)
+                performanceMonitoringFull.stopTrace()
+
+            shouldShowCodP3 = it.userCod
+            pdpHashMapUtil.snapShotMap.shouldShowCod =
+                    shouldShowCodP1 && shouldShowCodP2Shop && shouldShowCodP3
+
+            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, 2)
         })
 
         viewModel.moveToWarehouseResult.observe(this, Observer {
@@ -468,6 +482,131 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 is Fail -> onErrorMoveToEtalase(it.throwable)
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (activity != null) {
+            AdultManager.handleActivityResult(activity!!, requestCode, resultCode, data)
+        }
+        when (requestCode) {
+            ProductDetailConstant.REQUEST_CODE_ETALASE -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
+                    val selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
+                    if (productId != null && !selectedEtalaseName.isNullOrEmpty()) {
+                        showProgressDialog(onCancelClicked = { viewModel.cancelEtalaseUseCase() })
+                        viewModel.moveProductToEtalase(productId!!, selectedEtalaseId, selectedEtalaseName)
+                    }
+                }
+            }
+            ProductDetailConstant.REQUEST_CODE_MERCHANT_VOUCHER_DETAIL,
+            ProductDetailConstant.REQUEST_CODE_MERCHANT_VOUCHER -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    // no op //TOGGLE_MVC_OFF
+                }
+            }
+            ProductDetailConstant.REQUEST_CODE_NORMAL_CHECKOUT -> {
+                if (resultCode == RESULT_CODE_ERROR_TICKET && data != null) {
+                    activity?.also { activity ->
+                        val result = data.getParcelableExtra<AddToCartDataModel>(RESULT_TICKET_DATA)
+                        val createTicketDialog = UnifyDialog(activity, UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER)
+                        createTicketDialog.apply {
+                            setTitle(result.errorReporter.texts.submitTitle)
+                            setDescription(result.errorReporter.texts.submitDescription)
+                            setSecondary(result.errorReporter.texts.cancelButton)
+                            setSecondaryOnClickListener(View.OnClickListener {
+                                this.dismiss()
+                                productDetailTracking.eventClickCloseOnHelpPopUpAtc()
+                            })
+                            setOk(result.errorReporter.texts.submitButton)
+                            setOkOnClickListener(View.OnClickListener {
+                                this.dismiss()
+                                productDetailTracking.eventClickReportOnHelpPopUpAtc()
+                                showProgressDialog()
+                                viewModel.hitSubmitTicket(result, this@DynamicProductDetailFragment::onErrorSubmitHelpTicket, this@DynamicProductDetailFragment::onSuccessSubmitHelpTicket)
+                            })
+                            show()
+                        }
+                        productDetailTracking.eventViewHelpPopUpWhenAtc()
+                    }
+                } else if (resultCode == Activity.RESULT_OK && data != null) {
+                    if (data.hasExtra(NormalCheckoutConstant.RESULT_PRODUCT_DATA_CACHE_ID)) {
+                        //refresh product by selected variant/product
+                        val objectId: String = data.getStringExtra(NormalCheckoutConstant.RESULT_PRODUCT_DATA_CACHE_ID)
+                        val cacheManager = SaveInstanceCacheManager(context!!, objectId)
+                        val selectedProductInfo: ProductInfo? = cacheManager.get(NormalCheckoutConstant.RESULT_PRODUCT_DATA, ProductInfo::class.java)
+                        val selectedWarehouse: MultiOriginWarehouse? = cacheManager.get(NormalCheckoutConstant.RESULT_SELECTED_WAREHOUSE,
+                                MultiOriginWarehouse::class.java)
+                        if (selectedProductInfo != null) {
+                            userInputVariant = data.getStringExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
+                            viewModel.productInfoP1.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
+                            selectedWarehouse?.let {
+                                viewModel.multiOrigin = it.warehouseInfo
+                                viewModel.p2ShopDataResp.value = viewModel.p2ShopDataResp.value?.copy(
+                                        nearestWarehouse = it
+                                )
+                            }
+
+                        }
+                    }
+                    //refresh variant
+                    viewModel.p2General.value?.variantResp?.run {
+                        onSuccessGetProductVariantInfo(this)
+                    }
+                    userInputNotes = data.getStringExtra(ApplinkConst.Transaction.EXTRA_NOTES)
+                    userInputQuantity = data.getIntExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, 0)
+                    if (data.hasExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)) {
+                        val successMessage = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
+                        showAddToCartDoneBottomSheet(successMessage)
+                        updateCartNotification()
+                    }
+                }
+            }
+            ProductDetailFragment.REQUEST_CODE_ATC_EXPRESS -> {
+                if (resultCode == Constant.RESULT_CODE_ERROR && data != null) {
+                    val message = data.getStringExtra(Constant.EXTRA_MESSAGES_ERROR)
+                    if (message != null && message.isNotEmpty()) {
+                        ToasterError.make(view, data.getStringExtra(Constant.EXTRA_MESSAGES_ERROR), BaseToaster.LENGTH_SHORT)
+                                .show()
+                    } else {
+                        errorBottomsheets.setData(
+                                getString(R.string.bottomsheet_title_global_error),
+                                getString(R.string.bottomsheet_message_global_error),
+                                getString(R.string.bottomsheet_action_global_error),
+                                true
+                        )
+                        errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListenerWithRetry {
+                            override fun onActionButtonClicked() {
+                                errorBottomsheets.dismiss()
+                                goToNormalCheckout()
+                            }
+
+                            override fun onRetryClicked() {
+                                errorBottomsheets.dismiss()
+                                goToAtcExpress()
+                            }
+                        }
+                        errorBottomsheets.show(fragmentManager, "")
+                    }
+                } else if (resultCode == Constant.RESULT_CODE_NAVIGATE_TO_OCS) {
+                    goToNormalCheckout()
+                } else if (resultCode == Constant.RESULT_CODE_NAVIGATE_TO_NCF) {
+                    goToNormalCheckout()
+                }
+            }
+            ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT -> {
+                loadProductData(true)
+            }
+            ProductDetailFragment.REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
+                doBuy()
+            }
+            ProductDetailFragment.REQUEST_CODE_REPORT -> {
+                if (resultCode == Activity.RESULT_OK)
+                    showToastSuccess(getString(R.string.success_to_report))
+            }
+            else ->
+                super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onDestroy() {
@@ -815,6 +954,76 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         pdpHashMapUtil.updateVariantInfo(data, selectedVariantListString)
     }
 
+    private fun showAddToCartDoneBottomSheet(successMessage: String) {
+        viewModel.getProductInfoP1?.let {
+            val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
+            val productName = it.basic.name
+            val productImageUrl = it.firstThumbnailPicture
+            val addedProductDataModel = AddToCartDoneAddedProductDataModel(
+                    it.basic.id.toString(),
+                    productName,
+                    productImageUrl,
+                    it.variant.isVariant,
+                    it.freeOngkir.isFreeOngkirActive,
+                    it.freeOngkir.freeOngkirImgUrl
+            )
+            val bundleData = Bundle()
+            bundleData.putParcelable(AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
+            addToCartDoneBottomSheet.arguments = bundleData
+            addToCartDoneBottomSheet.setDismissListener {
+                shouldShowCartAnimation = true
+                updateCartNotification()
+            }
+            addToCartDoneBottomSheet.show(
+                    fragmentManager, "TAG"
+            )
+        }
+    }
+
+    private fun updateCartNotification() {
+        viewModel.updateCartCounerUseCase(::onSuccessUpdateCartCounter)
+    }
+
+    private fun onSuccessUpdateCartCounter(count: Int) {
+        val cache = LocalCacheHandler(context, CartConstant.CART);
+        cache.putInt(CartConstant.IS_HAS_CART, if (count > 0) 1 else 0)
+        cache.putInt(CartConstant.CACHE_TOTAL_CART, count);
+        cache.applyEditor();
+        if (isAdded) {
+            initToolBarMethod()
+        }
+    }
+
+    private fun onErrorSubmitHelpTicket(e: Throwable?) {
+        hideProgressDialog()
+        view?.also {
+            Toaster.showError(it, ErrorHandler.getErrorMessage(context, e), BaseToaster.LENGTH_SHORT)
+        }
+    }
+
+    private fun onSuccessSubmitHelpTicket(result: SubmitTicketResult) {
+        hideProgressDialog()
+        if (result.status) {
+            activity?.also {
+                val successTicketDialog = UnifyDialog(it, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
+                successTicketDialog.apply {
+                    setTitle(result.texts.submitTitle)
+                    setDescription(result.texts.submitDescription)
+                    setOk(result.texts.successButton)
+                    setOkOnClickListener(View.OnClickListener {
+                        this.dismiss()
+                    })
+                    show()
+                }
+            }
+        } else {
+            view?.also {
+                Toaster.showError(it, result.message, BaseToaster.LENGTH_SHORT)
+            }
+        }
+    }
+
+
     private fun shareProduct() {
         activity?.let {
             viewModel.getProductInfoP1?.let { productInfo ->
@@ -1054,7 +1263,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             if (::pdpHashMapUtil.isInitialized) {
                 pdpHashMapUtil.listProductRecomMap?.first()?.let {
                     val positionShouldLoading = getRecyclerView(view).layoutManager as LinearLayoutManager
-                    Log.e("recom","${positionShouldLoading.findLastVisibleItemPosition()}")
+                    Log.e("recom", "${positionShouldLoading.findLastVisibleItemPosition()}")
                     if (it.position != -1 && positionShouldLoading.findLastVisibleItemPosition() == it.position - 4) {
                         viewModel.loadRecommendation()
                         getRecyclerView(view).removeOnScrollListener(this)
@@ -1266,7 +1475,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private fun onSuccessRemoveWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         pdpHashMapUtil.snapShotMap.isWishlisted = false
-        dynamicAdapter.notifyItemChanged(0, ProductDetailConstant.PAYLOADS_WISHLIST)
+        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOADS_WISHLIST)
         sendIntentResultWishlistChange(productId ?: "", false)
     }
 
@@ -1277,7 +1486,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private fun onSuccessAddWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         pdpHashMapUtil.snapShotMap.isWishlisted = true
-        dynamicAdapter.notifyItemChanged(0, ProductDetailConstant.PAYLOADS_WISHLIST)
+        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOADS_WISHLIST)
         productDetailTracking.eventBranchAddToWishlist(pdpHashMapUtil.snapShotMap.productInfoP1, (UserSession(activity)).userId)
         sendIntentResultWishlistChange(productId ?: "", true)
     }

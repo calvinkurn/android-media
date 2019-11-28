@@ -62,5 +62,18 @@ object ProductDetailConstant {
     const val PAYLOADS_WISHLIST = 1
     const val PAYLOADS_COD = 2
 
+    //Request Code
+    const val REQUEST_CODE_TALK_PRODUCT = 1
+    const val REQUEST_CODE_EDIT_PRODUCT = 2
+    const val REQUEST_CODE_LOGIN = 561
+    const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 563
+    const val REQUEST_CODE_MERCHANT_VOUCHER = 564
+    const val REQUEST_CODE_ETALASE = 565
+    const val REQUEST_CODE_NORMAL_CHECKOUT = 566
+    const val REQUEST_CODE_ATC_EXPRESS = 567
+    const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
+    const val REQUEST_CODE_REPORT = 570
+    const val REQUEST_CODE_SHOP_INFO = 998
+
 
 }

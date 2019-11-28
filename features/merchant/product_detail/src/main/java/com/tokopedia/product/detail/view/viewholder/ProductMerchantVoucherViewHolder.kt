@@ -2,6 +2,8 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.product.detail.R
@@ -16,26 +18,31 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
     }
 
     override fun bind(element: ProductMerchantVoucherDataModel?) {
-        element?.let {
-            view.merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
-                override val isOwner: Boolean
-                    get() = listener.isOwner()
+        if(element?.shouldRenderInitialData != false) {
+            element?.shouldRenderInitialData = false
+            view.loading_voucher.show()
+            element?.let {
+                view.loading_voucher.hide()
+                view.merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
+                    override val isOwner: Boolean
+                        get() = listener.isOwner()
 
-                override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
-                    listener.onMerchantUseVoucherClicked(merchantVoucherViewModel, position)
-                }
+                    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
+                        listener.onMerchantUseVoucherClicked(merchantVoucherViewModel, position)
+                    }
 
-                override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-                    listener.onItemMerchantVoucherClicked(merchantVoucherViewModel)
-                }
+                    override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
+                        listener.onItemMerchantVoucherClicked(merchantVoucherViewModel)
+                    }
 
-                override fun onSeeAllClicked() {
-                    listener.onSeeAllMerchantVoucherClick()
-                }
+                    override fun onSeeAllClicked() {
+                        listener.onSeeAllMerchantVoucherClick()
+                    }
 
-            })
+                })
 
-            view.merchantVoucherListWidget.setData(it.voucherData)
+                view.merchantVoucherListWidget.setData(it.voucherData)
+            }
         }
     }
 }

@@ -8,7 +8,8 @@ data class ProductTradeinDataModel(
         val type: String = "",
         val name: String = "",
         val dataLayout: List<ComponentData> = listOf(),
-        var tradeInParams: TradeInParams = TradeInParams()
+        var tradeInParams: TradeInParams = TradeInParams(),
+        var shouldRenderInitialData :Boolean = true
 ) : DynamicPDPDataModel {
     override fun type(): String = type
 

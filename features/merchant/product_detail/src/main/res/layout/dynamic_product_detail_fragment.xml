@@ -75,6 +75,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_pdp_container"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:focusableInTouchMode="true"
         app:layout_constraintTop_toBottomOf="@+id/appbar">
 
         <androidx.recyclerview.widget.RecyclerView

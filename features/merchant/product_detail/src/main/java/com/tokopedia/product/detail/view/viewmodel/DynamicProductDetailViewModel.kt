@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
@@ -28,12 +29,17 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.origin
+import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketRequest
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
+import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -42,6 +48,11 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
+import rx.Observer
+import rx.Subscriber
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -61,6 +72,8 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                                                         private val moveProductToWarehouseUseCase: MoveProductToWarehouseUseCase,
                                                         private val moveProductToEtalaseUseCase: MoveProductToEtalaseUseCase,
                                                         private val trackAffiliateUseCase: TrackAffiliateUseCase,
+                                                        private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
+                                                        private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                                         private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher) {
 
     val productInfoP1 = MutableLiveData<Result<ProductInfoP1>>()
@@ -74,9 +87,11 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     val moveToEtalaseResult = MutableLiveData<Result<Boolean>>()
 
     var multiOrigin: WarehouseInfo = WarehouseInfo()
-    private var productInfoTemp = ProductInfo()
     var getProductInfoP1: ProductInfo? = null
     var listOfRecomData: List<ProductRecommendationDataModel>? = null
+
+    private var productInfoTemp = ProductInfo()
+    private var submitTicketSubscription: Subscription? = null
 
     fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
@@ -99,12 +114,14 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         getProductInfoP2GeneralUseCase.cancelJobs()
         getProductInfoP3UseCase.cancelJobs()
         toggleFavoriteUseCase.cancelJobs()
-        removeWishlistUseCase.unsubscribe()
         toggleFavoriteUseCase.cancelJobs()
-        getRecommendationUseCase.unsubscribe()
         trackAffiliateUseCase.cancelJobs()
         moveProductToWarehouseUseCase.cancelJobs()
         moveProductToEtalaseUseCase.cancelJobs()
+        getRecommendationUseCase.unsubscribe()
+        removeWishlistUseCase.unsubscribe()
+        submitTicketSubscription?.unsubscribe()
+        updateCartCounterUseCase.unsubscribe()
     }
 
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
@@ -300,10 +317,8 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                     withContext(Dispatchers.IO) {
                         val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
                                 pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
-//                                pageName = ProductDetailConstant.DEFAULT_PAGE_NAME,
-                                pageName = "homepage",
-//                                productIds = arrayListOf(product.data.productInfo.basic.id.toString())
-                                productIds = arrayListOf()
+                                pageName = ProductDetailConstant.DEFAULT_PAGE_NAME,
+                                productIds = arrayListOf(product.data.productInfo.basic.id.toString())
                         )).toBlocking()
                         loadTopAdsProduct.postValue(Success(recomData.first() ?: emptyList()))
                     }
@@ -341,6 +356,55 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         }
     }
 
+    fun hitSubmitTicket(addToCartDataModel: AddToCartDataModel, onErrorSubmitHelpTicket: (Throwable?) -> Unit, onNextSubmitHelpTicket: (SubmitTicketResult) -> Unit) {
+        val requestParams = RequestParams.create()
+        val submitHelpTicketRequest = SubmitHelpTicketRequest()
+        submitHelpTicketRequest.apply {
+            apiJsonResponse = addToCartDataModel.responseJson
+            errorMessage = addToCartDataModel.errorReporter.texts.submitDescription
+            if (addToCartDataModel.errorMessage.isNotEmpty()) {
+                headerMessage = addToCartDataModel.errorMessage[0]
+            }
+            page = SubmitHelpTicketUseCase.PAGE_ATC
+            requestUrl = SubmitHelpTicketUseCase.GQL_REQUEST_URL
+        }
+        requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest)
+        submitTicketSubscription = submitHelpTicketUseCase.createObservable(requestParams).subscribe(object : Observer<SubmitTicketResult> {
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+                onErrorSubmitHelpTicket(e)
+            }
+
+            override fun onNext(t: SubmitTicketResult) {
+                onNextSubmitHelpTicket(t)
+            }
+
+            override fun onCompleted() {
+                submitTicketSubscription = null
+            }
+        })
+    }
+
+    fun updateCartCounerUseCase(onSuccessRequest: (count: Int) -> Unit) {
+        updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Int>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onNext(count: Int) {
+                        onSuccessRequest(count)
+                    }
+                })
+    }
+
 
     fun generateVariantString(): String {
         return try {
@@ -354,6 +418,10 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
     fun cancelWarehouseUseCase() {
         moveProductToWarehouseUseCase.cancelJobs()
+    }
+
+    fun cancelEtalaseUseCase() {
+        moveProductToEtalaseUseCase.cancelJobs()
     }
 
     private fun mapSelectedProductVariants(userInputVariant: String?): ArrayMap<String, ArrayMap<String, String>>? {

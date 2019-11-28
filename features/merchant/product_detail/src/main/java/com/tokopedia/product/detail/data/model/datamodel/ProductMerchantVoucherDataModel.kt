@@ -8,7 +8,8 @@ class ProductMerchantVoucherDataModel(
         val type: String = "",
         val name: String = "",
         val dataLayout: List<ComponentData> = listOf(),
-        var voucherData: ArrayList<MerchantVoucherViewModel> = arrayListOf()
+        var voucherData: ArrayList<MerchantVoucherViewModel> = arrayListOf(),
+        var shouldRenderInitialData : Boolean = true
 ) : DynamicPDPDataModel {
     override fun type(): String = type
 

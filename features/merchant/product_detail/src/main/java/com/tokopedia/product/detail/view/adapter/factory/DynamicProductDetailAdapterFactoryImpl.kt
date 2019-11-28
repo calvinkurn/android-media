@@ -65,7 +65,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val childFragmentManager: F
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductLastSeenViewHolder.LAYOUT -> ProductLastSeenViewHolder(view)
-            ProductOpenShopViewHolder.LAYOUT -> ProductOpenShopViewHolder(view)
+            ProductOpenShopViewHolder.LAYOUT -> ProductOpenShopViewHolder(view, listener)
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
             ProductTradeinViewHolder.LAYOUT -> ProductTradeinViewHolder(view, listener)
             ProductMerchantVoucherViewHolder.LAYOUT -> ProductMerchantVoucherViewHolder(view, listener)

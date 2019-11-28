@@ -5,14 +5,19 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_open_shop.view.*
 
-class ProductOpenShopViewHolder(private val view: View): AbstractViewHolder<ProductOpenShopDataModel>(view){
+class ProductOpenShopViewHolder(private val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductOpenShopDataModel>(view) {
 
-    companion object{
+    companion object {
         val LAYOUT = R.layout.item_dynamic_open_shop
     }
+
     override fun bind(element: ProductOpenShopDataModel?) {
         view.open_shop.show()
+        view.setOnClickListener {
+            listener.openShopClicked()
+        }
     }
 }
