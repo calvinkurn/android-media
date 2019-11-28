@@ -93,7 +93,6 @@ import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
-import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
@@ -1019,50 +1018,50 @@ class FeedPlusFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showSnackbar(activity, message)
     }
 
-    override fun onWhitelistClicked(element: WhitelistViewModel) {
-        analytics.trackClickCreatePost(userSession.userId)
-        showBottomSheetCreatePost(element)
-    }
+//    override fun onWhitelistClicked(element: WhitelistViewModel) {
+//        analytics.trackClickCreatePost(userSession.userId)
+//        showBottomSheetCreatePost(element)
+//    }
 
-    private fun showBottomSheetCreatePost(element: WhitelistViewModel) {
-        if (activity != null) {
-            createPostBottomSheet = CloseableBottomSheetDialog.createInstance(requireContext(),
-                    {
+//    private fun showBottomSheetCreatePost(element: WhitelistViewModel) {
+//        if (activity != null) {
+//            createPostBottomSheet = CloseableBottomSheetDialog.createInstance(requireContext(),
+//                    {
+//
+//                    }, {
+//
+//            })
+//            val customView = createCustomCreatePostBottomSheetView(activity!!.layoutInflater, element)
+//            createPostBottomSheet.setCustomContentView(customView,
+//                    getString(R.string.create_post_as), true)
+//            createPostBottomSheet.show()
+//        }
+//    }
 
-                    }, {
-
-            })
-            val customView = createCustomCreatePostBottomSheetView(activity!!.layoutInflater, element)
-            createPostBottomSheet.setCustomContentView(customView,
-                    getString(R.string.create_post_as), true)
-            createPostBottomSheet.show()
-        }
-    }
-
-    private fun createCustomCreatePostBottomSheetView(layoutInflater: LayoutInflater, element: WhitelistViewModel): View {
-        val view = layoutInflater.inflate(R.layout.layout_create_post_bottom_sheet, null)
-
-        if (activity != null) {
-            val entryPointRecyclerView = view.findViewById<RecyclerView>(R.id.entry_point_list)
-            val adapter = EntryPointAdapter(activity!!,
-                    element.whitelist.authors, object: EntryPointAdapter.ActionListener{
-                override fun onEntryPointClicked(applink: String) {
-                    analytics.trackClickCreatePostAs(applink, userSession.userId,
-                            userSession.shopId)
-                    startActivityForResult(
-                            RouteManager.getIntent(requireContext(), applink),
-                            CREATE_POST
-                    )
-                    createPostBottomSheet.dismiss()
-                }
-
-            })
-            entryPointRecyclerView.layoutManager = LinearLayoutManager(requireContext(),
-                    LinearLayoutManager.VERTICAL, false)
-            entryPointRecyclerView.adapter = adapter
-        }
-        return view
-    }
+//    private fun createCustomCreatePostBottomSheetView(layoutInflater: LayoutInflater, element: WhitelistViewModel): View {
+//        val view = layoutInflater.inflate(R.layout.layout_create_post_bottom_sheet, null)
+//
+//        if (activity != null) {
+//            val entryPointRecyclerView = view.findViewById<RecyclerView>(R.id.entry_point_list)
+//            val adapter = EntryPointAdapter(activity!!,
+//                    element.whitelist.authors, object: EntryPointAdapter.ActionListener{
+//                override fun onEntryPointClicked(applink: String) {
+//                    analytics.trackClickCreatePostAs(applink, userSession.userId,
+//                            userSession.shopId)
+//                    startActivityForResult(
+//                            RouteManager.getIntent(requireContext(), applink),
+//                            CREATE_POST
+//                    )
+//                    createPostBottomSheet.dismiss()
+//                }
+//
+//            })
+//            entryPointRecyclerView.layoutManager = LinearLayoutManager(requireContext(),
+//                    LinearLayoutManager.VERTICAL, false)
+//            entryPointRecyclerView.adapter = adapter
+//        }
+//        return view
+//    }
 
     override fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int) {
         if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {

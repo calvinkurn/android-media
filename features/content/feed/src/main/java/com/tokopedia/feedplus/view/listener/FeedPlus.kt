@@ -7,10 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
-import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel
 import com.tokopedia.topads.sdk.domain.model.Data
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 
 import java.util.ArrayList
@@ -108,7 +105,7 @@ interface FeedPlus {
 
         fun onErrorSendVote(message: String)
 
-        fun onWhitelistClicked(element: WhitelistViewModel)
+//        fun onWhitelistClicked(element: WhitelistViewModel)
 
         fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int)
 
