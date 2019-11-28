@@ -64,8 +64,6 @@ class NotificationTransactionViewModel @Inject constructor(
     val lastNotificationId: LiveData<String> get() = _lastNotificationId
 
     init {
-        getInfoStatusNotification()
-
         _filterNotification.addSource(_infoNotification) {
             getNotificationFilter()
         }
