@@ -41,8 +41,9 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.testDependencies.kotlinMockito
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0")
-
+    testImplementation rootProject.ext.testDependencies.kotlinMockito2
 }
 
 project.ext {
