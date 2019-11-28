@@ -43,6 +43,7 @@ import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.contract.CouponDetailContract;
 import com.tokopedia.tokopoints.view.customview.RoundButton;
+import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.customview.SwipeCardView;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
@@ -84,10 +85,6 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     private TextView mBtnBarCode;
     private View mViewCodeSeparator;
     private TextView mTextSwipeNote;
-    private AppCompatImageView imageError;
-    private AppCompatTextView tvTitleError;
-    private AppCompatTextView tvLabelError;
-    private RoundButton btnError;
 
     @Inject
     public CouponDetailPresenter mPresenter;
@@ -95,6 +92,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     private String mRealCode;
     private CardView mBarCodeContainer;
     private CloseableBottomSheetFragment mBottomSheetFragment;
+    private ServerErrorView mServerErrorView;
 
 
     public static Fragment newInstance(Bundle extras) {
@@ -165,7 +163,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     @Override
     public void showError(boolean networkError) {
         mContainerMain.setDisplayedChild(CONTAINER_ERROR);
-        updateErrorUi(networkError);
+        mServerErrorView.showErrorUi(networkError);
     }
 
     @Override
@@ -208,18 +206,16 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     private void initViews(@NonNull View view) {
         mContainerMain = view.findViewById(R.id.container);
         llBottomBtn = view.findViewById(R.id.ll_bottom_button);
-        imageError = view.findViewById(R.id.img_error);
-        tvTitleError = view.findViewById(R.id.text_title_error);
-        tvLabelError = view.findViewById(R.id.text_label_error);
-        btnError = view.findViewById(R.id.text_failed_action);
+        mServerErrorView = view.findViewById(R.id.server_error_view);
     }
 
     private void initListener() {
         if (getView() == null) {
             return;
         }
-
-        getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
+        mServerErrorView.setErrorButtonClickListener((view) -> {
+            mPresenter.getCouponDetail(getArguments().getString(CommonConstant.EXTRA_COUPON_CODE));
+        });
     }
 
     @Override
@@ -820,40 +816,6 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         }, CloseableBottomSheetFragment.STATE_FULL);
         mBottomSheetFragment.showNow(getActivity().getSupportFragmentManager(), "");
     }
-
-
-    private void updateErrorUi(boolean hasInternet) {
-
-        int noConnectionImageId = R.drawable.ic_tp_no_connection;
-
-        int buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_large);
-        int buttonColor = MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.bg_button_green_border_outline);
-        int buttonFontColor = MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.white);
-
-        CharSequence titleText = getResources().getText(R.string.tp_no_internet_title);
-        CharSequence labelText = getResources().getText(R.string.tp_no_internet_label);
-        if (hasInternet) {
-
-            noConnectionImageId = R.drawable.ic_tp_toped_sorry;
-
-            buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_medium);
-            buttonColor = MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.transparent);
-            buttonFontColor = MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.tkpd_main_green);
-
-            titleText = getResources().getText(R.string.tp_label_server_error);
-            labelText = getResources().getText(R.string.tp_label_try_again);
-        }
-
-        imageError.setImageResource(noConnectionImageId);
-
-        btnError.setTextColor(buttonFontColor);
-        btnError.setButtonColor(buttonColor);
-        btnError.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonFontSize);
-
-        tvTitleError.setText(titleText);
-        tvLabelError.setText(labelText);
-    }
-
-
+    
 }
 

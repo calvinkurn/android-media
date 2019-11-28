@@ -860,7 +860,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.feed_delete_post))
         dialog.setDesc(getString(R.string.feed_after_delete_cant))
-        dialog.setBtnOk(getString(R.string.action_delete))
+        dialog.setBtnOk(getString(R.string.button_delete))
         dialog.setBtnCancel(getString(R.string.cancel))
         dialog.setOnOkClickListener {
             presenter.deletePost(id, rowNumber)
@@ -1335,6 +1335,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
 
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE)
+    }
+
+    override fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+        //Not used
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {

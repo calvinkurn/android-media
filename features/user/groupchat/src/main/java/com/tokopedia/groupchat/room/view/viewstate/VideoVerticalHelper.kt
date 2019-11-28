@@ -118,7 +118,7 @@ class VideoVerticalHelper constructor (
         playerView.layoutParams = layoutParams
 
         player = TkpdVideoPlayer.Builder()
-                .transaction(com.tokopedia.videoplayer.R.id.playerView, fragmentManager)
+                .transaction(R.id.playerView, fragmentManager)
                 .videoSource(sourceMedia)
                 /* preventing seekTo, declare videoPlayer with live_stream mode */
                 .type(PlayerType.LIVE_STREAM)
