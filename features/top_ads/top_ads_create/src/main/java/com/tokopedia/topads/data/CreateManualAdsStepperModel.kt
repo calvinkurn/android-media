@@ -9,13 +9,31 @@ import com.tokopedia.abstraction.base.view.model.StepperModel
  */
 open class CreateManualAdsStepperModel() : StepperModel {
 
-    constructor(source: Parcel) : this(
-    )
+    var groupId: String = ""
+    var groupName: String = ""
+    var selectedProductIds = mutableListOf<Int>()
+    var selectedKeywords = mutableListOf<String>()
 
-    override fun describeContents() = 0
+    constructor(parcel: Parcel) : this() {
+        groupId = parcel.readString()
+        groupName = parcel.readString()
+        selectedProductIds = arrayListOf<Int>().apply {
+            parcel.readList(this, Int::class.java.classLoader)
+        }
+        selectedKeywords = arrayListOf<String>().apply {
+            parcel.readList(this, String::class.java.classLoader)
+        }
+    }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(groupId)
+        parcel.writeString(groupName)
+        parcel.writeList(selectedProductIds)
+        parcel.writeList(selectedKeywords)
+    }
 
+    override fun describeContents(): Int {
+        return 0
     }
 
     companion object {
@@ -25,4 +43,6 @@ open class CreateManualAdsStepperModel() : StepperModel {
             override fun newArray(size: Int): Array<CreateManualAdsStepperModel?> = arrayOfNulls(size)
         }
     }
+
+
 }

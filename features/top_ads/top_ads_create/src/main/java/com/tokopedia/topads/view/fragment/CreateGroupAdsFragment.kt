@@ -54,6 +54,7 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) {}
 
     override fun gotoNextPage() {
+        stepperModel?.groupName = group_name_input.text.toString()
         stepperListener?.goToNextPage(stepperModel)
     }
 

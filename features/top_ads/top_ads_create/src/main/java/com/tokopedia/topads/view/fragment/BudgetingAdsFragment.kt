@@ -1,6 +1,7 @@
 package com.tokopedia.topads.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.tip_btn
 class BudgetingAdsFragment: BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     companion object {
+        val TAG = BudgetingAdsFragment::class.simpleName
         fun createInstance(): Fragment {
 
             val fragment = BudgetingAdsFragment()
@@ -39,6 +41,7 @@ class BudgetingAdsFragment: BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     override fun populateView(stepperModel: CreateManualAdsStepperModel) {
+        Log.d(TAG, stepperModel.toString())
     }
 
     override fun getScreenName(): String {

@@ -71,13 +71,23 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         stepperModel = stepperModel ?: CreateManualAdsStepperModel()
     }
 
-    override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) {}
+    override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) { }
 
     override fun gotoNextPage() {
+        stepperModel?.selectedProductIds = getSelectedProduct()
         stepperListener?.goToNextPage(stepperModel)
     }
 
+    private fun getSelectedProduct(): MutableList<Int> {
+        var list = mutableListOf<Int>()
+        productListAdapter.getSelectedItems().forEach {
+            list.add(it.productId)
+        }
+        return list
+    }
+
     override fun populateView(stepperModel: CreateManualAdsStepperModel) {
+
     }
 
     override fun getScreenName(): String {
@@ -167,7 +177,9 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun onProductListSelected() {
-        select_product_info.setText(String.format(getString(R.string.format_selected_produk), productListAdapter.getSelectedItems().size))
+        var count = productListAdapter.getSelectedItems().size
+        select_product_info.setText(String.format(getString(R.string.format_selected_produk), count))
+        btn_next.isEnabled = count > 0
     }
 
     private fun onEmptyProduct() {
@@ -187,7 +199,6 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun onSuccessGetProductList(data: List<ResponseProductList.Data>) {
         clearRefreshLoading()
-        btn_next.isEnabled = true
         data.forEach { result -> productListAdapter.items.add(ProductItemViewModel(result)) }
         productListAdapter.notifyDataSetChanged()
     }

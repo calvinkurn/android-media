@@ -31,6 +31,7 @@ class KeywordItemViewHolder(val view: View, var actionSelected: (() -> Unit)?): 
             view.keyword_count.setText(Utils.format(it.totalSearch.toLong()))
             view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 item.isChecked = isChecked
+                actionSelected?.invoke()
             }
         }
     }

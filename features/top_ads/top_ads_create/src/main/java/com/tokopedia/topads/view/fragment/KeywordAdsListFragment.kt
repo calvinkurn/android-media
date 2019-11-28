@@ -110,7 +110,16 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) {}
 
     override fun gotoNextPage() {
+        stepperModel?.selectedKeywords = getSelectedKeyword()
         stepperListener?.goToNextPage(stepperModel)
+    }
+
+    private fun getSelectedKeyword(): MutableList<String> {
+        var list = mutableListOf<String>()
+        keywordListAdapter.getSelectedItems().forEach {
+            list.add(it.keyword)
+        }
+        return list
     }
 
     override fun populateView(stepperModel: CreateManualAdsStepperModel) {

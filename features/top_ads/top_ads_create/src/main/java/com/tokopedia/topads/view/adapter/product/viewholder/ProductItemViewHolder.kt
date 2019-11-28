@@ -33,6 +33,7 @@ class ProductItemViewHolder(val view: View, var actionChecked: (() -> Unit)?): P
             ImageLoader.LoadImage(view.product_image, it.data.productImage)
             view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 item.isChecked = isChecked
+                actionChecked?.invoke()
             }
         }
     }
