@@ -12,11 +12,13 @@ import com.tokopedia.navigation.listener.TransactionMenuListener
 import com.tokopedia.navigation.presentation.adapter.viewholder.transaction.*
 import com.tokopedia.navigation.presentation.view.listener.NotificationTransactionItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
+import com.tokopedia.user.session.UserSessionInterface
 
 class NotificationTransactionFactoryImpl(
         private var notificationUpdateListener: NotificationTransactionItemListener,
         private val notificationFilterListener: NotificationFilterViewHolder.NotifFilterListener,
-        private val transactionMenuListener: TransactionMenuListener
+        private val transactionMenuListener: TransactionMenuListener,
+        private val userSession: UserSessionInterface
 ): BaseAdapterTypeFactory(), NotificationTransactionFactory {
 
     override fun type(purchaseNotification: PurchaseNotification): Int = PurchaseViewHolder.LAYOUT
@@ -53,7 +55,7 @@ class NotificationTransactionFactoryImpl(
             BigBannerNotificationViewHolder.LAYOUT -> BigBannerNotificationViewHolder(parent, notificationUpdateListener)
             ProductRecomNotificationViewHolder.LAYOUT -> ProductRecomNotificationViewHolder(parent, notificationUpdateListener)
             WishListNotificationViewHolder.LAYOUT -> WishListNotificationViewHolder(parent, notificationUpdateListener)
-            NotificationFilterViewHolder.LAYOUT -> NotificationFilterViewHolder(parent, notificationFilterListener)
+            NotificationFilterViewHolder.LAYOUT -> NotificationFilterViewHolder(parent, notificationFilterListener, userSession)
             else -> super.createViewHolder(parent, type)
         }
     }

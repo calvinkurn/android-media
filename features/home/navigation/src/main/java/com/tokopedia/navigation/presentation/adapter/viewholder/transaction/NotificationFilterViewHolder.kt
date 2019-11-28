@@ -12,29 +12,30 @@ import com.tokopedia.navigation.domain.model.NotificationFilterSectionWrapper
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
-import com.tokopedia.navigation.widget.ChipFilterItemDivider
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class NotificationFilterViewHolder(
         val view: View,
-        val listener: NotifFilterListener
+        val listener: NotifFilterListener,
+        val userSession: UserSessionInterface
 ): AbstractViewHolder<NotificationFilterSectionWrapper>(view), NotificationUpdateFilterAdapter.FilterAdapterListener {
 
-    private val context = view.context
     private val container = view.findViewById<LinearLayout>(R.id.container_notification_filter)
     private val lstFilter = view.findViewById<RecyclerView>(R.id.filter_list)
     private var filterAdapter: NotificationUpdateFilterAdapter?= null
 
     override fun bind(element: NotificationFilterSectionWrapper) {
-        if (element.filters.isNotEmpty()) {
-            container.show()
+        container.show() //TODO should check first of notification list
+
+        if (userSession.hasShop()) {
+            lstFilter.show()
         }
 
         if (filterAdapter == null) {
             filterAdapter = NotificationUpdateFilterAdapter(
                     NotificationUpdateFilterSectionTypeFactoryImpl(),
                     this,
-                    UserSession(context?.applicationContext))
+                    userSession)
             lstFilter.adapter = filterAdapter
             filterAdapter?.updateData(map(element.filters))
         }
