@@ -30,7 +30,7 @@ class NotificationTransactionAnalytics @Inject constructor() {
                 EVENT,
                 EVENT_CATEGORY,
                 EVENT_TRANSACTION_TAB_ACTION,
-                String.format("%s - %s", parent, child.replace("\\n", " "))
+                String.format("%s - %s", parent, child)
         ))
     }
 
