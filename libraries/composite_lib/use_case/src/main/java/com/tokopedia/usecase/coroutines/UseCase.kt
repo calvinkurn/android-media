@@ -23,8 +23,11 @@ abstract class UseCase<out T : Any>(
         }
     }
 
-    @JvmOverloads
-    fun execute(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit, useCaseRequestParams: RequestParams = RequestParams.EMPTY) {
+    fun execute(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit) {
+        execute(onSuccess, onError, RequestParams.EMPTY)
+    }
+
+    fun execute(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit, useCaseRequestParams: RequestParams) {
         cancelJobs()
         localScope.launchCatchError(block = {
             this.useCaseRequestParams = useCaseRequestParams
