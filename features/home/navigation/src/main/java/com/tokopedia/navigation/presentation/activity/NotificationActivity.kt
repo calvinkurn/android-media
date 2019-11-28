@@ -36,6 +36,7 @@ import com.tokopedia.navigation.presentation.fragment.NotificationTransactionFra
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
+import com.tokopedia.navigation.util.CacheManager
 import com.tokopedia.navigation.util.NotifPreference
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import javax.inject.Inject
@@ -47,14 +48,10 @@ import javax.inject.Inject
 class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, NotificationActivityContract.View,
         NotificationUpdateFragment.NotificationUpdateListener {
 
-    @Inject
-    lateinit var presenter: NotificationActivityPresenter
-
-    @Inject
-    lateinit var analytics: NotificationUpdateAnalytics
-
-    @Inject
-    lateinit var notifPreference: NotifPreference
+    @Inject lateinit var presenter: NotificationActivityPresenter
+    @Inject lateinit var analytics: NotificationUpdateAnalytics
+    @Inject lateinit var notifPreference: NotifPreference
+    @Inject lateinit var cacheManager: CacheManager
 
     private val handler = Handler()
 
@@ -106,7 +103,12 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     }
 
     override fun goToUpdateTab() {
-        viewPager.currentItem = 1
+        if (cacheManager.isExist(KEY_TAB_POSITION)) {
+            val position = cacheManager.read(KEY_TAB_POSITION)
+            changeTabPager(position)
+        } else {
+            viewPager.currentItem = 1
+        }
     }
 
     override fun onSuccessLoadNotifUpdate() {
@@ -152,7 +154,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPager.setCurrentItem(tab.position, true)
+                changeTabPager(tab.position)
                 sendAnalytics(tab.position)
                 clearNotifCounter(tab.position)
                 setTabSelectedView(tab.customView)
@@ -163,6 +165,11 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
         val tab = tabLayout.getTabAt(initialIndexPage)
         tab?.select()
+    }
+
+    private fun changeTabPager(position: Int) {
+        viewPager.setCurrentItem(position, true)
+        cacheManager.entry(KEY_TAB_POSITION, position)
     }
 
     private fun showOnBoarding(position: Int) {
@@ -303,6 +310,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     }
 
     companion object {
+        private const val KEY_TAB_POSITION = "tab_position"
 
         var INDEX_NOTIFICATION_ACTIVITY = 0
         var INDEX_NOTIFICATION_UPDATE = 1
