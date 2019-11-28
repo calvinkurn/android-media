@@ -39,7 +39,7 @@ public class FlightAnalytics {
     private String PROMO_CLICK_EVENT = "promoClick";
     private String PRODUCT_CLICK_EVENT = "productClick";
     private String PRODUCT_VIEW_EVENT = "productView";
-    private String SEARCH_RESULT_EVENT = "searchResult";
+    private String SEARCH_RESULT_EVENT = "viewSearchResult";
     private String CLICK_SEARCH_EVENT = "clickSearch";
     private String GENERIC_CATEGORY = "digital - flight";
     private String EVENT_CATEGORY = "eventCategory";
@@ -223,7 +223,7 @@ public class FlightAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(SEARCH_RESULT_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH_PRODUCT_NOT_FOUND,
-                String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
+                String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s - %s",
                         Label.FLIGHT_SMALL,
                         (searchPassDataViewModel.getDepartureAirport().getAirportCode() == null || searchPassDataViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
                                 searchPassDataViewModel.getDepartureAirport().getCityCode() : searchPassDataViewModel.getDepartureAirport().getAirportCode(),
