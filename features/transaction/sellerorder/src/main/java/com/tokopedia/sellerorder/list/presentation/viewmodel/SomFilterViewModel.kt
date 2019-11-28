@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -19,9 +20,17 @@ import javax.inject.Inject
 class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                              private val graphqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
-    val shippingListResult = MutableLiveData<Result<MutableList<SomListAllFilter.Data.ShippingList>>>()
-    val statusOrderListResult = MutableLiveData<Result<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>>()
-    val orderTypeListResult = MutableLiveData<Result<MutableList<SomListAllFilter.Data.OrderType>>>()
+    private val _shippingListResult = MutableLiveData<Result<MutableList<SomListAllFilter.Data.ShippingList>>>()
+    val shippingListResult: LiveData<Result<MutableList<SomListAllFilter.Data.ShippingList>>>
+        get() = _shippingListResult
+
+    private val _statusOrderListResult = MutableLiveData<Result<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>>()
+    val statusOrderListResult: LiveData<Result<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>>
+        get() = _statusOrderListResult
+
+    private val _orderTypeListResult = MutableLiveData<Result<MutableList<SomListAllFilter.Data.OrderType>>>()
+    val orderTypeListResult: LiveData<Result<MutableList<SomListAllFilter.Data.OrderType>>>
+        get() = _orderTypeListResult
 
     fun loadSomFilterData(filterQuery: String) {
         launch { getFilterList(filterQuery) }
@@ -34,14 +43,14 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 graphqlRepository.getReseponse(listOf(filterRequest))
                         .getSuccessData<SomListAllFilter.Data>()
             }
-            shippingListResult.postValue(Success(filterListData.orderShippingList.toMutableList()))
-            statusOrderListResult.postValue(Success(filterListData.orderFilterSomSingle.statusList.toMutableList()))
-            orderTypeListResult.postValue(Success(filterListData.orderTypeList.toMutableList()))
+            _shippingListResult.postValue(Success(filterListData.orderShippingList.toMutableList()))
+            _statusOrderListResult.postValue(Success(filterListData.orderFilterSomSingle.statusList.toMutableList()))
+            _orderTypeListResult.postValue(Success(filterListData.orderTypeList.toMutableList()))
 
         }, onError = {
-            shippingListResult.postValue(Fail(it))
-            statusOrderListResult.postValue(Fail(it))
-            orderTypeListResult.postValue(Fail(it))
+            _shippingListResult.postValue(Fail(it))
+            _statusOrderListResult.postValue(Fail(it))
+            _orderTypeListResult.postValue(Fail(it))
         })
     }
 

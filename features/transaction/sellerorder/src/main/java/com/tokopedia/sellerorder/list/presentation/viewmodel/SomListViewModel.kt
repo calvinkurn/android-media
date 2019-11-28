@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -22,9 +23,17 @@ import javax.inject.Inject
 class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                            private val graphqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
-    val tickerListResult = MutableLiveData<Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>>>()
-    val filterListResult = MutableLiveData<Result<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>>()
-    val orderListResult = MutableLiveData<Result<MutableList<SomListOrder.Data.OrderList.Order>>>()
+    private val _tickerListResult = MutableLiveData<Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>>>()
+    val tickerListResult: LiveData<Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>>>
+        get() = _tickerListResult
+
+    private val _filterListResult = MutableLiveData<Result<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>>()
+    val filterListResult: LiveData<Result<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>>
+        get() = _filterListResult
+
+    private val _orderListResult = MutableLiveData<Result<MutableList<SomListOrder.Data.OrderList.Order>>>()
+    val orderListResult: LiveData<Result<MutableList<SomListOrder.Data.OrderList.Order>>>
+        get() = _orderListResult
 
     fun loadSomListData(tickerQuery: String, filterQuery: String) {
         launch { getTickerList(tickerQuery) }
@@ -44,9 +53,9 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 graphqlRepository.getReseponse(listOf(tickerRequest))
                         .getSuccessData<SomListTicker.Data>()
                 }
-            tickerListResult.value = Success(tickerListData.orderTickers.listTicker.toMutableList())
+            _tickerListResult.value = Success(tickerListData.orderTickers.listTicker.toMutableList())
         }, onError = {
-            tickerListResult.postValue(Fail(it))
+            _tickerListResult.postValue(Fail(it))
         })
     }
 
@@ -57,9 +66,9 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 graphqlRepository.getReseponse(listOf(filterRequest))
                         .getSuccessData<SomListFilter.Data>()
             }
-            filterListResult.postValue(Success(filterListData.orderFilterSom.statusList.toMutableList()))
+            _filterListResult.postValue(Success(filterListData.orderFilterSom.statusList.toMutableList()))
         }, onError = {
-            filterListResult.postValue(Fail(it))
+            _filterListResult.postValue(Fail(it))
         })
     }
 
@@ -71,9 +80,9 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 graphqlRepository.getReseponse(listOf(orderRequest))
                         .getSuccessData<SomListOrder.Data>()
             }
-            orderListResult.postValue(Success(orderListData.orderList.orders.toMutableList()))
+            _orderListResult.postValue(Success(orderListData.orderList.orders.toMutableList()))
         }, onError = {
-            orderListResult.postValue(Fail(it))
+            _orderListResult.postValue(Fail(it))
         })
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.detail.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -28,11 +29,25 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                             private val graphqlRepository: GraphqlRepository,
                                              private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
 
-    val orderDetailResult = MutableLiveData<Result<SomDetailOrder.Data.GetSomDetail>>()
-    val acceptOrderResult = MutableLiveData<Result<SomAcceptOrder.Data>>()
-    val rejectReasonResult = MutableLiveData<Result<SomReasonRejectData.Data>>()
-    val rejectOrderResult = MutableLiveData<Result<SomRejectOrder.Data>>()
-    val editRefNumResult = MutableLiveData<Result<SomEditAwbResponse.Data>>()
+    private val _orderDetailResult = MutableLiveData<Result<SomDetailOrder.Data.GetSomDetail>>()
+    val orderDetailResult: LiveData<Result<SomDetailOrder.Data.GetSomDetail>>
+        get() = _orderDetailResult
+
+    private val _acceptOrderResult = MutableLiveData<Result<SomAcceptOrder.Data>>()
+    val acceptOrderResult: LiveData<Result<SomAcceptOrder.Data>>
+        get() = _acceptOrderResult
+
+    private val _rejectReasonResult = MutableLiveData<Result<SomReasonRejectData.Data>>()
+    val rejectReasonResult: LiveData<Result<SomReasonRejectData.Data>>
+        get() = _rejectReasonResult
+
+    private val _rejectOrderResult = MutableLiveData<Result<SomRejectOrder.Data>>()
+    val rejectOrderResult: LiveData<Result<SomRejectOrder.Data>>
+        get() = _rejectOrderResult
+
+    private val _editRefNumResult = MutableLiveData<Result<SomEditAwbResponse.Data>>()
+    val editRefNumResult: LiveData<Result<SomEditAwbResponse.Data>>
+        get() = _editRefNumResult
 
     fun loadDetailOrder(detailQuery: String, orderId: String) {
         launch { getDetailOrder(detailQuery, orderId) }
@@ -59,13 +74,13 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 VAR_PARAM_LANG to PARAM_LANG_ID)
         launchCatchError(block = {
             val orderDetailData = withContext(Dispatchers.IO) {
-                val detailRequest = GraphqlRequest(rawQuery, POJO_DETAIL, requestDetailParams as Map<String, Any>?)
+                val detailRequest = GraphqlRequest(rawQuery, SomDetailOrder.Data::class.java, requestDetailParams as Map<String, Any>?)
                 graphqlRepository.getReseponse(listOf(detailRequest))
                         .getSuccessData<SomDetailOrder.Data>()
             }
-            orderDetailResult.postValue(Success(orderDetailData.getSomDetail))
+            _orderDetailResult.postValue(Success(orderDetailData.getSomDetail))
         }, onError = {
-            orderDetailResult.postValue(Fail(it))
+            _orderDetailResult.postValue(Fail(it))
         })
     }
 
@@ -75,13 +90,13 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         val acceptOrderParams = mapOf(PARAM_INPUT to requestAcceptOrderParam)
         launchCatchError(block = {
             val acceptOrderData = withContext(Dispatchers.IO) {
-                val acceptOrderRequest = GraphqlRequest(rawQuery, POJO_ACCEPT_ORDER, acceptOrderParams as Map<String, Any>?)
+                val acceptOrderRequest = GraphqlRequest(rawQuery, SomAcceptOrder.Data::class.java, acceptOrderParams as Map<String, Any>?)
                 graphqlRepository.getReseponse(listOf(acceptOrderRequest))
                         .getSuccessData<SomAcceptOrder.Data>()
             }
-            acceptOrderResult.postValue(Success(acceptOrderData))
+            _acceptOrderResult.postValue(Success(acceptOrderData))
         }, onError = {
-            acceptOrderResult.postValue(Fail(it))
+            _acceptOrderResult.postValue(Fail(it))
         })
     }
 
@@ -89,13 +104,13 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         val orderParams = mapOf(PARAM_INPUT to reasonRejectParam)
         launchCatchError(block = {
             val rejectReasonData = withContext(Dispatchers.IO) {
-                val orderRequest = GraphqlRequest(rawQuery, POJO_REASON_REJECT, orderParams)
+                val orderRequest = GraphqlRequest(rawQuery, SomReasonRejectData.Data::class.java, orderParams)
                 graphqlRepository.getReseponse(listOf(orderRequest))
                         .getSuccessData<SomReasonRejectData.Data>()
             }
-            rejectReasonResult.postValue(Success(rejectReasonData))
+            _rejectReasonResult.postValue(Success(rejectReasonData))
         }, onError = {
-            rejectReasonResult.postValue(Fail(it))
+            _rejectReasonResult.postValue(Fail(it))
         })
     }
 
@@ -105,13 +120,13 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         println("++ rejectParam = $rejectParam")
         launchCatchError(block = {
             val rejectOrderData = withContext(Dispatchers.IO) {
-                val rejectRequest = GraphqlRequest(rawQuery, POJO_REJECT_ORDER, rejectParam)
+                val rejectRequest = GraphqlRequest(rawQuery, SomRejectOrder.Data::class.java, rejectParam)
                 graphqlRepository.getReseponse(listOf(rejectRequest))
                         .getSuccessData<SomRejectOrder.Data>()
             }
-            rejectOrderResult.postValue(Success(rejectOrderData))
+            _rejectOrderResult.postValue(Success(rejectOrderData))
         }, onError = {
-            rejectOrderResult.postValue(Fail(it))
+            _rejectOrderResult.postValue(Fail(it))
         })
     }
 
@@ -122,16 +137,9 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 graphqlRepository.getReseponse(listOf(rejectRequest))
                         .getSuccessData<SomEditAwbResponse.Data>()
             }
-            editRefNumResult.postValue(Success(editRefNum))
+            _editRefNumResult.postValue(Success(editRefNum))
         }, onError = {
-            editRefNumResult.postValue(Fail(it))
+            _editRefNumResult.postValue(Fail(it))
         })
-    }
-
-    companion object {
-        private val POJO_DETAIL = SomDetailOrder.Data::class.java
-        private val POJO_ACCEPT_ORDER = SomAcceptOrder.Data::class.java
-        private val POJO_REASON_REJECT = SomReasonRejectData.Data::class.java
-        private val POJO_REJECT_ORDER = SomRejectOrder.Data::class.java
     }
 }

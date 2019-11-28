@@ -38,8 +38,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.fragment_som_confirm_shipping.*
 import javax.inject.Inject
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_CHANGE_COURIER
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_CONFIRMATION_SHIPPING
+import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 
 /**
  * Created by fwidjaja on 2019-11-15.
@@ -96,6 +95,8 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (currIsChangeShipping) (activity as SomConfirmShippingActivity).supportActionBar?.title = getString(R.string.title_som_change_courier)
+        else (activity as SomConfirmShippingActivity).supportActionBar?.title = getString(R.string.title_som_confirm_shipping)
         return inflater.inflate(R.layout.fragment_som_confirm_shipping, container, false)
     }
 
@@ -120,11 +121,9 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         label_choosen_courier_service?.text = currShipmentProductName
 
         if (currIsChangeShipping) {
-            activity?.title = TITLE_CHANGE_COURIER
             switch_change_courier?.isChecked = true
             setBtnToChangeCourier()
         } else {
-            activity?.title = TITLE_CONFIRMATION_SHIPPING
             switch_change_courier?.isChecked = false
             setBtnToConfirmShipping()
         }

@@ -267,7 +267,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 currentIndex = index
                 filterItem.setColorBorder(R.color.tkpd_main_green)
                 filterItem.isSelected = true
-                paramOrder.statusList = it.orderStatusIdList
+                // paramOrder.statusList = it.orderStatusIdList
 
             }  else {
                 filterItem.setColorBorder(R.color.gray_background)

@@ -473,9 +473,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             setActionUbahNoResi()
 
         } else if (key.equals(KEY_UPLOAD_AWB, true)) {
-            if (detailResponse.shipment.awbUploadUrl.isNotEmpty()) {
+            setActionUploadAwb(key)
+            // make sure using this one or just use the url?
+            /*if (detailResponse.shipment.awbUploadUrl.isNotEmpty()) {
                 onInvalidResiUpload(detailResponse.shipment.awbUploadUrl)
-            }
+            }*/
 
         } else if (key.equals(KEY_CHANGE_COURIER, true)) {
             setActionChangeCourier()
@@ -484,6 +486,14 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
     private fun setActionChangeCourier() {
         createIntentConfirmShipping(true)
+    }
+
+    private fun setActionUploadAwb(key: String) {
+        detailResponse.button.forEach {
+            if (key.equals(KEY_UPLOAD_AWB, true)) {
+                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, it.url))
+            }
+        }
     }
 
     private fun createIntentConfirmShipping(isChangeShipping: Boolean) {

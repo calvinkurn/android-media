@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.requestpickup.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -25,8 +26,13 @@ import javax.inject.Inject
  */
 class SomConfirmReqPickupViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                        private val graphqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
-    val confirmReqPickupResult = MutableLiveData<Result<SomConfirmReqPickup.Data>>()
-    val processReqPickupResult = MutableLiveData<Result<SomProcessReqPickup>>()
+    private val _confirmReqPickupResult = MutableLiveData<Result<SomConfirmReqPickup.Data>>()
+    val confirmReqPickupResult: LiveData<Result<SomConfirmReqPickup.Data>>
+        get() = _confirmReqPickupResult
+
+    private val _processReqPickupResult = MutableLiveData<Result<SomProcessReqPickup>>()
+    val processReqPickupResult: LiveData<Result<SomProcessReqPickup>>
+        get() = _processReqPickupResult
 
     fun loadConfirmRequestPickup(detailQuery: String, reqPickupParam: SomConfirmReqPickupParam) {
         launch { getRequestPickupData(detailQuery, reqPickupParam) }
@@ -40,13 +46,13 @@ class SomConfirmReqPickupViewModel @Inject constructor(dispatcher: CoroutineDisp
         val reqPickupParamInput = mapOf(SomConsts.PARAM_INPUT to reqPickupParam)
         launchCatchError(block = {
             val reqPickupData = withContext(Dispatchers.IO) {
-                val reqPickupRequest = GraphqlRequest(rawQuery, POJO_LOGISTIC_PRE_SHIP, reqPickupParamInput as Map<String, Any>?)
+                val reqPickupRequest = GraphqlRequest(rawQuery, SomConfirmReqPickup.Data::class.java, reqPickupParamInput as Map<String, Any>?)
                 graphqlRepository.getReseponse(listOf(reqPickupRequest))
                         .getSuccessData<SomConfirmReqPickup.Data>()
             }
-            confirmReqPickupResult.postValue(Success(reqPickupData))
+            _confirmReqPickupResult.postValue(Success(reqPickupData))
         }, onError = {
-            confirmReqPickupResult.postValue(Fail(it))
+            _confirmReqPickupResult.postValue(Fail(it))
         })
     }
 
@@ -55,18 +61,13 @@ class SomConfirmReqPickupViewModel @Inject constructor(dispatcher: CoroutineDisp
 
         launchCatchError(block = {
             val processReqPickupData = withContext(Dispatchers.IO) {
-                val reqPickupRequest = GraphqlRequest(reqPickupQuery, POJO_LOGISTIC_REQ_PICKUP, reqPickupParamInput as Map<String, Any>?)
+                val reqPickupRequest = GraphqlRequest(reqPickupQuery, SomProcessReqPickup::class.java, reqPickupParamInput as Map<String, Any>?)
                 graphqlRepository.getReseponse(listOf(reqPickupRequest))
                         .getSuccessData<SomProcessReqPickup>()
             }
-            processReqPickupResult.postValue(Success(processReqPickupData))
+            _processReqPickupResult.postValue(Success(processReqPickupData))
         }, onError = {
-            processReqPickupResult.postValue(Fail(it))
+            _processReqPickupResult.postValue(Fail(it))
         })
-    }
-
-    companion object {
-        private val POJO_LOGISTIC_PRE_SHIP = SomConfirmReqPickup.Data::class.java
-        private val POJO_LOGISTIC_REQ_PICKUP = SomProcessReqPickup::class.java
     }
 }

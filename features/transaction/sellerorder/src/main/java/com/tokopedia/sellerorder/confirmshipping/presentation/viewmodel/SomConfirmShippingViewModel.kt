@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.confirmshipping.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -23,9 +24,17 @@ import javax.inject.Inject
 class SomConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                       private val graphqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
-    val confirmShippingResult = MutableLiveData<Result<SomConfirmShipping.Data>>()
-    val courierListResult = MutableLiveData<Result<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>>()
-    val changeCourierResult = MutableLiveData<Result<SomChangeCourier.Data>>()
+    private val _confirmShippingResult = MutableLiveData<Result<SomConfirmShipping.Data>>()
+    val confirmShippingResult: LiveData<Result<SomConfirmShipping.Data>>
+        get() = _confirmShippingResult
+
+    private val _courierListResult = MutableLiveData<Result<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>>()
+    val courierListResult: LiveData<Result<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>>
+        get() = _courierListResult
+
+    private val _changeCourierResult = MutableLiveData<Result<SomChangeCourier.Data>>()
+    val changeCourierResult: LiveData<Result<SomChangeCourier.Data>>
+        get() = _changeCourierResult
 
     fun confirmShipping(queryString: String) {
         launch { doConfirmShipping(queryString) }
@@ -46,22 +55,22 @@ class SomConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispa
                 graphqlRepository.getReseponse(listOf(confirmShippingRequest))
                         .getSuccessData<SomConfirmShipping.Data>()
             }
-            confirmShippingResult.postValue(Success(confirmShippingData))
+            _confirmShippingResult.postValue(Success(confirmShippingData))
         }, onError = {
-            confirmShippingResult.postValue(Fail(it))
+            _confirmShippingResult.postValue(Fail(it))
         })
     }
 
     suspend fun doGetCourierList(rawQuery: String) {
         launchCatchError(block = {
             val courierListData = withContext(Dispatchers.IO) {
-                val orderRequest = GraphqlRequest(rawQuery, COURIER_LIST_RESP)
+                val orderRequest = GraphqlRequest(rawQuery, SomCourierList.Data::class.java)
                 graphqlRepository.getReseponse(listOf(orderRequest))
                         .getSuccessData<SomCourierList.Data>()
             }
-            courierListResult.postValue(Success(courierListData.mpLogisticGetEditShippingForm.dataShipment.listShipment.toMutableList()))
+            _courierListResult.postValue(Success(courierListData.mpLogisticGetEditShippingForm.dataShipment.listShipment.toMutableList()))
         }, onError = {
-            courierListResult.postValue(Fail(it))
+            _courierListResult.postValue(Fail(it))
         })
     }
 
@@ -72,14 +81,9 @@ class SomConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispa
                 graphqlRepository.getReseponse(listOf(changeCourierRequest))
                         .getSuccessData<SomChangeCourier.Data>()
             }
-            changeCourierResult.postValue(Success(changeCourierData))
+            _changeCourierResult.postValue(Success(changeCourierData))
         }, onError = {
-            changeCourierResult.postValue(Fail(it))
+            _changeCourierResult.postValue(Fail(it))
         })
-    }
-
-    companion object {
-        private val CONFIRM_SHIPPING_RESP = SomConfirmShipping.Data::class.java
-        private val COURIER_LIST_RESP = SomCourierList.Data::class.java
     }
 }
