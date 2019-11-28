@@ -135,14 +135,19 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_SHIPPED)
     public static Intent getIntentShipped(Context context, Bundle extras) {
-        /*Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, CustomerAppSellerTransactionActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SHIPPED)
-                .putExtras(extras);*/
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
 
-        return RouteManager.getIntent(context, ApplinkConstInternalOrder.SHIPPED)
-                .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
+        if (enable) {
+            return RouteManager.getIntent(context, ApplinkConstInternalOrder.SHIPPED)
+                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
+        } else {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, CustomerAppSellerTransactionActivity.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SHIPPED)
+                    .putExtras(extras);
+        }
     }
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_DELIVERED)
