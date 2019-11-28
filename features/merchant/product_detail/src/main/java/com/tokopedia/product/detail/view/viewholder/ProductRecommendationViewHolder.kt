@@ -14,7 +14,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import kotlinx.android.synthetic.main.partial_product_recom_1.view.*
 
@@ -39,90 +38,83 @@ class ProductRecommendationViewHolder(private val view: View,
                     listener.onSeeAllRecomClicked(pageName, seeMoreAppLink)
                 }
             }
-            initAdapter(this, element.shouldInitRecomWidget)
-            /**
-             * Do not init when recommendation widget already loaded
-             * this function is for handle refresh behavior
-             */
-            element.shouldInitRecomWidget = false
+            initAdapter(this)
         }
     }
 
-    private fun initAdapter(product: RecommendationWidget, shouldInitRecomWidget: Boolean) {
-        if (shouldInitRecomWidget) {
-            view.product_recom_1.initCarouselProductCardView(
-                    parentView = view,
-                    isScrollable = true,
-                    carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
-                        override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
-                            val productRecommendation = product.recommendationItemList[adapterPosition]
-                            val topAdsClickUrl = productRecommendation.clickUrl
-                            if (productCardModel.isTopAds) {
-                                ImpresionTask().execute(topAdsClickUrl)
-                            }
-
-                            listener.eventRecommendationClick(productRecommendation, adapterPosition, product.pageName, product.title)
-
-                            view.context?.run {
-                                RouteManager.route(this,
-                                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                                        productRecommendation.productId.toString())
-                            }
-                        }
-                    },
-                    carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
-                        override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
-                            return product.recommendationItemList[adapterPosition]
+    private fun initAdapter(product: RecommendationWidget) {
+        view.product_recom_1.initCarouselProductCardView(
+                parentView = view,
+                isScrollable = true,
+                carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
+                    override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
+                        val productRecommendation = product.recommendationItemList[adapterPosition]
+                        val topAdsClickUrl = productRecommendation.clickUrl
+                        if (productCardModel.isTopAds) {
+                            ImpresionTask().execute(topAdsClickUrl)
                         }
 
-                        override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
-                            val productRecommendation = product.recommendationItemList[adapterPosition]
-                            val topAdsImageUrl = productRecommendation.trackerImageUrl
-                            if (productCardModel.isTopAds) {
-                                ImpresionTask().execute(topAdsImageUrl)
-                            }
+                        listener.eventRecommendationClick(productRecommendation, adapterPosition, product.pageName, product.title)
 
-                            listener.eventRecommendationImpression(productRecommendation,
-                                    adapterPosition,
-                                    product.pageName,
-                                    product.title)
+                        view.context?.run {
+                            RouteManager.route(this,
+                                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                                    productRecommendation.productId.toString())
                         }
-                    },
-                    productCardModelList = product.recommendationItemList.map {
-                        ProductCardModel(
-                                slashedPrice = it.slashedPrice,
-                                productName = it.name,
-                                formattedPrice = it.price,
-                                productImageUrl = it.imageUrl,
-                                isTopAds = it.isTopAds,
-                                discountPercentage = it.discountPercentage,
-                                reviewCount = it.countReview,
-                                ratingCount = it.rating,
-                                shopLocation = it.location,
-                                isWishlistVisible = false,
-                                isWishlisted = it.isWishlist,
-                                shopBadgeList = it.badgesUrl.map {
-                                    ProductCardModel.ShopBadge(imageUrl = it ?: "")
-                                },
-                                freeOngkir = ProductCardModel.FreeOngkir(
-                                        isActive = it.isFreeOngkirActive,
-                                        imageUrl = it.freeOngkirImageUrl
-                                ),
-                                labelPromo = ProductCardModel.Label(
-                                        title = it.labelPromo.title,
-                                        type = it.labelPromo.type
-                                ),
-                                labelCredibility = ProductCardModel.Label(
-                                        title = it.labelCredibility.title,
-                                        type = it.labelCredibility.type
-                                ),
-                                labelOffers = ProductCardModel.Label(
-                                        title = it.labelOffers.title,
-                                        type = it.labelOffers.type
-                                )
-                        )
-                    })
-        }
+                    }
+                },
+                carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
+                    override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
+                        return product.recommendationItemList[adapterPosition]
+                    }
+
+                    override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
+                        val productRecommendation = product.recommendationItemList[adapterPosition]
+                        val topAdsImageUrl = productRecommendation.trackerImageUrl
+                        if (productCardModel.isTopAds) {
+                            ImpresionTask().execute(topAdsImageUrl)
+                        }
+
+                        listener.eventRecommendationImpression(productRecommendation,
+                                adapterPosition,
+                                product.pageName,
+                                product.title)
+                    }
+                },
+                productCardModelList = product.recommendationItemList.map {
+                    ProductCardModel(
+                            slashedPrice = it.slashedPrice,
+                            productName = it.name,
+                            formattedPrice = it.price,
+                            productImageUrl = it.imageUrl,
+                            isTopAds = it.isTopAds,
+                            discountPercentage = it.discountPercentage,
+                            reviewCount = it.countReview,
+                            ratingCount = it.rating,
+                            shopLocation = it.location,
+                            isWishlistVisible = false,
+                            isWishlisted = it.isWishlist,
+                            shopBadgeList = it.badgesUrl.map {
+                                ProductCardModel.ShopBadge(imageUrl = it ?: "")
+                            },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    isActive = it.isFreeOngkirActive,
+                                    imageUrl = it.freeOngkirImageUrl
+                            ),
+                            labelPromo = ProductCardModel.Label(
+                                    title = it.labelPromo.title,
+                                    type = it.labelPromo.type
+                            ),
+                            labelCredibility = ProductCardModel.Label(
+                                    title = it.labelCredibility.title,
+                                    type = it.labelCredibility.type
+                            ),
+                            labelOffers = ProductCardModel.Label(
+                                    title = it.labelOffers.title,
+                                    type = it.labelOffers.type
+                            )
+                    )
+                })
     }
 
     override fun bind(element: ProductRecommendationDataModel?, payloads: MutableList<Any>) {

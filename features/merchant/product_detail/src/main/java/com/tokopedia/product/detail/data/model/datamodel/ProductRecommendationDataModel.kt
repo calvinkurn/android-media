@@ -9,8 +9,7 @@ data class ProductRecommendationDataModel(
         val name: String = "",
         val dataLayout: List<ComponentData> = listOf(),
         var recomWidgetData: RecommendationWidget? = null,
-        var position: Int = -1,
-        var shouldInitRecomWidget: Boolean = true
+        var position: Int = -1
 ) : DynamicPDPDataModel {
     override fun type(): String = type
 

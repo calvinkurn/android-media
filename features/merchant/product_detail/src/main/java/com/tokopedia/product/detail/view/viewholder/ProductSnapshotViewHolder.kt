@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -61,7 +60,7 @@ class ProductSnapshotViewHolder(itemView: View,
         })
 
         itemView.fab_detail.setOnClickListener { listener.onFabWishlistClicked(it.isActivated) }
-        itemView.view_picture_search_bar.renderData(element.media, listener::onImageClicked, childFragmentManager)
+        itemView.view_picture_search_bar.renderData(element.media, listener::onImageClicked, listener.getChild()!!)
     }
 
     override fun bind(element: ProductSnapshotDataModel?, payloads: MutableList<Any>) {

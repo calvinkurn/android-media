@@ -3,7 +3,42 @@ query pdpGetLayout($productID: String) {
     name
     basicInfo {
       productID
-      categoryID
+      category{
+        id
+        name
+        title
+        breadcrumbURL
+        isAdult
+        detail{
+          id
+        }
+      }
+      menu{
+        id
+        name
+        url
+      }
+      shopID
+      name
+      alias
+      minOrder
+      maxOrder
+      status
+      url
+      sku
+      gtin
+      isKreasiLokal
+      isMustInsurance
+      catalogID
+      needPrescription
+      isLeasing
+      isBlacklisted
+      blacklistMessage{
+        title
+        description
+        button
+        url
+      }
     }
     components {
       name
@@ -66,13 +101,28 @@ query pdpGetLayout($productID: String) {
             value
             stockWording
           }
-          isFreeOngkir {
-            isActive
-            imageURL
+
+          variant{
+            isVariant
+            parentID
+          }
+          wholesale {
+            minQty
+            price {
+              value
+              currency
+              lastUpdateUnix
+              idr
+            }
           }
           isCashback {
             percentage
           }
+          isFreeOngkir {
+            isActive
+            imageURL
+          }
+
           isTradeIn
           isTradeIn
           isOS

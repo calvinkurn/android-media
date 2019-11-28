@@ -23,6 +23,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -129,6 +130,10 @@ import javax.inject.Inject
 
 class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener {
 
+    override fun getChild(): FragmentManager? {
+        return childFragmentManager
+    }
+
     companion object {
         const val PAYLOAD_TOOGLE_FAVORITE = 2
         const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
@@ -202,6 +207,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         initializeSearchToolbar()
         initializeStickyLogin(view)
         initActionButton()
+        getRecyclerView(view).itemAnimator = null
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
@@ -466,7 +472,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             pdpHashMapUtil.snapShotMap.shouldShowCod =
                     shouldShowCodP1 && shouldShowCodP2Shop && shouldShowCodP3
 
-            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, 2)
+            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOADS_COD)
         })
 
         viewModel.moveToWarehouseResult.observe(this, Observer {
@@ -1642,7 +1648,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             pdpHashMapUtil.getShopInfo.shopInfo = pdpHashMapUtil.getShopInfo.shopInfo?.copy(favoriteData = newFavorite)
             pdpHashMapUtil.getShopInfo.isFavorite = favorite.alreadyFavorited != 1
             pdpHashMapUtil.getShopInfo.toogleFavorite = true
-            // TODO UPDATE SNAPSHOT
             dynamicAdapter.notifyShopInfo(pdpHashMapUtil.getShopInfo, PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
         }
     }

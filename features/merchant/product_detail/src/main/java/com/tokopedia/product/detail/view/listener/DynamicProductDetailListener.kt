@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.listener
 
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Category
@@ -18,6 +19,7 @@ interface DynamicProductDetailListener {
      */
     fun onImageClicked(position: Int)
     fun onFabWishlistClicked(isActive: Boolean)
+    fun getChild(): FragmentManager?
 
     /**
      * ProductInfoViewHolder

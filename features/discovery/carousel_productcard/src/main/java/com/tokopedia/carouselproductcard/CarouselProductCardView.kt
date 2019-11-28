@@ -6,14 +6,14 @@ import android.graphics.Point
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
-import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
+import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 
 class CarouselProductCardView: BaseCustomView {
 
@@ -85,7 +85,9 @@ class CarouselProductCardView: BaseCustomView {
                 productCardModelList, isScrollable, carouselProductCardListenerInfo, getMaxProductCardContentHeight(productCardModelList))
 
         carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
-        carouselProductCardRecyclerView?.adapter = carouselAdapter
+        if (carouselProductCardRecyclerView.adapter == null) {
+            carouselProductCardRecyclerView?.adapter = carouselAdapter
+        }
     }
 
     /**
