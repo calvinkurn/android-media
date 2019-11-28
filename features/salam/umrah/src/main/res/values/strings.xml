@@ -184,6 +184,10 @@
 
     <string name="umrah_pdp_additional_information_title">Informasi Tambahan</string>
     <string name="umrah_checkout_validation_error">Harap Lengkapi Data anda</string>
+    <string name="umrah_checkout_dialog_title">Yakin Batal Pesan?</string>
+    <string name="umrah_checkout_dialog_desc">Paket umrah ini bisa tidak tersedia di waktu lain. Lanjut pesan untuk tetap membeli paket umrah ini?</string>
+    <string name="umrah_checkout_dialog_cancel_desc">Batalkan</string>
+    <string name="umrah_checkout_dialog_ok_desc">Lanjut Pesan</string>
 
 
 </resources>
