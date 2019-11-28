@@ -50,6 +50,7 @@ import com.tokopedia.showcase.ShowCasePreference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -348,11 +349,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     private void startShowCase() {
-
-        if (isAllowImageSearch() &&
-                !isShowShowCase()) {
-
-
+        if (shouldShowImageSearchShowCase()) {
             final String showCaseTag = "Image Search ShowCase";
             if (ShowCasePreference.hasShown(mContext, showCaseTag)) {
                 return;
@@ -386,6 +383,12 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             }
 
         }
+    }
+
+    private boolean shouldShowImageSearchShowCase() {
+        return isAllowImageSearch()
+                && !isShowShowCase()
+                && mImageSearchButton.getVisibility() == View.VISIBLE;
     }
 
     private ShowCaseDialog createShowCase() {
