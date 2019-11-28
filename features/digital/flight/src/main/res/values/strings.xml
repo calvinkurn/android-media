@@ -455,5 +455,4 @@
 
     <string name="flight_min_date_label">Pergi</string>
     <string name="flight_max_date_label">Pulang</string>
-    <string name="flight_calendar_lowest_fare_price_color">#42b549</string>
 </resources>

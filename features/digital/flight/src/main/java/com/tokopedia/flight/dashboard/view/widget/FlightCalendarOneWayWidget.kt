@@ -186,7 +186,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
         val subTitleList = arrayListOf<SubTitle>()
         listFareAttribute.map {
             subTitleList.add(SubTitle(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.dateFare),
-                    it.displayedFare, if (it.isLowestFare) getString(R.string.flight_calendar_lowest_fare_price_color) else ""))
+                    it.displayedFare, if (it.isLowestFare) "# + ${Integer.toHexString(R.color.filter_order_green)}" else ""))
         }
         return subTitleList
     }
