@@ -466,7 +466,7 @@ public class OrderListAnalytics {
                                 NAME, categoryName,
                                 ID, order.getOrderId(),
                                 PRICE, total,
-                                LIST, "/orderlist "+order.status(),
+                                LIST, "/order list "+order.status(),
                                 KEY_CATEGORY, NONE,
                                 BRAND, NONE,
                                 VARIANT, NONE,
@@ -485,7 +485,7 @@ public class OrderListAnalytics {
                         CURRENCY_CODE, IDR,
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
-                                        LIST, "/orderList "+status,
+                                        LIST, "/order list "+status,
                                         PRODUCTS, DataLayer.listOf(
                                                 DataLayer.mapOf(
                                                         NAME, items.getTitle(),
