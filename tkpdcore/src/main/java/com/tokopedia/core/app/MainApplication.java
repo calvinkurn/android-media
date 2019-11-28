@@ -8,6 +8,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.util.Log;
+
 import androidx.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
@@ -162,15 +164,18 @@ public abstract class MainApplication extends MainRouterApplication{
                 @Override
                 public void onProviderInstalled() {
                     // Do nothing
+                    Log.d("Oka", "Provider Installer success");
                 }
 
                 @Override
                 public void onProviderInstallFailed(int i, Intent intent) {
                     // Do nothing
+                    Log.d("Oka", "Provider Installer failed");
                 }
             });
         } catch (Throwable t) {
             // Do nothing
+            t.printStackTrace();
         }
     }
 
