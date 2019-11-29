@@ -153,7 +153,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog()
-            else if (bookingViewModel.getDepartureId().isNotEmpty()) hideShimmering()
+            else if (bookingViewModel.getCartId().isNotEmpty()) hideShimmering()
         })
 
         bookingViewModel.flightPromoResult.observe(this, Observer {
