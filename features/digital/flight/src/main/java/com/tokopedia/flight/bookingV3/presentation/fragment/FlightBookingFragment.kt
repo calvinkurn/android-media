@@ -148,7 +148,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendAddToCartTracking()
                 }
                 is Fail -> {
-                    showErrorFullPage(mapThrowableToFlightError(it.throwable.message ?: ""), ::addToCart)
+                    showErrorFullPage(mapThrowableToFlightError(it.throwable.message
+                            ?: ""), ::addToCart)
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
@@ -194,7 +195,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendCheckOutTracking(it.data.parameter.pid)
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""), ::checkOutCart)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message
+                            ?: ""), ::checkOutCart)
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
@@ -213,7 +215,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""), ::verifyCart)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message
+                            ?: ""), ::verifyCart)
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
@@ -653,7 +656,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
             delay(2000L)
             layout_loading.visibility = View.GONE
             layout_shimmering.visibility = View.VISIBLE
-        } catch (e: Throwable) { }
+        } catch (e: Throwable) {
+        }
 
     }
 
@@ -741,14 +745,20 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun showErrorFullPage(e: FlightError, action: () -> Unit) {
-        if (activity != null) {
-            val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
-            layout_full_page_error.visibility = View.VISIBLE
-            layout_full_page_error.iv_error_page.setImageResource(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
-            layout_full_page_error.tv_error_title.text = FlightBookingErrorCodeMapper.getErrorTitle(errorCode)
-            layout_full_page_error.tv_error_subtitle.text = FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode)
+        val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
+        layout_full_page_error.visibility = View.VISIBLE
+        layout_full_page_error.iv_error_page.setImageResource(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
+        layout_full_page_error.tv_error_title.text = FlightBookingErrorCodeMapper.getErrorTitle(errorCode)
+        layout_full_page_error.tv_error_subtitle.text = FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode)
+        if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
             layout_full_page_error.button_error_action.text = getString(R.string.flight_booking_action_refind_ticket)
-            layout_full_page_error.button_error_action.setOnClickListener { action() }
+            layout_full_page_error.button_error_action.setOnClickListener { finishActivityToSearchPage() }
+        } else {
+            layout_full_page_error.button_error_action.text = getString(R.string.flight_booking_action_retry)
+            layout_full_page_error.button_error_action.setOnClickListener {
+                layout_full_page_error.visibility = View.GONE
+                action()
+            }
         }
     }
 
