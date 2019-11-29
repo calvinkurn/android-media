@@ -72,7 +72,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import javax.inject.Inject
 
-class NormalChekoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAdapterTypeFactory>(),
+class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAdapterTypeFactory>(),
         NormalCheckoutContract.View, AddToCartVariantActionListener {
 
     private var isInsuranceSelected: Boolean = false
@@ -152,8 +152,8 @@ class NormalChekoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAda
                            reference: String?,
                            customEventLabel: String?,
                            customEventAction: String?,
-                           tradeInParams: TradeInParams?): NormalChekoutFragment {
-            val fragment = NormalChekoutFragment().apply {
+                           tradeInParams: TradeInParams?): NormalCheckoutFragment {
+            val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
                     putString(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, productId)
@@ -190,7 +190,7 @@ class NormalChekoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAda
         activity?.run {
             DaggerNormalCheckoutComponent.builder()
                     .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
-                    .inject(this@NormalChekoutFragment)
+                    .inject(this@NormalCheckoutFragment)
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(NormalCheckoutViewModel::class.java)
         }
