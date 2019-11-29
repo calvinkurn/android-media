@@ -105,8 +105,6 @@ interface FeedPlus {
 
         fun onErrorSendVote(message: String)
 
-//        fun onWhitelistClicked(element: WhitelistViewModel)
-
         fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int)
 
         fun onErrorToggleFavoriteShop(message: String, rowNumber: Int, adapterPosition: Int,

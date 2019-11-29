@@ -1018,51 +1018,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showSnackbar(activity, message)
     }
 
-//    override fun onWhitelistClicked(element: WhitelistViewModel) {
-//        analytics.trackClickCreatePost(userSession.userId)
-//        showBottomSheetCreatePost(element)
-//    }
-
-//    private fun showBottomSheetCreatePost(element: WhitelistViewModel) {
-//        if (activity != null) {
-//            createPostBottomSheet = CloseableBottomSheetDialog.createInstance(requireContext(),
-//                    {
-//
-//                    }, {
-//
-//            })
-//            val customView = createCustomCreatePostBottomSheetView(activity!!.layoutInflater, element)
-//            createPostBottomSheet.setCustomContentView(customView,
-//                    getString(R.string.create_post_as), true)
-//            createPostBottomSheet.show()
-//        }
-//    }
-
-//    private fun createCustomCreatePostBottomSheetView(layoutInflater: LayoutInflater, element: WhitelistViewModel): View {
-//        val view = layoutInflater.inflate(R.layout.layout_create_post_bottom_sheet, null)
-//
-//        if (activity != null) {
-//            val entryPointRecyclerView = view.findViewById<RecyclerView>(R.id.entry_point_list)
-//            val adapter = EntryPointAdapter(activity!!,
-//                    element.whitelist.authors, object: EntryPointAdapter.ActionListener{
-//                override fun onEntryPointClicked(applink: String) {
-//                    analytics.trackClickCreatePostAs(applink, userSession.userId,
-//                            userSession.shopId)
-//                    startActivityForResult(
-//                            RouteManager.getIntent(requireContext(), applink),
-//                            CREATE_POST
-//                    )
-//                    createPostBottomSheet.dismiss()
-//                }
-//
-//            })
-//            entryPointRecyclerView.layoutManager = LinearLayoutManager(requireContext(),
-//                    LinearLayoutManager.VERTICAL, false)
-//            entryPointRecyclerView.adapter = adapter
-//        }
-//        return view
-//    }
-
     override fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int) {
         if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
             val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
