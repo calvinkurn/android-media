@@ -1787,7 +1787,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         productInfoViewModel.p2Login.value?.isWishlisted = false
         updateWishlist(false)
-        //TODO flush cache
+        //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", false)
 
     }
@@ -1809,7 +1809,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productInfoViewModel.p2Login.value?.isWishlisted = true
         updateWishlist(true)
         productDetailTracking.eventBranchAddToWishlist(productInfo, (UserSession(activity)).userId)
-        //TODO flush cache
+        //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
 
