@@ -126,7 +126,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun loadData(page: Int) {
-        renderList(buyerMenu(), false)
+        renderList(buyerMenu(), true)
         viewModel.getInfoStatusNotification()
     }
 
@@ -134,19 +134,25 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         return object : EndlessRecyclerViewScrollListener(super.getRecyclerView(view).layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
-                getNotification(page.toString())
+                getNotification(cursor)
             }
         }
     }
 
     private fun onSuccessNotificationData(notification: TransactionNotification) {
+        hideLoading()
+
         //pagination
         val pagination = notification.paging.hasNext
         if (pagination && !notification.list.isEmpty()) {
             cursor = (notification.list.last().notificationId)
         }
-
         _adapter.addElement(notification.list)
+
+        if (_adapter.dataSize < minimumScrollableNumOfItems
+                && endlessRecyclerViewScrollListener != null && pagination) {
+            endlessRecyclerViewScrollListener.loadMoreNextPage()
+        }
     }
 
     override fun itemClicked(notification: TransactionItemNotification, adapterPosition: Int) {
