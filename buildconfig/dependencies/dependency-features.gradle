@@ -26,6 +26,8 @@ ext {
             affiliateCommon                 : ":features:content:affiliate_common",
             profile                         : ":features:content:profile",
             createpost                      : ":features:content:createpost",
+            play                            : ":features:content:play",
+            playCommon                      : ":features:content:play-common",
 
             digitalEmoney                  : ":features:digital:digital_emoney",
             digitalBrowse                   : ":features:digital:digital_browse",
