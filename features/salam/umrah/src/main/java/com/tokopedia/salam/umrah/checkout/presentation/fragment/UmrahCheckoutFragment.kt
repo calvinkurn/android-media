@@ -112,7 +112,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         pilgrimCount = arguments!!.getInt(EXTRA_TOTAL_PASSENGER, 0)
         price = arguments!!.getInt(EXTRA_PRICE, 0)
         departDate = arguments!!.getString(EXTRA_DEPART_DATE, "")
-        totalPrice = arguments!!.getInt(EXTRA_TOTAL_PRICE,0)
+        totalPrice = arguments!!.getInt(EXTRA_TOTAL_PRICE, 0)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -148,6 +148,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     }
                 }
                 is Fail -> {
+                    progressDialog.dismiss()
                     val data = it.throwable
                     view?.let {
                         Toaster.showErrorWithAction(it, data.message
@@ -191,6 +192,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
             renderHeader(checkoutPDP)
             userData = user
             listSchemes = paymentOptions.umrahPaymentOptions.paymentOptions[DEFAULT_OPTION_INSTALLMENT_PAYMENT].schemes
+            listPaymentOptions = paymentOptions.umrahPaymentOptions
 
             renderContentOrder(userData)
             renderContentSummary(summaryPayment.umrahCheckoutSummary, paymentOptions.umrahPaymentOptions)
@@ -235,18 +237,18 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         progressDialog.setCancelable(false)
     }
 
-    private fun onButtonCheckoutClicked(){
+    private fun onButtonCheckoutClicked() {
         progressDialog.show()
 
-        if(validateData()){
-            trackingUmrahUtil.getCheckoutTracker(DEFAULT_OPTION_CHECKOUT_STEP, productModel,pilgrimCount)
+        if (validateData()) {
+            trackingUmrahUtil.getCheckoutTracker(DEFAULT_OPTION_CHECKOUT_STEP, productModel, pilgrimCount)
             val checkoutResultParams = UmrahCheckoutResultParams(
                     meta_data = mapToCheckoutMetaData()
             )
 
             umrahCheckoutViewModel.executeCheckout(GraphqlHelper.loadRawString(resources,
                     R.raw.gql_query_umrah_checkout_general), checkoutResultParams)
-        }else{
+        } else {
             progressDialog.dismiss()
             view?.let {
                 Toaster.showErrorWithAction(it, getString(R.string.umrah_checkout_validation_error)
@@ -256,39 +258,59 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     }
 
-    private fun validateData(): Boolean{
+    private fun validateData(): Boolean {
         var isValid = false
         if (cb_umrah_checkout.isChecked && userData.id.isNotEmpty() && userData.name.isNotEmpty() && userData.email.isNotEmpty() &&
-                userData.phoneNumber.isNotEmpty() && productModel.id.isNotEmpty() && price>0 && variantId.isNotEmpty() &&
+                userData.phoneNumber.isNotEmpty() && productModel.id.isNotEmpty() && price > 0 && variantId.isNotEmpty() &&
                 pilgrimsValidation())
             isValid = true
 
         return isValid
     }
 
-    private fun mapToCheckoutMetaData(): String{
+    private fun mapToCheckoutMetaData(): String {
+
+        val listPaymentTerms = getListTerms()
         val listPilgrims = mapPilgrimstoMetaData()
         val contact = Contact(
                 name = userData.name,
                 email = userData.email,
-                phone = userData.phoneNumber,
-                pilgrims = listPilgrims
+                phone = userData.phoneNumber
         )
         var mappedCheckoutMetaData = UmrahCheckoutMetaDataParams(
-                user_id = userData.id,
-                product_id = productModel.id,
-                price = price,
-                product_variant_id = variantId,
-                contact = contact
+                user_id = userData.id.toInt(),
+                product_id = productModel.id.toInt(),
+                price = totalPrice,
+                product_variant_id = variantId.toInt(),
+                contact = contact,
+                pilgrims = listPilgrims,
+                payment_terms = listPaymentTerms
+
         )
 
         return convertToJsonMetaData(mappedCheckoutMetaData)
     }
 
-    private fun pilgrimsValidation():Boolean{
+    private fun getListTerms(): List<TermParam> {
+        val termParm = if (rb_umrah_checkout_full_paid.isChecked) {
+           listPaymentOptions.paymentOptions[DEFAULT_OPTION_FULL_PAYMENT].schemes[DEFAULT_OPTION_FULL_PAYMENT].terms
+        }else{
+            listPaymentOptions.paymentOptions[DEFAULT_OPTION_INSTALLMENT_PAYMENT].schemes[optionSchemes].terms
+        }
+
+        return termParm.map {
+            with(it) {
+                return@map TermParam(
+                        type,price,dueDate
+                )
+            }
+        }
+    }
+
+    private fun pilgrimsValidation(): Boolean {
         var isValid = false
-        if(listDataPilgrims.isNotEmpty()){
-            for(i in 0 until listDataPilgrims.size){
+        if (listDataPilgrims.isNotEmpty()) {
+            for (i in 0 until listDataPilgrims.size) {
                 isValid = (listDataPilgrims[i].firstName.isNotEmpty() && listDataPilgrims[i].lastName.isNotEmpty()
                         && listDataPilgrims[i].dateBirth.isNotEmpty() && listDataPilgrims[i].title.isNotEmpty())
             }
@@ -296,16 +318,16 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         return isValid
     }
 
-    private fun convertToJsonMetaData(umrahCheckoutMetaDataParams: UmrahCheckoutMetaDataParams): String{
+    private fun convertToJsonMetaData(umrahCheckoutMetaDataParams: UmrahCheckoutMetaDataParams): String {
         val gson = Gson()
         return gson.toJson(umrahCheckoutMetaDataParams)
     }
 
-    private fun mapPilgrimstoMetaData():List<Pilgrims>{
+    private fun mapPilgrimstoMetaData(): List<Pilgrims> {
         return listDataPilgrims.map {
-            with(it){
+            with(it) {
                 return@map Pilgrims(
-                        title,firstName,lastName,dateBirth
+                        title, firstName, lastName, dateBirth
                 )
             }
         }
@@ -334,14 +356,14 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         renderPaymentOption(paymentOption)
     }
 
-    private fun renderFooter(price:Int){
+    private fun renderFooter(price: Int) {
         tg_umrah_total_price.text = getRupiahFormat(price)
-        cb_umrah_checkout.setOnCheckedChangeListener { _ , _ ->
+        cb_umrah_checkout.setOnCheckedChangeListener { _, _ ->
             renderButtonCheckout()
         }
     }
 
-    private fun renderButtonCheckout(){
+    private fun renderButtonCheckout() {
         btn_umrah_checkout.isEnabled = validateData()
     }
 
@@ -362,12 +384,12 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         if (paymentOption.paymentOptions.isNotEmpty()) {
             tg_umrah_checkout_full_payment_price.text = getRupiahFormat(
                     paymentOption.paymentOptions[DEFAULT_OPTION_FULL_PAYMENT].price)
-            tg_umrah_checkout_installment_price.text =getRupiahFormat(
+            tg_umrah_checkout_installment_price.text = getRupiahFormat(
                     paymentOption.paymentOptions[DEFAULT_OPTION_INSTALLMENT_PAYMENT].price)
 
             val schemes = paymentOption.paymentOptions[DEFAULT_OPTION_INSTALLMENT_PAYMENT].schemes
             val defaultOptionSchemes = paymentOption.paymentOptions[DEFAULT_OPTION_INSTALLMENT_PAYMENT].defaultOption
-            setPaymentTypeChecked(paymentOption.defaultOption,schemes, defaultOptionSchemes)
+            setPaymentTypeChecked(paymentOption.defaultOption, schemes, defaultOptionSchemes)
         }
 
     }
@@ -465,7 +487,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
     }
 
 
-    private fun setPaymentTypeChecked(defaultOption: Int, schemes: List<Schemes>, defaultOptionSchemes:Int) {
+    private fun setPaymentTypeChecked(defaultOption: Int, schemes: List<Schemes>, defaultOptionSchemes: Int) {
         val defaultSchemes = schemes[defaultOptionSchemes]
         tg_umrah_checkout_installment_list.text = getDefaultInstallmentTitle(defaultSchemes)
         tg_umrah_checkout_installment_first_due_date.text = getDefaultFirstDueDate(defaultSchemes)
@@ -600,13 +622,13 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                 .map { UmrahCheckoutMandatoryDocument(it.first, it.second) }
     }
 
-    private fun getDefaultInstallmentTitle(scheme: Schemes): String{
+    private fun getDefaultInstallmentTitle(scheme: Schemes): String {
         return "${scheme.title} - ${getRupiahFormat(scheme.price)}"
     }
 
-    private fun getDefaultFirstDueDate(scheme: Schemes): String{
-        val firstDueDate = getDay("dd MMMM YYYY",scheme.firstDueDate)
-        return getString(R.string.umrah_checkout_summary_installment_next,firstDueDate)
+    private fun getDefaultFirstDueDate(scheme: Schemes): String {
+        val firstDueDate = getDay("dd MMMM YYYY", scheme.firstDueDate)
+        return getString(R.string.umrah_checkout_summary_installment_next, firstDueDate)
     }
 
     override fun onPilgrimsClick(position: Int) {
@@ -627,7 +649,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                 renderButtonCheckout()
 
             } else if (requestCode == REQUEST_FILTER_PAYMENT && data != null && data.hasExtra(CommonParam.ARG_CHECKOUT_PAYMENT_OPTION)) {
-                val choosenPaymentTypeSchemes = data.getIntExtra(CommonParam.ARG_CHECKOUT_PAYMENT_OPTION,0)
+                val choosenPaymentTypeSchemes = data.getIntExtra(CommonParam.ARG_CHECKOUT_PAYMENT_OPTION, 0)
                 optionSchemes = choosenPaymentTypeSchemes
                 setPaymentTypeChecked(DEFAULT_OPTION_INSTALLMENT_PAYMENT, listSchemes, optionSchemes)
                 renderButtonCheckout()
@@ -661,18 +683,19 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
         var optionSchemes = 0
         var userData = ContactUser()
-        var listSchemes : List<Schemes> = arrayListOf()
+        var listSchemes: List<Schemes> = arrayListOf()
         var listDataPilgrims: MutableList<UmrahCheckoutPilgrims> = mutableListOf()
         var productModel = UmrahProductModel.UmrahProduct()
+        var listPaymentOptions = UmrahPaymentOptions()
 
         fun getInstance(slugName: String, variant: String, price: Int,
-                        totalPrice:Int,totalPassenger: Int, departDate: String
+                        totalPrice: Int, totalPassenger: Int, departDate: String
         ): UmrahCheckoutFragment = UmrahCheckoutFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_SLUG_NAME, slugName)
                 putString(EXTRA_VARIANT, variant)
                 putInt(EXTRA_PRICE, price)
-                putInt(EXTRA_TOTAL_PRICE,totalPrice)
+                putInt(EXTRA_TOTAL_PRICE, totalPrice)
                 putInt(EXTRA_TOTAL_PASSENGER, totalPassenger)
                 putString(EXTRA_DEPART_DATE, departDate)
             }
