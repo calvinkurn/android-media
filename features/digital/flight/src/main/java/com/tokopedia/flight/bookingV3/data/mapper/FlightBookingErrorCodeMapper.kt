@@ -1,5 +1,6 @@
 package com.tokopedia.flight.bookingV3.data.mapper
 
+import com.tokopedia.flight.R
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 
 /**
@@ -48,6 +49,19 @@ class FlightBookingErrorCodeMapper {
                 FlightErrorConstant.FLIGHT_STILL_IN_PROCESS -> "Untuk pesan tiket dengan rute perjalanan yang sama, kamu bisa tunggu x menit"
                 FlightErrorConstant.FLIGHT_INVALID_USER -> "Nama penumpang yang kamu tulis tidak diperkenankan oleh Tokopedia. Pastikan nama sudah benar, ya."
                 else -> "Tenang, kami sedang memperbaiki gangguan ini."
+            }
+        }
+
+        fun getErrorIcon(errorCode: String): Int {
+            return when (errorCode) {
+                FlightErrorConstant.FLIGHT_SOLD_OUT -> R.drawable.ic_travel_no_ticket
+                FlightErrorConstant.INVALID_JSON -> R.drawable.ic_flight_booking_error_refresh
+                FlightErrorConstant.FAILED_ADD_FACILITY -> R.drawable.ic_flight_booking_error_add_luggage
+                FlightErrorConstant.ERROR_PROMO_CODE -> R.drawable.ic_flight_booking_error_promo_code
+                FlightErrorConstant.FLIGHT_DUPLICATE_BOOKING -> R.drawable.ic_flight_booking_error_wait
+                FlightErrorConstant.FLIGHT_STILL_IN_PROCESS -> R.drawable.ic_flight_booking_error_wait
+                FlightErrorConstant.FLIGHT_INVALID_USER -> R.drawable.ic_flight_booking_error_invalid_passenger
+                else -> R.drawable.ic_flight_booking_error_refresh
             }
         }
     }
