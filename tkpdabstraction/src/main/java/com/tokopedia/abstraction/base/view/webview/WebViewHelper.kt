@@ -75,7 +75,7 @@ object WebViewHelper {
                 if (uri != null  && !decodedUrl.contains(PARAM_APPCLIENT_ID)) {
                     val clientID = TrackApp.getInstance().getGTM().getClientIDString();
 
-                    if (decodedUrl.contains("js.tokopedia.com")) {
+                    if (clientID != null && decodedUrl.contains("js.tokopedia.com")) {
                         var tokopediaUrl = uri!!.getQueryParameter("url")
                         if (tokopediaUrl != null) {
                             val tokopediaUri = Uri.parse(tokopediaUrl)
