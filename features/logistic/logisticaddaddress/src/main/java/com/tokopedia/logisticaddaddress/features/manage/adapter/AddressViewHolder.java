@@ -1,20 +1,13 @@
 package com.tokopedia.logisticaddaddress.features.manage.adapter;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.LayoutRes;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.unifyprinciples.Typography;
@@ -25,10 +18,7 @@ import com.tokopedia.unifyprinciples.Typography;
 public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> {
 
     private ManageAddressListener listener;
-
-    public static final String DEFAULT_LATITUDE = "-6.1753924";
-    public static final String DEFAULT_LONGITUDE = "106.8249641";
-    public static final int ADDRESS_STATUS_VISIBLE_CODE = 1;
+    private static final int ADDRESS_STATUS_VISIBLE_CODE = 1;
 
     public interface ManageAddressListener {
 
@@ -47,9 +37,9 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> {
     private ImageView locationImg;
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.logistic_item_manage_people_address;
+    static final int LAYOUT = R.layout.logistic_item_manage_people_address;
 
-    public AddressViewHolder(View itemView, ManageAddressListener listener) {
+    AddressViewHolder(View itemView, ManageAddressListener listener) {
         super(itemView);
         this.listener = listener;
         addressName = itemView.findViewById(R.id.address_name);
