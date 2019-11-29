@@ -42,7 +42,7 @@ interface FeedPlus {
 
         fun onInfoClicked()
 
-        fun onSuccessGetFeedFirstPage(listFeed: MutableList<Visitable<*>>)
+        fun onSuccessGetFeedFirstPage(listFeed: List<Visitable<*>>)
 
         fun onErrorGetFeedFirstPage(errorMessage: String)
 
@@ -72,7 +72,7 @@ interface FeedPlus {
 
         fun updateCursor(currentCursor: String)
 
-        fun onSuccessGetFeed(visitables: MutableList<Visitable<*>>)
+        fun onSuccessGetFeed(visitables: List<Visitable<*>>)
 
         fun onRetryClicked()
 
@@ -82,7 +82,7 @@ interface FeedPlus {
 
         fun getString(msg_network_error: Int): String
 
-        fun getColor(black: Int): Int
+        fun getColor(color: Int): Int
 
         fun onShowEmpty()
 

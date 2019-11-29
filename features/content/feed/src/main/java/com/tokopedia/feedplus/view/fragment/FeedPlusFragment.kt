@@ -188,12 +188,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private val userIdInt: Int
         get() {
-            try {
-                return Integer.valueOf(userSession.userId)
-            } catch (ignored: NumberFormatException) {
-                return 0
-            }
-
+           return userSession.userId.toIntOrZero()
         }
 
     companion object {
@@ -461,7 +456,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onSuccessGetFeedFirstPage(listFeed: MutableList<Visitable<*>>) {
+    override fun onSuccessGetFeedFirstPage(listFeed: List<Visitable<*>>) {
         parentFragment?.let {
             (it as FeedPlusContainerFragment).showCreatePostOnBoarding()
         }
@@ -546,13 +541,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
 
-    override fun onSuccessGetFeed(listFeed: MutableList<Visitable<*>>) {
-        trackFeedImpression(listFeed)
+    override fun onSuccessGetFeed(visitables: List<Visitable<*>>) {
+        trackFeedImpression(visitables)
 
         adapter.removeEmpty()
         val posStart = adapter.itemCount
-        adapter.addList(listFeed)
-        adapter.notifyItemRangeInserted(posStart, listFeed.size)
+        adapter.addList(visitables)
+        adapter.notifyItemRangeInserted(posStart, visitables.size)
     }
 
     override fun onShowRetryGetFeed() {
@@ -1606,7 +1601,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun trackFeedImpression(listFeed: MutableList<Visitable<*>>) {
+    private fun trackFeedImpression(listFeed: List<Visitable<*>>) {
         for (i in listFeed.indices) {
             val visitable = listFeed[i]
             val feedPosition = adapter.getlist().size + i
