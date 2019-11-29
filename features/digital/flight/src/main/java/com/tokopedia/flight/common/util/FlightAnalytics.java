@@ -21,8 +21,10 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -40,6 +42,7 @@ public class FlightAnalytics {
     private String PRODUCT_CLICK_EVENT = "productClick";
     private String PRODUCT_VIEW_EVENT = "productView";
     private String SEARCH_RESULT_EVENT = "searchResult";
+    private String VIEW_SEARCH_EVENT = "viewSearchPage";
     private String CLICK_SEARCH_EVENT = "clickSearch";
     private String GENERIC_CATEGORY = "digital - flight";
     private String EVENT_CATEGORY = "eventCategory";
@@ -50,10 +53,21 @@ public class FlightAnalytics {
     private String IMPRESSIONS = "impressions";
     private String CURRENCY_CODE = "currencyCode";
     private String DEFAULT_CURRENCY_CODE = "IDR";
+    private String OPEN_SCREEN_EVENT = "openScreen";
+    private String EVENT_NAME = "eventName";
+    private String IS_LOGIN_STATUS = "isLoggedInStatus";
 
     @Inject
     public FlightAnalytics(FlightDateUtil flightDateUtil) {
         this.flightDateUtil = flightDateUtil;
+    }
+
+    public void eventOpenScreen(String screenName, boolean isLoginStatus) {
+        Map<String, String> mapOpenScreen = new HashMap<>();
+        mapOpenScreen.put(EVENT_NAME, OPEN_SCREEN_EVENT);
+        mapOpenScreen.put(IS_LOGIN_STATUS, isLoginStatus? "true" : "false");
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(
+                screenName, mapOpenScreen);
     }
 
     public void eventClickTransactions(String screenName) {
@@ -149,8 +163,44 @@ public class FlightAnalytics {
                         dashboardViewModel.getFlightClass().getTitle(),
                         FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getDepartureDate()),
                         dashboardViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getReturnDate()))
-                )
+                )));
+    }
+
+    public void eventSearchView(FlightSearchPassDataViewModel passDataViewModel, boolean searchFound, String deeplink, String url) {
+        Map<String, Object> mapModel = new HashMap<>();
+        mapModel.put(EVENT, VIEW_SEARCH_EVENT);
+        mapModel.put(EVENT_CATEGORY, GENERIC_CATEGORY);
+        mapModel.put(EVENT_ACTION, Category.VIEW_SEARCH);
+        mapModel.put(EVENT_LABEL, String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
+                Label.FLIGHT_SMALL,
+                (passDataViewModel.getDepartureAirport().getAirportCode() == null || passDataViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
+                        passDataViewModel.getDepartureAirport().getCityCode() : passDataViewModel.getDepartureAirport().getAirportCode(),
+                (passDataViewModel.getArrivalAirport().getAirportCode() == null || passDataViewModel.getArrivalAirport().getAirportCode().isEmpty()) ?
+                        passDataViewModel.getArrivalAirport().getCityCode() : passDataViewModel.getArrivalAirport().getAirportCode(),
+                passDataViewModel.isOneWay() ? "oneway" : "roundtrip",
+                passDataViewModel.getFlightPassengerViewModel().getAdult(),
+                passDataViewModel.getFlightPassengerViewModel().getChildren(),
+                passDataViewModel.getFlightPassengerViewModel().getInfant(),
+                passDataViewModel.getFlightClass().getTitle(),
+                FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getDepartureDate()),
+                passDataViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getReturnDate()))
         ));
+        mapModel.put("from", (passDataViewModel.getDepartureAirport().getAirportCode() == null || passDataViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
+                passDataViewModel.getDepartureAirport().getCityCode() : passDataViewModel.getDepartureAirport().getAirportCode());
+        mapModel.put("destination", (passDataViewModel.getArrivalAirport().getAirportCode() == null || passDataViewModel.getArrivalAirport().getAirportCode().isEmpty()) ?
+                passDataViewModel.getArrivalAirport().getCityCode() : passDataViewModel.getArrivalAirport().getAirportCode());
+        mapModel.put("departureDate", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getDepartureDate()));
+        mapModel.put("returnDateFormatted", passDataViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getReturnDate())));
+        mapModel.put("returnTicket", passDataViewModel.isOneWay()? "false": "true");
+        mapModel.put("passenger", passDataViewModel.getFlightPassengerViewModel().getAdult() + passDataViewModel.getFlightPassengerViewModel().getChildren() +
+                passDataViewModel.getFlightPassengerViewModel().getInfant());
+        mapModel.put("travelWithKids", passDataViewModel.getFlightPassengerViewModel().getChildren() > 0 ||
+                passDataViewModel.getFlightPassengerViewModel().getInfant() > 0 ? "true" : "false");
+        mapModel.put("class", passDataViewModel.getFlightClass().getTitle());
+        mapModel.put("deeplinkUrl", deeplink);
+        mapModel.put("url", url);
+        mapModel.put("searchFound", searchFound);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(mapModel);
     }
 
     public void eventSearchProductClickFromDetail(FlightSearchPassDataViewModel flightSearchPassData, FlightJourneyViewModel viewModel) {
@@ -891,6 +941,7 @@ public class FlightAnalytics {
         static String SELECT_PASSENGER = "select Passenger";
         static String SELECT_CLASS = "select flight class";
         static String CLICK_SEARCH = "click search flight";
+        static String VIEW_SEARCH = "view search result flight";
         static String CLICK_SEARCH_PRODUCT = "product click";
         static String CLICK_SEARCH_PRODUCT_NOT_FOUND = "product not found";
         static String CLICK_SEARCH_DETAIL = "click see the details";

@@ -296,6 +296,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
         passData = new FlightDashboardPassDataViewModel();
         presenter.attachView(this);
+        presenter.sendAnalyticsOpenScreen(FlightAnalytics.Screen.HOMEPAGE);
         presenter.initialize();
         KeyboardHandler.hideSoftKeyboard(getActivity());
 
@@ -304,7 +305,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public String getScreenName() {
-        return FlightAnalytics.Screen.HOMEPAGE;
+        return null;
     }
 
     @Override

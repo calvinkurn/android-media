@@ -63,6 +63,6 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
 
     @Override
     public String getScreenName() {
-        return FlightAnalytics.Screen.HOMEPAGE;
+        return null;
     }
 }
