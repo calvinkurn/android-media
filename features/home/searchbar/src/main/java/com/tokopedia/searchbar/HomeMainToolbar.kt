@@ -196,8 +196,17 @@ class HomeMainToolbar : MainToolbar {
             if(placeholder.isEmpty()){
                 RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
             }else{
-                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}&hint={hint}", HOME_SOURCE, URLEncoder.encode(keyword, UTF_8.toString()))
+                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}&hint={hint}", HOME_SOURCE, safeEncodeUTF8(keyword))
             }
+        }
+    }
+
+    private fun safeEncodeUTF8(value: String): String {
+        return try {
+            URLEncoder.encode(value, UTF_8.toString())
+        }
+        catch (e: Throwable) {
+            value
         }
     }
 
