@@ -82,8 +82,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         CharacterPerMinuteInterface {
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
+    private final String NOTIFICATION_CHANNEL_NAME_BTS_ONE = "Promo BTS 1";
+    private final String NOTIFICATION_CHANNEL_NAME_BTS_TWO = "Promo BTS 2";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
+    private final String NOTIFICATION_CHANNEL_ID_BTS_ONE = "custom_sound_bts_one";
+    private final String NOTIFICATION_CHANNEL_ID_BTS_TWO = "custom_sound_bts_two";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
+    private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
+    private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
 
     CharacterPerMinuteActivityLifecycleCallbacks callback;
 
@@ -202,6 +208,28 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                     R.raw.tokopedia_endtune), att);
             NotificationManager notificationManager = (NotificationManager) getSystemService(
                     NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(mChannel);
+
+            // Create the NotificationChannel
+            mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_BTS_ONE,
+                    NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+            mChannel.setDescription(NOTIFICATION_CHANNEL_DESC_BTS_ONE);
+            att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
+                    R.raw.tokopedia_bts_one), att);
+            notificationManager.createNotificationChannel(mChannel);
+
+            // Create the NotificationChannel
+            mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_BTS_TWO,
+                    NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+            mChannel.setDescription(NOTIFICATION_CHANNEL_DESC_BTS_TWO);
+            att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
+                    R.raw.tokopedia_bts_two), att);
             notificationManager.createNotificationChannel(mChannel);
         }
     }
