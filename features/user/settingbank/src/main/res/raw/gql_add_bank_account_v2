@@ -1,0 +1,13 @@
+mutation{
+  richieAddBankAccountNewFlow(bankID:71, bankName:"PT. BANK CENTRAL ASIA TBK", accountNo:"8765456787", accountName:"Ade Wijaya Test", isManual:false){
+     	status
+    	message
+    	data{
+        accID
+        accNo
+        accName
+      	bankID
+        userID
+      }
+  }
+}

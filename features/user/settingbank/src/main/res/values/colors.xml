@@ -3,6 +3,10 @@
 
     <color name="green_main_account">#f3fef3</color>
 
+    <color name="sbank_top_shadow_color">#1e31353b</color>
+    <color name="sbank_search_bg">#f4f5f7</color>
+    <color name="sbank_text_disabled">#5131353b</color>
+
     <color name="shadow_color_1">#00CCCCCC</color>
     <color name="shadow_color_2">#10CCCCCC</color>
     <color name="shadow_color_3">#15CCCCCC</color>

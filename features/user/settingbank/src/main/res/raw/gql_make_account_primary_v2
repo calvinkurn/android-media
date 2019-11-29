@@ -1,0 +1,15 @@
+mutation{
+  richieSetPrimaryBankAccount(AccountID:10){
+    status
+    header{
+      processTime
+      message
+      reason
+      errorCode
+    }
+    data{
+      isSuccess
+      message
+    }
+  }
+}

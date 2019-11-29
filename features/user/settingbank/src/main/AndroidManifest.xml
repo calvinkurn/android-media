@@ -7,7 +7,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".banklist.view.activity.SettingBankActivity"
+            android:name=".banklist.v2.view.activity.SettingBankActivity"
             android:label="@string/title_setting_bank"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
@@ -24,7 +24,7 @@
         </activity>
 
         <activity
-            android:name=".addeditaccount.view.activity.AddEditBankActivity"
+            android:name=".banklist.v2.view.activity.AddBankActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">

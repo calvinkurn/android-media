@@ -1,0 +1,28 @@
+query {
+  GetBankAccount(){
+    status
+    header{
+      processTime
+      message
+      reason
+      errorCode
+    }
+    data{
+      bankAccounts{
+        accID
+        accName
+        accNumber
+        bankID
+        bankName
+        fsp
+		statusFraud
+		bankImageUrl
+      }
+      userInfo{
+        message
+        isVerified
+      }
+    }
+  }
+
+}
