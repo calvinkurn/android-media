@@ -165,6 +165,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var afterPost: Boolean = false
     private var afterRefresh: Boolean = false
 
+    private var isUserEventTrackerDoneTrack = false
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var feedOnboardingPresenter: FeedOnboardingViewModel
@@ -740,8 +742,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 showAfterPostToaster()
                 afterPost = false
             }
-
-            analytics.trackScreen(screenName)
         }
     }
 
@@ -1130,6 +1130,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
         TrackApp.getInstance().moEngage.sendTrackEvent(value, EventMoEngage.OPEN_FEED)
     }
 
+    override fun sendFeedPlusScreenTracking() {
+        if (!isUserEventTrackerDoneTrack) {
+            val isEmptyFeed = !hasFeed()
+
+            feedAnalytics.eventOpenFeedPlusFragment(
+                    userSession.isLoggedIn,
+                    isEmptyFeed
+            )
+
+            isUserEventTrackerDoneTrack = true
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         if (activity != null && activity!!.isFinishing) {
@@ -1335,6 +1348,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
 
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE)
+    }
+
+    override fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+        //Not used
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
