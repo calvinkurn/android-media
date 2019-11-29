@@ -80,7 +80,7 @@ object WebViewHelper {
                         if (tokopediaUrl != null) {
                             val tokopediaUri = Uri.parse(tokopediaUrl)
                             tokopediaUrl = tokopediaUri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString()
-                            tokopediaUrl = URLEncoder.encode(tokopediaUrl!!, "UTF-8")
+                            //tokopediaUrl = URLEncoder.encode(tokopediaUrl!!, "UTF-8")
 
                             url = replaceUriParameter(uri!!, "url", tokopediaUrl)
 
