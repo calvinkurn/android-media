@@ -6,6 +6,7 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
+import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -69,6 +70,9 @@ interface ChatbotContract {
         fun submitCsatRating(inputItem: InputItem,
                              onError: (Throwable) -> Unit,
                              onSuccess: (String) -> Unit)
+
+        fun showTickerData(onError: (Throwable) -> Unit,
+                           onSuccesGetTickerData: (TickerData) -> Unit)
 
         fun sendActionBubble(messageId: String, selected: ChatActionBubbleViewModel,
                              startTime: String,

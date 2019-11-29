@@ -180,7 +180,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         somDetailAdapter = SomDetailAdapter().apply {
             setActionListener(this@SomDetailFragment)
         }
-        // somDetailAdapter.setActionListener(this)
         rv_detail?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = somDetailAdapter
@@ -206,7 +205,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                     renderDetail()
                 }
                 is Fail -> {
-                    // quick_filter?.visibility = View.GONE
+                    showToasterError(getString(R.string.global_error))
                 }
             }
         })

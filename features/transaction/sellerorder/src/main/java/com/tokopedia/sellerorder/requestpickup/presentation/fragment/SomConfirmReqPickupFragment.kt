@@ -128,17 +128,19 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
     private fun renderConfirmReqPickup() {
         shop_address?.text = confirmReqPickupResponse.dataSuccess.pickupLocation.address
         shop_phone?.text = confirmReqPickupResponse.dataSuccess.pickupLocation.phone
-        val shipper = confirmReqPickupResponse.dataSuccess.detail.listShippers[0]
-        iv_courier?.loadImageWithoutPlaceholder(shipper.courierImg)
+        if (confirmReqPickupResponse.dataSuccess.detail.listShippers.isNotEmpty()) {
+            val shipper = confirmReqPickupResponse.dataSuccess.detail.listShippers[0]
+            iv_courier?.loadImageWithoutPlaceholder(shipper.courierImg)
 
-        context?.let {
-            val htmlCourierNameService = HtmlLinkHelper(it, "<b>${shipper.name}</b> ${shipper.service}")
-            tv_courier_name_service?.text = htmlCourierNameService.spannedString
+            context?.let {
+                val htmlCourierNameService = HtmlLinkHelper(it, "<b>${shipper.name}</b> ${shipper.service}")
+                tv_courier_name_service?.text = htmlCourierNameService.spannedString
 
-            val htmlCourierCountService = HtmlLinkHelper(it, "${shipper.countText} <b>${shipper.count}</b>")
-            tv_courier_count?.text = htmlCourierCountService.spannedString
+                val htmlCourierCountService = HtmlLinkHelper(it, "${shipper.countText} <b>${shipper.count}</b>")
+                tv_courier_count?.text = htmlCourierCountService.spannedString
+            }
+            tv_courier_notes?.text = shipper.note
         }
-        tv_courier_notes?.text = shipper.note
 
         if (confirmReqPickupResponse.dataSuccess.notes.listNotes.isNotEmpty()) {
             confirmReqPickupCourierNotesAdapter = SomConfirmReqPickupCourierNotesAdapter()

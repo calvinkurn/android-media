@@ -18,19 +18,4 @@ class SomScanResiActivity: CaptureActivity() {
         setContentView(R.layout.activity_barcode_scanner)
         return findViewById<View>(R.id.zxing_barcode_scanner) as DecoratedBarcodeView
     }
-
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val barcode = getBarcode(requestCode, resultCode, data)
-        setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(RESULT_SCAN_BARCODE, barcode)
-        })
-        finish()
-    }*/
-
-    /*private fun getBarcode(requestCode: Int, resultCode: Int, data: Intent?): String {
-        val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        return if (scanResult != null && scanResult.contents != null) {
-            scanResult.contents
-        } else ""
-    }*/
 }

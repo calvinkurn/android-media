@@ -28,6 +28,7 @@
                 app:tabMode="scrollable"
                 app:tabSelectedTextColor="@color/tkpd_green_header"
                 app:tabTextAppearance="@style/SearchTabWidgetText" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
@@ -38,8 +39,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-
-
         </LinearLayout>
 
     </FrameLayout>
@@ -48,8 +47,8 @@
         android:id="@+id/search_nav_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:layout_gravity="bottom|center_horizontal">
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="@dimen/dp_20">
 
     </com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView>
 
@@ -69,93 +68,75 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/toolbar_height"
+            android:layout_height="?attr/actionBarSize"
             android:background="@color/white"
             app:layout_scrollFlags="scroll|enterAlways"
             app:titleTextColor="@color/black_70">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
+                android:id="@+id/search_top_bar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <ImageView
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:id="@+id/action_up_btn"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:paddingRight="@dimen/dp_16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/discovery_ic_back"
-                    />
-                <ImageButton
-                    android:id="@+id/img_display_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
-                    app:layout_constraintBottom_toBottomOf="@+id/layout_search"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/layout_search"
-                    app:layout_constraintTop_toTopOf="@+id/layout_search"
-                    app:srcCompat="@drawable/ic_grid_display" />
+                    app:srcCompat="@drawable/discovery_ic_back" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/layout_search"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/dp_4"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:background="@drawable/category_bg_corner"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toStartOf="@+id/img_display_button"
-                    app:layout_constraintStart_toEndOf="@+id/action_up_btn"
-                    app:layout_constraintTop_toTopOf="parent">
-
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_weight="1"
+                    android:background="@drawable/category_bg_corner">
 
 
                     <ImageView
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:paddingLeft="@dimen/dp_8"
+                        android:id="@+id/filter_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginLeft="@dimen/dp_10"
                         app:srcCompat="@drawable/ic_category_filter" />
-
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/et_search"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/dp_4"
-                        android:layout_marginLeft="@dimen/dp_4"
-                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/filter_icon"
+                        android:layout_toRightOf="@id/filter_icon"
                         android:background="@null"
                         android:enabled="true"
-                        app:typographyType="body_2"
                         android:focusable="false"
                         android:gravity="center_vertical"
                         android:inputType="none"
                         android:maxLines="1"
-                        android:textColorHint="@android:color/black"
-                        android:textSize="@dimen/sp_16" />
-
-                    <ImageButton
-                        android:id="@+id/image_button_close"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="@dimen/dp_8"
-                        android:background="@null"
                         android:padding="@dimen/dp_8"
-                        android:visibility="visible"
-                        app:srcCompat="@drawable/ic_close_search" />
+                        android:textColorHint="@android:color/black"
+                        android:textSize="@dimen/sp_14"
+                        app:typographyType="body_2" />
 
-                </LinearLayout>
+                </RelativeLayout>
 
+                <ImageButton
+                    android:id="@+id/img_display_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_grid_display" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
 

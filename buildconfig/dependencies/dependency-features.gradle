@@ -18,6 +18,7 @@ ext {
             feedComponent                   : ":features:content:feed_component",
             explore                         : ":features:content:explore",
             interestPick                    : ":features:content:interest_pick",
+            interestPickCommon              : ":features:content:interest_pick_common",
             kol                             : ":features:content:kol",
             kolCommon                       : ":features:content:kol_common",
             affiliate                       : ":features:content:affiliate",
@@ -26,6 +27,7 @@ ext {
             profile                         : ":features:content:profile",
             createpost                      : ":features:content:createpost",
 
+            digitalEmoney                  : ":features:digital:digital_emoney",
             digitalBrowse                   : ":features:digital:digital_browse",
             digitalDeals                    : ":features:digital:digital_deals",
             commonDigital                   : ":features:digital:common_digital",
@@ -43,6 +45,8 @@ ext {
             travelHomepage                  : ":features:digital:travel_homepage",
             imagePreviewSlider              : ":features:digital:imagepreviewslider",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
+
+            umrah                           : ":features:salam:umrah",
 
             categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
@@ -134,6 +138,7 @@ ext {
 
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",
+            seamlesslogin                   : ":features:user:seamless_login",
             tokopoints                      : ":features:promo:tokopoints",
 //            tokopoints             : ":features:promo:tokopoints_no_op",
             tokopointsNotification          : ":features:promo:tokopoints_notification",
@@ -183,6 +188,7 @@ ext {
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
 //            userIdentification              : ":features:user:user_identification_no_op",
+            seamlesslogin                   : ":features:user:seamless_login",
             stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",
             vote                            : ":features:user:vote",

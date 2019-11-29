@@ -170,8 +170,6 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
         }
 
         private val clickHandler: (View) -> Unit = {
-            // selectedPosition = adapterPosition
-            // notifyDataSetChanged()
             println("++ index = $position")
             val id = listSubFilter[position].id
             if (itemView.cb_filter.isChecked) listId.add(id)

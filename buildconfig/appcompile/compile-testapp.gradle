@@ -33,7 +33,7 @@ include "libraries:network"
 include "libraries:remote_config"
 //include "libraries:travel_calendar"
 //include "libraries:tracking_optimizer"
-include "libraries:use_case"
+//include "libraries:use_case"
 include "libraries:user_session"
 //include "libraries:video_recorder"
 //include "libraries:videoplayer"
@@ -44,32 +44,25 @@ include "libraries:user_session"
 //include "libraries:sharecontent"
 include "libraries:track"
 //include "libraries:graph_view"
-//include 'libraries:cpm'
-include "libraries:linker"
+include 'libraries:cpm'
+//include "libraries:linker"
 //include "libraries:webview"
-include "libraries:akamai_bot_lib"
-include "libraries:collapsing_tab_layout"
+//include "libraries:collapsing_tab_layout"
 
 //include "libraries:videouploader"
 
 //include "libraries:unify:unify_compositions:banner"
 include 'libraries:promotions_target'
+include 'libraries:inappupdate'
 
 include 'tkpddesign'
 include 'tkpdabstraction'
 include "features:user:sessioncommon"
-// include "features:user:user_identification_common"
 include "features:common:resources_common"
 
 
-// FOR SHOP SETTINGS
-//include "features:merchant:shop_settings"
-//include "features:merchant:shop_common"
-//include "features:merchant:gold_merchant_common"
-//include "features:merchant:gold_merchant_resource"
-
-// FOR SELLER ORDER
-include "features:transaction:sellerorder"
+// digital home
+//include ":features:digital:digital_homepage"
 
 
 include 'testapp'

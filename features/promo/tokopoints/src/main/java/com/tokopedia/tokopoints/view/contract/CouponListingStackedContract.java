@@ -15,7 +15,6 @@ public interface CouponListingStackedContract {
     interface View extends CustomerView {
         void showLoader();
 
-        void showError(String errorMessage);
 
         void hideLoader();
 
@@ -25,7 +24,6 @@ public interface CouponListingStackedContract {
 
         void emptyCoupons(Map<String, String> errors);
 
-        void onErrorCoupons(String errorMessage);
 
         Context getActivityContext();
 

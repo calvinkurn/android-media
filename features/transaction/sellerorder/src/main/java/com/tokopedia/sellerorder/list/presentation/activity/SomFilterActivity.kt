@@ -21,9 +21,6 @@ import kotlinx.android.synthetic.main.partial_toolbar_reset_button.*
  * Created by fwidjaja on 2019-09-10.
  */
 class SomFilterActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
-    /*override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
-    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple*/
-
     override fun getLayoutRes(): Int = R.layout.activity_filter
 
     companion object {
@@ -35,8 +32,7 @@ class SomFilterActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
-        toolbar = findViewById<View>(R.id.toolbar_filter) as Toolbar
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_filter)
 
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)

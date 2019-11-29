@@ -80,16 +80,14 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            currOrderId = arguments?.getString(PARAM_ORDER_ID).toString()
-            currShipmentName = arguments?.getString(PARAM_CURR_SHIPMENT_NAME).toString()
-            currShipmentProductName = arguments?.getString(PARAM_CURR_SHIPMENT_PRODUCT_NAME).toString()
-            arguments?.getBoolean(PARAM_CURR_IS_CHANGE_SHIPPING)?.let {
-                currIsChangeShipping = it
-            }
-            arguments?.getInt(PARAM_CURR_SHIPMENT_ID)?.let {
-                currShipmentId = it
-            }
+        currOrderId = arguments?.getString(PARAM_ORDER_ID).toString()
+        currShipmentName = arguments?.getString(PARAM_CURR_SHIPMENT_NAME).toString()
+        currShipmentProductName = arguments?.getString(PARAM_CURR_SHIPMENT_PRODUCT_NAME).toString()
+        arguments?.getBoolean(PARAM_CURR_IS_CHANGE_SHIPPING)?.let {
+            currIsChangeShipping = it
+        }
+        arguments?.getInt(PARAM_CURR_SHIPMENT_ID)?.let {
+            currShipmentId = it
         }
         getCourierList()
     }
