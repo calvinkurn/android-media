@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.EmptyState
 
@@ -14,8 +15,12 @@ class EmptyDataViewHolder(view: View): AbstractViewHolder<EmptyState>(view) {
     private val txtMessage = view.findViewById<TextView>(R.id.txt_message)
 
     override fun bind(element: EmptyState) {
-        imgState.setImageResource(element.icon)
         txtMessage.text = element.title
+        if (element.icon != 0) {
+            imgState.setImageResource(element.icon)
+        } else {
+            imgState.hide()
+        }
     }
 
     companion object {
