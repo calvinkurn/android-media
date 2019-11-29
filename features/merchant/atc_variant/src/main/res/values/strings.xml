@@ -16,4 +16,5 @@
     <string name="label_quantity_total">Jumlah</string>
     <string name="sizechart_guideline">Panduan Ukuran</string>
     <string name="prescription_warning">Wajib upload resep melalui formulir yang dikirim di Chat setelah pembayaran berhasil</string>
+    <string name="label_total_price">Total Harga</string>
 </resources>
