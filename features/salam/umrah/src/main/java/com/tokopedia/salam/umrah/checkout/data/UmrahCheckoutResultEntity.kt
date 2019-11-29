@@ -5,6 +5,12 @@ import com.google.gson.annotations.SerializedName
 import org.intellij.lang.annotations.Language
 
 class UmrahCheckoutResultEntity(
+        @SerializedName("checkout_general")
+        @Expose
+        val checkoutGeneral : UmrahCheckoutGeneral = UmrahCheckoutGeneral()
+)
+
+class UmrahCheckoutGeneral(
         @SerializedName("header")
         @Expose
         val header: CheckoutResponseHeader = CheckoutResponseHeader(),

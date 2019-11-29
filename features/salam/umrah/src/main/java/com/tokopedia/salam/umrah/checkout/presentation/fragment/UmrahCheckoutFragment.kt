@@ -139,13 +139,14 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
             when (it) {
                 is Success -> {
                     val checkoutResultData = PaymentPassData()
-                    checkoutResultData.queryString = it.data.data.data.queryString
-                    checkoutResultData.redirectUrl = it.data.data.data.redirectUrl
-                    checkoutResultData.transactionId = it.data.data.data.parameter.transactionId
-                    checkoutResultData.paymentId = it.data.data.data.parameter.pid
+                    checkoutResultData.queryString = it.data.checkoutGeneral.data.data.queryString
+                    checkoutResultData.redirectUrl = it.data.checkoutGeneral.data.data.redirectUrl
+                    checkoutResultData.transactionId = it.data.checkoutGeneral.data.data.parameter.transactionId
+                    checkoutResultData.paymentId = it.data.checkoutGeneral.data.data.parameter.pid
 
                     val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
                     val intent = RouteManager.getIntent(context, paymentCheckoutString)
+                    progressDialog.dismiss()
                     intent?.run {
                         putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
                         startActivityForResult(intent, REQUEST_CODE_CHECKOUT)
