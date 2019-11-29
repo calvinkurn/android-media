@@ -6,7 +6,7 @@ import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.atc_variant.R
-import com.tokopedia.atc_variant.view.CheckoutVariantActionListener
+import com.tokopedia.atc_variant.view.AddToCartVariantActionListener
 import com.tokopedia.atc_variant.view.viewmodel.NoteViewModel
 import kotlinx.android.synthetic.main.item_note_detail_product_page.view.*
 
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_note_detail_product_page.view.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class NoteViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<NoteViewModel>(view) {
+class NoteViewHolder(val view: View, val listenerNormal: AddToCartVariantActionListener) : AbstractViewHolder<NoteViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_note_detail_product_page
@@ -42,7 +42,7 @@ class NoteViewHolder(val view: View, val listener: CheckoutVariantActionListener
                     itemView.tv_note_char_counter.text = String.format(
                         itemView.context.getString(R.string.format_note_counter),
                         element.note.length, element.noteCharMax)
-                    listener.onChangeNote(element)
+                    listenerNormal.onChangeNote(element)
                 }
             })
         }

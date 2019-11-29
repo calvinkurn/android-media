@@ -5,7 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.atc_variant.R
-import com.tokopedia.atc_variant.view.CheckoutVariantActionListener
+import com.tokopedia.atc_variant.view.AddToCartVariantActionListener
 import com.tokopedia.atc_variant.view.MAX_QUANTITY
 import com.tokopedia.atc_variant.view.viewmodel.ProductChild
 import com.tokopedia.atc_variant.view.viewmodel.ProductViewModel
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.item_product_detail_product_page.view.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class ProductViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<ProductViewModel>(view) {
+class ProductViewHolder(val view: View, val listenerNormal: AddToCartVariantActionListener) : AbstractViewHolder<ProductViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_product_detail_product_page
@@ -71,7 +71,7 @@ class ProductViewHolder(val view: View, val listener: CheckoutVariantActionListe
                 if (element.maxOrderQuantity > 0) stockWording = itemView.context.getString(R.string.label_stock_available)
             }
 
-            listener.onBindProductUpdateQuantityViewModel(element, stockWording)
+            listenerNormal.onBindProductUpdateQuantityViewModel(element, stockWording)
         }
     }
 

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.atc_variant.view.CheckoutVariantActionListener
+import com.tokopedia.atc_variant.view.AddToCartVariantActionListener
 import com.tokopedia.atc_variant.view.viewholder.*
 import com.tokopedia.atc_variant.view.viewmodel.*
 
@@ -14,7 +14,7 @@ import com.tokopedia.atc_variant.view.viewmodel.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-open class CheckoutVariantAdapterTypeFactory(val listener: CheckoutVariantActionListener) : BaseAdapterTypeFactory(), CheckoutVariantTypeFactory {
+open class AddToCartVariantAdapterTypeFactory(val listenerNormal: AddToCartVariantActionListener) : BaseAdapterTypeFactory(), AddToCartVariantTypeFactory {
 
     override fun type(viewModel: NoteViewModel): Int {
         return NoteViewHolder.LAYOUT
@@ -42,11 +42,11 @@ open class CheckoutVariantAdapterTypeFactory(val listener: CheckoutVariantAction
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return when (viewType) {
-            NoteViewHolder.LAYOUT -> NoteViewHolder(view, listener)
-            ProductViewHolder.LAYOUT -> ProductViewHolder(view, listener)
-            QuantityViewHolder.LAYOUT -> QuantityViewHolder(view, listener)
-            TypeVariantViewHolder.LAYOUT -> TypeVariantViewHolder(view, listener)
-            InsuranceRecommendationViewHolder.LAYOUT -> InsuranceRecommendationViewHolder(view, listener)
+            NoteViewHolder.LAYOUT -> NoteViewHolder(view, listenerNormal)
+            ProductViewHolder.LAYOUT -> ProductViewHolder(view, listenerNormal)
+            QuantityViewHolder.LAYOUT -> QuantityViewHolder(view, listenerNormal)
+            TypeVariantViewHolder.LAYOUT -> TypeVariantViewHolder(view, listenerNormal)
+            InsuranceRecommendationViewHolder.LAYOUT -> InsuranceRecommendationViewHolder(view, listenerNormal)
             HideViewHolder.LAYOUT -> HideViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }

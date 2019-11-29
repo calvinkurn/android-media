@@ -3,7 +3,7 @@ package com.tokopedia.atc_variant.view.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.atc_variant.view.adapter.CheckoutVariantAdapterTypeFactory
+import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapterTypeFactory
 import com.tokopedia.atc_variant.view.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.product.detail.common.data.model.variant.Variant.Companion.COLOR
 import com.tokopedia.product.detail.common.data.model.variant.Variant.Companion.SIZE
@@ -19,7 +19,7 @@ data class TypeVariantViewModel(
         var variantGuideline: String,
         var variantIdentifier: String,
         var variantOptions: ArrayList<OptionVariantViewModel>
-) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
+) : Visitable<AddToCartVariantAdapterTypeFactory>, Parcelable {
 
     fun getSelectedOption(): Int? {
         return variantOptions.find { it.currentState == STATE_SELECTED }?.optionId
@@ -36,7 +36,7 @@ data class TypeVariantViewModel(
             }
     )
 
-    override fun type(typeFactory: CheckoutVariantAdapterTypeFactory): Int {
+    override fun type(typeFactory: AddToCartVariantAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 

@@ -7,7 +7,7 @@ import rx.subscriptions.CompositeSubscription
  * Created by Irfan Khoirul on 03/12/18.
  */
 
-interface CheckoutVariantActionListener {
+interface AddToCartVariantActionListener {
 
     fun onBindProductUpdateQuantityViewModel(productViewModel: ProductViewModel, stockWording: String)
 

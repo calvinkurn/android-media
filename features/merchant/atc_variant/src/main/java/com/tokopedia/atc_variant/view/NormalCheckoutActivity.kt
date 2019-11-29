@@ -19,7 +19,7 @@ import com.tokopedia.tradein.model.TradeInParams
 open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener {
     companion object {
         private var tradeInParams: TradeInParams? = null
-        private var normalCheckoutFragment: NormalCheckoutFragment? = null
+        private var normalCheckoutFragment: NormalChekoutFragment? = null
 
         /**
          * shopID: mandatory
@@ -71,7 +71,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
         val bundle = intent.extras
         tradeInParams = intent.getParcelableExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS)
         bundle?.run {
-            normalCheckoutFragment = NormalCheckoutFragment.createInstance(
+            normalCheckoutFragment = NormalChekoutFragment.createInstance(
                     getString(ApplinkConst.Transaction.EXTRA_SHOP_ID),
                     getString(ApplinkConst.Transaction.EXTRA_CATEGORY_ID),
                     getString(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME),
@@ -103,7 +103,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
 
     override fun onBackPressed() {
         fragment?.run {
-            (this as NormalCheckoutFragment).selectVariantAndFinish()
+            (this as NormalChekoutFragment).selectVariantAndFinish()
         }
         overridePendingTransition(0, R.anim.push_down)
     }

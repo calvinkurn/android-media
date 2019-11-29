@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantAdapter(adapterTypeFactory: CheckoutVariantAdapterTypeFactory) :
-        BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory>(adapterTypeFactory) {
+class AddToCartVariantAdapter(adapterTypeFactory: AddToCartVariantAdapterTypeFactory) :
+        BaseListAdapter<Visitable<*>, AddToCartVariantAdapterTypeFactory>(adapterTypeFactory) {
 
     fun addDataViewModel(visitableList: ArrayList<Visitable<*>>) {
         visitables.addAll(visitableList)

@@ -9,7 +9,7 @@ import com.tokopedia.atc_variant.R
  * Created by Irfan Khoirul on 13/12/18.
  */
 
-class CheckoutVariantItemDecorator : RecyclerView.ItemDecoration() {
+class NormalCheckoutItemDecorator : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val dimen: Int? = view?.context?.resources?.getDimension(R.dimen.dp_8)?.toInt()

@@ -11,7 +11,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.atc_variant.R
-import com.tokopedia.atc_variant.view.CheckoutVariantActionListener
+import com.tokopedia.atc_variant.view.AddToCartVariantActionListener
 import com.tokopedia.atc_variant.view.viewmodel.InsuranceRecommendationViewModel
 import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.item_insurance_recommendation_product_page
 import java.util.*
 
 
-class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<InsuranceRecommendationViewModel>(view) {
+class InsuranceRecommendationViewHolder(val view: View, val listenerNormal: AddToCartVariantActionListener) : AbstractViewHolder<InsuranceRecommendationViewModel>(view) {
 
     private var datePicker: SaldoDatePickerUtil? = null
     private var errorMessage: String = ""
@@ -118,12 +118,12 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                                 errorMessageView.hide()
                                 insuranceProductApplicationDetails.value = s.toString()
                                 insuranceProductApplicationDetails.isError = false
-                                listener.onInsuranceSelectedStateChanged(element, insuranceCartDigitalProductViewModel.optIn)
+                                listenerNormal.onInsuranceSelectedStateChanged(element, insuranceCartDigitalProductViewModel.optIn)
                             } else {
                                 errorMessageView.show()
                                 errorMessageView.text = errorMessage
                                 insuranceProductApplicationDetails.isError = true
-                                listener.onInsuranceSelectedStateChanged(null, insuranceCartDigitalProductViewModel.optIn)
+                                listenerNormal.onInsuranceSelectedStateChanged(null, insuranceCartDigitalProductViewModel.optIn)
                             }
                             if (errorMessage.isBlank()) {
                                 itemView.tv_info_text.show()
@@ -158,12 +158,12 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                                     errorMessageView.hide()
                                     insuranceProductApplicationDetails.value = getDateInServerFormat(s.toString())
                                     insuranceProductApplicationDetails.isError = false
-                                    listener.onInsuranceSelectedStateChanged(element, insuranceCartDigitalProductViewModel.optIn)
+                                    listenerNormal.onInsuranceSelectedStateChanged(element, insuranceCartDigitalProductViewModel.optIn)
                                 } else {
                                     errorMessageView.show()
                                     errorMessageView.text = errorMessage
                                     insuranceProductApplicationDetails.isError = true
-                                    listener.onInsuranceSelectedStateChanged(null, insuranceCartDigitalProductViewModel.optIn)
+                                    listenerNormal.onInsuranceSelectedStateChanged(null, insuranceCartDigitalProductViewModel.optIn)
                                 }
                                 if (errorMessage.isBlank()) {
                                     itemView.tv_info_text.show()
@@ -222,7 +222,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                         applicationDetailsView.hide()
                         itemView.tv_info_text.hide()
                     }
-                    listener.onInsuranceSelectedStateChanged(originalData, isChecked)
+                    listenerNormal.onInsuranceSelectedStateChanged(originalData, isChecked)
                 }
 
             })

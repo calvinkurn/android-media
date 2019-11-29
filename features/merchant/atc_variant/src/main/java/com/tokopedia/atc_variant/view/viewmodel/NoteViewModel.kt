@@ -3,7 +3,7 @@ package com.tokopedia.atc_variant.view.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.atc_variant.view.adapter.CheckoutVariantAdapterTypeFactory
+import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapterTypeFactory
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -12,13 +12,13 @@ import com.tokopedia.atc_variant.view.adapter.CheckoutVariantAdapterTypeFactory
 data class NoteViewModel(
         var note: String,
         var noteCharMax: Int = 144
-) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
+) : Visitable<AddToCartVariantAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
             parcel?.readString() ?: "",
             parcel?.readInt() ?: 0)
 
-    override fun type(typeFactory: CheckoutVariantAdapterTypeFactory): Int {
+    override fun type(typeFactory: AddToCartVariantAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 

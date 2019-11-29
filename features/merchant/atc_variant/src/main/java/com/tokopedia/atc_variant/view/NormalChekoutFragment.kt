@@ -53,8 +53,8 @@ import com.tokopedia.atc_variant.model.Fail
 import com.tokopedia.atc_variant.model.InsuranceRecommendationContainer
 import com.tokopedia.atc_variant.model.ProductInfoAndVariant
 import com.tokopedia.atc_variant.model.ProductInfoAndVariantContainer
-import com.tokopedia.atc_variant.view.adapter.CheckoutVariantAdapter
-import com.tokopedia.atc_variant.view.adapter.CheckoutVariantAdapterTypeFactory
+import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapter
+import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapterTypeFactory
 import com.tokopedia.atc_variant.view.presenter.NormalCheckoutViewModel
 import com.tokopedia.atc_variant.view.viewmodel.*
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.EXTRA_IS_ONE_CLICK_SHIPMENT
@@ -72,8 +72,8 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import javax.inject.Inject
 
-class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
-        NormalCheckoutContract.View, CheckoutVariantActionListener {
+class NormalChekoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAdapterTypeFactory>(),
+        NormalCheckoutContract.View, AddToCartVariantActionListener {
 
     private var isInsuranceSelected: Boolean = false
 
@@ -93,7 +93,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private val normalCheckoutTracking: NormalCheckoutTracking by lazy {
         NormalCheckoutTracking()
     }
-    private lateinit var adapter: CheckoutVariantAdapter
+    private lateinit var adapter: AddToCartVariantAdapter
 
     private var insuranceViewModel = InsuranceRecommendationViewModel()
     var shopId: String = ""
@@ -152,8 +152,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            reference: String?,
                            customEventLabel: String?,
                            customEventAction: String?,
-                           tradeInParams: TradeInParams?): NormalCheckoutFragment {
-            val fragment = NormalCheckoutFragment().apply {
+                           tradeInParams: TradeInParams?): NormalChekoutFragment {
+            val fragment = NormalChekoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
                     putString(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, productId)
@@ -190,7 +190,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         activity?.run {
             DaggerNormalCheckoutComponent.builder()
                     .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
-                    .inject(this@NormalCheckoutFragment)
+                    .inject(this@NormalChekoutFragment)
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(NormalCheckoutViewModel::class.java)
         }
@@ -555,7 +555,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val recyclerView = getRecyclerView(view)
-        recyclerView.addItemDecoration(CheckoutVariantItemDecorator())
+        recyclerView.addItemDecoration(NormalCheckoutItemDecorator())
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         super.onViewCreated(view, savedInstanceState)
         button_buy_partial.setOnClickListener {
@@ -1119,15 +1119,15 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory> {
-        adapter = CheckoutVariantAdapter(adapterTypeFactory)
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AddToCartVariantAdapterTypeFactory> {
+        adapter = AddToCartVariantAdapter(adapterTypeFactory)
         return adapter
     }
 
     override fun isLoadMoreEnabledByDefault() = false
 
-    override fun getAdapterTypeFactory(): CheckoutVariantAdapterTypeFactory {
-        return CheckoutVariantAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory(): AddToCartVariantAdapterTypeFactory {
+        return AddToCartVariantAdapterTypeFactory(this)
     }
 
     override fun loadData(page: Int) {

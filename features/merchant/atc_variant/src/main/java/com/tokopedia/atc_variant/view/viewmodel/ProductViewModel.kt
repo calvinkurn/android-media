@@ -3,7 +3,7 @@ package com.tokopedia.atc_variant.view.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.atc_variant.view.adapter.CheckoutVariantAdapterTypeFactory
+import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapterTypeFactory
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -22,7 +22,7 @@ data class ProductViewModel(
         var discountedPercentage: Float = 0f,
         var isFreeOngkir: Boolean = false,
         var freeOngkirImg: String = ""
-) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
+) : Visitable<AddToCartVariantAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
             parcel?.readInt() ?: 0,
@@ -42,7 +42,7 @@ data class ProductViewModel(
             parcel?.readByte() != 0.toByte(),
             parcel?.readString() ?: "")
 
-    override fun type(typeFactory: CheckoutVariantAdapterTypeFactory): Int {
+    override fun type(typeFactory: AddToCartVariantAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 

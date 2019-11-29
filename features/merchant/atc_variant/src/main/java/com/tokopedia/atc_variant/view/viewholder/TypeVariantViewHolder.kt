@@ -4,7 +4,7 @@ import android.view.View
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.atc_variant.R
-import com.tokopedia.atc_variant.view.CheckoutVariantActionListener
+import com.tokopedia.atc_variant.view.AddToCartVariantActionListener
 import com.tokopedia.atc_variant.view.adapter.VariantOptionAdapter
 import com.tokopedia.atc_variant.view.viewmodel.OptionVariantViewModel
 import com.tokopedia.atc_variant.view.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.item_variant_detail_product_page.view.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class TypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<TypeVariantViewModel>(view) {
+class TypeVariantViewHolder(val view: View, val listenerNormal: AddToCartVariantActionListener) : AbstractViewHolder<TypeVariantViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_variant_detail_product_page
@@ -26,7 +26,7 @@ class TypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionL
 
     override fun bind(element: TypeVariantViewModel?) {
         if (element != null) {
-            val checkoutVariantProductViewModel = listener.onBindVariantGetProductViewModel()
+            val checkoutVariantProductViewModel = listenerNormal.onBindVariantGetProductViewModel()
             if (checkoutVariantProductViewModel != null && checkoutVariantProductViewModel.selectedVariantOptionsIdMap.isNotEmpty()) {
                 for ((key, value) in checkoutVariantProductViewModel.selectedVariantOptionsIdMap) {
                     if (key == element.variantId) {
@@ -50,7 +50,7 @@ class TypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionL
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                     .build()
-            val variantOptionAdapter = VariantOptionAdapter(element.variantOptions, listener)
+            val variantOptionAdapter = VariantOptionAdapter(element.variantOptions, listenerNormal)
             itemView.rv_variant_options.isNestedScrollingEnabled = false
             itemView.rv_variant_options.layoutManager = chipsLayoutManager
             itemView.rv_variant_options.adapter = variantOptionAdapter
@@ -59,7 +59,7 @@ class TypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionL
                 itemView.tv_variant_guideline.hide()
             } else {
                 itemView.tv_variant_guideline.setOnClickListener {
-                    listener.onVariantGuidelineClick(element.variantGuideline)
+                    listenerNormal.onVariantGuidelineClick(element.variantGuideline)
                 }
                 itemView.tv_variant_guideline.visible()
             }

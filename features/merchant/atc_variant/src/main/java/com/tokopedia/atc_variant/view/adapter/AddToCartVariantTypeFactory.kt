@@ -8,7 +8,7 @@ import com.tokopedia.atc_variant.view.viewmodel.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-interface CheckoutVariantTypeFactory {
+interface AddToCartVariantTypeFactory {
 
     fun type(viewModel: NoteViewModel): Int
 

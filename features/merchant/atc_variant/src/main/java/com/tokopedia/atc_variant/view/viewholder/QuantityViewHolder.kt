@@ -7,7 +7,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.atc_variant.R
-import com.tokopedia.atc_variant.view.CheckoutVariantActionListener
+import com.tokopedia.atc_variant.view.AddToCartVariantActionListener
 import com.tokopedia.atc_variant.view.viewmodel.QuantityViewModel
 import kotlinx.android.synthetic.main.item_quantity_detail_product_page.view.*
 import rx.Observable
@@ -20,9 +20,9 @@ import java.util.concurrent.TimeUnit
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : AbstractViewHolder<QuantityViewModel>(view) {
+class QuantityViewHolder(view: View, listenerNormal: AddToCartVariantActionListener) : AbstractViewHolder<QuantityViewModel>(view) {
 
-    private var actionListener: CheckoutVariantActionListener = listener
+    private var actionListenerNormal: AddToCartVariantActionListener = listenerNormal
     private var quantityChangeDebounceListener: QuantityChangeDebounceListener? = null
     private lateinit var element: QuantityViewModel
 
@@ -122,7 +122,7 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
         setupMinButton(element)
         setupPlusButton(element)
         if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
-            actionListener.onChangeQuantity(element)
+            actionListenerNormal.onChangeQuantity(element)
         }
     }
 
@@ -159,7 +159,7 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
     }
 
     private fun initUpdateShippingRatesDebouncer() {
-        val compositeSubscription = actionListener.onGetCompositeSubscriber()
+        val compositeSubscription = actionListenerNormal.onGetCompositeSubscriber()
         compositeSubscription?.run {
             add(Observable.create(Observable.OnSubscribe<QuantityModel> { subscriber ->
                 quantityChangeDebounceListener = object : QuantityChangeDebounceListener {

@@ -3,7 +3,7 @@ package com.tokopedia.atc_variant.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.atc_variant.view.CheckoutVariantActionListener
+import com.tokopedia.atc_variant.view.AddToCartVariantActionListener
 import com.tokopedia.atc_variant.view.VariantChangeListener
 import com.tokopedia.atc_variant.view.viewholder.OptionVariantViewHolder
 import com.tokopedia.atc_variant.view.viewmodel.OptionVariantViewModel
@@ -15,7 +15,7 @@ import com.tokopedia.atc_variant.view.viewmodel.OptionVariantViewModel.Companion
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class VariantOptionAdapter(var dataList: ArrayList<OptionVariantViewModel>, val listener: CheckoutVariantActionListener) :
+class VariantOptionAdapter(var dataList: ArrayList<OptionVariantViewModel>, val listenerNormal: AddToCartVariantActionListener) :
         RecyclerView.Adapter<OptionVariantViewHolder>(), VariantChangeListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionVariantViewHolder {
@@ -44,7 +44,7 @@ class VariantOptionAdapter(var dataList: ArrayList<OptionVariantViewModel>, val 
             }
         }
         notifyDataSetChanged()
-        listener.onChangeVariant(selectedVariant)
+        listenerNormal.onChangeVariant(selectedVariant)
     }
 
 }
