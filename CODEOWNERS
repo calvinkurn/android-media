@@ -51,6 +51,7 @@
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 /features/merchant/official_store/                      @tokopedia/minion-stuart
+/features/merchant/atc_variant/                         @tokopedia/minion-stuart
 /features/top_ads/top_ads_free_claim/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
