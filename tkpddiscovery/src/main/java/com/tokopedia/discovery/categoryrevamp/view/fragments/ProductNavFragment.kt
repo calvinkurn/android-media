@@ -14,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -24,10 +26,7 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
-import com.tokopedia.discovery.categoryrevamp.adapters.ProductNavListAdapter
-import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
-import com.tokopedia.discovery.categoryrevamp.adapters.SubCategoryAdapter
+import com.tokopedia.discovery.categoryrevamp.adapters.*
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.filter.DAFilterQueryType
@@ -41,11 +40,14 @@ import com.tokopedia.discovery.categoryrevamp.utils.ParamMapToUrl
 import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
+import com.tokopedia.discovery.categoryrevamp.view.interfaces.SelectedFilterListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.SubCategoryListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -64,12 +66,13 @@ import rx.Subscriber
 import javax.inject.Inject
 
 
-class ProductNavFragment : BaseCategorySectionFragment(),
+open class ProductNavFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
         QuickFilterListener,
         ProductCardListener,
         SubCategoryListener,
-        WishListActionListener {
+        WishListActionListener,
+        SelectedFilterListener {
 
     var isSubCategoryAvailable = false
 
@@ -147,6 +150,8 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     var pageCount = 0
     var isPagingAllowed: Boolean = true
 
+    private var selectedFilterAdapter: SelectedFilterAdapter? = null
+
     private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
     private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
@@ -200,6 +205,21 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         if (userVisibleHint) {
             setUpVisibleFragmentListener()
         }
+        initSelectedFilterRecyclerView()
+    }
+
+    protected fun initSelectedFilterRecyclerView() {
+        selectedFilterAdapter = SelectedFilterAdapter(this)
+        selectedFilterRecyclerView.adapter = selectedFilterAdapter
+        val layoutManager = ChipsLayoutManager.newBuilder(context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
+        selectedFilterRecyclerView.layoutManager = layoutManager
+        selectedFilterRecyclerView.addItemDecoration(SpacingItemDecoration(
+                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10)
+        ))
     }
 
 
@@ -385,6 +405,13 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
             quickfilter_parent.hide()
             subcategory_recyclerview.hide()
+            val selectedFilterFromEmptyStateListener = getSelectedFilterAsOptionList()
+            if (selectedFilterFromEmptyStateListener != null && selectedFilterFromEmptyStateListener.isNotEmpty()) {
+                selectedFilterRecyclerView.visibility = View.VISIBLE
+                populateSelectedFilterToRecylerView(selectedFilterFromEmptyStateListener)
+            } else {
+                selectedFilterRecyclerView.visibility = View.GONE
+            }
         } else {
             layout_no_data.hide()
             quickfilter_parent.show()
@@ -392,6 +419,10 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 subcategory_recyclerview.show()
             }
         }
+    }
+
+    protected fun populateSelectedFilterToRecylerView(selectedFilterOptionList: List<Option>) {
+        selectedFilterAdapter?.setOptionList(selectedFilterOptionList)
     }
 
     private fun initQuickFilter(list: ArrayList<Filter>) {
@@ -700,5 +731,18 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         subCategoryAdapter = null
         quickFilterAdapter = null
         super.onDestroyView()
+    }
+
+    override fun onSelectedFilterRemoved(uniqueId: String) {
+        removeSelectedFilter(uniqueId)
+    }
+
+    override fun getSelectedFilterAsOptionList(): List<Option>? {
+        return getOptionListFromFilterController()
+    }
+
+    private fun getOptionListFromFilterController(): List<Option> {
+        return if (filterController == null) java.util.ArrayList() else OptionHelper.combinePriceFilterIfExists(filterController.getActiveFilterOptionList(),
+                resources.getString(R.string.empty_state_selected_filter_price_name))
     }
 }
