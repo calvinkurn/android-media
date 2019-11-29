@@ -5,6 +5,10 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
+import com.tokopedia.search.di.module.GraphqlRepositoryModule;
+import com.tokopedia.search.di.module.ResourcesModule;
+import com.tokopedia.search.di.module.UserSessionModule;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -13,6 +17,7 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.result.data.mapper.searchproduct.SearchProductMapperModule;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
 
@@ -21,7 +26,9 @@ import dagger.Provides;
 import rx.functions.Func1;
 
 @SearchScope
-@Module(includes = SearchProductMapperModule.class)
+@Module(includes = {
+        SearchProductMapperModule.class
+})
 public class SearchProductUseCaseModule {
 
     @SearchScope

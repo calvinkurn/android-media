@@ -273,7 +273,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             showTicker();
         }
 
-        saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
 
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.dp_16)
                 , MethodChecker.getDrawable(getActivity(), R.drawable.swd_divider));
@@ -297,13 +296,18 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         });
 
 
+        float displayBalance;
         if (buyerSaldoBalance == 0 || buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
+            displayBalance = sellerSaldoBalance;
+            saldoTitleTV.setText(getString(R.string.saldo_seller));
             currentState = SELLER_STATE;
             sellerWithdrawal = true;
             tabLayout.getTabAt(1).select();
             bankAdapter.setCurrentTab(1);
             checkForEmptyView(1);
         } else {
+            displayBalance = buyerSaldoBalance;
+            saldoTitleTV.setText(getString(R.string.saldo_refund));
             currentState = BUYER_STATE;
             sellerWithdrawal = false;
             tabLayout.getTabAt(0).select();
@@ -311,6 +315,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             checkForEmptyView(0);
         }
 
+        saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(displayBalance, false));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

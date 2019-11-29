@@ -18,6 +18,7 @@ include "features:content:kol"
 include "features:content:kol_common"
 include "features:content:profile"
 include "features:content:interest_pick"
+include "features:content:interest_pick_common"
 include "features:category:basemvvm"
 include "features:category:tradein"
 include "features:category:age_restriction"
@@ -163,6 +164,7 @@ include 'features:user:profilecompletion'
 include "features:user:settingbank"
 include "features:user:settingnotif"
 include "features:user:sessioncommon"
+include "features:user:seamless_login"
 include "features:user:stickylogin"
 include "features:user:talk"
 include "features:user:topchat"
@@ -176,6 +178,7 @@ include "features:fintech:ovo_pay_with_qr"
 include "features:discovery:home_recom"
 include "features:discovery:home_wishlist"
 include "features:discovery:smart_recycler_diffutil_helper"
+include "features:user:seamless_login"
 
 include 'tkpdcore'
 include 'tkpdinbox'
