@@ -756,6 +756,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     private fun onSetFeaturedProductClicked() {
 
+        //TODO: Finish ini
+
     }
 
     private fun onPromoTopAdsClicked(productManageViewModel: ProductManageViewModel) {

@@ -12,11 +12,13 @@ import com.tokopedia.product.manage.list.data.ConfirmationProductData
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.ETALASE_DEFAULT
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.STOCK_DELETED
+import com.tokopedia.product.manage.list.data.model.featuredproductresponse.FeaturedProductResponseDomainModel
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductEditPriceParam
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Param
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Response
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.product.manage.list.domain.BulkUpdateProductUseCase
+import com.tokopedia.product.manage.list.domain.EditFeaturedProductUseCase
 import com.tokopedia.product.manage.list.domain.EditPriceUseCase
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.list.view.listener.ProductManageView
@@ -45,7 +47,8 @@ class ProductManagePresenterImpl @Inject constructor(
         private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
         private val getProductListUseCase: GetProductListUseCase,
         val productListMapperView: ProductListMapperView,
-        private val bulkUpdateProductUseCase: BulkUpdateProductUseCase
+        private val bulkUpdateProductUseCase: BulkUpdateProductUseCase,
+        private val editFeaturedProductUseCase: EditFeaturedProductUseCase
 ) : BaseDaggerPresenter<ProductManageView>(), ProductManagePresenter {
 
     override fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
@@ -248,6 +251,28 @@ class ProductManagePresenterImpl @Inject constructor(
                     }
 
                 })
+    }
+
+    override fun setFeaturedProduct(productId: String, status: Int) {
+
+        //loading animation
+
+        editFeaturedProductUseCase.execute(EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status),
+                object : Subscriber<FeaturedProductResponseDomainModel>() {
+                    override fun onNext(featuredProduct: FeaturedProductResponseDomainModel?) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onCompleted() {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+                })
+
+        // TODO("not implemented") To change body of created functions use File | Settings | File Templates.
     }
 
     private fun getShopIdInteger(): Int {
