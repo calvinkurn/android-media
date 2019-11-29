@@ -34,7 +34,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
-import android.widget.LinearLayout
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -1114,7 +1113,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     val selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
                     val selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
                     if (productId != null && !selectedEtalaseName.isNullOrEmpty()) {
-                        showProgressDialog(onCancelClicked = { productWarehouseViewModel.clear() })
+                        showProgressDialog(onCancelClicked = { productWarehouseViewModel.flush() })
                         productWarehouseViewModel.moveToEtalase(productId!!, selectedEtalaseId, selectedEtalaseName!!,
                                 onSuccessMoveToEtalase = this::onSuccessMoveToEtalase,
                                 onErrorMoveToEtalase = this::onErrorMoveToEtalase)
@@ -1293,8 +1292,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productInfoViewModel.p2Login.removeObservers(this)
         productInfoViewModel.productInfoP3resp.removeObservers(this)
         productInfoViewModel.loadTopAdsProduct.removeObservers(this)
-        productInfoViewModel.clear()
-        productWarehouseViewModel.clear()
+        productInfoViewModel.flush()
+        productWarehouseViewModel.flush()
         super.onDestroy()
     }
 
@@ -1788,7 +1787,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         productInfoViewModel.p2Login.value?.isWishlisted = false
         updateWishlist(false)
-        //TODO clear cache
+        //TODO flush cache
         sendIntentResusltWishlistChange(productId ?: "", false)
 
     }
@@ -1810,7 +1809,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productInfoViewModel.p2Login.value?.isWishlisted = true
         updateWishlist(true)
         productDetailTracking.eventBranchAddToWishlist(productInfo, (UserSession(activity)).userId)
-        //TODO clear cache
+        //TODO flush cache
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
 
@@ -2080,7 +2079,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun warehouseProduct() {
         productId?.let {
-            showProgressDialog(onCancelClicked = { productWarehouseViewModel.clear() })
+            showProgressDialog(onCancelClicked = { productWarehouseViewModel.flush() })
             productWarehouseViewModel.moveToWarehouse(it,
                     onSuccessMoveToWarehouse = this::onSuccessWarehouseProduct,
                     onErrorMoveToWarehouse = this::onErrorWarehouseProduct)
