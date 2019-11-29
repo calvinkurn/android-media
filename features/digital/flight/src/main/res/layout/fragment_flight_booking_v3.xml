@@ -31,7 +31,7 @@
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_10"
                 android:paddingEnd="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_4"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -52,9 +52,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginLeft="@dimen/dp_4"
-                android:layout_marginBottom="@dimen/dp_4"
                 android:text="@string/flight_booking_contact_sublabel"
                 android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintTop_toTopOf="@id/tv_traveller_info_title"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_traveller_info_title"
                 app:layout_constraintStart_toEndOf="@+id/tv_traveller_info_title"
                 app:typographyType="body_2" />
@@ -109,14 +109,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_passenger_info_title"
                 app:typographyType="body_2" />
 
-            <Switch
+            <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
                 android:id="@+id/switch_traveller_as_passenger"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:thumb="@drawable/bg_flight_switch_thumb"
-                android:track="@drawable/bg_flight_switch_track_selector"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_traveller_as_passenger"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -253,14 +251,14 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_5" />
 
-            <include
-                android:id="@+id/layout_shimmering"
-                layout="@layout/layout_flight_booking_v3_shimmering"
-                android:visibility="gone" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/layout_shimmering"
+        layout="@layout/layout_flight_booking_v3_shimmering"
+        android:visibility="gone" />
 
     <include
         android:id="@+id/layout_loading"

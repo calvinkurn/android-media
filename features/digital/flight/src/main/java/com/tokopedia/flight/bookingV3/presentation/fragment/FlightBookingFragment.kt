@@ -293,6 +293,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             tickerBookingPromo.tickerType = if (cart.promoEligibility.success) Ticker.TYPE_ANNOUNCEMENT else Ticker.TYPE_WARNING
             tickerBookingPromo.setTextDescription(cart.promoEligibility.message)
         } else tickerBookingPromo.visibility = View.GONE
+        tickerBookingPromo.tickerShape = Ticker.SHAPE_LOOSE
 
         continueToPayButton.setOnClickListener {
             showCheckBookingDetailPopUp()

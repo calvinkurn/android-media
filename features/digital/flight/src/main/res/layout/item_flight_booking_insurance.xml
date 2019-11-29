@@ -39,11 +39,10 @@
             app:typographyType="body_3"
             tools:text="Rp30.000/orang" />
 
-        <androidx.appcompat.widget.AppCompatCheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/cb_insurance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/bg_button_green_border_outline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -115,10 +114,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_12"
-                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/seperator_2"
-                >
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seperator_2">
+
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_insurance_highlight_see_more"
                     android:layout_width="wrap_content"
@@ -134,11 +133,10 @@
                     android:id="@+id/iv_insurance_highlight_see_more_arrow"
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:srcCompat="@drawable/ic_system_action_arrow_down_normal_24"
-                    android:layout_marginTop="@dimen/dp_2"
                     android:layout_gravity="center_vertical"
-                    />
+                    android:layout_marginTop="@dimen/dp_2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:srcCompat="@drawable/ic_system_action_arrow_down_normal_24" />
             </LinearLayout>
 
             <View
@@ -159,6 +157,4 @@
                 app:layout_constraintTop_toBottomOf="@+id/seperator_3" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </LinearLayout>

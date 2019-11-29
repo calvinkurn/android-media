@@ -62,7 +62,7 @@ class TravellerInfoWidget @JvmOverloads constructor(context: Context, attrs: Att
 
     fun setListener(listener: TravellerInfoWidgetListener) {
         this.listener = listener
-        ic_edit_contact.setOnClickListener { listener.onClickEdit() }
+        user_contact_info.setOnClickListener { listener.onClickEdit() }
     }
 
     interface TravellerInfoWidgetListener {

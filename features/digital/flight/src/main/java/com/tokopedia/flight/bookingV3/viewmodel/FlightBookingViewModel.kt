@@ -1,6 +1,7 @@
 package com.tokopedia.flight.bookingV3.viewmodel
 
 import android.util.Patterns
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -44,7 +45,10 @@ import javax.inject.Inject
 class FlightBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                  dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val flightCartResult = MutableLiveData<Result<FlightCartViewEntity>>() //journey, insurance option, luggage option and meal option
+    private val _flightCartResult = MutableLiveData<Result<FlightCartViewEntity>>() //journey, insurance option, luggage option and meal option
+    val flightCartResult: LiveData<Result<FlightCartViewEntity>>
+        get() = _flightCartResult
+
     val flightVerifyResult = MutableLiveData<Result<FlightVerify.FlightVerifyMetaAndData>>() //flightVerify
     val flightCheckoutResult = MutableLiveData<Result<FlightCheckoutData>>() //flightCheckout
     val flightPromoResult = MutableLiveData<FlightPromoViewEntity>() //promoData
@@ -99,7 +103,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                             data.cartData.flight.child, data.cartData.flight.infant)
                     flightPriceData.value = data.cartData.flight.priceDetail
                     flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
-                    flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
+                    _flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
                 }
                 retryCount = 0
             } else {
@@ -109,11 +113,11 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     getCart(rawQuery, cartId, autoVerify, bookingVerifyParam, verifyQuery, checkVoucherQuery)
                 } else {
                     retryCount = 0
-                    flightCartResult.value = Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY))
+                    _flightCartResult.value = Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY))
                 }
             }
         }) {
-            flightCartResult.value = Fail(it)
+            _flightCartResult.value = Fail(it)
         }
     }
 
@@ -260,7 +264,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             getCart(getCartQuery, getCartId(), true, bookingVerifyParam, verifyQuery, checkVoucherQuery)
         })
         {
-            flightCartResult.value = Fail(it)
+            _flightCartResult.value = Fail(it)
         }
     }
 
@@ -681,7 +685,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             if (getCartQuery.isNotEmpty()) getCart(getCartQuery, getCartId())
         })
         {
-            flightCartResult.value = Fail(it)
+            _flightCartResult.value = Fail(it)
         }
     }
 
@@ -721,7 +725,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             flightCheckoutResult.value = Success(checkOutData)
         })
         {
-            flightCartResult.value = Fail(it)
+            _flightCartResult.value = Fail(it)
         }
     }
 
