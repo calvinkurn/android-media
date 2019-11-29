@@ -148,8 +148,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendAddToCartTracking()
                 }
                 is Fail -> {
-                    showErrorFullPage(mapThrowableToFlightError(it.throwable.message
-                            ?: ""), ::addToCart)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message
+                            ?: ""), ::refreshCart)
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
@@ -744,22 +744,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showErrorFullPage(e: FlightError, action: () -> Unit) {
+    private fun showErrorFullPage(e: FlightError) {
         val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
         layout_full_page_error.visibility = View.VISIBLE
         layout_full_page_error.iv_error_page.setImageResource(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
         layout_full_page_error.tv_error_title.text = FlightBookingErrorCodeMapper.getErrorTitle(errorCode)
         layout_full_page_error.tv_error_subtitle.text = FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode)
-        if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
-            layout_full_page_error.button_error_action.text = getString(R.string.flight_booking_action_refind_ticket)
-            layout_full_page_error.button_error_action.setOnClickListener { finishActivityToSearchPage() }
-        } else {
-            layout_full_page_error.button_error_action.text = getString(R.string.flight_booking_action_retry)
-            layout_full_page_error.button_error_action.setOnClickListener {
-                layout_full_page_error.visibility = View.GONE
-                action()
-            }
-        }
+        layout_full_page_error.button_error_action.text = getString(R.string.flight_booking_action_refind_ticket)
+        layout_full_page_error.button_error_action.setOnClickListener { finishActivityToSearchPage() }
     }
 
     private fun showErrorDialog(e: FlightError, action: () -> Unit) {
@@ -768,7 +760,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
                 if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME) renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
                 else if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
-                    showErrorFullPage(e, ::finishActivityToSearchPage)
+                    showErrorFullPage(e)
                 } else {
                     lateinit var dialog: DialogUnify
                     when (errorCode) {
