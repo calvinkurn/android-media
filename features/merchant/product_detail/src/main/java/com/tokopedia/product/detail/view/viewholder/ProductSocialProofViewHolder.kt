@@ -10,7 +10,8 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.partial_product_detail_visibility.view.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.view.*
 
-class ProductSocialProofViewHolder(val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductSocialProofDataModel>(view) {
+class ProductSocialProofViewHolder(val view: View, private val listener: DynamicProductDetailListener)
+    : AbstractViewHolder<ProductSocialProofDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_pdp_social_proof
@@ -28,15 +29,16 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
             attributeInfoView = PartialAttributeInfoView.build(view.base_attribute)
         }
 
-        element.productInfoP2?.run {
-            productStatsView.renderRating(rating)
-            attributeInfoView.renderWishlistCount(wishlistCount.count)
+        element.rating?.run {
+            productStatsView.renderRating(this)
         }
+        attributeInfoView.renderWishlistCount(element.wishListCount)
 
-        element.productInfo?.run {
-            productStatsView.renderData(this, listener::onReviewClick, listener::onDiscussionClicked)
-            attributeInfoView.renderData(this)
-        }
+        //TO-DO
+        productStatsView.renderData(0, 0, listener::onReviewClick, listener::onDiscussionClicked)
+        //TO-DO
+        //attributeInfoView.renderData(this)
+
 
         productStatsView.renderClickShipping {
             listener.onShipmentClicked()

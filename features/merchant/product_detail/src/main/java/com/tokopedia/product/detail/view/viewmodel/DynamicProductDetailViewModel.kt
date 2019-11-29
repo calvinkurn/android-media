@@ -87,7 +87,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     val moveToEtalaseResult = MutableLiveData<Result<Boolean>>()
 
     var multiOrigin: WarehouseInfo = WarehouseInfo()
-    var getProductInfoP1: ProductInfo? = null
+    var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var dynamicProductInfoP1 = MutableLiveData<Result<DynamicProductInfoP1>>()
 
     private var submitTicketSubscription: Subscription? = null
@@ -158,9 +158,9 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             val productInfo = getPdpData(productParams.productId?.toInt() ?: 0)
 
             productLayout.value = Success(initialLayoutData)
-            dynamicProductInfoP1.value = Success(DynamicProductDetailMapper.mapToDynamicProductDetailP1(pdpLayout.data))
-            getProductInfoP1 = productInfo.productInfo
-            productInfoP1.value = Success(productInfo)
+            val productInfoP1 = Success(DynamicProductDetailMapper.mapToDynamicProductDetailP1(pdpLayout.data))
+            getDynamicProductInfoP1 = productInfoP1.data
+            dynamicProductInfoP1.value = productInfoP1
 
             val p2ShopDeferred = getProductInfoP2ShopAsync(productInfo.productInfo.basic.shopID,
                     productInfo.productInfo.basic.id.toString(),
@@ -267,17 +267,17 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     fun putChatProductInfoTo(
             intent: Intent?,
             productId: String?,
-            productInfo: ProductInfo?,
+            productInfo: DynamicProductInfoP1?,
             userInputVariant: String?
     ) {
         if (intent == null) return
         val variants = mapSelectedProductVariants(userInputVariant)
-        val productImageUrl = productInfo?.getProductImageUrl()
-        val productName = productInfo?.getProductName()
-        val productPrice = productInfo?.getProductPrice()?.getCurrencyFormatted()
-        val productUrl = productInfo?.getProductUrl()
-        val productFsIsActive = productInfo?.getFsProductIsActive()
-        val productFsImageUrl = productInfo?.getFsProductImageUrl()
+        val productImageUrl = productInfo?.data?.getProductImageUrl()
+        val productName = productInfo?.basic?.name
+        val productPrice = productInfo?.data?.price?.value?.getCurrencyFormatted()
+        val productUrl = productInfo?.basic?.url
+        val productFsIsActive = productInfo?.data?.getFsProductIsActive()
+        val productFsImageUrl = productInfo?.data?.getFsProductImageUrl()
         val productColorVariant = variants?.get("colour")?.get("value")
         val productColorHexVariant = variants?.get("colour")?.get("hex")
         val productSizeVariant = variants?.get("size")?.get("value")
@@ -315,7 +315,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                         val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
                                 pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                                 pageName = ProductDetailConstant.DEFAULT_PAGE_NAME,
-                                productIds = arrayListOf(product.data.productInfo.basic.id.toString())
+                                productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
                         )).toBlocking()
                         loadTopAdsProduct.postValue(Success(recomData.first() ?: emptyList()))
                     }

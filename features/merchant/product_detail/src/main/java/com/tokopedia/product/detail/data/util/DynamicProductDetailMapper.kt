@@ -13,7 +13,7 @@ object DynamicProductDetailMapper {
         data.forEachIndexed { index, component ->
             when (component.type) {
                 "product_snapshot" -> {
-                    listOfComponent.add(ProductSnapshotDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductSnapshotDataModel(type = component.type, name = component.componentName))
                 }
                 "discussion" -> {
                     listOfComponent.add(ProductDiscussionDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))

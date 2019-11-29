@@ -10,7 +10,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.view.fragment.partialview.PartialSnapshotView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import kotlinx.android.synthetic.main.item_dynamic_pdp_snapshot.view.*
 
 class ProductSnapshotViewHolder(private val view: View,
@@ -31,21 +30,18 @@ class ProductSnapshotViewHolder(private val view: View,
 
         element.dynamicProductInfoP1?.let {
             header.renderData(it)
-
+            header.showOfficialStore(it.data.isPowerMerchant, it.data.isOS)
             element.nearestWarehouse?.let { nearestWarehouse ->
                 if (nearestWarehouse.warehouseInfo.id.isNotBlank())
                     header.updateStockAndPriceWarehouse(nearestWarehouse, it.data.campaign)
             }
-
-            it.data.media.let {
-//                view.view_picture_search_bar.renderData(it, listener::onImageClicked, listener.getProductFragmentManager(), element.shouldReinitVideoPicture)
-                element.shouldReinitVideoPicture = false
-            }
         }
 
-        element.shopInfo?.let {
-            header.showOfficialStore(it.goldOS)
-            renderWishlist(it, element.isWishlisted)
+        renderWishlist(element.isAllowManage, element.isWishlisted)
+
+        element.media?.let {
+            view.view_picture_search_bar.renderData(it, listener::onImageClicked, listener.getProductFragmentManager(), element.shouldReinitVideoPicture)
+            element.shouldReinitVideoPicture = false
         }
 
         header.renderCod(element.shouldShowCod)
@@ -74,7 +70,7 @@ class ProductSnapshotViewHolder(private val view: View,
             return
         }
         when (payloads[0] as Int) {
-            1 -> renderWishlist(element.shopInfo ?: ShopInfo(), element.isWishlisted)
+            1 -> renderWishlist(element.isAllowManage, element.isWishlisted)
             2 -> renderCod(element.shouldShowCod)
         }
     }
@@ -85,10 +81,10 @@ class ProductSnapshotViewHolder(private val view: View,
         }
     }
 
-    private fun renderWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
+    private fun renderWishlist(isAllowManage: Int, wishlisted: Boolean) {
         view.context?.let {
             view.fab_detail.show()
-            if (shopInfo.isAllowManage == 1) {
+            if (isAllowManage == 1) {
                 view.fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
             } else {
                 updateWishlist(wishlisted)

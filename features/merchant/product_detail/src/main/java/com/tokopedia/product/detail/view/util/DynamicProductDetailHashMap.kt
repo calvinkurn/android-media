@@ -9,7 +9,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
 class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPDataModel>) {
 
@@ -76,12 +75,8 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
 
     fun updateDataP1(data: ProductInfoP1?) {
         data?.let {
-            snapShotMap.productInfoP1 = it.productInfo
-            snapShotMap.media = it.productInfo.media
-
-            socialProofMap?.run {
-                productInfo = it.productInfo
-            }
+            //            snapShotMap.productInfoP1 = it.productInfo
+//            snapShotMap.media = it.productInfo.media
 
             productDiscussionMap?.run {
                 shopId = it.productInfo.basic.shopID.toString()
@@ -101,8 +96,13 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
 
     fun updateDataP1Test(data: DynamicProductInfoP1?) {
         data?.let {
-            snapShotMap.dynamicProductInfoP1 = it
-//            snapShotMap.media = it.productInfo.media
+            snapShotMap.run {
+                dynamicProductInfoP1 = it
+                media = it.data.media.map { media ->
+                    ProductMediaDataModel(media.type, media.uRL300, media.uRLOriginal, media.uRLThumbnail, media.description, media.videoURLAndroid, media.isAutoplay)
+                }
+                isWishlisted = it.data.isWishlist
+            }
 
             socialProofMap?.run {
                 dynamicProductInfoP1 = it
@@ -131,8 +131,10 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
                 shopInfo = it.shopInfo
             }
 
-            snapShotMap.shopInfo = it.shopInfo ?: ShopInfo()
-            snapShotMap.nearestWarehouse = it.nearestWarehouse
+            snapShotMap.run {
+                isAllowManage = it.shopInfo?.isAllowManage ?: 0
+                nearestWarehouse = it.nearestWarehouse
+            }
 
             productInfoMap?.run {
                 shopInfo = it.shopInfo
@@ -151,7 +153,8 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
             }
 
             socialProofMap?.run {
-                productInfoP2 = it
+                wishListCount = it.wishlistCount.count
+                rating = it.rating
             }
 
             productDiscussionMap?.run {

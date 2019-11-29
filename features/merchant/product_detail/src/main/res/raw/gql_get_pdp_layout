@@ -69,6 +69,11 @@ query pdpGetLayout($productID: String) {
             url300
             Status
           }
+          preorder{
+            duration
+            timeUnit
+            isActive
+          }
           videos {
             source
             url

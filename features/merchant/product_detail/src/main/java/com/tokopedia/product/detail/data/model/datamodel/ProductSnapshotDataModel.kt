@@ -3,25 +3,23 @@ package com.tokopedia.product.detail.data.model.datamodel
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.product.Media
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
 data class ProductSnapshotDataModel(
-        var dataLayout: List<ComponentData> = listOf(),
-        var media: List<Media>? = null,
-        val name: String = "",
-        var productInfoP1: ProductInfo? = null,
-        var dynamicProductInfoP1: DynamicProductInfoP1? = null,
-        var shopInfo: ShopInfo? = null,
-        var nearestWarehouse: MultiOriginWarehouse? = null,
         var type: String = "",
+        val name: String = "",
+        var dataLayout: List<ComponentData>? = null,
+
+        var isAllowManage: Int = 0,
         var isWishlisted: Boolean = false,
+
+        var media: List<ProductMediaDataModel>? = null,
+        var dynamicProductInfoP1: DynamicProductInfoP1? = null,
+        var nearestWarehouse: MultiOriginWarehouse? = null,
         var shouldShowCod: Boolean = false,
         var shouldShowTradein: Boolean = false,
-        var shouldReinitVideoPicture : Boolean = true
+        var shouldReinitVideoPicture: Boolean = true
 ) : DynamicPDPDataModel {
     override fun name(): String = name
     override fun type(): String = type

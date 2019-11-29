@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.product.Media
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.view.adapter.VideoPicturePagerAdapter
 import com.tokopedia.product.detail.view.fragment.VideoPictureFragment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.widget_picture_scrolling.view.*
 class PictureScrollingView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-    private var urlTemp = ""
     lateinit var pagerAdapter: VideoPicturePagerAdapter
 
     val position: Int
@@ -40,7 +39,7 @@ class PictureScrollingView @JvmOverloads constructor(
         View.inflate(context, R.layout.widget_picture_scrolling, this)
     }
 
-    fun renderData(media: List<Media>?, onPictureClickListener: ((Int) -> Unit)?, fragmentManager: FragmentManager,
+    fun renderData(media: List<ProductMediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, fragmentManager: FragmentManager,
                    forceRefresh: Boolean = true) {
         val mediaList = if (media == null || media.isEmpty()) {
             val resId = R.drawable.product_no_photo_default
@@ -49,12 +48,12 @@ class PictureScrollingView @JvmOverloads constructor(
                     + "://" + res.getResourcePackageName(resId)
                     + '/'.toString() + res.getResourceTypeName(resId)
                     + '/'.toString() + res.getResourceEntryName(resId))
-            mutableListOf(Media(urlOriginal = uriNoPhoto.toString()))
+            mutableListOf(ProductMediaDataModel(urlOriginal = uriNoPhoto.toString()))
         } else
             media.toMutableList()
 
         if (!::pagerAdapter.isInitialized || forceRefresh) {
-            pagerAdapter = VideoPicturePagerAdapter(context, mediaList, urlTemp, onPictureClickListener, fragmentManager)
+            pagerAdapter = VideoPicturePagerAdapter(context, mediaList, onPictureClickListener, fragmentManager)
             view_pager.adapter = pagerAdapter
 
             view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -79,12 +78,12 @@ class PictureScrollingView @JvmOverloads constructor(
         }
     }
 
-    fun renderShopStatus(shopInfo: ShopInfo, productStatus: String, productStatusTitle: String = "",
+    fun renderShopStatus(shopInfo: ShopInfo.StatusInfo, productStatus: String, productStatusTitle: String = "",
                          productStatusMessage: String = "") {
-        if (shopInfo.statusInfo.shopStatus != SHOP_STATUS_ACTIVE) {
+        if (shopInfo.shopStatus != SHOP_STATUS_ACTIVE) {
             error_product_container.visible()
-            error_product_title.text = MethodChecker.fromHtml(shopInfo.statusInfo.statusTitle)
-            error_product_descr.text = MethodChecker.fromHtml(shopInfo.statusInfo.statusMessage)
+            error_product_title.text = MethodChecker.fromHtml(shopInfo.statusTitle)
+            error_product_descr.text = MethodChecker.fromHtml(shopInfo.statusMessage)
         } else if (productStatus != ProductStatusTypeDef.ACTIVE) {
             // TODO ASK PRODUCT STATUS DETAIL
             error_product_container.visible()

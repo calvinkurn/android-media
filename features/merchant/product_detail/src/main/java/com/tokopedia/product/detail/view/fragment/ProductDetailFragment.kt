@@ -60,7 +60,6 @@ import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSlider
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -80,6 +79,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
@@ -90,6 +90,7 @@ import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
+import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.view.activity.CourierActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
@@ -1431,7 +1432,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS)
             valuePropositionView.renderData(shopInfo.goldOS)
-            varPictureImage.renderShopStatus(shopInfo, productInfo?.basic?.status
+            varPictureImage.renderShopStatus(shopInfo.statusInfo, productInfo?.basic?.status
                     ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
                 productStatsView.renderClickShipping(it, ::onShipmentClicked)
@@ -1625,10 +1626,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         shouldShowCod = data.shouldShowCod
         isLeasing = data.basic.isLeasing
         headerView.renderData(data)
-        varPictureImage.renderData(data.media, this::onPictureProductClicked, childFragmentManager)
-        productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
+        val mediaViewModel = data.media.map {
+            ProductMediaDataModel(it.type, it.url300, it.urlOriginal, it.urlThumbnail, it.mediaDescription, it.videoUrl, it.isAutoPlay)
+        }
+        varPictureImage.renderData(mediaViewModel, this::onPictureProductClicked, childFragmentManager)
+        productStatsView.renderData(data.stats.countView, data.stats.countReview, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
-        attributeInfoView.renderData(data)
+        attributeInfoView.renderData(data.stats.countView , data.txStats)
         txt_last_update.text = getString(R.string.template_last_update_price, data.basic.lastUpdatePrice)
         txt_last_update.visible()
 

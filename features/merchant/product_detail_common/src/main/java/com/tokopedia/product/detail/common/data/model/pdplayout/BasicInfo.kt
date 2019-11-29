@@ -1,7 +1,10 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
+import android.content.Context
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.R
+import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 
 data class BasicInfo(
         @SerializedName("alias")
@@ -43,6 +46,20 @@ data class BasicInfo(
         @SerializedName("url")
         val url: String = ""
 ) {
-        fun getProductId():Int  = productID.toIntOrNull() ?: 0
-        fun getShopId():Int  = shopID.toIntOrNull() ?: 0
+    fun getProductId(): Int = productID.toIntOrNull() ?: 0
+    fun getShopId(): Int = shopID.toIntOrNull() ?: 0
+    fun isActive(): Boolean {
+        return status == ProductStatusTypeDef.ACTIVE
+    }
+    fun statusMessage(context: Context): String {
+        return when (status) {
+            ProductStatusTypeDef.DELETED -> context.getString(R.string.product_status_deleted)
+            ProductStatusTypeDef.ACTIVE -> context.getString(R.string.product_status_active)
+            ProductStatusTypeDef.WAREHOUSE -> context.getString(R.string.product_status_warehouse)
+            ProductStatusTypeDef.HIDDEN -> context.getString(R.string.product_status_hidden)
+            ProductStatusTypeDef.PENDING -> context.getString(R.string.product_status_pending)
+            ProductStatusTypeDef.BANNED -> context.getString(R.string.product_status_banned)
+            else -> context.getString(R.string.product_status_active)
+        }
+    }
 }

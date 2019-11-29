@@ -19,7 +19,6 @@ import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWareh
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -132,21 +131,21 @@ class PartialSnapshotView(private val view: View,
         }
     }
 
-    fun showOfficialStore(goldOs: ShopInfo.GoldOS) {
+    fun showOfficialStore(isGoldMerchant: Boolean, isOfficialStore: Boolean) {
         val imageIc: ImageSpan
         val colorIc: Int
         val labelIc: String
         val context = view.context
         val drawableSize = context.resources.getDimension(R.dimen.dp_16).toInt()
 
-        if (goldOs.isGoldBadge == 1 && goldOs.isOfficial == 0) {
+        if (isGoldMerchant && !isOfficialStore) {
             val drawablePm = MethodChecker.getDrawable(context, R.drawable.ic_power_merchant)
             drawablePm?.setBounds(0, 0, drawableSize, drawableSize)
             labelIc = context.getString(R.string.from_power_badge_label)
             imageIc = ImageSpan(drawablePm, ImageSpan.ALIGN_BOTTOM)
             colorIc = ContextCompat.getColor(context, R.color.green_power_badge)
             renderTxtIcon(labelIc, colorIc, imageIc)
-        } else if (goldOs.isOfficial == 1) {
+        } else if (isOfficialStore) {
             val drawableOs = MethodChecker.getDrawable(context, R.drawable.ic_badge_shop_official)
             drawableOs?.setBounds(0, 0, drawableSize, drawableSize)
             labelIc = context.getString(R.string.from_official_store_label)
