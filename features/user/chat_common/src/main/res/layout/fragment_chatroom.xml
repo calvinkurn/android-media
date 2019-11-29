@@ -191,7 +191,6 @@
                         android:id="@+id/iv_chat_menu"
                         android:layout_width="@dimen/dp_40"
                         android:layout_height="@dimen/dp_40"
-                        android:background="?selectableItemBackgroundBorderless"
                         android:padding="@dimen/dp_8"
                         app:srcCompat="@drawable/ic_add_grey_chat_common" />
                 </FrameLayout>

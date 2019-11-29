@@ -2,6 +2,7 @@
 <resources>
 
     <color name="black_12">#1e000000</color>
+    <color name="shadow_attachment">#0C000000</color>
     <color name="black_twenty_percent">#1F000000</color>
     <color name="tkpd_dark_red">#FF0000</color>
 
