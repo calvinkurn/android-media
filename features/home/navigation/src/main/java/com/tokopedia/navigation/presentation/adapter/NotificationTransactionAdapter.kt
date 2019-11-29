@@ -62,4 +62,9 @@ class NotificationTransactionAdapter(
         notifyDataSetChanged()
     }
 
+    fun removeEmptyState() {
+        visitables.removeAll { it is EmptyState }
+        notifyDataSetChanged()
+    }
+
 }
