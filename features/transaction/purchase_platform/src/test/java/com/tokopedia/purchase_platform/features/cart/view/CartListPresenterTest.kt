@@ -570,6 +570,36 @@ class CartListPresenterTest : Spek({
             }
         }
 
+        Scenario("some item error") {
+
+            Given("error in some items") {
+                firstItemFirst.isSelected = true
+                secondItemFirstData.isError = true
+                firstShop.isPartialSelected = true
+
+                secondShopData.isError = true
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+                every { view.allAvailableCartDataList } answers {
+                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+            }
+
+            Then("should have some subtotal and selected all item") {
+                verifyOrder {
+                    view.updateCashback(100.0)
+                    view.allAvailableCartDataList
+                    view.renderDetailInfoSubTotal("1", "Rp1.000", true, false, false)
+                }
+            }
+        }
+
         Scenario("all item selected") {
 
             Given("check all items") {
@@ -598,6 +628,166 @@ class CartListPresenterTest : Spek({
                     view.updateCashback(100.0)
                     view.allAvailableCartDataList
                     view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
+                }
+            }
+        }
+
+        Scenario("all item selected with wholesale price") {
+
+            Given("check all items") {
+                firstItemFirst.isSelected = true
+                secondItemFirst.isSelected = true
+                firstShop.isAllSelected = true
+
+                firstItemSecond.isSelected = true
+                secondItemSecond.isSelected = true
+                secondShop.isAllSelected = true
+            }
+
+            Given("wholesale price") {
+                val wholesalePriceData = WholesalePriceData().apply {
+                    qtyMin = 5
+                    prdPrc = 100
+                }
+                firstItemFirstOriginData.wholesalePriceData = arrayListOf(wholesalePriceData)
+                firstItemFirstUpdatedData.quantity = 10
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+                every { view.allAvailableCartDataList } answers {
+                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+            }
+
+            Then("should have all subtotal") {
+                verifyOrder {
+                    view.updateCashback(100.0)
+                    view.allAvailableCartDataList
+                    view.renderDetailInfoSubTotal("19", "Rp1.684", true, false, false)
+                }
+            }
+        }
+
+        Scenario("all item selected with invalid wholesale price") {
+
+            Given("check all items") {
+                firstItemFirst.isSelected = true
+                secondItemFirst.isSelected = true
+                firstShop.isAllSelected = true
+
+                firstItemSecond.isSelected = true
+                secondItemSecond.isSelected = true
+                secondShop.isAllSelected = true
+            }
+
+            Given("wholesale price") {
+                val wholesalePriceData = WholesalePriceData().apply {
+                    qtyMin = 10
+                    prdPrc = 100
+                }
+                firstItemFirstOriginData.wholesalePriceData = arrayListOf(wholesalePriceData)
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+                every { view.allAvailableCartDataList } answers {
+                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+            }
+
+            Then("should have all subtotal") {
+                verifyOrder {
+                    view.updateCashback(100.0)
+                    view.allAvailableCartDataList
+                    view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
+                }
+            }
+        }
+
+        Scenario("all item selected with product variant") {
+
+            Given("check all items") {
+                firstItemFirst.isSelected = true
+                secondItemFirst.isSelected = true
+                firstShop.isAllSelected = true
+
+                firstItemSecond.isSelected = true
+                secondItemSecond.isSelected = true
+                secondShop.isAllSelected = true
+            }
+
+            Given("product variant") {
+                firstItemFirstOriginData.parentId = "9"
+                secondItemFirstOriginData.parentId = "9"
+                secondItemFirstOriginData.isCashBack = firstItemFirstOriginData.isCashBack
+                secondItemFirstOriginData.productCashBack = firstItemFirstOriginData.productCashBack
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+                every { view.allAvailableCartDataList } answers {
+                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+            }
+
+            Then("should have all subtotal") {
+                verifyOrder {
+                    view.updateCashback(160.0)
+                    view.allAvailableCartDataList
+                    view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
+                }
+            }
+        }
+
+        Scenario("all item selected with product variant same price and cashback") {
+
+            Given("check all items") {
+                firstItemFirst.isSelected = true
+                secondItemFirst.isSelected = true
+                firstShop.isAllSelected = true
+
+                firstItemSecond.isSelected = true
+                secondItemSecond.isSelected = true
+                secondShop.isAllSelected = true
+            }
+
+            Given("product variant") {
+                firstItemFirstOriginData.parentId = "9"
+                secondItemFirstOriginData.parentId = "9"
+                secondItemFirstOriginData.pricePlan = firstItemFirstOriginData.pricePlan
+                secondItemFirstOriginData.isCashBack = firstItemFirstOriginData.isCashBack
+                secondItemFirstOriginData.productCashBack = firstItemFirstOriginData.productCashBack
+            }
+
+            Given("attach view") {
+                cartListPresenter.attachView(view)
+                every { view.allAvailableCartDataList } answers {
+                    cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
+                }
+            }
+
+            When("recalculate subtotal") {
+                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+            }
+
+            Then("should have all subtotal") {
+                verifyOrder {
+                    view.updateCashback(400.0)
+                    view.allAvailableCartDataList
+                    view.renderDetailInfoSubTotal("10", "Rp4.084", true, false, false)
                 }
             }
         }
