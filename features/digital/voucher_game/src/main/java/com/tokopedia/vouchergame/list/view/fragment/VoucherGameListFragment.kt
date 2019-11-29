@@ -30,6 +30,8 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
@@ -64,6 +66,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
     @Inject
     lateinit var rechargeAnalytics: RechargeAnalytics
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +107,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                                 (activity as BaseVoucherGameActivity).updateTitle(categoryName)
                                 voucherGameAnalytics.categoryName = categoryName
                                 voucherGameExtraParam.categoryId.toIntOrNull()?.let { id ->
-                                    rechargeAnalytics.eventDigitalCategoryScreenLaunch(categoryName, id.toString())
+                                    rechargeAnalytics.eventDigitalCategoryScreenLaunch(categoryName,
+                                            id.toString(), userSession.isLoggedIn)
                                 }
                             }
 

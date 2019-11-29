@@ -22,6 +22,7 @@ import com.tokopedia.common_digital.common.presentation.model.RechargePushEventR
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topupbills.telco.view.widget.DigitalSubMenuWidget
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_digital_telco.*
 import rx.Subscriber
 import javax.inject.Inject
@@ -36,6 +37,8 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
     lateinit var topupAnalytics: DigitalTopupAnalytics
     @Inject
     lateinit var rechargeAnalytics: RechargeAnalytics
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun getScreenName(): String? {
         return null
@@ -66,7 +69,8 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
             var postpaidExtraParam = TopupBillsExtraParam()
 
             digitalTelcoExtraParam.categoryId.toIntOrNull()?.let {
-                rechargeAnalytics.eventDigitalCategoryScreenLaunch(topupAnalytics.getCategoryName(it), digitalTelcoExtraParam.categoryId)
+                rechargeAnalytics.eventDigitalCategoryScreenLaunch(topupAnalytics.getCategoryName(it),
+                        digitalTelcoExtraParam.categoryId, userSession.isLoggedIn)
                 rechargeAnalytics.trackVisitRechargePushEventRecommendation(it)
             }
 
