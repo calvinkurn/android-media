@@ -267,6 +267,24 @@ Anda di sini.</string>
     <string name="detail_label_digital">Detail Pembelian</string>
     <string name="lihat_detail">Lihat Detail</string>
     <string name="detail_label">Detail E-voucher Deals</string>
+
+    <!-- OMS Insurance-->
+
+    <string name="insurance_ticker">Polis asuransi akan dikirimkan lewat email.</string>
+    <string name="insurance_policy">Polis Asuransi</string>
+    <string name="insurance_detail_label">Daftar Produk</string>
+    <string name="protection_details">Detail Proteksi</string>
+    <string name="insurance_claim">Lihat Cara Klaim</string>
+    <string name="insurance_claim_content">Info lengkap benefit asuransi dan cara pengajuan klaim asuransi</string>
+    <string name="insurance_policy_content">Bukti perjanjian tertulis tertanggung dan pihak asuransi</string>
+    <string name="insurance_type">Jenis Asuransi</string>
+    <string name="product_category">Kategori Produk</string>
+    <string name="insurance_length">Masa Perlindungan</string>
+    <string name="insurance_quantity">Jumlah Proteksi</string>
+    <string name="insurance_price">Harga Proteksi</string>
+
+    <!-- OMS Insurance-->
+
     <string name="detail_label_events">Detail E-Tiket</string>
     <string name="product_info_label">Daftar Produk</string>
     <string name="lihat_text">LIHAT</string>

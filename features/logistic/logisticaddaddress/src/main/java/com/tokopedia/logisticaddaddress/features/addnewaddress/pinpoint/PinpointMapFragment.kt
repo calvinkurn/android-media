@@ -20,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -30,9 +31,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.logisticaddaddress.AddressConstants
-import com.tokopedia.logisticaddaddress.AddressConstants.MONAS_LAT
-import com.tokopedia.logisticaddaddress.AddressConstants.MONAS_LONG
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.common.AddressConstants.MONAS_LAT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.MONAS_LONG
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
@@ -46,6 +47,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.utils.rxPinPoint
+import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -73,7 +75,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private val FINISH_FLAG = 1212
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
-    private var fusedLocationClient: FusedLocationProviderClient? = null
     private var token: Token? = null
     private var isPolygon: Boolean = false
     private var districtId: Int? = null
@@ -154,6 +155,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
+        presenter.autofill(currentLat, currentLong)
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -235,7 +237,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
         activity?.let { MapsInitializer.initialize(activity) }
 
-        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong))
 
         if (this.isPolygon) {
             districtId?.let { districtId ->
@@ -299,7 +301,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             currentLat = lat
             currentLong = long
         }
-        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong))
     }
 
     private fun moveMap(latLng: LatLng) {
@@ -372,7 +374,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         currentLat = getDistrictDataUiModel.latitude.toDouble()
         currentLong = getDistrictDataUiModel.longitude.toDouble()
         isGetDistrict = true
-        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong))
 
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.VISIBLE

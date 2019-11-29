@@ -163,6 +163,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var afterPost: Boolean = false
     private var afterRefresh: Boolean = false
 
+    private var isUserEventTrackerDoneTrack = false
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var feedOnboardingPresenter: FeedOnboardingViewModel
@@ -736,8 +738,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 showAfterPostToaster()
                 afterPost = false
             }
-
-            analytics.trackScreen(screenName)
         }
     }
 
@@ -1053,6 +1053,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 MoEngage.IS_FEED_EMPTY, isEmptyFeed
         )
         TrackApp.getInstance().moEngage.sendTrackEvent(value, EventMoEngage.OPEN_FEED)
+    }
+
+    override fun sendFeedPlusScreenTracking() {
+        if (!isUserEventTrackerDoneTrack) {
+            val isEmptyFeed = !hasFeed()
+
+            feedAnalytics.eventOpenFeedPlusFragment(
+                    userSession.isLoggedIn,
+                    isEmptyFeed
+            )
+
+            isUserEventTrackerDoneTrack = true
+        }
     }
 
     override fun onStop() {

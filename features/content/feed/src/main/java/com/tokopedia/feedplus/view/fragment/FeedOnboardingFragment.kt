@@ -10,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -121,6 +122,9 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     override fun initInjector() {
         activity?.application?.let {
             DaggerFeedPlusComponent.builder()
+                    .baseAppComponent(
+                            (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                    )
                     .build()
                     .inject(this)
         }

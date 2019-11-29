@@ -138,6 +138,7 @@ ext {
 
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",
+            seamlesslogin                   : ":features:user:seamless_login",
             tokopoints                      : ":features:promo:tokopoints",
 //            tokopoints             : ":features:promo:tokopoints_no_op",
             tokopointsNotification          : ":features:promo:tokopoints_notification",
@@ -186,6 +187,7 @@ ext {
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
 //            userIdentification              : ":features:user:user_identification_no_op",
+            seamlesslogin                   : ":features:user:seamless_login",
             stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",
             vote                            : ":features:user:vote",
