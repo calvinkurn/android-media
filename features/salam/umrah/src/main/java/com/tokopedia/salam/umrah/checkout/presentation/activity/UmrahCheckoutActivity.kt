@@ -27,9 +27,6 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
     lateinit var userSession: UserSessionInterface
         @Inject set
 
-    @Inject
-    lateinit var trackingUmrahUtil: TrackingUmrahUtil
-
     override fun getNewFragment(): Fragment? = UmrahCheckoutFragment.getInstance(
             intent.getStringExtra(EXTRA_SLUG_NAME),
             intent.getStringExtra(EXTRA_VARIANT),
@@ -66,10 +63,18 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
                 .putExtra(EXTRA_VARIANT, variant)
                 .putExtra(EXTRA_TOTAL_PASSENGER, totalPassenger)
                 .putExtra(EXTRA_DEPART_DATE, departDate)
+    }
 
+    interface OnBackListener {
+        fun onBackPress()
     }
 
     override fun onBackPressed() {
+
+        if (fragment is OnBackListener) {
+            (fragment as OnBackListener).onBackPress()
+        }
+
         val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.umrah_checkout_dialog_title))
         dialog.setDescription(getString(R.string.umrah_checkout_dialog_desc))
@@ -81,7 +86,7 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
         }
 
         dialog.setSecondaryCTAClickListener {
-            trackingUmrahUtil.getClickBackCheckoutTracker()
+            dialog.dismiss()
             super.onBackPressed()
         }
     }

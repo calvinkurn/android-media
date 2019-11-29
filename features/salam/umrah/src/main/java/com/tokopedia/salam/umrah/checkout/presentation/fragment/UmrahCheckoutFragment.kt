@@ -26,6 +26,7 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.*
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
+import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel.UmrahProduct.TravelAgent
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_DEPART_DATE
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_PRICE
@@ -70,7 +71,7 @@ import javax.inject.Inject
  */
 
 class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder.UmrahCheckoutPilgrimsListListener,
-        UmrahPilgrimsFilledViewHolder.UmrahCheckoutPilgrimsListListener {
+        UmrahPilgrimsFilledViewHolder.UmrahCheckoutPilgrimsListListener, UmrahCheckoutActivity.OnBackListener {
 
     @Inject
     lateinit var umrahCheckoutViewModel: UmrahCheckoutViewModel
@@ -711,5 +712,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
             return pilgrimsCountList
         }
     }
+
+    override fun onBackPress() {
+        trackingUmrahUtil.getClickBackCheckoutTracker()
+    }
+
 
 }
