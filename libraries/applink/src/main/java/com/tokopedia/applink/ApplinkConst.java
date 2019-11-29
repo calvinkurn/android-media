@@ -46,6 +46,7 @@ public interface ApplinkConst {
     String SELLER_HISTORY = "tokopedia://seller/history";
     String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
     String REPUTATION = "tokopedia://review";
+    String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String REPUTATION_DETAIL = "tokopedia://review/{reputation_id}";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String WEBVIEW = "tokopedia://webview";
@@ -90,6 +91,7 @@ public interface ApplinkConst {
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
+    String CHAT_BOT = "tokopedia://chatbot";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
     String GROUPCHAT_DETAIL = "tokopedia://groupchat/{channel_id}";
     String REFERRAL = "tokopedia://referral";
@@ -375,6 +377,7 @@ public interface ApplinkConst {
         String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
         String PARAM_HAS_TITLEBAR = "titlebar";
         String PARAM_URL = "url";
+        String HOST = "groupchat";
     }
 
     interface Profile {

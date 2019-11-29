@@ -620,11 +620,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setCartPromoSuggestionHolderData(cartShipmentAddressFormData.getCartPromoSuggestionHolderData());
         }
 
-        setShipmentCartItemModelList(getView()
-                .getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData));
+        setShipmentCartItemModelList(getView().getShipmentDataConverter().getShipmentItems(
+                cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null)
+        );
 
         this.codData = cartShipmentAddressFormData.getCod();
-        if (this.codData != null && this.codData.isCod()) {
+        if ((this.codData != null && this.codData.isCod()) || cartShipmentAddressFormData.isMultipleDisable()) {
             recipientAddressModel.setDisableMultipleAddress(true);
         }
 
@@ -1653,10 +1654,36 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void changeShippingAddress(final RecipientAddressModel recipientAddressModel,
-                                      boolean isOneClickShipment) {
+    public void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
+                                      boolean isOneClickShipment,
+                                      boolean isTradeInDropOff,
+                                      boolean isHandleFallback) {
         getView().showLoading();
-        String changeAddressRequestJsonString = new Gson().toJson(changeAddressRequestList);
+        List<DataChangeAddressRequest> dataChangeAddressRequests = new ArrayList<>();
+        if (shipmentCartItemModelList != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                    DataChangeAddressRequest dataChangeAddressRequest = new DataChangeAddressRequest();
+                    dataChangeAddressRequest.setQuantity(cartItemModel.getQuantity());
+                    dataChangeAddressRequest.setProductId(cartItemModel.getProductId());
+                    dataChangeAddressRequest.setNotes(cartItemModel.getNoteToSeller());
+                    dataChangeAddressRequest.setCartId(cartItemModel.getCartId());
+                    if (isTradeInDropOff) {
+                        dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
+                                newRecipientAddressModel.getLocationDataModel().getAddrId() : 0
+                        );
+                    } else {
+                        dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
+                                Integer.parseInt(newRecipientAddressModel.getId()) :
+                                Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId())
+                        );
+                    }
+                    dataChangeAddressRequests.add(dataChangeAddressRequest);
+                }
+            }
+        }
+
+        String changeAddressRequestJsonString = new Gson().toJson(dataChangeAddressRequests);
 
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("carts", changeAddressRequestJsonString);
@@ -1682,30 +1709,42 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onError(Throwable e) {
-                                getView().hideLoading();
-                                e.printStackTrace();
-                                getView().showToastError(
-                                        ErrorHandler.getErrorMessage(getView().getActivityContext(), e)
-                                );
+                                if (getView() != null) {
+                                    getView().hideLoading();
+                                    e.printStackTrace();
+                                    getView().showToastError(
+                                            ErrorHandler.getErrorMessage(getView().getActivityContext(), e)
+                                    );
+                                    if (isHandleFallback) {
+                                        getView().renderChangeAddressFailed();
+                                    }
+                                }
                             }
 
                             @Override
                             public void onNext(SetShippingAddressData setShippingAddressData) {
-
-                                getView().hideLoading();
-                                if (setShippingAddressData.isSuccess()) {
-                                    getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
-                                    getView().renderChangeAddressSuccess(recipientAddressModel);
-                                } else {
-                                    if (setShippingAddressData.getMessages() != null &&
-                                            setShippingAddressData.getMessages().size() > 0) {
-                                        StringBuilder stringBuilder = new StringBuilder();
-                                        for (String errorMessage : setShippingAddressData.getMessages()) {
-                                            stringBuilder.append(errorMessage).append(" ");
-                                        }
-                                        getView().showToastError(stringBuilder.toString());
+                                if (getView() != null) {
+                                    getView().hideLoading();
+                                    if (setShippingAddressData.isSuccess()) {
+                                        getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
+                                        getView().renderChangeAddressSuccess();
                                     } else {
-                                        getView().showToastError(getView().getActivityContext().getString(R.string.label_change_address_failed));
+                                        if (setShippingAddressData.getMessages() != null &&
+                                                setShippingAddressData.getMessages().size() > 0) {
+                                            StringBuilder stringBuilder = new StringBuilder();
+                                            for (String errorMessage : setShippingAddressData.getMessages()) {
+                                                stringBuilder.append(errorMessage).append(" ");
+                                            }
+                                            getView().showToastError(stringBuilder.toString());
+                                            if (isHandleFallback) {
+                                                getView().renderChangeAddressFailed();
+                                            }
+                                        } else {
+                                            getView().showToastError(getView().getActivityContext().getString(R.string.label_change_address_failed));
+                                            if (isHandleFallback) {
+                                                getView().renderChangeAddressFailed();
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -1768,6 +1807,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setTradeInDropOff(shipmentDetailData.isTradeInDropOff());
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
+        shippingParam.setTradeInDropOff(isTradeInDropOff);
 
         if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
             shippingParam.setDestinationDistrictId(String.valueOf(recipientAddressModel.getLocationDataModel().getDistrict()));

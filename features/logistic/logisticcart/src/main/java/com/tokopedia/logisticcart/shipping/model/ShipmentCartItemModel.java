@@ -95,6 +95,9 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private boolean isLeasingProduct;
     private int bookingFee;
 
+    private boolean isDropshipperDisable;
+    private boolean isOrderPrioritasDisable;
+
     private boolean hasSetDropOffLocation;
 
     public ShipmentCartItemModel() {
@@ -703,6 +706,22 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     public int getBookingFee() { return bookingFee; }
 
     public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
+
+    public boolean isDropshipperDisable() {
+        return isDropshipperDisable;
+    }
+
+    public void setDropshipperDisable(boolean dropshipperDisable) {
+        isDropshipperDisable = dropshipperDisable;
+    }
+
+    public boolean isOrderPrioritasDisable() {
+        return isOrderPrioritasDisable;
+    }
+
+    public void setOrderPrioritasDisable(boolean orderPrioritasDisable) {
+        isOrderPrioritasDisable = orderPrioritasDisable;
+    }
 
     public boolean isHasSetDropOffLocation() {
         return hasSetDropOffLocation;

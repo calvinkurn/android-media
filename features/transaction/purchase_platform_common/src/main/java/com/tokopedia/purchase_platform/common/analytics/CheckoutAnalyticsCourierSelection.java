@@ -658,6 +658,28 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventClickJemputTab() {
+        sendEventCategoryAction(EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_JEMPUT_TAB
+        );
+    }
+
+    public void eventClickDropOffTab() {
+        sendEventCategoryAction(EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_DROP_OFF_TAB
+        );
+    }
+
+    public void eventClickUbahTitikDropoffButton() {
+        sendEventCategoryAction(EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_UBAH_TITIK_DROP_OFF_BUTTON
+        );
+    }
+
+
     public void eventClickShowMerchantVoucherList() {
         sendEventCategoryAction(
                 EventName.CLICK_COURIER,
@@ -734,7 +756,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
 
     public void eventCancelPromoStackingLogistic() {
         sendEventCategoryAction(
-            "",
+                "",
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_X_ON_PROMO_STACKING_LOGISTIC
         );

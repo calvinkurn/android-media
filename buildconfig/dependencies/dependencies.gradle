@@ -185,8 +185,7 @@ ext {
             moengagePushbase    : "com.moengage:pushbase:3.2.00",
             moengageInapp   : "com.moengage:inapp:3.2.02",
             branch     : "io.branch.sdk.android:library:4.1.1",
-            rapid7     : "com.rapid7:r7insight_java:1.1.39",
-            cashshield : "com.cashshield.android:cashshield:2.5.1@aar"
+            rapid7     : "com.rapid7:r7insight_java:1.1.39"
     ]
 
     deeplinkDispatchDependencies = [
@@ -201,6 +200,7 @@ ext {
             parceler              : "org.parceler:parceler:1.1.12",
             gson                  : "com.google.code.gson:gson:2.7",
             rxAndroid             : "io.reactivex:rxandroid:1.0.1",
+            rxKotlin             : "io.reactivex:rxkotlin:0.60.0",
             rxJava                : "io.reactivex:rxjava:1.2.9",
             rxJavaMath            : "io.reactivex:rxjava-math:1.0.0",
             rxJavaComputation     : 'io.reactivex:rxjava-computation-expressions:0.21.0',
@@ -234,8 +234,9 @@ ext {
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
             liveData              : "androidx.lifecycle:lifecycle-livedata:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.1",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.2",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
+            rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
     ]
 
     testDependencies = [

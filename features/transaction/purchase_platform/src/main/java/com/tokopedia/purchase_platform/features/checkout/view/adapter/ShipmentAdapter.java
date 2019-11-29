@@ -42,7 +42,6 @@ import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.InsuranceCartShopViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.TickerAnnouncementViewHolder;
-import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentFragment;
@@ -624,6 +623,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return recipientAddressModel;
     }
 
+    public int getRecipientAddressModelPosition() {
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            if (shipmentDataList.get(i) instanceof RecipientAddressModel) {
+                return i;
+            }
+        }
+        return RecyclerView.NO_POSITION;
+    }
+
     public int getTickerAnnouncementHolderDataIndex() {
         return shipmentDataList.indexOf(tickerAnnouncementHolderData);
     }
@@ -937,7 +945,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentCostModel.setTotalPurchaseProtectionItem(totalPurchaseProtectionItem);
         shipmentCostModel.setPurchaseProtectionFee(totalPurchaseProtectionPrice);
         shipmentCostModel.setTradeInPrice(tradeInPrice);
-        if (shipmentDonationModel.isChecked()) {
+        if (shipmentDonationModel != null && shipmentDonationModel.isChecked()) {
             shipmentCostModel.setDonation(shipmentDonationModel.getDonation().getNominal());
         } else {
             if (shipmentCostModel.getDonation() > 0) {
@@ -1359,12 +1367,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static class RequestData {
 
         private List<DataCheckoutRequest> checkoutRequestData;
-        private List<DataChangeAddressRequest> changeAddressRequestData;
 
         @Inject
         public RequestData() {
             checkoutRequestData = new ArrayList<>();
-            changeAddressRequestData = new ArrayList<>();
         }
 
         public List<DataCheckoutRequest> getCheckoutRequestData() {
@@ -1375,13 +1381,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.checkoutRequestData = checkoutRequestData;
         }
 
-        public List<DataChangeAddressRequest> getChangeAddressRequestData() {
-            return changeAddressRequestData;
-        }
-
-        public void setChangeAddressRequestData(List<DataChangeAddressRequest> changeAddressRequestData) {
-            this.changeAddressRequestData = changeAddressRequestData;
-        }
     }
 
     public List<ShipmentCartItemModel> getShipmentCartItemModelList() {

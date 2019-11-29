@@ -86,7 +86,12 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                           RecipientAddressModel recipientAddressModel) {
         if (getView() != null) {
             getView().showLoading();
-            String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
+            String query;
+            if (isTradeInDropOff) {
+                query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_trade_in_query);
+            } else {
+                query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
+            }
             ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString, isTradeInDropOff, recipientAddressModel);
             int selectedSpId = 0;
             if (shipmentDetailData.getSelectedCourier() != null) {
@@ -166,6 +171,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setTradein(shipmentDetailData.isTradein());
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
+        shippingParam.setTradeInDropOff(isTradeInDropOff);
 
         if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
             shippingParam.setDestinationDistrictId(String.valueOf(recipientAddressModel.getLocationDataModel().getDistrict()));

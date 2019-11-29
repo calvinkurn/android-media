@@ -52,6 +52,7 @@ public class ToolbarRemoveWithBackView extends BaseCustomView {
         } else {
             btnOpenChuck.setVisibility(GONE);
         }
+        btnOpenChuck.setVisibility(VISIBLE);
     }
 
     public void setTitle(CharSequence title) {

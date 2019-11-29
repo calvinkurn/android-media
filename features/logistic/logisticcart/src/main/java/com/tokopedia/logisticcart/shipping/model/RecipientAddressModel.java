@@ -11,6 +11,9 @@ import com.tokopedia.logisticdata.data.entity.address.LocationDataModel;
 
 public class RecipientAddressModel implements Parcelable {
 
+    public static final int TAB_ACTIVE_ADDRESS_DEFAULT = 0;
+    public static final int TAB_ACTIVE_ADDRESS_TRADE_IN = 1;
+
     private String id;
     private int addressStatus;
     private String addressName;

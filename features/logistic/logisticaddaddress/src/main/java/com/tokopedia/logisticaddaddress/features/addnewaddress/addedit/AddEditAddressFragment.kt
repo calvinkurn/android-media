@@ -809,6 +809,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         labelAlamatChipsAdapter.notifyDataSetChanged()
     }
 
+    override fun showLoading() {
+        // no op
+    }
+
     private fun setSaveAddressModel() {
         var address1 = ""
         val detailAddress: String

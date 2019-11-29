@@ -45,6 +45,7 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_HOME_WIDGET = "home_widget";
         public static final String LAYOUT_BANNER_ORGANIC = "banner_organic";
         public static final String LAYOUT_BANNER_CAROUSEL = "banner_carousel";
+        public static final String LAYOUT_REVIEW = "product_review";
         public static final String LAYOUT_PLAY_BANNER = "play_widget";
 
         public static final String channelId = "channelId";
@@ -458,6 +459,8 @@ public class DynamicHomeChannel {
                                     "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
                                             grid.getPrice()
                                     )),
+                                    "brand", "none / other",
+                                    "variant", "none / other",
                                     "list", "/ - p1 - lego product - " + getHeader().getName(),
                                     "position", String.valueOf(i + 1),
                                     "dimension83", grid.getFreeOngkir().isActive() ? "bebas ongkir" : "none/other",

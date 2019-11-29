@@ -127,6 +127,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             renderTradeInAddressWithTabs(recipientAddress);
         } else {
             renderTradeInAddressWithoutTabs(recipientAddress);
+            formatTradeInDeliveryInfo(recipientAddress);
         }
     }
 
@@ -184,12 +185,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             }
         });
 
-        tvChangeDropOff.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shipmentAdapterActionListener.onChangeTradeInDropOffClicked();
-            }
-        });
+        tvChangeDropOff.setOnClickListener(view -> shipmentAdapterActionListener.onChangeTradeInDropOffClicked());
     }
 
     private void renderTradeInPickUpTab(RecipientAddressModel recipientAddress) {
