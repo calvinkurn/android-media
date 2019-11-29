@@ -6,8 +6,10 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
+
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -136,6 +138,8 @@ public class ViewEngine {
         RelativeLayout.LayoutParams innerLayoutParams = (RelativeLayout.LayoutParams) innerContainer.getLayoutParams();
 
         int pXtoDP40 = (int) getPXtoDP(40F);
+        boolean isAppLinkSupported = false;
+        CMLayout cmLayout = cmInApp.getCmLayout();
         switch (cmInApp.getType()) {
             case CmInAppConstant.TYPE_FULL_SCREEN:
                 layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -154,11 +158,17 @@ public class ViewEngine {
                 innerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 innerLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
                 changeConstraintToBorderView((ConstraintLayout) innerContainer, cmInApp);
+
+                if (isStickWithOnlyText(cmInApp))
+                    isAppLinkSupported = true;
                 break;
             case CmInAppConstant.TYPE_BORDER_TOP:
                 innerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 innerLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
                 changeConstraintToBorderView((ConstraintLayout) innerContainer, cmInApp);
+
+                if (isStickWithOnlyText(cmInApp))
+                    isAppLinkSupported = true;
                 break;
             case CmInAppConstant.TYPE_ALERT:
                 innerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -175,10 +185,8 @@ public class ViewEngine {
                 innerLayoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
                 innerLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 changeToImageOnly((ConstraintLayout) innerContainer);
-                if (cmInApp.getCmLayout().getAppLink() != null) {
-                    ElementType elementType = new ElementType(ElementType.MAIN);
-                    addOnClickAction(cmInApp, innerContainer, cmInApp.getCmLayout().getAppLink(), elementType);
-                }
+
+                isAppLinkSupported = true;
                 break;
 
             case CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY:
@@ -189,15 +197,27 @@ public class ViewEngine {
                 margins[1] = margins[1] + pXtoDP40;
                 margins[2] = margins[2] + pXtoDP40;
                 margins[3] = margins[3] + pXtoDP40;
-                if (cmInApp.getCmLayout().getAppLink() != null) {
-                    ElementType elementType = new ElementType(ElementType.MAIN);
-                    addOnClickAction(cmInApp, innerContainer, cmInApp.getCmLayout().getAppLink(), elementType);
-                }
+
+                isAppLinkSupported = true;
                 break;
+        }
+
+        if (isAppLinkSupported && cmInApp.getCmLayout().getAppLink() != null) {
+            ElementType elementType = new ElementType(ElementType.MAIN);
+            addOnClickAction(cmInApp, innerContainer, cmInApp.getCmLayout().getAppLink(), elementType);
         }
 
         innerContainer.setLayoutParams(innerLayoutParams);
         layoutParams.setMargins(margins[0], margins[1], margins[2], margins[3]);
+    }
+
+    private boolean isStickWithOnlyText(CMInApp cmInApp) {
+        CMLayout cmLayout = cmInApp.getCmLayout();
+        return (cmLayout.getTitleText() == null || TextUtils.isEmpty(cmLayout.getTitleText().getTxt())
+                || (cmLayout.getTitleText().getTxt() != null
+                && TextUtils.isEmpty(cmLayout.getTitleText().getTxt().trim())))
+                && (cmLayout.getMessageText() != null && !TextUtils.isEmpty(cmLayout.getMessageText().getTxt()))
+                && !hasButtons(cmInApp);
     }
 
     private void setMainContainerBackGround(View view, CMInApp cmInApp) {
@@ -277,6 +297,12 @@ public class ViewEngine {
                     addOnClickAction(cmInApp, button, cmButton.getAppLink(), elementType);
             }
         }
+    }
+
+    private boolean hasButtons(CMInApp cmInApp) {
+        CMLayout cmLayout = cmInApp.getCmLayout();
+        List<CMButton> cmButtonList = cmLayout.getButton();
+        return cmButtonList != null && cmButtonList.size() != 0;
     }
 
     private Button createButton(LinearLayout buttonContainer, String orientation, CMButton cmButton, boolean isLastButton) {
