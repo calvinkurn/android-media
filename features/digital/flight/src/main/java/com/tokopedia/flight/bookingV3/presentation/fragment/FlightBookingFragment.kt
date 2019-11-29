@@ -152,7 +152,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                             ?: ""), ::refreshCart)
                 }
             }
-            if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
+            if (bookingViewModel.isStillLoading) showLoadingDialog()
+            else if (bookingViewModel.getDepartureId().isNotEmpty()) hideShimmering()
         })
 
         bookingViewModel.flightPromoResult.observe(this, Observer {
@@ -769,6 +770,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                             dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_refind_ticket))
                             dialog.setPrimaryCTAClickListener {
                                 dialog.dismiss()
+                                showLoadingDialog()
                                 finishActivityToSearchPage()
                             }
                         }
@@ -869,6 +871,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToPromoPage() {
+        showLoadingDialog()
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
         intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, 0)
         intent.putExtra(COUPON_EXTRA_CART_ID, bookingViewModel.getCartId())
@@ -876,6 +879,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToFlightOrderList() {
+        showLoadingDialog()
         RouteManager.route(context, ApplinkConst.FLIGHT_ORDER)
         finishActivityToHomepage()
     }
@@ -902,12 +906,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun finishActivityToHomepage() {
+        showLoadingDialog()
         activity?.let {
             FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.EXPIRED_JOURNEY)
         }
     }
 
     private fun finishActivityToSearchPage() {
+        showLoadingDialog()
         activity?.let {
             FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.PRICE_CHANGE)
         }
