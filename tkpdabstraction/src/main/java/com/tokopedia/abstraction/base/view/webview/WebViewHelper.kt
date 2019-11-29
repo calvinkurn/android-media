@@ -49,41 +49,6 @@ object WebViewHelper {
         return uri.getQueryParameter(KEY_PARAM_URL)
     }
 
-//    /**
-//     * This function appends GA client ID as a query param for url contains tokopedia as domain
-//     * @param url
-//     * @param context
-//     * @return
-//     */
-//    @JvmStatic
-//    fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
-//        var newUrl = url ?:  return ""
-//
-//        if (isPassingGAClientIdEnable(context)) {
-//            try {
-//                val decodedUrl = URLDecoder.decode(newUrl, "UTF-8")
-//
-//                //parse url
-//                val uri = Uri.parse(decodedUrl)
-//
-//                //logic to append GA clientID in web URL to track app to web sessions
-//                if (uri != null) {
-//                    val clientID = TrackApp.getInstance().gtm.clientIDString
-//
-//                    if (clientID != null && newUrl.contains(HOST_TOKOPEDIA)) {
-//                        newUrl = uri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString()
-//                        newUrl = URLEncoder.encode(newUrl, "UTF-8")
-//                    }
-//                }
-//            } catch (ex: Exception) {
-//                //do nothing
-//            }
-//
-//        }
-//
-//        return newUrl
-//    }
-
 
     /**
      * This function appends GA client ID as a query param for url contains tokopedia as domain
@@ -92,7 +57,8 @@ object WebViewHelper {
      * @param context
      * @return
      */
-    private fun appendGAClientIdAsQueryParam(url: String?, context: Context): String {
+     @JvmStatic
+     fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
         Log.d("WebviewHelper before URL" , url)
         var url: String? = url ?: return ""
 
@@ -107,7 +73,7 @@ object WebViewHelper {
 
                 //logic to append GA clientID in web URL to track app to web sessions
                 if (uri != null  && !decodedUrl.contains(PARAM_APPCLIENT_ID)) {
-                    val clientID = "testid"//TrackApp.getInstance().getGTM().getClientIDString();
+                    val clientID = TrackApp.getInstance().getGTM().getClientIDString();
 
                     if (decodedUrl.contains("js.tokopedia.com")) {
                         var tokopediaUrl = uri!!.getQueryParameter("url")
@@ -115,8 +81,6 @@ object WebViewHelper {
                             val tokopediaUri = Uri.parse(tokopediaUrl)
                             tokopediaUrl = tokopediaUri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString()
                             tokopediaUrl = URLEncoder.encode(tokopediaUrl!!, "UTF-8")
-
-                            //url = uri.buildUpon().a
 
                             url = replaceUriParameter(uri!!, "url", tokopediaUrl)
 
