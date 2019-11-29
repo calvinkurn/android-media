@@ -46,11 +46,13 @@
         app:use_gradient="true"
         app:width_weight="0.7" />
 
-    <com.tokopedia.unifycomponents.CardUnify
+    <FrameLayout
         android:id="@+id/shimmering_layout_card_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
+        android:background="@color/white"
+        android:elevation="@dimen/dp_4"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_2">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -100,7 +102,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.tokopedia.unifycomponents.CardUnify>
+    </FrameLayout>
 
     <View
         android:id="@+id/shimmering_layout_6"

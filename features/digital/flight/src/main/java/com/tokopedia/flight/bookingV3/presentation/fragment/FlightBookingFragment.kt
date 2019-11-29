@@ -53,7 +53,6 @@ import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
-import com.tokopedia.flight.orderlist.util.FlightErrorUtil
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
@@ -94,10 +93,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
     var isCouponChanged = false
     var totalCartPrice: Int = 0
 
-    lateinit var flightRouteAdapter: FlightJourneyAdapter
-    lateinit var flightInsuranceAdapter: FlightInsuranceAdapter
-    lateinit var flightPassengerAdapter: FlightBookingPassengerAdapter
-    lateinit var flightPriceAdapter: FlightBookingPriceAdapter
+    private lateinit var flightRouteAdapter: FlightJourneyAdapter
+    private lateinit var flightInsuranceAdapter: FlightInsuranceAdapter
+    private lateinit var flightPassengerAdapter: FlightBookingPassengerAdapter
+    private lateinit var flightPriceAdapter: FlightBookingPriceAdapter
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -127,10 +126,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
             val returnId = args.getString(EXTRA_FLIGHT_ARRIVAL_ID, "")
             val departureTerm = args.getString(EXTRA_FLIGHT_DEPARTURE_TERM, "")
             val returnTerm = args.getString(EXTRA_FLIGHT_ARRIVAL_TERM, "")
-            val searchParam: FlightSearchPassDataViewModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
-                    ?: FlightSearchPassDataViewModel()
-            val flightPriceViewModel: FlightPriceViewModel = args.getParcelable(EXTRA_PRICE)
-                    ?: FlightPriceViewModel()
+            val searchParam: FlightSearchPassDataViewModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA) ?: FlightSearchPassDataViewModel()
+            val flightPriceViewModel: FlightPriceViewModel = args.getParcelable(EXTRA_PRICE) ?: FlightPriceViewModel()
 
             bookingViewModel.setSearchParam(departureId, returnId, departureTerm, returnTerm, searchParam, flightPriceViewModel)
         }
@@ -148,12 +145,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendAddToCartTracking()
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message
-                            ?: ""), ::refreshCart)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""), ::refreshCart)
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog()
-            else if (bookingViewModel.getCartId().isNotEmpty()) hideShimmering()
+            else if (bookingViewModel.getDepartureJourney() != null) hideShimmering()
         })
 
         bookingViewModel.flightPromoResult.observe(this, Observer {
@@ -161,11 +157,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
 
         bookingViewModel.profileResult.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    renderProfileData(it.data)
-                }
-            }
+            if (it is Success) renderProfileData(it.data)
         })
 
         bookingViewModel.flightPassengersData.observe(this, Observer {
@@ -185,8 +177,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
 
         bookingViewModel.errorToastMessageData.observe(this, Observer {
-            if (it == 0) showLoadingDialog()
-            else renderErrorToast(it)
+            if (it == 0) showLoadingDialog() else renderErrorToast(it)
         })
 
         bookingViewModel.flightCheckoutResult.observe(this, Observer {
@@ -196,8 +187,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendCheckOutTracking(it.data.parameter.pid)
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message
-                            ?: ""), ::checkOutCart)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""), ::checkOutCart)
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
@@ -216,13 +206,38 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message
-                            ?: ""), ::verifyCart)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""), ::verifyCart)
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
         })
 
+    }
+
+    private fun setUpView() {
+        hidePriceDetail()
+
+        widget_traveller_info.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
+            override fun onClickEdit() {
+                context?.let {
+                    startActivityForResult(TravelContactDataActivity.getCallingIntent(it,
+                            TravelContactData(widget_traveller_info.getContactName(),
+                                    widget_traveller_info.getContactEmail(),
+                                    widget_traveller_info.getContactPhoneNum(),
+                                    widget_traveller_info.getContactPhoneCode(),
+                                    widget_traveller_info.getContactPhoneCountry()),
+                            TravelContactDataActivity.FLIGHT),
+                            REQUEST_CODE_CONTACT_FORM)
+                }
+            }
+        })
+
+        layout_see_detail_price.setOnClickListener { if (rv_flight_price_detail.isVisible) hidePriceDetail() else showPriceDetail() }
+        switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
+            needToFillFirstPassengerDetail = true
+            bookingViewModel.onTravellerAsPassenger(on, widget_traveller_info.getContactName())
+        }
+        button_submit.setOnClickListener { verifyCart() }
     }
 
     private fun mapThrowableToFlightError(message: String): FlightError {
@@ -263,7 +278,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun renderErrorToast(resId: Int) {
         view?.let {
-            Toaster.showErrorWithAction(it, getString(resId), Snackbar.LENGTH_LONG, "Oke", View.OnClickListener { /* do nothing */ })
+            Toaster.make(it, getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "Oke", View.OnClickListener { /* do nothing */ })
         }
     }
 
@@ -318,23 +333,16 @@ class FlightBookingFragment : BaseDaggerFragment() {
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
                 checkOutCart()
-                showLoadingDialog()
             }
 
-            dialog.setSecondaryCTAClickListener {
-                dialog.dismiss()
-            }
-
+            dialog.setSecondaryCTAClickListener { dialog.dismiss() }
             dialog.show()
         }
     }
 
     private fun addToCart() {
         if (bookingViewModel.getCartId().isNotEmpty()) showLoadingDialog()
-        val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
-        bookingViewModel.addToCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart),
-                GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
-                requestId)
+        bookingViewModel.addToCart(getAtcQuery(), getGetCartQuery(), getRequestId())
     }
 
     private fun setUpTimer(timeStamp: Date) {
@@ -350,8 +358,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun refreshCart() {
         showLoadingDialog()
-        bookingViewModel.getCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
-                bookingViewModel.getCartId())
+        bookingViewModel.getCart(getGetCartQuery(), bookingViewModel.getCartId())
     }
 
     private fun renderData(cart: FlightCartViewEntity) {
@@ -433,32 +440,27 @@ class FlightBookingFragment : BaseDaggerFragment() {
             rv_passengers_info.adapter = flightPassengerAdapter
             flightPassengerAdapter.listener = object : FlightBookingPassengerAdapter.PassengerViewHolderListener {
                 override fun onClickEditPassengerListener(passenger: FlightBookingPassengerViewModel) {
-                    val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
-                    navigateToPassengerInfoDetail(passenger, bookingViewModel.getDepartureDate(), requestId)
+                    navigateToPassengerInfoDetail(passenger, bookingViewModel.getDepartureDate(), getRequestId())
                 }
             }
         }
         flightPassengerAdapter.updateList(passengers)
         if (passengers.isNotEmpty() && switch_traveller_as_passenger.isChecked) {
             if (needToFillFirstPassengerDetail && passengers.first().passengerLastName.isNullOrEmpty()) {
-                val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
-                navigateToPassengerInfoDetail(passengers.first(), bookingViewModel.getDepartureDate(), requestId)
+                navigateToPassengerInfoDetail(passengers.first(), bookingViewModel.getDepartureDate(), getRequestId())
             } else if (!passengers.first().passengerFirstName.equals(widget_traveller_info.getContactName(), true)) {
                 switch_traveller_as_passenger.isChecked = false
             }
         }
     }
 
-    private fun getDepartureId(): String = bookingViewModel.getDepartureId()
-    private fun getReturnId(): String = bookingViewModel.getReturnId()
-
     private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, departureDate: String, requestId: String) {
         needToFillFirstPassengerDetail = false
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
                         activity as Activity,
-                        getDepartureId(),
-                        getReturnId(),
+                        bookingViewModel.getDepartureId(),
+                        bookingViewModel.getReturnId(),
                         viewModel,
                         bookingViewModel.getLuggageViewModels(),
                         bookingViewModel.getMealViewModels(),
@@ -471,6 +473,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         )
     }
 
+    private fun getRequestId(): String = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
 
     private fun generateIdEmpotency(requestId: String): String {
         var userId = Math.random().toString()
@@ -504,7 +507,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         launchLoadingPageJob.start()
         setUpView()
         addToCart()
-        bookingViewModel.getProfile(GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile))
+        bookingViewModel.getProfile(getProfileQuery())
     }
 
     private fun navigateToTopPay(checkoutData: FlightCheckoutData) {
@@ -523,54 +526,26 @@ class FlightBookingFragment : BaseDaggerFragment() {
         finishActivityToHomepage()
     }
 
-
-    private fun setUpView() {
-        hidePriceDetail()
-
-        widget_traveller_info.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
-            override fun onClickEdit() {
-                context?.let {
-                    startActivityForResult(TravelContactDataActivity.getCallingIntent(it,
-                            TravelContactData(widget_traveller_info.getContactName(),
-                                    widget_traveller_info.getContactEmail(),
-                                    widget_traveller_info.getContactPhoneNum(),
-                                    widget_traveller_info.getContactPhoneCode(),
-                                    widget_traveller_info.getContactPhoneCountry()),
-                            TravelContactDataActivity.FLIGHT),
-                            REQUEST_CODE_CONTACT_FORM)
-                }
-            }
-        })
-
-        layout_see_detail_price.setOnClickListener { if (rv_flight_price_detail.isVisible) hidePriceDetail() else showPriceDetail() }
-        switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
-            needToFillFirstPassengerDetail = true
-            bookingViewModel.onTravellerAsPassenger(on, widget_traveller_info.getContactName())
-        }
-        button_submit.setOnClickListener { verifyCart() }
-    }
-
     private fun verifyCart() {
-        val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
-        bookingViewModel.verifyCartData(
-                GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart),
+        bookingViewModel.validateDataAndVerifyCart(
+                getVerifyCartQuery(),
                 totalPrice = totalCartPrice,
                 contactName = widget_traveller_info.getContactName(),
                 contactEmail = widget_traveller_info.getContactEmail(),
                 contactPhone = widget_traveller_info.getContactPhoneNum(),
                 contactCountry = widget_traveller_info.getContactPhoneCountry(),
-                checkVoucherQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_check_voucher),
-                addToCartQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart),
-                idempotencyKey = requestId,
-                getCartQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart))
+                checkVoucherQuery = getCheckVoucherQuery(),
+                addToCartQuery = getAtcQuery(),
+                idempotencyKey = getRequestId(),
+                getCartQuery = getGetCartQuery())
     }
 
     private fun checkOutCart() {
-        bookingViewModel.checkOutCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart),
-                totalCartPrice)
+        showLoadingDialog()
+        bookingViewModel.checkOutCart(getCheckoutQuery(), totalCartPrice)
     }
 
-    fun renderAutoApplyPromo(flightVoucher: FlightPromoViewEntity) {
+    private fun renderAutoApplyPromo(flightVoucher: FlightPromoViewEntity) {
         if (flightVoucher.isCouponEnable) showVoucherContainer() else hideVoucherContainer()
         renderPromoTicker(flightVoucher)
     }
@@ -588,7 +563,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             override fun onResetPromoDiscount() {
                 isCouponChanged = true
                 bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = ""))
-                bookingViewModel.onCancelAppliedVoucher(GraphqlHelper.loadRawString(resources, com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher))
+                bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
             }
 
             override fun onClickUsePromo() {
@@ -600,7 +575,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
             override fun onDisablePromoDiscount() {
                 bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
-                bookingViewModel.onCancelAppliedVoucher(GraphqlHelper.loadRawString(resources, com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher))
+                bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
             }
 
             override fun onClickDetailPromo() {
@@ -658,9 +633,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             delay(2000L)
             layout_loading.visibility = View.GONE
             layout_shimmering.visibility = View.VISIBLE
-        } catch (e: Throwable) {
-        }
-
+        } catch (e: Throwable) { }
     }
 
     private fun hideShimmering() {
@@ -683,67 +656,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
         thin_seperator_1.show()
         rv_flight_price_detail.show()
         iv_see_detail_price_arrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_normal_24)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        when (requestCode) {
-            REQUEST_CODE_CONTACT_FORM -> if (resultCode == Activity.RESULT_OK) {
-                data?.let {
-                    val contactData: TravelContactData = it.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
-                    widget_traveller_info.setContactName(contactData.name)
-                    widget_traveller_info.setContactEmail(contactData.email)
-                    widget_traveller_info.setContactPhoneNum(contactData.phoneCode, contactData.phone)
-                    widget_traveller_info.setContactPhoneCountry(contactData.phoneCountry)
-                }
-            }
-
-            REQUEST_CODE_PASSENGER -> {
-                when (resultCode) {
-                    Activity.RESULT_OK -> {
-                        data?.let {
-                            val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerViewModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
-                            bookingViewModel.onPassengerResultReceived(passengerViewModel)
-                        }
-                    }
-                }
-            }
-
-            COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> if (resultCode == RESULT_OK) {
-                data?.let {
-                    var promoData = PromoData()
-                    if (it.hasExtra(EXTRA_PROMO_DATA)) promoData = data.getParcelableExtra(COUPON_EXTRA_PROMO_DATA)
-                    when (promoData.state) {
-                        TickerCheckoutView.State.EMPTY -> {
-                            promoData.promoCode = ""
-                            promoData.state = TickerCheckoutView.State.EMPTY
-                            bookingViewModel.updatePromoData(promoData)
-                        }
-                        TickerCheckoutView.State.FAILED -> {
-                            promoData.promoCode = ""
-                            promoData.state = TickerCheckoutView.State.FAILED
-                            bookingViewModel.updatePromoData(promoData)
-                        }
-                        TickerCheckoutView.State.ACTIVE -> {
-                            promoData.state = TickerCheckoutView.State.ACTIVE
-                            bookingViewModel.updatePromoData(promoData)
-                        }
-                        else -> {
-                            promoData.promoCode = ""
-                            promoData.state = TickerCheckoutView.State.EMPTY
-                            bookingViewModel.updatePromoData(promoData)
-                        }
-                    }
-                }
-            }
-
-        }
-
-        if (needRefreshCart) {
-            needRefreshCart = false
-            refreshCart()
-        }
     }
 
     private fun showErrorFullPage(e: FlightError) {
@@ -867,8 +779,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun proceedCheckoutWithoutLuggage() {
         showLoadingDialog()
-        bookingViewModel.proceedCheckoutWithoutLuggage(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart),
-                totalCartPrice)
+        bookingViewModel.proceedCheckoutWithoutLuggage(
+                getCheckVoucherQuery(),
+                getVerifyCartQuery(),
+                totalCartPrice,
+                widget_traveller_info.getContactName(),
+                widget_traveller_info.getContactEmail(),
+                widget_traveller_info.getContactPhoneNum(),
+                widget_traveller_info.getContactPhoneCountry())
     }
 
     private fun navigateToPromoPage() {
@@ -919,6 +837,76 @@ class FlightBookingFragment : BaseDaggerFragment() {
             FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.PRICE_CHANGE)
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_CODE_CONTACT_FORM -> if (resultCode == Activity.RESULT_OK) {
+                data?.let {
+                    val contactData: TravelContactData = it.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
+                    widget_traveller_info.setContactName(contactData.name)
+                    widget_traveller_info.setContactEmail(contactData.email)
+                    widget_traveller_info.setContactPhoneNum(contactData.phoneCode, contactData.phone)
+                    widget_traveller_info.setContactPhoneCountry(contactData.phoneCountry)
+                }
+            }
+
+            REQUEST_CODE_PASSENGER -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        data?.let {
+                            val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerViewModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
+                            bookingViewModel.onPassengerResultReceived(passengerViewModel)
+                        }
+                    }
+                }
+            }
+
+            COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> if (resultCode == RESULT_OK) {
+                data?.let {
+                    var promoData = PromoData()
+                    if (it.hasExtra(EXTRA_PROMO_DATA)) promoData = data.getParcelableExtra(COUPON_EXTRA_PROMO_DATA)
+                    when (promoData.state) {
+                        TickerCheckoutView.State.EMPTY -> {
+                            promoData.promoCode = ""
+                            promoData.state = TickerCheckoutView.State.EMPTY
+                            bookingViewModel.updatePromoData(promoData)
+                        }
+                        TickerCheckoutView.State.FAILED -> {
+                            promoData.promoCode = ""
+                            promoData.state = TickerCheckoutView.State.FAILED
+                            bookingViewModel.updatePromoData(promoData)
+                        }
+                        TickerCheckoutView.State.ACTIVE -> {
+                            promoData.state = TickerCheckoutView.State.ACTIVE
+                            bookingViewModel.updatePromoData(promoData)
+                        }
+                        else -> {
+                            promoData.promoCode = ""
+                            promoData.state = TickerCheckoutView.State.EMPTY
+                            bookingViewModel.updatePromoData(promoData)
+                        }
+                    }
+                }
+            }
+        }
+
+        if (needRefreshCart) {
+            needRefreshCart = false
+            refreshCart()
+        }
+    }
+
+    private fun getDepartureId(): String = bookingViewModel.getDepartureId()
+    private fun getReturnId(): String = bookingViewModel.getReturnId()
+    private fun getAtcQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart)
+    private fun getGetCartQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart)
+    private fun getCheckVoucherQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_check_voucher)
+    private fun getVerifyCartQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart)
+    private fun getCheckoutQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart)
+    private fun getProfileQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile)
+    private fun getCancelVoucherQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher)
 
     companion object {
 
