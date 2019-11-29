@@ -268,6 +268,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 filterItem.setColorBorder(R.color.tkpd_main_green)
                 filterItem.isSelected = true
                 // paramOrder.statusList = it.orderStatusIdList
+                if (paramOrder.statusList.isEmpty()) paramOrder.statusList = it.orderStatusIdList
 
             }  else {
                 filterItem.setColorBorder(R.color.gray_background)
@@ -323,7 +324,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     }
                 }
                 is Fail -> {
-                    order_list_rv?.visibility = View.GONE
+                    renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
                 }
             }
         })
@@ -344,6 +345,21 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         title_empty?.text = title
         desc_empty?.text = desc
         btn_cek_peluang?.visibility = View.GONE
+    }
+
+    private fun renderErrorOrderList(title: String, desc: String) {
+        refreshHandler?.finishRefresh()
+        order_list_rv.visibility = View.GONE
+        empty_state_order_list.visibility = View.VISIBLE
+        title_empty?.text = title
+        desc_empty?.text = desc
+        btn_cek_peluang?.apply {
+            visibility = View.VISIBLE
+            text = getString(R.string.retry_load_list)
+            setOnClickListener {
+                refreshHandler?.startRefresh()
+            }
+        }
     }
 
     private fun renderCekPeluang() {
@@ -384,6 +400,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             if (data != null) {
                 if (data.hasExtra(SomConsts.PARAM_LIST_ORDER)) {
                     paramOrder = data.getParcelableExtra(SomConsts.PARAM_LIST_ORDER)
+                    tabActive = ""
                     renderFilter()
                 }
             }

@@ -154,13 +154,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
 
     private fun setBtnToChangeCourier() {
         cl_change_courier?.visibility = View.VISIBLE
-        val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_change_courier)
-        val queryString = rawQuery
-                .replace(INPUT_ORDER_ID, currOrderId)
-                .replace(INPUT_SHIPPING_REF, tf_no_resi?.textFieldInput?.text.toString())
-                .replace(INPUT_AGENCY_ID, currShipmentId.toString())
-                .replace(INPUT_SP_ID, currShipmentProductId)
         btn_confirm_shipping?.setOnClickListener {
+            val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_change_courier)
+            val queryString = rawQuery
+                    .replace(INPUT_ORDER_ID, currOrderId)
+                    .replace(INPUT_SHIPPING_REF, tf_no_resi?.textFieldInput?.text.toString())
+                    .replace(INPUT_AGENCY_ID, currShipmentId.toString())
+                    .replace(INPUT_SP_ID, currShipmentProductId)
             processChangeCourier(queryString)
         }
         observingChangeCourier()
@@ -168,11 +168,11 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
 
     private fun setBtnToConfirmShipping() {
         cl_change_courier?.visibility = View.GONE
-        val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_confirm_shipping)
-        val queryString = rawQuery
-                .replace(INPUT_ORDER_ID, currOrderId)
-                .replace(INPUT_SHIPPING_REF, tf_no_resi?.textFieldInput?.text.toString())
         btn_confirm_shipping?.setOnClickListener {
+            val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_confirm_shipping)
+            val queryString = rawQuery
+                    .replace(INPUT_ORDER_ID, currOrderId)
+                    .replace(INPUT_SHIPPING_REF, tf_no_resi?.textFieldInput?.text.toString())
             processConfirmShipping(queryString)
         }
         observingConfirmShipping()
@@ -230,7 +230,6 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     iv_choose_courier_service?.setOnClickListener { showBottomSheetCourier(true) }
                 }
                 is Fail -> {
-                    println("++ ERROR = ${it.throwable.localizedMessage}")
                     Utils.showToasterError(getString(R.string.global_error), view)
                 }
             }

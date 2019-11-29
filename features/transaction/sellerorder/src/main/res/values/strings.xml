@@ -24,6 +24,8 @@
     <string name="empty_search_desc">Gunakan kata kunci yang relevan (Nama Pembeli, No. Invoice, Tanggal belanja)</string>
     <string name="empty_peluang_title">Tidak Ada Pesanan</string>
     <string name="empty_peluang_desc">Cek Peluang dan ambil pesanan yang tidak diproses penjual lain.</string>
+    <string name="error_list_title">Sedang Ada Perbaikan Sistem</string>
+    <string name="error_list_desc">Mohon maaf, kami sedang ada perbaikan sistem, anda dapat mencobanya beberapa saat lagi</string>
     <string name="btn_cek_peluang">Cek Peluang</string>
     <string name="key_all_order">all_order</string>
 
@@ -151,5 +153,15 @@
     <string name="change_no_resi_hint">Nomor Resi</string>
     <string name="change_no_resi_notes">Min. 8 karakter dan Maks. 17 karakter</string>
     <string name="change_no_resi_btn_ubah">Ubah</string>
+
+
+    <string name="booking_code_copied">Kode booking berhasil disalin</string>
+    <string name="retry_load_list">Coba Lagi</string>
+
+    <string name="barcode_image_content_description">Barcode Image</string>
+    <string name="barcode_label_one">Kode booking pengiriman</string>
+    <string name="barcode_label_two">(tap untuk perbesar)</string>
+    <string name="barcode_helper">Tunjukkan barcode atau kode booking kepada petugas di gerai kurir saat mengirim barang.</string>
+    <string name="message_label">Informasi tambahan mengenai sistem kode booking</string>
 
 </resources>

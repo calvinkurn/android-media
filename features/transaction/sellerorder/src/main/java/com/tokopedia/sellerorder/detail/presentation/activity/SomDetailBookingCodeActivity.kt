@@ -18,4 +18,8 @@ class SomDetailBookingCodeActivity: BaseSimpleActivity() {
         }
         return SomDetailBookingCodeFragment.newInstance(bundle)
     }
+
+    override fun isShowCloseButton(): Boolean {
+        return true
+    }
 }

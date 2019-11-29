@@ -118,4 +118,5 @@ object SomConsts {
     const val RESULT_SCAN_BARCODE = "result_scan_barcode"
     const val LABEL_EMPTY = "-"
     const val EXTRA_URL_UPLOAD = "EXTRA_URL_UPLOAD"
+    const val LABEL_COPY_BOOKING_CODE = "LABEL_COPY_BOOKING_CODE"
 }
