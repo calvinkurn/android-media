@@ -44,6 +44,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.tokopedia.product.manage.list.constant.GqlRawConstantKt.GQL_FEATURED_PRODUCT;
 import static com.tokopedia.product.manage.list.constant.GqlRawConstantKt.GQL_UPDATE_PRODUCT;
 import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.GQL_POPUP_NAME;
 import static com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT_LIST;
@@ -183,5 +184,15 @@ public class ProductManageModule {
         return GraphqlHelper.loadRawString(
                 context.getResources(),
                 com.tokopedia.shop.common.R.raw.gql_get_shop_info);
+    }
+
+    @ProductManageScope
+    @Provides
+    @Named(GQL_FEATURED_PRODUCT)
+    public String provideGqlMutationFeaturedProduct(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.gql_mutation_gold_manage_featured_product_v2
+        );
     }
 }

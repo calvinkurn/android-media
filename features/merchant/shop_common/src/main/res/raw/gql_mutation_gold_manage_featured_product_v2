@@ -1,0 +1,10 @@
+mutation GoldManageFeaturedProductV2($productId: Int!, $status: Int!) {
+  GoldManageFeaturedProductV2(ProductID: $productId, Status: $status) {
+    header {
+      process_time
+      reason
+      error_code
+      message
+    }
+  }
+}
