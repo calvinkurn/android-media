@@ -62,7 +62,12 @@ class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCateg
                     val subCategoryList = it.child
                     subCategoryList?.let {
                         if (subCategoryList.isNotEmpty()) {
-                            mSubCategoryList.value = Success(it as List<SubCategoryItem>)
+                            val mSubCategoryArrayList = it as ArrayList<SubCategoryItem>
+                            val item = SubCategoryItem()
+                            item.name = "Semua"
+                            item.is_default = true
+                            mSubCategoryArrayList.add(0, item)
+                            mSubCategoryList.value = Success(mSubCategoryArrayList)
                         } else {
                             mSubCategoryList.value = Fail(Throwable("no data"))
                         }

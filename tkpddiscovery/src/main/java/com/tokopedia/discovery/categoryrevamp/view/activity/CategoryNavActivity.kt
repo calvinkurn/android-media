@@ -399,9 +399,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             moveToAutoCompleteActivity(departmentName)
         }
 
-        image_button_close.setOnClickListener {
-            moveToAutoCompleteActivity("")
-        }
     }
 
     private fun moveToAutoCompleteActivity(departMentName: String) {

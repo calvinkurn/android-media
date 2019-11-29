@@ -29,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.otp)
 
     implementation rootProject.ext.unifyDependencies.principles
