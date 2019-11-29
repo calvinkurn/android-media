@@ -347,7 +347,7 @@ class CartListPresenterTest : Spek({
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.getGeneratedAuthParamNetwork(any()) } answers {value}
+                every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
             }
 
             When("process delete cart item") {
@@ -384,83 +384,145 @@ class CartListPresenterTest : Spek({
             )
         }
 
-        val firstItemFirst = CartItemHolderData()
-        val firstItemFirstData = CartItemData()
-        val firstItemFirstOriginData = CartItemData.OriginData()
-        firstItemFirstOriginData.pricePlan = 1000.0
-        firstItemFirstOriginData.parentId = "0"
-        firstItemFirstOriginData.productId = "1"
-        firstItemFirstData.originData = firstItemFirstOriginData
-        val firstItemFirstUpdatedData = CartItemData.UpdatedData()
-        firstItemFirstUpdatedData.quantity = 1
-        firstItemFirstData.updatedData = firstItemFirstUpdatedData
-        firstItemFirst.cartItemData = firstItemFirstData
+        //region First Item In First Shop
+        val firstItemFirstOriginData by memoized {
+            CartItemData.OriginData().apply {
+                pricePlan = 1000.0
+                parentId = "0"
+                productId = "1"
+                isCashBack = true
+                productCashBack = "10%"
+            }
+        }
+        val firstItemFirstUpdatedData by memoized {
+            CartItemData.UpdatedData().apply {
+                quantity = 1
+            }
+        }
+        val firstItemFirstData by memoized {
+            CartItemData().apply {
+                originData = firstItemFirstOriginData
+                updatedData = firstItemFirstUpdatedData
+            }
+        }
+        val firstItemFirst by memoized {
+            CartItemHolderData().apply {
+                cartItemData = firstItemFirstData
+            }
+        }
+        //endregion
 
-        val firstItemSecond = CartItemHolderData()
-        val firstItemSecondData = CartItemData()
-        val firstItemSecondOriginData = CartItemData.OriginData()
-        firstItemSecondOriginData.pricePlan = 40.0
-        firstItemSecondOriginData.parentId = "0"
-        firstItemSecondOriginData.productId = "2"
-        firstItemSecondData.originData = firstItemSecondOriginData
-        val firstItemSecondUpdatedData = CartItemData.UpdatedData()
-        firstItemSecondUpdatedData.quantity = 2
-        firstItemSecondData.updatedData = firstItemSecondUpdatedData
-        firstItemSecond.cartItemData = firstItemSecondData
+        //region First Item In Second Shop
+        val firstItemSecondOriginData by memoized {
+            CartItemData.OriginData().apply {
+                pricePlan = 40.0
+                parentId = "0"
+                productId = "2"
+            }
+        }
+        val firstItemSecondUpdatedData by memoized {
+            CartItemData.UpdatedData().apply {
+                quantity = 2
+            }
+        }
+        val firstItemSecondData by memoized {
+            CartItemData().apply {
+                originData = firstItemSecondOriginData
+                updatedData = firstItemSecondUpdatedData
+            }
+        }
+        val firstItemSecond by memoized {
+            CartItemHolderData().apply {
+                cartItemData = firstItemSecondData
+            }
+        }
+        //endregion
 
-        val secondItemFirst = CartItemHolderData()
-        val secondItemFirstData = CartItemData()
-        val secondItemFirstOriginData = CartItemData.OriginData()
-        secondItemFirstOriginData.pricePlan = 200.0
-        secondItemFirstOriginData.parentId = "0"
-        secondItemFirstOriginData.productId = "3"
-        secondItemFirstData.originData = secondItemFirstOriginData
-        val secondItemFirstUpdatedData = CartItemData.UpdatedData()
-        secondItemFirstUpdatedData.quantity = 3
-        secondItemFirstData.updatedData = secondItemFirstUpdatedData
-        secondItemFirst.cartItemData = secondItemFirstData
+        //region Second Item In First Shop
+        val secondItemFirstOriginData by memoized {
+            CartItemData.OriginData().apply {
+                pricePlan = 200.0
+                parentId = "0"
+                productId = "3"
+            }
+        }
+        val secondItemFirstUpdatedData by memoized {
+            CartItemData.UpdatedData().apply {
+                quantity = 3
+            }
+        }
+        val secondItemFirstData by memoized {
+            CartItemData().apply {
+                originData = secondItemFirstOriginData
+                updatedData = secondItemFirstUpdatedData
+            }
+        }
+        val secondItemFirst by memoized {
+            CartItemHolderData().apply {
+                cartItemData = secondItemFirstData
+            }
+        }
+        //endregion
 
-        val secondItemSecond = CartItemHolderData()
-        val secondItemSecondData = CartItemData()
-        val secondItemSecondOriginData = CartItemData.OriginData()
-        secondItemSecondOriginData.pricePlan = 1.0
-        secondItemSecondOriginData.parentId = "0"
-        secondItemSecondOriginData.productId = "4"
-        secondItemSecondData.originData = secondItemSecondOriginData
-        val secondItemSecondUpdatedData = CartItemData.UpdatedData()
-        secondItemSecondUpdatedData.quantity = 4
-        secondItemSecondData.updatedData = secondItemSecondUpdatedData
-        secondItemSecond.cartItemData = secondItemSecondData
+        //region Second Item In Second Shop
+        val secondItemSecondOriginData by memoized {
+            CartItemData.OriginData().apply {
+                pricePlan = 1.0
+                parentId = "0"
+                productId = "4"
+            }
+        }
+        val secondItemSecondUpdatedData by memoized {
+            CartItemData.UpdatedData().apply {
+                quantity = 4
+            }
+        }
+        val secondItemSecondData by memoized {
+            CartItemData().apply {
+                originData = secondItemSecondOriginData
+                updatedData = secondItemSecondUpdatedData
+            }
+        }
+        val secondItemSecond by memoized {
+            CartItemHolderData().apply {
+                cartItemData = secondItemSecondData
+            }
+        }
+        //endregion
 
-        val firstShop = CartShopHolderData()
-        val firstShopData = ShopGroupAvailableData()
-        firstShop.shopGroupAvailableData = firstShopData
-        firstShopData.cartItemHolderDataList = arrayListOf(firstItemFirst, secondItemFirst)
+        //region First Shop
+        val firstShopData by memoized {
+            ShopGroupAvailableData().apply {
+                cartItemHolderDataList = arrayListOf(firstItemFirst, secondItemFirst)
+            }
+        }
+        val firstShop by memoized {
+            CartShopHolderData().apply {
+                shopGroupAvailableData = firstShopData
+            }
+        }
+        //endregion
 
-        val secondShop = CartShopHolderData()
-        val secondShopData = ShopGroupAvailableData()
-        secondShop.shopGroupAvailableData = secondShopData
-        secondShopData.cartItemHolderDataList = arrayListOf(firstItemSecond, secondItemSecond)
+        //region Second Shop
+        val secondShopData by memoized {
+            ShopGroupAvailableData().apply {
+                cartItemHolderDataList = arrayListOf(firstItemSecond, secondItemSecond)
+            }
+        }
+        val secondShop by memoized {
+            CartShopHolderData().apply {
+                shopGroupAvailableData = secondShopData
+            }
+        }
+        //endregion
 
-        val cartShops = arrayListOf(firstShop, secondShop)
+        val cartShops by memoized { arrayListOf(firstShop, secondShop) }
 
         Scenario("no item selected") {
 
-            Given("uncheck all items") {
-                firstItemFirst.isSelected = false
-                secondItemFirst.isSelected = false
-                firstShop.isAllSelected = false
-                firstShop.isPartialSelected = false
-
-                firstItemSecond.isSelected = false
-                secondItemSecond.isSelected = false
-                secondShop.isAllSelected = false
-                secondShop.isPartialSelected = false
-            }
-
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers  {
+                every { view.allAvailableCartDataList } answers {
                     cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
                 }
             }
@@ -469,7 +531,7 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
             }
 
-            Then("") {
+            Then("should have no subtotal") {
                 verifyOrder {
                     view.updateCashback(0.0)
                     view.allAvailableCartDataList
@@ -482,19 +544,15 @@ class CartListPresenterTest : Spek({
 
             Given("uncheck some items") {
                 firstItemFirst.isSelected = true
-                secondItemFirst.isSelected = false
-                firstShop.isAllSelected = false
                 firstShop.isPartialSelected = true
 
-                firstItemSecond.isSelected = false
                 secondItemSecond.isSelected = true
-                secondShop.isAllSelected = false
                 secondShop.isPartialSelected = true
             }
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers  {
+                every { view.allAvailableCartDataList } answers {
                     cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
                 }
             }
@@ -503,9 +561,9 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
             }
 
-            Then("") {
+            Then("should have some subtotal") {
                 verifyOrder {
-                    view.updateCashback(0.0)
+                    view.updateCashback(100.0)
                     view.allAvailableCartDataList
                     view.renderDetailInfoSubTotal("5", "Rp1.004", false, false, false)
                 }
@@ -518,17 +576,15 @@ class CartListPresenterTest : Spek({
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
                 firstShop.isAllSelected = true
-                firstShop.isPartialSelected = false
 
                 firstItemSecond.isSelected = true
                 secondItemSecond.isSelected = true
                 secondShop.isAllSelected = true
-                secondShop.isPartialSelected = false
             }
 
             Given("attach view") {
                 cartListPresenter.attachView(view)
-                every { view.allAvailableCartDataList } answers  {
+                every { view.allAvailableCartDataList } answers {
                     cartShops.flatMap { it.shopGroupAvailableData.cartItemDataList }.map { it.cartItemData }
                 }
             }
@@ -537,9 +593,9 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
             }
 
-            Then("") {
+            Then("should have all subtotal") {
                 verifyOrder {
-                    view.updateCashback(0.0)
+                    view.updateCashback(100.0)
                     view.allAvailableCartDataList
                     view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
                 }
