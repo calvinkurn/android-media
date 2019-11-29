@@ -53,6 +53,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
@@ -69,6 +70,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
@@ -130,10 +132,6 @@ import javax.inject.Inject
 
 class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener {
 
-    override fun getChild(): FragmentManager? {
-        return childFragmentManager
-    }
-
     companion object {
         const val PAYLOAD_TOOGLE_FAVORITE = 2
         const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
@@ -174,7 +172,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private var trackerListName: String? = ""
 
     //View
-    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(childFragmentManager, this) }
+    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory) }
     private var menu: Menu? = null
     private lateinit var varToolbar: Toolbar
@@ -346,22 +344,27 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             }
         })
 
-        viewModel.loadTopAdsProduct.observe(this, Observer {
+        viewModel.dynamicProductInfoP1.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    pdpHashMapUtil.updateRecomData(it.data)
-                    dynamicAdapter.notifyRecomAdapter(pdpHashMapUtil.listProductRecomMap)
+                    val productP1Data = it.data
+                    renderTradein(productP1Data)
+                    shouldShowCodP1 = productP1Data.data.isCOD
+                    pdpHashMapUtil.updateDataP1Test(it.data)
+                    dynamicAdapter.notifyDataSetChanged()
                 }
-                is Fail -> dynamicAdapter.removeRecommendation(pdpHashMapUtil.listProductRecomMap)
+                is Fail -> {
+                    showToasterError(it.throwable.message ?: "")
+                }
             }
         })
 
         viewModel.productInfoP1.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    renderTradein(it.data)
+//                    renderTradein(it.data)
                     shouldShowCodP1 = it.data.productInfo.shouldShowCod
-                    pdpHashMapUtil.updateDataP1(it.data)
+//                    pdpHashMapUtil.updateDataP1(it.data)
 
                     actionButtonView.isLeasing = it.data.productInfo.basic.isLeasing
                     it.data.productInfo.let { data ->
@@ -383,6 +386,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 is Fail -> {
                     showToasterError(it.throwable.message ?: "")
                 }
+            }
+        })
+
+
+        viewModel.loadTopAdsProduct.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    pdpHashMapUtil.updateRecomData(it.data)
+                    dynamicAdapter.notifyRecomAdapter(pdpHashMapUtil.listProductRecomMap)
+                }
+                is Fail -> dynamicAdapter.removeRecommendation(pdpHashMapUtil.listProductRecomMap)
             }
         })
 
@@ -878,6 +892,21 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 position))
     }
 
+    override fun getProductFragmentManager(): FragmentManager {
+        return childFragmentManager
+    }
+
+    override fun showAlertCampaignEnded() {
+        Dialog(activity, Dialog.Type.LONG_PROMINANCE).apply {
+            setTitle(getString(R.string.campaign_expired_title))
+            setDesc(getString(R.string.campaign_expired_descr))
+            setBtnOk(getString(R.string.exp_dialog_ok))
+            setBtnCancel(getString(R.string.close))
+            setOnCancelClickListener { loadData(0); dismiss() }
+            setOnOkClickListener { dismiss();}
+        }.show()
+    }
+
     override fun onFabWishlistClicked(isActive: Boolean) {
         val shopInfo = pdpHashMapUtil.getShopInfo.shopInfo
         val productInfo = pdpHashMapUtil.snapShotMap.productInfoP1
@@ -1173,7 +1202,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
     private fun loadProductData(forceRefresh: Boolean = false) {
-        productId = "15242561"
+        productId = "14285903"
         if (productId != null || (productKey != null && shopDomain != null)) {
             viewModel.getProductP1(ProductParams(productId, shopDomain, productKey), true)
         }
@@ -1332,24 +1361,26 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
 
-    private fun renderTradein(productInfoP1: ProductInfoP1) {
+    private fun renderTradein(productInfoP1: DynamicProductInfoP1) {
         tradeInParams = TradeInParams()
-        tradeInParams.categoryId = productInfoP1.productInfo.category.id.toIntOrZero()
+        tradeInParams.categoryId = productInfoP1.basic.category.id.toIntOrZero()
         tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
         tradeInParams.userId = if (viewModel.userId.isNotEmpty())
             viewModel.userId.toIntOrZero()
         else
             0
-        tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
-        tradeInParams.productId = productInfoP1.productInfo.basic.id
-        tradeInParams.shopId = productInfoP1.productInfo.basic.shopID
-        tradeInParams.productName = productInfoP1.productInfo.basic.name
-        val preorderstatus = productInfoP1.productInfo.isPreorderActive
+        tradeInParams.setPrice(productInfoP1.data.price.value)
+        tradeInParams.productId = productInfoP1.basic.getProductId()
+        tradeInParams.shopId = productInfoP1.basic.getShopId()
+        tradeInParams.productName = productInfoP1.basic.name
+        // TODO
+//        val preorderstatus = productInfoP1.productInfo.isPreorderActive
+        val preorderstatus = true
         if (preorderstatus)
             tradeInParams.isPreorder = preorderstatus
         else
             tradeInParams.isPreorder = false
-        tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
+        tradeInParams.isOnCampaign = productInfoP1.data.campaign.isActive
 
         pdpHashMapUtil.productTradeinMap?.let {
             it.tradeInParams = tradeInParams

@@ -86,7 +86,6 @@ query pdpGetLayout($productID: String) {
             percentageAmount
             originalPrice
             discountedPrice
-            originalStock
             stock
             startDate
             endDate

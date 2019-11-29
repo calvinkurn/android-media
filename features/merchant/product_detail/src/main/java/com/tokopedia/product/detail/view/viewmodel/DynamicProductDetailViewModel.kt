@@ -11,6 +11,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.debugTrace
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
@@ -24,7 +25,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -88,9 +88,8 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
     var multiOrigin: WarehouseInfo = WarehouseInfo()
     var getProductInfoP1: ProductInfo? = null
-    var listOfRecomData: List<ProductRecommendationDataModel>? = null
+    var dynamicProductInfoP1 = MutableLiveData<Result<DynamicProductInfoP1>>()
 
-    private var productInfoTemp = ProductInfo()
     private var submitTicketSubscription: Subscription? = null
 
     fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
@@ -156,21 +155,20 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                 initialLayoutData.add(ProductOpenShopDataModel())
             }
             initialLayoutData.add(ProductLastSeenDataModel())
-
             val productInfo = getPdpData(productParams.productId?.toInt() ?: 0)
+
             productLayout.value = Success(initialLayoutData)
+            dynamicProductInfoP1.value = Success(DynamicProductDetailMapper.mapToDynamicProductDetailP1(pdpLayout.data))
             getProductInfoP1 = productInfo.productInfo
             productInfoP1.value = Success(productInfo)
-            productInfoTemp = productInfo.productInfo
-            listOfRecomData = initialLayoutData.filterIsInstance(ProductRecommendationDataModel::class.java)
 
             val p2ShopDeferred = getProductInfoP2ShopAsync(productInfo.productInfo.basic.shopID,
                     productInfo.productInfo.basic.id.toString(),
                     "", false)
 
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive()) {
-                getProductInfoP2LoginAsync(productInfo.productInfo.basic.id,
-                        productInfo.productInfo.basic.shopID)
+                getProductInfoP2LoginAsync(productInfo.productInfo.basic.shopID,
+                        productInfo.productInfo.basic.id)
             } else null
 
             val userId = if (!TextUtils.isEmpty(userSessionInterface.userId)) {
@@ -298,13 +296,12 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     }
 
     fun getImageUriPaths(): ArrayList<String> {
-        return ArrayList(productInfoTemp.run {
-            media.map {
-                if (it.type == "image") {
-                    it.urlOriginal
-                } else {
-                    it.urlThumbnail
-                }
+        val mediaData = (dynamicProductInfoP1.value) as? Success ?: return arrayListOf()
+        return ArrayList(mediaData.data.data.media.map {
+            if (it.type == "image") {
+                it.uRLOriginal
+            } else {
+                it.uRLThumbnail
             }
         })
     }

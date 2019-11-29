@@ -3,11 +3,11 @@ package com.tokopedia.product.detail.view.widget
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import androidx.fragment.app.FragmentManager
-import androidx.viewpager.widget.ViewPager
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import androidx.fragment.app.FragmentManager
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -40,7 +40,8 @@ class PictureScrollingView @JvmOverloads constructor(
         View.inflate(context, R.layout.widget_picture_scrolling, this)
     }
 
-    fun renderData(media: List<Media>?, onPictureClickListener: ((Int) -> Unit)?, fragmentManager: FragmentManager) {
+    fun renderData(media: List<Media>?, onPictureClickListener: ((Int) -> Unit)?, fragmentManager: FragmentManager,
+                   forceRefresh: Boolean = true) {
         val mediaList = if (media == null || media.isEmpty()) {
             val resId = R.drawable.product_no_photo_default
             val res = context.resources
@@ -52,28 +53,30 @@ class PictureScrollingView @JvmOverloads constructor(
         } else
             media.toMutableList()
 
-        pagerAdapter = VideoPicturePagerAdapter(context, mediaList, urlTemp, onPictureClickListener, fragmentManager)
-        view_pager.adapter = pagerAdapter
+        if (!::pagerAdapter.isInitialized || forceRefresh) {
+            pagerAdapter = VideoPicturePagerAdapter(context, mediaList, urlTemp, onPictureClickListener, fragmentManager)
+            view_pager.adapter = pagerAdapter
 
-        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            var lastPosition = 0
-            override fun onPageSelected(position: Int) {
-                (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
-                (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
-                lastPosition = position
-            }
+            view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                var lastPosition = 0
+                override fun onPageSelected(position: Int) {
+                    (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
+                    (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
+                    lastPosition = position
+                }
 
-            override fun onPageScrollStateChanged(b: Int) {
+                override fun onPageScrollStateChanged(b: Int) {
 
-            }
+                }
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
-            }
-        })
+                }
+            })
 
-        indicator_picture.setViewPager(view_pager)
-        indicator_picture.notifyDataSetChanged()
+            indicator_picture.setViewPager(view_pager)
+            indicator_picture.notifyDataSetChanged()
+        }
     }
 
     fun renderShopStatus(shopInfo: ShopInfo, productStatus: String, productStatusTitle: String = "",

@@ -2,42 +2,44 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ViewVisibilityListener
 import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
-import com.tokopedia.product.detail.view.fragment.partialview.PartialHeaderView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialSnapshotView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import kotlinx.android.synthetic.main.item_dynamic_pdp_snapshot.view.*
-import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
 
-class ProductSnapshotViewHolder(itemView: View,
-                                private val childFragmentManager: FragmentManager,
-                                private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductSnapshotDataModel>(itemView) {
-    private lateinit var header: PartialHeaderView
+class ProductSnapshotViewHolder(private val view: View,
+                                private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductSnapshotDataModel>(view) {
+    private lateinit var header: PartialSnapshotView
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_pdp_snapshot
     }
 
     override fun bind(element: ProductSnapshotDataModel) {
-        val screenWidth = itemView.resources.displayMetrics.widthPixels
-        itemView.view_picture_search_bar.layoutParams.height = screenWidth
+        val screenWidth = view.resources.displayMetrics.widthPixels
+        view.view_picture_search_bar.layoutParams.height = screenWidth
 
         if (!::header.isInitialized) {
-            header = PartialHeaderView.build(itemView.base_header, null)
+            header = PartialSnapshotView(view, listener)
         }
 
-        element.productInfoP1?.let {
+        element.dynamicProductInfoP1?.let {
             header.renderData(it)
 
             element.nearestWarehouse?.let { nearestWarehouse ->
                 if (nearestWarehouse.warehouseInfo.id.isNotBlank())
-                    header.updateStockAndPriceWarehouse(nearestWarehouse, it.campaign)
+                    header.updateStockAndPriceWarehouse(nearestWarehouse, it.data.campaign)
+            }
+
+            it.data.media.let {
+//                view.view_picture_search_bar.renderData(it, listener::onImageClicked, listener.getProductFragmentManager(), element.shouldReinitVideoPicture)
+                element.shouldReinitVideoPicture = false
             }
         }
 
@@ -48,19 +50,22 @@ class ProductSnapshotViewHolder(itemView: View,
 
         header.renderCod(element.shouldShowCod)
         header.renderTradein(element.shouldShowTradein)
-        itemView.view_picture_search_bar.isVisibleOnTheScreen(object : ViewVisibilityListener {
+        view.view_picture_search_bar.isVisibleOnTheScreen(object : ViewVisibilityListener {
             override fun onViewNotVisible() {
-                itemView.fab_detail.hide()
+                view.fab_detail.hide()
             }
 
             override fun onViewVisible() {
-                itemView.fab_detail.show()
+                view.fab_detail.show()
             }
 
         })
 
-        itemView.fab_detail.setOnClickListener { listener.onFabWishlistClicked(it.isActivated) }
-        itemView.view_picture_search_bar.renderData(element.media, listener::onImageClicked, listener.getChild()!!)
+        view.fab_detail.setOnClickListener { listener.onFabWishlistClicked(it.isActivated) }
+        element.media?.let {
+            view.view_picture_search_bar.renderData(it, listener::onImageClicked, listener.getProductFragmentManager(), element.shouldReinitVideoPicture)
+            element.shouldReinitVideoPicture = false
+        }
     }
 
     override fun bind(element: ProductSnapshotDataModel?, payloads: MutableList<Any>) {
@@ -81,10 +86,10 @@ class ProductSnapshotViewHolder(itemView: View,
     }
 
     private fun renderWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
-        itemView.context?.let {
-            itemView.fab_detail.show()
+        view.context?.let {
+            view.fab_detail.show()
             if (shopInfo.isAllowManage == 1) {
-                itemView.fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
+                view.fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
             } else {
                 updateWishlist(wishlisted)
             }
@@ -92,17 +97,17 @@ class ProductSnapshotViewHolder(itemView: View,
     }
 
     private fun updateWishlist(wishlisted: Boolean) {
-        itemView.context?.let {
+        view.context?.let {
             if (wishlisted) {
-                itemView.fab_detail.hide()
-                itemView.fab_detail.isActivated = true
-                itemView.fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_checked))
-                itemView.fab_detail.show()
+                view.fab_detail.hide()
+                view.fab_detail.isActivated = true
+                view.fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_checked))
+                view.fab_detail.show()
             } else {
-                itemView.fab_detail.hide()
-                itemView.fab_detail.isActivated = false
-                itemView.fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unchecked))
-                itemView.fab_detail.show()
+                view.fab_detail.hide()
+                view.fab_detail.isActivated = false
+                view.fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+                view.fab_detail.show()
             }
         }
     }

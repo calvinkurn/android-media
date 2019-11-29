@@ -16,7 +16,7 @@ data class ComponentData(
 
         // Snapshot data
         @SerializedName("campaign")
-        val campaign: Campaign = Campaign(),
+        val campaign: CampaignModular = CampaignModular(),
         @SerializedName("isCOD")
         val isCOD: Boolean = false,
         @SerializedName("isCashback")

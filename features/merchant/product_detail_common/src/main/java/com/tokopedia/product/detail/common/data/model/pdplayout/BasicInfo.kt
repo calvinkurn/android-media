@@ -42,4 +42,7 @@ data class BasicInfo(
         val status: String = "",
         @SerializedName("url")
         val url: String = ""
-)
+) {
+        fun getProductId():Int  = productID.toIntOrNull() ?: 0
+        fun getShopId():Int  = shopID.toIntOrNull() ?: 0
+}

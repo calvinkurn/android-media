@@ -19,7 +19,8 @@ interface DynamicProductDetailListener {
      */
     fun onImageClicked(position: Int)
     fun onFabWishlistClicked(isActive: Boolean)
-    fun getChild(): FragmentManager?
+    fun getProductFragmentManager(): FragmentManager
+    fun showAlertCampaignEnded()
 
     /**
      * ProductInfoViewHolder

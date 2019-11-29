@@ -10,7 +10,7 @@ class DynamicProductDetailAdapter(
 
     fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel, payload: Int) {
         val indexOfSnapshot = list.indexOf(snapshotData)
-        notifyItemChanged(indexOfSnapshot)
+        notifyItemChanged(indexOfSnapshot, payload)
     }
 
     fun notifyShopInfo(shopInfoData: ProductShopInfoDataModel, payload: Int) {

@@ -1,15 +1,13 @@
 package com.tokopedia.product.detail.view.adapter.factory
 
 import android.view.View
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.*
 
-class DynamicProductDetailAdapterFactoryImpl(private val childFragmentManager: FragmentManager,
-                                             private val listener: DynamicProductDetailListener) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
+class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductLastSeenDataModel): Int {
         return ProductLastSeenViewHolder.LAYOUT
     }
@@ -70,7 +68,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val childFragmentManager: F
             ProductTradeinViewHolder.LAYOUT -> ProductTradeinViewHolder(view, listener)
             ProductMerchantVoucherViewHolder.LAYOUT -> ProductMerchantVoucherViewHolder(view, listener)
             ProductImageReviewViewHolder.LAYOUT -> ProductImageReviewViewHolder(view, listener)
-            ProductSnapshotViewHolder.LAYOUT -> ProductSnapshotViewHolder(view, childFragmentManager, listener)
+            ProductSnapshotViewHolder.LAYOUT -> ProductSnapshotViewHolder(view, listener)
             ProductShopInfoViewHolder.LAYOUT -> ProductShopInfoViewHolder(view, listener)
             ProductSocialProofViewHolder.LAYOUT -> ProductSocialProofViewHolder(view, listener)
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)

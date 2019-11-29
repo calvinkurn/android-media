@@ -1,6 +1,9 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.product.detail.common.data.model.pdplayout.Component
+import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.data.model.datamodel.*
 
 object DynamicProductDetailMapper {
@@ -45,6 +48,14 @@ object DynamicProductDetailMapper {
             }
         }
         return listOfComponent
+    }
+
+    fun mapToDynamicProductDetailP1(data: PdpGetLayout): DynamicProductInfoP1 {
+        val componentData = data.components.find {
+            it.type == "product_snapshot"
+        }?.componentData?.firstOrNull() ?: ComponentData()
+
+        return DynamicProductInfoP1(basic = data.basicInfo, data = componentData)
     }
 
     fun hashMapLayout(data: List<DynamicPDPDataModel>): Map<String, DynamicPDPDataModel> {
