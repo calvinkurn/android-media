@@ -12,10 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
@@ -42,6 +39,10 @@ class ChatItemListViewHolder(
     private val unreadCounter: Typography = itemView.findViewById(R.id.unread_counter)
     private val time: Typography = itemView.findViewById(R.id.time)
     private val label: Label = itemView.findViewById(R.id.user_label)
+    private val pin: ImageView = itemView.findViewById(R.id.ivPin)
+
+    private val statusPinned = 1
+    private val statusUnpinned = 0
 
     override fun bind(element: ItemChatListPojo) {
         val attributes = element.attributes
@@ -64,8 +65,14 @@ class ChatItemListViewHolder(
             bindMessageState(attributes.lastReplyMessage)
             bindTimeStamp(attributes.lastReplyTimeStr)
             bindLabel(contact.tag)
+            bindPin(attributes.pinStatus)
         }
 
+    }
+
+    private fun bindPin(pinStatus: Int) {
+        val shouldShowPin = pinStatus == statusPinned
+        pin.showWithCondition(shouldShowPin)
     }
 
     private fun onChatItemClicked(chat: ItemChatListPojo) {

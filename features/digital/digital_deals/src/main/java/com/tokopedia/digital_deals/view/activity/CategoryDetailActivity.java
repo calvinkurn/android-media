@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
-
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.UriUtil;
@@ -36,9 +35,12 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
     public Bundle getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
 
         Location location = Utils.getSingletonInstance().getLocation(context);
-            String searchName = extras.getString("search_name");
+        String searchName = extras.getString("search_name");
         CategoriesModel categoriesModel = new CategoriesModel();
-        categoriesModel.setCategoryId(Integer.parseInt(extras.getString("category_id")));
+        String categoryId = extras.getString("category_id");
+        if (!TextUtils.isEmpty(categoryId)) {
+            categoriesModel.setCategoryId(Integer.parseInt(categoryId));
+        }
         categoriesModel.setTitle(extras.getString("search_name"));
         String categoryUrl = searchName + "?" + Utils.QUERY_PARAM_CITY_ID + "=" + location.getId();
         categoriesModel.setCategoryUrl(DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_CATEGORY + categoryUrl);

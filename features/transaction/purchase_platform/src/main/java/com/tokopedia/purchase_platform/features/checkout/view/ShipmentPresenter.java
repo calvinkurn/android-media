@@ -551,6 +551,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                                boolean isTradeIn, boolean isSkipUpdateOnboardingState,
+                                               boolean isReloadAfterPriceChangeHinger,
                                                @Nullable String cornerId, String deviceId, String leasingId) {
 
         if (isReloadData) {
@@ -580,7 +581,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    isReloadData, true))
+                                    isReloadData, isReloadAfterPriceChangeHinger, true))
             );
         } else {
             requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
@@ -590,7 +591,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    isReloadData, false))
+                                    isReloadData, isReloadAfterPriceChangeHinger, false))
             );
         }
     }
@@ -747,7 +748,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    true, true))
+                                    true, false, true))
 
             );
         } else {
@@ -758,7 +759,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    true, false))
+                                    true, false, false))
 
             );
         }
@@ -970,6 +971,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else if (checkoutData.getErrorReporter() != null && checkoutData.getErrorReporter().getEligible()) {
                     getView().renderCheckoutCartErrorReporter(checkoutData);
+                } else if (checkoutData.getPriceValidationData() != null && checkoutData.getPriceValidationData().isUpdated() &&
+                        checkoutData.getPriceValidationData().getMessage() != null) {
+                    getView().renderCheckoutPriceUpdated(checkoutData.getPriceValidationData());
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
                     if (checkoutData.getErrorMessage() != null && !checkoutData.getErrorMessage().isEmpty()) {

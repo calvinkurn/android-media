@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -103,7 +104,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     UserSessionInterface userSession;
 
     private ImageProductListAdapter adapter;
-    private ProductViewModel productViewModel;
     private ImageProductListTypeFactory imageProductListTypeFactory;
     private SearchParameter searchParameter = new SearchParameter();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
@@ -120,6 +120,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private HashMap<String, String> selectedSort;
     private String imagePath;
     private boolean isFromCamera;
+    private String queryKey = "";
 
 
     public static ImageSearchProductListFragment newInstance(String imagePath, boolean isFromCamera) {
@@ -404,12 +405,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         return adapter.isLoading();
     }
 
-    private List<Visitable> initMappingProduct() {
-        List<Visitable> list = new ArrayList<>();
-        list.addAll(productViewModel.getProductList());
-        return list;
-    }
-
     protected StaggeredGridLayoutManager getStaggeredGridLayoutManager() {
         return staggeredGridLayoutManager;
     }
@@ -576,8 +571,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public String getQueryKey() {
-        return productViewModel.getQuery();
+    public void setQueryKey(String query) {
+        this.queryKey = query;
+    }
+
+    private String getQueryKey() {
+        return queryKey;
     }
 
     @Override
@@ -661,15 +660,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onProductImpressed(ProductItem item, int adapterPosition) {
 
-    }
-
-    public void onLongClick(ProductItem item, int adapterPosition) {
-        ImageSearchTracking.trackEventProductLongPress(getQueryKey(), item.getProductID(), getToken());
-        startSimilarSearch(item.getProductID());
-    }
-
-    public void startSimilarSearch(String productId) {
-        RouteManager.route(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
     }
 
     public void onWishlistButtonClicked(ProductItem productItem) {

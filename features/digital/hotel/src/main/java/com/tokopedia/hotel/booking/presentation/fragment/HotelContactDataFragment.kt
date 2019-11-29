@@ -96,7 +96,6 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
 
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf(), this)
-
             (til_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
 
             (til_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id ->  autofillView(travelContactArrayAdapter.getItem(position)) }

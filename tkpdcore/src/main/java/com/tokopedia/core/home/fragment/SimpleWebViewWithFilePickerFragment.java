@@ -199,13 +199,21 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
             String urlString = url.toString();
             try {
                 //TODO delete this after ws change to new applink
-                if (urlString.contains(String.format("%s=true", TkpdInboxRouter.IS_CHAT_BOT))) {
+                String kuponMemberShipUrl = "/tukar-point/kuponmembership";
+                if (!TextUtils.isEmpty(urlString) && urlString.contains(kuponMemberShipUrl) && getActivity().getApplicationContext() instanceof TkpdInboxRouter && RouteManager.isSupportApplink(getContext(), urlString)) {
+                    RouteManager.route(getContext(), urlString);
+                    return true;
+                }
+                else if (urlString.contains(String.format("%s=true", TkpdInboxRouter.IS_CHAT_BOT))) {
                     String messageId = urlString.toLowerCase().replace("tokopedia://topchat/", "")
                             .replace("?is_chat_bot=true", "");
                     RouteManager.route(getActivity(), ApplinkConst.CHATBOT,messageId);
                     return true;
-                } else if (getActivity().getApplicationContext() instanceof TkpdInboxRouter && RouteManager.isSupportApplink(getContext(), urlString)) {
-                    RouteManager.route(getContext(), urlString);
+                } else if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
+                        && ((TkpdInboxRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url.toString())) {
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .actionNavigateByApplinksUrl(getActivity(), url.toString(), new
+                                    Bundle());
                     return true;
                 } else if (urlString.startsWith("tel:")) {
                     Intent intent = new Intent(Intent.ACTION_DIAL, url);
