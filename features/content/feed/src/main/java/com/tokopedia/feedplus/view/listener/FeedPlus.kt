@@ -46,6 +46,8 @@ interface FeedPlus {
 
         fun onErrorGetFeedFirstPage(errorMessage: String)
 
+        fun sendFeedPlusScreenTracking()
+
         fun onErrorFollowKol(errorMessage: String, id: Int, status: Int, rowNumber: Int)
 
         fun onSuccessFollowUnfollowKol(rowNumber: Int)

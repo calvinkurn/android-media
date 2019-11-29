@@ -414,6 +414,7 @@ internal constructor(@ApplicationContext private val context: Context,
                         }
 
                         view.sendMoEngageOpenFeedEvent()
+                        view.sendFeedPlusScreenTracking()
                         view.stopTracePerformanceMon()
                     }
                 }
