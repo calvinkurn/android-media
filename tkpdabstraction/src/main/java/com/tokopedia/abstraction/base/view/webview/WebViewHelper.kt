@@ -7,6 +7,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
 import java.net.URLDecoder
 import java.net.URLEncoder
+import android.util.Log
 
 /**
  * Created by Ade Fulki on 2019-06-21.
