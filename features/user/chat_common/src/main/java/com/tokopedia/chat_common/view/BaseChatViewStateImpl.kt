@@ -49,6 +49,7 @@ open class BaseChatViewStateImpl(
     protected lateinit var notifier: View
     protected lateinit var chatMenuButton: ImageView
     protected lateinit var attachmentMenu: AttachmentMenuRecyclerView
+    protected lateinit var attachmentMenuContainer: FrameLayout
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
@@ -67,6 +68,7 @@ open class BaseChatViewStateImpl(
         notifier = view.findViewById(getNotifierId())
         chatMenuButton = view.findViewById(getChatMenuId())
         attachmentMenu = view.findViewById(getAttachmentMenuId())
+        attachmentMenuContainer = view.findViewById(getAttachmentMenuContainer())
 
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
@@ -100,9 +102,9 @@ open class BaseChatViewStateImpl(
 
         rootView.viewTreeObserver.addOnGlobalLayoutListener(this)
 
+        attachmentMenu.container = attachmentMenuContainer
         chatMenuButton.setOnClickListener {
             attachmentMenu.toggle()
-//            chatMenuListener.showChatMenu()
         }
     }
 
@@ -310,5 +312,6 @@ open class BaseChatViewStateImpl(
     open fun getChatMenuId() = R.id.iv_chat_menu
     open fun getAttachmentMenuId() = R.id.rv_attachment_menu
     open fun getRootViewId() = R.id.main
+    open fun getAttachmentMenuContainer(): Int = R.id.rv_attachment_menu_container
 
 }

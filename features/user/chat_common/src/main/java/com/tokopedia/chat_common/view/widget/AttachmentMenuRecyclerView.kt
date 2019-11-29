@@ -2,9 +2,9 @@ package com.tokopedia.chat_common.view.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
@@ -12,6 +12,8 @@ import com.tokopedia.chat_common.view.adapter.AttachmentMenuAdapter
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 
 class AttachmentMenuRecyclerView : RecyclerView, AttachmentItemViewHolder.AttachmentViewHolderListener {
+
+    var container: FrameLayout? = null
 
     private val manager = GridLayoutManager(context, 4)
     private val adapter = AttachmentMenuAdapter(this)
@@ -42,7 +44,7 @@ class AttachmentMenuRecyclerView : RecyclerView, AttachmentItemViewHolder.Attach
     }
 
     fun toggle() {
-        if (isShowing) return
+        if (isShowing || container == null) return
         if (isVisible) {
             hideMenu()
         } else {
@@ -53,7 +55,7 @@ class AttachmentMenuRecyclerView : RecyclerView, AttachmentItemViewHolder.Attach
     fun hideMenu() {
         if (isVisible && !isShowing) {
             isVisible = false
-            visibility = View.GONE
+            container?.visibility = View.GONE
         }
     }
 
@@ -75,7 +77,7 @@ class AttachmentMenuRecyclerView : RecyclerView, AttachmentItemViewHolder.Attach
         isShowing = false
         showDelayed = false
         isVisible = true
-        visibility = View.VISIBLE
+        container?.visibility = View.VISIBLE
     }
 
     fun setAttachmentMenuListener(listener: AttachmentMenu.AttachmentMenuListener) {
