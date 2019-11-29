@@ -5,6 +5,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.drawer2.data.pojo.InfoPenjualNotification;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -23,6 +24,7 @@ public class NewNotificationUseCase extends UseCase<NotificationModel> {
     NotificationUseCase notificationUseCase;
     GetChatNotificationUseCase getChatNotificationUseCase;
     DeleteNotificationCacheUseCase deleteNotificationCacheUseCase;
+    GetInfoPenjualNotificationUseCase getInfoPenjualNotificationUseCase;
     private LocalCacheHandler drawerCache;
 
     private boolean isRefresh = false;
@@ -32,11 +34,13 @@ public class NewNotificationUseCase extends UseCase<NotificationModel> {
                                   NotificationUseCase notificationUseCase,
                                   DeleteNotificationCacheUseCase deleteNotificationCacheUseCase,
                                   GetChatNotificationUseCase getChatNotificationUseCase,
+                                  GetInfoPenjualNotificationUseCase getInfoPenjualNotificationUseCase,
                                   LocalCacheHandler drawerCache) {
         super(threadExecutor, postExecutionThread);
         this.notificationUseCase = notificationUseCase;
         this.getChatNotificationUseCase = getChatNotificationUseCase;
         this.deleteNotificationCacheUseCase = deleteNotificationCacheUseCase;
+        this.getInfoPenjualNotificationUseCase = getInfoPenjualNotificationUseCase;
         this.drawerCache = drawerCache;
     }
 
@@ -44,25 +48,33 @@ public class NewNotificationUseCase extends UseCase<NotificationModel> {
     public Observable<NotificationModel> createObservable(RequestParams requestParams) {
         if (isRefresh) {
             getChatNotificationUseCase.setRefresh(true);
+            getInfoPenjualNotificationUseCase.setRefresh(true);
             return deleteNotificationCacheUseCase.createObservable()
-                    .flatMap( result -> getNotification(requestParams));
+                    .flatMap(result -> getNotification(requestParams));
         } else {
             getChatNotificationUseCase.setRefresh(false);
+            getInfoPenjualNotificationUseCase.setRefresh(false);
             return getNotification(requestParams);
         }
     }
 
-    private Observable<NotificationModel> getNotification(RequestParams requestParams){
+    private Observable<NotificationModel> getNotification(RequestParams requestParams) {
         Observable<NotificationModel> notif = notificationUseCase.createObservable(requestParams);
         Observable<TopChatNotificationModel> notifTopChat = getChatNotificationUseCase.createObservable(com.tokopedia.usecase.RequestParams.EMPTY);
-        return Observable.zip(notif, notifTopChat, (notificationModel, chatNotificationModel) -> {
+        Observable<InfoPenjualNotification> infoPenjualNotification = getInfoPenjualNotificationUseCase.createObservable(
+                GetInfoPenjualNotificationUseCase.createParams(2)
+        );
+
+        return Observable.zip(notif, notifTopChat, infoPenjualNotification, (notificationModel, chatNotificationModel, infoPenjualNotif) -> {
             NotificationData data = notificationModel.getNotificationData();
             data.setTotalNotif(data.getTotalNotif() - data.getInbox().getInboxMessage() +
-                    chatNotificationModel.getNotifUnreadsSeller());
+                    chatNotificationModel.getNotifUnreadsSeller() + infoPenjualNotif.getNotifUnreadInt().intValue());
             data.getInbox().setInboxMessage(chatNotificationModel.getNotifUnreadsSeller());
             notificationModel.setNotificationData(data);
             int notifUnreadsSeller = chatNotificationModel.getNotifUnreadsSeller();
+            int notifInfoPenjual = infoPenjualNotif.getNotifUnreadInt().intValue();
             drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, notifUnreadsSeller);
+            drawerCache.putInt(DrawerNotification.CACHE_INBOX_SELLER_INFO, notifInfoPenjual);
             drawerCache.putInt(DrawerNotification.CACHE_TOTAL_NOTIF, data.getTotalNotif());
             drawerCache.applyEditor();
             return notificationModel;

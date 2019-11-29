@@ -15,6 +15,7 @@ import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
 import com.tokopedia.core.drawer2.domain.interactor.DeleteNotificationCacheUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.GetChatNotificationUseCase;
+import com.tokopedia.core.drawer2.domain.interactor.GetInfoPenjualNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -28,6 +29,7 @@ import dagger.Module;
 import dagger.Provides;
 
 import static com.tokopedia.core.drawer2.domain.GqlQueryConstant.GET_CHAT_NOTIFICATION_QUERY;
+import static com.tokopedia.core.drawer2.domain.GqlQueryConstant.GET_INFO_PENJUAL_NOTIFICATION_QUERY;
 
 @DrawerScope
 @Module
@@ -78,6 +80,7 @@ public class DrawerModule {
                                                                  deleteNotificationCacheUseCase,
                                                          GetChatNotificationUseCase
                                                                  getChatNotificationUseCase,
+                                                         GetInfoPenjualNotificationUseCase getInfoPenjualNotificationUseCase,
                                                          LocalCacheHandler drawerCache) {
         return new NewNotificationUseCase(
                 threadExecutor,
@@ -85,17 +88,9 @@ public class DrawerModule {
                 notificationUseCase,
                 deleteNotificationCacheUseCase,
                 getChatNotificationUseCase,
+                getInfoPenjualNotificationUseCase,
                 drawerCache
         );
-    }
-
-    @DrawerScope
-    @Provides
-    GetChatNotificationUseCase provideTopChatNotificationUseCase(
-            @Named(GET_CHAT_NOTIFICATION_QUERY) String queryString,
-            GraphqlUseCase graphqlUseCase,
-            LocalCacheHandler localCacheHandler) {
-        return new GetChatNotificationUseCase(queryString, graphqlUseCase, localCacheHandler);
     }
 
     @DrawerScope
@@ -103,5 +98,12 @@ public class DrawerModule {
     @Named(GET_CHAT_NOTIFICATION_QUERY)
     String provideGetChatNotificationQuery(@ApplicationContext Context context){
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_chat_notification);
+    }
+
+    @DrawerScope
+    @Provides
+    @Named(GET_INFO_PENJUAL_NOTIFICATION_QUERY)
+    String provideGET_INFO_PENJUAL_NOTIFICATION_QUERY(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_notification_update_total_unread);
     }
 }

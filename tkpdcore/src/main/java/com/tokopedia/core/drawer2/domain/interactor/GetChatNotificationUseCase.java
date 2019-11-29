@@ -24,18 +24,15 @@ public class GetChatNotificationUseCase extends UseCase<TopChatNotificationModel
 
     private String query;
     private GraphqlUseCase graphqlUseCase;
-    private LocalCacheHandler drawerCache;
     private boolean isRefresh = false;
 
     @Inject
     public GetChatNotificationUseCase(
             @Named(GET_CHAT_NOTIFICATION_QUERY) String query,
-            GraphqlUseCase graphqlUseCase,
-            LocalCacheHandler drawerCache
+            GraphqlUseCase graphqlUseCase
     ) {
         this.query = query;
         this.graphqlUseCase = graphqlUseCase;
-        this.drawerCache = drawerCache;
     }
 
     @Override
@@ -65,19 +62,7 @@ public class GetChatNotificationUseCase extends UseCase<TopChatNotificationModel
             } else {
                 throw new RuntimeException();
             }
-        }).doOnNext(saveToCache());
-    }
-
-    private Action1<TopChatNotificationModel> saveToCache() {
-        return topChatNotificationModel -> {
-            int notifUnreadsSeller = topChatNotificationModel.getNotifUnreadsSeller();
-            drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, notifUnreadsSeller);
-            drawerCache.putInt(
-                    DrawerNotification.CACHE_TOTAL_NOTIF,
-                    drawerCache.getInt(DrawerNotification.CACHE_TOTAL_NOTIF, 0) + notifUnreadsSeller
-            );
-            drawerCache.applyEditor();
-        };
+        });
     }
 
     public void setRefresh(boolean refresh) {
