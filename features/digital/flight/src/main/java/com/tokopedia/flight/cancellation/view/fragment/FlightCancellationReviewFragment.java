@@ -5,12 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -22,9 +16,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationTermsAndConditionsActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
@@ -114,7 +116,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         FlightCancellationAttachmentTypeFactory adapterTypeFactory = new FlightCancellationAttachementAdapterTypeFactory(this, false);
         attachmentAdapter = new FlightCancellationAttachmentAdapter(adapterTypeFactory);
         LinearLayoutManager layoutManager
-                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         rvAttachments.setLayoutManager(layoutManager);
         rvAttachments.setHasFixedSize(true);
         rvAttachments.setNestedScrollingEnabled(false);
@@ -132,6 +134,11 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
 
         presenter.attachView(this);
         presenter.onViewCreated();
+    }
+
+    @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
     }
 
     @Override
@@ -245,7 +252,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         renderList(flightCancellationPassData.getGetCancellations());
 
         if (flightCancellationPassData.getCancellationReasonAndAttachment().getReason() != null &&
-                !flightCancellationPassData.getCancellationReasonAndAttachment().getReason().isEmpty()) {
+                flightCancellationPassData.getCancellationReasonAndAttachment().getReason().length() > 0) {
             txtReason.setText(flightCancellationPassData.getCancellationReasonAndAttachment().getReason());
         } else {
             containerAdditionalReason.setVisibility(View.GONE);
@@ -260,7 +267,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
 
         if ((flightCancellationPassData.getCancellationReasonAndAttachment().getReason() == null &&
                 flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments() == null) ||
-                (flightCancellationPassData.getCancellationReasonAndAttachment().getReason().isEmpty() &&
+                (flightCancellationPassData.getCancellationReasonAndAttachment().getReason().length() == 0 &&
                         flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments().size() == 0)) {
             containerAdditionalData.setVisibility(View.GONE);
         }

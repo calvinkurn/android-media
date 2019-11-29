@@ -17,6 +17,7 @@ public interface ApplinkConst {
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
     String HOME_CATEGORY = "tokopedia://home/category";
     String HOME_HOTLIST = "tokopedia://hot";
+    String HOST_CATEGORY_P = "p";
     String MESSAGE = "tokopedia://message";
     String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
     String TALK = "tokopedia://talk";

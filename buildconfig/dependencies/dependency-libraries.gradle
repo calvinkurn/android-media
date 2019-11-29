@@ -2,16 +2,16 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            authentication          : "com.tokopedia.authentication:authentication:1.0.1@aar",
-            cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24@aar",
-            globalconfig            : "com.tokopedia.config:global_config:1.0.3@aar",
-            graphql                 : "com.tokopedia.graphql:graphql:1.0.18@aar",
-            network                 : "com.tokopedia.network:network:1.0.10-test@aar",
-            url                     : "com.tokopedia.url:url:1.0.2@aar",
-            usecase                 : "com.tokopedia.usecase:usecase:1.0.2@aar",
-            usersession             : "com.tokopedia.user.session:user_session:1.0.7@aar",
-            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.5-test@aar",
-            analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.2@aar"
+            authentication          : "com.tokopedia.authentication:authentication:1.0.6",
+            cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
+            globalconfig            : "com.tokopedia.config:global_config:1.0.3",
+            graphql                 : "com.tokopedia.graphql:graphql:1.0.18",
+            network                 : "com.tokopedia.network:network:1.0.10-test",
+            url                     : "com.tokopedia.url:url:1.0.2",
+            usecase                 : "com.tokopedia.usecase:usecase:1.0.2",
+            usersession             : "com.tokopedia.user.session:user_session:1.0.7",
+            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.5-test",
+            analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.2"
     ]
 
     // Sort and categorize alphabetically by folder name
