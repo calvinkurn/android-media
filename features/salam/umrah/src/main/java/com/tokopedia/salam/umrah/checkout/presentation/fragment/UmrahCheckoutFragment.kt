@@ -243,7 +243,9 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         if (validateData()) {
             trackingUmrahUtil.getCheckoutTracker(DEFAULT_OPTION_CHECKOUT_STEP, productModel, pilgrimCount)
             val checkoutResultParams = UmrahCheckoutResultParams(
-                    meta_data = mapToCheckoutMetaData()
+                    carts = Carts(
+                      meta_data = mapToCheckoutMetaData()
+                    )
             )
 
             umrahCheckoutViewModel.executeCheckout(GraphqlHelper.loadRawString(resources,
