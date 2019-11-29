@@ -78,6 +78,8 @@
     <string name="error_field_required">Harus diisi</string>
     <string name="wrong_email_format">Format email salah</string>
     <string name="success_add_email">Email berhasil ditambah</string>
+    <string name="add_and_verify_phone">Tambah dan verifikasi Nomor HP</string>
+    <string name="add_and_verify_phone_detail">Tambah dan verifikasi Nomor HP terlebih dahulu sebelum mengubah email</string>
 
     <!-- ADD PHONE -->
     <string name="title_add_phone">Tambah Nomor HP</string>
