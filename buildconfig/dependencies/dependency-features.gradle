@@ -26,6 +26,7 @@ ext {
             profile                         : ":features:content:profile",
             createpost                      : ":features:content:createpost",
 
+            digitalEmoney                  : ":features:digital:digital_emoney",
             digitalBrowse                   : ":features:digital:digital_browse",
             digitalDeals                    : ":features:digital:digital_deals",
             commonDigital                   : ":features:digital:common_digital",
@@ -43,6 +44,8 @@ ext {
             travelHomepage                  : ":features:digital:travel_homepage",
             imagePreviewSlider              : ":features:digital:imagepreviewslider",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
+
+            umrah                           : ":features:salam:umrah",
 
             categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
@@ -182,6 +185,7 @@ ext {
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
 //            userIdentification              : ":features:user:user_identification_no_op",
+            seamlesslogin                   : ":features:user:seamless_login",
             stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",
             vote                            : ":features:user:vote",

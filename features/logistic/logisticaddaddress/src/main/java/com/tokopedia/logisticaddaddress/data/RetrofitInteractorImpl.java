@@ -38,44 +38,6 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     }
 
     @Override
-    public void generateAddress(final Context context, final GenerateAddressListener listener) {
-
-        listener.onPreConnection();
-
-        LocalCacheHandler cache = new LocalCacheHandler(context, GeolocationPresenter.CACHE_LATITUDE_LONGITUDE);
-
-        compositeSubscription.add(Observable.just(cache)
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(cache1 -> {
-
-                    double latitude = Double.parseDouble(cache1.getString(GeolocationPresenter.CACHE_LATITUDE));
-                    double longitude = Double.parseDouble(cache1.getString(GeolocationPresenter.CACHE_LONGITUDE));
-
-                    return listener.convertData(latitude, longitude);
-                })
-                .delaySubscription(3000, TimeUnit.MILLISECONDS)
-                .subscribe(new Subscriber<LocationPass>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, "generateAddress: onError " + e.toString());
-                        listener.onError(e);
-                    }
-
-                    @Override
-                    public void onNext(LocationPass model) {
-                        listener.onSuccess(model);
-                    }
-                }));
-
-    }
-
-    @Override
     public void generateLatLng(Map<String, String> param,
                                final GenerateLatLongListener listener) {
         TKPDMapParam<String, Object> paramaters = new TKPDMapParam<>();

@@ -13,17 +13,21 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.app.MainApplication
 import com.tokopedia.core.base.di.component.AppComponent
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment
+import com.tokopedia.tkpd.tkpdreputation.createreputation.util.ReviewTracking
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity
-
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
+
+    private var productId: String = ""
+
+    lateinit var createReviewFragment: CreateReviewFragment
+
     companion object {
         fun newInstance(context: Context) = Intent(context, CreateReviewActivity::class.java)
     }
 
     override fun getNewFragment(): Fragment {
-        val productId: String
         val reputationId: String
         val bundle = intent.extras
         val uri = intent.data
@@ -37,12 +41,12 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
             productId = bundle?.getString(InboxReputationFormActivity.ARGS_PRODUCT_ID) ?: ""
             reputationId = bundle?.getString(InboxReputationFormActivity.ARGS_REPUTATION_ID) ?: ""
         }
-
-        return CreateReviewFragment.createInstance(
+        createReviewFragment = CreateReviewFragment.createInstance(
                 productId,
                 reputationId,
                 bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, 0) ?: 0
         )
+        return createReviewFragment
 
     }
 
@@ -64,6 +68,8 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
     }
 
     override fun onBackPressed() {
+        ReviewTracking.reviewOnCloseTracker(createReviewFragment.getOrderId, productId)
+
         if (isTaskRoot) {
             val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
 

@@ -2,6 +2,7 @@ package com.tokopedia.profile.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
@@ -9,12 +10,17 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.domain.model.statistic.FeedGetStatsPosts
+import com.tokopedia.feedcomponent.domain.usecase.GetPostStatisticCommissionUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
+import com.tokopedia.feedcomponent.view.mapper.PostStatisticMapper
 import com.tokopedia.feedcomponent.view.subscriber.TrackPostClickSubscriber
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailUiModel
+import com.tokopedia.kotlin.extensions.view.toCompactAmountString
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.profile.R
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileFirstUseCase
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileUseCase
 import com.tokopedia.profile.domain.usecase.ShouldChangeUsernameUseCase
@@ -29,13 +35,14 @@ import javax.inject.Inject
 class ProfilePresenter @Inject constructor(
         private val getDynamicFeedProfileFirstUseCase: GetDynamicFeedProfileFirstUseCase,
         private val getDynamicFeedProfileUseCase: GetDynamicFeedProfileUseCase,
-        private val likeKolPostUseCase: LikeKolPostUseCase,
-        private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
+        private val likeKolPostUseCase: com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase,
+        private val followKolPostGqlUseCase: com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase,
         private val deletePostUseCase: DeletePostUseCase,
         private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
         private val shouldChangeUsernameUseCase: ShouldChangeUsernameUseCase,
         private val getRelatedPostUseCase: GetRelatedPostUseCase,
-        private val atcUseCase: AddToCartUseCase)
+        private val atcUseCase: AddToCartUseCase,
+        private val getPostStatisticCommissionUseCase: GetPostStatisticCommissionUseCase)
     : BaseDaggerPresenter<ProfileContract.View>(), ProfileContract.Presenter {
 
     override var cursor: String = ""
@@ -71,7 +78,7 @@ class ProfilePresenter @Inject constructor(
     override fun followKol(id: Int) {
         followKolPostGqlUseCase.clearRequest()
         followKolPostGqlUseCase.addRequest(
-            followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_FOLLOW)
+            followKolPostGqlUseCase.getRequest(id, com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase.PARAM_FOLLOW)
         )
         followKolPostGqlUseCase.execute(FollowSubscriber(view))
     }
@@ -79,22 +86,22 @@ class ProfilePresenter @Inject constructor(
     override fun unfollowKol(id: Int) {
         followKolPostGqlUseCase.clearRequest()
         followKolPostGqlUseCase.addRequest(
-            followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
+            followKolPostGqlUseCase.getRequest(id, com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
         )
         followKolPostGqlUseCase.execute(FollowSubscriber(view))
     }
 
-    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+    override fun likeKol(id: Int, rowNumber: Int, likeListener: com.tokopedia.kolcommon.view.listener.KolPostLikeListener) {
         likeKolPostUseCase.execute(
-            LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
-            LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
+            com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase.getParam(id, com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase.LikeKolPostAction.Like),
+                com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber(likeListener, rowNumber, com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase.LikeKolPostAction.Like)
         )
     }
 
-    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: com.tokopedia.kolcommon.view.listener.KolPostLikeListener) {
         likeKolPostUseCase.execute(
-            LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
-            LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
+            com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase.getParam(id, com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase.LikeKolPostAction.Unlike),
+                com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber(likeListener, rowNumber, com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase.LikeKolPostAction.Unlike)
         )
     }
 
@@ -192,6 +199,31 @@ class ProfilePresenter @Inject constructor(
                 }
             }
         )
+    }
+
+    override fun getPostStatistic(activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+        getPostStatisticCommissionUseCase.run {
+            setParams(
+                    GetPostStatisticCommissionUseCase.getParam(
+                            listOf(activityId),
+                            productIds
+                    )
+            )
+            execute(
+                    onSuccess = {
+                        view.onSuccessGetPostStatistic(
+                                PostStatisticCommissionUiModel(
+                                        KMNumbers.formatRupiahString(it.second.totalProductCommission.toLongOrZero()),
+                                        PostStatisticMapper(likeCount, commentCount).call(it.first)
+                                )
+
+                        )
+                    },
+                    onError = {
+                        view.onErrorGetPostStatistic(it, activityId, productIds)
+                    }
+            )
+        }
     }
 
     private fun getUserId(): String {

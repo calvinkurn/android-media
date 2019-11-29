@@ -2,9 +2,10 @@ package com.tokopedia.home.account.presentation.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
+
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
@@ -14,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -49,7 +51,20 @@ import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
-import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
+import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CREATIVE_KUPON_SAYA;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CREATIVE_TOKOPOINTS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CREATIVE_TOKO_MEMBER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_MERCHANT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.POSITION_KUPON_SAYA;
+import static com.tokopedia.home.account.AccountConstants.Analytics.POSITION_TOKOMEMBER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.POSITION_TOKOPOINT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
@@ -479,7 +494,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
                 SECTION_OTHER_FEATURE,
                 ITEM_POWER_MERCHANT
         );
-        RouteManager.route(getActivity(), ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
+        RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
     }
 
     @Override
