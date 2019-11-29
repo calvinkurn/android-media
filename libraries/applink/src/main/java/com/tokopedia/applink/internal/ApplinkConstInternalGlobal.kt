@@ -190,7 +190,7 @@ object ApplinkConstInternalGlobal {
 
 
     @JvmField
-    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}&title={title}"
+    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}?title={title}"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-profile-phone-verification
