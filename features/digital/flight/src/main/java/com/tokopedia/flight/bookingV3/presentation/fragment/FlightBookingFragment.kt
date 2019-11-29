@@ -852,7 +852,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     dialog.show()
                 }
             } else {
-                NetworkErrorHelper.showEmptyState(activity, view, e.title) {
+                NetworkErrorHelper.showEmptyState(activity, view) {
                     NetworkErrorHelper.hideEmptyState(view)
                     showLoadingDialog()
                     action()
