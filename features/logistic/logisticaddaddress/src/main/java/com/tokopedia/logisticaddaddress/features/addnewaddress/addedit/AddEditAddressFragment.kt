@@ -28,13 +28,12 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.logisticaddaddress.AddressConstants
-import com.tokopedia.logisticaddaddress.AddressConstants.ANA_NEGATIVE
-import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_NEGATIVE
+import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
-import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
@@ -50,6 +49,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocompl
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.user.session.UserSessionInterface
@@ -75,8 +75,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private var googleMap: GoogleMap? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
     private var token: Token? = null
-    private var currentLat: Double? = 0.0
-    private var currentLong: Double? = 0.0
+    private var currentLat: Double = 0.0
+    private var currentLong: Double = 0.0
     private var labelRumah: String? = "Rumah"
     private var isMismatch: Boolean = false
     private var isMismatchSolved: Boolean = false
@@ -132,12 +132,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             token = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
             isLatitudeNotEmpty = saveAddressDataModel?.latitude?.isNotEmpty()
             isLatitudeNotEmpty?.let {
-                if (it) currentLat = saveAddressDataModel?.latitude?.toDouble()
+                if (it) currentLat = saveAddressDataModel?.latitude?.toDouble() ?: 0.0
             }
 
             isLongitudeNotEmpty = saveAddressDataModel?.longitude?.isNotEmpty()
             isLongitudeNotEmpty?.let {
-                if (it) currentLong = saveAddressDataModel?.longitude?.toDouble()
+                if (it) currentLong = saveAddressDataModel?.longitude?.toDouble() ?: 0.0
             }
 
             isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)!!
@@ -860,7 +860,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         this.googleMap?.uiSettings?.setAllGesturesEnabled(false)
         activity?.let { MapsInitializer.initialize(activity) }
-        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong))
 
     }
 
@@ -959,7 +959,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     override fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel) {
         currentLat = getDistrictDataUiModel.latitude.toDouble()
         currentLong = getDistrictDataUiModel.longitude.toDouble()
-        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong))
     }
 
     override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
