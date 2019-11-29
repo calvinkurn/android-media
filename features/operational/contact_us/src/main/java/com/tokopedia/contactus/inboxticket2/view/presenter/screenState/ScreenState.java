@@ -6,7 +6,7 @@ public abstract class ScreenState {
 
 
     public int getFirstEmoji() {
-        return R.drawable.rating_inactive_1;
+        return R.drawable.ic_rating_inactive_1;
     }
 
     public String getMessageColor() {
@@ -15,22 +15,22 @@ public abstract class ScreenState {
 
 
     public int getSecondEmoji() {
-        return R.drawable.rating_inactive_2;
+        return R.drawable.ic_rating_inactive_2;
     }
 
 
     public int getThirdEmoji() {
-        return R.drawable.rating_inactive_3;
+        return R.drawable.ic_rating_inactive_3;
     }
 
 
     public int getFourthEmoji() {
-        return R.drawable.rating_inactive_4;
+        return R.drawable.ic_rating_inactive_4;
     }
 
 
     public int getFifthEmoji() {
-        return R.drawable.rating_inactive_5;
+        return R.drawable.ic_rating_inactive_5;
     }
 
 

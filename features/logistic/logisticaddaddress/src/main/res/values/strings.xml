@@ -65,7 +65,7 @@
     <string name="text_information_google_map">* Pastikan lokasi google map anda sesuai dengan alamat yang anda masukan</string>
     <string name="permission_location_neverask">Anda tidak memberikan izin akses untuk Lokasi. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_multi_neverask">Anda tidak memberikan izin akses. Anda bisa memberikan izin melalui Pengaturan.</string>
-    <string name="need_permission_location" >Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan?</string>
+    <string name="need_permission_location">Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan?</string>
     <string name="need_permission_multi">Aplikasi ini membutuhkan beberapa izin. Perbolehkan?</string>
     <string name="dialog_cancel">BATAL</string>
     <string name="permission_multi_denied">Anda tidak memberikan izin akses</string>
@@ -140,6 +140,27 @@
     <string name="disabled_location_notif_title">Lokasi Anda Belum Terisi</string>
     <string name="disabled_location_notfi_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
     <string name="something_wrong_happened">Terjadi Kesalahan</string>
+    <string name="title_dropoff_picker">Pilih lokasi Drop Off</string>
+    <string name="searchbar_dropoff_hint">Cari Tempat Drop Off…</string>
+    <string name="searchbar_autocomplete_hint">Masukkan kata kunci lokasi</string>
+    <string name="gps_empty_title">GPS tidak terdeteksi!</string>
+    <string name="gps_empty_desc">Cari otomatis dengan aktifkan GPS atau masukkan kata kunci lokasi</string>
+    <string name="gps_empty_action">Aktifkan GPS</string>
+    <string name="no_permission_title">Lokasi tidak diizinkan</string>
+    <string name="no_permission_desc">Cari otomatis dengan izinkan lokasi atau masukkan kata kunci lokasi</string>
+    <string name="no_permission_action">Izinkan Lokasi</string>
+    <string name="title_bottom_sheet_dropoff">Titik Ambil Terdekat</string>
+    <string name="button_cancel">Batal</string>
+    <string name="button_choose">Pilih</string>
+    <string name="store_logo">Logo Tempat Ambil</string>
+    <string name="button_title_change_keyword">Ubah Kata Kunci</string>
+    <string name="no_dropoff_found_desc">Tidak ada titik Drop Off dalam radius</string>
+    <string name="no_dropoff_found_title">Tidak menemukan titik Drop Off terdekat</string>
+    <string name="title_autocomplete_page">Cari Lokasi</string>
+    <string name="tv_noresult_title">Lokasi tidak ketemu</string>
+    <string name="tv_noresult_desc">Cek kata pencarian kamu atau cari lewat peta</string>
+    <string name="title_bottom_sheet_autocomplete">Lihat titik Ambil terdekat</string>
+    <string name="point_center">Point Center</string>
     <string name="no_pinpoint">Belum Pinpoint</string>
     <string name="havent_pinpoint">Sudah Pinpoint</string>
 

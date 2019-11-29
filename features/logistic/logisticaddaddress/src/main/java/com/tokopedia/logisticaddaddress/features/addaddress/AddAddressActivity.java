@@ -18,11 +18,11 @@ import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import java.util.List;
 
-import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
-import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_INSTANCE_TYPE;
-import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MANAGE_ADDRESS_EMPTY_DEFAULT_ADDRESS;
-import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS;
-import static com.tokopedia.logisticaddaddress.AddressConstants.KERO_TOKEN;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.EDIT_PARAM;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_INSTANCE_TYPE;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MANAGE_ADDRESS_EMPTY_DEFAULT_ADDRESS;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MANAGE_ADDRESS;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.KERO_TOKEN;
 
 /**
  * Created by nisie on 9/6/16.
