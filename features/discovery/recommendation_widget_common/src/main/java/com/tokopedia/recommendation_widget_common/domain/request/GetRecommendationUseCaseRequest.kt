@@ -74,8 +74,8 @@ internal class GetRecommendationUseCaseRequest {
     """.trimIndent()
 
         val singleQuery = """
-            query productRecommendationSingle(${'$'}userID: Int!, ${'$'}pageNumber: Int!, ${'$'}ref: String!, ${'$'}productIDs: String!) {
-                productRecommendationWidgetSingle(userID: ${'$'}userID, ref: ${'$'}ref, pageNumber: ${'$'}pageNumber, productIDs: ${'$'}productIDs){
+            query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}${'$'}pageName: String!, ${'$'}productIDs: String!) {
+                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs){
                     meta {
                         recommendation
                         size
