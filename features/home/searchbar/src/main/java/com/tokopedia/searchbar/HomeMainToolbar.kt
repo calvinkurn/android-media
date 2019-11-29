@@ -20,6 +20,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
+import java.net.URLEncoder
+import kotlin.text.Charsets.UTF_8
 
 
 class HomeMainToolbar : MainToolbar {
@@ -194,7 +196,7 @@ class HomeMainToolbar : MainToolbar {
             if(placeholder.isEmpty()){
                 RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
             }else{
-                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}&hint={hint}", HOME_SOURCE, keyword)
+                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}&hint={hint}", HOME_SOURCE, URLEncoder.encode(keyword, UTF_8.toString()))
             }
         }
     }
