@@ -34,6 +34,8 @@ public interface FeedPlus {
 
         void sendMoEngageOpenFeedEvent();
 
+        void sendFeedPlusScreenTracking();
+
         void stopTracePerformanceMon();
 
         void onAddToCartSuccess();
