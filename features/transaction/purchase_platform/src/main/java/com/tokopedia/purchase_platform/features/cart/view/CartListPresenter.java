@@ -1741,14 +1741,18 @@ public class CartListPresenter implements ICartListPresenter {
                 seamlessLoginUsecase.generateSeamlessUrl(url.replace(QUERY_APP_CLIENT_ID, adsId), new SeamlessLoginSubscriber() {
                     @Override
                     public void onUrlGenerated(@NotNull String url) {
-                        view.hideProgressLoading();
-                        view.goToLite(url);
+                        if (view != null) {
+                            view.hideProgressLoading();
+                            view.goToLite(url);
+                        }
                     }
 
                     @Override
                     public void onError(@NotNull String msg) {
-                        view.hideProgressLoading();
-                        view.showToastMessageRed(msg);
+                        if (view != null) {
+                            view.hideProgressLoading();
+                            view.showToastMessageRed(msg);
+                        }
                     }
                 });
             } else {
