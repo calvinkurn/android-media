@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalQuickBuyItem
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.layout_quick_buy_widget.view.*
 import kotlinx.android.synthetic.main.layout_quick_buy_widget_footer.view.*
@@ -38,7 +39,7 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
     }
 
     open fun renderImage(element: DigitalQuickBuyItem) {
-        ImageHandler.loadImageFit2(context, icon, element.imageUrl)
+        ImageHandler.LoadImage(icon, element.imageUrl)
     }
 
     open fun renderProduct(element: DigitalQuickBuyItem) {
@@ -46,7 +47,7 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
             product_name.visibility = View.GONE
         } else {
             product_name.visibility = View.VISIBLE
-            product_name.text = element.name
+            product_name.text = element.name.capitalize()
         }
     }
 
@@ -104,7 +105,7 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
     }
 
     open fun hasPrice(element: DigitalQuickBuyItem): Boolean {
-        return element.price.isNotEmpty()
+        return element.price.toIntOrZero() > 0
                 || element.pricePrefix.isNotEmpty()
                 || element.originalPrice.isNotEmpty()
     }
