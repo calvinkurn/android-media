@@ -277,11 +277,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
                     OrderFilter orderFilter = response.getData(OrderFilter.class);
                     if (orderFilter != null && orderFilter != null) {
-                        try {
-                            getView().setFilterRange(orderFilter.getGetBomOrderFilter().getDefaultDate(), orderFilter.getGetBomOrderFilter().getCustomDate());
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                        getView().setFilterRange(orderFilter.getGetBomOrderFilter().getDefaultDate(), orderFilter.getGetBomOrderFilter().getCustomDate());
                     }
                 } else {
                     getView().unregisterScrollListener();

@@ -71,7 +71,7 @@ public class OrderListContract {
 
         void showSuccessMessageWithAction(String message);
 
-        void setFilterRange(DefaultDate defaultDate, CustomDate customDate) throws ParseException;
+        void setFilterRange(DefaultDate defaultDate, CustomDate customDate);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

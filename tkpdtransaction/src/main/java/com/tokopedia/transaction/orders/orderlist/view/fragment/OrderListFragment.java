@@ -142,6 +142,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private RadioButtonUnify radio1,radio2;
     private DatePickerUnify datePickerUnify;
     private RefreshHandler refreshHandler;
+    private TextView reset;
     private boolean isLoading = false;
     private int page_num = 1;
     private Bundle savedState;
@@ -624,15 +625,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void setFilterRange(DefaultDate defaultDate, CustomDate customDate) throws ParseException {
-        try {
-            defStartDate = format.format(format1.parse(defaultDate.getStartRangeDate()));
-            defEndDate = format.format(format1.parse(defaultDate.getEndRangeDate()));
-            customEndDate = format.format(format1.parse(customDate.getEndRangeDate()));
-            customStartDate = format.format(format1.parse(customDate.getStartRangeDate()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    public void setFilterRange(DefaultDate defaultDate, CustomDate customDate) {
+
+        defStartDate = setFormat(format, format1, defaultDate.getStartRangeDate());
+        defEndDate = setFormat(format, format1, defaultDate.getEndRangeDate());
+        customEndDate = setFormat(format, format1, customDate.getEndRangeDate());
+        customStartDate = setFormat(format, format1, customDate.getStartRangeDate());
+
     }
 
     @Override
@@ -711,13 +710,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 state = 0;
             } else {
                 state = 1;
-                try {
-                    startDate = format.format(format2.parse(mulaiButton.getText().toString()));
-                    endDate = format.format(format2.parse(sampaiButton.getText().toString()));
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                startDate = setFormat(format, format2, mulaiButton.getText().toString());
+                endDate = setFormat(format, format2, sampaiButton.getText().toString());
             }
             selectedDateMap.clear();
             selectedDateMap.put(SAMPAI, endDate);
@@ -741,7 +735,14 @@ public class OrderListFragment extends BaseDaggerFragment implements
             radio2 = categoryView.findViewById(R.id.radio2);
             datePickerlayout = categoryView.findViewById(R.id.date_picker);
             radioGroup = categoryView.findViewById(R.id.radio_grp);
+            reset = categoryView.findViewById(R.id.reset);
             terapkan.setOnClickListener(this);
+            reset.setOnClickListener(view -> {
+                radio1.setChecked(true);
+                datePickerlayout.setVisibility(View.GONE);
+                sampaiButton.setText(setFormat(format2, format, customEndDate));
+                mulaiButton.setText(setFormat(format2, format, customStartDate));
+            });
             if (state == 1) {
                 radio2.setChecked(true);
                 datePickerlayout.setVisibility(View.VISIBLE);
@@ -752,16 +753,12 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 radio1.setChecked(true);
 
             }
-            try {
-                sampaiButton.setText(format2.format(format.parse(selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate)));
-                mulaiButton.setText(format2.format(format.parse(selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate)));
+            sampaiButton.setText(setFormat(format2, format, selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate));
+            mulaiButton.setText(setFormat(format2, format, selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate));
 
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
 
-            crossIcon.setOnClickListener((View view)->{
-                    changeDateBottomSheetDialog.dismiss();
+            crossIcon.setOnClickListener((View view) -> {
+                changeDateBottomSheetDialog.dismiss();
             });
             changeDateBottomSheetDialog.setCustomContentView(categoryView, "", false);
             changeDateBottomSheetDialog.show();
@@ -771,7 +768,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
                     datePickerlayout.setVisibility(View.VISIBLE);
 
                 } else {
-                    datePickerlayout.setVisibility(View.INVISIBLE);
+                    datePickerlayout.setVisibility(View.GONE);
                 }
             });
             mulaiButton.setOnClickListener((View view)-> {
@@ -781,6 +778,17 @@ public class OrderListFragment extends BaseDaggerFragment implements
                     showDatePicker(SAMPAI);
             });
         }
+    }
+
+    private String setFormat(SimpleDateFormat target, SimpleDateFormat current, String value) {
+        String result = null;
+        try {
+            result = target.format(current.parse(value));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
+
     }
 
     private String[] split(String date) {
