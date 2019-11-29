@@ -39,6 +39,7 @@ import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
 import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +56,14 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     private static final long DURATION_ANIMATOR = 1000;
     private static final String FAVORITE_TRACE = "mp_favourite_shop";
+    private static final String FAVORITE_SHOP_SCREEN_NAME = "/favorite";
+    public static final String SCREEN_PARAM_IS_LOGGED_IN_STATUS = "isLoggedInStatus";
+    public static final String SCREEN_PARAM_IS_FAVOURITE_EMPTY = "isFavouriteEmpty";
+    private Boolean isUserEventTrackerDoneTrack = false;
+
+    //value is logged in is always true, because favorite shop can only be open from
+    //account fragment, which is only logged in user that can access that tab
+    public static final String VALUE_IS_LOGGED_IN_FAVORITE_SHOP = "true";
 
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
@@ -233,6 +242,7 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     public void showInitialDataPage(List<Visitable> dataFavorite) {
+        sendFavoriteShopScreenTracker(dataFavorite.isEmpty());
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
         favoriteAdapter.setElement(dataFavorite);
@@ -393,5 +403,19 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     private boolean isAdapterNotEmpty() {
         return favoriteAdapter.getItemCount() > 0;
+    }
+
+    private void sendFavoriteShopScreenTracker(boolean isFavouriteEmpty) {
+        if (!isUserEventTrackerDoneTrack) {
+            HashMap<String, String> customDimensions = new HashMap<>();
+            customDimensions.put(SCREEN_PARAM_IS_LOGGED_IN_STATUS, VALUE_IS_LOGGED_IN_FAVORITE_SHOP);
+            customDimensions.put(SCREEN_PARAM_IS_FAVOURITE_EMPTY, String.valueOf(isFavouriteEmpty));
+
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(
+                    FAVORITE_SHOP_SCREEN_NAME,
+                    customDimensions
+            );
+            isUserEventTrackerDoneTrack = true;
+        }
     }
 }

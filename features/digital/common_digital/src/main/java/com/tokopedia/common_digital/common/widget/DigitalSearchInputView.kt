@@ -7,8 +7,8 @@ import com.tokopedia.design.text.SearchInputView
 import org.jetbrains.annotations.NotNull
 
 class DigitalSearchInputView @JvmOverloads constructor(@NotNull context: Context,
-                                                               attrs: AttributeSet? = null,
-                                                               defStyleAttr: Int = 0)
+                                                       attrs: AttributeSet? = null,
+                                                       defStyleAttr: Int = 0)
     : SearchInputView(context, attrs, defStyleAttr) {
 
     override fun getLayout(): Int {
