@@ -81,7 +81,6 @@ import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
 import com.tokopedia.feedplus.view.adapter.EntryPointAdapter
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
-import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
@@ -95,10 +94,11 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
+import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
+import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
 import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
@@ -164,6 +164,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
     private var afterRefresh: Boolean = false
+
+    private var isUserEventTrackerDoneTrack = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -304,7 +306,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun initVar() {
-        val typeFactory = FeedPlusTypeFactoryImpl(this, userSession)
+        val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this)
         adapter = FeedPlusAdapter(typeFactory)
         adapter.setOnLoadListener { totalCount ->
             val size = adapter.getlist().size
@@ -740,8 +742,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 showAfterPostToaster()
                 afterPost = false
             }
-
-            analytics.trackScreen(screenName)
         }
     }
 
@@ -1128,6 +1128,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 MoEngage.IS_FEED_EMPTY, isEmptyFeed
         )
         TrackApp.getInstance().moEngage.sendTrackEvent(value, EventMoEngage.OPEN_FEED)
+    }
+
+    override fun sendFeedPlusScreenTracking() {
+        if (!isUserEventTrackerDoneTrack) {
+            val isEmptyFeed = !hasFeed()
+
+            feedAnalytics.eventOpenFeedPlusFragment(
+                    userSession.isLoggedIn,
+                    isEmptyFeed
+            )
+
+            isUserEventTrackerDoneTrack = true
+        }
     }
 
     override fun onStop() {
@@ -1548,11 +1561,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 .show()
     }
 
-    override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
+    override fun onInterestPickItemClicked(item: InterestPickDataViewModel) {
         feedAnalytics.eventClickFeedInterestPick(item.name)
     }
 
-    override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
+    override fun onLihatSemuaItemClicked(selectedItemList: List<InterestPickDataViewModel>) {
         feedAnalytics.eventClickFeedInterestPickSeeAll()
         activity?.let {
             val bundle = Bundle()
@@ -1561,7 +1574,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
+    override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<InterestPickDataViewModel>) {
         view?.showLoadingTransparent()
         feedAnalytics.eventClickFeedCheckAccount(selectedItemList.size.toString())
         feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK, OPEN_INTERESTPICK_RECOM_PROFILE)
@@ -1587,7 +1600,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         } else {
             finishLoading()
             clearData()
-            val feedOnboardingData: MutableList<OnboardingDataViewModel> = ArrayList()
+            val feedOnboardingData: MutableList<InterestPickDataViewModel> = mutableListOf()
             feedOnboardingData.addAll(data.dataList)
             data.dataList = feedOnboardingData
             adapter.addItem(data)

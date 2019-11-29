@@ -19,6 +19,7 @@ ext {
             feedComponent                   : ":features:content:feed_component",
             explore                         : ":features:content:explore",
             interestPick                    : ":features:content:interest_pick",
+            interestPickCommon              : ":features:content:interest_pick_common",
             kol                             : ":features:content:kol",
             kolCommon                       : ":features:content:kol_common",
             affiliate                       : ":features:content:affiliate",
@@ -138,6 +139,7 @@ ext {
 
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",
+            seamlesslogin                   : ":features:user:seamless_login",
             tokopoints                      : ":features:promo:tokopoints",
 //            tokopoints             : ":features:promo:tokopoints_no_op",
             tokopointsNotification          : ":features:promo:tokopoints_notification",
