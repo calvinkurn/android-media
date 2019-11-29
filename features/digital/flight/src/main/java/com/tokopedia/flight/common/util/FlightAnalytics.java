@@ -223,7 +223,7 @@ public class FlightAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(SEARCH_RESULT_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH_PRODUCT_NOT_FOUND,
-                String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s - %s",
+                String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s%s",
                         Label.FLIGHT_SMALL,
                         (searchPassDataViewModel.getDepartureAirport().getAirportCode() == null || searchPassDataViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
                                 searchPassDataViewModel.getDepartureAirport().getCityCode() : searchPassDataViewModel.getDepartureAirport().getAirportCode(),
