@@ -487,8 +487,10 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private fun onErrorGetReviewForm(throwable: Throwable) {
         hideShimmering()
         if (throwable is MessageErrorException) {
-            showToasterError(getString(R.string.review_error_not_found))
-            finishIfRoot()
+            activity?.let {
+                Toast.makeText(it, R.string.review_error_not_found, Toast.LENGTH_LONG).show()
+                finishIfRoot()
+            }
         } else {
             NetworkErrorHelper.showEmptyState(context, review_root) {
                 getReviewData()
