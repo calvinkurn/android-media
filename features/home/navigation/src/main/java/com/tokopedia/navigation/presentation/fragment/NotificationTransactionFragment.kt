@@ -4,11 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -25,6 +22,7 @@ import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
 import com.tokopedia.navigation.data.consts.buyerMenu
 import com.tokopedia.navigation.data.consts.sellerMenu
 import com.tokopedia.navigation.data.mapper.NotificationMapper
+import com.tokopedia.navigation.domain.model.EmptyState
 import com.tokopedia.navigation.domain.model.TransactionItemNotification
 import com.tokopedia.navigation.domain.model.TransactionNotification
 import com.tokopedia.navigation.domain.pojo.ProductData
@@ -84,7 +82,16 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
             _adapter.addElement(it)
         })
         viewModel.notification.observe(this, Observer {
-            onSuccessNotificationData(it)
+            if (it.list.isEmpty()) {
+                updateScrollListenerState(false)
+                val emptyString = EmptyState(
+                        R.drawable.ic_empty_notification_state,
+                        getString(R.string.notification_empty_message))
+                _adapter.addElement(emptyString)
+            }  else {
+                _adapter.removeEmptyState()
+                onSuccessNotificationData(it)
+            }
         })
         viewModel.lastNotificationId.observe(this, Observer {
             viewModel.getTransactionNotification(it)
@@ -126,7 +133,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun loadData(page: Int) {
-        renderList(buyerMenu(), true)
+        renderList(buyerMenu(), false)
         viewModel.getInfoStatusNotification()
     }
 
@@ -142,12 +149,12 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     private fun onSuccessNotificationData(notification: TransactionNotification) {
         hideLoading()
 
-        //pagination
         val pagination = notification.paging.hasNext
         if (pagination && !notification.list.isEmpty()) {
             cursor = (notification.list.last().notificationId)
         }
         _adapter.addElement(notification.list)
+        updateScrollListenerState(pagination)
 
         if (_adapter.dataSize < minimumScrollableNumOfItems
                 && endlessRecyclerViewScrollListener != null && pagination) {
