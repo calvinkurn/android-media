@@ -1,7 +1,7 @@
 package com.tokopedia.salam.umrah.checkout.data
 
 class UmrahCheckoutResultParams (
-       val metaData: String = "",
-       val businessType: Int = 3,
-       val cartInfo: Array<String> = arrayOf()
+       val meta_data: String = "",
+       val business_type: Int = 3,
+       val cart_info: Array<String> = arrayOf()
 )

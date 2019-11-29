@@ -241,7 +241,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         if(validateData()){
             trackingUmrahUtil.getCheckoutTracker(DEFAULT_OPTION_CHECKOUT_STEP, productModel,pilgrimCount)
             val checkoutResultParams = UmrahCheckoutResultParams(
-                    metaData = mapToCheckoutMetaData()
+                    meta_data = mapToCheckoutMetaData()
             )
 
             umrahCheckoutViewModel.executeCheckout(GraphqlHelper.loadRawString(resources,
@@ -275,12 +275,11 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                 pilgrims = listPilgrims
         )
         var mappedCheckoutMetaData = UmrahCheckoutMetaDataParams(
-                userId = userData.id,
-                productId = productModel.id,
+                user_id = userData.id,
+                product_id = productModel.id,
                 price = price,
-                productVariantId = variantId,
+                product_variant_id = variantId,
                 contact = contact
-
         )
 
         return convertToJsonMetaData(mappedCheckoutMetaData)
