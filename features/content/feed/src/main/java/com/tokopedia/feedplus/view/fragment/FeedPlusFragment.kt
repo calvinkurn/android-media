@@ -899,12 +899,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onErrorFollowKol(errorMessage: String, id: Int, status: Int, rowNumber: Int) {
-        Toaster.make(view!!, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
-            if (status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
-                presenter.unfollowKol(id, rowNumber)
-            else
-                presenter.followKol(id, rowNumber )
-        })
+        view?.let {
+            Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+                if (status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
+                    presenter.unfollowKol(id, rowNumber)
+                else
+                    presenter.followKol(id, rowNumber)
+            })
+        }
     }
 
     override fun onSuccessFollowUnfollowKol(rowNumber: Int) {
@@ -916,7 +918,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onErrorLikeDislikeKolPost(errorMessage: String) {
-        Toaster.make(view!!, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        view?.let {
+            Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
 
     }
 
