@@ -51,6 +51,7 @@ import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.RequestCancelActivity;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
+import com.tokopedia.transaction.orders.orderlist.common.util.Utils;
 import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
@@ -78,7 +79,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -627,10 +627,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void setFilterRange(DefaultDate defaultDate, CustomDate customDate) {
 
-        defStartDate = setFormat(format, format1, defaultDate.getStartRangeDate());
-        defEndDate = setFormat(format, format1, defaultDate.getEndRangeDate());
-        customEndDate = setFormat(format, format1, customDate.getEndRangeDate());
-        customStartDate = setFormat(format, format1, customDate.getStartRangeDate());
+        defStartDate = Utils.INSTANCE.setFormat(format, format1, defaultDate.getStartRangeDate());
+        defEndDate = Utils.INSTANCE.setFormat(format, format1, defaultDate.getEndRangeDate());
+        customEndDate = Utils.INSTANCE.setFormat(format, format1, customDate.getEndRangeDate());
+        customStartDate = Utils.INSTANCE.setFormat(format, format1, customDate.getStartRangeDate());
 
     }
 
@@ -710,8 +710,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 state = 0;
             } else {
                 state = 1;
-                startDate = setFormat(format, format2, mulaiButton.getText().toString());
-                endDate = setFormat(format, format2, sampaiButton.getText().toString());
+                startDate = Utils.INSTANCE.setFormat(format, format2, mulaiButton.getText().toString());
+                endDate = Utils.INSTANCE.setFormat(format, format2, sampaiButton.getText().toString());
             }
             selectedDateMap.clear();
             selectedDateMap.put(SAMPAI, endDate);
@@ -740,8 +740,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
             reset.setOnClickListener(view -> {
                 radio1.setChecked(true);
                 datePickerlayout.setVisibility(View.GONE);
-                sampaiButton.setText(setFormat(format2, format, customEndDate));
-                mulaiButton.setText(setFormat(format2, format, customStartDate));
+                sampaiButton.setText(Utils.INSTANCE.setFormat(format2, format, customEndDate));
+                mulaiButton.setText(Utils.INSTANCE.setFormat(format2, format, customStartDate));
             });
             if (state == 1) {
                 radio2.setChecked(true);
@@ -753,8 +753,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 radio1.setChecked(true);
 
             }
-            sampaiButton.setText(setFormat(format2, format, selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate));
-            mulaiButton.setText(setFormat(format2, format, selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate));
+            sampaiButton.setText(Utils.INSTANCE.setFormat(format2, format, selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate));
+            mulaiButton.setText(Utils.INSTANCE.setFormat(format2, format, selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate));
 
 
             crossIcon.setOnClickListener((View view) -> {
@@ -780,67 +780,12 @@ public class OrderListFragment extends BaseDaggerFragment implements
         }
     }
 
-    private String setFormat(SimpleDateFormat target, SimpleDateFormat current, String value) {
-        String result = null;
-        try {
-            result = target.format(current.parse(value));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return result;
-
-    }
-
     private String[] split(String date) {
         String[] dateFormat = new String[0];
         if (date != null) {
             dateFormat = date.split("/", 5);
         }
         return dateFormat;
-    }
-
-    private String convertMonth(int num) {
-
-        String monthString = "";
-        switch (num) {
-            case (1):
-                monthString = "Jan";
-                break;
-            case (2):
-                monthString = "Feb";
-                break;
-            case (3):
-                monthString = "Mar";
-                break;
-            case (4):
-                monthString = "Apr";
-                break;
-            case (5):
-                monthString = "Mei";
-                break;
-            case (6):
-                monthString = "Jun";
-                break;
-            case (7):
-                monthString = "Jul";
-                break;
-            case (8):
-                monthString = "Ags";
-                break;
-            case (9):
-                monthString = "Sep";
-                break;
-            case (10):
-                monthString = "Okt";
-                break;
-            case (11):
-                monthString = "Nov";
-                break;
-            case (12):
-                monthString = "Des";
-                break;
-        }
-        return monthString;
     }
 
 
@@ -867,9 +812,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
             Integer[] date = datePickerUnify.getDate();
             date[1] = date[1] + 1;
             if (title.equalsIgnoreCase(SAMPAI)) {
-                sampaiButton.setText(date[0] + " " + convertMonth(date[1]) + " " + date[2]);
+                sampaiButton.setText(date[0] + " " + Utils.INSTANCE.convertMonth(date[1]) + " " + date[2]);
             } else {
-                mulaiButton.setText(date[0] + " " + convertMonth(date[1]) + " " + date[2]);
+                mulaiButton.setText(date[0] + " " + Utils.INSTANCE.convertMonth(date[1]) + " " + date[2]);
             }
             datePickerUnify.dismiss();
         });

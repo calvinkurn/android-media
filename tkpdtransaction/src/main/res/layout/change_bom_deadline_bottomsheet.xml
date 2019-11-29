@@ -28,7 +28,7 @@
             android:layout_alignLeft="@id/cross_icon_bottomsheet"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_32"
-            android:text="Filter Tanggal"
+            android:text="@string/tkpdtransaction_filter_title"
             android:textColor="@color/clr_f531353b"
             android:textSize="@dimen/sp_18"
             android:textStyle="bold" />
@@ -65,7 +65,7 @@
             android:layout_marginRight="@dimen/dp_8"
             android:gravity="start"
             android:layoutDirection="rtl"
-            android:text="90 Hari Terakhir"
+            android:text="@string/tkpdtransaction_filter_90_days"
             android:textAlignment="textStart"
             android:textColor="@color/clr_f531353b"
             android:textSize="@dimen/sp_14"
@@ -87,7 +87,7 @@
             android:layout_marginRight="@dimen/dp_8"
             android:gravity="start"
             android:layoutDirection="rtl"
-            android:text="Pilih Tanggal Sendiri"
+            android:text="@string/tkpdtransaction_filter_custom_date"
             android:textAlignment="textStart"
             android:textColor="@color/clr_f531353b"
             android:textSize="@dimen/sp_14"
@@ -117,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:hint="Mulai Dari"
+                android:hint="@string/tkpdtransaction_filter_mulai"
                 android:textColorHint="@color/Neutral_N700_68">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_24"
                 android:layout_marginLeft="@dimen/dp_24"
-                android:hint="Sampai"
+                android:hint="@string/tkpdtransaction_filter_sampai"
                 android:textColorHint="@color/Neutral_N700_68">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -180,6 +180,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_24"
-        android:text="Terapkan" />
+        android:text="@string/tkpdtransaction_filter_terapkan" />
 
 </LinearLayout>
