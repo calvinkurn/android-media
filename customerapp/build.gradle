@@ -4,6 +4,14 @@ apply plugin: 'io.fabric'
 if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
+
+if (hasProperty('buildScan')) {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
+}
+
 apply plugin: 'io.hansel.preprocessor'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
@@ -231,7 +239,7 @@ android {
         resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
         resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
-        resolutionStrategy.force 'com.facebook.soloader:soloader:0.6.0'
+        resolutionStrategy.force 'com.facebook.soloader:soloader:0.8.0'
     }
 
     // Specifies 4 flavor dimensions.
@@ -265,7 +273,6 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.gamification)
-    implementation project(rootProject.ext.features.affiliate)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.feed)
@@ -286,8 +293,6 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flightOrderList)
-    implementation project(rootProject.ext.features.hotel)
-    implementation project(rootProject.ext.features.travelHomepage)
     implementation project(rootProject.ext.features.umrah)
     implementation project(rootProject.ext.features.imagePreviewSlider)
     implementation project(rootProject.ext.features.reputation)
@@ -304,9 +309,8 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.digitalproduct)
-    implementation project(rootProject.ext.features.digitalTopupBills)
     implementation project(rootProject.ext.features.digitalEmoney)
-    implementation project(rootProject.ext.features.voucherGame)
+    implementation project(rootProject.ext.features.commonTopupBills)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
@@ -397,6 +401,7 @@ dependencies {
     implementation project(rootProject.ext.features.common_promo)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.bannerDynamic)
     implementation project(rootProject.ext.features.kyc)
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.logger)
@@ -522,7 +527,7 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
-    implementation 'com.facebook.soloader:soloader:0.6.0'
+    implementation 'com.facebook.soloader:soloader:0.8.0'
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
