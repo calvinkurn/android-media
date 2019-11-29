@@ -76,6 +76,8 @@
 
     <string name="in_full">Selengkapnya</string>
 
+    <string name="notification_empty_message">Belum ada notifikasi</string>
+
     <string name="coachicon_title_filter">Cari notifikasi lebih cepat dengan filter</string>
     <string name="coachicon_description_filter">Klik salah satu filter buat menampilkan notifikasi sesuai kebutuhanmu</string>
     <string name="coachicon_title_tabs">Cek notifikasi terbaru di sini</string>
