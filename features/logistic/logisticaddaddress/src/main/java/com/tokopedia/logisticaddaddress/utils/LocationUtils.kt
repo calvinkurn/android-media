@@ -9,11 +9,11 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
 import rx.Emitter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
-import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
 
 const val REVERSE_GEOCODE_DELAY = 1000L
 
