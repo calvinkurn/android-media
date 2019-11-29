@@ -19,6 +19,9 @@ class LongClickMenu : BottomSheetUnify() {
 
     init {
         setFullPage(false)
+        setCloseClickListener {
+            dismiss()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -88,6 +88,7 @@ class ChatItemListViewHolder(
     }
 
     private fun showLongClickMenu(element: ItemChatListPojo) {
+        if (menu.isAdded) return
         menu.apply {
             setItemMenuList(createChatLongClickMenu(element))
             setOnItemMenuClickListener { itemMenus, _ ->

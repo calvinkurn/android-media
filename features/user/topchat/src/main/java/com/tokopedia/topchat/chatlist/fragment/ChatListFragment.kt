@@ -357,6 +357,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     private fun showFilterDialog() {
         activity?.let {
+            if (filterMenu.isAdded) return@let
             val itemMenus = ArrayList<Menus.ItemMenus>()
             val arrayFilterString = arrayListOf(
                     it.getString(R.string.filter_chat_all),
