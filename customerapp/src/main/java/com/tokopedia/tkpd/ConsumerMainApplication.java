@@ -212,7 +212,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
             // Create the NotificationChannel
             mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_BTS_ONE,
-                    NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+                    NOTIFICATION_CHANNEL_NAME_BTS_ONE, NotificationManager.IMPORTANCE_DEFAULT);
             mChannel.setDescription(NOTIFICATION_CHANNEL_DESC_BTS_ONE);
             att = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
@@ -223,7 +223,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
             // Create the NotificationChannel
             mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_BTS_TWO,
-                    NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+                    NOTIFICATION_CHANNEL_NAME_BTS_TWO, NotificationManager.IMPORTANCE_DEFAULT);
             mChannel.setDescription(NOTIFICATION_CHANNEL_DESC_BTS_TWO);
             att = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
