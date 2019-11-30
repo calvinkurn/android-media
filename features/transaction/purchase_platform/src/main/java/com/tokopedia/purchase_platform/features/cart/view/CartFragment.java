@@ -170,9 +170,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private RelativeLayout layoutUsedPromoEmptyCart;
     private RelativeLayout rlContent;
     private CheckBox cbSelectAll;
+    private LinearLayout llHeader;
     private Typography btnRemove;
     private CardView cardHeader;
-    private CardView cardFooter;
+    private LinearLayout bottomLayout;
+    private View bottomLayoutShadow;
     private LinearLayout llNetworkErrorView;
     private LinearLayout llCartContainer;
 
@@ -387,8 +389,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         rlContent = view.findViewById(R.id.rl_content);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
         cardHeader = view.findViewById(R.id.card_header);
-        cardFooter = view.findViewById(R.id.card_footer);
+        bottomLayout = view.findViewById(R.id.bottom_layout);
+        bottomLayoutShadow = view.findViewById(R.id.bottom_layout_shadow);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
+        llHeader = view.findViewById(R.id.ll_header);
         btnRemove = view.findViewById(R.id.btn_delete_all_cart);
         llCartContainer = view.findViewById(R.id.ll_cart_container);
 
@@ -545,6 +549,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     protected void setViewListener() {
         btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(""));
         cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
+        llHeader.setOnClickListener(getOnClickCheckboxSelectAll());
         btnRemove.setOnClickListener(v -> {
             if (btnRemove.getVisibility() == View.VISIBLE) {
                 onToolbarRemoveAllCart();
@@ -1071,22 +1076,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             linearSmoothScroller.setTargetPosition(cartAdapter.getDisabledItemHeaderPosition());
             cartRecyclerView.getLayoutManager().startSmoothScroll(linearSmoothScroller);
         }
-    }
-
-    @Override
-    public void onTickerDescriptionUrlClicked(@NotNull String url) {
-        String finalUrl = url;
-        if (!url.startsWith("https://")) {
-            if (url.startsWith("http://")) {
-                finalUrl = url.replace("http", "https");
-            } else {
-                finalUrl = "https://" + url;
-            }
-        }
-        Intent view = new Intent();
-        view.setAction(Intent.ACTION_VIEW);
-        view.setData(Uri.parse(finalUrl));
-        startActivity(view);
     }
 
     @Override
@@ -1626,27 +1615,31 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void showMainContainerLoadingInitData() {
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
-        cardFooter.setVisibility(View.GONE);
+        bottomLayout.setVisibility(View.GONE);
+        bottomLayoutShadow.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
     }
 
     public void showMainContainer() {
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
-        cardFooter.setVisibility(View.VISIBLE);
+        bottomLayout.setVisibility(View.VISIBLE);
+        bottomLayoutShadow.setVisibility(View.VISIBLE);
         cardHeader.setVisibility(View.VISIBLE);
     }
 
     public void showErrorContainer() {
         rlContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
-        cardFooter.setVisibility(View.GONE);
+        bottomLayout.setVisibility(View.GONE);
+        bottomLayoutShadow.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
     }
 
     public void showEmptyCartContainer() {
         llNetworkErrorView.setVisibility(View.GONE);
-        cardFooter.setVisibility(View.GONE);
+        bottomLayout.setVisibility(View.GONE);
+        bottomLayoutShadow.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
         onContentAvailabilityChanged(false);
     }
@@ -2765,6 +2758,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         DialogUnify dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size());
 
+        for (CartItemData cartItemData : allDisabledCartItemDataList) {
+            if (cartItemData.getNicotineLiteMessageData() != null) {
+                cartPageAnalytics.eventClickHapusButtonOnProductContainTobacco();
+                break;
+            }
+        }
         sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
                 allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
         ));
@@ -2790,7 +2789,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onDeleteDisabledItem(CartItemData cartItemData) {
-        sendAnalyticsOnClickRemoveIconCartItem();
+        if (cartItemData.getNicotineLiteMessageData() != null) {
+            cartPageAnalytics.eventClickTrashIconButtonOnProductContainTobacco();
+        } else {
+            sendAnalyticsOnClickRemoveIconCartItem();
+        }
         List<CartItemData> cartItemDatas = Collections.singletonList(cartItemData);
         List<CartItemData> allCartItemDataList = cartAdapter.getAllDisabledCartItemData();
 
@@ -2811,5 +2814,21 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             return Unit.INSTANCE;
         });
         dialog.show();
+    }
+
+    @Override
+    public void onTobaccoLiteUrlClicked(@NotNull String url) {
+        cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco();
+        dPresenter.redirectToLite(url);
+    }
+
+    @Override
+    public void onShowTickerTobacco() {
+        cartPageAnalytics.eventViewTickerProductContainTobacco();
+    }
+
+    @Override
+    public void goToLite(String url) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 }

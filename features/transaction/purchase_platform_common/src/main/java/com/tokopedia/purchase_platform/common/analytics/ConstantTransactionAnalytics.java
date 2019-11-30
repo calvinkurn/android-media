@@ -21,6 +21,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BUY = "clickBuy";
         String CLICK_CHECKOUT = "clickCheckout";
         String VIEW_ATC = "viewATC";
+        String VIEW_ATC_IRIS = "viewATCIris";
         String REMOVE_FROM_CART = "removeFromCart";
         String CHECKOUT = "checkout";
         String ADD_TO_CART = "addToCart";
@@ -270,6 +271,9 @@ public interface ConstantTransactionAnalytics {
         String CLICK_GANTI_NOMOR = "click ganti nomor";
         String CLICK_BUTTON_PILIH_DURASI = "click button pilih durasi";
         String CLICK_KURIR_TRADE_IN = "click kurir trade in";
+        String CLICK_JEMPUT_TAB = "click - jemput tab";
+        String CLICK_DROP_OFF_TAB = "click - drop off tab";
+        String CLICK_UBAH_TITIK_DROP_OFF_BUTTON = "click - ubah titik drop off button";
 
         //PROMO STACKING
         String CLICK_PILIH_MERCHANT_VOUCHER = "click pilih merchant voucher";
@@ -292,6 +296,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_PROMO_LOGISTIC_TICKER = "view promo logistic ticker";
         String CLICK_X_ON_PROMO_STACKING_LOGISTIC = "click x on promo stacking logistic";
         String VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT = "view information and warning ticker in checkout";
+        String VIEW_POP_UP_PRICE_INCREASE = "view pop up price increase";
 
         //Promo not eligible bottomsheet
         String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";
@@ -327,6 +332,12 @@ public interface ConstantTransactionAnalytics {
         String REMOVE_WISHLIST_LAST_SEEN = "remove wishlist - last seen - login";
         String ADD_WISHLIST_WISHLIST = "add wishlist - wishlist - login";
         String REMOVE_WISHLIST_WISHLIST = "remove wishlist - wishlist - login";
+
+        //Tobacco
+        String CLICK_BROWSE_BUTTON_ON_TICKER_PRODUCT_CONTAIN_TOBACCO = "click browse button on ticker product contain tobacco";
+        String VIEW_TICKER_PRODUCT_CONTAIN_TOBACCO = "view ticker product contain tobacco";
+        String CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO = "click hapus button on product contain tobacco";
+        String CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO = "click trash icon button on product contain tobacco";
     }
 
     interface EventLabel {
