@@ -346,7 +346,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     if (selected.key.equals(meal.key, true)) {
                         val selectedMeals = arrayListOf<String>()
                         for (amenity in selected.amenities) {
-                            selectedMeals.add(amenity.title)
+                            selectedMeals.add("${amenity.title} - ${amenity.price}")
                         }
                         simpleModel.description = TextUtils.join(",", selectedMeals)
                         break

@@ -113,8 +113,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     lateinit var loadingDialog: DialogUnify
     lateinit var loadingText: Typography
-    var needRefreshCart = false
-    var needResetFirstPassenger = true
+
+    private var needRefreshCart = false
+    private var needToDoChangesOnFirstPassenger = true
+    private var passengerAsTraveller = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -243,13 +245,17 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         layout_see_detail_price.setOnClickListener { if (rv_flight_price_detail.isVisible) hidePriceDetail() else showPriceDetail() }
         switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
-            if (on) {
-                val firstPassenger = bookingViewModel.onTravellerAsPassenger(widget_traveller_info.getContactName())
-                navigateToPassengerInfoDetail(firstPassenger, bookingViewModel.getDepartureDate(), getRequestId(), firstPassenger.passengerFirstName)
-            } else if (needResetFirstPassenger) {
-                bookingViewModel.resetFirstPassenger()
+            passengerAsTraveller = !on
+            if (needToDoChangesOnFirstPassenger) {
+                if (on) {
+                    val firstPassenger = bookingViewModel.onTravellerAsPassenger(widget_traveller_info.getContactName())
+                    navigateToPassengerInfoDetail(firstPassenger, bookingViewModel.getDepartureDate(), getRequestId(), firstPassenger.passengerFirstName)
+                } else {
+                    bookingViewModel.resetFirstPassenger()
+                }
             }
-            needResetFirstPassenger = true
+            needToDoChangesOnFirstPassenger = true
+
         }
         button_submit.setOnClickListener { verifyCart() }
     }
@@ -464,7 +470,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             val firstPassenger = passengers.first()
             val fullName = "${firstPassenger.passengerFirstName} ${firstPassenger.passengerLastName}"
             if (!fullName.equals(widget_traveller_info.getContactName(), true)) {
-                needResetFirstPassenger = false
+                needToDoChangesOnFirstPassenger = false
                 switch_traveller_as_passenger.isChecked = false
             }
         }
@@ -885,6 +891,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
                             val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerViewModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
                             bookingViewModel.onPassengerResultReceived(passengerViewModel)
                         }
+                    }
+                    Activity.RESULT_CANCELED -> {
+                        needToDoChangesOnFirstPassenger = false
+                        switch_traveller_as_passenger.isChecked = passengerAsTraveller
                     }
                 }
             }
