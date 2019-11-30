@@ -569,7 +569,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         flight_promo_ticker_view.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
             override fun onResetPromoDiscount() {
                 isCouponChanged = true
-                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = ""))
+                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
                 bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
             }
 
