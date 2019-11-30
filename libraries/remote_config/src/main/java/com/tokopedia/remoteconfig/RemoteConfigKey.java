@@ -154,6 +154,7 @@ public class RemoteConfigKey {
     public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
 
     public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
+    public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
 
     public static final String APP_HOTLIST_NAV_ENABLE = "app_hotlist_nav_enable";
 
@@ -176,4 +177,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_CUSTOMER_USER_AGENT_IN_WEBVIEW = "enable_customer_user_agent_in_webview";
 
     public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
+    public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
+
+    public static final String AKAMAI_CART_ENABLE = "android_akamai_cart_enable";
 }

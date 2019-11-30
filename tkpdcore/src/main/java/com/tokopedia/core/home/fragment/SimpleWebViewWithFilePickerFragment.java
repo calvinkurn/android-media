@@ -204,8 +204,11 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
                             .replace("?is_chat_bot=true", "");
                     RouteManager.route(getActivity(), ApplinkConst.CHATBOT,messageId);
                     return true;
-                } else if (getActivity().getApplicationContext() instanceof TkpdInboxRouter && RouteManager.isSupportApplink(getContext(), urlString)) {
-                    RouteManager.route(getContext(), urlString);
+                } else if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
+                        && ((TkpdInboxRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url.toString())) {
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .actionNavigateByApplinksUrl(getActivity(), url.toString(), new
+                                    Bundle());
                     return true;
                 } else if (urlString.startsWith("tel:")) {
                     Intent intent = new Intent(Intent.ACTION_DIAL, url);

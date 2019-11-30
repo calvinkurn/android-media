@@ -209,8 +209,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         dealsAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.CATEGORY_PAGE, this, !IS_SHORT_LAYOUT);
         dealsAdapter.setCategoryName(categoriesModel.getTitle());
         recyclerViewDeals.setAdapter(dealsAdapter);
-        if (getArguments() != null)
-            searchText = getArguments().getString(SEARCH_TEXT);
+        searchText = getArguments().getString(SEARCH_TEXT);
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
                 (getActivity(), com.tokopedia.digital_deals.R.drawable.ic_search_deal), null, null , null);
         if (!TextUtils.isEmpty(searchText)) {

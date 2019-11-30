@@ -176,10 +176,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
     }
 
-    override fun showListCatalogHighlight(e: Throwable) {
-        populateExchnageCouponList()
-    }
-
     override fun onErrorCheckPromo(e: Throwable) {
         if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCodeFailed()

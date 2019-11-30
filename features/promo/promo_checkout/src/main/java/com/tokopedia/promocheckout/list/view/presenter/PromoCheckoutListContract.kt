@@ -16,7 +16,6 @@ interface PromoCheckoutListContract {
         fun renderListLastSeen(data: GetPromoSuggestion?)
         fun showGetListLastSeenError(e: Throwable)
         fun renderListExchangeCoupon(data: TokopointsCatalogHighlight)
-        fun showListCatalogHighlight(e: Throwable)
         fun onSuccessCheckPromo(data: DataUiModel)
         fun onErrorCheckPromo(e: Throwable)
         fun onErrorEmptyPromo()
@@ -25,7 +24,7 @@ interface PromoCheckoutListContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources)
+        fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources )
         fun getListLastSeen(serviceId: String, resources: Resources)
     }
 }

@@ -8,7 +8,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import rx.Subscriber
-import java.lang.NumberFormatException
 import javax.inject.Inject
 
 /**
@@ -38,26 +37,16 @@ class GetExistingChatUseCase @Inject constructor(
 
         fun generateParamFirstTime(messageId: String): Map<String, Any> {
             val requestParams = HashMap<String, Any>()
-            requestParams[PARAM_MESSAGE_ID] = verifyMessageId(messageId)
+            requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
             requestParams[PARAM_PAGE] = 1
             return requestParams
         }
 
         fun generateParam(messageId: String, page: Int): Map<String, Any> {
             val requestParams = HashMap<String, Any>()
-            requestParams[PARAM_MESSAGE_ID] = verifyMessageId(messageId)
+            requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
             requestParams[PARAM_PAGE] = page
             return requestParams
-        }
-
-        private fun verifyMessageId(messageId: String): Int {
-            return if (messageId.isNotBlank()) {
-                try {
-                    messageId.toInt()
-                } catch (e: NumberFormatException) {
-                    0
-                }
-            } else 0
         }
     }
 

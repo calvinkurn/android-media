@@ -33,13 +33,14 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
     private boolean isLocationUpdated;
     private CategoryDetailHomeFragment categoryDetailHomeFragment;
 
-    public Bundle getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
+    public Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
+        Intent destination = new Intent();
 
         Location location = Utils.getSingletonInstance().getLocation(context);
             String searchName = extras.getString("search_name");
         CategoriesModel categoriesModel = new CategoriesModel();
         categoriesModel.setCategoryId(Integer.parseInt(extras.getString("category_id")));
-        categoriesModel.setTitle(extras.getString("search_name"));
+        categoriesModel.setTitle(extras.getString("name"));
         String categoryUrl = searchName + "?" + Utils.QUERY_PARAM_CITY_ID + "=" + location.getId();
         categoriesModel.setCategoryUrl(DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_CATEGORY + categoryUrl);
 
@@ -54,7 +55,9 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
         }
         extras.putString(CATEGORY_NAME, categoriesModel.getTitle());
         extras.putParcelable(CATEGORIES_DATA, categoriesModel);
-        return extras;
+        destination = new Intent(context, CategoryDetailActivity.class)
+                .putExtras(extras);
+        return destination;
     }
 
     @Override
@@ -63,21 +66,22 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
         categoryName = getIntent().getStringExtra(CATEGORY_NAME);
         if (TextUtils.isEmpty(categoryName))
             categoryName = getString(com.tokopedia.digital_deals.R.string.text_deals);
-        if (getIntent().getExtras() != null) {
+        categoryDetailHomeFragment = CategoryDetailHomeFragment.createInstance(getIntent().getExtras(), isLocationUpdated);
+        return categoryDetailHomeFragment;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            Map<String, Object> params = UriUtil.destructureUriToMap(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY, uri, true);
             Bundle extras = getIntent().getExtras();
-            Uri uri = getIntent().getData();
-            if (uri != null) {
-                Map<String, Object> params = UriUtil.destructureUriToMap(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY, uri, true);
-                for (String key : params.keySet()) {
-                    extras.putString(key, (String) params.get(key));
-                }
-                getInstanceIntentAppLinkBackToHome(this, extras);
+            for (String key :params.keySet()) {
+                extras.putString(key, (String) params.get(key));
             }
-            categoryDetailHomeFragment = CategoryDetailHomeFragment.createInstance(extras, isLocationUpdated);
-            return categoryDetailHomeFragment;
-        } else {
-            return null;
+            getInstanceIntentAppLinkBackToHome(this, extras);
         }
+        super.onCreate(savedInstanceState);
     }
 
     @Override

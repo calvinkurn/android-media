@@ -138,18 +138,14 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
             @Override
             public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().hideCrossSellingItems();
-                }
+                getView().hideCrossSellingItems();
             }
 
             @Override
             public void onNext(GraphqlResponse response) {
-                if (isViewAttached()) {
-                    TravelCrossSelling.Response crossSellingResponse = response.getData(TravelCrossSelling.Response.class);
-                    if (crossSellingResponse.getResponse().getItems().isEmpty()) getView().hideCrossSellingItems();
-                    else getView().showCrossSellingItems(crossSellingResponse.getResponse());
-                }
+                TravelCrossSelling.Response crossSellingResponse = response.getData(TravelCrossSelling.Response.class);
+                if (crossSellingResponse.getResponse().getItems().isEmpty()) getView().hideCrossSellingItems();
+                else getView().showCrossSellingItems(crossSellingResponse.getResponse());
             }
         };
     }

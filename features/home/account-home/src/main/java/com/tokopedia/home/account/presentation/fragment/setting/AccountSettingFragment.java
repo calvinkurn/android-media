@@ -212,11 +212,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     break;
                 case SettingConstant.SETTING_ACCOUNT_SAMPAI_ID:
                     goToTokopediaCorner();
-                    break;
                 case SettingConstant.SETTING_BANK_ACCOUNT_ID:
                     accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
                     gotoAccountBank();
-                    break;
                 default:
                     break;
             }
