@@ -34,7 +34,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
-import java.lang.Exception
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -404,25 +403,29 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         addPassengerAmenitiesPrices()
     }
 
-    fun onTravellerAsPassenger(isEnable: Boolean, userName: String) {
+    fun onTravellerAsPassenger(userName: String): FlightBookingPassengerViewModel {
         val userProfile = if (profileResult.value is Success) (profileResult.value as Success).data else ProfileInfo()
+        val passenger = FlightBookingPassengerViewModel()
+        passenger.passengerLocalId = 1
+        passenger.type = FlightBookingPassenger.ADULT
+        passenger.flightBookingLuggageMetaViewModels = arrayListOf()
+        passenger.flightBookingMealMetaViewModels = arrayListOf()
+        passenger.headerTitle = userName
+        passenger.passengerFirstName = userName
+        if (getMandatoryDOB()) passenger.passengerBirthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, userProfile.birthday))
+        return passenger
+    }
+
+    fun resetFirstPassenger() {
         val passengers = (flightPassengersData.value ?: listOf()).toMutableList()
-        if (passengers.isNotEmpty() && userName.isNotEmpty()) {
+        if (passengers.isNotEmpty()) {
             val passenger = FlightBookingPassengerViewModel()
             passenger.passengerLocalId = 1
             passenger.type = FlightBookingPassenger.ADULT
             passenger.flightBookingLuggageMetaViewModels = arrayListOf()
             passenger.flightBookingMealMetaViewModels = arrayListOf()
-            if (isEnable) {
-                passenger.headerTitle = userName
-                passenger.passengerFirstName = userName
-                if (getMandatoryDOB()) passenger.passengerBirthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, userProfile.birthday))
-                passengers[0] = passenger
-            } else if (passengers[0].passengerFirstName.equals(userName, true)) {
-                passenger.headerTitle = String.format("Penumpang dewasa")
-                passengers[0] = passenger
-            }
-
+            passenger.headerTitle = String.format("Penumpang dewasa")
+            passengers[0] = passenger
             _flightPassengersData.value = passengers
         }
     }

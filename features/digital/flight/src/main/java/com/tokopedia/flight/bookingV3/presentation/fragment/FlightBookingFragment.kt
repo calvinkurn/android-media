@@ -114,7 +114,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     lateinit var loadingDialog: DialogUnify
     lateinit var loadingText: Typography
     var needRefreshCart = false
-    var needToFillFirstPassengerDetail = false
+    var needResetFirstPassenger = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -243,8 +243,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         layout_see_detail_price.setOnClickListener { if (rv_flight_price_detail.isVisible) hidePriceDetail() else showPriceDetail() }
         switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
-            needToFillFirstPassengerDetail = true
-            bookingViewModel.onTravellerAsPassenger(on, widget_traveller_info.getContactName())
+            if (on) {
+                val firstPassenger = bookingViewModel.onTravellerAsPassenger(widget_traveller_info.getContactName())
+                navigateToPassengerInfoDetail(firstPassenger, bookingViewModel.getDepartureDate(), getRequestId(), firstPassenger.passengerFirstName)
+            } else if (needResetFirstPassenger) {
+                bookingViewModel.resetFirstPassenger()
+            }
+            needResetFirstPassenger = true
         }
         button_submit.setOnClickListener { verifyCart() }
     }
@@ -454,17 +459,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
             }
         }
         flightPassengerAdapter.updateList(passengers)
+
         if (passengers.isNotEmpty() && switch_traveller_as_passenger.isChecked) {
-            if (needToFillFirstPassengerDetail && passengers.first().passengerLastName.isNullOrEmpty()) {
-                navigateToPassengerInfoDetail(passengers.first(), bookingViewModel.getDepartureDate(), getRequestId(), passengers.first().passengerFirstName)
-            } else if (!passengers.first().passengerFirstName.equals(widget_traveller_info.getContactName(), true)) {
+            val firstPassenger = passengers.first()
+            val fullName = "${firstPassenger.passengerFirstName} ${firstPassenger.passengerLastName}"
+            if (!fullName.equals(widget_traveller_info.getContactName(), true)) {
+                needResetFirstPassenger = false
                 switch_traveller_as_passenger.isChecked = false
             }
         }
     }
 
     private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, departureDate: String, requestId: String, autofillName: String = "") {
-        needToFillFirstPassengerDetail = false
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
                         activity as Activity,
