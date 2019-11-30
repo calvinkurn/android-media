@@ -3,8 +3,8 @@ package com.tokopedia.similarsearch.viewmodel
 import com.tokopedia.discovery.common.State
 import com.tokopedia.similarsearch.*
 import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
-import com.tokopedia.similarsearch.testinstance.getSimilarProductModelThreePage
-import com.tokopedia.similarsearch.testinstance.getSimilarProductModelTwoPage
+import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelThreePage
+import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelTwoPage
 import com.tokopedia.similarsearch.testutils.InstantTaskExecutorRuleSpek
 import com.tokopedia.similarsearch.testutils.shouldBe
 import com.tokopedia.similarsearch.testutils.shouldBeInstanceOf

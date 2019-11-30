@@ -1,4 +1,4 @@
-package com.tokopedia.similarsearch.testinstance
+package com.tokopedia.similarsearch.viewmodel.testinstance
 
 import com.google.gson.Gson
 import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel

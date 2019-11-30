@@ -3,7 +3,7 @@ package com.tokopedia.similarsearch.viewmodel
 import com.tokopedia.similarsearch.SimilarSearchViewModel
 import com.tokopedia.similarsearch.testutils.TestDispatcherProvider
 import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
-import com.tokopedia.similarsearch.testinstance.getSimilarSearchQuery
+import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarSearchQuery
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase

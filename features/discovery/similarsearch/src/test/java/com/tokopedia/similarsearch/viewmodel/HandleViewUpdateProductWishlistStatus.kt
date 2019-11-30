@@ -1,8 +1,8 @@
 package com.tokopedia.similarsearch.viewmodel
 
 import com.tokopedia.similarsearch.*
-import com.tokopedia.similarsearch.testinstance.getSimilarProductModelCommon
-import com.tokopedia.similarsearch.testinstance.getSimilarProductModelOriginalProductWishlisted
+import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelCommon
+import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelOriginalProductWishlisted
 import com.tokopedia.similarsearch.getsimilarproducts.GetSimilarProductsUseCase
 import com.tokopedia.similarsearch.testutils.InstantTaskExecutorRuleSpek
 import com.tokopedia.similarsearch.testutils.shouldBe
