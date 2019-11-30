@@ -15,6 +15,8 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -122,6 +124,8 @@ import javax.inject.Inject;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import rx.Observable;
+
+import static rx.schedulers.Schedulers.start;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -435,6 +439,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDestroy() {
         super.onDestroy();
+        clearCache();
         presenter.onDestroy();
         presenter.detachView();
         homeRecyclerView.setAdapter(null);
@@ -443,6 +448,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         layoutManager = null;
         presenter = null;
         unRegisterBroadcastReceiverTokoCash();
+    }
+
+    private void clearCache(){
+        Context context = getContext();
+        if(context != null) {
+            new Thread(() -> {
+                Glide.get(context).clearDiskCache();
+            }).start();
+            Glide.get(context).clearMemory();
+        }
     }
 
     private void initRefreshLayout() {

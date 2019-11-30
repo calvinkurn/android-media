@@ -28,6 +28,7 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.helper.HomeImageHandler
+import com.tokopedia.home.beranda.helper.glide.loadImageRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.*
@@ -147,14 +148,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         val textColor = if(bannerItem.textColor.isEmpty()) ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
-
-        Glide.with(itemView.context)
-                .asBitmap()
-                .load(bannerItem.imageUrl)
-                .centerCrop()
-                .dontAnimate()
-                .into(getRoundedImageViewTarget(bannerImage, 24f))
-//        HomeImageHandler.loadImageRoundedCenterCrop(itemView.context, bannerImage, bannerItem.imageUrl, 24f)
+        bannerImage.loadImageRounded(bannerItem.imageUrl)
 
         measureParentView(homeCategoryListener.getWindowWidth(), recyclerView)
 

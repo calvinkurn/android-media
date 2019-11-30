@@ -25,6 +25,8 @@ import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.HomeImageHandler
+import com.tokopedia.home.beranda.helper.glide.loadImage
+import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -129,8 +131,7 @@ class ThematicCardView : BaseCustomView {
 
     fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
-//            ImageHandler.loadImageThumbs(context, it, productImageUrl)
-            HomeImageHandler.loadImage(context, it, productImageUrl)
+            it.loadImage(productImageUrl)
         }
     }
 
@@ -240,7 +241,7 @@ class ThematicCardView : BaseCustomView {
 
         imageFreeOngkirPromo.configureVisibilityWithBlankSpaceConfig(
                 shouldShowFreeOngkirImage, blankSpaceConfig.freeOngkir) {
-            ImageHandler.loadImageThumbs(context, it, imageUrl)
+            it.loadImageFitCenter(imageUrl)
         }
     }
 
