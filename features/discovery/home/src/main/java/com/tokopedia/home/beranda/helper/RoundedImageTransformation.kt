@@ -12,7 +12,6 @@ import java.security.MessageDigest
 class RoundedImageTransformation(private val mBitmapPool: BitmapPool, private val mRadius: Int) : Transformation<Bitmap> {
     override fun transform(context: Context, resource: Resource<Bitmap>, outWidth: Int, outHeight: Int): Resource<Bitmap> {
         val source = resource.get()
-
         val width = source.width
         val height = source.height
 
@@ -30,7 +29,6 @@ class RoundedImageTransformation(private val mBitmapPool: BitmapPool, private va
     }
 
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private val mDiameter: Int = mRadius * 2

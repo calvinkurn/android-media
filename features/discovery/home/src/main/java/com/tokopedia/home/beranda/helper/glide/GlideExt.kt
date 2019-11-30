@@ -4,9 +4,11 @@ package com.tokopedia.home.beranda.helper.glide
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.helper.RoundedImageTransformation
+
 
 fun ImageView.loadImage(url: String){
     Glide.with(context)
@@ -32,7 +34,7 @@ fun ImageView.loadImageFitCenter(url: String){
 fun ImageView.loadImageRounded(url: String){
     Glide.with(context)
             .load(url)
-            .transform(RoundedImageTransformation(context, 10))
+            .transform(RoundedCorners(10))
             .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .placeholder(R.drawable.loading_page)
@@ -40,13 +42,11 @@ fun ImageView.loadImageRounded(url: String){
             .into(this)
 }
 
-
 fun ImageView.loadImageRounded(url: String, width: Int, height: Int){
     Glide.with(context)
             .load(url)
-            .fitCenter()
             .override(width, height)
-            .transform(RoundedImageTransformation(context, 10))
+            .transform(RoundedCorners( 10))
             .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .placeholder(R.drawable.loading_page)
@@ -78,12 +78,22 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int){
             .into(this)
 }
 
+fun ImageView.loadImageCenterCrop(url: String){
+    Glide.with(context)
+            .load(url)
+            .transform(CenterCrop(), RoundedCorners(15))
+            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .placeholder(R.drawable.loading_page)
+            .into(this)
+}
+
 fun ImageView.loadGif(url: String){
     Glide.with(context)
             .asGif()
             .load(url)
             .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
             .thumbnail(0.1f)
-            .transform(RoundedImageTransformation(context, 10))
+            .transform(RoundedCorners(10))
             .into(this)
 }
