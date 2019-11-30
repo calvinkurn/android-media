@@ -181,6 +181,10 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 verifyRetryCount = 0
                 isStillLoading = false
                 _flightVerifyResult.value = Success(flightVerifyData)
+                if (!flightVerifyData.data.cartItems[0].promoEligibility.success) {
+                    //update UI promoData (reset)
+                    _flightPromoResult.value = FlightPromoViewEntity(isCouponEnable = true)
+                }
                 pastVerifyParam = convertVerifyParamToString(bookingVerifyParam)
             } else {
                 if (flightVerifyData.meta.needRefresh && flightVerifyData.meta.maxRetry >= verifyRetryCount) {
@@ -556,7 +560,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
             //update UI promoData
             flightPromoViewEntity.promoData.description = "Anda akan mendapatkan " + voucher.message
-            _flightPromoResult.value = flightPromoViewEntity
 
             return promoEligibility
         } catch (e: Exception) {
@@ -565,9 +568,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 val error = mapThrowableToFlightError(e.message ?: "")
                 promoEligibility.message = error.title
                 if (error.id.equals("4")) promoEligibility.message += "Promo akan dihapus jika lanjut bayar"
-
-                //update UI promoData (reset)
-                _flightPromoResult.value = FlightPromoViewEntity(isCouponEnable = true)
             }
             return promoEligibility
         }
