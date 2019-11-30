@@ -26,13 +26,8 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_banner_shop;
     private static final String TAG = BannerShopViewHolder.class.getSimpleName();
-    private Context context;
-    private ImpressedImageView iconImg;
-    private TextView nameTxt;
     private TextView descriptionTxt;
     private TextView ctaTxt;
-    private ImageLoader imageLoader;
-    private LinearLayout layoutContainer;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
     private final TopAdsItemImpressionListener impressionListener;
 
@@ -41,30 +36,17 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
         super(itemView);
         this.topAdsBannerClickListener = topAdsBannerClickListener;
         this.impressionListener = itemImpressionListener;
-        context = itemView.getContext();
-        imageLoader = new ImageLoader(context);
-        iconImg = (ImpressedImageView) itemView.findViewById(R.id.icon);
         descriptionTxt = (TextView) itemView.findViewById(R.id.description);
         ctaTxt = (TextView) itemView.findViewById(R.id.kunjungi_toko);
-        layoutContainer = itemView.findViewById(R.id.layout_container);
     }
 
     @Override
     public void bind(final BannerShopViewModel element) {
         final Cpm cpm = element.getCpmData().getCpm();
         if(cpm!=null) {
-            iconImg.setImage(cpm.getCpmImage());
-            iconImg.setViewHintListener(new ImpressedImageView.ViewHintListener() {
-                @Override
-                public void onViewHint() {
-                    if(impressionListener!=null){
-                        impressionListener.onImpressionHeadlineAdsItem(getAdapterPosition(), element.getCpmData());
-                    }
-                }
-            });
             descriptionTxt.setText(TopAdsBannerView.escapeHTML(cpm.getCpmShop().getSlogan()));
             ctaTxt.setText(cpm.getCta());
-            layoutContainer.setOnClickListener(new View.OnClickListener() {
+            ctaTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(topAdsBannerClickListener!=null) {

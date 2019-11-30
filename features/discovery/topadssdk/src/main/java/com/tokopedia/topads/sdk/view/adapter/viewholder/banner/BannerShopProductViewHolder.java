@@ -2,6 +2,8 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.banner;
 
 import android.content.Context;
 import androidx.annotation.LayoutRes;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,7 +32,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     private ImpressedImageView imageView;
     private TextView descTxt;
     private TextView priceTxt;
-    private LinearLayout layoutContainer;
+    private ConstraintLayout layoutContainer;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
     private final TopAdsItemImpressionListener impressionListener;
     private Context context;

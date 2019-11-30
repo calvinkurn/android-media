@@ -811,12 +811,6 @@ final class ProductListPresenter
         boolean isGlobalNavWidgetAvailable
                 = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
 
-        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable && shouldShowCpmShop(productViewModel)) {
-            CpmViewModel cpmViewModel = new CpmViewModel();
-            cpmViewModel.setCpmModel(productViewModel.getCpmModel());
-            list.add(cpmViewModel);
-        }
-
         if (isGlobalNavWidgetAvailable) {
             list.add(productViewModel.getGlobalNavViewModel());
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
@@ -838,6 +832,12 @@ final class ProductListPresenter
 
         if (productViewModel.getQuickFilterModel() != null) {
             list.add(productViewModel.getQuickFilterModel());
+        }
+
+        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable && shouldShowCpmShop(productViewModel)) {
+            CpmViewModel cpmViewModel = new CpmViewModel();
+            cpmViewModel.setCpmModel(productViewModel.getCpmModel());
+            list.add(cpmViewModel);
         }
 
         list.addAll(convertToListOfVisitable(productViewModel));

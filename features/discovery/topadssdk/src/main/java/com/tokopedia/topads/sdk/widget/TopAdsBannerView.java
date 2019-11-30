@@ -71,7 +71,8 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     private RecyclerView recyclerView;
     private TextView promotedTxt;
     private TextView shopName;
-    private LinearLayout badgeContainer;
+    private ImageView shopImg;
+    private ImageView shopBadgeImg;
     private ImageView iconImg;
     private TextView nameTxt;
     private TextView descriptionTxt;
@@ -113,7 +114,8 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             recyclerView = findViewById(R.id.list);
             promotedTxt = (TextView) findViewById(R.id.title_promote);
             shopName = (TextView) findViewById(R.id.shop_name);
-            badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
+            shopImg = findViewById(R.id.shop_image);
+            shopBadgeImg = findViewById(R.id.shop_badge);
             promotedTxt.setText(cpmData.getCpm().getPromotedText());
             shopName.setText(TopAdsBannerView.escapeHTML(cpmData.getCpm().getName()));
             bannerAdsAdapter = new BannerAdsAdapter(new BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener));
@@ -136,20 +138,11 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     private void setHeadlineShopData(CpmData cpmData, String appLink, String adsClickUrl) {
         if (cpmData != null && cpmData.getCpm().getCpmShop() != null) {
-            if (cpmData.getCpm().getBadges().size() > 0) {
-                badgeContainer.removeAllViews();
-                badgeContainer.setVisibility(View.VISIBLE);
-                for (Badge badge : cpmData.getCpm().getBadges()) {
-                    ImageView badgeImg = new ImageView(getContext());
-                    badgeImg.setLayoutParams(new LinearLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.badge_size_small),
-                            getResources().getDimensionPixelSize(R.dimen.badge_size_small)));
-                    if (!activityIsFinishing(getContext())) {
-                        Glide.with(getContext().getApplicationContext()).load(badge.getImageUrl()).into(badgeImg);
-                    }
-                    badgeContainer.addView(badgeImg);
-                }
+            if(cpmData.getCpm().getBadges().size()>0){
+                shopBadgeImg.setVisibility(View.VISIBLE);
+                Glide.with(shopBadgeImg).load(cpmData.getCpm().getBadges().get(0).getImageUrl()).into(shopBadgeImg);
             } else {
-                badgeContainer.setVisibility(View.GONE);
+                shopBadgeImg.setVisibility(View.GONE);
             }
             ArrayList<Item> items = new ArrayList<>();
             items.add(new BannerShopViewModel(cpmData, appLink, adsClickUrl));
