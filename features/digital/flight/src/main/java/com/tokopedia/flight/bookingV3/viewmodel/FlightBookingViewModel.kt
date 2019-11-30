@@ -568,7 +568,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             if (!e.message.isNullOrEmpty()) {
                 val error = mapThrowableToFlightError(e.message ?: "")
                 promoEligibility.message = error.title
-                if (error.id.equals("4")) promoEligibility.message += "Promo akan dihapus jika lanjut bayar"
+                if (error.id.equals("4")) promoEligibility.message += ". Promo akan dihapus jika lanjut bayar"
             }
             return promoEligibility
         }
