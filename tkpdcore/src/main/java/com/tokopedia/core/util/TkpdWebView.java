@@ -67,7 +67,7 @@ public class TkpdWebView extends WebView {
     @Override
     public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
         if (WebViewHelper.isUrlValid(url)) {
-            super.loadUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, getContext()), additionalHttpHeaders);
+            super.loadUrl(url, additionalHttpHeaders);
         } else {
             if (!GlobalConfig.DEBUG)
                 Crashlytics.log(getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
@@ -77,11 +77,12 @@ public class TkpdWebView extends WebView {
     }
 
     public void loadAuthUrl(String url) {
-
+        url = WebViewHelper.appendGAClientIdAsQueryParam(url, getContext());
         loadUrl(url, getWebviewHeaders(url));
     }
 
     public void loadOtherUrl(String url) {
+        url = WebViewHelper.appendGAClientIdAsQueryParam(url, getContext());
         loadUrl(url, new HashMap<String, String>());
     }
 

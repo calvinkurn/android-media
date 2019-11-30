@@ -73,10 +73,14 @@ public class TkpdWebView extends WebView {
     }
 
     public void loadUrlWithFlags(String url) {
+        url = WebViewHelper.appendGAClientIdAsQueryParam(url, getContext());
+
         loadUrl(generateUri(url));
     }
 
     public void loadAuthUrlWithFlags(String url, String userId, String accessToken) {
+        url = WebViewHelper.appendGAClientIdAsQueryParam(url, getContext());
+
         if (TextUtils.isEmpty(userId)) {
             loadUrl(generateUri(url));
         } else {
@@ -89,6 +93,8 @@ public class TkpdWebView extends WebView {
     }
 
     public void loadAuthUrl(String url, String userId, String accessToken) {
+        url = WebViewHelper.appendGAClientIdAsQueryParam(url, getContext());
+
         if (TextUtils.isEmpty(userId)) {
             loadUrl(url);
         } else {
@@ -102,6 +108,8 @@ public class TkpdWebView extends WebView {
 
     public void loadAuthUrl(String url, String userId, String accessToken, HashMap<String,
             String> additionalHeaders) {
+        url = WebViewHelper.appendGAClientIdAsQueryParam(url, getContext());
+
         if (TextUtils.isEmpty(userId)) {
             loadUrl(url);
         } else {
@@ -184,7 +192,7 @@ public class TkpdWebView extends WebView {
     @Override
     public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
         if (WebViewHelper.isUrlValid(url)) {
-            super.loadUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, getContext()), additionalHttpHeaders);
+            super.loadUrl(url, additionalHttpHeaders);
         } else {
             if (!GlobalConfig.DEBUG)
                 Crashlytics.log(
