@@ -460,6 +460,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             rv_passengers_info.adapter = flightPassengerAdapter
             flightPassengerAdapter.listener = object : FlightBookingPassengerAdapter.PassengerViewHolderListener {
                 override fun onClickEditPassengerListener(passenger: FlightBookingPassengerViewModel) {
+                    passengerAsTraveller = switch_traveller_as_passenger.isChecked
                     navigateToPassengerInfoDetail(passenger, bookingViewModel.getDepartureDate(), getRequestId())
                 }
             }
@@ -477,7 +478,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, departureDate: String, requestId: String, autofillName: String = "") {
-        passengerAsTraveller = switch_traveller_as_passenger.isChecked
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
                         activity as Activity,
