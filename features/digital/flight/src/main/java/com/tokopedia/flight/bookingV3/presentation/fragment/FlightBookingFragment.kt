@@ -73,7 +73,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_flight_booking_v3.*
 import kotlinx.android.synthetic.main.fragment_flight_booking_v3.button_submit
 import kotlinx.android.synthetic.main.layout_flight_booking_v3_error.view.*
@@ -104,6 +104,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var flightAnalytics: FlightAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun getScreenName(): String = "/flight/booking"
 
@@ -477,10 +480,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun generateIdEmpotency(requestId: String): String {
         var userId = Math.random().toString()
-        if (activity != null && activity!!.application is AbstractionRouter) {
-            val userSession = UserSession(activity)
-            userId += userSession.userId
-        }
+        userId += userSession.userId
         val timeMillis = System.currentTimeMillis().toString()
         val token = FlightRequestUtil.md5(timeMillis)
         return userId + String.format(getString(com.tokopedia.flight.R.string.flight_booking_id_empotency_format),
@@ -506,8 +506,16 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         launchLoadingPageJob.start()
         setUpView()
-        addToCart()
-        bookingViewModel.getProfile(getProfileQuery())
+        initialize()
+    }
+
+    private fun initialize() {
+        if (userSession.isMsisdnVerified) {
+            addToCart()
+            bookingViewModel.getProfile(getProfileQuery())
+        } else if (userSession.isLoggedIn) {
+            navigateToOtpPage()
+        }
     }
 
     private fun navigateToTopPay(checkoutData: FlightCheckoutData) {
@@ -803,6 +811,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
         finishActivityToHomepage()
     }
 
+    fun navigateToOtpPage() {
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.FLIGHT_PHONE_VERIFICATION), REQUEST_CODE_OTP)
+    }
+
     private fun showLoadingDialog() {
         context?.let {
             val list = randomLoadingSubtitle()
@@ -890,6 +902,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
             }
+
+            REQUEST_CODE_OTP -> if (resultCode == RESULT_OK) {
+                initialize()
+            } else {
+                activity?.finish()
+            }
         }
 
         if (needRefreshCart) {
@@ -928,6 +946,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_CONTACT_FORM = 12
         const val COUPON_EXTRA_LIST_ACTIVITY_RESULT = 3121
         const val COUPON_EXTRA_DETAIL_ACTIVITY_RESULT = 3122
+        const val REQUEST_CODE_OTP = 5
 
         fun newInstance(): FlightBookingFragment {
             return FlightBookingFragment()
