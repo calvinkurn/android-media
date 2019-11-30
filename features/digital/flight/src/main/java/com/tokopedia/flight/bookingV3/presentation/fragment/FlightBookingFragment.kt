@@ -74,10 +74,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_flight_booking_v3.*
-import kotlinx.android.synthetic.main.fragment_flight_booking_v3.button_submit
 import kotlinx.android.synthetic.main.layout_flight_booking_v3_error.view.*
 import kotlinx.android.synthetic.main.layout_flight_booking_v3_loading.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -128,8 +130,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
             val returnId = args.getString(EXTRA_FLIGHT_ARRIVAL_ID, "")
             val departureTerm = args.getString(EXTRA_FLIGHT_DEPARTURE_TERM, "")
             val returnTerm = args.getString(EXTRA_FLIGHT_ARRIVAL_TERM, "")
-            val searchParam: FlightSearchPassDataViewModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA) ?: FlightSearchPassDataViewModel()
-            val flightPriceViewModel: FlightPriceViewModel = args.getParcelable(EXTRA_PRICE) ?: FlightPriceViewModel()
+            val searchParam: FlightSearchPassDataViewModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
+                    ?: FlightSearchPassDataViewModel()
+            val flightPriceViewModel: FlightPriceViewModel = args.getParcelable(EXTRA_PRICE)
+                    ?: FlightPriceViewModel()
 
             bookingViewModel.setSearchParam(departureId, returnId, departureTerm, returnTerm, searchParam, flightPriceViewModel)
         }
@@ -147,7 +151,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendAddToCartTracking()
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""), ::refreshCart)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message
+                            ?: ""), ::refreshCart)
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog()
@@ -189,7 +194,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendCheckOutTracking(it.data.parameter.pid)
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""), ::checkOutCart)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message
+                            ?: ""), ::checkOutCart)
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
@@ -208,7 +214,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""), ::verifyCart)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message
+                            ?: ""), ::verifyCart)
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
@@ -449,14 +456,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
         flightPassengerAdapter.updateList(passengers)
         if (passengers.isNotEmpty() && switch_traveller_as_passenger.isChecked) {
             if (needToFillFirstPassengerDetail && passengers.first().passengerLastName.isNullOrEmpty()) {
-                navigateToPassengerInfoDetail(passengers.first(), bookingViewModel.getDepartureDate(), getRequestId())
+                navigateToPassengerInfoDetail(passengers.first(), bookingViewModel.getDepartureDate(), getRequestId(), passengers.first().passengerFirstName)
             } else if (!passengers.first().passengerFirstName.equals(widget_traveller_info.getContactName(), true)) {
                 switch_traveller_as_passenger.isChecked = false
             }
         }
     }
 
-    private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, departureDate: String, requestId: String) {
+    private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, departureDate: String, requestId: String, autofillName: String = "") {
         needToFillFirstPassengerDetail = false
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
@@ -469,7 +476,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         bookingViewModel.getMandatoryDOB(),
                         departureDate,
                         requestId,
-                        bookingViewModel.flightIsDomestic()
+                        bookingViewModel.flightIsDomestic(),
+                        autofillName
                 ),
                 REQUEST_CODE_PASSENGER
         )
@@ -640,7 +648,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
             delay(2000L)
             layout_loading.visibility = View.GONE
             layout_shimmering.visibility = View.VISIBLE
-        } catch (e: Throwable) { }
+        } catch (e: Throwable) {
+        }
     }
 
     private fun hideShimmering() {

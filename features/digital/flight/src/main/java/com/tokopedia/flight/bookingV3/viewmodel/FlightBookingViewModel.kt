@@ -193,7 +193,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     _flightVerifyResult.value = Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY))
                 }
             }
-
         }) {
             _flightVerifyResult.value = Fail(it)
         }
