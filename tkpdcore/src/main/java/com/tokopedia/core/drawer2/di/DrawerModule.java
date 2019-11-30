@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -21,7 +20,6 @@ import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core2.R;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import javax.inject.Named;
 
@@ -104,6 +102,6 @@ public class DrawerModule {
     @Provides
     @Named(GET_INFO_PENJUAL_NOTIFICATION_QUERY)
     String provideGET_INFO_PENJUAL_NOTIFICATION_QUERY(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_notification_update_total_unread);
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_notification_center_total_unread);
     }
 }

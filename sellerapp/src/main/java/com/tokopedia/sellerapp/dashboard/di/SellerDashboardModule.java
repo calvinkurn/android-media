@@ -207,7 +207,7 @@ public class SellerDashboardModule {
     @Provides
     @Named(GET_INFO_PENJUAL_NOTIFICATION_QUERY)
     String provideGET_INFO_PENJUAL_NOTIFICATION_QUERY(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_notification_update_total_unread);
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_notification_center_total_unread);
     }
 
     @SellerDashboardScope
