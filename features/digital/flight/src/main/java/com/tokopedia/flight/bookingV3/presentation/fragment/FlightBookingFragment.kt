@@ -245,10 +245,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         layout_see_detail_price.setOnClickListener { if (rv_flight_price_detail.isVisible) hidePriceDetail() else showPriceDetail() }
         switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
-            passengerAsTraveller = !on
             if (needToDoChangesOnFirstPassenger) {
                 if (on) {
                     val firstPassenger = bookingViewModel.onTravellerAsPassenger(widget_traveller_info.getContactName())
+                    passengerAsTraveller = false
                     navigateToPassengerInfoDetail(firstPassenger, bookingViewModel.getDepartureDate(), getRequestId(), firstPassenger.passengerFirstName)
                 } else {
                     bookingViewModel.resetFirstPassenger()
