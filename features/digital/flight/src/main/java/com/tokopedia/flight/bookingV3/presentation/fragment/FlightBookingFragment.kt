@@ -477,6 +477,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, departureDate: String, requestId: String, autofillName: String = "") {
+        passengerAsTraveller = switch_traveller_as_passenger.isChecked
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
                         activity as Activity,
