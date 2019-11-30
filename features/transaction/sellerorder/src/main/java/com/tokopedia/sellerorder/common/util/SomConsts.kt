@@ -119,4 +119,7 @@ object SomConsts {
     const val LABEL_EMPTY = "-"
     const val EXTRA_URL_UPLOAD = "EXTRA_URL_UPLOAD"
     const val LABEL_COPY_BOOKING_CODE = "LABEL_COPY_BOOKING_CODE"
+
+    const val LIST_ORDER_SCREEN_NAME = "/myorder"
+    const val DETAIL_ORDER_SCREEN_NAME = "/myorder/detail/"
 }

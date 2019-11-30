@@ -19,27 +19,6 @@
         android:layout_below="@id/rv_bottomsheet_secondary"
         android:visibility="gone"/>
 
-    <!--<com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/extra_notes_wrapper"
-        style="@style/HintTextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColorHint="@color/Neutral_N700_68"
-        android:layout_below="@id/rv_bottomsheet_secondary"
-        android:layout_marginTop="@dimen/dp_16">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/extra_notes_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="always"
-            android:scrollbarStyle="insideInset"
-            android:scrollbars="vertical"
-            android:textColor="@color/Neutral_N700_96"
-            android:textSize="@dimen/sp_14" />
-
-    </com.google.android.material.textfield.TextInputLayout>-->
-
     <FrameLayout
         android:id="@+id/fl_btn_primary"
         android:layout_width="match_parent"

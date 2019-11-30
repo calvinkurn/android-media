@@ -91,7 +91,6 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
             }
 
             if (item.dataObject.awbUploadProofText.isNotEmpty()) {
-                // TODO : need investigate why ticker only show 1 line :(
                 val completeDesc = item.dataObject.awbUploadProofText + " " + itemView.context.getString(R.string.additional_invalid_resi)
                 itemView.ticker_invalid_resi?.apply {
                     visibility = View.VISIBLE

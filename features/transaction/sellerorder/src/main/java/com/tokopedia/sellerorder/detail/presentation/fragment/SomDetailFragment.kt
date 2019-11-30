@@ -73,6 +73,11 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import android.net.Uri
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.sellerorder.analytics.SomAnalytics
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickChatOnHeaderDetail
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_URL_UPLOAD
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
@@ -173,6 +178,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun onChatClicked() {
+        eventClickChatOnHeaderDetail()
         RouteManager.route(activity, ApplinkConst.TOPCHAT_IDLESS)
     }
 
@@ -187,6 +193,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun loadDetail() {
+        activity?.let { SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId) }
         somDetailViewModel.loadDetailOrder(
                 GraphqlHelper.loadRawString(resources, R.raw.gql_som_detail), orderId)
     }
@@ -342,22 +349,18 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         if (detailResponse.button.isNotEmpty()) {
             rl_btn_detail?.visibility = View.VISIBLE
             detailResponse.button.first().let { buttonResp ->
-                btn_primary?.text = buttonResp.displayName
-
-                if (buttonResp.key.equals(KEY_ACCEPT_ORDER, true)) {
-                    setActionAcceptOrder(buttonResp)
-
-                } else if (buttonResp.key.equals(KEY_TRACK_SELLER, true)) {
-                    setActionGoToTrackingPage(buttonResp)
-
-                } else if (buttonResp.key.equals(KEY_REQUEST_PICKUP, true)) {
-                    setActionRequestPickup()
-
-                } else if (buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true)) {
-                    setActionConfirmShipping()
-
-                } else if (buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true)) {
-                    setActionSeeComplaint(buttonResp.url)
+                btn_primary?.apply {
+                    text = buttonResp.displayName
+                    setOnClickListener {
+                        eventClickMainActionInOrderDetail(buttonResp.displayName, detailResponse.statusText)
+                        when {
+                            buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(buttonResp)
+                            buttonResp.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(buttonResp)
+                            buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> setActionRequestPickup()
+                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping()
+                            buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(buttonResp.url)
+                        }
+                    }
                 }
             }
 
@@ -371,7 +374,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                     val mapKey = HashMap<String, String>()
                     detailResponse.button.filterIndexed { index, _ -> (index != 0) }.forEach { btn ->
                         mapKey[btn.key] = btn.displayName
-
                     }
                     somBottomSheetRejectOrderAdapter.mapKey = mapKey
                     somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
@@ -386,14 +388,12 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun setActionSeeComplaint(url: String) {
-        btn_primary?.setOnClickListener {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-        }
+        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
     private fun setActionAcceptOrder(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
-        btn_primary?.setOnClickListener { v ->
-            dialogUnify = DialogUnify(v.context, HORIZONTAL_ACTION, NO_IMAGE).apply {
+        view?.context?.let {
+            dialogUnify = DialogUnify(it, HORIZONTAL_ACTION, NO_IMAGE).apply {
                 setTitle(buttonResp.title)
                 setDescription(buttonResp.content)
                 setPrimaryCTAText(getString(R.string.terima_pesanan))
@@ -415,33 +415,27 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun setActionGoToTrackingPage(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
-        btn_primary?.setOnClickListener {
-            var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", detailResponse.orderId.toString())
+        var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", detailResponse.orderId.toString())
 
-            val trackingUrl: String?
-            val uri = Uri.parse(buttonResp.url)
-            trackingUrl = uri.getQueryParameter("url")
+        val trackingUrl: String?
+        val uri = Uri.parse(buttonResp.url)
+        trackingUrl = uri.getQueryParameter("url")
 
-            val uriBuilder = Uri.Builder()
-            uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl)
-            routingAppLink += uriBuilder.toString()
-            RouteManager.route(context, routingAppLink)
-        }
+        val uriBuilder = Uri.Builder()
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl)
+        routingAppLink += uriBuilder.toString()
+        RouteManager.route(context, routingAppLink)
     }
 
     private fun setActionRequestPickup() {
-        btn_primary?.setOnClickListener {
-            Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
-                putExtra(PARAM_ORDER_ID, orderId)
-                startActivityForResult(this, FLAG_CONFIRM_REQ_PICKUP)
-            }
+        Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
+            putExtra(PARAM_ORDER_ID, orderId)
+            startActivityForResult(this, FLAG_CONFIRM_REQ_PICKUP)
         }
     }
 
     private fun setActionConfirmShipping() {
-        btn_primary?.setOnClickListener {
-            createIntentConfirmShipping(false)
-        }
+        createIntentConfirmShipping(false)
     }
 
     private fun showTextOnlyBottomSheet() {
@@ -460,26 +454,18 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     override fun onBottomSheetItemClick(key: String) {
+        detailResponse.button.forEach {
+            if (key.equals(it.key, true)) {
+                eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse.statusText)
+            }
+        }
         bottomSheetUnify.dismiss()
-        println("++ KEY = $key")
-        if (key.equals(KEY_REJECT_ORDER, true)) {
-            setActionRejectOrder()
-
-        } else if (key.equals(KEY_BATALKAN_PESANAN, true)) {
-            setActionCancelOrder()
-
-        } else if (key.equals(KEY_UBAH_NO_RESI, true)) {
-            setActionUbahNoResi()
-
-        } else if (key.equals(KEY_UPLOAD_AWB, true)) {
-            setActionUploadAwb(key)
-            // make sure using this one or just use the url?
-            /*if (detailResponse.shipment.awbUploadUrl.isNotEmpty()) {
-                onInvalidResiUpload(detailResponse.shipment.awbUploadUrl)
-            }*/
-
-        } else if (key.equals(KEY_CHANGE_COURIER, true)) {
-            setActionChangeCourier()
+        when {
+            key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
+            key.equals(KEY_BATALKAN_PESANAN, true) -> setActionCancelOrder()
+            key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
+            key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(key)
+            key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
         }
     }
 
@@ -631,12 +617,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     override fun onRejectReasonItemClick(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
-        println("++ REASON CODE = ${rejectReason.reasonCode}")
-        /* 1 = Stok Produk Kosong
-        *  4 = Toko Sedang Tutup
-        *  7 = Kendala Kurir
-        *  15 = Pembeli Tidak Respons
-        *  14 = Lainnya */
         when (rejectReason.reasonCode) {
             1 -> setProductEmpty(rejectReason.reasonCode.toString())
             4 -> setShopClosed(rejectReason.reasonCode.toString())

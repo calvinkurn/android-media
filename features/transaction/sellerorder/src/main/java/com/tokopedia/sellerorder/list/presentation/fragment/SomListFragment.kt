@@ -22,8 +22,15 @@ import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.analytics.SomAnalytics
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangInEmptyState
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
@@ -31,7 +38,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
-import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
 import com.tokopedia.sellerorder.detail.data.model.SomAcceptOrder
 import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
@@ -42,9 +48,7 @@ import com.tokopedia.sellerorder.list.data.model.SomListTicker
 import com.tokopedia.sellerorder.list.di.SomListComponent
 import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
-import com.tokopedia.sellerorder.list.presentation.bottomsheet.TickerDetailBottomSheetFragment
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
-import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickup
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
@@ -105,7 +109,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).toString()
-            println("++ tabActive = $tabActive")
         }
         loadInitial()
     }
@@ -142,7 +145,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         search_input_view?.searchTextView?.setOnClickListener { search_input_view?.searchTextView?.isCursorVisible = true }
 
         filter_action_button.setOnClickListener {
-            // startActivity(Intent(context, SomFilterActivity::class.java))
             val intentFilter = context?.let { ctx -> SomFilterActivity.createIntent(ctx, paramOrder) }
             startActivityForResult(intentFilter, REQUEST_FILTER)
         }
@@ -151,12 +153,10 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun setInitialValue() {
         paramOrder.startDate = getCalculatedFormattedDate("dd/MM/yyyy", -90)
         paramOrder.endDate = Date().toFormattedString("dd/MM/yyyy")
-
-        println("++ paramOrder.startDate = ${paramOrder.startDate}")
-        println("++ paramOrder.endDate = ${paramOrder.endDate}")
     }
 
     private fun loadInitial() {
+        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
         somListViewModel.loadSomListData(
                 GraphqlHelper.loadRawString(resources, R.raw.gql_som_ticker),
                 GraphqlHelper.loadRawString(resources, R.raw.gql_som_filter))
@@ -198,7 +198,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 var indexTicker = 0
                 tickerList.forEach {
                     if (it.isActive) {
-                        // listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, true, indexTicker))
                         listTickerData.add(TickerData("", it.shortDesc, Ticker.TYPE_ANNOUNCEMENT, true))
                         indexTicker++
                     }
@@ -206,19 +205,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
                 context?.let {
                     val adapter = TickerPagerAdapter(it, listTickerData)
-                    /*adapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
-                        override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                            println("++ linkUrl = $linkUrl, itemData = ${itemData.toString()}")
-                            val index = itemData as Int
-                            // showTickerBottomSheet(listTickerData[index].description)
-                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                        }
-                    })*/
                     adapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
                         override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                            // changed to open bottomsheet
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                            // showTickerBottomSheet(listTickerData[])
                         }
 
                     })
@@ -231,9 +220,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
                     ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            // changed to open bottomsheet
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                            // showTickerBottomSheet(it.body)
                         }
 
                         override fun onDismiss() {}
@@ -244,12 +231,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         } else {
             ticker_info?.visibility = View.GONE
         }
-    }
-
-    private fun showTickerBottomSheet(desc: String) {
-        val tickerDetailBottomSheetFragment =
-                TickerDetailBottomSheetFragment.newInstance(desc)
-        tickerDetailBottomSheetFragment.show(fragmentManager, "")
     }
 
     private fun renderFilter() {
@@ -264,10 +245,10 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             filterItem.type = it.key
 
             if (it.isChecked || tabActive.equals(it.key, true) || paramOrder.statusList == it.orderStatusIdList) {
+                SomAnalytics.eventClickQuickFilter(it.orderStatus)
                 currentIndex = index
                 filterItem.setColorBorder(R.color.tkpd_main_green)
                 filterItem.isSelected = true
-                // paramOrder.statusList = it.orderStatusIdList
                 if (paramOrder.statusList.isEmpty()) paramOrder.statusList = it.orderStatusIdList
 
             }  else {
@@ -353,6 +334,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         empty_state_order_list.visibility = View.VISIBLE
         title_empty?.text = title
         desc_empty?.text = desc
+        ic_empty?.loadImageDrawable(R.drawable.ic_som_error_list)
         btn_cek_peluang?.apply {
             visibility = View.VISIBLE
             text = getString(R.string.retry_load_list)
@@ -370,6 +352,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         desc_empty?.text = getString(R.string.empty_peluang_desc)
         btn_cek_peluang?.visibility = View.VISIBLE
         btn_cek_peluang?.setOnClickListener {
+            eventClickButtonPeluangInEmptyState(tabActive)
             startActivity(RouteManager.getIntent(context, ApplinkConstInternalOrder.OPPORTUNITY))
         }
     }
@@ -378,6 +361,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onSearchSubmitted(text: String?) {
         text?.let {
+            eventSubmitSearch(text)
             paramOrder.search = text
             refreshHandler?.startRefresh()
         }
@@ -438,6 +422,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onListItemClicked(orderId: String) {
+        eventClickOrder()
         Intent(activity, SomDetailActivity::class.java).apply {
             putExtra(PARAM_ORDER_ID, orderId)
             startActivityForResult(this, FLAG_DETAIL)

@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangInEmptyState
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_TYPE
@@ -109,7 +110,7 @@ class SomFilterFragment : BaseDaggerFragment() {
 
     private fun setListeners() {
         btn_terapkan?.setOnClickListener {
-            println("++ currentFilterParams = $currentFilterParams")
+            eventClickButtonPeluangInEmptyState()
             activity?.setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(PARAM_LIST_ORDER, currentFilterParams)
             })
