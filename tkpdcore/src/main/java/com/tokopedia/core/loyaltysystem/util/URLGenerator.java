@@ -24,8 +24,6 @@ import java.net.URLEncoder;
 public class URLGenerator {
 
     private static final String SEAMLESS_LOGIN = "seamless?";
-    private static final String PARAM_APPCLIENT_ID = "appClientId";
-    private static final String HOST_TOKOPEDIA = "tokopedia.com";
 
     public static String generateURLLucky(String url, Context context) {
         Uri uri = Uri.parse(url);
