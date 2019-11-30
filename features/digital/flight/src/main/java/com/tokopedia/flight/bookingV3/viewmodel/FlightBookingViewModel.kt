@@ -171,44 +171,29 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 }.getSuccessData<FlightVerify.Response>().flightVerify
             }
 
+            val flightVerifyData = data.await()
+
             if (promoCode.isNotEmpty()) {
                 val checkPromoData = async { checkVoucher(checkVoucherQuery, getCartId()) }
-                val flightVerifyData = data.await()
                 flightVerifyData.data.cartItems[0].promoEligibility = checkPromoData.await()
+            }
 
-                if (!flightVerifyData.meta.needRefresh && flightVerifyData.data.cartItems.isNotEmpty()) {
-                    verifyRetryCount = 0
-                    isStillLoading = false
-                    _flightVerifyResult.value = Success(flightVerifyData)
-                    pastVerifyParam = convertVerifyParamToString(bookingVerifyParam)
-                } else {
-                    if (flightVerifyData.meta.needRefresh && flightVerifyData.meta.maxRetry >= verifyRetryCount) {
-                        verifyRetryCount++
-                        delay(flightVerifyData.meta.refreshTime * 1000.toLong())
-                        verifyCartData(query, bookingVerifyParam, checkVoucherQuery)
-                    } else {
-                        verifyRetryCount = 0
-                        _flightVerifyResult.value = Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY))
-                    }
-                }
+            if (!flightVerifyData.meta.needRefresh && flightVerifyData.data.cartItems.isNotEmpty()) {
+                verifyRetryCount = 0
+                isStillLoading = false
+                _flightVerifyResult.value = Success(flightVerifyData)
+                pastVerifyParam = convertVerifyParamToString(bookingVerifyParam)
             } else {
-                val flightVerifyData = data.await()
-                if (!flightVerifyData.meta.needRefresh && flightVerifyData.data.cartItems.isNotEmpty()) {
-                    verifyRetryCount = 0
-                    isStillLoading = false
-                    _flightVerifyResult.value = Success(flightVerifyData)
-                    pastVerifyParam = convertVerifyParamToString(bookingVerifyParam)
+                if (flightVerifyData.meta.needRefresh && flightVerifyData.meta.maxRetry >= verifyRetryCount) {
+                    verifyRetryCount++
+                    delay(flightVerifyData.meta.refreshTime * 1000.toLong())
+                    verifyCartData(query, bookingVerifyParam, checkVoucherQuery)
                 } else {
-                    if (flightVerifyData.meta.needRefresh && flightVerifyData.meta.maxRetry >= verifyRetryCount) {
-                        verifyRetryCount++
-                        delay(flightVerifyData.meta.refreshTime * 1000.toLong())
-                        verifyCartData(query, bookingVerifyParam, checkVoucherQuery)
-                    } else {
-                        verifyRetryCount = 0
-                        _flightVerifyResult.value = Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY))
-                    }
+                    verifyRetryCount = 0
+                    _flightVerifyResult.value = Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY))
                 }
             }
+
         }) {
             _flightVerifyResult.value = Fail(it)
         }
