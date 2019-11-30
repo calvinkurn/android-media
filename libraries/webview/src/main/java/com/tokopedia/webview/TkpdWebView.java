@@ -80,6 +80,8 @@ public class TkpdWebView extends WebView {
      * isUseFlag=true will add custom query parameter
      */
     public void loadAuthUrl(@NonNull String url,@Nullable UserSessionInterface userSession, boolean isUseFlag) {
+        url = WebViewHelper.appendGAClientIdAsQueryParam(url, getContext());
+
         String urlToLoad;
         if (isUseFlag) {
             urlToLoad = generateUri(url);
@@ -176,7 +178,7 @@ public class TkpdWebView extends WebView {
     @Override
     public void loadUrl(@NonNull String url, @NonNull Map<String, String> additionalHttpHeaders) {
         if(WebViewHelper.isUrlValid(url)){
-            super.loadUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, getContext()), additionalHttpHeaders);
+            super.loadUrl(url, additionalHttpHeaders);
         }else {
             if(!GlobalConfig.DEBUG)
                 Crashlytics.log(
