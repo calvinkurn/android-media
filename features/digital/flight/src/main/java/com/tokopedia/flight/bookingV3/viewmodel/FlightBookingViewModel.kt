@@ -683,7 +683,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             passenger.flightBookingLuggageMetaViewModels = listOf()
         }
         _flightPassengersData.value = passengerViewModels
-        val bookingVerifyParam = createVerifyParam(totalPrice = totalPrice, contactName = contactName,
+        val bookingVerifyParam = createVerifyParam(totalPrice = totalPrice, cartId = getCartId(), contactName = contactName,
                 contactEmail = contactEmail, contactPhone = contactPhone, contactCountry = contactCountry)
         verifyCartData(verifyQuery, bookingVerifyParam, checkVoucherQuery)
     }
