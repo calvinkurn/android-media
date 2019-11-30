@@ -84,7 +84,7 @@ internal class SimilarSearchViewModel(
 
         if (similarProductModelList.isEmpty()) {
             addEmptyResultView()
-            trackingEmptyResultEventLiveData.postValue(Event(true))
+            postTrackingEmptyResult()
         }
         else {
             addTitleView()
@@ -103,6 +103,10 @@ internal class SimilarSearchViewModel(
 
     private fun addEmptyResultView() {
         similarSearchViewModelList.add(EmptyResultViewModel())
+    }
+
+    private fun postTrackingEmptyResult() {
+        trackingEmptyResultEventLiveData.postValue(Event(true))
     }
 
     private fun addTitleView() {
@@ -168,8 +172,14 @@ internal class SimilarSearchViewModel(
     private fun catchGetSimilarProductsError(throwable: Throwable?) {
         throwable?.printStackTrace()
 
-        similarSearchLiveData.postValue(Error(""))
-        trackingEmptyResultEventLiveData.postValue(Event(true))
+        addEmptyResultView()
+        postTrackingEmptyResult()
+
+        postSimilarSearchLiveDataError()
+    }
+
+    private fun postSimilarSearchLiveDataError() {
+        similarSearchLiveData.postValue(Error("", similarSearchViewModelList))
     }
 
     fun getOriginalProductLiveData(): LiveData<Product> {

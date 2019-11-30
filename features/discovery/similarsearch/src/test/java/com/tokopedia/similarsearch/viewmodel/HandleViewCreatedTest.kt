@@ -151,11 +151,11 @@ internal class HandleViewCreatedTest: Spek({
                 )
             }
 
-            Then("assert similar search state is error and does not contain data") {
+            Then("assert similar search state is error and contain empty search data") {
                 val similarSearchLiveData = similarSearchViewModel.getSimilarSearchLiveData().value
 
                 similarSearchLiveData.shouldBeInstanceOf<State.Error<*>>()
-                similarSearchLiveData.shouldBeNullOrEmpty()
+                similarSearchLiveData.shouldHaveCorrectErrorResultView()
             }
 
             Then("assert has next page is false") {
@@ -197,11 +197,11 @@ internal class HandleViewCreatedTest: Spek({
                 )
             }
 
-            Then("assert similar search state is error and does not contain data") {
+            Then("assert similar search state is error and contains empty search data") {
                 val similarSearchLiveData = similarSearchViewModel.getSimilarSearchLiveData().value
 
                 similarSearchLiveData.shouldBeInstanceOf<State.Error<*>>()
-                similarSearchLiveData.shouldBeNullOrEmpty()
+                similarSearchLiveData.shouldHaveCorrectErrorResultView()
             }
 
             Then("assert has next page is false") {

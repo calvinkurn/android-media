@@ -76,8 +76,14 @@ internal fun State<List<Any>>?.shouldHaveCorrectViewModelListWithoutLoadingMore(
     this.shouldHaveSimilarProductItemModel(2, similarProductItemList)
 }
 
-internal fun State<List<Any>>?.shouldBeNullOrEmpty() {
-    this?.data.isNullOrEmpty().shouldBe(true, "Data should be null")
+internal fun State<List<Any>>?.shouldHaveCorrectErrorResultView() {
+    this.shouldNotBeNull()
+
+    // Empty Result
+    this.shouldHaveCorrectDataSize(1)
+
+    // Error is shown as empty result
+    this.shouldHaveEmptyResultViewModel(0)
 }
 
 internal fun State<List<Any>>?.shouldHaveCorrectEmptyResultView() {
