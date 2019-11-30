@@ -49,12 +49,19 @@ class FlightBookingPriceAdapter: RecyclerView.Adapter<FlightBookingPriceAdapter.
         notifyDataSetChanged()
     }
 
-    fun countTotalPrice() {
+    private fun countTotalPrice() {
         var totalPrice = 0
         for (item in routePriceList) totalPrice += item.priceNumeric
         for (item in othersPriceList) totalPrice += item.priceNumeric
         for (item in amenityPriceList) totalPrice += item.priceNumeric
         listener.onPriceChangeListener(FlightCurrencyFormatUtil.convertToIdrPrice(totalPrice), totalPrice)
+    }
+
+    fun getTotalPriceWithoutAmenities(): Int {
+        var totalPrice = 0
+        for (item in routePriceList) totalPrice += item.priceNumeric
+        for (item in othersPriceList) totalPrice += item.priceNumeric
+        return totalPrice
     }
 
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {

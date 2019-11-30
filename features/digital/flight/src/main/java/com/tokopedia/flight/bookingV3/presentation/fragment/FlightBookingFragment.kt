@@ -789,7 +789,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.proceedCheckoutWithoutLuggage(
                 getCheckVoucherQuery(),
                 getVerifyCartQuery(),
-                totalCartPrice,
+                flightPriceAdapter.getTotalPriceWithoutAmenities(),
                 widget_traveller_info.getContactName(),
                 widget_traveller_info.getContactEmail(),
                 widget_traveller_info.getContactPhoneNum(),
@@ -810,7 +810,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         finishActivityToHomepage()
     }
 
-    fun navigateToOtpPage() {
+    private fun navigateToOtpPage() {
         startActivityForResult(RouteManager.getIntent(context, ApplinkConst.FLIGHT_PHONE_VERIFICATION), REQUEST_CODE_OTP)
     }
 

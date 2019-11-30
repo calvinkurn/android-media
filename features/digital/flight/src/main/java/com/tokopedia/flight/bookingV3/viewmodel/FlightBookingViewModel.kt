@@ -443,7 +443,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
-    fun addPassengerAmenitiesPrices() {
+    private fun addPassengerAmenitiesPrices(): Int {
         val flightBookingPassengers = flightPassengersData.value ?: listOf()
         // amenities
         val meals = hashMapOf<String, Int>()
@@ -485,19 +485,23 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         }
 
         val prices = listOf<FlightCart.PriceDetail>().toMutableList()
+        var grandTotalAmenityPrice = 0
         for ((key, value) in meals) {
             val count = mealsCount[key] ?: 1
             if (count > 1) prices.add(FlightCart.PriceDetail(String.format("%s %s (x%s)", "Makanan", key, count), FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
             else prices.add(FlightCart.PriceDetail(String.format("%s %s", "Makanan",
                     key), FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
+            grandTotalAmenityPrice += value
         }
         for ((key, value) in luggages) {
             val count = luggageCount[key] ?: 1
             if (count > 1) prices.add(FlightCart.PriceDetail(String.format("%s %s (x%s)", "Bagasi", key, count), FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
             else prices.add(FlightCart.PriceDetail(String.format("%s %s", "Bagasi", key),
                     FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
+            grandTotalAmenityPrice += value
         }
         _flightAmenityPriceData.value = prices
+        return grandTotalAmenityPrice
     }
 
     fun updatePromoData(promoData: PromoData) {
@@ -552,8 +556,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     private suspend fun checkVoucher(query: String, cartId: String): FlightVerify.PromoEligibility {
         val promoEligibility = FlightVerify.PromoEligibility()
-        val promoCode = (flightPromoResult.value as FlightPromoViewEntity).promoData.promoCode
-        val params = mapOf(PARAM_CART_ID to cartId, PARAM_VOUCHER_CODE to promoCode)
+        val flightPromoViewEntity = (flightPromoResult.value as FlightPromoViewEntity)
+        val params = mapOf(PARAM_CART_ID to cartId, PARAM_VOUCHER_CODE to flightPromoViewEntity.promoData.promoCode)
         try {
             val voucher = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(query, FlightVoucher.Response::class.java, params)
@@ -562,11 +566,22 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
             promoEligibility.message = voucher.message
             promoEligibility.success = true
+
+            //update UI promoData
+            flightPromoViewEntity.promoData.description = "Anda akan mendapatkan " + voucher.message
+            _flightPromoResult.value = flightPromoViewEntity
+
             return promoEligibility
         } catch (e: Exception) {
             promoEligibility.success = false
-            if (!e.message.isNullOrEmpty()) promoEligibility.message = mapThrowableToFlightError(e.message
-                    ?: "").title
+            if (!e.message.isNullOrEmpty()) {
+                val error = mapThrowableToFlightError(e.message ?: "")
+                promoEligibility.message = error.title
+                if (error.id.equals("4")) promoEligibility.message += "Promo akan dihapus jika lanjut bayar"
+
+                //update UI promoData (reset)
+                _flightPromoResult.value = FlightPromoViewEntity(isCouponEnable = true)
+            }
             return promoEligibility
         }
     }
@@ -676,19 +691,27 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun proceedCheckoutWithoutLuggage(checkVoucherQuery: String, verifyQuery: String,
-                                      totalPrice: Int, contactName: String, contactEmail: String,
+                                      totalPriceWithoutAmenities: Int, contactName: String, contactEmail: String,
                                       contactPhone: String, contactCountry: String) {
         val passengerViewModels = flightPassengersData.value ?: listOf()
         for (passenger in passengerViewModels) {
             passenger.flightBookingLuggageMetaViewModels = listOf()
         }
         _flightPassengersData.value = passengerViewModels
-        val bookingVerifyParam = createVerifyParam(totalPrice = totalPrice, cartId = getCartId(), contactName = contactName,
-                contactEmail = contactEmail, contactPhone = contactPhone, contactCountry = contactCountry)
+
+        val amenitiesPrice = addPassengerAmenitiesPrices()
+
+        val bookingVerifyParam = createVerifyParam(
+                totalPrice = totalPriceWithoutAmenities + amenitiesPrice,
+                cartId = getCartId(),
+                contactName = contactName,
+                contactEmail = contactEmail,
+                contactPhone = contactPhone,
+                contactCountry = contactCountry)
         verifyCartData(verifyQuery, bookingVerifyParam, checkVoucherQuery)
     }
 
-    fun mapThrowableToFlightError(message: String): FlightError {
+    private fun mapThrowableToFlightError(message: String): FlightError {
         val gson = Gson()
         val itemType = object : TypeToken<List<FlightError>>() {}.type
         return gson.fromJson<List<FlightError>>(message, itemType)[0]
