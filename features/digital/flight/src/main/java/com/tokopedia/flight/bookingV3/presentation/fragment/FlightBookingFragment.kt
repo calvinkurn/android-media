@@ -896,6 +896,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     Activity.RESULT_CANCELED -> {
                         needToDoChangesOnFirstPassenger = false
                         switch_traveller_as_passenger.isChecked = passengerAsTraveller
+                        needToDoChangesOnFirstPassenger = true
                     }
                 }
             }
