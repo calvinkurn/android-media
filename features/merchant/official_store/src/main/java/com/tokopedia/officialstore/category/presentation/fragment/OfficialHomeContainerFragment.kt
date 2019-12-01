@@ -48,6 +48,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var statusBar: View? = null
     private var mainToolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
+    private var loadingLayout: View? = null
     private var viewPager: ViewPager? = null
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
@@ -120,6 +121,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         viewModel.officialStoreCategoriesResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    removeLoading()
                     populateCategoriesData(it.data)
                 }
                 is Fail -> {
@@ -184,6 +186,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         configStatusBar(view)
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
+        loadingLayout = view.findViewById(R.id.view_category_tab_loading)
         viewPager = view.findViewById(R.id.viewpager)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
@@ -200,6 +203,11 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
             else -> View.GONE
         }
+    }
+
+    private fun removeLoading() {
+        loadingLayout?.visibility = View.GONE
+        tabLayout?.visibility = View.VISIBLE
     }
 
     private fun configMainToolbar(view: View) {

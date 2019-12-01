@@ -34,8 +34,16 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl7"
             android:background="@color/white"
+            android:visibility="gone"
             app:tabMode="scrollable"
             app:tabIndicatorColor="@color/Purple_P600" />
+
+        <include
+            android:id="@+id/view_category_tab_loading"
+            layout="@layout/view_official_store_category_loading"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"  />
 
     </com.google.android.material.appbar.AppBarLayout>
 
