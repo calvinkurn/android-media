@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
@@ -13,7 +12,6 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
-import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
@@ -28,27 +26,25 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_banner_shop_product;
     private static final String TAG = BannerShopProductViewHolder.class.getSimpleName();
-    private ImageLoader imageLoader;
     private ImpressedImageView imageView;
     private TextView descTxt;
     private TextView priceTxt;
-    private ConstraintLayout layoutContainer;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
     private final TopAdsItemImpressionListener impressionListener;
     private Context context;
+    private View container;
 
 
     public BannerShopProductViewHolder(View itemView, TopAdsBannerClickListener topAdsBannerClickListener,
                                        TopAdsItemImpressionListener itemImpressionListener) {
         super(itemView);
+        this.container = itemView;
         this.context = itemView.getContext();
         this.topAdsBannerClickListener = topAdsBannerClickListener;
         this.impressionListener = itemImpressionListener;
-        imageLoader = new ImageLoader(itemView.getContext());
         imageView = itemView.findViewById(R.id.icon);
         descTxt = itemView.findViewById(R.id.description);
         priceTxt = itemView.findViewById(R.id.price);
-        layoutContainer = itemView.findViewById(R.id.layout_container);
     }
 
     @Override
@@ -63,9 +59,9 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
                 }
             }
         });
-        descTxt.setText(TopAdsBannerView.escapeHTML(element.getProduct().getName()));
+        descTxt.setText(TopAdsBannerView.Companion.escapeHTML(element.getProduct().getName()));
         priceTxt.setText(element.getProduct().getPriceFormat());
-        layoutContainer.setOnClickListener(new View.OnClickListener() {
+        container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (topAdsBannerClickListener != null) {

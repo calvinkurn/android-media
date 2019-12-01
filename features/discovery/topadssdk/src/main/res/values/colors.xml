@@ -23,4 +23,5 @@
     <color name="bottom_label_color">#42b549</color> <!-- Use with white text -->
     <color name="white_solid">#ffffffff</color>
     <color name="gradient_solid_bu_widget">#ffe5f5ff</color>
+    <color name="topads_borderColor">#50000000</color>
 </resources>

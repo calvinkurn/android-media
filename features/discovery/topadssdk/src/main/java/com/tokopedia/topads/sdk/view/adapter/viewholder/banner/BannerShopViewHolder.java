@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.banner;
 import android.content.Context;
 import androidx.annotation.LayoutRes;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     private static final String TAG = BannerShopViewHolder.class.getSimpleName();
     private TextView descriptionTxt;
     private TextView ctaTxt;
+    private ImageView bg;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
     private final TopAdsItemImpressionListener impressionListener;
 
@@ -38,13 +40,14 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
         this.impressionListener = itemImpressionListener;
         descriptionTxt = (TextView) itemView.findViewById(R.id.description);
         ctaTxt = (TextView) itemView.findViewById(R.id.kunjungi_toko);
+        bg = itemView.findViewById(R.id.bg);
     }
 
     @Override
     public void bind(final BannerShopViewModel element) {
         final Cpm cpm = element.getCpmData().getCpm();
         if(cpm!=null) {
-            descriptionTxt.setText(TopAdsBannerView.escapeHTML(cpm.getCpmShop().getSlogan()));
+            descriptionTxt.setText(TopAdsBannerView.Companion.escapeHTML(cpm.getCpmShop().getSlogan()));
             ctaTxt.setText(cpm.getCta());
             ctaTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -55,6 +58,14 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                     }
                 }
             });
+            if(cpm.getCpmShop().isPowerMerchant()){
+                bg.setImageResource(R.drawable.bg_pm_ads);
+            } else {
+                bg.setImageResource(R.drawable.bg_rm_ads);
+            }
+            if(cpm.getCpmShop().isOfficial()) {
+                bg.setImageResource(R.drawable.bg_os_ads);
+            }
         }
     }
 }
