@@ -89,6 +89,9 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UPLOAD_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_MESSAGE_LIST
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
@@ -98,6 +101,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_UBAH_RESI
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
+import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
@@ -292,7 +296,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.shipment.awbUploadProofText,
                 detailResponse.bookingInfo.onlineBooking.bookingCode,
                 detailResponse.bookingInfo.onlineBooking.state,
-                detailResponse.bookingInfo.onlineBooking.message)
+                detailResponse.bookingInfo.onlineBooking.barcodeType)
 
         // products
         val dataProducts = SomDetailProducts(detailResponse.listProduct)
@@ -323,8 +327,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.bookingInfo.driver.phone,
                 detailResponse.bookingInfo.driver.licenseNumber,
                 detailResponse.bookingInfo.onlineBooking.bookingCode,
-                detailResponse.bookingInfo.onlineBooking.state,
-                detailResponse.bookingInfo.onlineBooking.message)
+                detailResponse.bookingInfo.onlineBooking.state)
 
         val dataPayments = SomDetailPayments(
                 detailResponse.paymentSummary.productsPriceText,
@@ -934,6 +937,14 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         val phone = "tel:$strPhoneNo"
         intent.data = Uri.parse(phone)
         startActivity(intent)
+    }
+
+    override fun onShowBookingCode(bookingCode: String, bookingType: String) {
+        Intent(activity, SomDetailBookingCodeActivity::class.java).apply {
+            putExtra(PARAM_BOOKING_CODE, detailResponse.bookingInfo.onlineBooking.bookingCode)
+            putExtra(PARAM_BOOKING_TYPE, detailResponse.bookingInfo.onlineBooking.barcodeType)
+            startActivity(this)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

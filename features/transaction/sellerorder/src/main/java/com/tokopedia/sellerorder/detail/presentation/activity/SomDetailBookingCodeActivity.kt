@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.detail.presentation.activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailBookingCodeFragment
 
 /**
@@ -14,7 +15,8 @@ class SomDetailBookingCodeActivity: BaseSimpleActivity() {
         if (intent.extras != null) {
             bundle = intent.extras
         } else {
-            // bundle.putString(PARAM_ORDER_ID, "")
+            bundle.putString(SomConsts.PARAM_BOOKING_CODE, "")
+            bundle.putString(SomConsts.PARAM_BOOKING_TYPE, "")
         }
         return SomDetailBookingCodeFragment.newInstance(bundle)
     }

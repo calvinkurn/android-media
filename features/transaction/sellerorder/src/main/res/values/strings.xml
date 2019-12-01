@@ -164,4 +164,12 @@
     <string name="barcode_helper">Tunjukkan barcode atau kode booking kepada petugas di gerai kurir saat mengirim barang.</string>
     <string name="message_label">Informasi tambahan mengenai sistem kode booking</string>
 
+    <string name="online_booking_msg_1">Resi akan otomatis terisi maksimal 1 x 24 jam  setelah  kode booking  di-scan.</string>
+    <string name="online_booking_msg_2">Lakukan cek berkala untuk memastikan pesanan sudah  pindah ke daftar transaksi.</string>
+
+    <string-array name="online_booking_msg">
+        <item>@string/online_booking_msg_1</item>
+        <item>@string/online_booking_msg_1</item>
+    </string-array>
+
 </resources>

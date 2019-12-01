@@ -242,7 +242,11 @@ data class SomDetailOrder (
 
                         @SerializedName("message")
                         @Expose
-                        val message: String = ""
+                        val message: String = "",
+
+                        @SerializedName("barcode_type")
+                        @Expose
+                        val barcodeType: String = ""
                 )
             }
 

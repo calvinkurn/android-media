@@ -28,6 +28,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onTextCopied(label: String, str: String)
         fun onInvalidResiUpload(awbUploadUrl: String)
         fun onDialPhone(strPhoneNo: String)
+        fun onShowBookingCode(bookingCode: String, bookingType: String)
     }
 
     companion object {

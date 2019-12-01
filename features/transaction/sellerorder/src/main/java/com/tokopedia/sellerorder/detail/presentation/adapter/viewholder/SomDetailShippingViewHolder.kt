@@ -105,6 +105,9 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     itemView.booking_code_see_btn.apply {
                         visibility = View.VISIBLE
                         setOnClickListener {
+                            actionListener.onShowBookingCode(
+                                    item.dataObject.onlineBookingCode,
+                                    item.dataObject.onlineBookingType)
                             // intent ke BookingCodeActivity?
                             // startActivity(BookingCodeActivity.createInstance(this, codeData))
                         }

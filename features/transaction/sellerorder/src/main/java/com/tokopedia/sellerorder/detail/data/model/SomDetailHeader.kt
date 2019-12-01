@@ -20,4 +20,4 @@ data class SomDetailHeader (
         val awbUploadProofText: String = "",
         val onlineBookingCode: String = "",
         val onlineBookingState: Int = -1,
-        val onlineBookingMsg: String = "")
+        val onlineBookingType: String = "")

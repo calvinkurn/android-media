@@ -78,6 +78,7 @@ query GetSOMDetail($orderID: String!, $lang: String!){
         booking_code
         state
         message
+        barcode_type
       }
     }
     receiver{
