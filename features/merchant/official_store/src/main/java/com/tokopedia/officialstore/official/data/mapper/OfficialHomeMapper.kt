@@ -23,7 +23,6 @@ class OfficialHomeMapper {
         val BANNER_POSITION = 0
         val BENEFIT_POSITION = 1
         val FEATURE_SHOP_POSITION = 2
-        val loadingModel: LoadingModel? = null
 
         fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?) {
             notifyElement(BANNER_POSITION, OfficialBannerViewModel(banner.banners,
@@ -71,14 +70,6 @@ class OfficialHomeMapper {
             }
             adapter?.notifyItemRangeInserted(adapter.lastIndex, productRecommendation.recommendationItemList.size)
         }
-
-//        fun mappingLoadingBanner(adapter: OfficialHomeAdapter?) {
-//            loadingModel?.let {
-//                adapter?.getVisitables()?.set(BANNER_POSITION, loadingModel)
-//                adapter?.notifyItemChanged(BANNER_POSITION)
-//            }
-////            notifyElement(BANNER_POSITION, , adapter)
-//        }
 
         fun notifyElement(position: Int, element: Visitable<*>, adapter: OfficialHomeAdapter?) {
             adapter?.getVisitables()?.set(position, element)

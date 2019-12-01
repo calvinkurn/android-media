@@ -135,10 +135,6 @@ class OfficialHomeFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-//        adapter?.showLoadingBanner()
-//        OfficialHomeMapper.mappingLoadingBanner(adapter)
-
         observeBannerData()
         observeBenefit()
         observeFeaturedShop()
@@ -577,7 +573,6 @@ class OfficialHomeFragment :
             }
             adapter?.notifyDataSetChanged()
         }
-        // loadData(true)
     }
 
     private fun initFirebasePerformanceMonitoring() {
