@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.viewmodel
 
 import android.content.Intent
-import android.text.TextUtils
 import androidx.collection.ArrayMap
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -33,6 +32,7 @@ import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCount
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -87,13 +87,16 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     val moveToEtalaseResult = MutableLiveData<Result<Boolean>>()
 
     var multiOrigin: WarehouseInfo = WarehouseInfo()
+    val dynamicProductInfoP1 = MutableLiveData<Result<DynamicProductInfoP1>>()
+
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
-    var dynamicProductInfoP1 = MutableLiveData<Result<DynamicProductInfoP1>>()
+    var shopInfo: ShopInfo? = null
 
     private var submitTicketSubscription: Subscription? = null
 
     fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
+
     val userId: String
         get() = userSessionInterface.userId
 
@@ -171,23 +174,15 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                         productInfo.productInfo.basic.id)
             } else null
 
-            val userId = if (!TextUtils.isEmpty(userSessionInterface.userId)) {
-                userSessionInterface.userId.toInt()
-            } else {
-                0
-            }
-
-            val categoryId = if (!TextUtils.isEmpty(productInfo.productInfo.category.id)) {
-                productInfo.productInfo.category.id.toInt()
-            } else {
-                0
-            }
+            val userIdInt = userId.toIntOrNull() ?: 0
+            val categoryId = productInfo.productInfo.category.id.toIntOrNull() ?: 0
 
             val p2GeneralAsync: Deferred<ProductInfoP2General> = getProductInfoP2GeneralAsync(productInfo.productInfo.basic.shopID,
                     productInfo.productInfo.basic.id, productInfo.productInfo.basic.price.toInt(),
                     productInfo.productInfo.basic.condition, productInfo.productInfo.basic.name,
-                    categoryId, productInfo.productInfo.basic.catalogID.toString(), userId)
+                    categoryId, productInfo.productInfo.basic.catalogID.toString(), userIdInt)
 
+            shopInfo = p2ShopDeferred.await().shopInfo
             p2ShopDataResp.value = p2ShopDeferred.await()
             p2General.value = p2GeneralAsync.await()
             p2LoginDeferred?.let {
@@ -315,7 +310,8 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                         val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
                                 pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                                 pageName = ProductDetailConstant.DEFAULT_PAGE_NAME,
-                                productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
+                                productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID
+                                        ?: "")
                         )).toBlocking()
                         loadTopAdsProduct.postValue(Success(recomData.first() ?: emptyList()))
                     }
