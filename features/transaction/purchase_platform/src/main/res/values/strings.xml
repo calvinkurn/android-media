@@ -267,7 +267,8 @@
     <string name="corner_error_stub">Penjual tidak melayani pengiriman dengan SiCepat</string>
     <string name="emas_checkout_title">Bulatkan Tagihan dengan Nabung Emas</string>
     <string name="emas_checkout_desc" formatted="false"><![CDATA[%s <b>%s</b>]]></string>
-    <string name="checkout_shipment_label_tradein" formatted="false">Kurir akan menelfon %s untuk tukar HP di tujuan pengiriman. Ganti nomor</string>
+    <string name="message_trade_in_checkout_delivery_info" formatted="false">Kurir akan menelfon %s untuk tukar HP di tujuan pengiriman. Ganti nomor</string>
+    <string name="message_trade_in_checkout_pickup_info">Barang akan dikirim ke titik Drop Off dan dilakukan penukaran dengan HP lama</string>
     <string name="label_promo">Promo</string>
     <string name="label_total_nilai_promo">Total Nilai Promo</string>
 
@@ -391,5 +392,9 @@
     <string name="title_choose_other_template">Pilih Template Lain</string>
     <string name="label_button_apply_credit">Ajukan Kredit</string>
     <string name="otdg_gtm_label">Jaminan Pengiriman Tepat Waktu</string>
+    <string name="lebal_trade_in_address_mode">Pilih Metode Pengambilan</string>
+    <string name="label_tab_trade_in_address_deliver">Antar</string>
+    <string name="label_tab_trade_in_address_pickup">Titik Ambil</string>
+    <string name="label_trade_in_shipping_price">Pilih lokasi untuk menampilkan harga</string>
 
 </resources>
