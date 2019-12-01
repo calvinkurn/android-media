@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -128,14 +129,16 @@ class OfficialHomeFragment :
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
-        adapter?.showLoadingBanner()
-        OfficialHomeMapper.mappingLoadingBanner(adapter)
 
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+//        adapter?.showLoadingBanner()
+//        OfficialHomeMapper.mappingLoadingBanner(adapter)
+
         observeBannerData()
         observeBenefit()
         observeFeaturedShop()
@@ -174,9 +177,9 @@ class OfficialHomeFragment :
 
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(this, Observer {
-            // adapter?.removeLoading()
             when (it) {
                 is Success -> {
+                    removeLoading()
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                     setLoadMoreListener()
@@ -565,6 +568,16 @@ class OfficialHomeFragment :
             tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
             sentDynamicChannelTrackers.add(channelData.id + impressionTag)
         }
+    }
+
+    private fun removeLoading() {
+        recyclerView?.post {
+            adapter?.getVisitables()?.removeAll {
+                it is LoadingModel
+            }
+            adapter?.notifyDataSetChanged()
+        }
+        // loadData(true)
     }
 
     private fun initFirebasePerformanceMonitoring() {

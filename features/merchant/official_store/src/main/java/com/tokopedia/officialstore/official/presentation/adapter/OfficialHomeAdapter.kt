@@ -17,6 +17,7 @@ class OfficialHomeAdapter(adapterTypeFactory: OfficialHomeAdapterTypeFactory):
      * preparing space for banner, benefit, and featuredshop
      */
     fun resetState() {
+        visitables.add(OfficialHomeMapper.BANNER_POSITION, loadingModel)
         visitables.add(OfficialHomeMapper.BANNER_POSITION, OfficialBannerViewModel(mutableListOf(), ""))
         visitables.add(OfficialHomeMapper.BENEFIT_POSITION, OfficialBenefitViewModel(arrayListOf()))
         visitables.add(OfficialHomeMapper.FEATURE_SHOP_POSITION, OfficialFeaturedShopViewModel(arrayListOf(), null, ""))
@@ -34,9 +35,9 @@ class OfficialHomeAdapter(adapterTypeFactory: OfficialHomeAdapterTypeFactory):
         super.onBindViewHolder(holder, position, payloads)
     }
 
-    fun showLoadingBanner() {
-        visitables.add(OfficialHomeMapper.BANNER_POSITION, loadingModel)
-    }
+//    fun showLoadingBanner() {
+//        visitables.add(OfficialHomeMapper.BANNER_POSITION, loadingModel)
+//    }
 
     fun removeLoading() {
         visitables.remove(loadingModel)

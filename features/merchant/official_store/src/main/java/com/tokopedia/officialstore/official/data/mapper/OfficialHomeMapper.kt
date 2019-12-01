@@ -72,13 +72,13 @@ class OfficialHomeMapper {
             adapter?.notifyItemRangeInserted(adapter.lastIndex, productRecommendation.recommendationItemList.size)
         }
 
-        fun mappingLoadingBanner(adapter: OfficialHomeAdapter?) {
-            loadingModel?.let {
-                adapter?.getVisitables()?.set(BANNER_POSITION, loadingModel)
-                adapter?.notifyItemChanged(BANNER_POSITION)
-            }
-//            notifyElement(BANNER_POSITION, , adapter)
-        }
+//        fun mappingLoadingBanner(adapter: OfficialHomeAdapter?) {
+//            loadingModel?.let {
+//                adapter?.getVisitables()?.set(BANNER_POSITION, loadingModel)
+//                adapter?.notifyItemChanged(BANNER_POSITION)
+//            }
+////            notifyElement(BANNER_POSITION, , adapter)
+//        }
 
         fun notifyElement(position: Int, element: Visitable<*>, adapter: OfficialHomeAdapter?) {
             adapter?.getVisitables()?.set(position, element)

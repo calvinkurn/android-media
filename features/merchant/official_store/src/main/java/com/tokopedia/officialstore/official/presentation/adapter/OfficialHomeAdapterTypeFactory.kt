@@ -49,7 +49,7 @@ class OfficialHomeAdapterTypeFactory(
     }
 
     override fun type(viewModel: LoadingModel): Int {
-        return OfficialLoadingBannerViewHolder.LAYOUT
+        return OfficialLoadingContentViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -62,7 +62,7 @@ class OfficialHomeAdapterTypeFactory(
             DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(parent, dcEventHandler)
             OfficialProductRecommendationTitleViewHolder.LAYOUT -> OfficialProductRecommendationTitleViewHolder(parent)
             OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(parent, recommendationListener)
-            OfficialLoadingBannerViewHolder.LAYOUT -> OfficialLoadingBannerViewHolder(parent)
+            OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(parent)
             HideViewHolder.LAYOUT -> HideViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

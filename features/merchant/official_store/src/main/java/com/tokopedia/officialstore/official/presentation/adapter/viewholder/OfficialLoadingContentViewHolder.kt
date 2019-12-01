@@ -7,11 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.officialstore.R
 
 
-class OfficialLoadingBannerViewHolder(itemView: View) : AbstractViewHolder<LoadingModel>(itemView) {
+class OfficialLoadingContentViewHolder(itemView: View) : AbstractViewHolder<LoadingModel>(itemView) {
 
     companion object {
         @LayoutRes
-        var LAYOUT = R.layout.viewmodel_official_loading
+        var LAYOUT = R.layout.viewmodel_official_loading_content
     }
 
     override fun bind(element: LoadingModel) { }
