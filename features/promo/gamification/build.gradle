@@ -45,6 +45,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.wishlistCommon)
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.presentation.viewHolders.RecommendationVH
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 //class PdpGamificationAdapter(val typeFactory: PdpGamificationAdapterTypeFactory,
 //                             visitables: List<Visitable<Any>>) :
@@ -24,18 +25,18 @@ import com.tokopedia.gamification.pdp.presentation.viewHolders.RecommendationVH
 //    }
 //
 //}
-class PdpGamificationAdapter(val visitables: List<Visitable<*>>) :
+class PdpGamificationAdapter(val visitables: List<Visitable<*>>, val recommendationListener: RecommendationListener) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(RecommendationVH.LAYOUT, parent, false)
-        return RecommendationVH(v)
+        return RecommendationVH(v, recommendationListener)
     }
 
     override fun getItemCount() = visitables.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is RecommendationVH){
-            holder.bind(visitables[position] as Visitable<Recommendation>)
+//            holder.bind(visitables[position] as Visitable<Recommendation>)
         }
     }
 
