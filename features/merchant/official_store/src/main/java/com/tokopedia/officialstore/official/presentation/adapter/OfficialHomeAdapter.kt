@@ -35,14 +35,6 @@ class OfficialHomeAdapter(adapterTypeFactory: OfficialHomeAdapterTypeFactory):
         super.onBindViewHolder(holder, position, payloads)
     }
 
-//    fun showLoadingBanner() {
-//        visitables.add(OfficialHomeMapper.BANNER_POSITION, loadingModel)
-//    }
-
-    fun removeLoading() {
-        visitables.remove(loadingModel)
-    }
-
     fun getVisitables(): MutableList<Visitable<*>> {
         return visitables
     }
