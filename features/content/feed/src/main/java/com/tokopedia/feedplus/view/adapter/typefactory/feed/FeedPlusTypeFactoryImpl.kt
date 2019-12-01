@@ -27,7 +27,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.kol.WhitelistViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
@@ -35,7 +34,6 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
 import com.tokopedia.feedplus.view.listener.FeedPlus
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
-import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
@@ -86,10 +84,6 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
         return EmptyFeedViewHolder.LAYOUT
     }
 
-    override fun type(whitelistViewModel: WhitelistViewModel): Int {
-        return WhitelistViewHolder.LAYOUT
-    }
-
     override fun type(emptyFeedBeforeLoginModel: EmptyFeedBeforeLoginModel): Int {
         return EmptyFeedBeforeLoginViewHolder.LAYOUT
     }
@@ -132,8 +126,6 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
             viewHolder = RetryViewHolder(view, viewListener)
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
             viewHolder = EmptyFeedBeforeLoginViewHolder(view, viewListener)
-        else if (type == WhitelistViewHolder.LAYOUT)
-            viewHolder = WhitelistViewHolder(view, viewListener)
         else if (type == DynamicPostViewHolder.LAYOUT) {
             viewHolder = DynamicPostViewHolder(
                     view,
