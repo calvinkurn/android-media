@@ -69,7 +69,7 @@ internal class SimilarSearchActivity: BaseSimpleActivity() {
     }
 
     private fun getSimilarSearchQueryFromIntent(): String {
-        return intent.getStringExtra(QUERY)
+        return intent.getStringExtra(QUERY) ?: ""
     }
 
     private fun setupViewModel() {
