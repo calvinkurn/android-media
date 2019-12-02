@@ -9,8 +9,10 @@ class DigitalProductInputViewHolder(val view: View, val listener: OnInputListene
 
     override fun bind(operator: DigitalProductInput) {
         val inputView = itemView as TopupBillsInputFieldWidget
+        inputView.resetState()
         inputView.setLabel(operator.text)
-        inputView.setListener(object : TopupBillsInputFieldWidget.ActionListener{
+        inputView.setHint("")
+        inputView.setActionListener(object : TopupBillsInputFieldWidget.ActionListener{
             override fun onFinishInput(input: String) {
                 listener.onFinishInput(input, adapterPosition)
             }

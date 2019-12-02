@@ -6,16 +6,22 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+import com.tokopedia.network.utils.ErrorHandler
 
 class DigitalProductAdapter(val context: Context,
-                            adapterFactory: DigitalProductAdapterFactory):
+                            adapterFactory: DigitalProductAdapterFactory,
+                            private val loaderListener: LoaderListener):
         BaseListAdapter<Visitable<DigitalProductAdapterFactory>, DigitalProductAdapterFactory>(adapterFactory) {
 
     override fun onCreateViewItem(parent: ViewGroup?, viewType: Int): View {
-        return TopupBillsInputFieldWidget(context)
+        if (viewType in 1..2) {
+            return TopupBillsInputFieldWidget(context)
+        }
+        return super.onCreateViewItem(parent, viewType)
     }
 
     fun renderList(data: List<Visitable<*>>) {
+        clearAllElements()
         addElement(data)
     }
 
@@ -33,10 +39,10 @@ class DigitalProductAdapter(val context: Context,
     }
 
     fun showGetListError(e: Throwable) {
-//        showErrorNetwork(ErrorHandler.getErrorMessage(context, e)) {
-//            showLoading()
-//            loaderListener.loadData()
-//        }
+        showErrorNetwork(ErrorHandler.getErrorMessage(context, e)) {
+            showLoading()
+            loaderListener.loadData()
+        }
     }
 
     interface LoaderListener {

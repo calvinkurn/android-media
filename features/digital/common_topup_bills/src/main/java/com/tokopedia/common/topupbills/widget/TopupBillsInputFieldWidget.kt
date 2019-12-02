@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethod
 import android.view.inputmethod.InputMethodManager
@@ -23,15 +24,15 @@ import org.jetbrains.annotations.NotNull
 /**
  * Created by resakemal on 20/08/19.
  */
-open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                                defStyleAttr: Int = 0)
+class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Context,
+                                                           attrs: AttributeSet? = null,
+                                                           defStyleAttr: Int = 0,
+                                                           var listener: ActionListener? = null)
     : BaseCustomView(context, attrs, defStyleAttr), TopupBillsInputDropdownBottomSheet.OnClickListener {
-
-    private var listener: ActionListener? = null
 
     private var isDropdown = false
     private var dropdownBottomSheet = BottomSheetUnify()
-    private var dropdownView: TopupBillsInputDropdownBottomSheet? = null
+    private var dropdownView: TopupBillsInputDropdownBottomSheet
     private var fragmentManager: FragmentManager? = null
 
     init {
@@ -81,17 +82,16 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
                 clearFocus()
             }
         }
+        ac_input.setOnFocusChangeListener { _, b ->
+            onFocusChangeDropdown(b)
+        }
 
         iv_input_dropdown.gone()
-
+        dropdownView = TopupBillsInputDropdownBottomSheet(context, listener = this)
         dropdownBottomSheet.setFullPage(true)
         dropdownBottomSheet.clearAction()
         dropdownBottomSheet.setCloseClickListener {
             dropdownBottomSheet.dismiss()
-        }
-
-        ac_input.setOnFocusChangeListener { _, b ->
-            onFocusChangeDropdown(b)
         }
     }
 
@@ -125,21 +125,22 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
         return R.layout.view_voucher_game_input_field
     }
 
-    fun setListener(listener: ActionListener) {
+    fun setActionListener(listener: ActionListener) {
         this.listener = listener
     }
 
     override fun onItemClicked(item: TopupBillsInputDropdownData) {
         ac_input.setText(item.value)
+        listener?.onFinishInput(item.value)
         dropdownBottomSheet.dismiss()
     }
 
     fun setupDropdownBottomSheet(data: List<TopupBillsInputDropdownData>) {
         isDropdown = true
-        iv_input_dropdown.visible()
+        iv_input_dropdown.show()
 
         dropdownView = TopupBillsInputDropdownBottomSheet(context, listener = this)
-        dropdownView?.setData(data)
+        dropdownView.setData(data)
 
         this.fragmentManager = (context as AppCompatActivity).supportFragmentManager
         dropdownBottomSheet.setChild(dropdownView)
@@ -154,6 +155,11 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
                 inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
             }, SHOW_KEYBOARD_DELAY)
         }
+    }
+
+    fun resetState() {
+        isDropdown = false
+        iv_input_dropdown.hide()
     }
 
     private fun onFocusChangeDropdown(hasFocus: Boolean) {

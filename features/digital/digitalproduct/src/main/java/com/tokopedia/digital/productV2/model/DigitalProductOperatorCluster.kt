@@ -26,7 +26,7 @@ class DigitalProductOperatorCluster(
         val style: String = "",
         @SerializedName("operatorGroup")
         @Expose
-        var operators: List<CatalogOperatorGroup> = listOf()
+        var operatorGroups: List<CatalogOperatorGroup> = listOf()
 
 ) {
 

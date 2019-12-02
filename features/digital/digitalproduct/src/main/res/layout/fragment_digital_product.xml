@@ -3,20 +3,42 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
-        app:cardElevation="@dimen/dp_2">
+        app:cardElevation="@dimen/dp_2"
+        app:cardCornerRadius="@dimen/dp_8" >
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_digital_product"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_16"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:layout_margin="@dimen/dp_16">
+
+            <com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+                android:id="@+id/operator_cluster_select"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_8" />
+
+            <com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+                android:id="@+id/operator_select"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_8"
+                tools:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_digital_product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 

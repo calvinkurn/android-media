@@ -2,12 +2,11 @@ package com.tokopedia.common.topupbills.data.product
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 
 /**
  * Created by resakemal on 26/11/19.
  */
-open class CatalogProductInput(
+class CatalogProductInput (
 
         @SerializedName("id")
         @Expose

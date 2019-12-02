@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 class DigitalProductViewModel  @Inject constructor(
         val graphqlRepository: GraphqlRepository,
-        val dispatcher: CoroutineDispatcher)
+        dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     val operatorCluster = MutableLiveData<Result<DigitalProductOperatorCluster>>()
@@ -30,11 +30,10 @@ class DigitalProductViewModel  @Inject constructor(
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default){
                 val graphqlRequest = GraphqlRequest(rawQuery, DigitalProductOperatorCluster.Response::class.java, mapParam)
-                val graphQlCacheStrategy : GraphqlCacheStrategy
-                if(isLoadFromCloud) {
-                    graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                val graphQlCacheStrategy = if(isLoadFromCloud) {
+                    GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 }else{
-                    graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                 }
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<DigitalProductOperatorCluster.Response>()
@@ -47,18 +46,18 @@ class DigitalProductViewModel  @Inject constructor(
     fun getProductList(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false){
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default){
-                val graphqlRequest = GraphqlRequest(rawQuery, DigitalProductOperatorCluster.Response::class.java, mapParam)
-                val graphQlCacheStrategy : GraphqlCacheStrategy
-                if(isLoadFromCloud) {
-                    graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                val graphqlRequest = GraphqlRequest(rawQuery, DigitalProductData.Response::class.java, mapParam)
+                val graphQlCacheStrategy = if(isLoadFromCloud) {
+                    GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 }else{
-                    graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                    GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                 }
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
-            }.getSuccessData<DigitalProductOperatorCluster.Response>()
-            operatorCluster.value = Success(data.response)
+            }.getSuccessData<DigitalProductData.Response>()
+            productList.value = Success(data.response)
         }){
-            operatorCluster.value = Fail(it)
+            val error = it
+            productList.value = Fail(it)
         }
     }
 

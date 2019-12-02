@@ -246,7 +246,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         field.setHint(data.placeholder)
 
         // Enquire if all required fields are filled
-        field.setListener(object : TopupBillsInputFieldWidget.ActionListener {
+        field.setActionListener(object : TopupBillsInputFieldWidget.ActionListener {
             override fun onFinishInput(input: String) {
                 voucherGameAnalytics.eventInputNumber()
                 enquireFields()

@@ -8,23 +8,65 @@ import com.google.gson.annotations.SerializedName
  */
 open class CatalogProduct(
 
-        @SerializedName("name")
+        @SerializedName("id")
         @Expose
-        val name: String = "",
-        @SerializedName("text")
+        val id: String = "",
+        @SerializedName("attributes")
         @Expose
-        val text: String = "",
-        @SerializedName("dataCollections")
-        @Expose
-        open val dataCollections: List<DataCollection> = listOf()
+        val attributes: Attributes = Attributes()
 
 ) {
-        open class DataCollection(
-                @SerializedName("name")
+        class Attributes(
+                @SerializedName("desc")
                 @Expose
-                val name: String = "",
-                @SerializedName("products")
+                val desc: String = "",
+                @SerializedName("price")
                 @Expose
-                open val products: List<CatalogProductData> = listOf()
+                val price: String = "",
+                @SerializedName("price_plain")
+                @Expose
+                val pricePlain: String = "",
+                @SerializedName("promo")
+                @Expose
+                val promo: Promo? = Promo(),
+                @SerializedName("product_labels")
+                @Expose
+                val productLabels: List<String> = listOf(),
+                @SerializedName("detail")
+                @Expose
+                val detail: String = "",
+                @SerializedName("detail_compat")
+                @Expose
+                val detailCompat: String = "",
+                @SerializedName("detail_url")
+                @Expose
+                val detailUrl: String = "",
+                @SerializedName("detail_url_text")
+                @Expose
+                val detailUrlText: String = ""
+        )
+
+        class Promo(
+                @SerializedName("id")
+                @Expose
+                val id: String = "",
+                @SerializedName("bonus_text")
+                @Expose
+                val bonusText: String = "",
+                @SerializedName("new_price")
+                @Expose
+                val newPrice: String = "",
+                @SerializedName("new_price_plain")
+                @Expose
+                val newPricePlain: Int = 0,
+                @SerializedName("tag")
+                @Expose
+                val tag: String = "",
+                @SerializedName("terms")
+                @Expose
+                val terms: String = "",
+                @SerializedName("value_text")
+                @Expose
+                val valueText: String = ""
         )
 }

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by resakemal on 26/11/19.
  */
-open class CatalogData(
+class CatalogData(
 
         @SerializedName("needEnquiry")
         @Expose
@@ -16,10 +16,10 @@ open class CatalogData(
         val isShowingProduct: Boolean = true,
         @SerializedName("enquiryFields")
         @Expose
-        open val enquiryFields: List<CatalogProductInput> = listOf(),
+        val enquiryFields: List<CatalogProductInput> = listOf(),
         @SerializedName("product")
         @Expose
-        open val product: CatalogProduct = CatalogProduct()
+        val product: CatalogProduct = CatalogProduct()
 
 ) {
         class Response(
