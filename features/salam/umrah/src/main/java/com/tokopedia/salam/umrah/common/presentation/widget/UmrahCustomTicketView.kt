@@ -33,7 +33,7 @@ import android.graphics.PorterDuff.Mode.SRC_IN
 /**
  * @author by firman on 06/11/2019
  */
-class CustomTicketView : View {
+class UmrahCustomTicketView : View {
 
 
     private val mBackgroundPaint = Paint()
@@ -211,20 +211,20 @@ class CustomTicketView : View {
 
     private fun init(attrs: AttributeSet?) {
         if (attrs != null) {
-            val typedArray = context.obtainStyledAttributes(attrs, R.styleable.CustomTicketView)
-            mBackgroundColor = typedArray.getColor(R.styleable.CustomTicketView_backgroundColor, resources.getColor(android.R.color.white))
-            mScallopRadius = typedArray.getDimensionPixelSize(R.styleable.CustomTicketView_scallopRadius, dpToPx(20f, context))
-            mShowBorder = typedArray.getBoolean(R.styleable.CustomTicketView_showBorder, false)
-            mBorderWidth = typedArray.getDimensionPixelSize(R.styleable.CustomTicketView_borderWidth, dpToPx(2f, context))
-            mBorderColor = typedArray.getColor(R.styleable.CustomTicketView_borderColor, resources.getColor(android.R.color.black))
-            mCornerType = typedArray.getInt(R.styleable.CustomTicketView_cornerType, CornerType.NORMAL)
-            mCornerRadius = typedArray.getDimensionPixelSize(R.styleable.CustomTicketView_cornerRadius, dpToPx(4f, context))
-            mShowTopShadow = typedArray.getBoolean(R.styleable.CustomTicketView_showTopShadow, false)
-            mShowBottomShadow = typedArray.getBoolean(R.styleable.CustomTicketView_showBottomShadow, false)
+            val typedArray = context.obtainStyledAttributes(attrs, R.styleable.UmrahCustomTicketView)
+            mBackgroundColor = typedArray.getColor(R.styleable.UmrahCustomTicketView_backgroundColor, resources.getColor(android.R.color.white))
+            mScallopRadius = typedArray.getDimensionPixelSize(R.styleable.UmrahCustomTicketView_scallopRadius, dpToPx(20f, context))
+            mShowBorder = typedArray.getBoolean(R.styleable.UmrahCustomTicketView_showBorder, false)
+            mBorderWidth = typedArray.getDimensionPixelSize(R.styleable.UmrahCustomTicketView_borderWidth, dpToPx(2f, context))
+            mBorderColor = typedArray.getColor(R.styleable.UmrahCustomTicketView_borderColor, resources.getColor(android.R.color.black))
+            mCornerType = typedArray.getInt(R.styleable.UmrahCustomTicketView_umrahCornerType, CornerType.NORMAL)
+            mCornerRadius = typedArray.getDimensionPixelSize(R.styleable.UmrahCustomTicketView_cornerRadius, dpToPx(4f, context))
+            mShowTopShadow = typedArray.getBoolean(R.styleable.UmrahCustomTicketView_showTopShadow, false)
+            mShowBottomShadow = typedArray.getBoolean(R.styleable.UmrahCustomTicketView_showBottomShadow, false)
 
             var elevation = 0f
-            if (typedArray.hasValue(R.styleable.CustomTicketView_ticketElevation)) {
-                elevation = typedArray.getDimension(R.styleable.CustomTicketView_ticketElevation, elevation)
+            if (typedArray.hasValue(R.styleable.UmrahCustomTicketView_ticketElevation)) {
+                elevation = typedArray.getDimension(R.styleable.UmrahCustomTicketView_ticketElevation, elevation)
             }
             if (elevation > 0f) {
                 setShadowBlurRadius(elevation)
@@ -344,6 +344,6 @@ class CustomTicketView : View {
 
     companion object {
 
-        val TAG = CustomTicketView::class.java.simpleName
+        val TAG = UmrahCustomTicketView::class.java.simpleName
     }
 }
