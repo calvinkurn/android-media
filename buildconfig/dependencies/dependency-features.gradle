@@ -162,6 +162,7 @@ ext {
             purchase_platform_common        : ":features:transaction:purchase_platform_common",
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
+            sellerorder                     : ":features:transaction:sellerorder",
 
             attachproduct                   : ":features:user:attachproduct",
             changepassword                  : ":features:user:changepassword",

@@ -22,7 +22,7 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleAdapter
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleDetailAdapter
-import com.tokopedia.salam.umrah.common.presentation.model.MyUmrahWidgetModel
+import com.tokopedia.salam.umrah.common.presentation.model.UmrahMyUmrahWidgetModel
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsMetaDataEntity
 import com.tokopedia.salam.umrah.orderdetail.di.UmrahOrderDetailComponent
@@ -231,9 +231,9 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         }))
     }
 
-    private fun renderMyUmrahWidget(data: MyUmrahWidgetModel) {
+    private fun renderMyUmrahWidget(data: UmrahMyUmrahWidgetModel) {
         if (data.header.isNotEmpty()) {
-            my_umrah_widget.myUmrahModel = data
+            my_umrah_widget.umrahMyUmrahModel = data
             my_umrah_widget.buildView(trackingUmrahUtil)
         } else {
             my_umrah_widget.visibility = View.GONE

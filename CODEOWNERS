@@ -55,11 +55,13 @@
 /features/digital/voucher_game          				@tokopedia/minion-mark
 /features/digital/digital_emoney        				@tokopedia/minion-mark
 /features/digital/imagepreviewslider    				@tokopedia/minion-mark
+/features/salam/umrah                                   @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
 /features/payment/pms/                          		@tokopedia/minion-bob
 /features/transaction/atc_common/               		@tokopedia/minion-bob
+/features/transaction/sellerorder/                  @tokopedia/minion-bob
 /features/transaction/purchase_platform/        		@tokopedia/minion-bob
 /features/transaction/purchase_platform_common/ 		@tokopedia/minion-bob
 /features/logistic/logisticdata/                		@tokopedia/minion-bob

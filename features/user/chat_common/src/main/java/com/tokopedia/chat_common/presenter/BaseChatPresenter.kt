@@ -62,8 +62,6 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
             } else {
                 sendMessageWithApi(messageId, sendMessage, startTime)
             }
-        } else {
-            showErrorSnackbar((R.string.error_empty_product))
         }
     }
 
