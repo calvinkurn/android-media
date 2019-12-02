@@ -6,13 +6,14 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.appcompat.widget.Toolbar
 import android.util.AttributeSet
+import com.tokopedia.banner.dynamic.util.ViewHelper
 import com.tokopedia.digital.home.R
 
 /**
  * @author by jessica on 2019-08-20
  */
 
-class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+class DigitalHomepageToolbar @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : Toolbar(context, attrs, defStyleAttr) {
 
     var shadowApplied: Boolean = true
@@ -41,10 +42,10 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
             val pL = this.paddingLeft
             var pT = 0
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                pT = getStatusBarHeight(context)
+                pT = ViewHelper.getStatusBarHeight(context)
             }
             val pR = this.paddingRight
-            val pB = resources.getDimensionPixelSize(R.dimen.toolbar_padding)
+            val pB = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_32)
             this.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.design.R.color.white))
             this.setPadding(pL, pT, pR, pB)
         }
@@ -56,23 +57,18 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
             val pL = this.paddingLeft
             var pT = 0
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                pT = getStatusBarHeight(context)
+                pT = ViewHelper.getStatusBarHeight(context)
             }
             val pR = this.paddingRight
-            val pB = resources.getDimensionPixelSize(R.dimen.toolbar_padding)
+            val pB = resources.getDimensionPixelSize(TOOLBAR_PADDING)
 
             this.background = ContextCompat.getDrawable(context, R.drawable.travel_homepage_toolbar_bg_shadow_bottom)
             this.setPadding(pL, pT, pR, pB)
         }
     }
 
-    fun getStatusBarHeight(context: Context): Int {
-        var height = 0
-        val resId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resId > 0) {
-            height = context.resources.getDimensionPixelSize(resId)
-        }
-        return height + 32
+    companion object {
+        val TOOLBAR_PADDING = com.tokopedia.design.R.dimen.dp_8
     }
 
 }
