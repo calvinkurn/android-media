@@ -710,6 +710,15 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     @Override
+    public String getCachedClientIDString() {
+        if(clientIdString == null) {
+            return "";
+        }
+
+        return clientIdString;
+    }
+
+    @Override
     public void initialize() {
         super.initialize();
         try {

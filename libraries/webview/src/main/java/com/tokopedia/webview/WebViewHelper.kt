@@ -1,13 +1,12 @@
-package com.tokopedia.abstraction.base.view.webview
+package com.tokopedia.webview
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
 import java.net.URLDecoder
-import java.net.URLEncoder
-import android.util.Log
 
 /**
  * Created by Ade Fulki on 2019-06-21.
@@ -73,7 +72,7 @@ object WebViewHelper {
 
                 //logic to append GA clientID in web URL to track app to web sessions
                 if (uri != null  && !decodedUrl.contains(PARAM_APPCLIENT_ID)) {
-                    val clientID = TrackApp.getInstance().getGTM().getClientIDString();
+                    val clientID = TrackApp.getInstance().getGTM().getCachedClientIDString();
 
                     if (clientID != null && decodedUrl.contains("js.tokopedia.com")) {
                         var tokopediaUrl = uri!!.getQueryParameter("url")

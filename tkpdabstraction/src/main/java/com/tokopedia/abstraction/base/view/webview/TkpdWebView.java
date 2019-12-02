@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.webview.WebViewHelper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

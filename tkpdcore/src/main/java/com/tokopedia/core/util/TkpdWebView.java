@@ -9,7 +9,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.crashlytics.android.Crashlytics;
-import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
+import com.tokopedia.webview.WebViewHelper;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
