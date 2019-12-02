@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.gson.JsonObject;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -26,11 +27,11 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
-import com.tokopedia.ovo.OvoPayWithQrRouter;
-import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -134,12 +135,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
-    public void goToPaymentPage(String imeiNumber, BarcodeResponseData barcodeData) {
+    public void goToPaymentPage(String imeiNumber, JsonObject barcodeData) {
         UserSession session = new UserSession(this);
         if (session.isLoggedIn()) {
             SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(this, true);
             cacheManager.put(QR_RESPONSE, barcodeData);
-            Intent intent = ((OvoPayWithQrRouter) getApplication()).getOvoActivityIntent(getApplicationContext());
+            Intent intent = RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY);
             intent.putExtra(QR_DATA, cacheManager.getId());
             intent.putExtra(IMEI, imeiNumber);
             startActivity(intent);

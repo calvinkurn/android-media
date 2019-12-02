@@ -38,6 +38,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.places
@@ -50,6 +53,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     testImplementation rootProject.ext.testDependencies.mockk
 }
@@ -57,7 +62,7 @@ dependencies {
 project.ext {
     artifactId = "add-address"
     groupId = "com.tokopedia.logistic"
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "logisticaddaddress-release"
 }
 

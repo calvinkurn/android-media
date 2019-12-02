@@ -68,7 +68,7 @@ public class DashboardModule {
     @Provides
     @Named("travel_calendar_holiday_query")
     String providerTravelCalendarHolidayQuery(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_travel_calendar_holiday);
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.travelcalendar.R.raw.query_get_travel_calendar_holiday);
     }
 
     @DashboardScope

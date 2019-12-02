@@ -4,11 +4,8 @@ import android.app.Activity;
 
 import javax.inject.Inject;
 
-import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by nisie on 1/5/18.

@@ -5,5 +5,6 @@
     <color name="seller_label">#daf5db</color>
     <color name="color_gray">#1f000000</color>
     <color name="bg_tips">#fafbfc</color>
+    <color name="pale_grey">#F3F4F5</color>
 
 </resources>

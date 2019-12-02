@@ -272,20 +272,11 @@ public class InboxReputationDetailItemViewHolder extends
 
         }
         showOrHideGiveReviewLayout(element);
-        giveReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToGiveReview(element.getReviewId(),
-                        element.getProductId(),
-                        element.getShopId(),
-                        element.isReviewIsSkippable(),
-                        element.getProductAvatar(),
-                        element.getProductName(),
-                        element.getProductUrl(),
-                        element.getRevieweeName(),
-                        element.getproductStatus());
-            }
-        });
+        giveReview.setOnClickListener( view -> viewListener.onGoToGiveReview(
+                element.getProductId(),
+                element.getShopId(),
+                ""
+        ));
 
         adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
         adapter.notifyDataSetChanged();

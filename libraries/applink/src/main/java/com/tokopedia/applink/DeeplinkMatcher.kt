@@ -19,6 +19,7 @@ import com.tokopedia.applink.DeepLinkChecker.OTHER
 import com.tokopedia.applink.DeepLinkChecker.PELUANG
 import com.tokopedia.applink.DeepLinkChecker.PLAY
 import com.tokopedia.applink.DeepLinkChecker.PRODUCT
+import com.tokopedia.applink.DeepLinkChecker.PRODUCT_REVIEW
 import com.tokopedia.applink.DeepLinkChecker.PROFILE
 import com.tokopedia.applink.DeepLinkChecker.PROMO_DETAIL
 import com.tokopedia.applink.DeepLinkChecker.PROMO_LIST
@@ -27,7 +28,6 @@ import com.tokopedia.applink.DeepLinkChecker.RECOMMENDATION
 import com.tokopedia.applink.DeepLinkChecker.REFERRAL
 import com.tokopedia.applink.DeepLinkChecker.SALE
 import com.tokopedia.applink.DeepLinkChecker.SHOP
-import com.tokopedia.applink.DeepLinkChecker.SIMILAR_PRODUCT
 import com.tokopedia.applink.DeepLinkChecker.SMCREFERRAL
 import com.tokopedia.applink.DeepLinkChecker.TOKOPOINT
 import com.tokopedia.applink.DeepLinkChecker.TOPPICKS
@@ -81,9 +81,11 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 1, mapOf(0 to "kredit-motor")) to OTHER)
             add(Pattern(EQ, 2, mapOf(0 to "fm", 1 to "modal-toko")) to OTHER)
             add(Pattern(EQ, 1, mapOf(0 to "hotel")) to HOTEL)
-            add(Pattern(GT, 2, mapOf(0 to "rekomendasi", 2 to "d")) to SIMILAR_PRODUCT)
             add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
+            add(Pattern(EQ, 4, mapOf(0 to "product-review")) to PRODUCT_REVIEW)
+            add(Pattern(EQ, 2, mapOf(0 to "myshop", 1 to "power-merchant")) to OTHER)
+            add(Pattern(EQ, 2, mapOf(0 to "terms", 1 to "aktivasi-powermerchant")) to OTHER)
             add(Pattern(EQ, 1, null) to SHOP)
             add(Pattern(EQ, 2, null) to PRODUCT)
         }

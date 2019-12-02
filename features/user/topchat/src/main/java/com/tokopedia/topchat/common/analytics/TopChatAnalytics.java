@@ -87,6 +87,7 @@ public class TopChatAnalytics {
         public static final String CLICK_ADD_ATTACHMENT = "click add attachment";
         public static final String CLICK_IMAGE_ATTACHMENT = "click on image on chat";
         public static final String CLICK_INVOICE_ATTACHMENT = "click invoice on chat detail";
+        public static final String CLICK_REPORT_USER = "click report user on chat";
 
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
 
@@ -420,5 +421,16 @@ public class TopChatAnalytics {
                 invoice.getInvoiceId()
         );
     }
+
+    // #RC1
+    public void eventClickReportUser(String opponentId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_REPORT_USER,
+                opponentId
+        );
+    }
+
 
 }

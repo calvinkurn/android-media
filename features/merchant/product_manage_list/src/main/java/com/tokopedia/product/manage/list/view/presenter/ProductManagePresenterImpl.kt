@@ -2,35 +2,39 @@ package com.tokopedia.product.manage.list.view.presenter
 
 import android.accounts.NetworkErrorException
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.core.base.domain.RequestParams
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase
-import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase
+import com.tokopedia.product.manage.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
+import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
+import com.tokopedia.product.manage.list.constant.option.PictureStatusProductOption
+import com.tokopedia.product.manage.list.constant.option.SortProductOption
 import com.tokopedia.product.manage.list.data.ConfirmationProductData
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.ETALASE_DEFAULT
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.STOCK_DELETED
+import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductEditPriceParam
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Param
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Response
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.product.manage.list.domain.BulkUpdateProductUseCase
-import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase
+import com.tokopedia.product.manage.list.domain.EditPriceUseCase
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.list.view.listener.ProductManageView
 import com.tokopedia.product.manage.list.view.mapper.ProductListMapperView
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
-import com.tokopedia.seller.product.manage.constant.*
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListResponse
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetProductListUseCase
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
 
 class ProductManagePresenterImpl @Inject constructor(
-        private val getShopInfoUseCase: GetShopInfoUseCase,
-        private val editPriceProductUseCase: EditPriceProductUseCase,
+        private val editPriceProductUseCase: EditPriceUseCase,
+        private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
         private val userSessionInterface: UserSessionInterface,
         private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
         private val setCashbackUseCase: SetCashbackUseCase,
@@ -40,22 +44,19 @@ class ProductManagePresenterImpl @Inject constructor(
         private val bulkUpdateProductUseCase: BulkUpdateProductUseCase
 ) : BaseDaggerPresenter<ProductManageView>(), ProductManagePresenter {
 
-    override fun isIdlePowerMerchant(): Boolean =  userSessionInterface.isPowerMerchantIdle
+    override fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     override fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
 
     override fun getGoldMerchantStatus() {
-        getShopInfoUseCase.execute(RequestParams.EMPTY, object : Subscriber<ShopModel>() {
-            override fun onNext(shopModel: ShopModel) {
-                view.onSuccessGetShopInfo(shopModel.info.isGoldMerchant, shopModel.info.isOfficialStore, shopModel.getInfo().shopDomain)
+        val getProductListJob: Job = SupervisorJob()
+        CoroutineScope(Dispatchers.Main + getProductListJob).launch {
+            val shopId: List<Int> = listOf(userSessionInterface.shopId.toInt())
+            gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(shopId)
+            val shopInfo = gqlGetShopInfoUseCase.executeOnBackground()
+            if (isViewAttached) {
+                view.onSuccessGetShopInfo(shopInfo.goldOS.isGold == 1, shopInfo.goldOS.isOfficial == 1, shopInfo.shopCore.domain)
             }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable?) {
-            }
-
-        })
+        }
     }
 
     override fun bulkUpdateProduct(listUpdateResponse: MutableList<ConfirmationProductData>) {
@@ -68,7 +69,7 @@ class ProductManagePresenterImpl @Inject constructor(
             override fun onCompleted() {
             }
 
-            override fun onError(e: Throwable?) {
+            override fun onError(e: Throwable) {
                 view.onErrorBulkUpdateProduct(e)
             }
 
@@ -110,17 +111,21 @@ class ProductManagePresenterImpl @Inject constructor(
                     view.onLoadListEmpty()
                 }
             }
-
         })
     }
 
     override fun editPrice(productId: String, price: String, currencyId: String, currencyText: String) {
         view.showLoadingProgress()
-        editPriceProductUseCase.execute(EditPriceProductUseCase.createRequestParams(price, currencyId, productId),
-                object : Subscriber<Boolean>() {
-                    override fun onNext(isSuccessEditPrice: Boolean) {
+        val param = ProductEditPriceParam()
+        param.price = price.toFloatOrNull() ?: 0F
+        param.productId = productId
+        param.shop.shopId = userSessionInterface.shopId
+
+        editPriceProductUseCase.execute(EditPriceUseCase.createRequestParams(param),
+                object : Subscriber<ProductUpdateV3Response>() {
+                    override fun onNext(data: ProductUpdateV3Response) {
                         view.hideLoadingProgress()
-                        if (isSuccessEditPrice) {
+                        if (data.productUpdateV3Data.isSuccess) {
                             view.onSuccessEditPrice(productId, price, currencyId, currencyText)
                         } else {
                             view.onErrorEditPrice(NetworkErrorException(), productId, price, currencyId, currencyText)
@@ -128,6 +133,7 @@ class ProductManagePresenterImpl @Inject constructor(
                     }
 
                     override fun onCompleted() {
+
                     }
 
                     override fun onError(e: Throwable?) {
@@ -136,7 +142,6 @@ class ProductManagePresenterImpl @Inject constructor(
                             view.onErrorEditPrice(e, productId, price, currencyId, currencyText)
                         }
                     }
-
                 })
     }
 
@@ -247,13 +252,13 @@ class ProductManagePresenterImpl @Inject constructor(
 
     private fun generateEtalaseIdFilter(etalaseId: Int): String {
         return when (etalaseId) {
-            ProductManageConstant.FILTER_ALL_PRODUK -> ProductManageConstant.FILTER_ALL_PRODUK_VALUE
-            ProductManageConstant.FILTER_SOLD_PRODUK -> ProductManageConstant.FILTER_SOLD_PRODUK_VALUE
-            ProductManageConstant.FILTER_EMPTY_STOK -> ProductManageConstant.FILTER_EMPTY_STOK_VALUE
-            ProductManageConstant.FILTER_PENDING -> ProductManageConstant.FILTER_PENDING_VALUE
-            ProductManageConstant.FILTER_FREE_RETURNS -> ProductManageConstant.FILTER_FREE_RETURNS_VALUE
-            ProductManageConstant.FILTER_PREORDER -> ProductManageConstant.FILTER_PREORDER_VALUE
-            ProductManageConstant.FILTER_ALL_SHOWCASE -> ProductManageConstant.FILTER_ALL_SHOWCASE_VALUE
+            ProductManageListConstant.FILTER_ALL_PRODUK -> ProductManageListConstant.FILTER_ALL_PRODUK_VALUE
+            ProductManageListConstant.FILTER_SOLD_PRODUK -> ProductManageListConstant.FILTER_SOLD_PRODUK_VALUE
+            ProductManageListConstant.FILTER_EMPTY_STOK -> ProductManageListConstant.FILTER_EMPTY_STOK_VALUE
+            ProductManageListConstant.FILTER_PENDING -> ProductManageListConstant.FILTER_PENDING_VALUE
+            ProductManageListConstant.FILTER_FREE_RETURNS -> ProductManageListConstant.FILTER_FREE_RETURNS_VALUE
+            ProductManageListConstant.FILTER_PREORDER -> ProductManageListConstant.FILTER_PREORDER_VALUE
+            ProductManageListConstant.FILTER_ALL_SHOWCASE -> ProductManageListConstant.FILTER_ALL_SHOWCASE_VALUE
             else -> etalaseId.toString()
         }
     }
@@ -323,5 +328,16 @@ class ProductManagePresenterImpl @Inject constructor(
         return confirmationProductDataList.filter {
             failData.map { it.productUpdateV3Data.productId }.contains(it.productId)
         }.toMutableList()
+    }
+
+    override fun detachView() {
+        super.detachView()
+        editPriceProductUseCase.unsubscribe()
+        gqlGetShopInfoUseCase.cancelJobs()
+        topAdsGetShopDepositGraphQLUseCase.unsubscribe()
+        setCashbackUseCase.unsubscribe()
+        popupManagerAddProductUseCase.unsubscribe()
+        getProductListUseCase.unsubscribe()
+        bulkUpdateProductUseCase.unsubscribe()
     }
 }

@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 
 import java.util.Map;
 
@@ -617,28 +614,28 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
 
     // Trade In
     public void eventViewCheckoutPageTradeIn() {
-        sendEventCategoryAction("",
+        sendEventCategoryAction(EventName.VIEW_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.VIEW_CHECKOUYT_PAGE_TRADE_IN
         );
     }
 
-    public void eventClickGantiNomor() {
-        sendEventCategoryAction("",
+    public void eventClickGantiNomor(boolean tradeIn) {
+        sendEventCategoryAction(tradeIn ? EventName.CLICK_TRADEIN : "",
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_GANTI_NOMOR
         );
     }
 
     public void eventClickButtonPilihDurasi() {
-        sendEventCategoryAction("",
+        sendEventCategoryAction(EventName.CLICK_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_BUTTON_PILIH_DURASI
         );
     }
 
     public void eventClickKurirTradeIn(String label) {
-        sendEventCategoryActionLabel("",
+        sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_KURIR_TRADE_IN,
                 label
@@ -646,7 +643,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void eventClickBayarTradeInFailed() {
-        sendEventCategoryActionLabel("",
+        sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_BAYAR,
                 EventLabel.FAILED
@@ -654,12 +651,34 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void eventClickBayarCourierNotComplete() {
-        sendEventCategoryActionLabel("",
+        sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_BAYAR,
                 EventLabel.COURIER_NOT_COMPLETE
         );
     }
+
+    public void eventClickJemputTab() {
+        sendEventCategoryAction(EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_JEMPUT_TAB
+        );
+    }
+
+    public void eventClickDropOffTab() {
+        sendEventCategoryAction(EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_DROP_OFF_TAB
+        );
+    }
+
+    public void eventClickUbahTitikDropoffButton() {
+        sendEventCategoryAction(EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_UBAH_TITIK_DROP_OFF_BUTTON
+        );
+    }
+
 
     public void eventClickShowMerchantVoucherList() {
         sendEventCategoryAction(
@@ -737,7 +756,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
 
     public void eventCancelPromoStackingLogistic() {
         sendEventCategoryAction(
-            "",
+                "",
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_X_ON_PROMO_STACKING_LOGISTIC
         );
@@ -917,5 +936,21 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT
         );
+    }
+
+    public void eventViewInformationAndWarningTickerInCheckout(String tickerId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT,
+                tickerId
+        );
+    }
+
+    public void eventViewPopupPriceIncrease(String eventLabel) {
+        sendEventCategoryActionLabel(EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POP_UP_PRICE_INCREASE,
+                eventLabel);
     }
 }

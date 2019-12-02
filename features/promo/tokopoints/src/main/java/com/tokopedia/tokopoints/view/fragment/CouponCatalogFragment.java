@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -34,8 +33,7 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
-import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
-import com.tokopedia.tokopoints.view.activity.TokoPointsHomeNewActivity;
+import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.contract.CouponCatalogContract;
 import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
@@ -59,21 +57,18 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.tokopoints.R.layout.tp_fragment_coupon_catalog;
 
-
-import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.tokopoints.view.util.CommanUtilsKt.getLessDisplayData;
+import static com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE;
+import static com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING;
 
 public class CouponCatalogFragment extends BaseDaggerFragment implements CouponCatalogContract.View, View.OnClickListener {
     private static final String FPM_DETAIL_TOKOPOINT = "ft_tokopoint_detail";
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
-    private static final String UTF_ENCODING = "UTF-8";
-    private static final String COUPON_MIME_TYPE = "text/html";
-    private static final String LIST_TAG_START = "<li>";
-    private static final String LIST_TAG_END = "</li>";
-    private static final int MAX_POINTS_TO_SHOW = 4;
+
+
     private static final int REQUEST_CODE_LOGIN = 1;
     private ViewFlipper mContainerMain;
     private ServerErrorView serverErrorView;
@@ -198,11 +193,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     }
 
     @Override
-    public void onEmptyCatalog() {
-        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
-    }
-
-    @Override
     public void hideLoader() {
         mContainerMain.setDisplayedChild(CONTAINER_DATA);
     }
@@ -236,7 +226,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     @Override
     public void onClick(View source) {
         if (source.getId() == R.id.text_my_coupon) {
-            startActivity(MyCouponListingActivity.getCallingIntent(getActivityContext()));
+            startActivity(CouponListingStackedActivity.getCallingIntent(getActivityContext()));
         }
     }
 
@@ -250,6 +240,9 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         if (getView() == null) {
             return;
         }
+        serverErrorView.setErrorButtonClickListener((view)->{
+            mPresenter.getCatalogDetail(code);
+        });
     }
 
     @Override
@@ -305,7 +298,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         });
 
         adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
-                    startActivity(MyCouponListingActivity.getCallingIntent(getActivityContext()));
+                    startActivity(CouponListingStackedActivity.getCallingIntent(getActivityContext()));
 
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -427,11 +420,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
-    }
-
-    @Override
-    public void showRedeemFullError(CatalogsValueEntity item, String title, String desc) {
-
     }
 
     @Override
@@ -737,24 +725,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 mCouponName);
     }
 
-    private String getLessDisplayData(String data, Typography seeMore) {
-        String[] totalString = data.split(LIST_TAG_START);
-        String displayString = totalString[0] + LIST_TAG_START;
-        if (totalString.length > MAX_POINTS_TO_SHOW + 1) {
-            for (int i = 1; i < MAX_POINTS_TO_SHOW; i++) {
-                displayString = displayString.concat(totalString[i] + LIST_TAG_START);
-            }
-            displayString = displayString.concat(totalString[MAX_POINTS_TO_SHOW]);
-            String lastString = totalString[totalString.length - 1];
-            if (lastString.contains(LIST_TAG_END)) {
-                displayString = displayString + LIST_TAG_END + totalString[totalString.length - 1].split(LIST_TAG_END)[1];
-            }
-        } else {
-            displayString = data;
-            seeMore.setVisibility(View.GONE);
-        }
-        return displayString;
-    }
+
 
     private void loadWebViewInBottomsheet(String data, String title) {
         CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());

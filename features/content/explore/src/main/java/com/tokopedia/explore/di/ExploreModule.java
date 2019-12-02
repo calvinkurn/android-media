@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.data.CoroutineThread;
 import com.tokopedia.explore.data.ExploreConstant;

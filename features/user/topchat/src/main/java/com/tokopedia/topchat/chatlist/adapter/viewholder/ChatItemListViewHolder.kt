@@ -12,15 +12,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
+import com.tokopedia.topchat.chatlist.widget.LongClickMenu
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -42,6 +40,9 @@ class ChatItemListViewHolder(
     private val unreadCounter: Typography = itemView.findViewById(R.id.unread_counter)
     private val time: Typography = itemView.findViewById(R.id.time)
     private val label: Label = itemView.findViewById(R.id.user_label)
+    private val pin: ImageView = itemView.findViewById(R.id.ivPin)
+
+    private val menu = LongClickMenu()
 
     override fun bind(element: ItemChatListPojo) {
         val attributes = element.attributes
@@ -64,8 +65,14 @@ class ChatItemListViewHolder(
             bindMessageState(attributes.lastReplyMessage)
             bindTimeStamp(attributes.lastReplyTimeStr)
             bindLabel(contact.tag)
+            bindPin(contact.tag)
         }
 
+    }
+
+    private fun bindPin(tag: String) {
+        val shouldShowPin = tag == OFFICIAL_TAG && listener.isTabSeller()
+        pin.showWithCondition(shouldShowPin)
     }
 
     private fun onChatItemClicked(chat: ItemChatListPojo) {
@@ -81,14 +88,14 @@ class ChatItemListViewHolder(
     }
 
     private fun showLongClickMenu(element: ItemChatListPojo) {
-        Menus(itemView.context, R.style.BottomFilterDialogTheme).apply {
-            setTitle(" ")
-            itemMenuList = createChatLongClickMenu(element)
+        if (menu.isAdded) return
+        menu.apply {
+            setItemMenuList(createChatLongClickMenu(element))
             setOnItemMenuClickListener { itemMenus, _ ->
                 handleChatMenuClick(itemMenus, element)
                 dismiss()
             }
-        }.show()
+        }.show(listener.getSupportChildFragmentManager(), LongClickMenu.TAG)
     }
 
     private fun handleChatMenuClick(itemMenus: Menus.ItemMenus, element: ItemChatListPojo) {

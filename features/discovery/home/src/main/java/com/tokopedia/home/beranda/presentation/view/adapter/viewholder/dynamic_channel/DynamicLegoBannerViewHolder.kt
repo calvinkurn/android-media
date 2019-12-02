@@ -30,8 +30,8 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
         ) {
 
     companion object {
-        private const val TYPE_SIX_GRID_LEGO = 0
-        private const val TYPE_THREE_GRID_LEGO = 1
+        private const val TYPE_SIX_GRID_LEGO = 3
+        private const val TYPE_THREE_GRID_LEGO = 4
 
         @LayoutRes
         val LAYOUT = R.layout.home_dc_lego_banner

@@ -13,7 +13,6 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.base.IMapperUtil
 import com.tokopedia.purchase_platform.common.di.*
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
@@ -64,8 +63,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
-    fun provideIShipmentMapper(iMapperUtil: IMapperUtil): IShipmentMapper {
-        return ShipmentMapper(iMapperUtil)
+    fun provideIShipmentMapper(): IShipmentMapper {
+        return ShipmentMapper()
     }
 
     @Provides
