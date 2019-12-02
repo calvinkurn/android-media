@@ -6,10 +6,9 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.UserCodStatus
-import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.usecase.coroutines.UseCase
@@ -18,14 +17,14 @@ import javax.inject.Inject
 class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<String, String>,
                                                   private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP3>() {
 
-    var productInfo: ProductInfo = ProductInfo()
+    var weight: String = WeightTypeDef.UNKNOWN
     var shopDomain = ""
     var needRequestCod = false
     var origin = ""
     var forceRefresh = false
 
-    fun createRequestParams(productInfo: ProductInfo, shopDomain: String, needRequestCod: Boolean, origin: String, forceRefresh: Boolean) {
-        this.productInfo = productInfo
+    fun createRequestParams(weight: String, shopDomain: String, needRequestCod: Boolean, origin: String, forceRefresh: Boolean) {
+        this.weight = weight
         this.shopDomain = shopDomain
         this.needRequestCod = needRequestCod
         this.origin = origin
@@ -35,7 +34,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
     override suspend fun executeOnBackground(): ProductInfoP3 {
         val productInfoP3 = ProductInfoP3()
 
-        val estimationParams = mapOf(ProductDetailCommonConstant.PARAM_RATE_EST_WEIGHT to productInfo.basic.weightInKg,
+        val estimationParams = mapOf(ProductDetailCommonConstant.PARAM_RATE_EST_WEIGHT to weight,
                 ProductDetailCommonConstant.PARAM_RATE_EST_SHOP_DOMAIN to shopDomain, "origin" to origin)
         val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
                 RatesEstimationModel.Response::class.java, estimationParams)

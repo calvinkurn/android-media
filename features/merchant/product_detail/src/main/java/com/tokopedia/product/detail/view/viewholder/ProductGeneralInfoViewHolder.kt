@@ -15,16 +15,16 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
     }
 
     override fun bind(element: ProductGeneralInfoDataModel) {
-        if (element.dataLayout.isNotEmpty()) {
-            view.pdp_info_title.text = element.dataLayout.first().title
+        element.data?.run {
+            view.pdp_info_title.text = title
 
             if (element.description.isNotEmpty()) {
                 view.pdp_info_desc.show()
                 view.pdp_info_desc.text = element.description
                 view.pdp_info_desc.setOnClickListener {
-
                 }
             }
+
         }
     }
 }

@@ -4,7 +4,9 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import android.content.Context
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.R
+import com.tokopedia.product.detail.common.data.model.constant.ProductConditionTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
+import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
 
 data class BasicInfo(
         @SerializedName("alias")
@@ -44,13 +46,18 @@ data class BasicInfo(
         @SerializedName("status")
         val status: String = "",
         @SerializedName("url")
-        val url: String = ""
+        val url: String = "",
+        @SerializedName("condition")
+        val condition: String = ProductConditionTypeDef.UNKNOWN,
+        @SerializedName("weightUnit")
+        val weightUnit: String = WeightTypeDef.UNKNOWN
 ) {
     fun getProductId(): Int = productID.toIntOrNull() ?: 0
     fun getShopId(): Int = shopID.toIntOrNull() ?: 0
     fun isActive(): Boolean {
         return status == ProductStatusTypeDef.ACTIVE
     }
+
     fun statusMessage(context: Context): String {
         return when (status) {
             ProductStatusTypeDef.DELETED -> context.getString(R.string.product_status_deleted)

@@ -15,9 +15,5 @@ data class WholesalePrice(
         val currency: String = "",
 
         @SerializedName("lastUpdateUnix")
-        val lastUpdateUnix: String = "",
-
-        @SerializedName("idr")
-        val idr: Float = 0F
-
+        val lastUpdateUnix: String = ""
 )

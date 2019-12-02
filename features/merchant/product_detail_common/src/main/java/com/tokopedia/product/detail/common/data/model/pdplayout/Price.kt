@@ -6,8 +6,6 @@ import com.google.gson.annotations.SerializedName
 data class Price(
         @SerializedName("currency")
         val currency: String = "",
-        @SerializedName("idr")
-        val idr: Int = 0,
         @SerializedName("lastUpdateUnix")
         val lastUpdateUnix: String = "",
         @SerializedName("value")

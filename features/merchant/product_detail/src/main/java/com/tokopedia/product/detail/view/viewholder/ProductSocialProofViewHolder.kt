@@ -34,10 +34,10 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
         }
         attributeInfoView.renderWishlistCount(element.wishListCount)
 
-        //TO-DO
+        //TO-DO RENDER FROM STATS MODEL
         productStatsView.renderData(0, 0, listener::onReviewClick, listener::onDiscussionClicked)
-        //TO-DO
-        //attributeInfoView.renderData(this)
+        //TO-DO RENDER FROM STATS MODEL
+//        attributeInfoView.renderData(this)
 
 
         productStatsView.renderClickShipping {

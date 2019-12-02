@@ -1,9 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
-import com.tokopedia.product.detail.common.data.model.pdplayout.Component
-import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
+import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 
 object DynamicProductDetailMapper {
@@ -16,38 +13,51 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductSnapshotDataModel(type = component.type, name = component.componentName))
                 }
                 "discussion" -> {
-                    listOfComponent.add(ProductDiscussionDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductDiscussionDataModel(type = component.type, name = component.componentName))
                 }
                 "product_info" -> {
-                    listOfComponent.add(ProductInfoDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductInfoDataModel(mapToProductInfoContent(component.componentData), type = component.type, name = component.componentName))
                 }
                 "shop_info" -> {
-                    listOfComponent.add(ProductShopInfoDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductShopInfoDataModel(type = component.type, name = component.componentName))
                 }
                 "social_proof" -> {
-                    listOfComponent.add(ProductSocialProofDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductSocialProofDataModel(type = component.type, name = component.componentName))
                 }
                 "image_review" -> {
-                    listOfComponent.add(ProductImageReviewDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductImageReviewDataModel(type = component.type, name = component.componentName))
                 }
                 "most_helpful_review" -> {
-                    listOfComponent.add(ProductMostHelpfulReviewDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
                 }
                 "trade_in" -> {
-                    listOfComponent.add(ProductTradeinDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductTradeinDataModel(type = component.type, name = component.componentName))
                 }
                 "info" -> {
-                    listOfComponent.add(ProductGeneralInfoDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                    val data = component.componentData.firstOrNull()
+                    listOfComponent.add(ProductGeneralInfoDataModel(ProductGeneralInfoData(data?.applink
+                            ?: "", data?.title ?: "", data?.content
+                            ?: listOf()), type = component.type, name = component.componentName))
                 }
                 "product_list" -> {
-                    listOfComponent.add(ProductRecommendationDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName, position = index))
+                    listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                 }
                 "shop_voucher" -> {
-                    listOfComponent.add(ProductMerchantVoucherDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
                 }
             }
         }
         return listOfComponent
+    }
+
+    private fun mapToProductInfoContent(listOfData: List<ComponentData>): List<ProductInfoContent>? {
+        return if (listOfData.isEmpty()) {
+            null
+        } else {
+            listOfData.map {
+                ProductInfoContent(it.row, it.content)
+            }
+        }
     }
 
     fun mapToDynamicProductDetailP1(data: PdpGetLayout): DynamicProductInfoP1 {

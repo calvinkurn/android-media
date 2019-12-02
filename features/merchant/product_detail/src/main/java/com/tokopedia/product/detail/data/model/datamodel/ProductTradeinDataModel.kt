@@ -7,7 +7,6 @@ import com.tokopedia.tradein.model.TradeInParams
 data class ProductTradeinDataModel(
         val type: String = "",
         val name: String = "",
-        val dataLayout: List<ComponentData> = listOf(),
         var tradeInParams: TradeInParams = TradeInParams(),
         var shouldRenderInitialData :Boolean = true
 ) : DynamicPDPDataModel {

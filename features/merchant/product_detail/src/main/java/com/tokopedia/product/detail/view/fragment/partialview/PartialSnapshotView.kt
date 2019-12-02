@@ -154,7 +154,7 @@ class PartialSnapshotView(private val view: View,
             renderTxtIcon(labelIc, colorIc, imageIc)
             view.layout_guarantee.visible()
             view.layout_guarantee.setOnClickListener {
-                //                onGuaranteeOsClicked?.invoke()
+            listener.onValuePropositionClicked(R.id.layout_guarantee)
             }
         } else {
             view.layout_guarantee.gone()

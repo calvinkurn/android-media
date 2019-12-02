@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
-import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
@@ -8,7 +7,6 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
  * For "Diskusi Produk"
  */
 data class ProductDiscussionDataModel(
-        val dataLayout: List<ComponentData> = listOf(),
         val type: String = "",
         val name:String = "",
         var latestTalk: Talk? = null,

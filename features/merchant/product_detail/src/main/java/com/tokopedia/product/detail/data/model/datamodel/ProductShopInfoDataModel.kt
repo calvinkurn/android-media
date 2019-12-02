@@ -1,14 +1,11 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
-import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
 class ProductShopInfoDataModel(
-        val dataLayout: List<ComponentData> = listOf(),
         val type: String = "",
         val name: String = "",
         var isFavorite: Boolean = false,

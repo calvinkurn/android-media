@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.util
 
+import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
@@ -104,10 +105,6 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
                 isWishlisted = it.data.isWishlist
             }
 
-            socialProofMap?.run {
-                dynamicProductInfoP1 = it
-            }
-
             productDiscussionMap?.run {
                 shopId = it.basic.shopID
                 // Should be in p2
@@ -119,7 +116,7 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
             }
 
             productLastSeenMap?.run {
-                lastSeen = it.data.price.idr.toString()
+                lastSeen = KMNumbers.formatRupiahString(it.data.price.value.toLong())
             }
 
         }

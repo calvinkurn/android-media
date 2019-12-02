@@ -92,6 +92,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
+import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.*
@@ -171,6 +172,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private var trackerListName: String? = ""
 
     //View
+    private lateinit var bottomSheet: ValuePropositionBottomSheet
+
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory) }
     private var menu: Menu? = null
@@ -179,6 +182,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private lateinit var stickyLoginView: StickyLoginView
     private lateinit var pdpHashMapUtil: DynamicProductDetailHashMap
     private var loadingProgressDialog: ProgressDialog? = null
+
     val errorBottomsheets: ErrorBottomsheets by lazy {
         ErrorBottomsheets()
     }
@@ -332,6 +336,30 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 is Success -> {
                     getRecyclerView(view).addOnScrollListener(onScrollListener)
                     pdpHashMapUtil = DynamicProductDetailHashMap(DynamicProductDetailMapper.hashMapLayout(it.data))
+                    viewModel.getDynamicProductInfoP1?.let { productInfo ->
+                        pdpHashMapUtil.updateDataP1Test(productInfo)
+                        shouldShowCodP1 = productInfo.data.isCOD
+
+                        if (productInfo.data.isTradeIn) renderTradein(productInfo) else dynamicAdapter.removeTradeinSection(pdpHashMapUtil.productTradeinMap)
+
+                        actionButtonView.isLeasing = productInfo.basic.isLeasing
+                        actionButtonView.renderData(!productInfo.basic.isActive(),
+                                (viewModel.isShopOwner(productInfo.basic.getShopId())
+                                        || viewModel.shopInfo?.allowManage == true),
+                                productInfo.data.preOrder)
+
+                        if (productInfo.basic.category.isAdult) {
+                            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId ?: "")
+                        }
+                    }
+
+                    actionButtonView.visibility = !isAffiliate
+                    if (affiliateString.hasValue()) {
+                        viewModel.hitAffiliateTracker(affiliateString
+                                ?: "", viewModel.deviceId)
+                    }
+
+                    activity?.invalidateOptionsMenu()
                     renderList(it.data)
                 }
                 is Fail -> {
@@ -341,52 +369,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 }
             }
         })
-
-        viewModel.dynamicProductInfoP1.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    val productP1Data = it.data
-                    renderTradein(productP1Data)
-                    shouldShowCodP1 = productP1Data.data.isCOD
-                    pdpHashMapUtil.updateDataP1Test(it.data)
-                    dynamicAdapter.notifyDataSetChanged()
-                }
-                is Fail -> {
-                    showToasterError(it.throwable.message ?: "")
-                }
-            }
-        })
-
-        viewModel.productInfoP1.observe(this, Observer {
-            when (it) {
-                is Success -> {
-//                    renderTradein(it.data)
-                    shouldShowCodP1 = it.data.productInfo.shouldShowCod
-//                    pdpHashMapUtil.updateDataP1(it.data)
-
-                    actionButtonView.isLeasing = it.data.productInfo.basic.isLeasing
-//                    it.data.productInfo.let { data ->
-//                        actionButtonView.renderData(!data.basic.isActive(),
-//                                (viewModel.isShopOwner(data.basic.shopID)
-//                                        || viewModel.shopInfo?.allowManage == true),
-//                                data.preorder)
-//                    }
-                    actionButtonView.visibility = !isAffiliate
-
-                    if (affiliateString.hasValue()) {
-                        viewModel.hitAffiliateTracker(affiliateString
-                                ?: "", viewModel.deviceId)
-                    }
-
-                    activity?.invalidateOptionsMenu()
-                    adapter.notifyDataSetChanged()
-                }
-                is Fail -> {
-                    showToasterError(it.throwable.message ?: "")
-                }
-            }
-        })
-
 
         viewModel.loadTopAdsProduct.observe(this, Observer {
             when (it) {
@@ -556,6 +538,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                                 MultiOriginWarehouse::class.java)
                         if (selectedProductInfo != null) {
                             userInputVariant = data.getStringExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
+                            //TODO asd
                             viewModel.productInfoP1.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
                             selectedWarehouse?.let {
                                 viewModel.multiOrigin = it.warehouseInfo
@@ -972,6 +955,40 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         }
     }
 
+    /**
+     * Value Proposition Clicked
+     */
+    override fun onValuePropositionClicked(view: Int) {
+        val title: String
+        val desc: String
+        val url: String
+        when (view) {
+            R.id.container_ready -> {
+                title = getString(R.string.value_proposition_title_ready)
+                desc = getString(R.string.value_proposition_desc_ready)
+                url = ProductDetailConstant.URL_VALUE_PROPOSITION_READY
+            }
+            R.id.container_ori -> {
+                title = getString(R.string.value_proposition_title_original)
+                desc = getString(R.string.value_proposition_desc_original)
+                url = ProductDetailConstant.URL_VALUE_PROPOSITION_ORI
+            }
+            R.id.container_guarantee_7_days -> {
+                title = getString(R.string.value_proposition_title_guarantee_7_days)
+                desc = getString(R.string.value_proposition_desc_guarantee_7_days)
+                url = ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
+            }
+            else -> {
+                title = getString(R.string.value_proposition_title_guarantee)
+                desc = getString(R.string.value_proposition_desc_guarantee)
+                url = ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
+            }
+        }
+
+        bottomSheet = ValuePropositionBottomSheet.newInstance(title, desc, url)
+        bottomSheet.show(fragmentManager, "pdp_bs")
+    }
+
     private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {
         if (data == null || !data.hasChildren) {
             dynamicAdapter.clearElement(pdpHashMapUtil.productVariantInfoMap)
@@ -1205,7 +1222,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             viewModel.getProductP1(ProductParams(productId, shopDomain, productKey), true)
         }
     }
-
 
     private fun gotoRateEstimation() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
@@ -1461,13 +1477,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private fun goToAtcExpress() {
         activity?.let {
             try {
-                val productInfo = (viewModel.productInfoP1.value as Success).data
+                val productInfo = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
                 val warehouseId: Int = viewModel.multiOrigin.id.toIntOrZero()
                 val atcRequestParam = AtcRequestParam()
-                atcRequestParam.setShopId(productInfo.productInfo.basic.shopID)
-                atcRequestParam.setProductId(productInfo.productInfo.basic.id)
+                atcRequestParam.setShopId(productInfo.basic.getShopId())
+                atcRequestParam.setProductId(productInfo.basic.getProductId())
                 atcRequestParam.setNotes(userInputNotes)
-                val qty = if (userInputQuantity == 0) productInfo.productInfo.basic.minOrder else userInputQuantity
+                val qty = if (userInputQuantity == 0) productInfo.basic.minOrder else userInputQuantity
                 atcRequestParam.setQuantity(qty)
                 atcRequestParam.setWarehouseId(warehouseId)
 

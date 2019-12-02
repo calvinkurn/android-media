@@ -27,7 +27,6 @@ query pdpGetLayout($productID: String) {
       url
       sku
       gtin
-      isKreasiLokal
       isMustInsurance
       catalogID
       needPrescription
@@ -78,11 +77,11 @@ query pdpGetLayout($productID: String) {
             source
             url
           }
+
           price {
             value
             currency
             lastUpdateUnix
-            idr
           }
           campaign {
             campaignID
@@ -112,11 +111,10 @@ query pdpGetLayout($productID: String) {
           }
           wholesale {
             minQty
-            price {
+            price{
               value
-              currency
               lastUpdateUnix
-              idr
+              currency
             }
           }
           isCashback {
@@ -126,8 +124,6 @@ query pdpGetLayout($productID: String) {
             isActive
             imageURL
           }
-
-          isTradeIn
           isTradeIn
           isOS
           isPowerMerchant

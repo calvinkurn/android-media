@@ -7,7 +7,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
@@ -28,11 +27,6 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
     override suspend fun executeOnBackground(): ProductInfoP2Login {
         val p2Login = ProductInfoP2Login()
 
-
-        val isWishlistedParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString())
-        val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
-                ProductInfo.WishlistStatus::class.java, isWishlistedParams)
-
         val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE],
                 GetCheckoutTypeResponse::class.java)
 
@@ -44,16 +38,10 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
-        val requests = mutableListOf(isWishlistedRequest, getCheckoutTypeRequest, affiliateRequest)
+        val requests = mutableListOf(getCheckoutTypeRequest, affiliateRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
-            if (gqlResponse.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
-                p2Login.isWishlisted = gqlResponse.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java)
-                        .isWishlisted == true
-            else
-                p2Login.isWishlisted = true
-
 
             if (gqlResponse.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
                 p2Login.pdpAffiliate = gqlResponse
