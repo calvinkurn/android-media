@@ -1,7 +1,7 @@
 package com.tokopedia.shop.note.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteDetail;
+import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel;
 import com.tokopedia.shop.note.domain.interactor.GetShopNoteDetailUseCase;
 import com.tokopedia.shop.note.view.listener.ShopNoteDetailView;
 
@@ -22,8 +22,11 @@ public class ShopNoteDetailPresenter extends BaseDaggerPresenter<ShopNoteDetailV
         this.getShopNoteDetailUseCase = getShopNoteDetailUseCase;
     }
 
-    public void getShopNoteList(String shopId) {
-        getShopNoteDetailUseCase.execute(GetShopNoteDetailUseCase.createRequestParam(shopId), new Subscriber<ShopNoteDetail>() {
+    public void getShopNoteList(String shopId, String noteId) {
+        getShopNoteDetailUseCase.execute(GetShopNoteDetailUseCase.createRequestParams(
+                shopId,
+                noteId
+        ), new Subscriber<ShopNoteModel>() {
             @Override
             public void onCompleted() {
 
@@ -37,8 +40,8 @@ public class ShopNoteDetailPresenter extends BaseDaggerPresenter<ShopNoteDetailV
             }
 
             @Override
-            public void onNext(ShopNoteDetail shopNoteDetail) {
-                getView().onSuccessGetShopNoteList(shopNoteDetail);
+            public void onNext(ShopNoteModel shopNoteModel) {
+                getView().onSuccessGetShopNoteList(shopNoteModel);
             }
         });
     }

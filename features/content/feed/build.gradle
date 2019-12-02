@@ -25,6 +25,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.features.affiliateCommon)
+    implementation project(rootProject.ext.features.interestPickCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.kolCommon)
@@ -50,7 +51,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.cameraview)
-    implementation project(rootProject.ext.features.tkpdcore)
 
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components

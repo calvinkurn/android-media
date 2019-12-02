@@ -1,14 +1,14 @@
 package com.tokopedia.product.manage.list.utils
 
-import android.content.Context
 import android.text.TextUtils
+import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.nishikino.model.EventTracking
 import com.tokopedia.product.manage.list.constant.*
-import com.tokopedia.seller.product.manage.constant.CatalogProductOption
-import com.tokopedia.seller.product.manage.constant.ConditionProductOption
-import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption
+import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
+import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
+import com.tokopedia.product.manage.list.constant.option.PictureStatusProductOption
+import com.tokopedia.product.manage.list.data.model.ProductManageFilterModel
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant
-import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel
 import com.tokopedia.track.TrackApp
 import java.util.*
 
@@ -43,13 +43,15 @@ object ProductManageTracking {
         eventProductManage(CLICK_FILTER_PRODUCT, label)
     }
 
-
     fun eventProductManageOverflowMenu(label: String) {
         eventProductManage(CLICK_OVERFLOW_MENU, label)
     }
 
+    fun eventDraftClick(label: String) {
+        eventProductManage(AppEventTracking.Action.CLICK, label)
+    }
 
-    fun trackingFilter(productManageFilterModel: ProductManageFilterModel, context: Context?) {
+    fun trackingFilter(productManageFilterModel: ProductManageFilterModel) {
         val filters = ArrayList<String>()
         if (productManageFilterModel.categoryId != ProductManageConstant.FILTER_ALL_CATEGORY.toString()) {
             filters.add(CATEGORY)

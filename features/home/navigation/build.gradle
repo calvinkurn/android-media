@@ -71,6 +71,8 @@ dependencies {
     testImplementation "org.robolectric:multidex:3.4.2"
     testImplementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     testAnnotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    testImplementation "androidx.arch.core:core-testing:2.0.0-rc01"
 }
 
 project.ext {
