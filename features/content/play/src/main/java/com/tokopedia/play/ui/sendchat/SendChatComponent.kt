@@ -6,9 +6,7 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 /**
  * Created by jegul on 02/12/19
@@ -17,7 +15,7 @@ class SendChatComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         private val coroutineScope: CoroutineScope
-) : UIComponent<SendChatInteractionEvent>, ChatFormView.Listener, CoroutineScope by coroutineScope {
+) : UIComponent<SendChatInteractionEvent>, SendChatView.Listener, CoroutineScope by coroutineScope {
 
     private val uiView = initChatFormView(container, bus)
 
@@ -29,18 +27,18 @@ class SendChatComponent(
         return bus.getSafeManagedReceiveChannel(SendChatInteractionEvent::class.java)
     }
 
-    override fun onChatFormClicked(view: ChatFormView) {
+    override fun onChatFormClicked(view: SendChatView) {
         launch {
             bus.emit(SendChatInteractionEvent::class.java, SendChatInteractionEvent.FormClicked)
         }
     }
 
-    override fun onSendChatClicked(view: ChatFormView) {
+    override fun onSendChatClicked(view: SendChatView) {
         launch {
             bus.emit(SendChatInteractionEvent::class.java, SendChatInteractionEvent.SendClicked)
         }
     }
 
-    private fun initChatFormView(container: ViewGroup, bus: EventBusFactory): ChatFormView =
-            ChatFormView(container, this)
+    private fun initChatFormView(container: ViewGroup, bus: EventBusFactory): SendChatView =
+            SendChatView(container, this)
 }

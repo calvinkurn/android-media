@@ -8,19 +8,16 @@ import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIView
-import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
+import com.tokopedia.unifycomponents.TextFieldUnify
 
 /**
  * Created by jegul on 02/12/19
  */
-class ChatFormView(container: ViewGroup, listener: Listener) : UIView(container) {
+class SendChatView(container: ViewGroup, listener: Listener) : UIView(container) {
 
     private val view: View =
             LayoutInflater.from(container.context).inflate(R.layout.view_chat_form, container, false)
-
-    override val containerId: Int = view.id
 
     init {
         container.addView(view)
@@ -36,6 +33,8 @@ class ChatFormView(container: ViewGroup, listener: Listener) : UIView(container)
                 }
     }
 
+    override val containerId: Int = view.id
+
     override fun show() {
         view.show()
     }
@@ -45,7 +44,7 @@ class ChatFormView(container: ViewGroup, listener: Listener) : UIView(container)
     }
 
     interface Listener {
-        fun onChatFormClicked(view: ChatFormView)
-        fun onSendChatClicked(view: ChatFormView)
+        fun onChatFormClicked(view: SendChatView)
+        fun onSendChatClicked(view: SendChatView)
     }
 }
