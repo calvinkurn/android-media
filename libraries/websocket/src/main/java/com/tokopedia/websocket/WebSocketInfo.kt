@@ -13,8 +13,8 @@ class WebSocketInfo {
     var webSocket: WebSocket? = null
 
     var response: WebSocketResponse? = null
-    var string: String = ""
-    var byteString: ByteString = ByteString.EMPTY
+    var string: String? = null
+    var byteString: ByteString? = null
     private var error: String = ""
 
     var isOnOpen: Boolean = false

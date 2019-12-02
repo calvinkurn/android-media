@@ -20,14 +20,20 @@ abstract class WebSocketSubscriber : Subscriber<WebSocketInfo>() {
                     hasOpened = true
                     onOpen(it)
                 }
-                onMessage(webSocketInfo.string)
-                onMessage(webSocketInfo.byteString)
-
-                webSocketInfo.response?.let {
-                    onMessage(it)
-                }
             }
             webSocketInfo.isOnReconnect -> onReconnect()
+        }
+
+        webSocketInfo.string?.let {
+            onMessage(it)
+        }
+
+        webSocketInfo.byteString?.let {
+            onMessage(it)
+        }
+
+        webSocketInfo.response?.let {
+            onMessage(it)
         }
     }
 
