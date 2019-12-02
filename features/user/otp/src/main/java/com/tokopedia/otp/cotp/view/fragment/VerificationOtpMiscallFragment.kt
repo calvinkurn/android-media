@@ -122,7 +122,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         setData()
         updateViewFromServer()
         requestOtp()
-        KeyboardHandler.showSoftKeyboard(activity)
+        showKeyboard()
     }
 
     private fun updateViewFromServer() {
@@ -487,6 +487,11 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             textInputOtp?.setText(phoneNumber.substring(phoneHint.length))
             disableVerifyButton()
         }
+    }
+
+    private fun showKeyboard() {
+        val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.toggleSoftInputFromWindow(textInputOtp.windowToken, InputMethodManager.SHOW_FORCED, 0)
     }
 
     companion object {
