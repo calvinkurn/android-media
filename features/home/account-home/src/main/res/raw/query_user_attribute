@@ -66,8 +66,6 @@ query BuyerUserAttribute($userID: Int!) {
     is_topads_user
   }
   notifications {
-    total_cart
-    total_notif
     resolution
     shop_id
     inbox {
@@ -89,10 +87,6 @@ query BuyerUserAttribute($userID: Int!) {
       paymentConfirm
       orderStatus
       deliveryConfirm
-    }
-    resolution_as {
-      buyer
-      seller
     }
     chat {
       unreads
