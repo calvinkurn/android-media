@@ -61,7 +61,6 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
     lateinit var catalogNavViewModel: CatalogNavViewModel
 
 
@@ -241,11 +240,9 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun initView() {
-        activity?.let { observer ->
-            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
-            catalogNavViewModel = viewModelProvider.get(CatalogNavViewModel::class.java)
-            fetchCatalogData(getCatalogListParams(0))
-        }
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        catalogNavViewModel = viewModelProvider.get(CatalogNavViewModel::class.java)
+        fetchCatalogData(getCatalogListParams(0))
     }
 
     private fun getCatalogListParams(page: Int): RequestParams {
@@ -310,11 +307,6 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         catalogNavViewModel.fetchCatalogDetail(paramMap)
     }
 
-
-    override fun onDetach() {
-        super.onDetach()
-        catalogNavViewModel.onDetach()
-    }
 
     override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
 
