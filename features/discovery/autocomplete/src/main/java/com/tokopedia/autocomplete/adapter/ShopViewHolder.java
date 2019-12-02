@@ -130,15 +130,28 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
             AutocompleteTracking.eventClickShopSearch(
                     itemView.getContext(),
                     String.format(
-                            "%s - keyword: %s - shop: %s - applink: %s",
-                            boundedShopSearch.getShopId(),
+                            "%s - keyword: %s - shop: %s",
+                            getShopIdFromApplink(boundedShopSearch.getApplink()),
                             boundedShopSearch.getSearchTerm(),
-                            boundedShopSearch.getKeyword(),
-                            boundedShopSearch.getApplink()
+                            boundedShopSearch.getKeyword()
                     ),
                     tabName
             );
             listener.onItemClicked(boundedShopSearch.getApplink(), boundedShopSearch.getUrl());
         });
+    }
+
+    private String getShopIdFromApplink(String applink) {
+        String prefix = "tokopedia://shop/";
+
+        try {
+            if (applink.startsWith(prefix)) {
+                return applink.substring(prefix.length(), applink.indexOf("?"));
+            } else {
+                return "";
+            }
+        } catch (Exception e) {
+            return "";
+        }
     }
 }
