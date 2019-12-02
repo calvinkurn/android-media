@@ -20,7 +20,5 @@ data class Header (
         @SerializedName("error_code")
         var errorCode: String? = null,
         @SerializedName("message")
-        var message: String? = null
+        var message: ArrayList<String>? = null
 )
-
-}

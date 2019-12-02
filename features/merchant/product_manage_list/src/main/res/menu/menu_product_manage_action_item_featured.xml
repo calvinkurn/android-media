@@ -15,7 +15,7 @@
             android:icon="@drawable/ic_menu_delete"
             android:title="@string/label_delete" />
         <item
-            android:title="@string/product_manage_menu_set_featured_product"
+            android:title="@string/product_manage_menu_remove_featured_product"
             android:id="@+id/set_featured_product"
             android:icon="@drawable/ic_menu_set_featured_product"/>
         <item

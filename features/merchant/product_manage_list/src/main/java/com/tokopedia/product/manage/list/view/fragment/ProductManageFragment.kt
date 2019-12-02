@@ -14,10 +14,7 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.*
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
@@ -369,6 +366,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     override fun onSuccessGetProductList(list: MutableList<ProductManageViewModel>, totalItem: Int, hasNextPage: Boolean) {
         productManageViewModels = list
         renderList(list, hasNextPage)
+        //TODO: remove this
+        hideLoadingProgress()
     }
 
     override fun onSuccessGetShopInfo(goldMerchant: Boolean, officialStore: Boolean, shopDomain: String) {
@@ -621,12 +620,21 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         renderCheckedView()
     }
 
-    override fun onSuccessChangeFeaturedProduct() {
-        showToasterNormal(getString(R.string.product_manage_success_add_featured_product))
+    override fun onSuccessChangeFeaturedProduct(status: Int) {
+        loadInitialData()
+        var successMessage: String = getString(R.string.product_manage_success_remove_featured_product)
+        if (status == ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
+            successMessage = getString(R.string.product_manage_success_add_featured_product)
+
+        Toast.makeText(context,successMessage,Toast.LENGTH_SHORT)
+                .show()
     }
 
     override fun onFailedChangeFeaturedProduct(errorMessage: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val error = errorMessage ?: getString(R.string.product_manage_failed_set_featured_product)
+        hideLoadingProgress()
+        Toast.makeText(context, error ,Toast.LENGTH_SHORT)
+                .show()
     }
 
     private fun updateBulkLayout() {
@@ -706,9 +714,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(productManageViewModel.productName)
         if (productManageViewModel.productStatus == StatusProductOption.EMPTY) {
-            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads)
+            if (productManageViewModel.isFeatureProduct) bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads_featured)
+            else bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads_not_featured)
         } else {
-            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item)
+            if (productManageViewModel.isFeatureProduct) bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_featured)
+            else bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_not_featured)
         }
         val bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))

@@ -19,6 +19,7 @@ import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepositor
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.domain.BulkUpdateProductUseCase;
+import com.tokopedia.product.manage.list.domain.EditFeaturedProductUseCase;
 import com.tokopedia.product.manage.list.domain.EditPriceUseCase;
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.list.view.mapper.ProductListMapperView;
@@ -66,9 +67,10 @@ public class ProductManageModule {
                                                                 PopupManagerAddProductUseCase popupManagerAddProductUseCase,
                                                                 GetProductListUseCase getProductListUseCase,
                                                                 ProductListMapperView productListMapperView,
-                                                                BulkUpdateProductUseCase bulkUpdateProductUseCase) {
+                                                                BulkUpdateProductUseCase bulkUpdateProductUseCase,
+                                                                EditFeaturedProductUseCase editFeaturedProductUseCase) {
         return new ProductManagePresenterImpl(editPriceUseCase, gqlGetShopInfoUseCase, userSession, topAdsGetShopDepositGraphQLUseCase,
-                setCashbackUseCase, popupManagerAddProductUseCase, getProductListUseCase, productListMapperView, bulkUpdateProductUseCase);
+                setCashbackUseCase, popupManagerAddProductUseCase, getProductListUseCase, productListMapperView, bulkUpdateProductUseCase, editFeaturedProductUseCase);
     }
 
     @Provides

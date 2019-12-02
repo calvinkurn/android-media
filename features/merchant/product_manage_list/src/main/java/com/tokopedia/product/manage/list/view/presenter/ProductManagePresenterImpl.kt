@@ -254,20 +254,17 @@ class ProductManagePresenterImpl @Inject constructor(
     }
 
     override fun setFeaturedProduct(productId: String, status: Int) {
-
         //loading animation
         view.showLoadingProgress()
 
         editFeaturedProductUseCase.execute(EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status),
                 object : Subscriber<FeaturedProductResponseDomainModel>() {
                     override fun onNext(featuredProductResponse: FeaturedProductResponseDomainModel?) {
-                        view.hideLoadingProgress()
+//                        view.hideLoadingProgress()
                         if (featuredProductResponse?.errorCode.equals("")) {
-                            //If not error, throw onSuccess method
-                            view.onSuccessChangeFeaturedProduct()
-
+                            view.onSuccessChangeFeaturedProduct(status)
                         } else {
-                            view.onFailedChangeFeaturedProduct(featuredProductResponse?.reason)
+                            view.onFailedChangeFeaturedProduct(featuredProductResponse?.message?.get(0))
                         }
                     }
 
@@ -276,7 +273,7 @@ class ProductManagePresenterImpl @Inject constructor(
                     }
 
                     override fun onError(e: Throwable?) {
-                        view.hideLoadingProgress()
+//                        view.hideLoadingProgress()
                         view.onFailedChangeFeaturedProduct(e?.message)
                     }
                 })
