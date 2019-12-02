@@ -1,5 +1,6 @@
 package com.tokopedia.abstraction.common.utils.image;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
