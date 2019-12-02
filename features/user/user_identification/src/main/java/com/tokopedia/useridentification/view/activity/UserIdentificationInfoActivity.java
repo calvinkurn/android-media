@@ -17,6 +17,7 @@ import com.tokopedia.useridentification.view.fragment.UserIdentificationInfoFrag
 public class UserIdentificationInfoActivity extends BaseSimpleActivity {
 
     boolean isSourceSeller;
+
     private int projectId = -1;
     public interface Listener {
         void onTrackBackPressed();

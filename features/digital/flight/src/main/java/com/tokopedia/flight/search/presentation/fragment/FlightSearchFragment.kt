@@ -233,14 +233,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     open fun getLayout(): Int = R.layout.fragment_search_flight
 
-    override fun getSwipeRefreshLayoutResourceId(): Int {
-        return R.id.swipe_refresh_layout
-    }
-
-    override fun getRecyclerViewResourceId(): Int {
-        return R.id.recycler_view
-    }
-
     override fun onDestroyView() {
         flightSearchPresenter.unsubscribeAll()
         stopTrace()

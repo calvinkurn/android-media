@@ -1,7 +1,5 @@
 package com.tokopedia.home.beranda.presentation.presenter;
 
-import androidx.annotation.NonNull;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -52,6 +50,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Lazy;
 import kotlin.Unit;
 import retrofit2.Response;
@@ -247,16 +246,12 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
             @Override
             public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorGetReviewData();
-                }
+                getView().onErrorGetReviewData();
             }
 
             @Override
             public void onNext(SuggestedProductReview suggestedProductReview) {
-                if (isViewAttached()) {
-                    getView().onSuccessGetReviewData(suggestedProductReview);
-                }
+                getView().onSuccessGetReviewData(suggestedProductReview);
             }
         });
     }

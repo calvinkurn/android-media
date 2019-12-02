@@ -1,8 +1,8 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.Rect
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -10,11 +10,11 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
-import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.util.OnImageReviewClick
 import com.tokopedia.product.detail.data.util.OnSeeAllReviewClick
 import com.tokopedia.product.detail.view.adapter.ImageReviewAdapter
 import kotlinx.android.synthetic.main.partial_product_image_review.view.*
+import com.tokopedia.product.detail.data.model.review.Review
 
 
 class PartialImageReviewView private constructor(private val view: View,
@@ -49,7 +49,6 @@ class PartialImageReviewView private constructor(private val view: View,
                 onReviewClicked?.invoke()
             }
             review_count.text = context.getString(R.string.review_counter, rating.totalRating)
-            review_rating.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_rating_gold), null)
             review_rating.text = context.getString(R.string.counter_pattern_string, rating.ratingScore, 5)
 
             setBackgroundAndKeepPadding(this, reviews)

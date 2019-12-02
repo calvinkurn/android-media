@@ -25,17 +25,21 @@ class SeamlessLoginUsecase @Inject constructor(
         private val userSession: UserSessionInterface,
         private val gson: Gson) {
 
-    fun generateSeamlessUrl(callbackUrl: String, listener: SeamlessLoginSubscriber){
-        getKeygenUsecase.execute(
-            onSuccess = {
-                listener.onUrlGenerated(
-                    createData(callbackUrl, it.data.key)
-                )
-            },
-            onError = {
-                listener.onError(it.message ?: "")
-            }
-        )
+    fun generateSeamlessUrl(callbackUrl: String, listener: SeamlessLoginSubscriber?){
+        if(!userSession.isLoggedIn){
+            listener?.onUrlGenerated(callbackUrl)
+        }else {
+            getKeygenUsecase.execute(
+                    onSuccess = {
+                        listener?.onUrlGenerated(
+                                createData(callbackUrl, it.data.key)
+                        )
+                    },
+                    onError = {
+                        listener?.onError(it.message ?: "")
+                    }
+            )
+        }
     }
 
     private fun buildUrl(callbackUrl: String): Uri.Builder {

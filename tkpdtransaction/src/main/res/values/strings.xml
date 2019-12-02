@@ -267,6 +267,24 @@ Anda di sini.</string>
     <string name="detail_label_digital">Detail Pembelian</string>
     <string name="lihat_detail">Lihat Detail</string>
     <string name="detail_label">Detail E-voucher Deals</string>
+
+    <!-- OMS Insurance-->
+
+    <string name="insurance_ticker">Polis asuransi akan dikirimkan lewat email.</string>
+    <string name="insurance_policy">Polis Asuransi</string>
+    <string name="insurance_detail_label">Daftar Produk</string>
+    <string name="protection_details">Detail Proteksi</string>
+    <string name="insurance_claim">Lihat Cara Klaim</string>
+    <string name="insurance_claim_content">Info lengkap benefit asuransi dan cara pengajuan klaim asuransi</string>
+    <string name="insurance_policy_content">Bukti perjanjian tertulis tertanggung dan pihak asuransi</string>
+    <string name="insurance_type">Jenis Asuransi</string>
+    <string name="product_category">Kategori Produk</string>
+    <string name="insurance_length">Masa Perlindungan</string>
+    <string name="insurance_quantity">Jumlah Proteksi</string>
+    <string name="insurance_price">Harga Proteksi</string>
+
+    <!-- OMS Insurance-->
+
     <string name="detail_label_events">Detail E-Tiket</string>
     <string name="product_info_label">Daftar Produk</string>
     <string name="lihat_text">LIHAT</string>
@@ -362,4 +380,11 @@ Anda di sini.</string>
     <string name="tkpdtransaction_oms_retry_failed_event">E-tiket belum terbit. Tunggu 30 detik untuk cek ulang, ya.</string>
     <string name="tkpdtransaction_oms_retry_success">Hore! E-voucher kamu sudah terbit.</string>
     <string name="tkpdtransaction_oms_retry_text">Tunggu 30 detik</string>
+
+    <string name="tkpdtransaction_filter_terapkan">Terapkan</string>
+    <string name="tkpdtransaction_filter_sampai">Sampai</string>
+    <string name="tkpdtransaction_filter_title">Filter Tanggal</string>
+    <string name="tkpdtransaction_filter_mulai">Mulai Dari</string>
+    <string name="tkpdtransaction_filter_custom_date">"Pilih Tanggal Sendiri"</string>
+    <string name="tkpdtransaction_filter_90_days">90 Hari Terakhir</string>
 </resources>

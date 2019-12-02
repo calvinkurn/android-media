@@ -249,15 +249,13 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     public RequestParams getParams() {
+        Brand brand = getArguments().getParcelable(BrandDetailsPresenter.BRAND_DATA);
         RequestParams requestParams = RequestParams.create();
-        if (getArguments() != null) {
-            Brand brand = getArguments().getParcelable(BrandDetailsPresenter.BRAND_DATA);
-            requestParams.putString(BrandDetailsPresenter.TAG, brand.getUrl());
-            Location location = Utils.getSingletonInstance().getLocation(getActivity());
-            if (location != null) {
-                if (!TextUtils.isEmpty(location.getCoordinates())) {
-                    requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
-                }
+        requestParams.putString(BrandDetailsPresenter.TAG, brand.getUrl());
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null) {
+            if (!TextUtils.isEmpty(location.getCoordinates())) {
+                requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
             }
         }
         return requestParams;

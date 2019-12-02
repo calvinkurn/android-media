@@ -3,7 +3,6 @@ package com.tokopedia.flight.search.presentation.fragment;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.presentation.adapter.FlightFilterRefundableAdapterTypeFactory;
 import com.tokopedia.flight.search.presentation.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
@@ -32,11 +31,6 @@ public class FlightFilterRefundableFragment extends BaseFlightFilterFragment<Ref
     @Override
     public void onItemClicked(RefundableStat refundableStat) {
         // no op
-    }
-
-    @Override
-    public int getRecyclerViewResourceId() {
-        return R.id.recycler_view;
     }
 
     @Override

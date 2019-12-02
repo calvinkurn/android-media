@@ -3,7 +3,6 @@ package com.tokopedia.flight.search.presentation.fragment;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.presentation.adapter.FlightFilterDepartureTimeAdapterTypeFactory;
 import com.tokopedia.flight.search.presentation.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum;
@@ -32,11 +31,6 @@ public class FlightFilterDepartureFragment extends BaseFlightFilterFragment<Depa
     @Override
     public void onItemClicked(DepartureStat departureStat) {
         // no op
-    }
-
-    @Override
-    public int getRecyclerViewResourceId() {
-        return R.id.recycler_view;
     }
 
     @Override
