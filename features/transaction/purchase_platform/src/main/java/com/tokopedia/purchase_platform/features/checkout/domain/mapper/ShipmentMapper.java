@@ -79,12 +79,18 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
         dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
 
-        if (shipmentAddressFormDataResponse.getDisabledFeaturesDetail() != null) {
-            DisabledFeaturesDetailData disabledFeaturesDetailData = new DisabledFeaturesDetailData();
-            disabledFeaturesDetailData.setDisabledMultiAddressMessage(
-                    shipmentAddressFormDataResponse.getDisabledFeaturesDetail().getDisabledMultiAddressMessage()
-            );
-            dataResult.setDisabledFeaturesDetailData(disabledFeaturesDetailData);
+        if (shipmentAddressFormDataResponse.getDisabledFeatures() != null && shipmentAddressFormDataResponse.getDisabledFeaturesDetail() != null) {
+            for (CheckoutDisabledFeatures disabledFeature : shipmentAddressFormDataResponse.getDisabledFeatures()) {
+                if (disabledFeature == CheckoutDisabledFeatures.multiAddress) {
+                    DisabledFeaturesDetailData disabledFeaturesDetailData = new DisabledFeaturesDetailData();
+                    disabledFeaturesDetailData.setDisabledMultiAddressMessage(
+                            shipmentAddressFormDataResponse.getDisabledFeaturesDetail().getDisabledMultiAddressMessage()
+                    );
+                    dataResult.setDisabledFeaturesDetailData(disabledFeaturesDetailData);
+                } else {
+                    break;
+                }
+            }
         }
 
         boolean isDisableEgold = false;
