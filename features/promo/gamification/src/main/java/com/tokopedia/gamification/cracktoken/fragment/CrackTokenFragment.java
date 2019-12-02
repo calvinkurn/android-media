@@ -38,9 +38,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.signature.ObjectKey;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.gamification.GamificationEventTracking;
@@ -64,6 +66,7 @@ import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.data.entity.TokenUserEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.di.GamificationComponentInstance;
+import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView;
 import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -99,7 +102,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetEggSource widgetEggSource;
     private WidgetTokenOnBoarding widgetTokenOnBoarding;
     private ProgressBar progressBar;
-    private TextView infoTitlePage;
     private FrameLayout crackLayoutTooltip;
 
     private ImageView imageRemainingToken;
@@ -115,6 +117,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetRewardCrackResult widgetRewards;
     private Toolbar toolbar;
     private TextView toolbarTitle;
+    private PdpGamificationView pdpGamificationView;
+    private ViewGroup bottomSheetContainer;
 
     private PerformanceMonitoring fpmRender;
     private PerformanceMonitoring fpmCrack;
@@ -151,7 +155,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetEggSource = rootView.findViewById(R.id.widget_remaining_token_view);
         widgetRewards = rootView.findViewById(R.id.widget_rewards);
         progressBar = rootView.findViewById(R.id.progress_bar);
-        infoTitlePage = rootView.findViewById(R.id.text_info_page);
         toolbar = rootView.findViewById(R.id.toolbar);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getString(R.string.toko_points_title));
@@ -159,7 +162,10 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         tvCounter = toolbar.findViewById(R.id.tv_floating_counter);
         flRemainingToken = toolbar.findViewById(R.id.fl_remaining_token);
         widgetTokenOnBoarding = rootView.findViewById(R.id.widget_token_onboarding);
+        pdpGamificationView = rootView.findViewById(R.id.pdpGamificationView);
+        bottomSheetContainer = rootView.findViewById(R.id.bottomSheetContainer);
         setUpToolBar();
+        setupBottomSheet();
 
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
@@ -229,6 +235,15 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         });
 
         return rootView;
+    }
+
+    private void setupBottomSheet() {
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer);
+        bottomSheetBehavior.setPeekHeight((int) dpToPx(getActivity(),120));
+    }
+
+    public float dpToPx(Context context, float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
     }
 
     private void showToolTip() {
@@ -345,8 +360,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         List<HomeActionButton> homeActionButtons = tokenData.getHome().getHomeActionButton();
         HomeSmallButton homeSmallButton = tokenData.getHome().getHomeSmallButton();
 
-        infoTitlePage.setText(tokenData.getHome().getTokensUser().getTitle());
-
         String backgroundUrl = tokenUser.getBackgroundAsset().getBackgroundImgUrl();
         ObjectKey signature = new ObjectKey(tokenUser.getBackgroundAsset().getVersion());
         ImageHandler.loadImageWithSignature(ivContainer, backgroundUrl, signature);
@@ -400,7 +413,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             widgetEggSource.hide();
         }
         showRewards(tokenData);
-        showInfoTitle();
     }
 
     private void showRemainingToken(String smallImageUrl, String remainingTokenString) {
@@ -428,13 +440,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }
     }
 
-    private void hideInfoTitle() {
-        infoTitlePage.setVisibility(View.GONE);
-    }
-
-    private void showInfoTitle() {
-        infoTitlePage.setVisibility(View.VISIBLE);
-    }
 
     private void stopTimer() {
         if (countDownTimer != null) {
@@ -457,7 +462,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                infoTitlePage.setVisibility(View.VISIBLE);
                 widgetRewards.setVisibility(View.VISIBLE);
                 initTimerBound();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -613,7 +617,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     public void onSuccessCrackToken(final CrackResultEntity crackResult) {
         crackLayoutTooltip.setVisibility(View.GONE);
         stopTimer();
-        hideInfoTitle();
         vibrate();
         fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
         if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&

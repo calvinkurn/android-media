@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gamification.pdp.data.GamingRecommendationParamResponse
 import com.tokopedia.gamification.pdp.data.LiveDataResult
+import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.data.di.modules.DispatcherModule
 import com.tokopedia.gamification.pdp.domain.usecase.GamingRecommendationParamUseCase
 import com.tokopedia.gamification.pdp.domain.usecase.GamingRecommendationProductUseCase
@@ -35,7 +36,7 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
                                              @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher) : BaseViewModel(uiDispatcher) {
 
     val recommendationLiveData: MutableLiveData<LiveDataResult<GamingRecommendationParamResponse>> = MutableLiveData()
-    val productLiveData: MutableLiveData<LiveDataResult<List<Visitable<*>>>> = MutableLiveData()
+    val productLiveData: MutableLiveData<LiveDataResult<List<Recommendation>>> = MutableLiveData()
 
     var pageNumber = 1
 

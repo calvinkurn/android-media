@@ -8,8 +8,8 @@ import java.util.*
 class Mapper {
 
 //    fun <T,V> map(t:T):V
-    fun recommWidgetToListOfVisitables(recommendationWidget: RecommendationWidget): List<Visitable<*>>{
-    val recomendationList = ArrayList<Visitable<*>>()
+    fun recommWidgetToListOfVisitables(recommendationWidget: RecommendationWidget): List<Recommendation>{
+    val recomendationList = ArrayList<Recommendation>()
     for (item in recommendationWidget.recommendationItemList) {
         recomendationList.add(Recommendation(item))
     }

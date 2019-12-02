@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -82,26 +81,6 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/text_info_page"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp_36"
-                    android:layout_marginRight="@dimen/dp_36"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:background="@drawable/bg_info_crack_egg"
-                    android:gravity="center"
-                    android:paddingLeft="@dimen/dp_32"
-                    android:paddingTop="@dimen/dp_8"
-                    android:paddingRight="@dimen/dp_32"
-                    android:paddingBottom="@dimen/dp_8"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/text_size_info_crack_egg"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    tools:text="@string/default_info_token_text_crack"
-                    tools:visibility="visible" />
             </LinearLayout>
 
 
@@ -218,11 +197,19 @@
 
 
         </FrameLayout>
-
-        <FrameLayout
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="120dp"/>
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/bottomSheetContainer"
+        android:layout_width="match_parent"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:layout_height="wrap_content">
+        <com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:id="@+id/pdpGamificationView"
             android:background="@color/white" />
-    </LinearLayout>
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
