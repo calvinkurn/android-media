@@ -47,9 +47,9 @@ val websocketSubscriber = object : WebSocketSubscriber() {
 val websocket = RxWebSocket[
                 "{fill the url here - String}",
                 "{fill the access token here - String}",
-                {"fill the delay by default is 5000ms - Int"},
-                {"fill the ping interval by default is 10000L ms - Long"},
-                {"fill the max entries by default is 3 times - Int"}
+                "{fill the delay by default is 5000ms - Int}",
+                "{fill the ping interval by default is 10000L ms - Long}",
+                "{fill the max entries by default is 3 times - Int}"
         ]
 
 val subsribeWebsocket = websocket?.subscribe(websocketSubscriber)
