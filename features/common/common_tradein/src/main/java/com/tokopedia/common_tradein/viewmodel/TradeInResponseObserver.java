@@ -1,16 +1,16 @@
-package com.tokopedia.tradein.viewmodel;
+package com.tokopedia.common_tradein.viewmodel;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import android.view.View;
 
 
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.tradein.R;
+import com.tokopedia.common_tradein.R;
 
-import javax.annotation.Nullable;
 
-import com.tokopedia.tradein.model.ValidateTradeInResponse;
-import com.tokopedia.tradein.view.customview.TradeInTextView;
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse;
+import com.tokopedia.common_tradein.customviews.TradeInTextView;
 
 public class TradeInResponseObserver implements Observer<ValidateTradeInResponse> {
 
