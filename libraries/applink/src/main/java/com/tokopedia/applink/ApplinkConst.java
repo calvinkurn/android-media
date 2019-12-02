@@ -354,16 +354,7 @@ public interface ApplinkConst {
         String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
 
-        String PRODUCT_PREVIEW_ID = "product_preview_id";
-        String PRODUCT_PREVIEW_IMAGE_URL = "product_preview_image_url";
-        String PRODUCT_PREVIEW_NAME = "product_preview_name";
-        String PRODUCT_PREVIEW_PRICE = "product_preview_price";
-        String PRODUCT_PREVIEW_URL = "product_preview_url";
-        String PRODUCT_PREVIEW_COLOR_VARIANT = "product_preview_color";
-        String PRODUCT_PREVIEW_HEX_COLOR_VARIANT = "product_preview_hex_color";
-        String PRODUCT_PREVIEW_SIZE_VARIANT = "product_preview_size";
-        String PRODUCT_PREVIEW_FS_IS_ACTIVE = "product_preview_fs_is_active";
-        String PRODUCT_PREVIEW_FS_IMAGE_URL = "product_preview_fs_is_image_url";
+        String PRODUCT_PREVIEWS = "product_previews";
 
         String INVOICE_ID = "invoice_id";
         String INVOICE_CODE = "invoice_code";

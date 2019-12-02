@@ -1,10 +1,10 @@
 package com.tokopedia.product.detail.view.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import android.content.Intent
-import androidx.collection.ArrayMap
 import android.text.TextUtils
 import android.util.SparseArray
+import androidx.collection.ArrayMap
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -12,6 +12,8 @@ import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffilia
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -439,329 +441,329 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val p2Login = ProductInfoP2Login()
 
-    val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productId.toString())
-    val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
-            ProductInfo.WishlistStatus::class.java, isWishlistedParams)
+            val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productId.toString())
+            val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
+                    ProductInfo.WishlistStatus::class.java, isWishlistedParams)
 
-    val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE],
-            GetCheckoutTypeResponse::class.java)
+            val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE],
+                    GetCheckoutTypeResponse::class.java)
 
-    val affilateParams = mapOf(ParamAffiliate.PRODUCT_ID_PARAM to listOf(productId),
-            ParamAffiliate.SHOP_ID_PARAM to shopId,
-            ParamAffiliate.INCLUDE_UI_PARAM to true)
+            val affilateParams = mapOf(ParamAffiliate.PRODUCT_ID_PARAM to listOf(productId),
+                    ParamAffiliate.SHOP_ID_PARAM to shopId,
+                    ParamAffiliate.INCLUDE_UI_PARAM to true)
 
-    val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
-            TopAdsPdpAffiliateResponse::class.java, affilateParams)
-    val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-    try {
-        val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, getCheckoutTypeRequest,
-                affiliateRequest), cacheStrategy)
+            val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
+                    TopAdsPdpAffiliateResponse::class.java, affilateParams)
+            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+            try {
+                val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, getCheckoutTypeRequest,
+                        affiliateRequest), cacheStrategy)
 
-        if (response.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
-            p2Login.isWishlisted = response.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java)
-                    .isWishlisted == true
-        else
-            p2Login.isWishlisted = true
+                if (response.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
+                    p2Login.isWishlisted = response.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java)
+                            .isWishlisted == true
+                else
+                    p2Login.isWishlisted = true
 
 
-        if (response.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
-            p2Login.pdpAffiliate = response
-                    .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
-                    .topAdsPDPAffiliate.data.affiliate.firstOrNull()
-        }
+                if (response.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
+                    p2Login.pdpAffiliate = response
+                            .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
+                            .topAdsPDPAffiliate.data.affiliate.firstOrNull()
+                }
 
-        if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
-            p2Login.cartType = response
-                    .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
-                    .getCartType.data.cartType
-        }
-    } catch (t: Throwable) {
-        t.debugTrace()
-    }
+                if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
+                    p2Login.cartType = response
+                            .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
+                            .getCartType.data.cartType
+                }
+            } catch (t: Throwable) {
+                t.debugTrace()
+            }
 
             p2Login
         }
-}
-
-private fun generateTopAdsParams(productInfo: ProductInfo): Map<String, Any> {
-    return mapOf(
-            TopAdsDisplay.KEY_USER_ID to (userSessionInterface.userId.toIntOrNull() ?: 0),
-            TopAdsDisplay.KEY_PAGE_NAME to TopAdsDisplay.DEFAULT_PAGE_NAME,
-            TopAdsDisplay.KEY_PAGE_NUMBER to TopAdsDisplay.DEFAULT_PAGE_NUMBER,
-            TopAdsDisplay.KEY_XDEVICE to TopAdsDisplay.DEFAULT_DEVICE,
-            TopAdsDisplay.KEY_XSOURCE to TopAdsDisplay.DEFAULT_SRC_PAGE,
-            TopAdsDisplay.KEY_PRODUCT_ID to productInfo.basic.id.toString()
-    )
-
-}
-
-private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: String,
-                                     forceRefresh: Boolean, needRequestCod: Boolean, origin: String?)
-        : ProductInfoP3 = withContext(Dispatchers.IO) {
-    val productInfoP3 = ProductInfoP3()
-
-    val estimationParams = mapOf(PARAM_RATE_EST_WEIGHT to productInfo.basic.weightInKg,
-            PARAM_RATE_EST_SHOP_DOMAIN to shopDomain, "origin" to origin)
-    val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
-            RatesEstimationModel.Response::class.java, estimationParams, false)
-
-    val requests = mutableListOf(estimationRequest)
-
-    if (needRequestCod) {
-        val userCodParams = mapOf("isPDP" to true)
-        val userCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_USER_COD_STATUS],
-                UserCodStatus.Response::class.java, userCodParams)
-        requests.add(userCodRequest)
     }
 
-    val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
+    private fun generateTopAdsParams(productInfo: ProductInfo): Map<String, Any> {
+        return mapOf(
+                TopAdsDisplay.KEY_USER_ID to (userSessionInterface.userId.toIntOrNull() ?: 0),
+                TopAdsDisplay.KEY_PAGE_NAME to TopAdsDisplay.DEFAULT_PAGE_NAME,
+                TopAdsDisplay.KEY_PAGE_NUMBER to TopAdsDisplay.DEFAULT_PAGE_NUMBER,
+                TopAdsDisplay.KEY_XDEVICE to TopAdsDisplay.DEFAULT_DEVICE,
+                TopAdsDisplay.KEY_XSOURCE to TopAdsDisplay.DEFAULT_SRC_PAGE,
+                TopAdsDisplay.KEY_PRODUCT_ID to productInfo.basic.id.toString()
+        )
 
-    try {
-        val response = graphqlRepository.getReseponse(requests, cacheStrategy)
-
-        if (response.getError(RatesEstimationModel.Response::class.java)?.isNotEmpty() != true) {
-            val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)?.data?.data
-            ratesEstModel?.texts?.shopCity = ratesEstModel?.shop?.cityName ?: ""
-            productInfoP3.rateEstSummarizeText = ratesEstModel?.texts
-            productInfoP3.ratesModel = ratesEstModel?.rates
-        }
-
-
-        if (needRequestCod && response.getError(UserCodStatus.Response::class.java)?.isNotEmpty() != true) {
-            productInfoP3.userCod = response.getData<UserCodStatus.Response>(UserCodStatus.Response::class.java)
-                    .result.userCodStatus.isCod
-        }
-
-    } catch (t: Throwable) {
-        t.debugTrace()
     }
-    productInfoP3
-}
 
-fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
-    launchCatchError(block = {
-        val param = mapOf(PARAM_INPUT to JsonObject().apply {
-            addProperty(PARAM_SHOP_ID, shopID)
+    private suspend fun getProductInfoP3(productInfo: ProductInfo, shopDomain: String,
+                                         forceRefresh: Boolean, needRequestCod: Boolean, origin: String?)
+            : ProductInfoP3 = withContext(Dispatchers.IO) {
+        val productInfoP3 = ProductInfoP3()
+
+        val estimationParams = mapOf(PARAM_RATE_EST_WEIGHT to productInfo.basic.weightInKg,
+                PARAM_RATE_EST_SHOP_DOMAIN to shopDomain, "origin" to origin)
+        val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
+                RatesEstimationModel.Response::class.java, estimationParams, false)
+
+        val requests = mutableListOf(estimationRequest)
+
+        if (needRequestCod) {
+            val userCodParams = mapOf("isPDP" to true)
+            val userCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_USER_COD_STATUS],
+                    UserCodStatus.Response::class.java, userCodParams)
+            requests.add(userCodRequest)
+        }
+
+        val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
+
+        try {
+            val response = graphqlRepository.getReseponse(requests, cacheStrategy)
+
+            if (response.getError(RatesEstimationModel.Response::class.java)?.isNotEmpty() != true) {
+                val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)?.data?.data
+                ratesEstModel?.texts?.shopCity = ratesEstModel?.shop?.cityName ?: ""
+                productInfoP3.rateEstSummarizeText = ratesEstModel?.texts
+                productInfoP3.ratesModel = ratesEstModel?.rates
+            }
+
+
+            if (needRequestCod && response.getError(UserCodStatus.Response::class.java)?.isNotEmpty() != true) {
+                productInfoP3.userCod = response.getData<UserCodStatus.Response>(UserCodStatus.Response::class.java)
+                        .result.userCodStatus.isCod
+            }
+
+        } catch (t: Throwable) {
+            t.debugTrace()
+        }
+        productInfoP3
+    }
+
+    fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
+        launchCatchError(block = {
+            val param = mapOf(PARAM_INPUT to JsonObject().apply {
+                addProperty(PARAM_SHOP_ID, shopID)
+            })
+
+            val request = GraphqlRequest(rawQueries[RawQueryKeyConstant.MUTATION_FAVORITE_SHOP],
+                    DataFollowShop::class.java, param)
+            val result = withContext(Dispatchers.IO) { graphqlRepository.getReseponse(listOf(request)) }
+
+            onSuccess(result.getSuccessData<DataFollowShop>().followShop.isSuccess)
+        }) { onError(it) }
+    }
+
+    fun removeWishList(productId: String,
+                       onSuccessRemoveWishlist: ((productId: String?) -> Unit)?,
+                       onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?) {
+        removeWishlistUseCase.createObservable(productId,
+                userSessionInterface.userId, object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                // no op
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                // no op
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                onErrorRemoveWishList?.invoke(errorMessage)
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                onSuccessRemoveWishlist?.invoke(productId)
+            }
         })
+    }
 
-        val request = GraphqlRequest(rawQueries[RawQueryKeyConstant.MUTATION_FAVORITE_SHOP],
-                DataFollowShop::class.java, param)
-        val result = withContext(Dispatchers.IO) { graphqlRepository.getReseponse(listOf(request)) }
-
-        onSuccess(result.getSuccessData<DataFollowShop>().followShop.isSuccess)
-    }) { onError(it) }
-}
-
-fun removeWishList(productId: String,
-                   onSuccessRemoveWishlist: ((productId: String?) -> Unit)?,
-                   onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?) {
-    removeWishlistUseCase.createObservable(productId,
-            userSessionInterface.userId, object : WishListActionListener {
-        override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-            // no op
-        }
-
-        override fun onSuccessAddWishlist(productId: String?) {
-            // no op
-        }
-
-        override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-            onErrorRemoveWishList?.invoke(errorMessage)
-        }
-
-        override fun onSuccessRemoveWishlist(productId: String?) {
-            onSuccessRemoveWishlist?.invoke(productId)
-        }
-    })
-}
-
-fun addWishList(productId: String,
-                onErrorAddWishList: ((errorMessage: String?) -> Unit)?,
-                onSuccessAddWishlist: ((productId: String?) -> Unit)?) {
-    addWishListUseCase.createObservable(productId,
-            userSessionInterface.userId, object : WishListActionListener {
-        override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-            onErrorAddWishList?.invoke(errorMessage)
-        }
-
-        override fun onSuccessAddWishlist(productId: String?) {
-            onSuccessAddWishlist?.invoke(productId)
-        }
-
-        override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-            // no op
-        }
-
-        override fun onSuccessRemoveWishlist(productId: String?) {
-            // no op
-        }
-    })
-}
-
-fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
-
-fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
-
-override fun clear() {
-    super.clear()
-    removeWishlistUseCase.unsubscribe()
-    addWishListUseCase.unsubscribe()
-    trackAffiliateUseCase.cancelJobs()
-    submitTicketSubscription?.unsubscribe()
-    stickyLoginUseCase.cancelJobs()
-}
-
-fun loadMore() {
-    val product = (productInfoP1Resp.value ?: return) as? Success ?: return
-    loadTopAdsProduct.value = Loading
-    launch(Dispatchers.IO) {
-        val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
-                (loadTopAdsProduct.value as? Loaded)?.data as? Success == null) {
-            try {
-                val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
-                        pageNumber = TopAdsDisplay.DEFAULT_PAGE_NUMBER,
-                        pageName = TopAdsDisplay.DEFAULT_PAGE_NAME,
-                        productIds = arrayListOf(product.data.productInfo.basic.id.toString())
-                )).toBlocking()
-                Loaded(Success(data.first() ?: emptyList()))
-            } catch (e: Throwable) {
-                Loaded(Fail(e))
+    fun addWishList(productId: String,
+                    onErrorAddWishList: ((errorMessage: String?) -> Unit)?,
+                    onSuccessAddWishlist: ((productId: String?) -> Unit)?) {
+        addWishListUseCase.createObservable(productId,
+                userSessionInterface.userId, object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                onErrorAddWishList?.invoke(errorMessage)
             }
-        } else null
 
-        withContext(Dispatchers.Main) {
-            loadTopAdsProduct.value = if ((topAdsProductDef?.data as? Success)?.data != null) {
-                Loaded(Success((topAdsProductDef?.data as? Success)?.data!!))
-            } else {
-                Loaded(Fail(RuntimeException()))
+            override fun onSuccessAddWishlist(productId: String?) {
+                onSuccessAddWishlist?.invoke(productId)
             }
-        }
-        lazyNeedForceUpdate = false
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                // no op
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                // no op
+            }
+        })
     }
-}
 
-fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
-    trackAffiliateUseCase.params = TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
-    trackAffiliateUseCase.execute({
-        //no op
-    }) {
-        it.debugTrace()
+    fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
+
+    fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
+
+    override fun clear() {
+        super.clear()
+        removeWishlistUseCase.unsubscribe()
+        addWishListUseCase.unsubscribe()
+        trackAffiliateUseCase.cancelJobs()
+        submitTicketSubscription?.unsubscribe()
+        stickyLoginUseCase.cancelJobs()
     }
-}
 
-fun hitSubmitTicket(addToCartDataModel: AddToCartDataModel, onErrorSubmitHelpTicket: (Throwable?) -> Unit, onNextSubmitHelpTicket: (SubmitTicketResult) -> Unit) {
-    val requestParams = RequestParams.create()
-    val submitHelpTicketRequest = SubmitHelpTicketRequest()
-    submitHelpTicketRequest.apply {
-        apiJsonResponse = addToCartDataModel.responseJson
-        errorMessage = addToCartDataModel.errorReporter.texts.submitDescription
-        if (addToCartDataModel.errorMessage.isNotEmpty()) {
-            headerMessage = addToCartDataModel.errorMessage[0]
-        }
-        page = SubmitHelpTicketUseCase.PAGE_ATC
-        requestUrl = SubmitHelpTicketUseCase.GQL_REQUEST_URL
-    }
-    requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest)
-    submitTicketSubscription = submitHelpTicketUseCase.createObservable(requestParams).subscribe(object : Observer<SubmitTicketResult> {
-        override fun onError(e: Throwable?) {
-            e?.printStackTrace()
-            onErrorSubmitHelpTicket(e)
-        }
-
-        override fun onNext(t: SubmitTicketResult) {
-            onNextSubmitHelpTicket(t)
-        }
-
-        override fun onCompleted() {
-            submitTicketSubscription = null
-        }
-    })
-}
-
-fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
-    stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
-    stickyLoginUseCase.execute(
-            onSuccess = {
-                if (it.response.tickers.isNotEmpty()) {
-                    for (tickerDetail in it.response.tickers) {
-                        if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
-                            onSuccess.invoke(tickerDetail)
-                            return@execute
-                        }
-                    }
-                    onError?.invoke(Throwable(""))
-                } else {
-                    onError?.invoke(Throwable(""))
+    fun loadMore() {
+        val product = (productInfoP1Resp.value ?: return) as? Success ?: return
+        loadTopAdsProduct.value = Loading
+        launch(Dispatchers.IO) {
+            val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
+                    (loadTopAdsProduct.value as? Loaded)?.data as? Success == null) {
+                try {
+                    val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                            pageNumber = TopAdsDisplay.DEFAULT_PAGE_NUMBER,
+                            pageName = TopAdsDisplay.DEFAULT_PAGE_NAME,
+                            productIds = arrayListOf(product.data.productInfo.basic.id.toString())
+                    )).toBlocking()
+                    Loaded(Success(data.first() ?: emptyList()))
+                } catch (e: Throwable) {
+                    Loaded(Fail(e))
                 }
-            },
-            onError = {
-                onError?.invoke(it)
+            } else null
+
+            withContext(Dispatchers.Main) {
+                loadTopAdsProduct.value = if ((topAdsProductDef?.data as? Success)?.data != null) {
+                    Loaded(Success((topAdsProductDef?.data as? Success)?.data!!))
+                } else {
+                    Loaded(Fail(RuntimeException()))
+                }
             }
-    )
-}
+            lazyNeedForceUpdate = false
+        }
+    }
 
-companion object {
-    private const val PARAM_SHOP_IDS = "shopIds"
-    private const val PARAM_SHOP_ID = "shopID"
-    private const val PARAM_SHOP_FIELDS = "fields"
+    fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
+        trackAffiliateUseCase.params = TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
+        trackAffiliateUseCase.execute({
+            //no op
+        }) {
+            it.debugTrace()
+        }
+    }
 
-    private const val PARAM_RATE_EST_SHOP_DOMAIN = "domain"
-    private const val PARAM_RATE_EST_WEIGHT = "weight"
+    fun hitSubmitTicket(addToCartDataModel: AddToCartDataModel, onErrorSubmitHelpTicket: (Throwable?) -> Unit, onNextSubmitHelpTicket: (SubmitTicketResult) -> Unit) {
+        val requestParams = RequestParams.create()
+        val submitHelpTicketRequest = SubmitHelpTicketRequest()
+        submitHelpTicketRequest.apply {
+            apiJsonResponse = addToCartDataModel.responseJson
+            errorMessage = addToCartDataModel.errorReporter.texts.submitDescription
+            if (addToCartDataModel.errorMessage.isNotEmpty()) {
+                headerMessage = addToCartDataModel.errorMessage[0]
+            }
+            page = SubmitHelpTicketUseCase.PAGE_ATC
+            requestUrl = SubmitHelpTicketUseCase.GQL_REQUEST_URL
+        }
+        requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest)
+        submitTicketSubscription = submitHelpTicketUseCase.createObservable(requestParams).subscribe(object : Observer<SubmitTicketResult> {
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+                onErrorSubmitHelpTicket(e)
+            }
 
-    private const val PARAM_PAGE = "page"
-    private const val PARAM_TOTAL = "total"
-    private const val PARAM_CONDITION = "condition"
-    private const val PARAM_PRODUCT_TITLE = "productTitle"
+            override fun onNext(t: SubmitTicketResult) {
+                onNextSubmitHelpTicket(t)
+            }
 
-    private const val DEFAULT_NUM_VOUCHER = 3
-    private const val DEFAULT_NUM_IMAGE_REVIEW = 4
+            override fun onCompleted() {
+                submitTicketSubscription = null
+            }
+        })
+    }
+
+    fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
+        stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
+        stickyLoginUseCase.execute(
+                onSuccess = {
+                    if (it.response.tickers.isNotEmpty()) {
+                        for (tickerDetail in it.response.tickers) {
+                            if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
+                                onSuccess.invoke(tickerDetail)
+                                return@execute
+                            }
+                        }
+                        onError?.invoke(Throwable(""))
+                    } else {
+                        onError?.invoke(Throwable(""))
+                    }
+                },
+                onError = {
+                    onError?.invoke(it)
+                }
+        )
+    }
+
+    companion object {
+        private const val PARAM_SHOP_IDS = "shopIds"
+        private const val PARAM_SHOP_ID = "shopID"
+        private const val PARAM_SHOP_FIELDS = "fields"
+
+        private const val PARAM_RATE_EST_SHOP_DOMAIN = "domain"
+        private const val PARAM_RATE_EST_WEIGHT = "weight"
+
+        private const val PARAM_PAGE = "page"
+        private const val PARAM_TOTAL = "total"
+        private const val PARAM_CONDITION = "condition"
+        private const val PARAM_PRODUCT_TITLE = "productTitle"
+
+        private const val DEFAULT_NUM_VOUCHER = 3
+        private const val DEFAULT_NUM_IMAGE_REVIEW = 4
 
         private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
                 "last_active", "location", "terms", "allow_manage",
                 "is_owner", "other-goldos", "status")
         private const val KEY_PARAM = "params"
 
-    private const val PARAMS_OTHER_PRODUCT_TEMPLATE = "device=android&source=other_product&shop_id=%d&-id=%d"
+        private const val PARAMS_OTHER_PRODUCT_TEMPLATE = "device=android&source=other_product&shop_id=%d&-id=%d"
 
-    private object TopAdsDisplay {
-        const val KEY_USER_ID = "userID"
-        const val KEY_PAGE_NAME = "pageName"
-        const val KEY_XDEVICE = "xDevice"
-        const val DEFAULT_DEVICE = "android"
-        const val DEFAULT_SRC_PAGE = "recommen_pdp"
-        const val KEY_PRODUCT_ID = "productIDs"
-        const val KEY_XSOURCE = "xSource"
-        const val KEY_PAGE_NUMBER = "pageNumber"
-        const val DEFAULT_PAGE_NUMBER = 1
-        const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
+        private object TopAdsDisplay {
+            const val KEY_USER_ID = "userID"
+            const val KEY_PAGE_NAME = "pageName"
+            const val KEY_XDEVICE = "xDevice"
+            const val DEFAULT_DEVICE = "android"
+            const val DEFAULT_SRC_PAGE = "recommen_pdp"
+            const val KEY_PRODUCT_ID = "productIDs"
+            const val KEY_XSOURCE = "xSource"
+            const val KEY_PAGE_NUMBER = "pageNumber"
+            const val DEFAULT_PAGE_NUMBER = 1
+            const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
+        }
+
+        private object ParamAffiliate {
+            const val SHOP_ID_PARAM = "shopId"
+            const val PRODUCT_ID_PARAM = "productId"
+            const val INCLUDE_UI_PARAM = "includeUI"
+        }
     }
 
-    private object ParamAffiliate {
-        const val SHOP_ID_PARAM = "shopId"
-        const val PRODUCT_ID_PARAM = "productId"
-        const val INCLUDE_UI_PARAM = "includeUI"
+    fun updateCartCounerUseCase(onSuccessRequest: (count: Int) -> Unit) {
+        updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Int>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onNext(count: Int) {
+                        onSuccessRequest(count)
+                    }
+                })
     }
-}
-
-fun updateCartCounerUseCase(onSuccessRequest: (count: Int) -> Unit) {
-    updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
-            .subscribeOn(Schedulers.io())
-            .unsubscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Subscriber<Int>() {
-                override fun onCompleted() {
-
-                }
-
-                override fun onError(e: Throwable) {
-                    e.printStackTrace()
-                }
-
-                override fun onNext(count: Int) {
-                    onSuccessRequest(count)
-                }
-            })
-}
 
     fun putChatProductInfoTo(
             intent: Intent?,
@@ -769,29 +771,35 @@ fun updateCartCounerUseCase(onSuccessRequest: (count: Int) -> Unit) {
             productInfo: ProductInfo?,
             userInputVariant: String?
     ) {
-        if (intent == null) return
+        if (intent == null || productId == null) return
         val variants = mapSelectedProductVariants(userInputVariant)
-        val productImageUrl = productInfo?.getProductImageUrl()
-        val productName = productInfo?.getProductName()
-        val productPrice = productInfo?.getProductPrice()?.getCurrencyFormatted()
-        val productUrl = productInfo?.getProductUrl()
-        val productFsIsActive = productInfo?.getFsProductIsActive()
-        val productFsImageUrl = productInfo?.getFsProductImageUrl()
-        val productColorVariant = variants?.get("colour")?.get("value")
-        val productColorHexVariant = variants?.get("colour")?.get("hex")
-        val productSizeVariant = variants?.get("size")?.get("value")
-        with(intent) {
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, productId)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, productUrl)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, productColorVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, productColorHexVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, productSizeVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IS_ACTIVE, productFsIsActive)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IMAGE_URL, productFsImageUrl)
-        }
+
+        val productImageUrl = productInfo?.getProductImageUrl() ?: ""
+        val productName = productInfo?.getProductName() ?: ""
+        val productPrice = productInfo?.getProductPrice()?.getCurrencyFormatted() ?: ""
+        val productUrl = productInfo?.getProductUrl() ?: ""
+        val productFsIsActive = productInfo?.getFsProductIsActive() ?: false
+        val productFsImageUrl = productInfo?.getFsProductImageUrl() ?: ""
+        val productColorVariant = variants?.get("colour")?.get("value") ?: ""
+        val productColorHexVariant = variants?.get("colour")?.get("hex") ?: ""
+        val productSizeVariant = variants?.get("size")?.get("value") ?: ""
+
+        val productPreviews = listOf(
+                ProductPreview(
+                        productId,
+                        productImageUrl,
+                        productName,
+                        productPrice,
+                        productColorVariant,
+                        productColorHexVariant,
+                        productSizeVariant,
+                        productUrl,
+                        productFsIsActive,
+                        productFsImageUrl
+                )
+        )
+        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
     private fun mapSelectedProductVariants(userInputVariant: String?): ArrayMap<String, ArrayMap<String, String>>? {

@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -30,6 +31,7 @@ import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -585,36 +587,22 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun initProductPreview(savedInstanceState: Bundle?) {
-        val productId = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, savedInstanceState)
-        val productImageUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, savedInstanceState)
-        val productName = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, savedInstanceState)
-        val productPrice = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, savedInstanceState)
-        val productUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, savedInstanceState)
-        val productColorVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, savedInstanceState)
-        val productColorHexVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, savedInstanceState)
-        val productSizeVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, savedInstanceState)
-        val productFsIsActive = view.getBooleanArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IS_ACTIVE, savedInstanceState)
-        val productFsImageUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IMAGE_URL, savedInstanceState)
+        val stringProductPreviews = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEWS, savedInstanceState)
 
-        val productPreview = ProductPreview(
-                productId,
-                productImageUrl,
-                productName,
-                productPrice,
-                productColorVariant,
-                productColorHexVariant,
-                productSizeVariant,
-                productUrl,
-                productFsIsActive,
-                productFsImageUrl
+        if (stringProductPreviews.isEmpty()) return
+
+        val listType = object : TypeToken<List<ProductPreview>>() {}.type
+        val productPreviews = CommonUtil.fromJson<List<ProductPreview>>(
+                stringProductPreviews,
+                listType
         )
-        val productPreviewViewModel = SendableProductPreview(productPreview)
 
-        attachmentsPreview.add(productPreviewViewModel)
-
-        if (productPreviewViewModel.notEnoughRequiredData()) {
-            attachmentsPreview.remove(productPreviewViewModel)
+        for (productPreview in productPreviews) {
+            if (productPreview.notEnoughRequiredData()) continue
+            val sendAbleProductPreview = SendableProductPreview(productPreview)
+            attachmentsPreview.add(sendAbleProductPreview)
         }
+
     }
 
     override fun initInvoicePreview(savedInstanceState: Bundle?) {
