@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.model;
+package com.tokopedia.common_tradein.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

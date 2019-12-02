@@ -112,6 +112,7 @@
 
     <!--Age Restriction-->
     <string name="title_module_age_restriction">Konten Dewasa</string>
+    <string name="title_trade_in">Tukar Tambah</string>
     <string name="label_dob">Tanggal Lahir</string>
 
     <!--Contact Us-->
