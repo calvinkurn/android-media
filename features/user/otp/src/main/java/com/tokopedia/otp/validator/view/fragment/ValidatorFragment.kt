@@ -150,7 +150,7 @@ class ValidatorFragment: BaseDaggerFragment(){
         }
 
         validatorViewModel.otpRequestEmail(otpType, email, false)
-        showKeyboard()
+        KeyboardHandler.showSoftKeyboard(activity)
     }
 
     private fun prepareView(){
@@ -386,11 +386,6 @@ class ValidatorFragment: BaseDaggerFragment(){
     private fun dismissLoading() {
         parent.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
-    }
-
-    private fun showKeyboard() {
-        val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.toggleSoftInputFromWindow(textInputOtp.windowToken, InputMethodManager.SHOW_FORCED, 0)
     }
 
     companion object {
