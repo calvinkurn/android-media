@@ -2,6 +2,7 @@ package com.tokopedia.kol.feature.postdetail.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
@@ -23,9 +24,13 @@ import com.tokopedia.kol.feature.postdetail.view.subscriber.FollowUnfollowDetail
 import com.tokopedia.kol.feature.postdetail.view.subscriber.GetKolPostDetailSubscriber
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.feedcomponent.domain.usecase.GetPostStatisticCommissionUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.feedcomponent.view.mapper.PostStatisticMapper
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kotlin.extensions.view.debugTrace
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -53,6 +58,7 @@ class KolPostDetailPresenter @Inject constructor(
         private val atcUseCase: AddToCartUseCase,
         private val getRelatedPostUseCase: GetRelatedPostUseCase,
         private val getWhitelistUseCase: GetWhitelistUseCase,
+        private val getPostStatisticCommissionUseCase: GetPostStatisticCommissionUseCase,
         private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<KolPostDetailContract.View>(), KolPostDetailContract.Presenter {
 
@@ -81,7 +87,7 @@ class KolPostDetailPresenter @Inject constructor(
                 GetPostDetailUseCase.createRequestParams(
                         userSession.userId,
                         "",
-                        GetDynamicFeedUseCase.SOURCE_DETAIL,
+                        GetDynamicFeedUseCase.FeedV2Source.Detail,
                         id.toString()
                 ),
                 GetKolPostDetailSubscriber(view)
@@ -297,14 +303,6 @@ class KolPostDetailPresenter @Inject constructor(
         )
     }
 
-    private fun mapRelatedPost(data: List<FeedPostRelated.Datum>): List<RelatedPostItemViewModel> {
-        val list = ArrayList<RelatedPostItemViewModel>()
-        for (item in data) {
-            list.add(RelatedPostItemViewModel(item))
-        }
-        return list
-    }
-
     override fun getWhitelist() {
         getWhitelistUseCase.clearRequest()
         getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
@@ -326,4 +324,34 @@ class KolPostDetailPresenter @Inject constructor(
             }
         })
     }
+
+    override fun getPostStatistic(activityId: String, productIds: MutableList<String>, likeCount: Int, commentCount: Int) {
+        getPostStatisticCommissionUseCase.run {
+            setParams(
+                    GetPostStatisticCommissionUseCase.getParam(
+                            listOf(activityId),
+                            productIds
+                    )
+            )
+            execute(
+                    onSuccess = {
+                        view.onSuccessGetPostStatistic(
+                                PostStatisticCommissionUiModel(
+                                        KMNumbers.formatRupiahString(it.second.totalProductCommission.toLongOrZero()),
+                                        PostStatisticMapper(likeCount, commentCount).call(it.first)
+                                )
+
+                        )
+                    },
+                    onError = {
+                        view.onErrorGetPostStatistic(it, activityId, productIds)
+                    }
+            )
+        }
+    }
+
+    private fun mapRelatedPost(data: List<FeedPostRelated.Datum>): List<RelatedPostItemViewModel> = data.map {
+        RelatedPostItemViewModel(it)
+    }
+
 }

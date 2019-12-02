@@ -15,8 +15,8 @@ import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
-import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
@@ -36,10 +36,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            @NonNull private val userSession: UserSessionInterface,
                            private val quickReplyListener: QuickReplyListener,
                            typingListener: TypingListener,
-                           chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener,
+                           attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
                            override val toolbar: Toolbar,
                            private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
-) : BaseChatViewStateImpl(view, toolbar, typingListener, chatMenuListener), ChatbotViewState {
+) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener), ChatbotViewState {
 
     private lateinit var quickReplyAdapter: QuickReplyAdapter
     private lateinit var rvQuickReply: RecyclerView

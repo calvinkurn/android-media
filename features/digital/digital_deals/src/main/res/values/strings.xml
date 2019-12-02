@@ -127,5 +127,6 @@
     <string name="deals_use_open_location_text_1">Lokasimu nggak terdeteksi</string>
     <string name="location_error_message">Belum ada Deals di lokasimu. Lokasi Deals dialihkan ke Jakarta</string>
     <string name="detect_current_location">Gunakan lokasi saya saat ini</string>
+    <string name="ticker_desc">Kamu bisa cek status pembelian dan e-voucher lewat halaman Daftar Transaksi</string>
 
 </resources>
