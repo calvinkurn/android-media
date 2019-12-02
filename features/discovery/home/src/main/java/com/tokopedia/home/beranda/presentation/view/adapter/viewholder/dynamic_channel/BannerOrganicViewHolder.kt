@@ -27,7 +27,6 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
-import com.tokopedia.home.beranda.helper.HomeImageHandler
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.*
@@ -41,7 +40,6 @@ import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_dc_banner_recyclerview.view.*
 
 class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCategoryListener, countDownListener: CountDownView.CountDownListener)
     : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener) {
@@ -154,7 +152,6 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                 .centerCrop()
                 .dontAnimate()
                 .into(getRoundedImageViewTarget(bannerImage, 24f))
-//        HomeImageHandler.loadImageRoundedCenterCrop(itemView.context, bannerImage, bannerItem.imageUrl, 24f)
 
         measureParentView(homeCategoryListener.getWindowWidth(), recyclerView)
 

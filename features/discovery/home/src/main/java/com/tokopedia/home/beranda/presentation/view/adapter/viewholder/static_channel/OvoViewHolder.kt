@@ -34,7 +34,6 @@ import com.tokopedia.gamification.util.HexValidator
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.SectionContentItem
-import com.tokopedia.home.beranda.helper.HomeImageHandler
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.util.ViewUtils
@@ -75,13 +74,13 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
         containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.white, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
         val radius = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 8f, itemView.resources.displayMetrics)
+                TypedValue.COMPLEX_UNIT_DIP, 8f, itemView.resources.displayMetrics).roundToInt()
 
         Glide.with(itemView.context)
-                .asBitmap()
                 .load(BG_CONTAINER_URL)
+                .transform(RoundedRightCornerTransformation(itemView.context, radius))
                 .dontAnimate()
-                .into(getRoundedImageViewTarget(imgNonLogin, radius))
+                .into(imgNonLogin)
 
         container.setOnClickListener {
             HomePageTracking.eventTokopointNonLogin(itemView.context)
@@ -202,17 +201,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             }
         }
     }
-
-    private fun getRoundedImageViewTarget(imageView: ImageView, radius: Float): BitmapImageViewTarget {
-        return object : BitmapImageViewTarget(imageView) {
-            override fun setResource(resource: Bitmap?) {
-                val circularBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
-                circularBitmapDrawable.cornerRadius = radius
-                imageView.setImageDrawable(circularBitmapDrawable)
-            }
-        }
-    }
-
+    
     private fun renderTokoPoint(element: HeaderViewModel) {
         val tokoPointHolder = itemView.findViewById<View>(R.id.container_tokopoint)
         val tvBalanceTokoPoint = itemView.findViewById<TextView>(R.id.tv_balance_tokopoint)

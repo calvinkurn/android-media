@@ -16,7 +16,6 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
-import com.tokopedia.home.beranda.helper.HomeImageHandler
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CarouselDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
@@ -89,8 +88,7 @@ class DynamicIconSectionViewHolder(val view: View,
 
         override fun onBindViewHolder(holder: DynamicIconViewHolder, position: Int) {
             holder.title.text = sectionViewModel.itemList[position].title
-//            ImageHandler.loadImageThumbs(holder.context, holder.icon, sectionViewModel.itemList[position].icon)
-            HomeImageHandler.loadImage(holder.context, holder.icon, sectionViewModel.itemList[position].icon)
+            ImageHandler.loadImageThumbs(holder.context, holder.icon, sectionViewModel.itemList[position].icon)
             holder.container.setOnClickListener { view ->
                 eventClickDynamicIcon(view.context, sectionViewModel.itemList[position], position)
                 listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.itemList[position]))

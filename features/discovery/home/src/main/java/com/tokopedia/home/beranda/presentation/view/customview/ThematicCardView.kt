@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.helper.HomeImageHandler
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -129,8 +128,7 @@ class ThematicCardView : BaseCustomView {
 
     fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
-//            ImageHandler.loadImageThumbs(context, it, productImageUrl)
-            HomeImageHandler.loadImage(context, it, productImageUrl)
+            ImageHandler.loadImageThumbs(context, it, productImageUrl)
         }
     }
 
