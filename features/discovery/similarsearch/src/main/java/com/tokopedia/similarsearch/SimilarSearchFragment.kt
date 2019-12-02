@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -80,6 +82,11 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun initViews() {
         initRecyclerView()
         disableSwipeRefreshLayout()
+
+
+//        appBarLayoutSimilarSearch?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { p0, p1 ->
+//            Toast.makeText(activity, (p1 / p0.totalScrollRange).toString(), Toast.LENGTH_SHORT).show()
+//        })
     }
 
     private fun initRecyclerView() {
@@ -131,7 +138,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun disableSwipeRefreshLayout() {
-        swipeToRefreshSimilarSearch?.isEnabled = false
+//        swipeToRefreshSimilarSearch?.isEnabled = false
     }
 
     private fun observeViewModelData() {
@@ -223,12 +230,12 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun updateViewContent(similarSearchLiveData: State<List<Any>>) {
         when (similarSearchLiveData) {
             is State.Loading -> {
-                swipeToRefreshSimilarSearch?.isRefreshing = true
+//                swipeToRefreshSimilarSearch?.isRefreshing = true
                 updateAdapterList(similarSearchLiveData)
                 updateScrollListener()
             }
             is State.Success -> {
-                swipeToRefreshSimilarSearch?.isRefreshing = false
+//                swipeToRefreshSimilarSearch?.isRefreshing = false
                 updateAdapterList(similarSearchLiveData)
                 updateScrollListener()
             }
