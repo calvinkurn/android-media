@@ -29,7 +29,7 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
 //        if (error == null || error.isEmpty()) {
 //            return (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result.data.first()
 //        } else {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
+            throw MessageErrorException("Error")
 //        }
     }
 
