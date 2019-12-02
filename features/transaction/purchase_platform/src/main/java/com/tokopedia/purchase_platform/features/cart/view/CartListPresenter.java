@@ -851,7 +851,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    public Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(List<Integer> toBeDeletedCartIds,
+    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(List<Integer> toBeDeletedCartIds,
                                                                                        List<CartItemData> removedCartItems,
                                                                                        boolean removeAllItems,
                                                                                        boolean removeInsurance) {
