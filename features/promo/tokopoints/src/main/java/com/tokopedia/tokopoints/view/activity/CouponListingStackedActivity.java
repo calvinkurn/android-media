@@ -112,9 +112,11 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
             mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
             showLoading();
         } else if ((requestCode == REQUEST_CODE_STACKED_IN_ADAPTER || requestCode == REQUEST_CODE_STACKED_ADAPTER) && resultCode == RESULT_OK) {
-            Fragment fragemnt = mAdapter.getRegisteredFragment(mPagerFilter.getCurrentItem());
-            if (fragemnt != null) {
-                fragemnt.onActivityResult(requestCode, resultCode, data);
+            if (mAdapter != null) {
+                Fragment fragemnt = mAdapter.getRegisteredFragment(mPagerFilter.getCurrentItem());
+                if (fragemnt != null) {
+                    fragemnt.onActivityResult(requestCode, resultCode, data);
+                }
             }
         } else {
             finish();
