@@ -16,6 +16,7 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation_common.model.VccUserStatus;
 
 import java.util.ArrayList;
@@ -46,10 +47,12 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private static final String LABEL_DEACTIVATED = "Dinonaktifkan";
     private static final String LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu";
     private Context context;
+    private RemoteConfig remoteConfig;
 
     @Inject
-    BuyerAccountMapper(@ApplicationContext Context context) {
+    BuyerAccountMapper(@ApplicationContext Context context, RemoteConfig remoteConfig) {
         this.context = context;
+        this.remoteConfig = remoteConfig;
     }
 
     @Override
@@ -226,7 +229,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         } else {
             tokopediaPayViewModel.setBsDataCentre(null);
         }
-        items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountModel));
+        items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountModel, remoteConfig));
         model.setItems(items);
 
         return model;

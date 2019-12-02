@@ -31,6 +31,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -46,6 +47,9 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     @Inject
     lateinit var presenter: BuyerAccount.Presenter
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private val adapter:BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
     private var snackBar: Snackbar? = null
@@ -128,7 +132,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         } else {
             context?.let {
                 adapter.clearAllElements()
-                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null))
+                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, remoteConfig))
             }
         }
 
