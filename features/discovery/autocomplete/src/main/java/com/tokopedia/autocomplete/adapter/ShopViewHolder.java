@@ -130,7 +130,8 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
             AutocompleteTracking.eventClickShopSearch(
                     itemView.getContext(),
                     String.format(
-                            "keyword: %s - shop: %s - applink: %s",
+                            "%s - keyword: %s - shop: %s - applink: %s",
+                            boundedShopSearch.getShopId(),
                             boundedShopSearch.getSearchTerm(),
                             boundedShopSearch.getKeyword(),
                             boundedShopSearch.getApplink()

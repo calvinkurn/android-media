@@ -133,12 +133,12 @@ public class SearchTracking {
         );
     }
 
-    public static void eventSearchResultShopItemClick(Object shopItem, String keyword) {
+    public static void eventSearchResultShopItemClick(Object shopItem, String shopId, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoClick",
                         EVENT_CATEGORY, "search result",
                         EVENT_ACTION, "click - shop",
-                        EVENT_LABEL, keyword,
+                        EVENT_LABEL, shopId + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoClick", DataLayer.mapOf(
                                         "promotions", shopItem
@@ -179,12 +179,12 @@ public class SearchTracking {
         );
     }
 
-    public static void eventSearchResultShopItemClosedClick(Object shopItemClosed, String keyword) {
+    public static void eventSearchResultShopItemClosedClick(Object shopItemClosed, String shopId, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoClick",
                         EVENT_CATEGORY, "search result",
                         EVENT_ACTION, "click - shop - inactive",
-                        EVENT_LABEL, keyword,
+                        EVENT_LABEL, shopId + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoClick", DataLayer.mapOf(
                                         "promotions", shopItemClosed
