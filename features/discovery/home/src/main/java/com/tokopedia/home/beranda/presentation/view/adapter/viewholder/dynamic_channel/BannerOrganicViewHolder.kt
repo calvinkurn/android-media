@@ -40,6 +40,7 @@ import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.home_dc_banner_recyclerview.view.*
 
 class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCategoryListener, countDownListener: CountDownView.CountDownListener)
     : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener) {

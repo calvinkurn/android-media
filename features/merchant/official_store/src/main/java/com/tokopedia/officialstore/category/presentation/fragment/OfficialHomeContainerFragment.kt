@@ -94,7 +94,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     // config collapse & expand tablayout
-    override fun onContentScrolled(dy: Int, totalScrollY: Int) {
+    override fun onContentScrolled(dy: Int) {
         tabLayout?.adjustTabCollapseOnScrolled(dy)
     }
 

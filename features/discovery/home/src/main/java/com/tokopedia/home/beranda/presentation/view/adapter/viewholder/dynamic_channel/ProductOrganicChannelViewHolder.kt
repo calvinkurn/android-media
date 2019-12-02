@@ -87,6 +87,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
             try {
                 val grid = grids[position]
                 ImageHandler.loadImageThumbs(holder.context, holder.channelImage1, grid.imageUrl)
+
                 holder.channelName.displayTextOrHide(grid.name)
                 holder.channelPrice1.displayTextOrHide(grid.price)
                 holder.channelDiscount1.displayTextOrHide(grid.discount)
