@@ -11,24 +11,19 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.adapter.ExpandableItemSelectedListAdapter
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterView
 
-/**
- * Created by henrypriyono on 8/11/17.
- */
-
 class DynamicFilterExpandableItemViewHolder(itemView: View, private var filterView: DynamicFilterView) : DynamicFilterViewHolder(itemView) {
 
-    private var titleContainer: LinearLayout = itemView.findViewById(R.id.title_container)
-    private var title: TextView = itemView.findViewById(R.id.expandable_item_title)
-    private var recyclerView: RecyclerView = itemView.findViewById(R.id.expandable_item_selected_list)
-    private lateinit var adapter: ExpandableItemSelectedListAdapter
-
     override fun bind(filter: Filter) {
-        adapter = ExpandableItemSelectedListAdapter(filterView)
-        recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.adapter = adapter
+        val titleContainer: LinearLayout? = itemView.findViewById(R.id.title_container)
+        val title: TextView? = itemView.findViewById(R.id.expandable_item_title)
+        val recyclerView: RecyclerView? = itemView.findViewById(R.id.expandable_item_selected_list)
+        val adapter = ExpandableItemSelectedListAdapter(filterView)
 
-        title.text = filter.title
-        titleContainer.setOnClickListener { filterView.onExpandableItemClicked(filter) }
+        recyclerView?.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView?.adapter = adapter
+
+        title?.text = filter.title
+        titleContainer?.setOnClickListener { filterView.onExpandableItemClicked(filter) }
 
         adapter.setSelectedOptionsList(filterView.getSelectedOptions(filter))
     }

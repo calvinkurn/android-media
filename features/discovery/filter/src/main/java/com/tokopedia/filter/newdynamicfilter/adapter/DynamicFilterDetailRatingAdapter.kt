@@ -19,12 +19,12 @@ class DynamicFilterDetailRatingAdapter(filterDetailView: DynamicFilterDetailView
 
     private class RatingItemViewHolder(itemView: View, filterDetailView: DynamicFilterDetailView) : DynamicFilterDetailViewHolder(itemView, filterDetailView) {
 
-        private val ratingView: ImageView = itemView.findViewById(R.id.filter_rating_view) as ImageView
+        private val ratingView: ImageView? = itemView.findViewById(R.id.filter_rating_view) as ImageView
 
         override fun bind(option: Option) {
             super.bind(option)
             val ratingCount = getRatingCount(option)
-            ratingView.setImageResource(RatingHelper.getRatingDrawable(ratingCount))
+            ratingView?.setImageResource(RatingHelper.getRatingDrawable(ratingCount))
         }
 
         private fun getRatingCount(option: Option): Int {

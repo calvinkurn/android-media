@@ -10,20 +10,16 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterView
 
-/**
- * Created by henrypriyono on 8/11/17.
- */
-
 class DynamicFilterItemToggleViewHolder(itemView: View, private val dynamicFilterView: DynamicFilterView) : DynamicFilterViewHolder(itemView) {
 
-    private val title: TextView = itemView.findViewById(R.id.title)
-    private val toggle: SwitchCompat = itemView.findViewById(R.id.toggle)
+    private val title: TextView? = itemView.findViewById(R.id.title)
+    private val toggle: SwitchCompat? = itemView.findViewById(R.id.toggle)
 
     override fun bind(filter: Filter) {
         val option = filter.getOptions()[0]
-        title.text = option.name
+        title?.text = option.name
 
-        itemView.setOnClickListener { toggle.isChecked = !toggle.isChecked }
+        itemView.setOnClickListener { toggle?.isChecked = toggle?.isChecked != true }
 
         bindSwitchForOption(option)
     }
@@ -31,8 +27,10 @@ class DynamicFilterItemToggleViewHolder(itemView: View, private val dynamicFilte
     private fun bindSwitchForOption(option: Option) {
         val onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, isChecked -> dynamicFilterView.saveCheckedState(option, isChecked) }
 
-        bindSwitch(toggle,
+        toggle?.let {
+            bindSwitch(it,
                 dynamicFilterView.loadLastCheckedState(option),
                 onCheckedChangeListener)
+        }
     }
 }

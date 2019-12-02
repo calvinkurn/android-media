@@ -11,10 +11,6 @@ import com.tokopedia.filter.newdynamicfilter.adapter.viewholder.DynamicFilterNoV
 import com.tokopedia.filter.newdynamicfilter.adapter.viewholder.DynamicFilterViewHolder
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterView
 
-/**
- * Created by henrypriyono on 8/11/17.
- */
-
 class DynamicFilterTypeFactoryImpl(private val filterView: DynamicFilterView) : DynamicFilterTypeFactory {
 
     override fun type(filter: Filter): Int {

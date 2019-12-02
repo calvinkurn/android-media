@@ -14,10 +14,6 @@ import com.tokopedia.filter.common.helper.NumberParseHelper
 
 import java.util.ArrayList
 
-/**
- * Created by henrypriyono on 8/11/17.
- */
-
 class PricePillsAdapter(private val callback: Callback?) : RecyclerView.Adapter<PricePillsAdapter.ViewHolder>() {
 
     private var pricePills: List<Option> = ArrayList()
@@ -46,40 +42,39 @@ class PricePillsAdapter(private val callback: Callback?) : RecyclerView.Adapter<
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var pricePillItem: TextView = itemView.findViewById(R.id.price_pill_item)
+        private var pricePillItem: TextView? = itemView.findViewById(R.id.price_pill_item)
         var context: Context = itemView.context
 
         fun bind(pricePillOption: Option, position: Int) {
             val isPricePillSelected = isValueRangeMatch(pricePillOption)
             if (isPricePillSelected) {
-                pricePillItem.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.unify_G500))
-                pricePillItem.background = context.resources.getDrawable(R.drawable.filter_price_pill_item_background_selected)
+                pricePillItem?.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.unify_G500))
+                pricePillItem?.background = context.resources.getDrawable(R.drawable.filter_price_pill_item_background_selected)
             } else {
-                pricePillItem.setTextColor(context.resources.getColor(R.color.price_pills_text_color_normal))
-                pricePillItem.background = context.resources.getDrawable(R.drawable.filter_price_pill_item_background_neutral)
+                pricePillItem?.setTextColor(context.resources.getColor(R.color.price_pills_text_color_normal))
+                pricePillItem?.background = context.resources.getDrawable(R.drawable.filter_price_pill_item_background_neutral)
             }
-            pricePillItem.text = pricePillOption.name
-            pricePillItem.setOnClickListener {
-                if (callback != null) {
-                    if (!isPricePillSelected) {
-                        callback.onPriceRangeSelected(
-                                NumberParseHelper.safeParseInt(pricePillOption.valMin),
-                                NumberParseHelper.safeParseInt(pricePillOption.valMax)
-                        )
-                    } else {
-                        callback.onPriceRangeRemoved()
-                    }
+            pricePillItem?.text = pricePillOption.name
+            pricePillItem?.setOnClickListener {
+                if (!isPricePillSelected) {
+                    callback?.onPriceRangeSelected(
+                            NumberParseHelper.safeParseInt(pricePillOption.valMin),
+                            NumberParseHelper.safeParseInt(pricePillOption.valMax)
+                    )
+                } else {
+                    callback?.onPriceRangeRemoved()
                 }
             }
         }
 
         private fun isValueRangeMatch(pricePillOption: Option): Boolean {
+            if(callback == null) return false
             val valMin = pricePillOption.valMin
             val valMax = pricePillOption.valMax
 
             return if (TextUtils.isEmpty(valMin) || TextUtils.isEmpty(valMax)) {
                 false
-            } else Integer.parseInt(valMin) == callback!!.currentPriceMin && Integer.parseInt(valMax) == callback.currentPriceMax
+            } else NumberParseHelper.safeParseInt(valMin) == callback.currentPriceMin && NumberParseHelper.safeParseInt(valMax) == callback.currentPriceMax
 
         }
     }

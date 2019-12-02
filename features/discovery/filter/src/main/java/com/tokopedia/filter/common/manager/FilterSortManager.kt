@@ -32,24 +32,22 @@ class FilterSortManager {
 
         @JvmStatic
         fun openFilterPage(trackingData: FilterTrackingData?, fragment: Fragment?, callerScreenName: String?, queryParams: HashMap<String, String>?) {
-            if (fragment == null) return
+            if (fragment == null || fragment.context == null || trackingData == null) return
 
-            trackingData?.let { FilterTracking.eventOpenFilterPage(it) }
+            FilterTracking.eventOpenFilterPage(trackingData)
 
             val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalDiscovery.FILTER)
-            intent.putExtra(EXTRA_CALLER_SCREEN_NAME, callerScreenName)
-            intent.putExtra(EXTRA_QUERY_PARAMETERS, queryParams)
+            intent.putExtra(EXTRA_CALLER_SCREEN_NAME, callerScreenName?: "")
+            intent.putExtra(EXTRA_QUERY_PARAMETERS, queryParams?: "")
 
             fragment.startActivityForResult(intent, FILTER_REQUEST_CODE)
 
-            if (fragment.activity != null) {
-                fragment.activity?.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
-            }
+            fragment.activity?.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
         }
 
         @JvmStatic
-        fun openSortActivity(fragment: Fragment?, sort: ArrayList<Sort>, selectedSort: HashMap<String, String>?): Boolean {
-            if (!isSortDataAvailable(sort) || fragment == null) {
+        fun openSortActivity(fragment: Fragment?, sort: ArrayList<Sort>?, selectedSort: HashMap<String, String>?): Boolean {
+            if (!isSortDataAvailable(sort) || fragment == null || fragment.context == null) {
                 return false
             }
             val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalDiscovery.SORT)
@@ -60,32 +58,33 @@ class FilterSortManager {
 
             fragment.startActivityForResult(intent, SORT_REQUEST_CODE)
 
-            if (fragment.activity != null) {
-                fragment.activity?.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
-            }
+            fragment.activity?.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
             return true
         }
 
+        @JvmStatic
         private fun isSortDataAvailable(sort: ArrayList<Sort>?): Boolean {
             return sort != null && sort.isNotEmpty()
         }
 
         @JvmStatic
-        fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?, callback: Callback) {
+        fun handleOnActivityResult(requestCode: Int, resultCode: Int, data: Intent?, callback: Callback?) {
+            if(data == null || callback == null) return
+
             if (resultCode == Activity.RESULT_OK) {
                 if (requestCode == SORT_REQUEST_CODE) {
-                    val selectedSort = data?.let { getMapFromIntent(it, EXTRA_SELECTED_SORT) }
-                    val selectedSortName = data?.getStringExtra(EXTRA_SELECTED_SORT_NAME)
-                    val autoApplyFilterParams = data?.getStringExtra(EXTRA_AUTO_APPLY_FILTER)
-                    if (selectedSort != null && selectedSortName != null && autoApplyFilterParams != null) {
+                    val selectedSort = getMapFromIntent(data, EXTRA_SELECTED_SORT)
+                    val selectedSortName = data.getStringExtra(EXTRA_SELECTED_SORT_NAME)
+                    val autoApplyFilterParams = data.getStringExtra(EXTRA_AUTO_APPLY_FILTER)
+                    if (selectedSortName != null && autoApplyFilterParams != null) {
                         callback.onSortResult(selectedSort, selectedSortName, autoApplyFilterParams)
                     }
 
                 } else if (requestCode == FILTER_REQUEST_CODE) {
-                    val queryParams = data?.let { getMapFromIntent(it, EXTRA_QUERY_PARAMETERS) }
-                    val selectedFilters = data?.let { getMapFromIntent(it, EXTRA_SELECTED_FILTERS) }
-                    val selectedOptions = data?.getParcelableArrayListExtra<Option>(EXTRA_SELECTED_OPTIONS)
-                    if (queryParams != null && selectedFilters != null && selectedOptions != null) {
+                    val queryParams = getMapFromIntent(data, EXTRA_QUERY_PARAMETERS)
+                    val selectedFilters = getMapFromIntent(data, EXTRA_SELECTED_FILTERS)
+                    val selectedOptions = data.getParcelableArrayListExtra<Option>(EXTRA_SELECTED_OPTIONS)
+                    if (selectedOptions != null) {
                         callback.onFilterResult(queryParams, selectedFilters, selectedOptions)
                     }
 

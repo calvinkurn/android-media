@@ -12,10 +12,6 @@ import android.widget.TextView
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Category
 
-/**
- * @author by alifa on 7/10/17.
- */
-
 class CategoryChildAdapter(private val clickListener: OnItemClickListener) : MultiLevelExpIndListAdapter() {
 
     var activePosition = 0
@@ -32,7 +28,7 @@ class CategoryChildAdapter(private val clickListener: OnItemClickListener) : Mul
         val category = getItemAt(position) as Category
         val itemRowHolder = holder as ItemRowHolder
         itemRowHolder.bindData(category)
-        itemRowHolder.categoryContainer.setOnClickListener {
+        itemRowHolder.categoryContainer?.setOnClickListener {
             val categoryClicked = getItemAt(position) as Category
             if (categoryClicked.children.isNotEmpty()) {
                 activePosition = position
@@ -47,39 +43,39 @@ class CategoryChildAdapter(private val clickListener: OnItemClickListener) : Mul
 
 
     inner class ItemRowHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var categoryContainer: LinearLayout = view.findViewById<View>(R.id.category_child_container) as LinearLayout
-        var categoryName: TextView = view.findViewById<View>(R.id.category_child_text) as TextView
-        private var dropdown: ImageView = view.findViewById<View>(R.id.category_child_dropdown) as ImageView
+        var categoryContainer: LinearLayout? = view.findViewById<View>(R.id.category_child_container) as LinearLayout
+        var categoryName: TextView? = view.findViewById<View>(R.id.category_child_text) as TextView
+        private var dropdown: ImageView? = view.findViewById<View>(R.id.category_child_dropdown) as ImageView
         private var colorTextNormal = view.context.resources.getColor(R.color.font_black_primary_70)
         private var colorTextSelected: Int = view.context.resources.getColor(R.color.medium_green)
 
         fun bindData(category: Category) {
-            this.categoryName.text = category.name
+            this.categoryName?.text = category.name
             if (category.children.isNotEmpty() && !category.isGroup) {
-                categoryName.setTextColor(colorTextNormal)
-                dropdown.setImageResource(R.drawable.carret_up)
-                dropdown.visibility = View.VISIBLE
+                categoryName?.setTextColor(colorTextNormal)
+                dropdown?.setImageResource(R.drawable.carret_up)
+                dropdown?.visibility = View.VISIBLE
             } else if (category.hasChild) {
-                categoryName.setTextColor(colorTextNormal)
-                dropdown.setImageResource(R.drawable.carret_down)
-                dropdown.visibility = View.VISIBLE
+                categoryName?.setTextColor(colorTextNormal)
+                dropdown?.setImageResource(R.drawable.carret_down)
+                dropdown?.visibility = View.VISIBLE
             } else {
-                dropdown.visibility = View.GONE
-                categoryName.setTextColor(if (category.id == lastSelectedCategoryId)
+                dropdown?.visibility = View.GONE
+                categoryName?.setTextColor(if (category.id == lastSelectedCategoryId)
                     colorTextSelected
                 else
                     colorTextNormal)
             }
             val pad = this.getPaddingPixels(10)
             if (category.indentation > 2) {
-                categoryContainer.setPadding(getPaddingPixels(25), pad, pad, pad)
+                categoryContainer?.setPadding(getPaddingPixels(25), pad, pad, pad)
             } else {
-                categoryContainer.setPadding(pad, pad, pad, pad)
+                categoryContainer?.setPadding(pad, pad, pad, pad)
             }
         }
 
         private fun getPaddingPixels(dpValue: Int): Int {
-            val scale = categoryContainer.context.resources.displayMetrics.density
+            val scale = categoryContainer?.context?.resources?.displayMetrics?.density?: 0F
             return (dpValue * scale + 0.5f).toInt()
         }
 

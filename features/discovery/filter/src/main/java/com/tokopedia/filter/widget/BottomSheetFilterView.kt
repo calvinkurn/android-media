@@ -42,8 +42,8 @@ import rx.schedulers.Schedulers
 import android.app.Activity.RESULT_OK
 
 class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
-    private lateinit var filterMainRecyclerView: RecyclerView
-    private lateinit var filterMainAdapter: DynamicFilterAdapter
+    private var filterMainRecyclerView: RecyclerView? = null
+    private var filterMainAdapter: DynamicFilterAdapter? = null
     private var buttonReset: TextView? = null
     private var buttonClose: View? = null
     private var buttonFinish: TextView? = null
@@ -55,12 +55,12 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     private lateinit var callback: Callback
 
     private var selectedExpandableItemPosition: Int = 0
+    private val filterController = FilterController()
 
-    private lateinit var filterController: FilterController
     private var trackingData: FilterTrackingData? = null
 
     private val isBottomSheetShown: Boolean
-        get() = bottomSheetBehavior != null && bottomSheetBehavior!!.state != BottomSheetBehavior.STATE_HIDDEN
+        get() = bottomSheetBehavior != null && bottomSheetBehavior?.state != BottomSheetBehavior.STATE_HIDDEN
 
     constructor(context: Context) : super(context) {
         init()
@@ -105,7 +105,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     override fun onExpandableItemClicked(filter: Filter) {
-        selectedExpandableItemPosition = filterMainAdapter.getItemPosition(filter)
+        selectedExpandableItemPosition = filterMainAdapter?.getItemPosition(filter)?: 0
         if (filter.isCategoryFilter) {
             launchFilterCategoryPage(filter)
         } else {
@@ -206,7 +206,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
 
     private fun resetAllFilter() {
         filterController.resetAllFilters()
-        filterMainAdapter.notifyDataSetChanged()
+        filterMainAdapter?.notifyDataSetChanged()
 
         applyFilter()
     }
@@ -218,15 +218,14 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     private fun initFilterMainRecyclerView() {
-        filterController = FilterController()
         val dynamicFilterTypeFactory = BottomSheetDynamicFilterTypeFactoryImpl(this)
         filterMainAdapter = DynamicFilterAdapter(dynamicFilterTypeFactory)
-        filterMainRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        val dividerItemDecoration = DividerItemDecoration(filterMainRecyclerView.context, DividerItemDecoration.VERTICAL)
+        filterMainRecyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        val dividerItemDecoration = DividerItemDecoration(filterMainRecyclerView?.context, DividerItemDecoration.VERTICAL)
         dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.bg_line_separator))
-        filterMainRecyclerView.addItemDecoration(dividerItemDecoration)
-        filterMainRecyclerView.adapter = filterMainAdapter
-        filterMainRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        filterMainRecyclerView?.addItemDecoration(dividerItemDecoration)
+        filterMainRecyclerView?.adapter = filterMainAdapter
+        filterMainRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     KeyboardHandler.hideSoftKeyboard(callback.activity)
@@ -246,7 +245,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
 
         filterController.initFilterController(searchParameter, initializedFilterList)
         updateResetButtonVisibility()
-        filterMainAdapter.filterList = initializedFilterList
+        filterMainAdapter?.filterList = initializedFilterList
     }
 
     private fun initBottomSheetListener() {
@@ -349,7 +348,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     private fun handleResultFromCategoryPage(data: Intent) {
         val selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID)
 
-        val category = FilterHelper.getSelectedCategoryDetailsFromFilterList(filterMainAdapter.filterList, selectedCategoryId)
+        val category = filterMainAdapter?.filterList?.let { FilterHelper.getSelectedCategoryDetailsFromFilterList(it, selectedCategoryId) }
 
         val selectedCategoryName = category?.categoryName ?: ""
         val categoryOption = OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName)
@@ -359,7 +358,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     private fun applyFilterFromDetailPage() {
-        filterMainAdapter.notifyItemChanged(selectedExpandableItemPosition)
+        filterMainAdapter?.notifyItemChanged(selectedExpandableItemPosition)
         applyFilter()
     }
 

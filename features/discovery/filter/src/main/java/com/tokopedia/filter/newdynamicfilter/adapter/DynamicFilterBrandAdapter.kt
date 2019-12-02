@@ -11,10 +11,6 @@ import com.tokopedia.filter.common.data.OptionWrapper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView
 
-/**
- * Created by henrypriyono on 8/31/17.
- */
-
 class DynamicFilterBrandAdapter(private val filterDetailView: DynamicFilterDetailView) : SectionDividedItemAdapter<OptionWrapper>() {
 
     private val sectionTitleDictionary = SectionTitleDictionary()
@@ -48,16 +44,16 @@ class DynamicFilterBrandAdapter(private val filterDetailView: DynamicFilterDetai
 
     private class BrandViewHolder internal constructor(itemView: View, private val filterDetailView: DynamicFilterDetailView,
                                                        sectionTitleDictionary: SectionTitleDictionary) : SectionDividedItemAdapter.ViewHolder<OptionWrapper>(itemView, sectionTitleDictionary) {
-        internal lateinit var checkBox: CheckBox
+        var checkBox: CheckBox? = null
 
         override fun initItem(itemView: View) {
             checkBox = itemView.findViewById(R.id.filter_detail_item_checkbox)
         }
 
         override fun bindItem(item: OptionWrapper) {
-            itemView.setOnClickListener { checkBox.isChecked = !checkBox.isChecked }
-            OptionHelper.bindOptionWithCheckbox(item.option, checkBox, filterDetailView)
-            checkBox.text = item.option.name
+            itemView.setOnClickListener { checkBox?.isChecked = checkBox?.isChecked != true }
+            checkBox?.let { OptionHelper.bindOptionWithCheckbox(item.option, it, filterDetailView) }
+            checkBox?.text = item.option.name
         }
     }
 }

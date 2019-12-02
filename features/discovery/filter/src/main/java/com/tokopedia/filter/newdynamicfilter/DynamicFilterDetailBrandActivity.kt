@@ -12,10 +12,6 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 
 import java.util.ArrayList
 
-/**
- * Created by henrypriyono on 8/31/17.
- */
-
 class DynamicFilterDetailBrandActivity : AbstractDynamicFilterDetailActivity<DynamicFilterBrandAdapter>() {
 
     private lateinit var sidebar: AlphabeticalSideBar
@@ -45,21 +41,21 @@ class DynamicFilterDetailBrandActivity : AbstractDynamicFilterDetailActivity<Dyn
     }
 
     companion object {
-
+        @JvmStatic
         fun moveTo(activity: AppCompatActivity?,
-                   pageTitle: String,
-                   optionList: List<Option>,
+                   pageTitle: String?,
+                   optionList: List<Option>?,
                    isSearchable: Boolean,
-                   searchHint: String,
+                   searchHint: String?,
                    isUsingTracking: Boolean,
                    trackingData: FilterTrackingData?) {
 
-            if (activity != null) {
+            if (activity != null && optionList != null) {
                 val intent = Intent(activity, DynamicFilterDetailBrandActivity::class.java)
-                intent.putExtra(EXTRA_PAGE_TITLE, pageTitle)
+                intent.putExtra(EXTRA_PAGE_TITLE, pageTitle?: "")
                 intent.putParcelableArrayListExtra(EXTRA_OPTION_LIST, ArrayList(optionList))
                 intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable)
-                intent.putExtra(EXTRA_SEARCH_HINT, searchHint)
+                intent.putExtra(EXTRA_SEARCH_HINT, searchHint?: "")
                 intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking)
                 intent.putExtra(EXTRA_TRACKING_DATA, trackingData)
                 activity.startActivityForResult(intent, REQUEST_CODE)

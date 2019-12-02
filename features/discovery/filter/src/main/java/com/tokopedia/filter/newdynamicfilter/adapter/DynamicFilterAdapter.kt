@@ -10,10 +10,6 @@ import com.tokopedia.filter.newdynamicfilter.adapter.viewholder.DynamicFilterVie
 
 import java.util.ArrayList
 
-/**
- * Created by henrypriyono on 8/11/17.
- */
-
 class DynamicFilterAdapter(private val typeFactory: DynamicFilterTypeFactory) : RecyclerView.Adapter<DynamicFilterViewHolder>() {
 
     var filterList: List<Filter> = ArrayList()

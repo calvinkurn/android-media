@@ -38,15 +38,10 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
-
-/**
- * Created by henrypriyono on 8/8/17.
- */
-
 class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
 
     private var recyclerView: RecyclerView? = null
-    private lateinit var adapter: DynamicFilterAdapter
+    private var adapter: DynamicFilterAdapter? = null
     private var buttonApply: TextView? = null
     private var buttonReset: TextView? = null
     private var buttonClose: View? = null
@@ -63,16 +58,17 @@ class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
         get() = object : Subscriber<List<Filter>>() {
             override fun onCompleted() {}
 
-            override fun onError(throwable: Throwable) {
-                throwable.printStackTrace()
+            override fun onError(throwable: Throwable?) {
+                throwable?.printStackTrace()
                 Toast.makeText(this@RevampedDynamicFilterActivity, getString(R.string.error_get_local_dynamic_filter), Toast.LENGTH_LONG).show()
                 finish()
             }
 
-            override fun onNext(filterList: List<Filter>) {
+            override fun onNext(filterList: List<Filter>?) {
+                if(filterList == null) return
                 val initializedFilterList = FilterHelper.initializeFilterList(filterList)
                 filterController.initFilterController(searchParameterFromIntent, initializedFilterList)
-                adapter.filterList = initializedFilterList
+                adapter?.filterList = initializedFilterList
             }
         }
 
@@ -175,7 +171,7 @@ class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
                 DynamicFilterCategoryActivity.REQUEST_CODE -> data?.let { handleResultFromCategoryPage(it) }
             }
 
-            adapter.notifyItemChanged(selectedExpandableItemPosition)
+            adapter?.notifyItemChanged(selectedExpandableItemPosition)
         }
 
         hideLoading()
@@ -195,11 +191,12 @@ class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
             .subscribe(object : Subscriber<List<Option>>() {
                 override fun onCompleted() {}
 
-                override fun onError(e: Throwable) {}
+                override fun onError(e: Throwable?) {}
 
-                override fun onNext(optionList: List<Option>) {
+                override fun onNext(optionList: List<Option>?) {
+                    if(optionList == null) return
                     filterController.setFilter(optionList)
-                    adapter.notifyItemChanged(selectedExpandableItemPosition)
+                    adapter?.notifyItemChanged(selectedExpandableItemPosition)
                     hideLoading()
                 }
             })
@@ -208,7 +205,7 @@ class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
     private fun handleResultFromCategoryPage(data: Intent) {
         val selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID)
 
-        val category = FilterHelper.getSelectedCategoryDetailsFromFilterList(adapter.filterList, selectedCategoryId)
+        val category = adapter?.filterList?.let { FilterHelper.getSelectedCategoryDetailsFromFilterList(it, selectedCategoryId) }
 
         val selectedCategoryNameFromList = category?.categoryName ?: ""
         val categoryOption = OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryNameFromList)
@@ -246,12 +243,12 @@ class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
 
     private fun resetAllFilter() {
         filterController.resetAllFilters()
-        adapter.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
     }
 
     override fun onExpandableItemClicked(filter: Filter) {
         showLoading()
-        selectedExpandableItemPosition = adapter.getItemPosition(filter)
+        selectedExpandableItemPosition = adapter?.getItemPosition(filter) ?: 0
         if (filter.isCategoryFilter) {
             launchFilterCategoryPage(filter)
         } else {

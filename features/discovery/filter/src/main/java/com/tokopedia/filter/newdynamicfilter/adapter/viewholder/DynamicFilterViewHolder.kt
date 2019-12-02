@@ -7,10 +7,6 @@ import android.widget.CompoundButton
 
 import com.tokopedia.filter.common.data.Filter
 
-/**
- * Created by henrypriyono on 8/11/17.
- */
-
 abstract class DynamicFilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     internal fun bindSwitch(switchView: SwitchCompat,

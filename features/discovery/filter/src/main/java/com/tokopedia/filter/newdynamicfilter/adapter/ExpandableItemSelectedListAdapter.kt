@@ -8,14 +8,11 @@ import android.view.ViewGroup
 import com.tokopedia.design.item.DeletableItemView
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.helper.NumberParseHelper
 import com.tokopedia.filter.newdynamicfilter.helper.RatingHelper
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterView
 
 import java.util.ArrayList
-
-/**
- * Created by henrypriyono on 8/11/17.
- */
 
 class ExpandableItemSelectedListAdapter(private val filterView: DynamicFilterView) : RecyclerView.Adapter<ExpandableItemSelectedListAdapter.ViewHolder>() {
 
@@ -41,17 +38,17 @@ class ExpandableItemSelectedListAdapter(private val filterView: DynamicFilterVie
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var selectedItem: DeletableItemView = itemView.findViewById(R.id.selected_item)
+        private var selectedItem: DeletableItemView? = itemView.findViewById(R.id.selected_item)
 
         fun bind(option: Option, position: Int) {
             if (Option.KEY_RATING.equals(option.key)) {
-                val ratingCount = Integer.parseInt(option.name)
-                selectedItem.setItemDrawable(RatingHelper.getRatingDrawable(ratingCount))
+                val ratingCount = NumberParseHelper.safeParseInt(option.name)
+                selectedItem?.setItemDrawable(RatingHelper.getRatingDrawable(ratingCount))
             } else {
-                selectedItem.setItemName(option.name)
+                selectedItem?.setItemName(option.name)
             }
 
-            selectedItem.setOnDeleteListener {
+            selectedItem?.setOnDeleteListener {
                 filterView.removeSelectedOption(option)
                 (selectedOptionsList as MutableList).removeAt(position)
                 notifyItemRemoved(position)

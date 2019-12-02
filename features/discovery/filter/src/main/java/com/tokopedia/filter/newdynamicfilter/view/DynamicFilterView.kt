@@ -3,10 +3,6 @@ package com.tokopedia.filter.newdynamicfilter.view
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 
-/**
- * Created by henrypriyono on 8/16/17.
- */
-
 interface DynamicFilterView {
     fun onExpandableItemClicked(filter: Filter)
 

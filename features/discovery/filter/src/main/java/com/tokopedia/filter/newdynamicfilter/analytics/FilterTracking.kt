@@ -5,10 +5,6 @@ import android.text.TextUtils
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
-/**
- * Created by henrypriyono on 1/5/18.
- */
-
 object FilterTracking {
 
     fun eventFilterJourney(trackingData: FilterTrackingData,

@@ -4,10 +4,10 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class FilterTrackingData() : Parcelable {
-    var event: String? = null
-    var filterCategory: String? = null
-    var categoryId: String? = null
-    var prefix: String? = null
+    var event: String = ""
+    var filterCategory: String = ""
+    var categoryId: String = ""
+    var prefix: String = ""
 
     constructor(event: String, filterCategory: String, categoryId: String, prefix: String) : this() {
         this.event = event

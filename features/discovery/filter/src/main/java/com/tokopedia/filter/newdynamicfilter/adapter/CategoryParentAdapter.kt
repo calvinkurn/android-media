@@ -15,10 +15,6 @@ import com.tokopedia.filter.common.data.Category
 
 import java.util.ArrayList
 
-/**
- * @author by alifa on 7/6/17.
- */
-
 class CategoryParentAdapter(private val clickListener: OnItemClickListener, var activeId: String?) : RecyclerView.Adapter<CategoryParentAdapter.ItemRowHolder>() {
 
     private var categories: List<Category>
@@ -46,27 +42,27 @@ class CategoryParentAdapter(private val clickListener: OnItemClickListener, var 
     override fun onBindViewHolder(holder: ItemRowHolder, position: Int) {
         holder.bindData(position)
         val onParentClicked = View.OnClickListener { clickListener.onItemClicked(categories[position], position) }
-        holder.categoryContainer.setOnClickListener(onParentClicked)
-        holder.categoryIcon.setOnClickListener(onParentClicked)
-        holder.categoryName.setOnClickListener(onParentClicked)
-        holder.categoryContainer.setOnClickListener(onParentClicked)
+        holder.categoryContainer?.setOnClickListener(onParentClicked)
+        holder.categoryIcon?.setOnClickListener(onParentClicked)
+        holder.categoryName?.setOnClickListener(onParentClicked)
+        holder.categoryContainer?.setOnClickListener(onParentClicked)
 
     }
 
     inner class ItemRowHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var categoryContainer: LinearLayout = view.findViewById(R.id.category_parent_container)
-        var categoryIcon: ImageView = view.findViewById(R.id.category_parent_icon)
-        var categoryName: TextView = view.findViewById(R.id.category_parent_text)
+        var categoryContainer: LinearLayout? = view.findViewById(R.id.category_parent_container)
+        var categoryIcon: ImageView? = view.findViewById(R.id.category_parent_icon)
+        var categoryName: TextView? = view.findViewById(R.id.category_parent_text)
 
         fun bindData(position: Int) {
             val category = categories[position]
-            this.categoryName.text = category.name
+            this.categoryName?.text = category.name
             ImageHandler.LoadImage(this.categoryIcon, category.iconImageUrl)
             if (category.id.equals(activeId)) {
-                this.categoryContainer.isSelected = true
+                this.categoryContainer?.isSelected = true
                 activePosition = position
             } else {
-                this.categoryContainer.isSelected = false
+                this.categoryContainer?.isSelected = false
             }
         }
 

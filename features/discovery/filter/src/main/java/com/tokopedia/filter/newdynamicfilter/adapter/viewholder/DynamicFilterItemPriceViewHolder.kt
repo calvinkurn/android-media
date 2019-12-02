@@ -20,16 +20,12 @@ import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterView
 
 import java.util.ArrayList
 
-/**
- * Created by henrypriyono on 8/11/17.
- */
-
 class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilterView: DynamicFilterView) : DynamicFilterViewHolder(itemView) {
 
-    private val wholesaleTitle: TextView = itemView.findViewById(R.id.wholesale_title)
-    private val wholesaleToggle: SwitchCompat = itemView.findViewById(R.id.wholesale_toggle)
-    private val wholesaleContainer: View = itemView.findViewById(R.id.wholesale_container)
-    private val priceRangeInputView: PriceRangeInputView = itemView.findViewById(R.id.price_range_input_view)
+    private val wholesaleTitle: TextView? = itemView.findViewById(R.id.wholesale_title)
+    private val wholesaleToggle: SwitchCompat? = itemView.findViewById(R.id.wholesale_toggle)
+    private val wholesaleContainer: View? = itemView.findViewById(R.id.wholesale_container)
+    private val priceRangeInputView: PriceRangeInputView? = itemView.findViewById(R.id.price_range_input_view)
     private var priceMinOption: Option? = null
     private var priceMaxOption: Option? = null
     private var priceMinMaxOption: Option? = null
@@ -42,7 +38,7 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
         var maxLabel = ""
         var minLabel = ""
 
-        wholesaleContainer.visibility = View.GONE
+        wholesaleContainer?.visibility = View.GONE
 
         var lastMinValue = 0
         var lastMaxValue = 0
@@ -96,11 +92,11 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
             lastMaxValue
         }
 
-        priceRangeInputView.setGestureListener(getPriceRangeInputViewGestureListener())
+        priceRangeInputView?.setGestureListener(getPriceRangeInputViewGestureListener())
 
-        priceRangeInputView.setOnValueChangedListener(getPriceRangeInputViewOnValueChangeListener())
+        priceRangeInputView?.setOnValueChangedListener(getPriceRangeInputViewOnValueChangeListener())
 
-        priceRangeInputView.setData(minLabel, maxLabel, minBound, maxBound,
+        priceRangeInputView?.setData(minLabel, maxLabel, minBound, maxBound,
                 defaultMinValue, defaultMaxValue)
     }
 
@@ -132,25 +128,23 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
                 get() = NumberParseHelper.safeParseInt(dynamicFilterView.getFilterValue(Option.KEY_PRICE_MAX))
 
             override fun onPriceRangeSelected(minValue: Int, maxValue: Int) {
-                priceRangeInputView.setData(minBound, maxBound, minValue, maxValue)
+                priceRangeInputView?.setData(minBound, maxBound, minValue, maxValue)
                 refreshPricePills()
                 dynamicFilterView.onPriceRangeClicked()
             }
 
             override fun onPriceRangeRemoved() {
-                priceRangeInputView.setData(minBound, maxBound, minBound, maxBound)
+                priceRangeInputView?.setData(minBound, maxBound, minBound, maxBound)
                 refreshPricePills()
                 dynamicFilterView.onPriceRangeClicked()
             }
         })
-        pricePillsAdapter!!.setPricePills(priceRangeList)
+        pricePillsAdapter?.setPricePills(priceRangeList)
         pricePillsRecyclerView.adapter = pricePillsAdapter
     }
 
     private fun refreshPricePills() {
-        if (pricePillsAdapter != null) {
-            pricePillsAdapter!!.refreshData()
-        }
+        pricePillsAdapter?.refreshData()
     }
 
     private fun getPriceRangeInputViewGestureListener() = object : RangeInputView.GestureListener {
@@ -177,9 +171,9 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
 
     private fun applyMinValueFilter(minValue: Int, minBound: Int) {
         if (minValue == minBound) {
-            dynamicFilterView.removeSavedTextInput(priceMinOption!!.uniqueId)
+            dynamicFilterView.removeSavedTextInput(priceMinOption?.uniqueId?: "")
         } else {
-            dynamicFilterView.saveTextInput(priceMinOption!!.uniqueId, minValue.toString())
+            dynamicFilterView.saveTextInput(priceMinOption?.uniqueId?: "", minValue.toString())
         }
     }
 
@@ -192,14 +186,16 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
     }
 
     private fun bindWholesaleOptionItem(option: Option) {
-        wholesaleContainer.visibility = View.VISIBLE
-        wholesaleTitle.text = option.name
+        wholesaleContainer?.visibility = View.VISIBLE
+        wholesaleTitle?.text = option.name
 
-        wholesaleTitle.setOnClickListener { wholesaleToggle.isChecked = !wholesaleToggle.isChecked }
+        wholesaleTitle?.setOnClickListener { wholesaleToggle?.isChecked = wholesaleToggle?.isChecked != true }
 
         val onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, isChecked -> dynamicFilterView.saveCheckedState(option, isChecked) }
-        bindSwitch(wholesaleToggle,
+        wholesaleToggle?.let {
+            bindSwitch(it,
                 dynamicFilterView.loadLastCheckedState(option),
                 onCheckedChangeListener)
+        }
     }
 }

@@ -7,10 +7,6 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 
-/**
- * Created by henrypriyono on 11/27/17.
- */
-
 object FilterDbHelper {
     fun storeLocationFilterOptions(context: Context, optionList: List<Option>) {
 

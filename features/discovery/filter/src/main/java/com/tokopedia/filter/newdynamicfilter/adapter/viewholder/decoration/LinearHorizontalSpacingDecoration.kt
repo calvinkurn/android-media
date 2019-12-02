@@ -15,7 +15,7 @@ class LinearHorizontalSpacingDecoration(private val spacingBetween: Int, private
 
         outRect.top = 0
         outRect.left = if (pos == 0) edgeMargin else spacingBetween / 2
-        outRect.right = if (pos == parent.adapter!!.itemCount - 1) edgeMargin else spacingBetween / 2
+        outRect.right = if (pos == parent.adapter?.itemCount?: 0 - 1) edgeMargin else spacingBetween / 2
         outRect.bottom = 0
     }
 }

@@ -17,10 +17,6 @@ import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
-/**
- * Created by henrypriyono on 8/16/17.
- */
-
 object FilterDetailActivityRouter {
 
     fun launchDetailActivity(activity: AppCompatActivity, filter: Filter) {

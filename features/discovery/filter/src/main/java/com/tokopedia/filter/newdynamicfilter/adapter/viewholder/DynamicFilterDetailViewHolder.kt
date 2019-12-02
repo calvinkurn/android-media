@@ -11,10 +11,10 @@ import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView
 
 open class DynamicFilterDetailViewHolder(itemView: View, private val filterDetailView: DynamicFilterDetailView) : RecyclerView.ViewHolder(itemView) {
 
-    protected var checkBox: CheckBox = itemView.findViewById(R.id.filter_detail_item_checkbox)
+    protected var checkBox: CheckBox? = itemView.findViewById(R.id.filter_detail_item_checkbox)
 
     open fun bind(option: Option) {
-        itemView.setOnClickListener { checkBox.isChecked = !checkBox.isChecked }
-        OptionHelper.bindOptionWithCheckbox(option, checkBox, filterDetailView)
+        itemView.setOnClickListener { checkBox?.isChecked = checkBox?.isChecked != true  }
+        checkBox?.let { OptionHelper.bindOptionWithCheckbox(option, it, filterDetailView) }
     }
 }

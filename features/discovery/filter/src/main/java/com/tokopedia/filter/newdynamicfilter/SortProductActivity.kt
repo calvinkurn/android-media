@@ -19,17 +19,13 @@ import com.tokopedia.filter.common.data.Sort
 import java.util.ArrayList
 import java.util.HashMap
 
-/**
- * Created by Erry on 7/12/2016.
- */
 @SuppressWarnings("unchecked")
 class SortProductActivity : BaseActivity() {
 
-    private lateinit var recyclerView: RecyclerView
-    private var buttonClose: View? = null
+    private var recyclerView: RecyclerView? = null
     private var topBarTitle: TextView? = null
     private var adapter: ListAdapter? = null
-    private var data: ArrayList<Sort>? = null
+    private var data: List<Sort>? = null
     private var selectedKey: String? = null
     private var selectedValue: String? = null
 
@@ -43,11 +39,11 @@ class SortProductActivity : BaseActivity() {
         topBarTitle = findViewById(R.id.top_bar_title)
         topBarTitle?.text = getString(R.string.title_sort_but)
         recyclerView = findViewById(R.id.list)
-        buttonClose = findViewById(R.id.top_bar_close_button)
-        buttonClose?.setOnClickListener { onBackPressed() }
+        val buttonClose: View = findViewById(R.id.top_bar_close_button)
+        buttonClose.setOnClickListener { onBackPressed() }
         data = intent.extras.getParcelableArrayList(EXTRA_SORT_DATA)
         generateSelectedKeyValue(intent.getSerializableExtra(EXTRA_SELECTED_SORT) as HashMap<String, String>)
-        adapter = ListAdapter(data, selectedKey, selectedValue, object : OnItemClickListener {
+        adapter = ListAdapter(data?: listOf(), selectedKey, selectedValue, object : OnItemClickListener {
             override fun onItemClicked(sortItem: Sort) {
                 val intent = Intent()
                 val params = hashMapOf<String, String>()
@@ -59,9 +55,9 @@ class SortProductActivity : BaseActivity() {
                 finish()
             }
         })
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.addItemDecoration(DividerItemDecoration(this))
-        recyclerView.adapter = adapter
+        recyclerView?.layoutManager = LinearLayoutManager(this)
+        recyclerView?.addItemDecoration(DividerItemDecoration(this))
+        recyclerView?.adapter = adapter
 
     }
 
@@ -93,20 +89,9 @@ class SortProductActivity : BaseActivity() {
         overridePendingTransition(android.R.anim.fade_in, R.anim.push_down)
     }
 
-    private inner class ListAdapter(sortList: List<Sort>?, private var selectedKey: String?, private var selectedValue: String?, var clickListener: OnItemClickListener?) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
-        private var sortList: List<Sort>? = null
+    private inner class ListAdapter(private val sortList: List<Sort> = ArrayList(), private var selectedKey: String?, private var selectedValue: String?, var clickListener: OnItemClickListener?) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 
-        init {
-            if (sortList == null) {
-                this.sortList = ArrayList()
-            } else {
-                this.sortList = sortList
-            }
-        }
-
-        override fun getItemCount(): Int {
-            return sortList!!.size
-        }
+        override fun getItemCount(): Int = sortList.size
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(R.layout.filter_sort_list_item, parent, false)
@@ -114,24 +99,24 @@ class SortProductActivity : BaseActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.title.text = sortList!![position].name
-            holder.title.tag = sortList!![position].value
+            holder.title?.text = sortList[position].name
+            holder.title?.tag = sortList[position].value
             if (selectedKey == null && selectedValue == null) {
                 if (position == 0) {
-                    holder.title.isSelected = true
+                    holder.title?.isSelected = true
                 }
             } else {
-                holder.title.isSelected = sortList!![position].key.equals(selectedKey) && sortList!![position].value.equals(selectedValue)
+                holder.title?.isSelected = sortList[position].key.equals(selectedKey) && sortList[position].value.equals(selectedValue)
             }
-            holder.title.setOnClickListener(object : View.OnClickListener {
+            holder.title?.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View) {
                     if (holder.adapterPosition == RecyclerView.NO_POSITION) {
                         return
                     }
-                    selectedKey = sortList!![holder.adapterPosition].key
-                    selectedValue = sortList!![holder.adapterPosition].value
+                    selectedKey = sortList[holder.adapterPosition].key
+                    selectedValue = sortList[holder.adapterPosition].value
 
-                    clickListener?.onItemClicked(sortList!![holder.adapterPosition])
+                    clickListener?.onItemClicked(sortList[holder.adapterPosition])
 
                     notifyDataSetChanged()
                 }
@@ -139,16 +124,15 @@ class SortProductActivity : BaseActivity() {
         }
 
         inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
-            // each data item is just a string in this case
-            var title: TextView = v.findViewById(R.id.title)
+            val title: TextView? = v.findViewById(R.id.title)
 
             init {
-                title.setOnClickListener(this)
+                title?.setOnClickListener(this)
             }
 
             override fun onClick(v: View) {
                 v.isSelected = true
-                clickListener?.onItemClicked(sortList!![adapterPosition])
+                clickListener?.onItemClicked(sortList[adapterPosition])
                 notifyDataSetChanged()
             }
 

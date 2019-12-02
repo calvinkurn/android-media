@@ -30,15 +30,11 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
-/**
- * Created by henrypriyono on 8/16/17.
- */
-
 abstract class AbstractDynamicFilterDetailActivity<T : RecyclerView.Adapter<*>> : BaseActivity(), DynamicFilterDetailView {
 
     protected lateinit var optionList: List<Option>
     protected lateinit var abstractDynamicFilterAdapter: T
-    protected lateinit var recyclerView: RecyclerView
+    protected var recyclerView: RecyclerView? = null
 
     private var searchInputContainer: View? = null
     private var searchInputView: EditText? = null
@@ -179,10 +175,10 @@ abstract class AbstractDynamicFilterDetailActivity<T : RecyclerView.Adapter<*>> 
 
     protected open fun initRecyclerView() {
         abstractDynamicFilterAdapter = getAdapter()
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recyclerView.addItemDecoration(DividerItemDecoration(this))
-        recyclerView.adapter = abstractDynamicFilterAdapter
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerView?.addItemDecoration(DividerItemDecoration(this))
+        recyclerView?.adapter = abstractDynamicFilterAdapter
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     hideKeyboard()
@@ -241,26 +237,18 @@ abstract class AbstractDynamicFilterDetailActivity<T : RecyclerView.Adapter<*>> 
         }
 
         override fun performFiltering(constraint: CharSequence): FilterResults {
-
             val filterSeq = constraint.toString().toLowerCase()
-
             val result = FilterResults()
-
             if (!TextUtils.isEmpty(filterSeq)) {
-
                 val filter = arrayListOf<Option>()
-
                 for (option in sourceData) {
                     if (option.name.toLowerCase().contains(filterSeq)) {
                         filter.add(option)
                     }
                 }
-
                 result.values = filter
                 result.count = filter.size
-
             } else {
-
                 synchronized(this) {
                     result.values = sourceData
                     result.count = sourceData.size
@@ -288,9 +276,7 @@ abstract class AbstractDynamicFilterDetailActivity<T : RecyclerView.Adapter<*>> 
 
     override fun onDestroy() {
         super.onDestroy()
-        if (subscription != null) {
-            subscription?.unsubscribe()
-        }
+        subscription?.unsubscribe()
     }
 
     companion object {

@@ -21,12 +21,6 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 
 import org.parceler.Parcels
 
-
-
-/**
- * Created by henrypriyono on 8/24/17.
- */
-
 class DynamicFilterCategoryActivity : AppCompatActivity(), CategoryParentAdapter.OnItemClickListener, CategoryChildAdapter.OnItemClickListener {
 
     private var categoryList: List<Category>? = null
@@ -146,19 +140,19 @@ class DynamicFilterCategoryActivity : AppCompatActivity(), CategoryParentAdapter
         private const val EXTRA_OPTION_LIST = "EXTRA_OPTION_LIST"
         private const val DEFAULT_OFFSET = 170
 
+        @JvmStatic
         fun moveTo(activity: AppCompatActivity?,
-                   optionList: List<Option>,
-                   defaultCategoryRootId: String,
-                   defaultCategoryId: String,
-                   isUsingTracking: Boolean,
+                   optionList: List<Option>?,
+                   defaultCategoryRootId: String?,
+                   defaultCategoryId: String?,
+                   isUsingTracking: Boolean?,
                    trackingData: FilterTrackingData?
         ) {
-
-            if (activity != null) {
+            if (activity != null && optionList != null) {
                 val intent = Intent(activity, DynamicFilterCategoryActivity::class.java)
                 intent.putExtra(EXTRA_OPTION_LIST, Parcels.wrap(optionList))
-                intent.putExtra(EXTRA_DEFAULT_CATEGORY_ROOT_ID, defaultCategoryRootId)
-                intent.putExtra(EXTRA_DEFAULT_CATEGORY_ID, defaultCategoryId)
+                intent.putExtra(EXTRA_DEFAULT_CATEGORY_ROOT_ID, defaultCategoryRootId?: "")
+                intent.putExtra(EXTRA_DEFAULT_CATEGORY_ID, defaultCategoryId?: "")
                 intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking)
                 intent.putExtra(EXTRA_TRACKING_DATA, trackingData)
                 activity.startActivityForResult(intent, REQUEST_CODE)

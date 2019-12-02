@@ -13,25 +13,25 @@ import com.tokopedia.filter.newdynamicfilter.view.BottomSheetDynamicFilterView
 
 class BottomSheetExpandableItemViewHolder(itemView: View, private val filterView: BottomSheetDynamicFilterView) : DynamicFilterViewHolder(itemView) {
 
-    private val titleContainer: LinearLayout = itemView.findViewById(R.id.title_container)
-    private val title: TextView = itemView.findViewById(R.id.expandable_item_title)
-    private val seeAllButton: View = itemView.findViewById(R.id.see_all_button)
-    private val recyclerView: RecyclerView = itemView.findViewById(R.id.expandable_item_selected_list)
-    private var adapter: BottomSheetExpandableItemSelectedListAdapter? = null
+    private val titleContainer: LinearLayout? = itemView.findViewById(R.id.title_container)
 
     override fun bind(filter: Filter) {
-        adapter = BottomSheetExpandableItemSelectedListAdapter(filterView, filter.title)
-        recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.adapter = adapter
+        val title: TextView? = itemView.findViewById(R.id.expandable_item_title)
+        val seeAllButton: View? = itemView.findViewById(R.id.see_all_button)
+        val recyclerView: RecyclerView? = itemView.findViewById(R.id.expandable_item_selected_list)
+        val adapter: BottomSheetExpandableItemSelectedListAdapter? = BottomSheetExpandableItemSelectedListAdapter(filterView, filter.title)
 
-        title.text = filter.title
+        recyclerView?.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView?.adapter = adapter
+
+        title?.text = filter.title
 
         if (hasCustomOptions(filter)) {
-            titleContainer.setOnClickListener { filterView.onExpandableItemClicked(filter) }
-            seeAllButton.visibility = View.VISIBLE
+            titleContainer?.setOnClickListener { filterView.onExpandableItemClicked(filter) }
+            seeAllButton?.visibility = View.VISIBLE
         } else {
-            titleContainer.setOnClickListener(null)
-            seeAllButton.visibility = View.GONE
+            titleContainer?.setOnClickListener(null)
+            seeAllButton?.visibility = View.GONE
         }
 
         adapter?.setSelectedOptionsList(filterView.getSelectedOptions(filter))

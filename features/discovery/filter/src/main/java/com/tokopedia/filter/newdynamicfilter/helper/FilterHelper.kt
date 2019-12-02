@@ -10,10 +10,6 @@ import com.tokopedia.filter.common.data.Option.Companion.METRIC_INTERNATIONAL
 
 import java.util.ArrayList
 
-/**
- * Created by henrypriyono on 11/13/17.
- */
-
 object FilterHelper {
 
     fun getSelectedCategoryDetailsFromFilterList(filterList: List<Filter>, categoryId: String): CategoryFilterModel? {

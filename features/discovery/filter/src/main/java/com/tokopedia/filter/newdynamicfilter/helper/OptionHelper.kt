@@ -14,10 +14,6 @@ import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView
 import java.util.ArrayList
 import java.util.HashMap
 
-/**
- * Created by henrypriyono on 8/22/17.
- */
-
 object OptionHelper {
 
     val VALUE_SEPARATOR = ","

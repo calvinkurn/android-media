@@ -12,10 +12,6 @@ import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView
 
 import java.util.ArrayList
 
-/**
- * Created by henrypriyono on 8/11/17.
- */
-
 open class DynamicFilterDetailAdapter(protected var filterDetailView: DynamicFilterDetailView) : RecyclerView.Adapter<DynamicFilterDetailViewHolder>() {
 
     private var list: List<Option> = ArrayList()
@@ -54,7 +50,7 @@ open class DynamicFilterDetailAdapter(protected var filterDetailView: DynamicFil
 
         override fun bind(option: Option) {
             super.bind(option)
-            checkBox.text = option.name
+            checkBox?.text = option.name
         }
     }
 }
