@@ -10,21 +10,24 @@ import rx.Subscriber
  */
 
 abstract class WebSocketSubscriber : Subscriber<WebSocketInfo>() {
+
     private var hasOpened: Boolean = false
 
     override fun onNext(webSocketInfo: WebSocketInfo) {
         when {
-            webSocketInfo.isOnOpen!! -> {
-                hasOpened = true
-                onOpen(webSocketInfo.webSocket!!)
-            }
-            webSocketInfo.string != null -> onMessage(webSocketInfo.string!!)
-            webSocketInfo.byteString != null -> onMessage(webSocketInfo.byteString!!)
-            webSocketInfo.isOnReconnect -> onReconnect()
-        }
+            webSocketInfo.isOnOpen -> {
+                webSocketInfo.webSocket?.let {
+                    hasOpened = true
+                    onOpen(it)
+                }
+                onMessage(webSocketInfo.string)
+                onMessage(webSocketInfo.byteString)
 
-        if (webSocketInfo.response != null) {
-            onMessage(webSocketInfo.response!!)
+                webSocketInfo.response?.let {
+                    onMessage(it)
+                }
+            }
+            webSocketInfo.isOnReconnect -> onReconnect()
         }
     }
 
@@ -38,9 +41,7 @@ abstract class WebSocketSubscriber : Subscriber<WebSocketInfo>() {
 
     protected open fun onReconnect() {}
 
-    protected open fun onClose() {
-
-    }
+    protected open fun onClose() {}
 
     override fun onCompleted() {
         if (hasOpened) {
