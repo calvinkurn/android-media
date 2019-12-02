@@ -43,8 +43,8 @@ class AffiliateDashboardTab : LinearLayout {
         tvTitle.setTextColor(
                 MethodChecker.getColor(
                         context,
-                        if (isActive) R.color.Green_G500
-                        else R.color.Neutral_N700_44
+                        if (isActive) com.tokopedia.unifyprinciples.R.color.Green_G500
+                        else com.tokopedia.unifyprinciples.R.color.Neutral_N700_44
                 )
         )
     }

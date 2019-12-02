@@ -124,6 +124,8 @@ dependencies {
     // productCard & topAdsSdk is used for recommendation section on cart
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.topAdsSdk)
+    // seamlesslogin is used for tobacco redirect to lite
+    implementation project(rootProject.ext.features.seamlesslogin)
     //-------------------------------------------------------------------//
 
 

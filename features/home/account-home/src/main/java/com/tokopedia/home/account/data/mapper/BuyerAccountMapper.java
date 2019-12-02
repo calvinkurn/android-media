@@ -16,6 +16,7 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +32,12 @@ import rx.functions.Func1;
 public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private static final String OVO = "OVO";
     private Context context;
+    private RemoteConfig remoteConfig;
 
     @Inject
-    BuyerAccountMapper(@ApplicationContext Context context) {
+    BuyerAccountMapper(@ApplicationContext Context context, RemoteConfig remoteConfig) {
         this.context = context;
+        this.remoteConfig = remoteConfig;
     }
 
     @Override
@@ -153,7 +156,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             items.add(tokopediaPayViewModel);
         }
 
-        items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountModel));
+        items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountModel, remoteConfig));
         model.setItems(items);
 
         return model;
