@@ -81,10 +81,10 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         val query = intentUri.query
         return if (query != null && query.contains("$KEY_URL=")) {
             url = query.substringAfter("$KEY_URL=").decode()
+            url = validateSymbol(url)
             if (!url.contains("$KEY_URL=")) {
                 return url
             }
-            url = validateSymbol(url)
             val url2 = url.substringAfter("$KEY_URL=", "")
             if (url2.isNotEmpty()) {
                 val url2BeforeAnd = url2.substringBefore("&")
