@@ -115,9 +115,10 @@ public class SimilarSearchAdapter extends RecyclerView.Adapter<SimilarSearchAdap
                     if (productsItem != null) {
                         if (productsItem.getId() != 0) {
                             productItem = productsItem.getProductAsObjectDataLayer(String.valueOf(getIndex(String.valueOf(productsItem.getId()))));
+
+                            SimilarSearchTracking.eventClickSimilarProduct("/searchproduct - product " + productsItem.getId(), productsItem.getOriginProductID(),productItem);
                         }
                     }
-                    SimilarSearchTracking.eventClickSimilarProduct("/searchproduct - product " + productsItem.getId(), productsItem.getOriginProductID(),productItem);
                 }
 
 
