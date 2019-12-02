@@ -1,19 +1,16 @@
 package com.tokopedia.salam.umrah.homepage.presentation.adapter
 
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
-import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
-import kotlinx.android.synthetic.main.partial_umrah_order_detail_content.*
-import kotlinx.android.synthetic.main.partial_umrah_order_detail_content.view.*
+import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import kotlinx.android.synthetic.main.widget_umrah_my_umrah.view.*
 
-class UmrahHomepageMyUmrahAdapter(val trackingUmrahUtil: TrackingUmrahUtil): RecyclerView.Adapter<UmrahHomepageMyUmrahAdapter.UmrahHomepageUmrahSayaViewHolder>(){
+class UmrahHomepageMyUmrahAdapter(val onItemBindListener: onItemBindListener): RecyclerView.Adapter<UmrahHomepageMyUmrahAdapter.UmrahHomepageUmrahSayaViewHolder>(){
     private var listCategories = emptyList<MyUmrahEntity>()
 
 
@@ -33,7 +30,7 @@ class UmrahHomepageMyUmrahAdapter(val trackingUmrahUtil: TrackingUmrahUtil): Rec
                 tg_umrah_next.text = element.nextActionText
                 btn_my_umrah_detail.text = element.mainButton.text
                 btn_my_umrah_detail.setOnClickListener {
-                    trackingUmrahUtil.umrahClickUmrahSayaTracker(element.header, element, position)
+                    onItemBindListener.onClickUmrahMyUmrah(element.header,element,position)
                     RouteManager.route(context, element.mainButton.link)
                 }
             }

@@ -28,6 +28,7 @@
     <string name="umrah_home_page_rupiah_curreny">Rp</string>
     <string name="umrah_home_page_days_duration">Hari %s</string>
     <string name="umrah_home_page_start_from">Mulai dari</string>
+    <string name="umrah_home_page_departure_back_date">%s - %s</string>
 
 
 

@@ -9,7 +9,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
-import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageMyUmrahEntity
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.UmrahHomepageMyUmrahAdapter
@@ -21,11 +20,10 @@ import kotlinx.android.synthetic.main.partial_umrah_home_page_my_umrah.view.*
  * @author by firman on 23/10/19
  */
 
-class UmrahHomepageMyUmrahViewHolder(view: View, private val onBindListener: onItemBindListener,
-                                     private val trackingUmrahUtil: TrackingUmrahUtil
+class UmrahHomepageMyUmrahViewHolder(view: View, private val onBindListener: onItemBindListener
 ) : AbstractViewHolder<UmrahHomepageMyUmrahEntity>(view) {
 
-    val adapterMyUmrah = UmrahHomepageMyUmrahAdapter(trackingUmrahUtil)
+    val adapterMyUmrah = UmrahHomepageMyUmrahAdapter(onBindListener)
 
     override fun bind(element: UmrahHomepageMyUmrahEntity) {
         if (element.isLoaded) {
@@ -34,9 +32,9 @@ class UmrahHomepageMyUmrahViewHolder(view: View, private val onBindListener: onI
                     shimmering.hide()
                     section_my_umrah.hide()
                     section_layout.show()
-                    trackingUmrahUtil.umrahImpressionDanaImpianTracker()
+                    onBindListener.onImpressionDanaImpian()
                     dream_fund_umrah_home_page.setOnClickListener {
-                        trackingUmrahUtil.umrahClickDanaImpianTracker()
+                        onBindListener.onClickDanaImpian()
                         RouteManager.route(context, getString(R.string.umrah_dana_impian_link))
                     }
                 } else {
@@ -56,7 +54,7 @@ class UmrahHomepageMyUmrahViewHolder(view: View, private val onBindListener: onI
                                 super.onScrollStateChanged(recyclerView, newState)
                                 if (newState == RecyclerView.SCROLL_STATE_IDLE){
                                     val positions = (rv_umrah_home_page_my_umrah.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                                    trackingUmrahUtil.umrahImpressionUmrahSayaTracker((element.listMyUmrahEntity.getOrNull(positions)?: MyUmrahEntity()).header
+                                    onBindListener.onImpressionMyUmrah((element.listMyUmrahEntity.getOrNull(positions)?: MyUmrahEntity()).header
                                             ,element.listMyUmrahEntity.getOrNull(positions) ?: MyUmrahEntity() ,positions)
                                 }
                             }

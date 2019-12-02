@@ -9,7 +9,6 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
-import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageBottomSheetData
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageBottomSheetMapper
@@ -30,8 +29,7 @@ import javax.inject.Inject
 /**
  * @author by firman on 23/10/19
  */
-class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener: onItemBindListener,
-                                         private val trackingUmrahUtil: TrackingUmrahUtil)
+class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener: onItemBindListener)
     : AbstractViewHolder<UmrahSearchParameterEntity>(view), UmrahHomepageBottomSheetAdapter.UmrahBottomSheetListener {
 
     private var adapterCity   = UmrahHomepageBottomSheetAdapter(view.context, this)
@@ -84,7 +82,7 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
                 }
 
                 btn_umrah_home_page_search.setOnClickListener {
-                    trackingUmrahUtil.umrahSearchProductTracker(tvPeriod.text.toString(),
+                    onBindListener.onSearchProduct(tvPeriod.text.toString(),
                                                                 tvLocation.text.toString(),
                                                                 tvPrice.text.toString())
 

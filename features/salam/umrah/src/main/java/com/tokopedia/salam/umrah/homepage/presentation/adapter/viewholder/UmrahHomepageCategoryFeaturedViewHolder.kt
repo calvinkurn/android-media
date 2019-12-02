@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageCategoryFeaturedEntity
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.UmrahHomepageCategoryFeaturedAdapter
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
@@ -16,10 +15,9 @@ import kotlinx.android.synthetic.main.partial_umrah_home_page_category_featured.
  * @author by firman on 23/10/19
  */
 
-class UmrahHomepageCategoryFeaturedViewHolder(view: View, private val onBindListener: onItemBindListener,
-                                              private val trackingUmrahUtil: TrackingUmrahUtil
-) : AbstractViewHolder<UmrahHomepageCategoryFeaturedEntity>(view){
-    val adapterFeaturedCategory = UmrahHomepageCategoryFeaturedAdapter(view.context, trackingUmrahUtil)
+class UmrahHomepageCategoryFeaturedViewHolder(view: View, private val onBindListener: onItemBindListener)
+    : AbstractViewHolder<UmrahHomepageCategoryFeaturedEntity>(view){
+    val adapterFeaturedCategory = UmrahHomepageCategoryFeaturedAdapter(onBindListener)
 
     override fun bind(element: UmrahHomepageCategoryFeaturedEntity) {
         if (element.isLoaded && element.umrahCategoriesFeatured.isNotEmpty()) {

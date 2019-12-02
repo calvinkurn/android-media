@@ -17,7 +17,7 @@ import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListen
 /**
  * @author by firman on 23/10/19
  */
-class UmrahHomepageFactoryImpl(private val onBindListener: onItemBindListener,private val trackingUmrahUtil: TrackingUmrahUtil)
+class UmrahHomepageFactoryImpl(private val onBindListener: onItemBindListener)
     : BaseAdapterTypeFactory(), UmrahHomepageFactory{
     override fun type(dataModel: UmrahSearchParameterEntity): Int {
        return UmrahSearchParameterEntity.LAYOUT
@@ -37,10 +37,10 @@ class UmrahHomepageFactoryImpl(private val onBindListener: onItemBindListener,pr
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when(type){
-            UmrahSearchParameterEntity.LAYOUT -> UmrahHomepageSpinnerLikeViewHolder(view, onBindListener,trackingUmrahUtil)
-            UmrahHomepageCategoryEntity.LAYOUT -> UmrahHomepageCategoryViewHolder(view, onBindListener, trackingUmrahUtil)
-            UmrahHomepageCategoryFeaturedEntity.LAYOUT -> UmrahHomepageCategoryFeaturedViewHolder(view, onBindListener, trackingUmrahUtil)
-            UmrahHomepageMyUmrahEntity.LAYOUT -> UmrahHomepageMyUmrahViewHolder(view, onBindListener, trackingUmrahUtil)
+            UmrahSearchParameterEntity.LAYOUT -> UmrahHomepageSpinnerLikeViewHolder(view, onBindListener)
+            UmrahHomepageCategoryEntity.LAYOUT -> UmrahHomepageCategoryViewHolder(view, onBindListener)
+            UmrahHomepageCategoryFeaturedEntity.LAYOUT -> UmrahHomepageCategoryFeaturedViewHolder(view, onBindListener)
+            UmrahHomepageMyUmrahEntity.LAYOUT -> UmrahHomepageMyUmrahViewHolder(view, onBindListener)
             else -> super.createViewHolder(view, type)
         }
     }

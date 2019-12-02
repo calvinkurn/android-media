@@ -13,8 +13,10 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
+import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.homepage.data.*
 import com.tokopedia.salam.umrah.homepage.di.UmrahHomepageComponent
+import com.tokopedia.salam.umrah.homepage.presentation.adapter.UmrahHomepageCategoryFeaturedItemAdapter
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.factory.UmrahHomepageFactoryImpl
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import com.tokopedia.salam.umrah.homepage.presentation.viewmodel.UmrahHomepageViewModel
@@ -33,8 +35,10 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     @Inject
     lateinit var trackingUmrahUtil: TrackingUmrahUtil
 
+
+
     private val adapterFactory by lazy {
-        UmrahHomepageFactoryImpl(this, trackingUmrahUtil)
+        UmrahHomepageFactoryImpl(this)
     }
 
     override fun getAdapterTypeFactory(): UmrahHomepageFactoryImpl = adapterFactory
@@ -119,6 +123,41 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
                 R.raw.gql_query_umrah_home_page_featured), isLoadedFromCloud)
     }
 
+    override fun onClickDanaImpian() {
+        trackingUmrahUtil.umrahClickDanaImpianTracker()
+    }
+
+    override fun onClickUmrahMyUmrah(title: String, myUmrahEntity: MyUmrahEntity, position: Int) {
+        trackingUmrahUtil.umrahClickUmrahSayaTracker(title, myUmrahEntity, position)
+    }
+
+    override fun onImpressionDanaImpian() {
+        trackingUmrahUtil.umrahImpressionDanaImpianTracker()
+    }
+
+    override fun onImpressionMyUmrah(headerTitle: String, myUmrahEntity: MyUmrahEntity, position: Int) {
+        trackingUmrahUtil.umrahImpressionUmrahSayaTracker(headerTitle, myUmrahEntity, position)
+    }
+
+    override fun onClickCategory(umrahCategories: UmrahCategories, position: Int) {
+        trackingUmrahUtil.umrahClickCategoryTracker(umrahCategories,position)
+    }
+
+    override fun onImpressionCategory(umrahCategories: UmrahCategories, position: Int) {
+        trackingUmrahUtil.umrahImpressionCategoryTracker(umrahCategories, position)
+    }
+
+    override fun onSearchProduct(period: String, location: String, price: String) {
+        trackingUmrahUtil.umrahSearchProductTracker(period,location,price)
+    }
+
+    override fun onClickFeaturedCategory(headerTitle: String, positionDC: Int, products: Products, position: Int) {
+        trackingUmrahUtil.umrahClickFeaturedCategoryTracker(headerTitle,positionDC,products,position)
+    }
+
+    override fun onImpressionFeaturedCategory(headerTitle: String, categories: UmrahCategoriesFeatured) {
+        trackingUmrahUtil.umrahImpressionFeaturedCategoryTracker(headerTitle,categories)
+    }
     companion object {
         fun getInstance(): UmrahHomepageFragment = UmrahHomepageFragment()
     }
