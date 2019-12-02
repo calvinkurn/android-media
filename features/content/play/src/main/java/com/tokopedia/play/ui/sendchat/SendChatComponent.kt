@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.sendchat
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -39,6 +40,6 @@ class SendChatComponent(
         }
     }
 
-    private fun initChatFormView(container: ViewGroup, bus: EventBusFactory): SendChatView =
+    private fun initChatFormView(container: ViewGroup, bus: EventBusFactory): UIView =
             SendChatView(container, this)
 }
