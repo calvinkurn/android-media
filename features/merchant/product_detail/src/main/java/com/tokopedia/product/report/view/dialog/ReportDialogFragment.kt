@@ -14,7 +14,6 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.*
 import android.widget.AdapterView
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
@@ -224,7 +223,7 @@ class ReportDialogFragment : DialogFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        productReportViewModel.clear()
+        productReportViewModel.flush()
     }
 
     override fun show(manager: FragmentManager, tag: String) {

@@ -475,7 +475,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     override fun onDestroy() {
         super.onDestroy()
         removeLiveDataObserver()
-        chatItemListViewModel.clear()
+        chatItemListViewModel.flush()
     }
 
     private fun removeLiveDataObserver() {
