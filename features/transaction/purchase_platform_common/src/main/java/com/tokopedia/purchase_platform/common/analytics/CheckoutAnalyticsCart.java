@@ -1004,4 +1004,35 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         mapEvent.put("productId", productId);
         sendGeneralEvent(mapEvent);
     }
+    public void eventClickBrowseButtonOnTickerProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_BROWSE_BUTTON_ON_TICKER_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventViewTickerProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.VIEW_ATC_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_TICKER_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventClickHapusButtonOnProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventClickTrashIconButtonOnProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
 }
