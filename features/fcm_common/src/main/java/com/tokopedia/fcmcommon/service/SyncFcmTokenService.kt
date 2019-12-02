@@ -7,6 +7,7 @@ import android.os.IBinder
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
+import timber.log.Timber
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -24,7 +25,12 @@ class SyncFcmTokenService: Service(), FirebaseMessagingManager.SyncListener {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        fcmManager.syncFcmToken(this)
+        try {
+            fcmManager.syncFcmToken(this)
+        } catch (e: Exception) {
+            Timber.e(e)
+            stopSelf()
+        }
         return START_NOT_STICKY
     }
 

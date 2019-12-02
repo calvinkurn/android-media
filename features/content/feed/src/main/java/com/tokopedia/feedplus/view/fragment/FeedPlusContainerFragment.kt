@@ -136,7 +136,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     override fun onDestroy() {
         viewModel.tabResp.removeObservers(this)
         viewModel.whitelistResp.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 
