@@ -1,6 +1,7 @@
 package com.tokopedia.otp.cotp.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -13,7 +14,9 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -84,6 +87,8 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         callReceiver.registerReceiver(activity, this)
     }
 
+
+
     private fun parseViewModel(bundle: Bundle): VerificationViewModel {
         viewModel = bundle.getParcelable(ARGS_PASS_DATA) as VerificationViewModel
         return viewModel
@@ -117,6 +122,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         setData()
         updateViewFromServer()
         requestOtp()
+        showKeyboard()
     }
 
     private fun updateViewFromServer() {
@@ -481,6 +487,11 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             textInputOtp?.setText(phoneNumber.substring(phoneHint.length))
             disableVerifyButton()
         }
+    }
+
+    private fun showKeyboard() {
+        val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.toggleSoftInputFromWindow(textInputOtp.windowToken, InputMethodManager.SHOW_FORCED, 0)
     }
 
     companion object {
