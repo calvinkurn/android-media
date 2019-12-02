@@ -13,7 +13,7 @@
         style="@style/TextSmallNormalBlack54"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/label_note_for_seller" />
+        android:text="@string/atc_variant_label_note_for_seller" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_note"

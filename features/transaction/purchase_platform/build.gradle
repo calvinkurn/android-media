@@ -89,9 +89,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-//    implementation project(rootProject.ext.libraries.linker) // Delete
     implementation project(rootProject.ext.libraries.remoteConfig)
-//    implementation project(rootProject.ext.libraries.track) // Delete?
     //-------------------------------------------------------------------//
 
 

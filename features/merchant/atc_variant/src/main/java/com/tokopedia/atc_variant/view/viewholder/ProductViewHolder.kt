@@ -55,7 +55,7 @@ class ProductViewHolder(val view: View, val listenerNormal: AddToCartVariantActi
                 itemView.tv_product_name.text = element.productName
                 itemView.tv_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false)
                 if (element.discountedPercentage > 0f) {
-                    itemView.tv_discount.text = String.format(getString(R.string.label_discount_percentage), element.discountedPercentage.toInt())
+                    itemView.tv_discount.text = String.format(getString(R.string.atc_variant_label_discount_percentage), element.discountedPercentage.toInt())
                     itemView.tv_discount.visible()
                 } else {
                     itemView.tv_discount.hide()
@@ -68,7 +68,7 @@ class ProductViewHolder(val view: View, val listenerNormal: AddToCartVariantActi
                 } else {
                     itemView.tv_original_price.hide()
                 }
-                if (element.maxOrderQuantity > 0) stockWording = itemView.context.getString(R.string.label_stock_available)
+                if (element.maxOrderQuantity > 0) stockWording = itemView.context.getString(R.string.atc_variant_label_stock_available)
             }
 
             listenerNormal.onBindProductUpdateQuantityViewModel(element, stockWording)

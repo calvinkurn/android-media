@@ -43,7 +43,7 @@
         android:textStyle="normal"
         android:visibility="gone"
         tools:visibility="visible"
-        android:text="@string/sizechart_guideline" />
+        android:text="@string/atc_variant_label_size_chart_guideline" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_variant_options"

@@ -27,7 +27,7 @@ class NoteViewHolder(val view: View, val listenerNormal: AddToCartVariantActionL
             }
             itemView.et_note.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(element.noteCharMax))
             itemView.tv_note_char_counter.text = String.format(
-                itemView.context.getString(R.string.format_note_counter),
+                itemView.context.getString(R.string.atc_variant_format_note_counter),
                 element.note.length, element.noteCharMax)
 
             itemView.et_note.addTextChangedListener(object : TextWatcher {
@@ -40,7 +40,7 @@ class NoteViewHolder(val view: View, val listenerNormal: AddToCartVariantActionL
                 override fun onTextChanged(note: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     element.note = note.toString()
                     itemView.tv_note_char_counter.text = String.format(
-                        itemView.context.getString(R.string.format_note_counter),
+                        itemView.context.getString(R.string.atc_variant_format_note_counter),
                         element.note.length, element.noteCharMax)
                     listenerNormal.onChangeNote(element)
                 }

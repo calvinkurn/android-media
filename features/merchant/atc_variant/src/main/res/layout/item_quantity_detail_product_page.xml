@@ -28,7 +28,7 @@
             style="@style/TextMidNormalBlack38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_quantity_total"
+            android:text="@string/atc_variant_label_quantity_total"
             android:textStyle="normal" />
 
         <LinearLayout

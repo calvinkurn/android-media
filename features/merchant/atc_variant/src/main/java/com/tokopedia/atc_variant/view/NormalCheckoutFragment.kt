@@ -410,13 +410,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 button_cart.gone()
             }
             button_buy_partial.text = if (action == ATC_ONLY) {
-                getString(R.string.add_to_cart)
+                getString(R.string.atc_variant_label_add_to_cart)
             } else if (action == TRADEIN_BUY) {
                 getString(R.string.tukar_tambah)
             } else if (productInfo.isPreorderActive) {
-                getString(R.string.label_button_preorder)
+                getString(R.string.atc_variant_label_button_preorder)
             } else {
-                getString(R.string.label_button_buy)
+                getString(R.string.atc_variant_label_button_buy)
             }
             if (hasError()) {
                 button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
@@ -476,11 +476,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         rl_bottom_action_container.gone()
         button_buy_full.visible()
         button_buy_full.text = if (!hasStock) {
-            getString(R.string.no_stock)
+            getString(R.string.atc_variant_label_no_stock)
         } else if (isPreorder) {
-            getString(R.string.label_button_preorder)
+            getString(R.string.atc_variant_label_button_preorder)
         } else {
-            getString(R.string.label_button_buy)
+            getString(R.string.atc_variant_label_button_buy)
         }
         button_buy_full.isClickable = enabled
         button_buy_full.isEnabled = enabled
