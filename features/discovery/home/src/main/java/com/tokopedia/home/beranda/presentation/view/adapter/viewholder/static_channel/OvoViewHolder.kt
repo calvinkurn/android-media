@@ -34,12 +34,10 @@ import com.tokopedia.gamification.util.HexValidator
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.SectionContentItem
-import com.tokopedia.home.beranda.helper.HomeImageHandler
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.util.ViewUtils
 import java.security.MessageDigest
-import kotlin.math.roundToInt
 
 /**
  * Created by Lukas on 2019-08-20

@@ -2,15 +2,12 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.view.View
 import android.widget.ImageView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.helper.HomeImageHandler
 import com.tokopedia.home.beranda.helper.glide.loadGif
-import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 
 /**

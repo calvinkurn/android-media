@@ -31,6 +31,18 @@ fun ImageView.loadImageFitCenter(url: String){
             .into(this)
 }
 
+
+fun ImageView.loadImageCrop(url: String){
+    Glide.with(context)
+            .load(url)
+            .centerCrop()
+            .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .placeholder(R.drawable.loading_page)
+            .thumbnail(0.1f)
+            .into(this)
+}
+
 fun ImageView.loadImageRounded(url: String){
     Glide.with(context)
             .load(url)
