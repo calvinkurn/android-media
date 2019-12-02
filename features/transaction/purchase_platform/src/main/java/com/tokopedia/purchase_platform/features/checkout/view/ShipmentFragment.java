@@ -112,6 +112,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionLi
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
+import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsMacroInsurance;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalytics;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
@@ -223,6 +224,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CodAnalytics mTrackerCod;
     @Inject
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
+    @Inject
+    CheckoutAnalyticsMacroInsurance mTrackerMacroInsurance;
     @Inject
     CornerAnalytics mTrackerCorner;
     @Inject
@@ -2077,6 +2080,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void doCheckout(int requestCode) {
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
+
+        if(hasInsurance) {
+            mTrackerMacroInsurance.eventClickPaymentMethodWithInsurance(shipmentAdapter.getInsuranceProductId(),
+                    shipmentAdapter.getInsuranceTitle());
+        }
+
         switch (requestCode) {
             case REQUEST_CODE_NORMAL_CHECKOUT:
                 shipmentPresenter.processSaveShipmentState();
@@ -3038,7 +3047,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void sendEventInsuranceImpressionForShipment(String title) {
-        mTrackerPurchaseProtection.eventImpressionOfInsuranceProductOnCheckout(title);
+        mTrackerMacroInsurance.eventImpressionOfInsuranceProductOnCheckout(title);
     }
 
     @Override

@@ -29,6 +29,8 @@ class NormalCheckoutTracking {
         const val CATEGORY_FIN_PDP_INSURANCE = "fin - product detail page"
         const val ACTION_FIN_PDP_CLICK_INFO = "click - ins - click info"
         const val ACTION_FIN_PDP_INSURANCR_STATE = "click - ins - tick include insurance to cart"
+        const val ACTION_FIN_PDP_INSURANCR_BUY = "ins - click ATC"
+
         const val LABEL_FIN_PDP_INSURANCE = "pdp page"
     }
 
@@ -50,6 +52,18 @@ class NormalCheckoutTracking {
                 LABEL_FIN_PDP_INSURANCE
         )
         mapEvent[KEY_PRODUCT_ID] = productId ?: ""
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun eventClickInsuranceBuy(title: String, productId: String) {
+        val eventLabel =    "pdp page - $title"
+        val mapEvent = TrackAppUtils.gtmData(
+                "",
+                CATEGORY_FIN_PDP_INSURANCE,
+                ACTION_FIN_PDP_INSURANCR_BUY,
+                eventLabel
+        )
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 

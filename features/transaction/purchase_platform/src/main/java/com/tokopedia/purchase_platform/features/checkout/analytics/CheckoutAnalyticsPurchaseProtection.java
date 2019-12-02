@@ -50,10 +50,4 @@ public class CheckoutAnalyticsPurchaseProtection extends TransactionAnalytics {
                 EventLabel.APPEAR);
     }
 
-    public void eventImpressionOfInsuranceProductOnCheckout(String title) {
-        sendEventCategoryActionLabel("",
-                EventCategory.FIN_INSURANCE_CHECKOUT,
-                EventAction.FIN_INSURANCE_CHECKOUT_IMPRESSION,
-                String.format("checkout - %s", title));
-    }
 }

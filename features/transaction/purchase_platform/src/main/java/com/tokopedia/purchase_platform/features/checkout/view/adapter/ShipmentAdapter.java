@@ -115,6 +115,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int lastServiceId;
     private String blackboxInfo;
     private boolean sendInsuranceImpressionEvent = false;
+    private String insuranceProductId = "";
+    private String insuranceTitle = "";
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -895,6 +897,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                     for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
                         for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
+
+                            insuranceTitle = insuranceCartDigitalProduct.getProductInfo().getTitle();
+                            insuranceProductId = insuranceCartDigitalProduct.getProductId();
                             if (!insuranceCartDigitalProduct.isProductLevel()) {
                                 totalItem += 1;
                                 macroInsurancLabel = insuranceCartDigitalProduct.getProductInfo().getTitle();
@@ -1276,6 +1281,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public PromoStackingData getPromoGlobalStackData() {
         return promoGlobalStackData;
+    }
+
+
+    public String getInsuranceProductId() {
+        return insuranceProductId;
+    }
+
+    public String getInsuranceTitle() {
+        return insuranceTitle;
     }
 
     public void addInsuranceDataList(InsuranceCartShops insuranceCartShops) {

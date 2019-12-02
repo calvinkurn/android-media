@@ -569,8 +569,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
                 if (!insuranceCartShopsArrayList.isEmpty()) {
                     deleteMacroInsurance(insuranceCartShopsArrayList, false);
+                } else if (cartAdapter.isInsuranceSelected()) {
+                    cartPageAnalytics.sendEventPurchaseInsurance(userSession.getUserId(),
+                            cartAdapter.getSelectedInsuranceProductId(),
+                            cartAdapter.getSelectedInsuranceProductTitle());
                 }
-
                 dPresenter.processToUpdateCartData(getSelectedCartDataList());
             } else {
                 showToastMessageRed(message);

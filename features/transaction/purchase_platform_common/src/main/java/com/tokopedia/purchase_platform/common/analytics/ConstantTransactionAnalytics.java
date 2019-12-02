@@ -335,6 +335,8 @@ public interface ConstantTransactionAnalytics {
         String FIN_INSURANCE_CART_DELETE = "ins - click delete from cart";
         String FIN_INSURANCE_CART_IMPRESSION = "ins - impression insurance box in cart ";
         String FIN_INSURANCE_STATE_CHANGE = "ins - click tick insurance for payment";
+        String FIN_INSURANCE_CLICK_BUY = "ins - click buy";
+        String FIN_INSURANCE_CHECKOUT = "ins - click pilih pembayaran";
         String FIN_INSURANCE_CHECKOUT_IMPRESSION = "ins - impression insurance box in checkout page";
     }
 

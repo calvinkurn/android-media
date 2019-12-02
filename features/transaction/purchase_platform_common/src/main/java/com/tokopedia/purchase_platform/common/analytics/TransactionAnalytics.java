@@ -42,4 +42,8 @@ public abstract class TransactionAnalytics {
     protected void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
     }
+
+    protected void sendGeneralEvent(Map<String, Object> eventData) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventData);
+    }
 }

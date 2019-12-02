@@ -865,6 +865,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         addToInsuranceCart(onFinish = { message: String?, cartId: String? ->
 
             hideLoadingDialog()
+            if (isInsuranceSelected) {
+                normalCheckoutTracking.eventClickInsuranceBuy(getInsuranceTitle(), productId)
+            }
             normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
                     selectedProductInfo?.basic?.price.toString(),
                     quantity,
@@ -901,6 +904,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             }
         })
 
+    }
+
+    private fun getInsuranceTitle(): String {
+        return insuranceViewModel.cartShopsList[0].shopItemsList[0].digitalProductList[0].productInfo.title
     }
 
     private fun isErrorInInsurance(): Boolean {

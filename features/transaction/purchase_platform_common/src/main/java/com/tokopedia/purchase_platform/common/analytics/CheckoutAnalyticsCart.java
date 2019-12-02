@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.common.analytics;
 import android.os.Bundle;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.Map;
 
@@ -984,7 +985,6 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         } else {
             eventLabel = String.format("cart page - untick %s", title);
         }
-
         sendEventCategoryActionLabel(
                 "",
                 EventCategory.FIN_INSURANCE_CART,
@@ -993,4 +993,15 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+    public void sendEventPurchaseInsurance(String userID, String productId, String title) {
+        Map<String, Object> mapEvent = TrackAppUtils.gtmData(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CLICK_BUY,
+                String.format("cart page - %s", title)
+        );
+        mapEvent.put("userId", userID);
+        mapEvent.put("productId", productId);
+        sendGeneralEvent(mapEvent);
+    }
 }
