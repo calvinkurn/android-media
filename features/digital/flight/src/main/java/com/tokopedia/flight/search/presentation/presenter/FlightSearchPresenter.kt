@@ -288,7 +288,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                                 }
                             }
                             view.showGetSearchListError(e)
-                            flightAnalytics.eventSearchView(passDataViewModel, false, "", "")
+                            flightAnalytics.eventSearchView(passDataViewModel, false)
                         }
                     }
 
@@ -321,7 +321,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                     }
 
                     override fun onNext(flightJourneyViewModelList: List<FlightJourneyViewModel>) {
-                        flightAnalytics.eventSearchView(view.getSearchPassData(), true, "", "")
+                        flightAnalytics.eventSearchView(view.getSearchPassData(), true)
                         if (!needRefresh || flightJourneyViewModelList.isNotEmpty()) {
                             view.clearAdapterData()
                         }

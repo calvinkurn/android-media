@@ -166,7 +166,7 @@ public class FlightAnalytics {
                 )));
     }
 
-    public void eventSearchView(FlightSearchPassDataViewModel passDataViewModel, boolean searchFound, String deeplink, String url) {
+    public void eventSearchView(FlightSearchPassDataViewModel passDataViewModel, boolean searchFound) {
         Map<String, Object> mapModel = new HashMap<>();
         mapModel.put(EVENT, VIEW_SEARCH_EVENT);
         mapModel.put(EVENT_CATEGORY, GENERIC_CATEGORY);
@@ -197,8 +197,14 @@ public class FlightAnalytics {
         mapModel.put("travelWithKids", passDataViewModel.getFlightPassengerViewModel().getChildren() > 0 ||
                 passDataViewModel.getFlightPassengerViewModel().getInfant() > 0 ? "true" : "false");
         mapModel.put("class", passDataViewModel.getFlightClass().getTitle());
-        mapModel.put("deeplinkUrl", deeplink);
-        mapModel.put("url", url);
+
+        if (passDataViewModel.getLinkUrl().contains("tokopedia://pesawat")) {
+            mapModel.put("deeplinkUrl", passDataViewModel.getLinkUrl());
+            mapModel.put("url", "");
+        } else {
+            mapModel.put("deeplinkUrl", "");
+            mapModel.put("url", passDataViewModel.getLinkUrl());
+        }
         mapModel.put("searchFound", searchFound);
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapModel);
     }
