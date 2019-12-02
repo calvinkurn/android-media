@@ -820,16 +820,13 @@ public class GTMAnalytics extends ContextAnalytics {
         final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
         final String afUniqueId = !TextUtils.isEmpty(getAfUniqueId(context)) ? getAfUniqueId(context) : "none";
 
-        UserSessionInterface userSessionInterface = new UserSession(context);
-        isLoggedIn = userSessionInterface.isLoggedIn();
-
         // V5 sendScreen
         Bundle bundle = new Bundle();
         bundle.putString("screenName", screenName);
         bundle.putString("appsflyerId", afUniqueId);
         bundle.putString("userId", sessionHandler.getLoginID());
         bundle.putString("clientId", getClientIDString());
-        bundle.putBoolean("isLoggedInStatus", isLoggedIn);
+        bundle.putBoolean("isLoggedInStatus", new UserSession(mContext).isLoggedIn());
 
         if (customDimension != null) {
             for (String key : customDimension.keySet()) {
