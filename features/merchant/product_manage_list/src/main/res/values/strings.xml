@@ -18,6 +18,8 @@
     <string name="product_manage_menu_set_cashback">Atur Cashback</string>
     <string name="product_manage_menu_set_promo_ads">Iklan TopAds</string>
     <string name="product_manage_menu_set_featured_product">Atur Produk Unggulan</string>
+    <string name="product_manage_menu_add_featured_product">Jadikan Produk Unggulan</string>
+    <string name="product_manage_menu_remove_featured_product">Hapus dari Produk Unggulan</string>
     <string name="product_manage_filter_menu_etalase_all">Semua Produk</string>
     <string name="product_manage_filter_menu_category_all">Semua Kategori</string>
     <string name="product_manage_cashback_title">Atur Cashback</string>
@@ -46,7 +48,8 @@
     <string name="product_manage_empty_list_title">Masukkan informasi produk yang benar di pencarian.</string>
     <string name="product_manage_change_btn">Ubah</string>
     <string name="product_manage_bulk_change_btn">Ubah sekaligus</string>
-
+    <string name="product_manage_success_add_featured_product">Berhasil tambah Produk Unggulan</string>
+    <string name="product_manage_success_remove_featured_product">Berhasil hapus Produk Unggulan</string>
 
     <string name="product_bs_etalase_title">Etalase produk</string>
     <string name="product_bs_stock_title">Stok produk</string>

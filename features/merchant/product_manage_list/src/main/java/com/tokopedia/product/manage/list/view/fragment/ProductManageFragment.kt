@@ -621,6 +621,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         renderCheckedView()
     }
 
+    override fun onSuccessChangeFeaturedProduct() {
+        showToasterNormal(getString(R.string.product_manage_success_add_featured_product))
+    }
+
+    override fun onFailedChangeFeaturedProduct(errorMessage: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private fun updateBulkLayout() {
         val containerFlags = containerChechBoxBulk.layoutParams as AppBarLayout.LayoutParams
         when {
@@ -749,14 +757,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             } else if (itemId == R.id.set_promo_ads_product_menu) {
                 onPromoTopAdsClicked(productManageViewModel)
             } else if (itemId == R.id.set_featured_product) {
-                onSetFeaturedProductClicked()
+                if (productManageViewModel.isFeatureProduct)
+                    onSetFeaturedProductClicked(productManageViewModel,ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)
+                else
+                    onSetFeaturedProductClicked(productManageViewModel,ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
             }
         }
     }
 
-    private fun onSetFeaturedProductClicked() {
-
-        //TODO: Finish ini
+    private fun onSetFeaturedProductClicked(productManageViewModel: ProductManageViewModel, setFeaturedType: Int) {
+        //TODO: Jalanin Use Case
+        productManagePresenter.setFeaturedProduct(productManageViewModel.productId, setFeaturedType)
 
     }
 

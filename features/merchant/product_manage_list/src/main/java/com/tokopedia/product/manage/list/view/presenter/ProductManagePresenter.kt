@@ -41,5 +41,5 @@ interface ProductManagePresenter : CustomerPresenter<ProductManageView> {
 
     fun failedBulkDataMapper(failData: List<ProductUpdateV3Response>, confirmationProductDataList: List<ConfirmationProductData>): MutableList<ConfirmationProductData>
 
-    fun setFeaturedProduct(productId: String, status: Int = 1)
+    fun setFeaturedProduct(productId: String, status: Int)
 }

@@ -256,23 +256,31 @@ class ProductManagePresenterImpl @Inject constructor(
     override fun setFeaturedProduct(productId: String, status: Int) {
 
         //loading animation
+        view.showLoadingProgress()
 
         editFeaturedProductUseCase.execute(EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status),
                 object : Subscriber<FeaturedProductResponseDomainModel>() {
-                    override fun onNext(featuredProduct: FeaturedProductResponseDomainModel?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    override fun onNext(featuredProductResponse: FeaturedProductResponseDomainModel?) {
+                        view.hideLoadingProgress()
+                        if (featuredProductResponse?.errorCode.equals("")) {
+                            //If not error, throw onSuccess method
+                            view.onSuccessChangeFeaturedProduct()
+
+                        } else {
+                            view.onFailedChangeFeaturedProduct(featuredProductResponse?.reason)
+                        }
                     }
 
                     override fun onCompleted() {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
                     }
 
                     override fun onError(e: Throwable?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        view.hideLoadingProgress()
+                        view.onFailedChangeFeaturedProduct(e?.message)
                     }
                 })
 
-        // TODO("not implemented") To change body of created functions use File | Settings | File Templates.
     }
 
     private fun getShopIdInteger(): Int {
