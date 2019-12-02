@@ -84,9 +84,9 @@
     <string name="product_label_maksimum_buy">Pemesanan Maksimum</string>
     <string name="product_label_add_maksimum_buy">+Tambah Pemesanan Maksimum</string>
     <string name="product_label_stock_count">Jumlah Stok</string>
-    <string name="product_label_stock_always_available">Stok Selalu Tersedia</string>
+    <string name="product_label_stock_active">Aktif</string>
     <string name="product_label_stock_limited">Stok Terbatas</string>
-    <string name="product_label_stock_empty">Stok Kosong</string>
+    <string name="product_label_stock_nonactive">Nonaktif</string>
     <string name="product_label_insurance">Asuransi Pengiriman</string>
     <string name="product_label_free_return">Free Returns</string>
     <string name="product_label_pre_order">Pre order</string>
