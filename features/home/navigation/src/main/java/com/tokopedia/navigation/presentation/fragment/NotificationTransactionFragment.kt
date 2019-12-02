@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,6 +97,13 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         viewModel.lastNotificationId.observe(this, Observer {
             viewModel.getTransactionNotification(it)
         })
+
+        swipeRefresh.setOnRefreshListener {
+            swipeRefresh.isRefreshing = true
+            Handler().postDelayed({
+                loadInitialData()
+            }, REFRESH_DELAY)
+        }
     }
 
     override fun onPause() {
@@ -133,6 +141,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun loadData(page: Int) {
+        swipeRefresh.isRefreshing = false
         renderList(buyerMenu(), false)
         viewModel.getInfoStatusNotification()
     }
@@ -253,9 +262,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
-    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
     override fun getRecyclerViewResourceId() = R.id.lstNotification
-    override fun hasInitialSwipeRefresh(): Boolean = true
     override fun onItemClicked(t: Visitable<*>?) = Unit
     override fun getScreenName() = SCREEN_NAME
 
@@ -269,6 +276,8 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         private const val PARAM_CTA_APPLINK = "cta applink"
         private const val PARAM_BUTTON_TEXT = "button text"
         private const val PARAM_TEMPLATE_KEY = "template key"
+
+        private const val REFRESH_DELAY = 1500L
     }
 
 }
