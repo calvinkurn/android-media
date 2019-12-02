@@ -93,6 +93,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("donation_checkbox_status")
     @Expose
     private boolean donationCheckboxStatus;
+    @SerializedName("addresses")
+    @Expose
+    private Addresses addresses;
 
     @Deprecated
     public AutoapplyV2 getAutoapplyV2() {
@@ -191,5 +194,9 @@ public class ShipmentAddressFormDataResponse {
 
     public boolean isDonationCheckboxStatus() {
         return donationCheckboxStatus;
+    }
+
+    public Addresses getAddresses() {
+        return addresses;
     }
 }

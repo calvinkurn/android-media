@@ -222,7 +222,7 @@ android {
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         resConfigs "en", "id"
         ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a"
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
         }
     }
 
@@ -281,6 +281,7 @@ dependencies {
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.explore)
     implementation project(rootProject.ext.features.interestPick)
+    implementation project(rootProject.ext.features.interestPickCommon)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.home)
@@ -298,6 +299,7 @@ dependencies {
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.tkpdtransaction)
     implementation project(rootProject.ext.features.tkpdseller)
+    implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.tkpddiscovery)
@@ -305,6 +307,8 @@ dependencies {
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.homeRecom)
+    implementation project(rootProject.ext.features.homeWishlist)
+    implementation project(rootProject.ext.features.smartRecycler)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.reputationCommon)

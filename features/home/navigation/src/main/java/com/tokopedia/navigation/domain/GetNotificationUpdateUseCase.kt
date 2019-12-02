@@ -35,8 +35,11 @@ class GetNotificationUpdateUseCase @Inject constructor(
     }
 
     companion object {
-        const val PARAM_PAGE = "page"
-        const val PARAM_LAST_ID = "lastNotifId"
+        private const val PARAM_PAGE = "page"
+        private const val PARAM_LAST_ID = "lastNotifId"
+        private const val PARAM_NOTIF_TYPE = "typeOfNotif"
+
+        private const val TYPE_NOTIF_UPDATE = 1
 
         fun getRequestParams(
                 page: Int,
@@ -45,6 +48,7 @@ class GetNotificationUpdateUseCase @Inject constructor(
         ): HashMap<String, Any> {
             variables[PARAM_PAGE] = page
             variables[PARAM_LAST_ID] = lastNotifId
+            variables[PARAM_NOTIF_TYPE] = TYPE_NOTIF_UPDATE
             return variables
         }
     }
