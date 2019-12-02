@@ -305,7 +305,7 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
     private fun sendClickBackButtonTrackingEvent() {
         when {
             isFirstPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonFirstPage()
-            isFinalPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonMiddlePage()
+            isFinalPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonLastPage()
             else -> powerMerchantTracking.eventPMCancellationClickBackButtonLastPage()
         }
     }
