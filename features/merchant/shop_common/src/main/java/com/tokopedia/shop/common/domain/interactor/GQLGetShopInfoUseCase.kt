@@ -24,13 +24,13 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
                 .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
 
-//        val gqlResponse = gqlUseCase.executeOnBackground()
-//        val error = gqlResponse.getError(ShopInfo.Response::class.java)
-//        if (error == null || error.isEmpty()) {
-//            return (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result.data.first()
-//        } else {
-            throw MessageErrorException("Error")
-//        }
+        val gqlResponse = gqlUseCase.executeOnBackground()
+        val error = gqlResponse.getError(ShopInfo.Response::class.java)
+        if (error == null || error.isEmpty()) {
+            return (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result.data.first()
+        } else {
+            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
+        }
     }
 
     companion object {
