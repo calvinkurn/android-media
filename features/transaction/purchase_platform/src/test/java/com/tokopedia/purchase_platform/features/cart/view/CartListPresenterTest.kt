@@ -20,6 +20,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -56,6 +57,7 @@ class CartListPresenterTest : Spek({
     val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
+    val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("get cart list") {
@@ -68,7 +70,7 @@ class CartListPresenterTest : Spek({
                     removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
                     clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
                     getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
             )
         }
         val emptyCartListData = CartListData()
@@ -169,7 +171,7 @@ class CartListPresenterTest : Spek({
                     removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
                     clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
                     getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
             )
         }
 
@@ -251,7 +253,7 @@ class CartListPresenterTest : Spek({
                     removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
                     clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
                     getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
             )
         }
 
@@ -380,7 +382,7 @@ class CartListPresenterTest : Spek({
                     removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
                     clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
                     getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
             )
         }
 
