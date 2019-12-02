@@ -43,8 +43,6 @@ query Notification($cursor: String) {
   }
 
   feed_last_feeds(cursor:$cursor){
-      error
-      content
       newFeeds
     }
 
