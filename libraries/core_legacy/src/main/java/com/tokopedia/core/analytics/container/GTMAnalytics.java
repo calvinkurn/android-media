@@ -65,7 +65,6 @@ public class GTMAnalytics extends ContextAnalytics {
     private final RemoteConfig remoteConfig;
     private String clientIdString = "";
     private Context mContext;
-    private boolean isLoggedIn;
 
     // have status that describe pending.
 
