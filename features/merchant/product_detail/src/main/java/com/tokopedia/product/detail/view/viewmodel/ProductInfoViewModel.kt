@@ -586,8 +586,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
 
-    override fun clear() {
-        super.clear()
+    override fun flush() {
+        super.flush()
         removeWishlistUseCase.unsubscribe()
         addWishListUseCase.unsubscribe()
         trackAffiliateUseCase.cancelJobs()
