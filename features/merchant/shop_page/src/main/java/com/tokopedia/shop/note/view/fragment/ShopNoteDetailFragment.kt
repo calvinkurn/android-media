@@ -10,11 +10,13 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.loading.LoadingStateView
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.common.constant.ShopParamConstant
+import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.util.TextHtmlUtils
-import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteDetail
+import com.tokopedia.shop.note.NoteUtil
 import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent
 import com.tokopedia.shop.note.di.module.ShopNoteModule
 import com.tokopedia.shop.note.view.listener.ShopNoteDetailView
@@ -26,17 +28,22 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
 
     @Inject lateinit var shopNoteDetailPresenter: ShopNoteDetailPresenter
     private var shopNoteId: String = ""
+    private var shopId: String = ""
 
     companion object {
         @JvmStatic
-        fun newInstance(noteId: String): Fragment = ShopNoteDetailFragment().apply {
-            arguments = Bundle().apply { putString(ShopParamConstant.EXTRA_SHOP_NOTE_ID, noteId) }
+        fun newInstance(shopId: String, noteId: String): Fragment = ShopNoteDetailFragment().apply {
+            arguments = Bundle().apply {
+                putString(ShopParamConstant.EXTRA_SHOP_ID, shopId)
+                putString(ShopParamConstant.EXTRA_SHOP_NOTE_ID, noteId)
+            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         shopNoteId = arguments?.getString(ShopParamConstant.EXTRA_SHOP_NOTE_ID) ?: ""
+        shopId = arguments?.getString(ShopParamConstant.EXTRA_SHOP_ID) ?: ""
         shopNoteDetailPresenter.attachView(this)
     }
 
@@ -57,7 +64,7 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
 
     private fun getShopDetail(){
         loadingStateView.setViewState(LoadingStateView.VIEW_LOADING)
-        shopNoteDetailPresenter.getShopNoteList(shopNoteId)
+        shopNoteDetailPresenter.getShopNoteList(shopId,shopNoteId)
     }
 
     override fun initInjector() {
@@ -77,11 +84,16 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
         buttonRetryError.setOnClickListener { getShopDetail() }
     }
 
-    override fun onSuccessGetShopNoteList(shopNoteDetail: ShopNoteDetail?) {
+    override fun onSuccessGetShopNoteList(shopNoteDetail: ShopNoteModel?) {
         shopNoteDetail?.run {
-            (activity as AppCompatActivity).supportActionBar?.title = notes.title
-            textViewDate.text = notes.lastUpdate
-            textViewDesc.text = TextHtmlUtils.getTextFromHtml(notes.content)
+            (activity as AppCompatActivity).supportActionBar?.title = shopNoteDetail.title
+            val latestUpdate  = shopNoteDetail.updateTimeUtc.toIntOrZero()
+            textViewDate.text = getString(
+                    R.string.shop_note_detail_date_format,
+                    NoteUtil.convertUnixToFormattedDate(latestUpdate),
+                    NoteUtil.convertUnixToFormattedTime(latestUpdate)
+            )
+            textViewDesc.text = TextHtmlUtils.getTextFromHtml(shopNoteDetail.content)
         }
         loadingStateView.setViewState(LoadingStateView.VIEW_CONTENT)
     }

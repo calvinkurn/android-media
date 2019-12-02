@@ -50,7 +50,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
     fun getPostDetail(){
         getPostDetailUseCase.execute(GetPostDetailUseCase
                 .createRequestParams(userSession.userId, "",
-                        GetDynamicFeedUseCase.SOURCE_DETAIL, postId),
+                        GetDynamicFeedUseCase.FeedV2Source.Detail, postId),
                 object : Subscriber<PostDetailViewModel>() {
                     override fun onNext(t: PostDetailViewModel?) {
                         if (t == null) {

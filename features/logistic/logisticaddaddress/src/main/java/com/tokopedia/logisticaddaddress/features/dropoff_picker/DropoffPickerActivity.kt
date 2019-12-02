@@ -36,11 +36,13 @@ import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNea
 import com.tokopedia.logisticaddaddress.utils.bitmapDescriptorFromVector
 import com.tokopedia.logisticaddaddress.utils.getDescription
 import com.tokopedia.logisticaddaddress.utils.getLatLng
+import com.tokopedia.logisticaddaddress.utils.rxPinPoint
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import rx.Subscriber
 import javax.inject.Inject
 
 const val REQUEST_CODE_LOCATION: Int = 1
@@ -175,6 +177,23 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 showStoreDetail(tag)
             }
             true
+        }
+        mMap?.let {
+            rxPinPoint(it).subscribe(object:Subscriber<Boolean> () {
+                override fun onNext(t: Boolean?) {
+                    val target = it.cameraPosition.target
+                    mLastLocation = getLatLng(target.latitude, target.longitude)
+                    mNearbyAdapter.setStateLoading()
+                    mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                    viewModel.getStores("${target.latitude},${target.longitude}")
+                }
+
+                override fun onCompleted() {
+                }
+
+                override fun onError(e: Throwable?) {
+                }
+            })
         }
     }
 
@@ -348,9 +367,6 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private fun drawStoreLocations(data: List<DropoffNearbyModel>) {
         mMarkerList.clear()
         mMap?.clear()
-        mMap?.addMarker(MarkerOptions()
-                .position(mLastLocation)
-                .icon(bitmapDescriptorFromVector(this, R.drawable.ic_pin_map)))
         for (datum in data) {
             val marker = mMap?.addMarker(MarkerOptions()
                     .position(getLatLng(datum.latitude, datum.longitude))

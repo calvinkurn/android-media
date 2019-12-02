@@ -21,6 +21,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BUY = "clickBuy";
         String CLICK_CHECKOUT = "clickCheckout";
         String VIEW_ATC = "viewATC";
+        String VIEW_ATC_IRIS = "viewATCIris";
         String REMOVE_FROM_CART = "removeFromCart";
         String CHECKOUT = "checkout";
         String ADD_TO_CART = "addToCart";
@@ -47,10 +48,12 @@ public interface ConstantTransactionAnalytics {
         String VIEW_COURIER_IRIS = "viewCourierIris";
         String VIEW_TRADEIN = "viewTradeIn";
         String CLICK_TRADEIN = "clickTradeIn";
+        String CART = "Cart";
     }
 
     interface EventCategory {
         String CART = "cart";
+        String EMPTY_CART = "empty cart";
         String COURIER_SELECTION = "courier selection";
         String ADD_TO_CART = "add to cart";
         String CART_CHANGE_ADDRESS = "cart change address";
@@ -293,6 +296,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_PROMO_LOGISTIC_TICKER = "view promo logistic ticker";
         String CLICK_X_ON_PROMO_STACKING_LOGISTIC = "click x on promo stacking logistic";
         String VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT = "view information and warning ticker in checkout";
+        String VIEW_POP_UP_PRICE_INCREASE = "view pop up price increase";
 
         //Promo not eligible bottomsheet
         String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";
@@ -304,8 +308,10 @@ public interface ConstantTransactionAnalytics {
         //WIDGET_RECOMMENDATION
         String IMPRESSION_ON_PRODUCT_RECOMMENDATION = "impression on product recommendation";
         String CLICK_ADD_TO_CART = "click add to cart";
-        String CLICK_ADD_WISHLIST_ON_PRIMARY_PRODUCT = "click add wishlist on primary product";
-        String CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT = "click remove wishlist on primary product";
+        String CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION = "click add wishlist on product recommendation";
+        String CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART = "click add wishlist on product recommendation - empty_cart";
+        String CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION = "click remove wishlist on product recommendation";
+        String CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART = "click remove wishlist on product recommendation - empty_cart";
 
         //Retry Pickup
         String VIEW_TUNGGU_CARI_DRIVER = "view tunggu cari driver";
@@ -316,6 +322,22 @@ public interface ConstantTransactionAnalytics {
         String VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT = "view help pop up after error in checkout";
         String CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT = "click report on help pop up in checkout";
         String CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT = "click close on help pop up in checkout";
+
+        //Wishlist
+        String ADD_WISHLIST_AVAILABLE_SECTION = "add wishlist - available section - login";
+        String REMOVE_WISHLIST_AVAILABLE_SECTION = "remove wishlist - available section - login";
+        String ADD_WISHLIST_UNAVAILABLE_SECTION = "add wishlist - unavailable section - login";
+        String REMOVE_WISHLIST_UNAVAILABLE_SECTION = "remove wishlist - unavailable section - login";
+        String ADD_WISHLIST_LAST_SEEN = "add wishlist - last seen - login";
+        String REMOVE_WISHLIST_LAST_SEEN = "remove wishlist - last seen - login";
+        String ADD_WISHLIST_WISHLIST = "add wishlist - wishlist - login";
+        String REMOVE_WISHLIST_WISHLIST = "remove wishlist - wishlist - login";
+
+        //Tobacco
+        String CLICK_BROWSE_BUTTON_ON_TICKER_PRODUCT_CONTAIN_TOBACCO = "click browse button on ticker product contain tobacco";
+        String VIEW_TICKER_PRODUCT_CONTAIN_TOBACCO = "view ticker product contain tobacco";
+        String CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO = "click hapus button on product contain tobacco";
+        String CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO = "click trash icon button on product contain tobacco";
     }
 
     interface EventLabel {

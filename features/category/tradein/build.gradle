@@ -22,7 +22,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.basemvvm)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.libraries.fingerprint)
@@ -63,6 +62,8 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
 
+    implementation project(rootProject.ext.features.commonTradein)
+    implementation rootProject.ext.miscDependencies.rootbeer
 }
 
 project.ext {

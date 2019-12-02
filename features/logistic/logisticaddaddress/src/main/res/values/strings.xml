@@ -160,6 +160,9 @@
     <string name="tv_noresult_title">Lokasi tidak ketemu</string>
     <string name="tv_noresult_desc">Cek kata pencarian kamu atau cari lewat peta</string>
     <string name="title_bottom_sheet_autocomplete">Lihat titik Ambil terdekat</string>
+    <string name="point_center">Point Center</string>
+    <string name="no_pinpoint">Belum Pinpoint</string>
+    <string name="havent_pinpoint">Sudah Pinpoint</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>
