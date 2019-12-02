@@ -3,6 +3,7 @@ package com.tokopedia.similarsearch.originalproduct
 import android.view.View
 import androidx.annotation.DrawableRes
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.similarsearch.R
@@ -116,5 +117,13 @@ internal class SimilarSearchOriginalProductView(
         fragmentView.buttonAddToCart?.setOnClickListener {
             similarSearchOriginalProductViewListener.onButtonAddToCartClicked()
         }
+    }
+
+    fun expand() {
+        fragmentView.cardViewOriginalProductSimilarSearch?.visible()
+    }
+
+    fun collapse() {
+        fragmentView.cardViewOriginalProductSimilarSearch?.gone()
     }
 }

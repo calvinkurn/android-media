@@ -4,38 +4,27 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+<!--    <com.google.android.material.appbar.AppBarLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll">
+<!--        -->
 
-            <androidx.appcompat.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize">
+<!--    </com.google.android.material.appbar.AppBarLayout>-->
 
-                <include
-                    android:id="@+id/cardViewOriginalProductSimilarSearch"
-                    android:visibility="visible"
-                    layout="@layout/similar_search_original_product_layout" />
-
-            </androidx.appcompat.widget.Toolbar>
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
+    <include
+        android:id="@+id/cardViewOriginalProductSimilarSearch"
+        app:layout_behavior=".originalproduct.OriginalProductLayoutBehavior"
+        app:layout_anchor="@+id/recyclerViewSimilarSearch"
+        app:layout_anchorGravity="top"
+        layout="@layout/similar_search_original_product_layout" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSimilarSearch"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:descendantFocusability="blocksDescendants"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:descendantFocusability="blocksDescendants"/>
 
 <!--    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh-->
 <!--        android:id="@+id/swipeToRefreshSimilarSearch"-->

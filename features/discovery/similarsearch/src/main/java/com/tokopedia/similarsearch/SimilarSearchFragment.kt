@@ -37,6 +37,7 @@ import com.tokopedia.similarsearch.utils.asObjectDataLayer
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
+import kotlin.math.abs
 
 internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemListener {
 
@@ -82,11 +83,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun initViews() {
         initRecyclerView()
         disableSwipeRefreshLayout()
-
-
-//        appBarLayoutSimilarSearch?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { p0, p1 ->
-//            Toast.makeText(activity, (p1 / p0.totalScrollRange).toString(), Toast.LENGTH_SHORT).show()
-//        })
     }
 
     private fun initRecyclerView() {
