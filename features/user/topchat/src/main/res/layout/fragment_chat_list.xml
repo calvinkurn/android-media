@@ -34,10 +34,10 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_24"
         android:visibility="gone"
-        app:fabCustomSize="@dimen/dp_56"
         app:backgroundTint="@color/Yellow_Y400"
+        app:fabCustomSize="@dimen/dp_56"
         app:layout_anchorGravity="bottom|center"
-        app:maxImageSize="31dp"
+        app:maxImageSize="33dp"
         app:srcCompat="@drawable/ic_broadcast_white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
