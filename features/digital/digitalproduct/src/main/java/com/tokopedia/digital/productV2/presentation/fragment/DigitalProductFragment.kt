@@ -107,7 +107,7 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
 //                    trackSearchResultCategories(it.data)
                 }
                 is Fail -> {
-//                    showGetListError(it.throwable)
+                    showGetListError(it.throwable)
                 }
             }
         })
@@ -125,7 +125,7 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
 //                    trackSearchResultCategories(it.data)
                 }
                 is Fail -> {
-//                    showGetListError(it.throwable)
+                    showGetListError(it.throwable)
                 }
             }
         })
@@ -177,6 +177,12 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
         }
     }
 
+    private fun showGetListError(e: Throwable) {
+        operator_cluster_select.hide()
+        operator_select.hide()
+        adapter.showGetListError(e)
+    }
+
     override fun loadData() {
         getMenuDetail(menuId)
         getOperatorCluster(menuId)
@@ -199,7 +205,7 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
     }
 
     override fun showError(t: Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        showGetListError(t)
     }
 
     override fun onFinishInput(input: String, position: Int) {
