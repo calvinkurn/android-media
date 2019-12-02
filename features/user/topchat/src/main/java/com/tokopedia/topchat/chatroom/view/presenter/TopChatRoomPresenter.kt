@@ -23,6 +23,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_M
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
+import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.ChatUrl
@@ -41,10 +42,9 @@ import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -100,7 +100,7 @@ class TopChatRoomPresenter @Inject constructor(
     var thisMessageId: String = ""
     private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
 
-    private var attachmentsPreview: ArrayList<PreviewViewModel> = arrayListOf()
+    private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
 
     init {
         mSubscription = CompositeSubscription()
@@ -271,7 +271,6 @@ class TopChatRoomPresenter @Inject constructor(
     private fun readMessage() {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
     }
-
 
 
     override fun startCompressImages(it: ImageUploadViewModel) {
@@ -597,7 +596,7 @@ class TopChatRoomPresenter @Inject constructor(
         val productFsIsActive = view.getBooleanArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IS_ACTIVE, savedInstanceState)
         val productFsImageUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IMAGE_URL, savedInstanceState)
 
-        val productPreviewViewModel = ProductPreviewViewModel(
+        val productPreview = ProductPreview(
                 productId,
                 productImageUrl,
                 productName,
@@ -609,6 +608,7 @@ class TopChatRoomPresenter @Inject constructor(
                 productFsIsActive,
                 productFsImageUrl
         )
+        val productPreviewViewModel = SendableProductPreview(productPreview)
 
         attachmentsPreview.add(productPreviewViewModel)
 

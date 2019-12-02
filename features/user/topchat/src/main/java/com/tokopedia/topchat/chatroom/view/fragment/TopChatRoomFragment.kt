@@ -63,7 +63,7 @@ import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -845,7 +845,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().focusOnReply()
     }
 
-    override fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>) {
+    override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {
         getViewState().showAttachmentPreview(attachmentPreview)
     }
 
@@ -861,7 +861,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return opponentName
     }
 
-    override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {
+    override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
         if (attachment is InvoicePreviewViewModel) {
             analytics.invoiceAttachmentSent(attachment)
         }

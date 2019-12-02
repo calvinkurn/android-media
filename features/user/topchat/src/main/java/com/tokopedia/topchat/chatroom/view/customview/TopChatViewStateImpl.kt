@@ -31,7 +31,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.Attachment
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
@@ -413,7 +413,7 @@ class TopChatViewStateImpl(
         scrollDownWhenInBottom()
     }
 
-    override fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>) {
+    override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {
         attachmentPreviewContainer.show()
         attachmentPreviewAdapter.updateAttachments(attachmentPreview)
     }
