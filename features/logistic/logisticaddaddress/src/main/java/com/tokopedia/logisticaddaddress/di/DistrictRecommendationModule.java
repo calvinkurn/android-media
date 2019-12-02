@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.logisticaddaddress.data.mapper.DistrictRecommendationEntityMapper;
+import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationEntityMapper;
 import com.tokopedia.logisticaddaddress.data.repository.DistrictRecommendationRepository;
 import com.tokopedia.logisticaddaddress.data.repository.ShopAddressRepository;
 import com.tokopedia.logisticaddaddress.data.service.KeroApi;

@@ -3,14 +3,15 @@ package com.tokopedia.flight.cancellation.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
@@ -281,13 +282,11 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Override
     public void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         flightCancellationPresenter.checkPassenger(passengerViewModel, position);
-        notifyChanges();
     }
 
     @Override
     public void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         flightCancellationPresenter.uncheckPassenger(passengerViewModel, position);
-        notifyChanges();
     }
 
     @Override

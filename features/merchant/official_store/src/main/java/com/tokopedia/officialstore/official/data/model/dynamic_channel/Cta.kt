@@ -2,13 +2,14 @@ package com.tokopedia.officialstore.official.data.model.dynamic_channel
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Cta(
-        val type: String,
-        val mode: String,
-        val text: String,
-        @SerializedName("coupon_code") val couponCode: String
+        @Expose @SerializedName("type") val type: String,
+        @Expose @SerializedName("mode") val mode: String,
+        @Expose @SerializedName("text") val text: String,
+        @Expose @SerializedName("coupon_code") val couponCode: String
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(

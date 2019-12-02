@@ -7,14 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
-import com.tokopedia.shop.favourite.view.model.ShopFavouriteViewModel;
+import com.tokopedia.shop.favourite.view.model.ShopFollowerUiModel;
 
 /**
  * @author by alvarisi on 12/12/17.
  */
 
-public class ShopFavouriteViewHolder extends AbstractViewHolder<ShopFavouriteViewModel> {
+public class ShopFavouriteViewHolder extends AbstractViewHolder<ShopFollowerUiModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_favourite_user;
@@ -32,8 +31,8 @@ public class ShopFavouriteViewHolder extends AbstractViewHolder<ShopFavouriteVie
     }
 
     @Override
-    public void bind(ShopFavouriteViewModel shopFavouriteViewModel) {
-        userLabelView.setTitle(shopFavouriteViewModel.getName());
-        ImageHandler.loadImageCircle2(userLabelView.getImageView().getContext(), userLabelView.getImageView(), shopFavouriteViewModel.getImageUrl());
+    public void bind(ShopFollowerUiModel shopFollowerUiModel) {
+        userLabelView.setTitle(shopFollowerUiModel.getName());
+        ImageHandler.loadImageCircle2(userLabelView.getImageView().getContext(), userLabelView.getImageView(), shopFollowerUiModel.getImageUrl());
     }
 }

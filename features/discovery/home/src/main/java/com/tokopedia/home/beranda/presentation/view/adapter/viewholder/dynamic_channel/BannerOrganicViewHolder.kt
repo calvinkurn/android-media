@@ -162,7 +162,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                 )
         )
 
-        itemView.dc_banner_card.setOnClickListener {
+        itemView.setOnClickListener {
             HomePageTracking.eventClickBannerChannelMix(itemView.context, channel)
             homeCategoryListener.onSectionItemClicked(channel.banner.applink)
         }

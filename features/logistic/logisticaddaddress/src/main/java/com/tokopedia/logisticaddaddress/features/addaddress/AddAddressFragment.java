@@ -60,18 +60,16 @@ import javax.inject.Inject;
 
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
-import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_ADDRESS;
-import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_INSTANCE_TYPE;
-import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
-import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
-import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_DEFAULT;
-import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
-import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
-import static com.tokopedia.logisticaddaddress.AddressConstants.IS_DISTRICT_RECOMMENDATION;
-import static com.tokopedia.logisticaddaddress.AddressConstants.IS_EDIT;
-import static com.tokopedia.logisticaddaddress.AddressConstants.KERO_TOKEN;
-import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.EDIT_PARAM;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_INSTANCE_TYPE;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_DEFAULT;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.KERO_TOKEN;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.REQUEST_CODE;
 
 /**
  * Created by nisie on 9/6/16.
@@ -134,7 +132,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     PerformanceMonitoring performanceMonitoring;
 
     private int instanceType;
-    private CompositeSubscription compositeSubscription;
 
     public static AddAddressFragment newInstance(Bundle extras) {
         Bundle bundle = new Bundle(extras);
@@ -194,7 +191,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        compositeSubscription.unsubscribe();
         mPresenter.detachView();
     }
 
@@ -258,7 +254,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        compositeSubscription = new CompositeSubscription();
         BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
         DaggerAddressComponent.builder()
                 .baseAppComponent(appComponent)
@@ -274,11 +269,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void stopPerformaceMonitoring() {
         performanceMonitoring.stopTrace();
-    }
-
-    @Override
-    public CompositeSubscription getCompositeSubscription() {
-        return compositeSubscription;
     }
 
     @Override

@@ -939,7 +939,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setItems(List<Items> items, boolean isTradeIn) {
         productInformationTitle.setVisibility(View.VISIBLE);
         itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn));
+        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status));
     }
 
     @Override
@@ -963,7 +963,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void onRefresh(View view) {
-        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
+        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT), null);
     }
 
     private void setUpScrollChangeListener() {

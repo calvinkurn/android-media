@@ -9,17 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.common.data.IS_COUPON_ACTIVE
-import com.tokopedia.promocheckout.common.data.PROMO_CODE
+import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics.Companion.promoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
-import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment
+import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplaceContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
@@ -39,8 +39,14 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
-    override fun onClickRedeemCoupon(catalog_id: Int, slug: String?) {
-        childFragmentManager.beginTransaction().add(R.id.list_parent_container, CheckoutCatalogDetailFragment.newInstance(slug = slug!!, catalog_id = catalog_id, promoCode = promoCode, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo!!)).addToBackStack(null).commit()
+    override fun onClickRedeemCoupon(catalogId: Int?, slug: String?, title: String, creativeName: String, position: Int) {
+        childFragmentManager.beginTransaction().add(R.id.list_parent_container, CheckoutCatalogDetailFragment.newInstance(slug = slug, catalogId = catalogId, promoCode = promoCode, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo)).addToBackStack(CHECKOUT_CATALOG_DETAIL_FRAGMENT).commit()
+        promoCheckoutAnalytics.clickCatalog(slug, title, catalogId, creativeName, position)
+    }
+
+    override fun onClickItemLastSeen(promoHistoryItem: PromoHistoryItem) {
+        textInputCoupon.setText(promoHistoryItem.promoCode)
+        promoHistoryItem.promoCode?.let { promoCheckoutListMarketplacePresenter.checkPromoStackingCode(it, isOneClickShipment, promo) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +58,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         promo = arguments?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM)
         promoCheckoutListMarketplacePresenter.attachView(this)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -68,7 +75,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
         super.onItemClicked(promoCheckoutListModel)
-        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
+        activity?.startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
                 activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo), REQUEST_CODE_DETAIL_PROMO)
     }
 
@@ -134,6 +141,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_FIRST_STEP_PARAM = "CHECK_PROMO_FIRST_STEP_PARAM"
+        val CHECKOUT_CATALOG_DETAIL_FRAGMENT = "CHECKOUT_CATALOG_DETAIL_FRAGMENT"
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
                            promo: Promo): PromoCheckoutListMarketplaceFragment {
@@ -150,6 +158,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onResume() {
+
         if (mIsRestoredfromBackStack) {
             isLoadingInitialData = true
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
@@ -161,9 +170,10 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     override fun loadData(page: Int) {
         if (isCouponActive) {
             pageNo = page
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
-            promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
         }
+        promoCheckoutListPresenter.getListLastSeen(serviceId, resources)
+        promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
     }
 
     override fun onStop() {

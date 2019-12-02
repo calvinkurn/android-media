@@ -51,6 +51,6 @@ class BannerAdapter(private val itemViewModels: List<BannerItemViewModel>,
     interface BannerItemListener {
         fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }
 }

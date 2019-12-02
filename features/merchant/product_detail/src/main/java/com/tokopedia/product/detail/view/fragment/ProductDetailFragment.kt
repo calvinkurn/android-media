@@ -4,9 +4,6 @@ import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -18,13 +15,6 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.content.ContextCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.*
@@ -33,7 +23,17 @@ import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -41,6 +41,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -54,10 +55,11 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
+import com.tokopedia.gallery.customview.BottomSheetImageReviewSlider
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -77,18 +79,18 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
+import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_ORI
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_READY
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
+import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.view.activity.CourierActivity
-import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
 import com.tokopedia.product.detail.view.fragment.partialview.*
@@ -99,11 +101,11 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
-import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
+import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Companion.KEY_ADDED_PRODUCT_DATA_MODEL
-import com.tokopedia.product.detail.view.widget.PictureScrollingView
-import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
-import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
+import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet.Companion.KEY_PDP_FINANCING_DATA
+import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet.Companion.KEY_PDP_IS_OFFICIAL
+import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet.Companion.KEY_PDP_PRODUCT_PRICE
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
@@ -129,9 +131,9 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
-import com.tokopedia.tradein.model.TradeInParams
-import com.tokopedia.tradein.view.customview.TradeInTextView
-import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
+import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.customviews.TradeInTextView
+import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.dialog.UnifyDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
@@ -159,8 +161,10 @@ import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import javax.inject.Inject
+import kotlin.math.roundToLong
 
-class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
+class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener, BottomSheetImageReviewSlider.Callback {
+
     private var productId: String? = null
     private var warehouseId: String? = null
     private var productKey: String? = null
@@ -171,6 +175,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var isFromDeeplink: Boolean = false
     private var isAffiliate: Boolean = false
     private var isLeasing: Boolean = false
+    private var deeplinkUrl: String = ""
 
     lateinit var headerView: PartialHeaderView
     lateinit var productStatsView: PartialProductStatisticView
@@ -238,6 +243,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
 
+    private var isWishlisted = false
+
     override val isUserSessionActive: Boolean
         get() = if (!::productInfoViewModel.isInitialized) false else productInfoViewModel.isUserSessionActive()
 
@@ -253,6 +260,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
         const val REQUEST_CODE_REPORT = 570
         const val REQUEST_CODE_SHOP_INFO = 998
+        const val REQUEST_CODE_IMAGE_PREVIEW = 999
 
         const val CART_MAX_COUNT = 99
         const val CART_ALPHA_ANIMATION_FROM = 1f
@@ -263,6 +271,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         const val CART_ANIMATION_DURATION = 700L
 
         private const val STICKY_SHOW_DELAY: Long = 3 * 60 * 1000
+
+        const val EXTRA_IMAGE_URL_LIST = "EXTRA_IMAGE_URL_LIST"
+        const val EXTRA_DEFAULT_POSITION = "EXTRA_DEFAULT_POSITION"
 
         const val SAVED_NOTE = "saved_note"
         const val SAVED_QUANTITY = "saved_quantity"
@@ -284,6 +295,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         private const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
         private const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
         private const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
+        private const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
 
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
@@ -296,7 +308,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         isAffiliate: Boolean = false,
                         trackerAttribution: String? = null,
                         trackerListName: String? = null,
-                        affiliateString: String? = null) =
+                        affiliateString: String? = null,
+                        deeplinkUrl: String? = null) =
                 ProductDetailFragment().also {
                     it.arguments = Bundle().apply {
                         productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
@@ -306,6 +319,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         trackerAttribution?.let { attribution -> putString(ARG_TRACKER_ATTRIBUTION, attribution) }
                         trackerListName?.let { listName -> putString(ARG_TRACKER_LIST_NAME, listName) }
                         affiliateString?.let { affiliateString -> putString(ARG_AFFILIATE_STRING, affiliateString) }
+                        deeplinkUrl?.let { deeplinkUrl -> putString(ARG_DEEPLINK_URL, deeplinkUrl) }
                         putBoolean(ARG_FROM_DEEPLINK, isFromDeeplink)
                         putBoolean(ARG_FROM_AFFILIATE, isAffiliate)
                     }
@@ -336,6 +350,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             affiliateString = it.getString(ARG_AFFILIATE_STRING)
             isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
+            deeplinkUrl = it.getString(ARG_DEEPLINK_URL, "")
         }
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -464,7 +479,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         initView()
         tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
         tv_trade_in_promo.setOnClickListener {
-            productId?.let{
+            productId?.let {
                 productDetailTracking.eventClickTradeInRibbon(it)
             }
             scrollToTradeInWidget()
@@ -793,11 +808,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             attributeInfoView = PartialAttributeInfoView.build(base_attribute)
 
         if (!::imageReviewViewView.isInitialized)
-            imageReviewViewView = PartialImageReviewView.build(base_image_review, this::onImageReviewClick)
+            imageReviewViewView = PartialImageReviewView.build(base_image_review, this::onSeeAllReviewClick, this::onImageReviewClick, this::onReviewClicked)
 
         if (!::mostHelpfulReviewView.isInitialized) {
             mostHelpfulReviewView = PartialMostHelpfulReviewView.build(base_view_most_helpful_review)
-            mostHelpfulReviewView.onReviewClicked = this::onReviewClicked
             mostHelpfulReviewView.onImageReviewClicked = this::onImagehelpfulReviewClick
         }
 
@@ -826,14 +840,22 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     }
 
-    private fun onImageReviewClick(imageReview: ImageReviewItem, isSeeAll: Boolean = false) {
-        val productId = productInfo?.basic?.id ?: return
-        if (isSeeAll) {
-            productDetailTracking.eventClickReviewOnSeeAllImage(productId)
-        } else {
-            productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview.reviewId)
-        }
+    private fun onImageReviewClick(imageReview: List<ImageReviewItem>, position: Int) {
         context?.let {
+            val productId = productInfo?.basic?.id ?: return
+            productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview[position].reviewId)
+            val listOfImage: List<String> = imageReview.map {
+                it.imageUrlLarge ?: ""
+            }
+
+            ImageReviewGalleryActivity.moveTo(context, ArrayList(listOfImage), position)
+        }
+    }
+
+    private fun onSeeAllReviewClick() {
+        context?.let {
+            val productId = productInfo?.basic?.id ?: return
+            productDetailTracking.eventClickReviewOnSeeAllImage(productId)
             RouteManager.route(it, ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY, productId.toString())
         }
     }
@@ -1195,6 +1217,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 if (resultCode == Activity.RESULT_OK)
                     showToastSuccessReport()
             }
+            REQUEST_CODE_IMAGE_PREVIEW -> {
+                if (data != null) {
+                    isWishlisted = data.getBooleanExtra(ImagePreviewPdpActivity.RESPONSE_CODE_IMAGE_RPEVIEW, false)
+                    updateWishlist(isWishlisted)
+                }
+            }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
         }
@@ -1227,6 +1255,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 Toaster.showError(it, result.message, BaseToaster.LENGTH_SHORT)
             }
         }
+    }
+
+    private fun openFtInstallmentBottomSheet(installmentData: FinancingDataResponse) {
+
+        productDetailTracking.eventClickPDPInstallmentSeeMore(productId)
+
+        val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
+        val bundleData = Bundle()
+        bundleData.putParcelable(KEY_PDP_FINANCING_DATA, installmentData)
+        bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price ?: 0f)
+        bundleData.putBoolean(KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
+        pdpInstallmentBottomSheet.arguments = bundleData
+        pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
     }
 
     private fun showAddToCartDoneBottomSheet(successMessage: String) {
@@ -1288,7 +1329,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun renderProductInfoP2Login(p2Login: ProductInfoP2Login) {
         shopInfo?.let { updateWishlist(it, p2Login.isWishlisted) }
         p2Login.pdpAffiliate?.let { renderAffiliate(it) }
-
+        isWishlisted = p2Login.isWishlisted
         actionButtonView.renderData(p2Login.isExpressCheckoutType)
     }
 
@@ -1435,9 +1476,54 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         } else {
             merchantVoucherListWidget.gone()
         }
-        productInfoP2.minInstallment?.let {
+
+        productInfoP2.productFinancingRecommendationData.let {
+            if (it.response.data.partnerCode.isNotBlank()) {
+                iv_ovo_installment_icon.show()
+                iv_arrow_next.show()
+
+                ImageHandler.loadImage(context, iv_ovo_installment_icon, it.response.data.partnerIcon, R.drawable.ic_loading_image)
+
+                iv_ovo_installment_icon.setOnClickListener {
+                    openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
+                }
+
+                iv_arrow_next.setOnClickListener {
+                    openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
+                }
+
+                label_installment.visible()
+                label_installment.text = String.format(getString(R.string.new_installment_template),
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                (if (shopInfo?.goldOS?.isOfficial == 1) it.response.data.osMonthlyPrice
+                                else it.response.data.monthlyPrice).roundToLong(), false))
+
+                label_desc_installment.text = getString(R.string.pdp_installment_desc)
+                label_desc_installment.visible()
+
+                label_desc_installment.setOnClickListener {
+                    activity?.let {
+                        openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
+                    }
+                }
+
+                if (label_min_wholesale.isVisible) {
+                    wholesale_divider.visible()
+                } else {
+                    wholesale_divider.gone()
+                }
+                base_view_wholesale.visible()
+
+            } else {
+                base_view_wholesale.hide()
+                iv_ovo_installment_icon.hide()
+                iv_arrow_next.hide()
+            }
+        }
+
+        /*productInfoP2.minInstallment?.let {
             label_installment.visible()
-            label_desc_installment.text = getString(R.string.installment_template, it.interest.numberFormatted(),
+            label_installment.text = getString(R.string.new_installment_template,
                     (if (shopInfo?.goldOS?.isOfficial == 1) it.osMonthlyPrice else it.monthlyPrice).getCurrencyFormatted())
             label_desc_installment.visible()
             label_desc_installment.setOnClickListener {
@@ -1460,15 +1546,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 wholesale_divider.gone()
             }
             base_view_wholesale.visible()
-        }
+        }*/
+
         productShopView.renderShopFeature(productInfoP2.shopFeature)
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
         productStatsView.renderRating(productInfoP2.rating)
         attributeInfoView.renderWishlistCount(productInfoP2.wishlistCount.count)
         partialVariantAndRateEstView.renderPriorityOrder(productInfoP2.shopCommitment)
-        imageReviewViewView.renderData(productInfoP2.imageReviews)
-        mostHelpfulReviewView.renderData(productInfoP2.helpfulReviews, productInfo?.stats?.countReview
-                ?: 0)
+        imageReviewViewView.renderData(productInfoP2)
+        mostHelpfulReviewView.renderData(productInfoP2.helpfulReviews)
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
                 productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
@@ -1482,6 +1568,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
 
     }
+
 
     private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
         context?.let {
@@ -1507,6 +1594,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unchecked))
                 fab_detail.show()
             }
+            isWishlisted = wishlisted
         }
     }
 
@@ -1614,7 +1702,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         else
             tradeInParams.isPreorder = false
         tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
-        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
+        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false, activity?.application)
         tv_trade_in.setOnClickListener {
             goToNormalCheckout(TRADEIN_BUY)
             tradeInParams?.let {
@@ -1748,6 +1836,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onSuccessRemoveWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         productInfoViewModel.p2Login.value?.isWishlisted = false
+        isWishlisted = false
         updateWishlist(false)
         //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", false)
@@ -1769,6 +1858,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onSuccessAddWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         productInfoViewModel.p2Login.value?.isWishlisted = true
+        isWishlisted = true
         updateWishlist(true)
         productDetailTracking.eventBranchAddToWishlist(productInfo, (UserSession(activity)).userId)
         //TODO clear cache
@@ -1785,6 +1875,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
         productInfo?.run {
+            productDetailTracking.eventDiscussionClickedIris(this, deeplinkUrl, (shopInfo?.goldOS?.isOfficial
+                    ?: 0) > 0, shopInfo?.shopCore?.name ?: "")
             productDetailTracking.sendMoEngageClickDiskusi(this,
                     (shopInfo?.goldOS?.isOfficial ?: 0) > 0,
                     shopInfo?.shopCore?.name ?: "")
@@ -1793,6 +1885,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun onReviewClicked() {
         productInfo?.run {
+            productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
             productDetailTracking.eventReviewClicked()
             productDetailTracking.sendMoEngageClickReview(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")
@@ -1830,10 +1923,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
      * go to preview image activity to show larger image of Product
      */
     private fun onPictureProductClicked(position: Int) {
-        startActivity(ImagePreviewActivity.getCallingIntent(context!!,
-                getImageURIPaths(),
-                null,
-                position))
+        activity?.let {
+            val intent = ImagePreviewPdpActivity.createIntent(it, productId
+                    ?: "", isWishlisted, getImageURIPaths(), null, position)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW)
+        }
     }
 
     private fun getImageURIPaths(): ArrayList<String> {
@@ -2157,8 +2251,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun trackProductView(isElligible: Boolean) {
         if (productInfo != null && shopInfo != null) {
+
             productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                    isElligible, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
+                    isElligible, tradeInParams.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment, deeplinkUrl)
         } else if (shopInfo == null) {
             delegateTradeInTracking = true
         }
@@ -2209,14 +2304,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun updateStickyContent() {
         productInfoViewModel.getStickyLoginContent(
-            onSuccess = {
-                this.tickerDetail = it
-                updateStickyState()
-                updateActionBarBackground()
-            },
-            onError = {
-                stickyLoginView.hide()
-            }
+                onSuccess = {
+                    this.tickerDetail = it
+                    updateStickyState()
+                    updateActionBarBackground()
+                },
+                onError = {
+                    stickyLoginView.hide()
+                }
         )
     }
 
@@ -2261,5 +2356,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             val drawable = context?.let { _context -> ContextCompat.getDrawable(_context, R.drawable.bg_shadow_top) }
             drawable?.let { actionButtonView.setBackground(it) }
         }
+    }
+
+    override val isAllowLoadMore: Boolean
+        get() = false
+
+    override fun onRequestLoadMore(page: Int) {
+    }
+
+    override fun onButtonBackPressed() {
     }
 }

@@ -5,10 +5,9 @@ import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplay
 import com.tokopedia.product.manage.item.catalog.domain.FetchCatalogDataUseCase
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.catalog.view.listener.ProductEditCategoryView
-import com.tokopedia.product.manage.item.category.domain.GetCategoryRecommUseCase
-import com.tokopedia.product.manage.item.main.base.data.mapper.CategoryRecommDomainToViewMapper
+import com.tokopedia.product.manage.item.category.domain.GetCategoryRecommendationUseCase
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catalogdata.CatalogDataModel
-import com.tokopedia.product.manage.item.main.base.domain.model.CategoryRecommDomainModel
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.categoryrecommendationdata.Category
 import rx.Subscriber
 import rx.subjects.BehaviorSubject
 import rx.android.schedulers.AndroidSchedulers
@@ -16,7 +15,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ProductEditCategoryPresenter
-    @Inject constructor(private val getCategoryRecommUseCase: GetCategoryRecommUseCase,
+    @Inject constructor(private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
                         private val fetchCategoryDisplayUseCase : FetchCategoryDisplayUseCase,
                         private val fetchCatalogDataUseCase: FetchCatalogDataUseCase):
         BaseDaggerPresenter<ProductEditCategoryView>(){
@@ -31,13 +30,12 @@ class ProductEditCategoryPresenter
                 fetchCatalogData(productName, categoryId, 0, 1)
             }!!
 
-    fun getCategoryRecommendation(productName: String, limitRow: Int = 3){
-        getCategoryRecommUseCase.execute(GetCategoryRecommUseCase.createRequestParams(productName, limitRow),
-                object : Subscriber<CategoryRecommDomainModel>() {
-                    override fun onNext(categoryRecommDomainModel: CategoryRecommDomainModel?) {
-                        view?.onSuccessLoadRecommendationCategory(
-                                CategoryRecommDomainToViewMapper.mapDomainView(categoryRecommDomainModel)
-                                        .productCategoryPrediction)
+    fun getCategoryRecommendation(productName: String){
+        getCategoryRecommendationUseCase.execute(GetCategoryRecommendationUseCase.createRequestParams(productName),
+                object : Subscriber<List<Category>>() {
+
+                    override fun onNext(productCategoryList: List<Category>?) {
+                        if (productCategoryList != null) view?.onSuccessLoadRecommendationCategory(productCategoryList)
                     }
 
                     override fun onCompleted() {}
@@ -101,7 +99,7 @@ class ProductEditCategoryPresenter
 
     override fun detachView() {
         super.detachView()
-        getCategoryRecommUseCase.unsubscribe()
+        getCategoryRecommendationUseCase.unsubscribe()
         fetchCategoryDisplayUseCase.unsubscribe()
         subscriptionProductName.unsubscribe()
     }

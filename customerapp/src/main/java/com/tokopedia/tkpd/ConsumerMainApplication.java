@@ -36,6 +36,7 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
+import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
@@ -45,6 +46,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
+import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -80,8 +82,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         CharacterPerMinuteInterface {
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
+    private final String NOTIFICATION_CHANNEL_NAME_BTS_ONE = "Promo BTS 1";
+    private final String NOTIFICATION_CHANNEL_NAME_BTS_TWO = "Promo BTS 2";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
+    private final String NOTIFICATION_CHANNEL_ID_BTS_ONE = "custom_sound_bts_one";
+    private final String NOTIFICATION_CHANNEL_ID_BTS_TWO = "custom_sound_bts_two";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
+    private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
+    private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
 
     CharacterPerMinuteActivityLifecycleCallbacks callback;
 
@@ -127,9 +135,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().initializeAllApis();
 
         PersistentCacheManager.init(this);
+        initReact();
 
         super.onCreate();
-        initReact();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
@@ -165,6 +173,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         initializeAbTestVariant();
 
+        GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
+        registerActivityLifecycleCallbacks(subscriber);
     }
 
     @Override
@@ -175,12 +185,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.deleteInstance();
         TokopediaUrl.Companion.deleteInstance();
         unregisterActivityLifecycleCallbacks(callback);
+        CoreLegacyDbFlowDatabase.reset();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         unregisterActivityLifecycleCallbacks(callback);
+        CoreLegacyDbFlowDatabase.reset();
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -196,6 +208,28 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                     R.raw.tokopedia_endtune), att);
             NotificationManager notificationManager = (NotificationManager) getSystemService(
                     NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(mChannel);
+
+            // Create the NotificationChannel
+            mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_BTS_ONE,
+                    NOTIFICATION_CHANNEL_NAME_BTS_ONE, NotificationManager.IMPORTANCE_DEFAULT);
+            mChannel.setDescription(NOTIFICATION_CHANNEL_DESC_BTS_ONE);
+            att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
+                    R.raw.tokopedia_bts_one), att);
+            notificationManager.createNotificationChannel(mChannel);
+
+            // Create the NotificationChannel
+            mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_BTS_TWO,
+                    NOTIFICATION_CHANNEL_NAME_BTS_TWO, NotificationManager.IMPORTANCE_DEFAULT);
+            mChannel.setDescription(NOTIFICATION_CHANNEL_DESC_BTS_TWO);
+            att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
+                    R.raw.tokopedia_bts_two), att);
             notificationManager.createNotificationChannel(mChannel);
         }
     }

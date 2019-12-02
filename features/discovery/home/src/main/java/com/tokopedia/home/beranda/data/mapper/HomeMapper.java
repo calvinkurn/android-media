@@ -2,13 +2,13 @@ package com.tokopedia.home.beranda.data.mapper;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.HomeData;
+import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.Spotlight;
 import com.tokopedia.home.beranda.domain.model.SpotlightItem;
 import com.tokopedia.home.beranda.domain.model.Ticker;
@@ -18,6 +18,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel;
@@ -34,6 +36,7 @@ import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,8 +75,8 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
         }
 
         if (homeData.getHomeFlag() != null) {
-            if (mappingOvoTokpoint(homeData.getHomeFlag().getHasTokopoints(), homeData.isCache()) != null) {
-                list.add(mappingOvoTokpoint(homeData.getHomeFlag().getHasTokopoints(), homeData.isCache()));
+            if (mappingOvoTokpoint(homeData.getHomeFlag().getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS), homeData.isCache()) != null) {
+                list.add(mappingOvoTokpoint(homeData.getHomeFlag().getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS), homeData.isCache()));
             }
         }
 
@@ -84,7 +87,8 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                 && !homeData.getDynamicHomeIcon().getDynamicIcon().isEmpty()) {
             list.add(mappingDynamicIcon(
                     homeData.getDynamicHomeIcon().getDynamicIcon(),
-                    homeData.isCache()
+                    homeData.isCache(),
+                    homeData.getHomeFlag().getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)
             ));
         }
 
@@ -117,6 +121,8 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                             channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                         } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC)
                                 || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL)) {
+                            channel.setPosition(position);
+                        } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_REVIEW)){
                             channel.setPosition(position);
                         }
                     }
@@ -204,8 +210,7 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                                     homeData.isCache()));
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size(),channel);
-
-                            HomePageTracking.eventEnhanceImpressionBanner(context, channel);
+                            if (!homeData.isCache()) HomePageTracking.eventEnhanceImpressionBanner(context, channel);
                             break;
                         case DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF:
                             list.add(mappingDynamicChannel(
@@ -215,7 +220,18 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                                     false,
                                     homeData.isCache()
                             ));
-                            HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
+                            if (!homeData.isCache()) HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
+                            break;
+                        case DynamicHomeChannel.Channels.LAYOUT_REVIEW:
+                            if (!homeData.isCache()) {
+                                list.add(mappingToReviewViewModel(channel));
+                            }
+                            break;
+                        case DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER:
+                            if (!homeData.isCache()) {
+                                HomeVisitable playBanner = mappingPlayChannel(channel, new HashMap<>(), homeData.isCache());
+                                if (!list.contains(playBanner)) list.add(playBanner);
+                            }
                             break;
                     }
                 }
@@ -223,6 +239,11 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
         }
 
         return new HomeViewModel(homeData.getHomeFlag(), list);
+    }
+
+    private HomeVisitable mappingToReviewViewModel(DynamicHomeChannel.Channels channel) {
+        ReviewViewModel reviewViewModel = new ReviewViewModel();
+        return reviewViewModel;
     }
 
     private HomeVisitable mappingDigitalWidget(List<Object> trackingDataForCombination, boolean isCache) {
@@ -289,8 +310,10 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
     }
 
     private HomeVisitable mappingDynamicIcon(List<DynamicHomeIcon.DynamicIcon> iconList,
-                                                boolean isCache) {
+                                                boolean isCache,
+                                             boolean dynamicIconWrap) {
         DynamicIconSectionViewModel viewModelDynamicIcon = new DynamicIconSectionViewModel();
+        viewModelDynamicIcon.setDynamicIconWrap(dynamicIconWrap);
         for (DynamicHomeIcon.DynamicIcon icon : iconList) {
             viewModelDynamicIcon.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl(), icon.getBu_identifier()));
         }
@@ -351,5 +374,16 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
             viewModel.setTrackingCombined(false);
         }
         return viewModel;
+    }
+
+    private HomeVisitable mappingPlayChannel(DynamicHomeChannel.Channels channel,
+                                             Map<String, Object> trackingData,
+                                             boolean isCache) {
+        PlayCardViewModel playCardViewModel = new PlayCardViewModel();
+        if (!isCache) {
+            playCardViewModel.setChannel(channel);
+            playCardViewModel.setTrackingData(trackingData);
+        }
+        return playCardViewModel;
     }
 }

@@ -32,7 +32,7 @@ public interface SearchConstant {
 
     interface Wishlist {
         String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
-        String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
+        String WISHLIST_STATUS_IS_WISHLIST = "isWishlist";
         String PRODUCT_WISHLIST_URL = "product_wishlist_url";
         String PRODUCT_WISHLIST_URL_USE_CASE = "product_wishlist_url_use_case";
     }
@@ -133,5 +133,9 @@ public interface SearchConstant {
     interface FreeOngkir {
         String FREE_ONGKIR_LOCAL_CACHE_NAME = "SEARCH_PRODUCT_FREE_ONGKIR";
         String FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN = "FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN";
+    }
+
+    interface SimilarSearch {
+        String QUERY = "SIMILAR_SEARCH_QUERY";
     }
 }

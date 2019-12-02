@@ -80,12 +80,14 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+    implementation "com.tokopedia.unify.compositions:datepicker:0.0.1@aar"
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 
 project.ext {
     artifactId = 'transaction'
     groupId = 'com.tokopedia.transaction'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "tkpdtransaction-release"
 }
 

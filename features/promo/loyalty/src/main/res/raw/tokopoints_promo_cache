@@ -1,0 +1,5 @@
+mutation SavePromoHistory($promoCode: String!) {
+  SavePromoHistory(promoCode: $promoCode) {
+    Success
+  }
+}

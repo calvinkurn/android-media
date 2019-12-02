@@ -1,9 +1,9 @@
 package com.tokopedia.purchase_platform.features.checkout.view;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -14,13 +14,11 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.PromoRequest;
-import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
@@ -62,15 +60,16 @@ import com.tokopedia.purchase_platform.common.data.model.request.checkout.Checko
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.EgoldData;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.ProductDataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.PromoRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.RatesFeature;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.ShopProductCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.TokopediaCornerData;
 import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartGqlResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
+import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
-import com.tokopedia.purchase_platform.features.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.saveshipmentstate.ShipmentStateDropshipData;
@@ -166,7 +165,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private Token token;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
-    private List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestDataList;
     private List<DataChangeAddressRequest> changeAddressRequestList;
     private CheckoutData checkoutData;
     private boolean partialCheckout;
@@ -289,13 +287,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList) {
         this.dataCheckoutRequestList = dataCheckoutRequestList;
-    }
-
-    @Override
-    public void setPromoCodeCartShipmentRequestData(
-            List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestData
-    ) {
-        this.promoCodeCartShipmentRequestDataList = promoCodeCartShipmentRequestData;
     }
 
     @Override
@@ -551,6 +542,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                                boolean isTradeIn, boolean isSkipUpdateOnboardingState,
+                                               boolean isReloadAfterPriceChangeHinger,
                                                @Nullable String cornerId, String deviceId, String leasingId) {
 
         if (isReloadData) {
@@ -580,7 +572,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    isReloadData, true))
+                                    isReloadData, isReloadAfterPriceChangeHinger, true))
             );
         } else {
             requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
@@ -590,7 +582,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    isReloadData, false))
+                                    isReloadData, isReloadAfterPriceChangeHinger, false))
             );
         }
     }
@@ -606,6 +598,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     new TickerAnnouncementHolderData(String.valueOf(cartShipmentAddressFormData.getTickerData().getId()),
                             cartShipmentAddressFormData.getTickerData().getMessage())
             );
+            analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
         }
 
         RecipientAddressModel newAddress = getView().getShipmentDataConverter()
@@ -628,11 +621,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setCartPromoSuggestionHolderData(cartShipmentAddressFormData.getCartPromoSuggestionHolderData());
         }
 
-        setShipmentCartItemModelList(getView()
-                .getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData));
+        setShipmentCartItemModelList(getView().getShipmentDataConverter().getShipmentItems(
+                cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null)
+        );
 
         this.codData = cartShipmentAddressFormData.getCod();
-        if (this.codData != null && this.codData.isCod()) {
+        if ((this.codData != null && this.codData.isCod()) || cartShipmentAddressFormData.isMultipleDisable()) {
             recipientAddressModel.setDisableMultipleAddress(true);
         }
 
@@ -746,7 +740,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    true, true))
+                                    true, false, true))
 
             );
         } else {
@@ -757,7 +751,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    true, false))
+                                    true, false, false))
 
             );
         }
@@ -772,7 +766,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId) {
+    public void processCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance,
+                                boolean isOneClickShipment, boolean isTradeIn, boolean isTradeInDropOff,
+                                String deviceId, String leasingId) {
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance, checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
@@ -783,7 +779,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             RequestParams requestParams = RequestParams.create();
             if (isTradeIn) {
                 Map<String, String> params = new HashMap<>();
-                params.put(CheckoutUseCase.PARAM_IS_TRADEIN, String.valueOf(isTradeIn));
+                params.put(CheckoutUseCase.PARAM_IS_TRADEIN, String.valueOf(true));
+                params.put(CheckoutUseCase.PARAM_IS_TRADE_IN_DROP_OFF, String.valueOf(isTradeInDropOff));
                 params.put(CheckoutUseCase.PARAM_DEVICE_ID, deviceId);
                 requestParams.putObject(CheckoutUseCase.PARAM_TRADE_IN_DATA, params);
             }
@@ -898,8 +895,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         checkPromoStackingCodeMapper.setFinal(true);
                         ResponseGetPromoStackUiModel responseGetPromoStack = checkPromoStackingCodeMapper.call(graphqlResponse);
                         if (!TextUtils.isEmpty(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage())) {
+                            tickerAnnouncementHolderData.setId(String.valueOf(responseGetPromoStack.getData().getTickerInfoUiModel().getStatusCode()));
                             tickerAnnouncementHolderData.setMessage(responseGetPromoStack.getData().getTickerInfoUiModel().getMessage());
                             getView().updateTickerAnnouncementMessage();
+                            analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
                         }
                         if (responseGetPromoStack.getStatus().equalsIgnoreCase("ERROR")) {
                             String message = "";
@@ -967,6 +966,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else if (checkoutData.getErrorReporter() != null && checkoutData.getErrorReporter().getEligible()) {
                     getView().renderCheckoutCartErrorReporter(checkoutData);
+                } else if (checkoutData.getPriceValidationData() != null && checkoutData.getPriceValidationData().isUpdated() &&
+                        checkoutData.getPriceValidationData().getMessage() != null) {
+                    getView().renderCheckoutPriceUpdated(checkoutData.getPriceValidationData());
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
                     if (checkoutData.getErrorMessage() != null && !checkoutData.getErrorMessage().isEmpty()) {
@@ -1351,47 +1353,55 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private void setSaveShipmentStateData(ShipmentCartItemModel shipmentCartItemModel, List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
         // todo: refactor to converter class
-        List<ShipmentStateProductData> shipmentStateProductDataList = new ArrayList<>();
-        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-            ShipmentStateProductData.Builder builder = new ShipmentStateProductData.Builder()
-                    .productId(cartItemModel.getProductId());
-            if (cartItemModel.isPreOrder()) {
-                ShipmentStateProductPreorder.Builder shipmentStateProductPreorder =
-                        new ShipmentStateProductPreorder.Builder()
-                                .durationDay(cartItemModel.getPreOrderDurationDay());
-                builder.productPreorder(shipmentStateProductPreorder.build());
-            }
-            shipmentStateProductDataList.add(builder.build());
+        CourierItemData courierData = null;
+        if (getView().isTradeInByDropOff()) {
+            courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff();
+        } else {
+            courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
         }
 
-        ShipmentStateDropshipData dropshipDataBuilder = new ShipmentStateDropshipData.Builder()
-                .name(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName())
-                .telpNo(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone())
-                .build();
+        if (courierData != null) {
+            List<ShipmentStateProductData> shipmentStateProductDataList = new ArrayList<>();
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                ShipmentStateProductData.Builder builder = new ShipmentStateProductData.Builder()
+                        .productId(cartItemModel.getProductId());
+                if (cartItemModel.isPreOrder()) {
+                    ShipmentStateProductPreorder.Builder shipmentStateProductPreorder =
+                            new ShipmentStateProductPreorder.Builder()
+                                    .durationDay(cartItemModel.getPreOrderDurationDay());
+                    builder.productPreorder(shipmentStateProductPreorder.build());
+                }
+                shipmentStateProductDataList.add(builder.build());
+            }
 
-        CourierItemData courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
-        RatesFeature ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData);
+            ShipmentStateDropshipData dropshipDataBuilder = new ShipmentStateDropshipData.Builder()
+                    .name(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName())
+                    .telpNo(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone())
+                    .build();
 
-        ShipmentStateShippingInfoData shippingInfoDataBuilder = new ShipmentStateShippingInfoData.Builder()
-                .shippingId(courierData.getShipperId())
-                .spId(courierData.getShipperProductId())
-                .ratesFeature(ratesFeature)
-                .build();
+            RatesFeature ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData);
 
-        ShipmentStateShopProductData.Builder builder = new ShipmentStateShopProductData.Builder()
-                .shopId(shipmentCartItemModel.getShopId())
-                .finsurance((shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance() != null &&
-                        shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) ? 1 : 0)
-                .isDropship((shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
-                        shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) ? 1 : 0)
-                .isOrderPriority((shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority() != null &&
-                        shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority()) ? 1 : 0)
-                .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
-                .warehouseId(shipmentCartItemModel.getFulfillmentId())
-                .dropshipData(dropshipDataBuilder)
-                .shippingInfoData(shippingInfoDataBuilder)
-                .productDataList(shipmentStateProductDataList);
-        shipmentStateShopProductDataList.add(builder.build());
+            ShipmentStateShippingInfoData shippingInfoDataBuilder = new ShipmentStateShippingInfoData.Builder()
+                    .shippingId(courierData.getShipperId())
+                    .spId(courierData.getShipperProductId())
+                    .ratesFeature(ratesFeature)
+                    .build();
+
+            ShipmentStateShopProductData.Builder builder = new ShipmentStateShopProductData.Builder()
+                    .shopId(shipmentCartItemModel.getShopId())
+                    .finsurance((shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) ? 1 : 0)
+                    .isDropship((shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) ? 1 : 0)
+                    .isOrderPriority((shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().isOrderPriority()) ? 1 : 0)
+                    .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
+                    .warehouseId(shipmentCartItemModel.getFulfillmentId())
+                    .dropshipData(dropshipDataBuilder)
+                    .shippingInfoData(shippingInfoDataBuilder)
+                    .productDataList(shipmentStateProductDataList);
+            shipmentStateShopProductDataList.add(builder.build());
+        }
     }
 
     @Override
@@ -1648,10 +1658,36 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void changeShippingAddress(final RecipientAddressModel recipientAddressModel,
-                                      boolean isOneClickShipment) {
+    public void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
+                                      boolean isOneClickShipment,
+                                      boolean isTradeInDropOff,
+                                      boolean isHandleFallback) {
         getView().showLoading();
-        String changeAddressRequestJsonString = new Gson().toJson(changeAddressRequestList);
+        List<DataChangeAddressRequest> dataChangeAddressRequests = new ArrayList<>();
+        if (shipmentCartItemModelList != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                    DataChangeAddressRequest dataChangeAddressRequest = new DataChangeAddressRequest();
+                    dataChangeAddressRequest.setQuantity(cartItemModel.getQuantity());
+                    dataChangeAddressRequest.setProductId(cartItemModel.getProductId());
+                    dataChangeAddressRequest.setNotes(cartItemModel.getNoteToSeller());
+                    dataChangeAddressRequest.setCartId(cartItemModel.getCartId());
+                    if (isTradeInDropOff) {
+                        dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
+                                newRecipientAddressModel.getLocationDataModel().getAddrId() : 0
+                        );
+                    } else {
+                        dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
+                                Integer.parseInt(newRecipientAddressModel.getId()) :
+                                Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId())
+                        );
+                    }
+                    dataChangeAddressRequests.add(dataChangeAddressRequest);
+                }
+            }
+        }
+
+        String changeAddressRequestJsonString = new Gson().toJson(dataChangeAddressRequests);
 
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("carts", changeAddressRequestJsonString);
@@ -1677,30 +1713,42 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onError(Throwable e) {
-                                getView().hideLoading();
-                                e.printStackTrace();
-                                getView().showToastError(
-                                        ErrorHandler.getErrorMessage(getView().getActivityContext(), e)
-                                );
+                                if (getView() != null) {
+                                    getView().hideLoading();
+                                    e.printStackTrace();
+                                    getView().showToastError(
+                                            ErrorHandler.getErrorMessage(getView().getActivityContext(), e)
+                                    );
+                                    if (isHandleFallback) {
+                                        getView().renderChangeAddressFailed();
+                                    }
+                                }
                             }
 
                             @Override
                             public void onNext(SetShippingAddressData setShippingAddressData) {
-
-                                getView().hideLoading();
-                                if (setShippingAddressData.isSuccess()) {
-                                    getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
-                                    getView().renderChangeAddressSuccess(recipientAddressModel);
-                                } else {
-                                    if (setShippingAddressData.getMessages() != null &&
-                                            setShippingAddressData.getMessages().size() > 0) {
-                                        StringBuilder stringBuilder = new StringBuilder();
-                                        for (String errorMessage : setShippingAddressData.getMessages()) {
-                                            stringBuilder.append(errorMessage).append(" ");
-                                        }
-                                        getView().showToastError(stringBuilder.toString());
+                                if (getView() != null) {
+                                    getView().hideLoading();
+                                    if (setShippingAddressData.isSuccess()) {
+                                        getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
+                                        getView().renderChangeAddressSuccess();
                                     } else {
-                                        getView().showToastError(getView().getActivityContext().getString(R.string.label_change_address_failed));
+                                        if (setShippingAddressData.getMessages() != null &&
+                                                setShippingAddressData.getMessages().size() > 0) {
+                                            StringBuilder stringBuilder = new StringBuilder();
+                                            for (String errorMessage : setShippingAddressData.getMessages()) {
+                                                stringBuilder.append(errorMessage).append(" ");
+                                            }
+                                            getView().showToastError(stringBuilder.toString());
+                                            if (isHandleFallback) {
+                                                getView().renderChangeAddressFailed();
+                                            }
+                                        } else {
+                                            getView().showToastError(getView().getActivityContext().getString(R.string.label_change_address_failed));
+                                            if (isHandleFallback) {
+                                                getView().renderChangeAddressFailed();
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -1714,9 +1762,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 ShipmentCartItemModel shipmentCartItemModel,
                                                 List<ShopShipment> shopShipmentList,
                                                 boolean isInitialLoad, ArrayList<Product> products,
-                                                String cartString) {
-        String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
-        ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString);
+                                                String cartString, boolean isTradeInDropOff,
+                                                RecipientAddressModel recipientAddressModel) {
+        String query = "";
+        if (isTradeInDropOff) {
+            query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_trade_in_query);
+        } else {
+            query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
+        }
+        ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString, isTradeInDropOff, recipientAddressModel);
 
         int counter = codData == null ? -1 : codData.getCounterCod();
         boolean cornerId = false;
@@ -1724,23 +1778,24 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             cornerId = getRecipientAddressModel().isCornerAddress();
         }
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
-        getCourierRecommendationUseCase.execute(query, counter, cornerId, shipmentCartItemModel.getIsLeasingProduct(), pslCode, spId, 0, shopShipmentList, new GetCourierRecommendationSubscriber(
-                getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
-                shipmentCartItemModel, shopShipmentList, isInitialLoad), shippingParam
+        getCourierRecommendationUseCase.execute(query, counter, cornerId, shipmentCartItemModel.getIsLeasingProduct(),
+                pslCode, spId, 0, shopShipmentList, shippingParam,
+                new GetCourierRecommendationSubscriber(getView(), this, shipperId, spId, itemPosition,
+                        shippingCourierConverter, shipmentCartItemModel, shopShipmentList, isInitialLoad, isTradeInDropOff)
         );
     }
 
     @NonNull
-    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData, List<Product> products, String cartString) {
+    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData,
+                                           List<Product> products,
+                                           String cartString,
+                                           boolean isTradeInDropOff,
+                                           RecipientAddressModel recipientAddressModel) {
         ShippingParam shippingParam = new ShippingParam();
         shippingParam.setOriginDistrictId(shipmentDetailData.getShipmentCartData().getOriginDistrictId());
         shippingParam.setOriginPostalCode(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
         shippingParam.setOriginLatitude(shipmentDetailData.getShipmentCartData().getOriginLatitude());
         shippingParam.setOriginLongitude(shipmentDetailData.getShipmentCartData().getOriginLongitude());
-        shippingParam.setDestinationDistrictId(shipmentDetailData.getShipmentCartData().getDestinationDistrictId());
-        shippingParam.setDestinationPostalCode(shipmentDetailData.getShipmentCartData().getDestinationPostalCode());
-        shippingParam.setDestinationLatitude(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
-        shippingParam.setDestinationLongitude(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
         shippingParam.setWeightInKilograms(shipmentDetailData.getShipmentCartData().getWeight() / 1000);
         shippingParam.setShopId(shipmentDetailData.getShopId());
         shippingParam.setToken(shipmentDetailData.getShipmentCartData().getToken());
@@ -1753,8 +1808,23 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setAddressId(shipmentDetailData.getAddressId());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
         shippingParam.setTradein(shipmentDetailData.isTradein());
+        shippingParam.setTradeInDropOff(shipmentDetailData.isTradeInDropOff());
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
+        shippingParam.setTradeInDropOff(isTradeInDropOff);
+
+        if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
+            shippingParam.setDestinationDistrictId(String.valueOf(recipientAddressModel.getLocationDataModel().getDistrict()));
+            shippingParam.setDestinationPostalCode(recipientAddressModel.getLocationDataModel().getPostalCode());
+            shippingParam.setDestinationLatitude(recipientAddressModel.getLocationDataModel().getLatitude());
+            shippingParam.setDestinationLongitude(recipientAddressModel.getLocationDataModel().getLongitude());
+        } else {
+            shippingParam.setDestinationDistrictId(shipmentDetailData.getShipmentCartData().getDestinationDistrictId());
+            shippingParam.setDestinationPostalCode(shipmentDetailData.getShipmentCartData().getDestinationPostalCode());
+            shippingParam.setDestinationLatitude(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
+            shippingParam.setDestinationLongitude(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
+        }
+
         return shippingParam;
     }
 
@@ -1802,7 +1872,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId) {
+    public void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance,
+                                   boolean isOneClickShipment, boolean isTradeIn,
+                                   String deviceId, String leasingId) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance, checkPromoParam,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
