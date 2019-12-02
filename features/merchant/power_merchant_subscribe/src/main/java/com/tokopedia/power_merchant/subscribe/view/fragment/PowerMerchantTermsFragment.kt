@@ -19,7 +19,6 @@ import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_URL
-import com.tokopedia.webview.TkpdWebView
 import kotlinx.android.synthetic.main.fragment_power_merchant_terms.*
 import javax.inject.Inject
 
@@ -96,14 +95,6 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
 
     override fun onError(throwable: Throwable?) {
         view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable))
-    }
-
-    override fun setWebView(): Int {
-        return R.id.webviewPm
-    }
-
-    override fun setProgressBar(): Int {
-        return R.id.progressbarPm
     }
 
     private fun initVar() {

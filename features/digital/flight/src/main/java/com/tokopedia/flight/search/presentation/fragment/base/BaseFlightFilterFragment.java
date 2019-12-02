@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.presentation.fragment.OnFlightBaseFilterListener;
 import com.tokopedia.flight.search.presentation.fragment.OnFlightFilterListener;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;

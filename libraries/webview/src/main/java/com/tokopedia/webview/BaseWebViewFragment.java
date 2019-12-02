@@ -8,6 +8,9 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +29,6 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
@@ -68,6 +68,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
+    private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
 
@@ -143,8 +144,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private View onCreateWebView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
         View view = inflater.inflate(getLayout(), container, false);
-        webView = view.findViewById(setWebView());
-        progressBar = view.findViewById(setProgressBar());
+        webView = view.findViewById(R.id.webview);
+        progressBar = view.findViewById(R.id.progressbar);
 
         CookieManager.getInstance().setAcceptCookie(true);
 
@@ -401,6 +402,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 RouteManager.route(getContext(), ApplinkConst.HOME);
             }
             return true;
+        } else if (url.contains(PLAY_GOOGLE_URL)) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
         }
         if (!allowOverride) {
             return false;
@@ -438,14 +442,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    private boolean goToLoginGoogle(@NonNull String url){
-        String loginType;
-        try {
-            loginType = Uri.parse(url).getQueryParameter("login_type");
-        } catch (Exception e) {
-            return false;
-        }
-        if ("plus".equals(loginType)) {
+    boolean goToLoginGoogle(@NonNull String url){
+        String query = Uri.parse(url).getQueryParameter("login_type");
+        if (query != null && query.equals("plus")) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), ApplinkConst.LOGIN);
             if (intent != null) {
                 intent.putExtra("auto_login", true);
@@ -466,14 +465,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     public TkpdWebView getWebView() {
         return webView;
-    }
-
-    public int setWebView(){
-        return R.id.webview;
-    }
-
-    public int setProgressBar() {
-        return R.id.progressbar;
     }
 
     public void reloadPage(){

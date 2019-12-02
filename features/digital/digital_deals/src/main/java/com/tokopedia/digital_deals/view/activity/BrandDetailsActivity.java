@@ -50,15 +50,12 @@ public class BrandDetailsActivity extends DealsBaseActivity {
     protected Fragment getNewFragment() {
         toolbar.setVisibility(View.GONE);
         Uri uri = getIntent().getData();
-        if (getIntent().getExtras() != null) {
-            Bundle bundle = getIntent().getExtras();
-            if (uri != null) {
-                List<String> params = UriUtil.destructureUri(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL, uri, true);
-                brandSeoUrl = params.get(0);
-                bundle = getInstanceIntentAppLinkBackToHome(this, brandSeoUrl);
-            }
-            return BrandDetailsFragment.createInstance(bundle);
+        Bundle bundle = getIntent().getExtras();
+        if (uri != null) {
+            List<String> params = UriUtil.destructureUri(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL, uri, true);
+            brandSeoUrl = params.get(0);
+            bundle = getInstanceIntentAppLinkBackToHome(this, brandSeoUrl);
         }
-        return null;
+        return BrandDetailsFragment.createInstance(bundle);
     }
 }

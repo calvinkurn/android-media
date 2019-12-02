@@ -1,11 +1,10 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 import android.os.Bundle;
-import android.view.MenuItem;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import android.view.MenuItem;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.abstraction.R;
@@ -32,7 +31,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
             currentPosition = savedInstanceState.getInt(CURRENT_POSITION_EXTRA);
         }
         super.onCreate(savedInstanceState);
-        progressStepper = (RoundCornerProgressBar) findViewById(getProgressBar());
+        progressStepper = (RoundCornerProgressBar) findViewById(R.id.stepper_progress);
         progressStepper.setMax(getListFragment().size());
         progressStepper.setProgress(currentPosition);
         updateToolbarTitle();
@@ -53,7 +52,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
             fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(getParentView(), fragment, fragment.getClass().getSimpleName())
+                    .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                     .commit();
         }
     }
@@ -123,11 +122,6 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     public void updateToolbarTitle() {
         getSupportActionBar().setTitle(getString(R.string.top_ads_label_stepper, currentPosition, getListFragment().size()));
-    }
-    public int getParentView() { return com.tokopedia.abstraction.R.id.parent_view; }
-
-    public int getProgressBar(){
-        return R.id.stepper_progress;
     }
 
     public void updateToolbarTitle(String title) {
