@@ -309,7 +309,7 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
         when {
             isFirstPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonFirstPage()
             isFinalPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonLastPage()
-            else -> powerMerchantTracking.eventPMCancellationClickBackButtonLastPage()
+            else -> powerMerchantTracking.eventPMCancellationClickBackButtonMiddlePage()
         }
     }
 
