@@ -2,42 +2,38 @@ package com.tokopedia.home.beranda.presentation.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
+import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
-import com.tokopedia.home.beranda.data.repository.HomeRepository
+import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
-import com.tokopedia.home.beranda.helper.HomeLiveData
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Resource
 import com.tokopedia.home.beranda.presentation.view.HomeContract
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel
 import com.tokopedia.home.beranda.presentation.view.subscriber.*
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.listener.ImpressionListener
-import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
-import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeReviewSuggestedUseCase
-import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import retrofit2.Response
 import rx.Observable
 import rx.Subscriber
@@ -46,14 +42,17 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import rx.subscriptions.Subscriptions
-import java.util.*
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+@ExperimentalCoroutinesApi
 class HomePresenter(private val userSession: UserSessionInterface,
                     private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
-                    private val coroutineDispatcher: CoroutineDispatcher) :
+                    private val coroutineDispatcher: CoroutineDispatcher,
+                    private val homeUseCase: HomeUseCase,
+                    private val homeDataMapper: HomeDataMapper) :
         BaseDaggerPresenter<HomeContract.View?>(), HomeContract.Presenter, CoroutineScope {
 
     protected var compositeSubscription: CompositeSubscription
@@ -73,9 +72,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
     lateinit var getPendingCasbackUseCase: GetPendingCasbackUseCase
 
     @Inject
-    lateinit var homeRepository: HomeRepository
-
-    @Inject
     lateinit var getHomeTokopointsDataUseCaseLazy: Lazy<GetHomeTokopointsDataUseCase>
 
     @Inject
@@ -93,14 +89,22 @@ class HomePresenter(private val userSession: UserSessionInterface,
     @Inject
     lateinit var playCardHomeUseCase: PlayCardHomeUseCase
 
-    private val _homeData = HomeLiveData(HomeViewModel())
-    val homeLiveData: LiveData<HomeViewModel> get() = _homeData
-    private var homeSource: LiveData<Resource<HomeViewModel>> = MutableLiveData()
+    @ExperimentalCoroutinesApi
+    val homeFlowData: Flow<HomeViewModel?> = homeUseCase.getHomeData()
+
+    @ExperimentalCoroutinesApi
+    val homeLiveData: LiveData<HomeViewModel>
+    get() = _homeLiveData
+
+    val _homeLiveData: MutableLiveData<HomeViewModel> = MutableLiveData()
+
+    private val _updateNetworkLiveData = MutableLiveData<Resource<Any>>()
+    val updateNetworkLiveData: LiveData<Resource<Any>> get() = _updateNetworkLiveData
 
     private var currentCursor = ""
     private lateinit var headerViewModel: HeaderViewModel
     private var fetchFirstData = false
-    private val REQUEST_DELAY_HOME_DATA: Long = 180000 // 3 minutes
+    private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(10) // 10 minutes
     private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
 
     override val coroutineContext: CoroutineContext
@@ -121,19 +125,19 @@ class HomePresenter(private val userSession: UserSessionInterface,
         val needRefresh = lastRequestTimeHomeData + REQUEST_DELAY_HOME_DATA < System.currentTimeMillis()
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
         if (isViewAttached && !fetchFirstData && needRefresh) {
-            updateHomeData()
+            refreshHomeData()
         }
-        if (needSendGeolocationRequest && view!!.hasGeolocationPermission()) {
-            view!!.detectAndSendLocation()
+        if (needSendGeolocationRequest && view?.hasGeolocationPermission() == true) {
+            view?.detectAndSendLocation()
         }
-        tokocashBalance
-        tokopoint
-        searchHint
+        getTokocashBalance()
+        getTokopoint()
+        searchHint()
         getStickyContent()
     }
 
     fun sendGeolocationData() {
-        sendGeolocationInfoUseCase!!.createObservable(RequestParams.EMPTY)
+        sendGeolocationInfoUseCase?.createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -144,24 +148,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
                         lastRequestTimeSendGeolocation = System.currentTimeMillis()
                     }
                 })
-    }
-
-    override fun updateHomeData() {
-        launch(coroutineContext){
-            _homeData.removeSource(homeSource)
-            homeSource = homeRepository.getHomeData()
-            _homeData.addSource(homeSource){
-                it.data?.let {data ->
-                    if(it.status == Resource.Status.SUCCESS){
-                        view?.configureHomeFlag(data.homeFlag)
-                        view?.updateListOnResume(ArrayList(data.list))
-                        view?.addImpressionToTrackingQueue(ArrayList(data.list))
-                        lastRequestTimeHomeData = System.currentTimeMillis()
-                    }
-                }
-
-            }
-        }
     }
 
     override fun dismissReview() {
@@ -191,65 +177,17 @@ class HomePresenter(private val userSession: UserSessionInterface,
         })
     }
 
-    override fun getHomeData() {
+    override fun refreshHomeData() {
         initHeaderViewModelData()
-        launch(coroutineContext){
-            _homeData.removeSource(homeSource)
-            homeSource = homeRepository.getHomeData()
-            _homeData.addSource(homeSource){
-                when(it.status){
-                    Resource.Status.LOADING -> view?.showLoading()
-                    Resource.Status.SUCCESS, Resource.Status.CACHE -> {
-                        view?.hideLoading()
-                        it.data?.let {data ->
-                            _homeData.value = data
-                            if (data.list.size > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
-                                val flag = if(it.status == Resource.Status.SUCCESS) FLAG_FROM_NETWORK else FLAG_FROM_CACHE
-                                view?.configureHomeFlag(data.homeFlag)
-                                view?.setItems(ArrayList(data.list), flag)
-                                if(flag == FLAG_FROM_NETWORK) view?.addImpressionToTrackingQueue(ArrayList<HomeVisitable<*>>(data.list))
-                                if (isDataValid(ArrayList<HomeVisitable<*>>(data.list))) {
-                                    view?.removeNetworkError()
-                                } else {
-                                    showNetworkError()
-                                }
-                                if(it.status == Resource.Status.SUCCESS){
-                                    lastRequestTimeHomeData = System.currentTimeMillis()
-                                } else { }
-                            } else {
-                                view?.showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(Throwable()))
-                            }
-                        }
-                    }
-                    Resource.Status.ERROR -> {
-                        it.data?.let {data ->
-                            view?.configureHomeFlag(data.homeFlag)
-                            view?.setItems(ArrayList(data.list), FLAG_FROM_CACHE)
-                        }
-                        view?.hideLoading()
-                        view?.showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(it.error))
 
-                    }
-                }
-
-            }
+        lastRequestTimeHomeData = System.currentTimeMillis()
+        launchCatchError(coroutineContext, block = {
+            val resource = homeUseCase.updateHomeData()
+            _updateNetworkLiveData.value = resource
+        }){
+            Timber.tag(HomePresenter::class.java.name).e(it)
+            _updateNetworkLiveData.value = Resource.error(Throwable(), null)
         }
-//        val homeLocalSubscriber = createHomeDataSubscriber()
-//        homeLocalSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_CACHE)
-//        subscription = homeUseCase.getExecuteObservable(RequestParams.EMPTY)
-//                .subscribeOn(Schedulers.io())
-//                .unsubscribeOn(Schedulers.io()) //                .doOnNext(homeViewModel ->
-//                {
-//                    HomeDataSubscriber homeNetworkSubscriber = createHomeDataSubscriber();
-//                    homeNetworkSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
-//                    compositeSubscription.add(getDataFromNetwork().subscribe(homeNetworkSubscriber));
-//                })
-//                .observeOn(AndroidSchedulers.mainThread()) //                .onErrorResumeNext(throwable -> {
-//                    homeLocalSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
-//                    return getDataFromNetwork();
-//                })
-//                .subscribe(homeLocalSubscriber)
-//        compositeSubscription.add(subscription)
     }
 
     private fun initHeaderViewModelData() {
@@ -258,54 +196,50 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
     }
 
-//    private fun createHomeDataSubscriber(): HomeDataSubscriber {
-//        return HomeDataSubscriber(this)
-//    }
-
     override fun updateHeaderTokoCashData(homeHeaderWalletAction: HomeHeaderWalletAction) {
         getHeaderViewModel().setWalletDataSuccess()
         getHeaderViewModel().homeHeaderWalletActionData = homeHeaderWalletAction
-        view!!.updateHeaderItem(getHeaderViewModel())
+        view?.updateHeaderItem(getHeaderViewModel())
     }
 
     override fun showPopUpIntroWalletOvo(applinkActivation: String) {
-        view!!.showPopupIntroOvo(applinkActivation)
+        view?.showPopupIntroOvo(applinkActivation)
     }
 
     override fun onHeaderTokocashError() {
         getHeaderViewModel().setWalletDataError()
         getHeaderViewModel().homeHeaderWalletActionData = null
-        view!!.updateHeaderItem(getHeaderViewModel())
+        view?.updateHeaderItem(getHeaderViewModel())
     }
 
     override fun updateHeaderTokoCashPendingData(cashBackData: CashBackData) {
         getHeaderViewModel().setWalletDataSuccess()
         getHeaderViewModel().cashBackData = cashBackData
         getHeaderViewModel().isPendingTokocashChecked = true
-        view!!.updateHeaderItem(getHeaderViewModel())
+        view?.updateHeaderItem(getHeaderViewModel())
     }
 
     override fun onHeaderTokopointError() {
         getHeaderViewModel().setTokoPointDataError()
         getHeaderViewModel().tokoPointDrawerData = null
         getHeaderViewModel().tokopointsDrawerHomeData = null
-        view!!.updateHeaderItem(getHeaderViewModel())
+        view?.updateHeaderItem(getHeaderViewModel())
     }
 
     override fun onRefreshTokoPoint() {
         getHeaderViewModel().setTokoPointDataSuccess()
         getHeaderViewModel().tokoPointDrawerData = null
         getHeaderViewModel().tokopointsDrawerHomeData = null
-        view!!.updateHeaderItem(getHeaderViewModel())
-        tokopoint
+        view?.updateHeaderItem(getHeaderViewModel())
+        getTokopoint()
     }
 
     override fun onRefreshTokoCash() {
         if (!userSession.isLoggedIn) return
         getHeaderViewModel().setWalletDataSuccess()
         getHeaderViewModel().homeHeaderWalletActionData = null
-        view!!.updateHeaderItem(getHeaderViewModel())
-        tokocashBalance
+        view?.updateHeaderItem(getHeaderViewModel())
+        getTokocashBalance()
     }
 
     override fun getShopInfo(url: String, shopDomain: String) {
@@ -313,15 +247,15 @@ class HomePresenter(private val userSession: UserSessionInterface,
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
-                    view!!.openWebViewURL(url)
+                    view?.openWebViewURL(url)
                 }
             }
 
             override fun onNext(shopInfo: ShopInfo) {
                 if (shopInfo.info != null) {
-                    view!!.startShopInfo(shopInfo.info.shopId)
+                    view?.startShopInfo(shopInfo.info.shopId)
                 } else {
-                    view!!.openWebViewURL(url)
+                    view?.openWebViewURL(url)
                 }
             }
         })
@@ -332,15 +266,15 @@ class HomePresenter(private val userSession: UserSessionInterface,
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
-                    view!!.openWebViewURL(url)
+                    view?.openWebViewURL(url)
                 }
             }
 
             override fun onNext(shopInfo: ShopInfo) {
                 if (shopInfo.info != null) {
-                    view!!.startDeeplinkShopInfo(url)
+                    view?.startDeeplinkShopInfo(url)
                 } else {
-                    view!!.openWebViewURL(url)
+                    view?.openWebViewURL(url)
                 }
             }
         })
@@ -349,16 +283,12 @@ class HomePresenter(private val userSession: UserSessionInterface,
     override fun getHeaderData(initialStart: Boolean) {
         if (!userSession.isLoggedIn) return
         if (initialStart && headerViewModel != null) {
-            if (headerViewModel.homeHeaderWalletActionData == null) tokocashBalance
-            if (headerViewModel.tokopointsDrawerHomeData == null) tokopoint
+            if (headerViewModel.homeHeaderWalletActionData == null) getTokocashBalance()
+            if (headerViewModel.tokopointsDrawerHomeData == null) getTokopoint()
         } else {
-            tokocashBalance
-            tokopoint
+            getTokocashBalance()
+            getTokopoint()
         }
-    }
-
-    fun setCursor(currentCursor: String) {
-        this.currentCursor = currentCursor
     }
 
     fun hasNextPageFeed(): Boolean {
@@ -371,66 +301,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
         headerViewModel.isUserLogin = userSession.isLoggedIn
         return headerViewModel
-    }
-
-    fun setFetchFirstData(fetchFirstData: Boolean) {
-        this.fetchFirstData = fetchFirstData
-    }
-
-    val isLogin: Boolean
-        get() = userSession.isLoggedIn
-
-    fun showNetworkError() {
-        view?.showNetworkError()
-    }
-
-//    internal class HomeDataSubscriber(var homePresenter: HomePresenter?) : Subscriber<HomeViewModel>() {
-//        private var repositoryFlag = 0
-//        fun setFlag(flag: Int) {
-//            repositoryFlag = flag
-//        }
-//
-//        override fun onStart() {
-//            if (homePresenter != null && homePresenter!!.isViewAttached) {
-//                homePresenter!!.view!!.showLoading()
-//            }
-//        }
-//
-//        override fun onCompleted() {
-//            if (homePresenter != null && homePresenter!!.isViewAttached) {
-//                homePresenter!!.view!!.hideLoading()
-//                homePresenter!!.setFetchFirstData(false)
-//                homePresenter = null
-//            }
-//        }
-//
-//        override fun onError(e: Throwable) {
-//
-//        }
-//
-//        override fun onNext(homeViewModel: HomeViewModel) {
-//
-//        }
-//
-//        companion object {
-//            var FLAG_FROM_NETWORK = 99
-//            var FLAG_FROM_CACHE = 98
-//
-//        }
-//
-//    }
-
-    private fun isDataValid(visitables: List<HomeVisitable<*>>): Boolean {
-        return containsInstance(visitables, BannerViewModel::class.java)
-    }
-
-    fun <E> containsInstance(list: List<E>, clazz: Class<out E>): Boolean {
-        for (e in list) {
-            if (clazz.isInstance(e)) {
-                return true
-            }
-        }
-        return false
     }
 
     override fun onDestroy() {
@@ -455,8 +325,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     /**
      * Tokocash & Tokopoint
      */
-    private val tokocashBalance: Unit
-        private get() {
+    private fun getTokocashBalance() {
             compositeSubscription.add(getWalletBalanceUseCase?.createObservable(RequestParams.EMPTY)
                     .subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
@@ -464,28 +333,25 @@ class HomePresenter(private val userSession: UserSessionInterface,
                     .subscribe(TokocashHomeSubscriber(this)))
         }
 
-    val tokocashPendingBalance: Unit
-        get() {
-            compositeSubscription.add(getPendingCasbackUseCase?.createObservable(RequestParams.EMPTY)
-                    .subscribeOn(Schedulers.newThread())
+    fun getTokocashPendingBalance(){
+        compositeSubscription.add(getPendingCasbackUseCase?.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(PendingCashbackHomeSubscriber(this)))
+    }
+
+    fun getTokopoint(){
+        val graphqlResponseObservable = tokopointsObservable
+        if (graphqlResponseObservable != null) {
+            compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(PendingCashbackHomeSubscriber(this)))
+                    .subscribe(TokopointHomeSubscriber(this)))
         }
+    }
 
-    val tokopoint: Unit
-        get() {
-            val graphqlResponseObservable = tokopointsObservable
-            if (graphqlResponseObservable != null) {
-                compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(TokopointHomeSubscriber(this)))
-            }
-        }
-
-    val searchHint: Unit
-        get() {
+    fun searchHint(){
             val graphqlResponseObservable = keywordSearchObservable
             if (graphqlResponseObservable != null) {
                 compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
@@ -557,12 +423,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
         getFeedTabUseCase?.execute(GetFeedTabsSubscriber(view))
     }
 
-    private fun mappingHomeFeedModel(feedTabModelList: List<FeedTabModel>): Visitable<*> {
-        val feedViewModel = HomeRecommendationFeedViewModel()
-        feedViewModel.feedTabModel = feedTabModelList
-        return feedViewModel
-    }
-
     override fun getStickyContent() {
         stickyLoginUseCase?.setParams(StickyLoginConstant.Page.HOME)
         stickyLoginUseCase?.execute(
@@ -591,11 +451,9 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     companion object {
-        private val TAG = HomePresenter::class.java.simpleName
         private const val CURSOR_NO_NEXT_PAGE_FEED = "CURSOR_NO_NEXT_PAGE_FEED"
         private var lastRequestTimeHomeData: Long = 0
         private var lastRequestTimeSendGeolocation: Long = 0
-        private const val VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1
         const val FLAG_FROM_NETWORK = 99
         const val FLAG_FROM_CACHE = 98
     }
@@ -603,5 +461,15 @@ class HomePresenter(private val userSession: UserSessionInterface,
     init {
         compositeSubscription = CompositeSubscription()
         subscription = Subscriptions.empty()
+        launchCatchError(coroutineContext,  block = {
+            homeFlowData.collect {
+                _homeLiveData.value = it
+            }
+        }) {
+            Timber.tag(HomePresenter::class.java.name).e(it)
+            _updateNetworkLiveData.value = Resource.error(Throwable(), null)
+        }
+        initHeaderViewModelData()
+        refreshHomeData()
     }
 }

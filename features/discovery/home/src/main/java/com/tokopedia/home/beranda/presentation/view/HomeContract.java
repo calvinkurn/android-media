@@ -105,9 +105,7 @@ public interface HomeContract {
 
         void getSuggestedReview();
 
-        void getHomeData();
-
-        void updateHomeData();
+        void refreshHomeData();
 
         void getHeaderData(boolean initialStart);
 
