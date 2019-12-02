@@ -109,11 +109,12 @@ public class SimilarSearchAdapter extends RecyclerView.Adapter<SimilarSearchAdap
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = getProductIntent(String.valueOf(productsItem.getId()));
-                    itemView.getContext().startActivity(intent);
                     Object productItem = null;
                     if (productsItem != null) {
                         if (productsItem.getId() != 0) {
+                            Intent intent = getProductIntent(String.valueOf(productsItem.getId()));
+                            itemView.getContext().startActivity(intent);
+
                             productItem = productsItem.getProductAsObjectDataLayer(String.valueOf(getIndex(String.valueOf(productsItem.getId()))));
 
                             SimilarSearchTracking.eventClickSimilarProduct("/searchproduct - product " + productsItem.getId(), productsItem.getOriginProductID(),productItem);
