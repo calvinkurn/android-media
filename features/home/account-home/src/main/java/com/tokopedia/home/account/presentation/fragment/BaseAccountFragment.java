@@ -295,7 +295,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
         if (applink != null && applink.startsWith("http")) {
             openApplink(String.format("%s?url=%s",
-                    ApplinkConst.WEBVIEW,``` ```
+                    ApplinkConst.WEBVIEW,
                     applink));
         } else if (applink != null && applink.startsWith("tokopedia")) {
             openApplink(applink);
