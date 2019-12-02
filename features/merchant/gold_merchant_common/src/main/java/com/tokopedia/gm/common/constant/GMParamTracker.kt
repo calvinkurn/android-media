@@ -44,7 +44,7 @@ object GMParamTracker {
         const val SEND_ANSWER = "kirim jawaban"
         const val BACK_BUTTON = "back button"
         const val NEXT = "Selanjutnya"
-        const val OPTION_BACK_BUTTON = "\\u003c"
+        const val OPTION_BACK_BUTTON = "\u003c"
 
     }
 
