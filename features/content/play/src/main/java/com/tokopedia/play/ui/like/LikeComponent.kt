@@ -7,6 +7,7 @@ import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 /**
@@ -24,7 +25,7 @@ class LikeComponent(
         return uiView.containerId
     }
 
-    override fun getUserInteractionEvents(): ReceiveChannel<LikeInteractionEvent> {
+    override fun getUserInteractionEvents(): Flow<LikeInteractionEvent> {
         return bus.getSafeManagedReceiveChannel(LikeInteractionEvent::class.java)
     }
 

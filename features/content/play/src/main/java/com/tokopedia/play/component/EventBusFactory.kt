@@ -8,6 +8,8 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 
 /**
  * Created by jegul on 02/12/19
@@ -72,7 +74,7 @@ class EventBusFactory private constructor(val owner: LifecycleOwner) {
      *
      *  @param clazz is the class of the event type used by this channel
      */
-    fun <T : ComponentEvent> getSafeManagedReceiveChannel(clazz: Class<T>): ReceiveChannel<T> {
-        return (if (map[clazz] != null) map[clazz] as BroadcastChannel<T> else create(clazz)).openSubscription()
+    fun <T : ComponentEvent> getSafeManagedReceiveChannel(clazz: Class<T>): Flow<T> {
+        return (if (map[clazz] != null) map[clazz] as BroadcastChannel<T> else create(clazz)).asFlow()
     }
 }

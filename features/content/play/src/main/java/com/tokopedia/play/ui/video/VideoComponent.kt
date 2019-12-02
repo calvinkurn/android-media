@@ -4,27 +4,45 @@ import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.component.UIView
+import com.tokopedia.play.view.event.ScreenStateEvent
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 /**
  * Created by jegul on 02/12/19
  */
 class VideoComponent(
         container: ViewGroup,
-        bus: EventBusFactory
-) : UIComponent<Unit> {
+        bus: EventBusFactory,
+        coroutineScope: CoroutineScope
+) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
     private val uiView = initUiView(container)
+
+    init {
+        launch {
+            bus.getSafeManagedReceiveChannel(ScreenStateEvent::class.java)
+                    .collect {
+                        when (it) {
+                            is ScreenStateEvent.Play -> uiView.setPlayer(it.exoPlayer)
+                        }
+                    }
+        }
+    }
 
     override fun getContainerId(): Int {
         return uiView.containerId
     }
 
-    override fun getUserInteractionEvents(): ReceiveChannel<Unit> {
+    override fun getUserInteractionEvents(): Flow<Unit> {
         throw IllegalArgumentException()
     }
 
-    private fun initUiView(container: ViewGroup): UIView =
+    private fun initUiView(container: ViewGroup): VideoView =
             VideoView(container)
 }

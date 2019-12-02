@@ -18,6 +18,7 @@ import com.tokopedia.play.ui.sendchat.SendChatComponent
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.collect
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -74,7 +75,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
 
         launch {
             sendChatComponent.getUserInteractionEvents()
-                    .consumeEach {
+                    .collect {
                         when (it) {
                             SendChatInteractionEvent.FormClicked -> {}
                             SendChatInteractionEvent.SendClicked -> {}
@@ -90,7 +91,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
 
         launch {
             likeComponent.getUserInteractionEvents()
-                    .consumeEach {
+                    .collect {
                         when (it) {
                             LikeInteractionEvent.LikeClicked -> {}
                         }
