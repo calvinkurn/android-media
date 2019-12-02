@@ -25,9 +25,7 @@ import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -51,7 +49,7 @@ import javax.inject.Inject
 /**
  * Created by resakemal on 12/08/19.
  */
-class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
+class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
         VoucherGameListAdapterFactory>(),
         SearchInputView.ResetListener,
         VoucherGameListViewHolder.OnClickListener {
@@ -78,7 +76,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         }
 
         arguments?.let {
-            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME) ?: VoucherGameExtraParam()
+            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME)
+                    ?: VoucherGameExtraParam()
         }
     }
 
@@ -86,7 +85,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         super.onActivityCreated(savedInstanceState)
         voucherGameViewModel.voucherGameList.observe(this, Observer {
             it.run {
-                when(it) {
+                when (it) {
                     is Success -> {
                         renderOperators(it.data)
                     }
@@ -99,9 +98,9 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         voucherGameViewModel.voucherGameMenuDetail.observe(this, Observer {
             it.run {
                 togglePromoBanner(true)
-                when(it) {
+                when (it) {
                     is Success -> {
-                        with (it.data) {
+                        with(it.data) {
                             if (catalog.label.isNotEmpty()) {
                                 val categoryName = catalog.label
                                 (activity as BaseVoucherGameActivity).updateTitle(categoryName)
@@ -178,7 +177,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                             } else {
                                 voucherGameAnalytics.impressionOperatorCard(
                                         operators.subList(visibleIndexes.first,
-                                        visibleIndexes.second + 1))
+                                                visibleIndexes.second + 1))
                             }
                         }
                     }
@@ -198,8 +197,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         if (data.operators.isEmpty()) {
             adapter.clearAllElements()
             showEmpty()
-        }
-        else {
+        } else {
             checkAutoSelectOperator(data.operators)
             renderList(data.operators)
 
@@ -243,9 +241,13 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     private fun renderTickers(tickers: List<TopupBillsTicker>) {
         if (tickers.isNotEmpty()) {
-            val messages = ArrayList<TickerData>()
+            val messages = mutableListOf<TickerData>()
             for (item in tickers) {
-                messages.add(TickerData(item.name, item.content,
+                var description: String = item.content
+                if (item.actionText.isNotEmpty() && item.actionLink.isNotEmpty()) {
+                    description += " [${item.actionText}]{${item.actionLink}}"
+                }
+                messages.add(TickerData(item.name, description,
                         when (item.type) {
                             TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
                             TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
@@ -254,9 +256,34 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                             else -> Ticker.TYPE_INFORMATION
                         }))
             }
-            context?.run {
-                ticker_view.addPagerView(TickerPagerAdapter(this, messages), messages)
+
+            if (messages.size == 1) {
+                with (messages.first()) {
+                    ticker_view.tickerTitle = title
+                    ticker_view.setHtmlDescription(description)
+                    ticker_view.tickerType = type
+                }
+                ticker_view.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                    }
+
+                    override fun onDismiss() {
+
+                    }
+                })
+            } else {
+                context?.let { context ->
+                    val tickerAdapter = TickerPagerAdapter(context, messages)
+                    tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                        override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                        }
+                    })
+                    ticker_view.addPagerView(tickerAdapter, messages)
+                }
             }
+
             ticker_view.visibility = View.VISIBLE
         } else {
             ticker_view.visibility = View.GONE
@@ -344,7 +371,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun onSearchSubmitted(text: String?) {
-        text?.let { if(text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it) }
+        text?.let { if (text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it) }
     }
 
     override fun onSearchTextChanged(text: String?) {
