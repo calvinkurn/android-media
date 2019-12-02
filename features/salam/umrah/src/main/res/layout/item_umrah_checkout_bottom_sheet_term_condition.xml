@@ -14,7 +14,9 @@
         android:layout_marginTop="@dimen/dp_18"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        tools:text="Keamanan" />
+        tools:text="Keamanan"
+        android:textColor="@color/Neutral_N700"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_checkout_desc_term"
@@ -23,6 +25,8 @@
         android:layout_margin="@dimen/dp_18"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Keamanan" />
+        tools:text="Keamanan"
+        android:textColor="@color/Neutral_N700"
+        />
 
 </LinearLayout>

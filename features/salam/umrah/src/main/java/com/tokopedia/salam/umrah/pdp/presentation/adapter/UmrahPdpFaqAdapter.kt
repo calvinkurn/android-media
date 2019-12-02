@@ -1,11 +1,9 @@
 package com.tokopedia.salam.umrah.pdp.presentation.adapter
 
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.pdp.data.UmrahFAQContent
 import kotlinx.android.synthetic.main.item_umrah_pdp_faq.view.*
@@ -14,10 +12,10 @@ import kotlinx.android.synthetic.main.item_umrah_pdp_faq.view.*
  * @author by M on 8/11/19
  */
 class UmrahPdpFaqAdapter : RecyclerView.Adapter<UmrahPdpFaqAdapter.UmrahPdpFaqViewHolder>() {
-    lateinit var onItemListener: OnClickListener
+    var onItemListener: OnClickListener? = null
     var faqs = emptyList<UmrahFAQContent>()
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): UmrahPdpFaqViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_umrah_pdp_faq,parent,false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_umrah_pdp_faq, parent, false)
         return UmrahPdpFaqViewHolder(view)
     }
 
@@ -29,17 +27,17 @@ class UmrahPdpFaqAdapter : RecyclerView.Adapter<UmrahPdpFaqAdapter.UmrahPdpFaqVi
 
     inner class UmrahPdpFaqViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(umrahFAQContent: UmrahFAQContent) {
-            with(itemView){
+            with(itemView) {
                 item_tg_umrah_pdp_faq_question.text = umrahFAQContent.header
                 item_tg_umrah_pdp_faq_answer.text = umrahFAQContent.snippet
                 item_tg_umrah_pdp_faq_read_more.setOnClickListener {
-                    onItemListener.onClick(umrahFAQContent.link)
+                    onItemListener?.onClick(umrahFAQContent.link)
                 }
             }
         }
     }
 
-    interface OnClickListener{
+    interface OnClickListener {
         fun onClick(link: String)
     }
 }

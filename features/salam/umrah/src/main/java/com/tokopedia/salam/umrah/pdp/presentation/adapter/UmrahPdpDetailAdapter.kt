@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.item_umrah_pdp_detail_room.view.*
 class UmrahPdpDetailAdapter : RecyclerView.Adapter<UmrahPdpDetailAdapter.UmrahPdpDetailViewHolder>() {
     var variants = emptyList<UmrahVariant>()
     var selectedItem: String = ""
-    lateinit var pdpDetailListener: UmrahPdpDetailListener
+    var pdpDetailListener: UmrahPdpDetailListener? = null
 
     fun updateSelectedItem(itemSelected: String) {
         selectedItem = itemSelected
@@ -50,13 +50,13 @@ class UmrahPdpDetailAdapter : RecyclerView.Adapter<UmrahPdpDetailAdapter.UmrahPd
                     setOnClickListener {
                         selectedItem = variant.name
                         notifyDataSetChanged()
-                        pdpDetailListener.onRoomClicked(variant)
+                        pdpDetailListener?.onRoomClicked(variant)
                     }
                 }
                 setOnClickListener {
                     selectedItem = variant.name
                     notifyDataSetChanged()
-                    pdpDetailListener.onRoomClicked(variant)
+                    pdpDetailListener?.onRoomClicked(variant)
                 }
                 item_tg_umrah_pdp_detail_room_title.text = variant.name
                 val rpPrice = getRupiahFormat(variant.price)

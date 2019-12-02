@@ -16,6 +16,7 @@
         tools:text="1"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
+        android:textColor="@color/Neutral_N700"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -26,6 +27,7 @@
         tools:text="25 Agustus 2019"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
+        android:textColor="@color/Neutral_N700"
          />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -36,6 +38,7 @@
         tools:text="Rp25.000.000"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
+        android:textColor="@color/Neutral_N700"
         />
 
 </LinearLayout>

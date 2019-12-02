@@ -10,13 +10,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.di.UmrahComponentInstance
-import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity
 import com.tokopedia.salam.umrah.search.di.DaggerUmrahSearchComponent
 import com.tokopedia.salam.umrah.search.di.UmrahSearchComponent
 import com.tokopedia.salam.umrah.search.presentation.fragment.UmrahSearchFragment
 
 class UmrahSearchActivity : BaseSimpleActivity(), HasComponent<UmrahSearchComponent> {
-    lateinit var onBackListener: UmrahPdpActivity.OnBackListener
     private var categorySlugName = ""
     private var categoryTitle = ""
     private var departureCityId = ""
@@ -82,11 +80,13 @@ class UmrahSearchActivity : BaseSimpleActivity(), HasComponent<UmrahSearchCompon
 
     override fun onBackPressed() {
         super.onBackPressed()
-        onBackListener.onBack()
+        if (fragment is OnBackListener) {
+            (fragment as OnBackListener).onBackPressed()
+        }
     }
 
     interface OnBackListener {
-        fun onBack()
+        fun onBackPressed()
     }
 
     companion object {

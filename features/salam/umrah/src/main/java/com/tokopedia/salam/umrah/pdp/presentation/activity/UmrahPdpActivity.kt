@@ -15,8 +15,7 @@ import com.tokopedia.salam.umrah.pdp.presentation.fragment.UmrahPdpFragment
 /**
  * @author by M on 30/10/19
  */
-class UmrahPdpActivity: BaseSimpleActivity(),HasComponent<UmrahPdpComponent>{
-    lateinit var onBackListener: OnBackListener
+class UmrahPdpActivity : BaseSimpleActivity(), HasComponent<UmrahPdpComponent> {
     private var slugName: String = ""
 
     override fun getComponent(): UmrahPdpComponent = DaggerUmrahPdpComponent.builder()
@@ -41,12 +40,15 @@ class UmrahPdpActivity: BaseSimpleActivity(),HasComponent<UmrahPdpComponent>{
 
     override fun onBackPressed() {
         super.onBackPressed()
-        onBackListener.onBack()
+        if (fragment is OnBackListener) {
+            (fragment as OnBackListener).onBackPressed()
+        }
     }
 
-    interface OnBackListener{
-        fun onBack()
+    interface OnBackListener {
+        fun onBackPressed()
     }
+
     companion object {
         const val EXTRA_SLUG_NAME = "EXTRA_SLUG_NAME"
         const val EXTRA_VARIANT_ROOM = "EXTRA_VARIANT_ROOM"

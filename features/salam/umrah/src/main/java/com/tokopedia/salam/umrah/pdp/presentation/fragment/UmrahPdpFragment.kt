@@ -26,11 +26,14 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahPdpTrackingUserAction
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingUtil
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
+import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDate
 import com.tokopedia.salam.umrah.common.util.UmrahHotelRating.getAllHotelRatings
 import com.tokopedia.salam.umrah.common.util.UmrahHotelVariant.getAllHotelVariants
 import com.tokopedia.salam.umrah.common.util.UmrahPriceUtil.getSlashedPrice
-import com.tokopedia.salam.umrah.pdp.data.*
+import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
+import com.tokopedia.salam.umrah.pdp.data.UmrahPdpFeaturedFacilityModel
+import com.tokopedia.salam.umrah.pdp.data.UmrahPdpGreenRectWidgetModel
 import com.tokopedia.salam.umrah.pdp.di.UmrahPdpComponent
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity.Companion.EXTRA_SLUG_NAME
@@ -43,7 +46,6 @@ import com.tokopedia.salam.umrah.pdp.presentation.adapter.*
 import com.tokopedia.salam.umrah.pdp.presentation.fragment.UmrahPdpDetailFragment.Companion.paramPurchase
 import com.tokopedia.salam.umrah.pdp.presentation.itemdecoration.UmrahPdpFaqIndicator
 import com.tokopedia.salam.umrah.pdp.presentation.viewmodel.UmrahPdpViewModel
-import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
@@ -59,7 +61,7 @@ import javax.inject.Inject
 /**
  * @author by M on 30/10/19
  */
-class UmrahPdpFragment : BaseDaggerFragment() {
+class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
     @Inject
     lateinit var umrahPdpViewModel: UmrahPdpViewModel
     @Inject
@@ -117,7 +119,6 @@ class UmrahPdpFragment : BaseDaggerFragment() {
     }
 
     private fun setupAll() {
-        setupOnBackListener()
         setupCollapsingToolbar()
         setupTopImages()
         setupPdpHeader()
@@ -135,14 +136,6 @@ class UmrahPdpFragment : BaseDaggerFragment() {
         setupAdditionalInformation()
         checkPackageAvailability()
         showData()
-    }
-
-    private fun setupOnBackListener() {
-        (activity as UmrahPdpActivity).onBackListener = object : UmrahPdpActivity.OnBackListener {
-            override fun onBack() {
-                umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.CLICK_BACK)
-            }
-        }
     }
 
     private fun showData() {
@@ -265,7 +258,7 @@ class UmrahPdpFragment : BaseDaggerFragment() {
         val departureDate = getDate("dd MMM", umrahProduct.departureDate)
         val returningDate = getDate("dd MMM yyyy", umrahProduct.returningDate)
         val umrahPdpItemWidgetModel = UmrahItemWidgetModel()
-        umrahPdpItemWidgetModel.apply{
+        umrahPdpItemWidgetModel.apply {
             imageDrawable = R.drawable.umrah_ic_calendar
             title = getString(R.string.umrah_pdp_calendar, departureDate, returningDate)
             desc = getString(R.string.umrah_pdp_duration, umrahProduct.durationDays, umrahProduct.durationDays - 1)
@@ -278,7 +271,7 @@ class UmrahPdpFragment : BaseDaggerFragment() {
         val hotelsRating = getAllHotelRatings(umrahProduct.hotels)
         val hotelsVariant = getAllHotelVariants(umrahProduct.variants)
         val umrahPdpItemWidgetModel = UmrahItemWidgetModel()
-        umrahPdpItemWidgetModel.apply{
+        umrahPdpItemWidgetModel.apply {
             imageDrawable = R.drawable.umrah_ic_hotel
             title = getString(R.string.umrah_search_hotel_rating_x, hotelsRating)
             desc = hotelsVariant
@@ -288,9 +281,9 @@ class UmrahPdpFragment : BaseDaggerFragment() {
 
     }
 
-    private fun setupPlaneItem(){
+    private fun setupPlaneItem() {
         val umrahPdpItemWidgetModel = UmrahItemWidgetModel()
-        umrahPdpItemWidgetModel.apply{
+        umrahPdpItemWidgetModel.apply {
             imageDrawable = R.drawable.umrah_ic_plane
             title = umrahProduct.airlines[0].name
             desc = try {
@@ -496,5 +489,11 @@ class UmrahPdpFragment : BaseDaggerFragment() {
                         putString(EXTRA_SLUG_NAME, slugName)
                     }
                 }
+    }
+
+    override fun onBackPressed() {
+        if (!isDetached) {
+            umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.CLICK_BACK)
+        }
     }
 }

@@ -12,9 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.Schemes
-import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutInstallment
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter
-import kotlinx.android.synthetic.main.item_umrah_checkout_bottom_sheet_installment.view.*
 import kotlinx.android.synthetic.main.item_umrah_checkout_payment_option_radio.view.*
 
 /**

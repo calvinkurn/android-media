@@ -60,6 +60,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/umrah_checkout_payment_option_label_installment"
+                    android:textColor="@color/Neutral_N700"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginLeft="@dimen/dp_12"
                     app:typographyType="heading_6"
@@ -70,6 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/umrah_chekcout_payment_option_label_due_date"
+                    android:textColor="@color/Neutral_N700"
                     app:typographyType="heading_6"
                     android:layout_marginTop="@dimen/dp_8"
                     app:typographyWeight="bold" />
@@ -81,6 +83,7 @@
                     android:layout_marginRight="@dimen/dp_12"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/umrah_checkout_payment_option_label_price"
+                    android:textColor="@color/Neutral_N700"
                     app:typographyType="heading_6"
                     app:typographyWeight="bold" />
 

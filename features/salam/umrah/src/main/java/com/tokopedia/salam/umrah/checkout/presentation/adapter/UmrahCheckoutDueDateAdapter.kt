@@ -13,14 +13,16 @@ import kotlinx.android.synthetic.main.item_umrah_checkout_payment_option_due_dat
 class UmrahCheckoutDueDateAdapter : RecyclerView.Adapter<UmrahCheckoutDueDateAdapter.UmrahCheckoutDueDateAdapterViewHolder>() {
 
     private var listCategories = emptyList<Term>()
+    private var counter = 1
 
     inner class UmrahCheckoutDueDateAdapterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(umrahTerm: Term) {
             with(itemView) {
-                tg_umrah_list_installment_due_date.text = UmrahDateUtil.getDate("dd MMM yyyy",umrahTerm.dueDate)
-                tg_umrah_list_installment_number.text = umrahTerm.type.toString()
+                tg_umrah_list_installment_due_date.text = UmrahDateUtil.getDate("dd MMM yyyy", umrahTerm.dueDate)
+                tg_umrah_list_installment_number.text = counter.toString()
                 tg_umrah_list_installment_price.text = CurrencyFormatter.getRupiahFormat(umrahTerm.price)
+                counter += 1
             }
         }
     }
@@ -39,4 +41,5 @@ class UmrahCheckoutDueDateAdapter : RecyclerView.Adapter<UmrahCheckoutDueDateAda
         listCategories = list
         notifyDataSetChanged()
     }
+
 }

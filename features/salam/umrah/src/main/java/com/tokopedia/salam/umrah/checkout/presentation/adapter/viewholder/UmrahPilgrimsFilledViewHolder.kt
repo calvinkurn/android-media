@@ -13,7 +13,7 @@ class UmrahPilgrimsFilledViewHolder(view: View,val umrahCheckoutPilgrimsListList
     fun bind(categories: UmrahCheckoutPilgrims) {
         with(itemView) {
             iv_widget_umrah_checkout_green_rect_action.setImageDrawable(resources.getDrawable(R.drawable.umrah_ic_pencil))
-            tg_widget_umrah_checkout_green_rect_title.text =  "${categories.title} ${categories.firstName} ${categories.lastName}"
+            tg_widget_umrah_checkout_green_rect_title.text =  resources.getString(R.string.umrah_checkout_pilgrims_title,categories.title,categories.firstName,categories.lastName)
             tg_widget_umrah_checkout_green_rect_first_line.text = getDay("dd MMMM YYYY",categories.dateBirth)
             container_widget_umrah_checkout_green_rect.setOnClickListener {
                 umrahCheckoutPilgrimsListListener.onPilgrimsClick(position)

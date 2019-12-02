@@ -62,7 +62,7 @@ import javax.inject.Inject
  * @author by furqan on 18/10/2019
  */
 class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdapterTypeFactory>(),
-        BaseEmptyViewHolder.Callback, UmrahSearchAdapter.OnClickListener {
+        BaseEmptyViewHolder.Callback, UmrahSearchAdapter.OnClickListener, UmrahSearchActivity.OnBackListener {
 
     private val umrahSearchSortAdapter: UmrahSearchSortAdapter by lazy { UmrahSearchSortAdapter() }
     private var isSortLoaded = false
@@ -119,7 +119,6 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         }
         if (umrahSearchViewModel.getSlugName() != "") searchOrCategory = SearchOrCategory.CATEGORY
         initSortBottomSheets()
-        setupOnBackListener()
     }
 
     private fun setSelectedFilterFromBundle() {
@@ -135,17 +134,6 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         }
         umrahSearchViewModel.setFilter(selectedFilter)
     }
-
-    private fun setupOnBackListener() {
-        (activity as UmrahSearchActivity).onBackListener = object : UmrahSearchActivity.OnBackListener, UmrahPdpActivity.OnBackListener {
-            override fun onBack() {
-                isFilter = false
-                if (umrahSearchViewModel.getSlugName() != "") umrahTrackingUtil.umrahSearchNCategoryBackClick(SearchOrCategory.CATEGORY)
-                else umrahTrackingUtil.umrahSearchNCategoryBackClick(SearchOrCategory.SEARCH)
-            }
-        }
-    }
-
 
     private fun getSearchParamFromBundle() {
         arguments?.let {
@@ -322,5 +310,13 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
                         putString(EXTRA_SORT, defaultSort)
                     }
                 }
+    }
+
+    override fun onBackPressed() {
+        if (!isDetached) {
+            isFilter = false
+            if (umrahSearchViewModel.getSlugName() != "") umrahTrackingUtil.umrahSearchNCategoryBackClick(SearchOrCategory.CATEGORY)
+            else umrahTrackingUtil.umrahSearchNCategoryBackClick(SearchOrCategory.SEARCH)
+        }
     }
 }

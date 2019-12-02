@@ -91,6 +91,12 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
     private var pilgrimCount = 0
     private var price = 0
     private var totalPrice = 0
+    private var optionSchemes = 0
+    private var userData = ContactUser()
+    private var listSchemes: List<Schemes> = arrayListOf()
+    private var listDataPilgrims: MutableList<UmrahCheckoutPilgrims> = mutableListOf()
+    private var productModel = UmrahProductModel.UmrahProduct()
+    private var listPaymentOptions = UmrahPaymentOptions()
 
 
     private val umrahCheckoutPilgrimsListAdapter by lazy { UmrahCheckoutPilgrimsListAdapter(this, this) }
@@ -687,13 +693,6 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         const val CHECKOUT_INSTALLMENT = "Uang Muka"
         const val DEFAULT_OPTION_CHECKOUT_STEP = 1
 
-
-        var optionSchemes = 0
-        var userData = ContactUser()
-        var listSchemes: List<Schemes> = arrayListOf()
-        var listDataPilgrims: MutableList<UmrahCheckoutPilgrims> = mutableListOf()
-        var productModel = UmrahProductModel.UmrahProduct()
-        var listPaymentOptions = UmrahPaymentOptions()
 
         fun getInstance(slugName: String, variant: String, price: Int,
                         totalPrice: Int, totalPassenger: Int, departDate: String

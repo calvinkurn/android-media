@@ -60,6 +60,7 @@ class UmrahCheckoutInstallmentFragment : BaseDaggerFragment(), UmrahCheckoutInst
     }
 
     private fun initView(){
+        tv_umrah_checkout_installment.setTextDescription(getText(R.string.umrah_checkout_payment_option_ticker_desc))
         if (schemes.isNotEmpty()){
             schemes.apply {
                 umrahCheckoutInstallmentAdapter.lastCheckedPosition = defaultOptionSchemes
