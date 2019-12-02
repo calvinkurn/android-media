@@ -106,6 +106,17 @@ class SettingProfileFragment : BaseDaggerFragment() {
         dialog.show()
     }
 
+    private fun showVerifyEmailDialog() {
+        val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
+        dialog.setTitle(getString(R.string.add_and_verify_phone))
+        dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
+        dialog.setOk(getString(R.string.title_verify_phone))
+        dialog.setOkOnClickListner(View.OnClickListener { goToVerifyPhone() })
+        dialog.setSecondary(getString(com.tokopedia.abstraction.R.string.label_cancel))
+        dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
+        dialog.show()
+    }
+
     private fun initObserver() {
         profileInfoViewModel.userProfileInfo.observe(this, Observer {
             when (it) {
@@ -389,6 +400,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     View.OnClickListener {
                         if(profileCompletionData.phone.isNotEmpty() && profileCompletionData.isPhoneVerified){
                             goToChangeEmail(profileCompletionData.email)
+                        } else if(profileCompletionData.phone.isNotEmpty() && !profileCompletionData.isPhoneVerified) {
+                            showVerifyEmailDialog()
                         }else{
                             showChangeEmailDialog()
                         }

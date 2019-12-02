@@ -83,6 +83,7 @@
 
     <!-- ADD PHONE -->
     <string name="title_add_phone">Tambah Nomor HP</string>
+    <string name="title_verify_phone">Verifikasi Nomor HP</string>
     <string name="warning_add_phone">Jaga akun dan transaksi Anda tetap aman dengan menambahkan nomor HP</string>
     <string name="title_phone">Nomor HP</string>
     <string name="sample_phone">Contoh: 08xxxxxxxxxx</string>
