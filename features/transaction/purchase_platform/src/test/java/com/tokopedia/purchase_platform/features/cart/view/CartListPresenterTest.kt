@@ -25,7 +25,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyOrder
@@ -156,7 +155,6 @@ class CartListPresenterTest : Spek({
                     view.renderErrorInitialGetCartListData(errorMessage)
                     view.stopCartPerformanceTrace()
                 }
-                confirmVerified(view)
             }
         }
     }
@@ -189,7 +187,7 @@ class CartListPresenterTest : Spek({
                 every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
             }
 
-            When("update and reload cart") {
+            When("process to update and reload cart data") {
                 cartListPresenter.processToUpdateAndReloadCartData()
             }
 
@@ -225,7 +223,7 @@ class CartListPresenterTest : Spek({
                 every { view.getGeneratedAuthParamNetwork(any()) } answers { value }
             }
 
-            When("update and reload cart") {
+            When("process to update and reload cart data") {
                 cartListPresenter.processToUpdateAndReloadCartData()
             }
 
@@ -544,7 +542,7 @@ class CartListPresenterTest : Spek({
 
         Scenario("some item selected") {
 
-            Given("uncheck some items") {
+            Given("check some items") {
                 firstItemFirst.isSelected = true
                 firstShop.isPartialSelected = true
 
@@ -574,7 +572,7 @@ class CartListPresenterTest : Spek({
 
         Scenario("some item error") {
 
-            Given("error in some items") {
+            Given("error in unselected items") {
                 firstItemFirst.isSelected = true
                 secondItemFirstData.isError = true
                 firstShop.isPartialSelected = true
@@ -754,7 +752,7 @@ class CartListPresenterTest : Spek({
             }
         }
 
-        Scenario("all item selected with product variant same price and cashback") {
+        Scenario("all item selected with same priced product variant") {
 
             Given("check all items") {
                 firstItemFirst.isSelected = true
@@ -766,7 +764,7 @@ class CartListPresenterTest : Spek({
                 secondShop.isAllSelected = true
             }
 
-            Given("product variant") {
+            Given("product variant with same price") {
                 firstItemFirstOriginData.parentId = "9"
                 secondItemFirstOriginData.parentId = "9"
                 secondItemFirstOriginData.pricePlan = firstItemFirstOriginData.pricePlan
