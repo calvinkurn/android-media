@@ -424,16 +424,6 @@ public class ImageHandler {
         loadImageRounded2(context, imageview, url, 5.0f);
     }
 
-    public static void loadImageRoundedWithCrossFade(Context context, final ImageView imageView, final String url){
-        Glide.with(context)
-                .asBitmap()
-                .load(url)
-                .transition(BitmapTransitionOptions.withCrossFade())
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .into(getRoundedImageViewTarget(imageView, 5.0f));
-    }
-
     public static void loadImageRoundedWithBorder(ImageView imageView,
                                                   Context context,
                                                   String url,

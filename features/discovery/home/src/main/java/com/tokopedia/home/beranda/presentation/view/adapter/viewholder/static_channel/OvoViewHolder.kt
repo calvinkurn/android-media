@@ -25,6 +25,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapResource
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
