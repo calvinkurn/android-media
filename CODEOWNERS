@@ -111,6 +111,8 @@
 /features/content/interest_pick/        				@tokopedia/minion-stuart
 /features/content/kol/                  				@tokopedia/minion-stuart
 /features/content/kol_common/           				@tokopedia/minion-stuart
+/features/content/play/              				    @tokopedia/minion-stuart
+/features/content/play-common/              			@tokopedia/minion-stuart
 /features/content/profile/              				@tokopedia/minion-stuart
 
 /features/digital/event                 				@tokopedia/minion-darth
