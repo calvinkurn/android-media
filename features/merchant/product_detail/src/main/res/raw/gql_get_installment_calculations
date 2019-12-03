@@ -1,0 +1,57 @@
+query pdpInstallmentCalculation($price: Float!, $quantity: Int!){
+  ft_installment_calculation(price: $price, quantity: $quantity) {
+    data {
+      credit_card {
+        partner_code
+        partner_name
+        partner_icon
+        partner_url
+        tnc_id
+        installment_list {
+          term
+          mdr_value
+          mdr_type
+          interest_rate
+          minimum_amount
+          maximum_amount
+          monthly_price
+          os_monthly_price
+        }
+        instruction_list {
+          order
+          description
+          ins_image_url
+        }
+      }
+      non_credit_card {
+        partner_code
+        partner_name
+        partner_icon
+        tnc_id
+        installment_list {
+          term
+          mdr_value
+          mdr_type
+          interest_rate
+          minimum_amount
+          maximum_amount
+          monthly_price
+          os_monthly_price
+        }
+        instruction_list {
+          order
+          description
+          ins_image_url
+        }
+      }
+      tnc {
+        tnc_id
+        tnc_list {
+            order
+            description
+        }
+      }
+    }
+    message
+  }
+}

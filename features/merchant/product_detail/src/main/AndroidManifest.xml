@@ -56,6 +56,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
+        <activity android:name=".imagepreview.view.activity.ImagePreviewPdpActivity"
+            android:label="@string/label_image_preview_pdp"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
     </application>
 
 </manifest>

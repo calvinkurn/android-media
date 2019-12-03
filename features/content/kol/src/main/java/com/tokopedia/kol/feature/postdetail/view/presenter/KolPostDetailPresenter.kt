@@ -2,6 +2,7 @@ package com.tokopedia.kol.feature.postdetail.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
@@ -14,18 +15,22 @@ import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract
 import com.tokopedia.kol.feature.postdetail.view.subscriber.FollowUnfollowDetailSubscriber
 import com.tokopedia.kol.feature.postdetail.view.subscriber.GetKolPostDetailSubscriber
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.feedcomponent.domain.usecase.GetPostStatisticCommissionUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.feedcomponent.view.mapper.PostStatisticMapper
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kotlin.extensions.view.debugTrace
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -53,6 +58,7 @@ class KolPostDetailPresenter @Inject constructor(
         private val atcUseCase: AddToCartUseCase,
         private val getRelatedPostUseCase: GetRelatedPostUseCase,
         private val getWhitelistUseCase: GetWhitelistUseCase,
+        private val getPostStatisticCommissionUseCase: GetPostStatisticCommissionUseCase,
         private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<KolPostDetailContract.View>(), KolPostDetailContract.Presenter {
 
@@ -81,7 +87,7 @@ class KolPostDetailPresenter @Inject constructor(
                 GetPostDetailUseCase.createRequestParams(
                         userSession.userId,
                         "",
-                        GetDynamicFeedUseCase.SOURCE_DETAIL,
+                        GetDynamicFeedUseCase.FeedV2Source.Detail,
                         id.toString()
                 ),
                 GetKolPostDetailSubscriber(view)
@@ -115,17 +121,17 @@ class KolPostDetailPresenter @Inject constructor(
         )
     }
 
-    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
         likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
-                LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
+                LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Like)
         )
     }
 
-    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
         likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
-                LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_UNLIKE)
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
+                LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Unlike)
         )
     }
 
@@ -297,14 +303,6 @@ class KolPostDetailPresenter @Inject constructor(
         )
     }
 
-    private fun mapRelatedPost(data: List<FeedPostRelated.Datum>): List<RelatedPostItemViewModel> {
-        val list = ArrayList<RelatedPostItemViewModel>()
-        for (item in data) {
-            list.add(RelatedPostItemViewModel(item))
-        }
-        return list
-    }
-
     override fun getWhitelist() {
         getWhitelistUseCase.clearRequest()
         getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
@@ -326,4 +324,34 @@ class KolPostDetailPresenter @Inject constructor(
             }
         })
     }
+
+    override fun getPostStatistic(activityId: String, productIds: MutableList<String>, likeCount: Int, commentCount: Int) {
+        getPostStatisticCommissionUseCase.run {
+            setParams(
+                    GetPostStatisticCommissionUseCase.getParam(
+                            listOf(activityId),
+                            productIds
+                    )
+            )
+            execute(
+                    onSuccess = {
+                        view.onSuccessGetPostStatistic(
+                                PostStatisticCommissionUiModel(
+                                        KMNumbers.formatRupiahString(it.second.totalProductCommission.toLongOrZero()),
+                                        PostStatisticMapper(likeCount, commentCount).call(it.first)
+                                )
+
+                        )
+                    },
+                    onError = {
+                        view.onErrorGetPostStatistic(it, activityId, productIds)
+                    }
+            )
+        }
+    }
+
+    private fun mapRelatedPost(data: List<FeedPostRelated.Datum>): List<RelatedPostItemViewModel> = data.map {
+        RelatedPostItemViewModel(it)
+    }
+
 }

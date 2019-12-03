@@ -121,4 +121,6 @@ public interface ICartListView extends IBaseView {
     ArrayList<InsuranceCartDigitalProduct> getInsuranceCartShopData();
 
     void removeInsuranceProductItem(List<Long> productId);
+
+    void goToLite(String url);
 }

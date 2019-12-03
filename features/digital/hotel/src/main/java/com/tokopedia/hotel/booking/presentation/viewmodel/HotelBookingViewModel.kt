@@ -6,7 +6,6 @@ import com.tokopedia.common.travel.data.entity.TravelContactListModel
 import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
 import com.tokopedia.common.travel.domain.GetContactListUseCase
 import com.tokopedia.common.travel.domain.UpsertContactListUseCase
-import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -35,7 +34,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
                                                 val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
-    val hotelCartResult = MutableLiveData<Result<HotelCart>>()
+    val hotelCartResult = MutableLiveData<Result<HotelCart.Response>>()
     val hotelCheckoutResult = MutableLiveData<Result<HotelCheckoutResponse>>()
 
     fun getContactList(query: String) {
@@ -68,8 +67,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_CART, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelCart.Response>()
-
-            hotelCartResult.value = Success(data.response)
+            hotelCartResult.value = Success(data)
         }) {
             hotelCartResult.value = Fail(it)
         }
