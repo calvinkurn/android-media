@@ -81,9 +81,21 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_ineligbile_promo_dialog_enabled")
     @Expose
     private boolean isIneligbilePromoDialogEnabled;
+    @SerializedName("is_new_buyer")
+    @Expose
+    private boolean isNewBuyer;
+    @SerializedName("disabled_features")
+    @Expose
+    private List<String> disabledFeatures = new ArrayList<>();
     @SerializedName("tickers")
     @Expose
     private List<Ticker> tickers = new ArrayList<>();
+    @SerializedName("donation_checkbox_status")
+    @Expose
+    private boolean donationCheckboxStatus;
+    @SerializedName("addresses")
+    @Expose
+    private Addresses addresses;
 
     @Deprecated
     public AutoapplyV2 getAutoapplyV2() {
@@ -168,7 +180,23 @@ public class ShipmentAddressFormDataResponse {
         return isIneligbilePromoDialogEnabled;
     }
 
+    public boolean isNewBuyer() {
+        return isNewBuyer;
+    }
+
+    public List<String> getDisabledFeatures() {
+        return disabledFeatures;
+    }
+
     public List<Ticker> getTickers() {
         return tickers;
+    }
+
+    public boolean isDonationCheckboxStatus() {
+        return donationCheckboxStatus;
+    }
+
+    public Addresses getAddresses() {
+        return addresses;
     }
 }

@@ -1,13 +1,11 @@
 package com.tokopedia.explore.view.listener;
 
 import android.content.Context;
-import android.view.View;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -48,7 +46,7 @@ public interface ContentExploreContract {
 
         void showEmpty();
 
-        void goToKolPostDetail(KolPostViewModel kolPostViewModel);
+        void goToKolPostDetail(@NotNull int postId, @NotNull String name);
 
         void addExploreItemCoachmark(android.view.View view);
 

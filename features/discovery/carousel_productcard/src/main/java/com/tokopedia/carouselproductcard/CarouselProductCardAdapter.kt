@@ -1,16 +1,13 @@
 package com.tokopedia.carouselproductcard
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 
 internal class CarouselProductCardAdapter(
-        private val productCardModelList: List<ProductCardModel>,
+        private var productCardModelList: List<ProductCardModel> = ArrayList(),
         private val isScrollable: Boolean,
         private val carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
         private val productCardHeight: Int = 0
@@ -38,12 +35,16 @@ internal class CarouselProductCardAdapter(
         return productCardModelList.size
     }
 
-    override fun onBindViewHolder(carouselProductCardViewHolder: CarouselProductCardViewHolder, position: Int) {
-        carouselProductCardViewHolder.bind(this.productCardModelList[position])
+    override fun getItemViewType(position: Int): Int {
+        return CarouselProductCardViewHolder.LAYOUT
     }
 
-    fun updateWishlist(position: Int, wishlist: Boolean) {
-        productCardModelList[position].isWishlisted = wishlist
-        notifyItemChanged(position)
+    override fun onBindViewHolder(carouselProductCardViewHolder: CarouselProductCardViewHolder, position: Int) {
+        carouselProductCardViewHolder.bind(productCardModelList[position])
+    }
+
+    fun updateWishlist(index: Int, isWishlist: Boolean){
+        productCardModelList[index].isWishlisted = isWishlist
+        notifyItemChanged(index)
     }
 }

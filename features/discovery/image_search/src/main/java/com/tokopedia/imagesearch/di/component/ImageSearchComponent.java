@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.imagesearch.di.module.ImageSearchModule;
 import com.tokopedia.imagesearch.di.scope.ImageSearchScope;
 import com.tokopedia.imagesearch.search.ImageSearchActivity;
-import com.tokopedia.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.imagesearch.search.fragment.ImageSearchProductListFragment;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListPresenterImpl;
 
@@ -23,6 +22,4 @@ public interface ImageSearchComponent {
     void inject(ImageSearchProductListFragment imageProductListFragment);
 
     void inject(ImageProductListPresenterImpl imageProductListPresenter);
-
-    void inject(ImageSearchPresenter imageSearchPresenter);
 }

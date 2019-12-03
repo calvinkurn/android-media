@@ -1,11 +1,27 @@
 package com.tokopedia.purchase_platform.features.checkout.view.converter;
 
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.tokopedia.purchase_platform.common.utils.Utils;
+import androidx.annotation.NonNull;
+
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticdata.data.entity.address.LocationDataModel;
+import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupShop;
@@ -14,12 +30,6 @@ import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipme
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.UserAddress;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
-import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
-import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,16 +53,29 @@ public class ShipmentDataConverter {
 
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
-            UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
+            UserAddress defaultAddress = null;
+            UserAddress tradeInAddress = null;
+            if (cartShipmentAddressFormData.getAddressesData() != null && cartShipmentAddressFormData.getAddressesData().getData() != null) {
+                if (cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress() != null &&
+                        cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress().getAddressId() != 0) {
+                    defaultAddress = cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress();
+                }
+                if (cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress() != null &&
+                        cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress().getAddressId() != 0) {
+                    tradeInAddress = cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress();
+                }
+            }
             boolean isTradeIn = false;
+            boolean isTradeInDropOffEnable = false;
             if (cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop() != null &&
                     cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop().size() > 0) {
                 for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
                     if (groupShop.getProducts() != null && groupShop.getProducts().size() > 0) {
                         boolean foundData = false;
                         for (Product product : groupShop.getProducts()) {
-                            if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+                            if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
                                 isTradeIn = true;
+                                isTradeInDropOffEnable = product.getTradeInInfoData().isDropOffEnable();
                                 foundData = true;
                                 break;
                             }
@@ -61,58 +84,99 @@ public class ShipmentDataConverter {
                     }
                 }
             }
-            return createRecipientAddressModel(userAddress, isTradeIn);
+            RecipientAddressModel recipientAddressModel = createRecipientAddressModel(defaultAddress, tradeInAddress, isTradeIn, isTradeInDropOffEnable);
+            recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
+            if (cartShipmentAddressFormData.getAddressesData() != null) {
+                if (cartShipmentAddressFormData.getAddressesData().getActive().equalsIgnoreCase(AddressesData.DEFAULT_ADDRESS)) {
+                    recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
+                } else if (cartShipmentAddressFormData.getAddressesData().getActive().equalsIgnoreCase(AddressesData.TRADE_IN_ADDRESS)) {
+                    recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN);
+                }
+            }
+            return recipientAddressModel;
         }
         return null;
     }
 
-    public RecipientAddressModel getRecipientAddressModel(UserAddress userAddress) {
+    public RecipientAddressModel getRecipientAddressModel(UserAddress defaultAddress) {
         // Trade in is only available on OCS.
         // OCS is not available to send to multiple address
-        return createRecipientAddressModel(userAddress, false);
+        return createRecipientAddressModel(defaultAddress, null, false, false);
     }
 
     public ShipmentDonationModel getShipmentDonationModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         ShipmentDonationModel shipmentDonationModel = new ShipmentDonationModel();
-        shipmentDonationModel.setChecked(false);
+        shipmentDonationModel.setChecked(cartShipmentAddressFormData.getDonation().isChecked());
         shipmentDonationModel.setDonation(cartShipmentAddressFormData.getDonation());
 
         return shipmentDonationModel;
     }
 
     @NonNull
-    private RecipientAddressModel createRecipientAddressModel(UserAddress userAddress, boolean isTradeIn) {
+    private RecipientAddressModel createRecipientAddressModel(UserAddress defaultAddress,
+                                                              UserAddress tradeInAddress,
+                                                              boolean isTradeIn,
+                                                              boolean isTradeInDropOffEnable) {
         RecipientAddressModel recipientAddress = new RecipientAddressModel();
 
-        recipientAddress.setId(String.valueOf(userAddress.getAddressId()));
-        recipientAddress.setAddressStatus(userAddress.getStatus());
-        recipientAddress.setAddressName(userAddress.getAddressName());
-        recipientAddress.setCountryName(userAddress.getCountry());
-        recipientAddress.setProvinceName(userAddress.getProvinceName());
-        recipientAddress.setDestinationDistrictName(userAddress.getDistrictName());
-        recipientAddress.setCityName(userAddress.getCityName());
-        recipientAddress.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
-        recipientAddress.setStreet(userAddress.getAddress());
-        recipientAddress.setPostalCode(userAddress.getPostalCode());
-        recipientAddress.setCityId(String.valueOf(userAddress.getCityId()));
-        recipientAddress.setProvinceId(String.valueOf(userAddress.getProvinceId()));
+        if (defaultAddress != null) {
+            recipientAddress.setId(String.valueOf(defaultAddress.getAddressId()));
+            recipientAddress.setAddressStatus(defaultAddress.getStatus());
+            recipientAddress.setAddressName(defaultAddress.getAddressName());
+            recipientAddress.setCountryName(defaultAddress.getCountry());
+            recipientAddress.setProvinceName(defaultAddress.getProvinceName());
+            recipientAddress.setDestinationDistrictName(defaultAddress.getDistrictName());
+            recipientAddress.setCityName(defaultAddress.getCityName());
+            recipientAddress.setDestinationDistrictId(String.valueOf(defaultAddress.getDistrictId()));
+            recipientAddress.setStreet(defaultAddress.getAddress());
+            recipientAddress.setPostalCode(defaultAddress.getPostalCode());
+            recipientAddress.setCityId(String.valueOf(defaultAddress.getCityId()));
+            recipientAddress.setProvinceId(String.valueOf(defaultAddress.getProvinceId()));
 
-        recipientAddress.setRecipientName(userAddress.getReceiverName());
-        recipientAddress.setRecipientPhoneNumber(userAddress.getPhone());
-        recipientAddress.setLatitude(!TextUtils.isEmpty(userAddress.getLatitude()) ?
-                userAddress.getLatitude() : null);
-        recipientAddress.setLongitude(!TextUtils.isEmpty(userAddress.getLongitude()) ?
-                userAddress.getLongitude() : null);
+            recipientAddress.setRecipientName(defaultAddress.getReceiverName());
+            recipientAddress.setRecipientPhoneNumber(defaultAddress.getPhone());
+            recipientAddress.setLatitude(!TextUtils.isEmpty(defaultAddress.getLatitude()) ?
+                    defaultAddress.getLatitude() : null);
+            recipientAddress.setLongitude(!TextUtils.isEmpty(defaultAddress.getLongitude()) ?
+                    defaultAddress.getLongitude() : null);
 
-        recipientAddress.setSelected(userAddress.getStatus() == PRIME_ADDRESS);
-        recipientAddress.setCornerId(String.valueOf(userAddress.getCornerId()));
-        recipientAddress.setTradeIn(isTradeIn);
-        recipientAddress.setCornerAddress(userAddress.isCorner());
+            recipientAddress.setSelected(defaultAddress.getStatus() == PRIME_ADDRESS);
+            recipientAddress.setCornerId(String.valueOf(defaultAddress.getCornerId()));
+            recipientAddress.setTradeIn(isTradeIn);
+            recipientAddress.setTradeInDropOffEnable(isTradeInDropOffEnable);
+            recipientAddress.setCornerAddress(defaultAddress.isCorner());
+        }
+
+        if (tradeInAddress != null) {
+            LocationDataModel locationDataModel = new LocationDataModel();
+            locationDataModel.setAddress1(tradeInAddress.getAddress());
+            locationDataModel.setAddress2(tradeInAddress.getAddress2());
+            locationDataModel.setAddrId(tradeInAddress.getAddressId());
+            locationDataModel.setAddrName(tradeInAddress.getAddressName());
+            locationDataModel.setCity(tradeInAddress.getCityId());
+            locationDataModel.setCityName(tradeInAddress.getCityName());
+            locationDataModel.setCountry(tradeInAddress.getCountry());
+            locationDataModel.setDistrict(tradeInAddress.getDistrictId());
+            locationDataModel.setDistrictName(tradeInAddress.getDistrictName());
+            locationDataModel.setLatitude(tradeInAddress.getLatitude());
+            locationDataModel.setLongitude(tradeInAddress.getLongitude());
+            locationDataModel.setPhone(tradeInAddress.getPhone());
+            locationDataModel.setPostalCode(tradeInAddress.getPostalCode());
+            locationDataModel.setProvince(tradeInAddress.getProvinceId());
+            locationDataModel.setProvinceName(tradeInAddress.getProvinceName());
+            locationDataModel.setReceiverName(tradeInAddress.getReceiverName());
+            locationDataModel.setStatus(tradeInAddress.getStatus());
+
+            recipientAddress.setDropOffAddressName(locationDataModel.getAddrName());
+            recipientAddress.setDropOffAddressDetail(locationDataModel.getAddress1());
+            recipientAddress.setLocationDataModel(locationDataModel);
+        }
 
         return recipientAddress;
     }
 
-    public List<ShipmentCartItemModel> getShipmentItems(CartShipmentAddressFormData cartShipmentAddressFormData) {
+    public List<ShipmentCartItemModel> getShipmentItems(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                                        boolean hasTradeInDropOffAddress) {
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
 
         int addressIndex = 0;
@@ -152,7 +216,7 @@ public class ShipmentDataConverter {
 
                     getShipmentItem(shipmentCartItemModel, userAddress, groupShop,
                             cartShipmentAddressFormData.getKeroToken(),
-                            String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true);
+                            String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true, hasTradeInDropOffAddress);
                     shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
                     shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
                     shipmentCartItemModel.setFulfillmentName(groupShop.getFulfillmentName());
@@ -165,6 +229,8 @@ public class ShipmentDataConverter {
             UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
             for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
                 shipmentCartItemModel = new ShipmentCartItemModel();
+                shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
+                shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
                 shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
                 shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
                 shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
@@ -195,7 +261,7 @@ public class ShipmentDataConverter {
                 }
 
                 getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
-                        String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false);
+                        String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false, hasTradeInDropOffAddress);
                 shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
                 shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
                 shipmentCartItemModel.setFulfillmentName(groupShop.getFulfillmentName());
@@ -208,7 +274,6 @@ public class ShipmentDataConverter {
     }
 
 
-
     private void setCartItemModelError(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isAllItemError()) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
@@ -219,7 +284,8 @@ public class ShipmentDataConverter {
 
     private void getShipmentItem(ShipmentCartItemModel shipmentCartItemModel,
                                  UserAddress userAddress, GroupShop groupShop,
-                                 String keroToken, String keroUnixTime, boolean isMultiple) {
+                                 String keroToken, String keroUnixTime,
+                                 boolean isMultiple, boolean hasTradeInDropOffAddress) {
         if (isMultiple) {
             shipmentCartItemModel.setRecipientAddressModel(getRecipientAddressModel(userAddress));
         }
@@ -250,6 +316,8 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setSaveStateFlag(groupShop.isSaveStateFlag());
         shipmentCartItemModel.setIsLeasingProduct(groupShop.getIsLeasingProduct());
         shipmentCartItemModel.setBookingFee(groupShop.getBookingFee());
+
+        shipmentCartItemModel.setHasSetDropOffLocation(hasTradeInDropOffAddress);
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);
@@ -347,10 +415,10 @@ public class ShipmentDataConverter {
         cartItemModel.setFreeShipping(product.isFreeShipping());
         cartItemModel.setFreeShippingBadgeUrl(product.getFreeShippingBadgeUrl());
 
-        if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+        if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
             cartItemModel.setValidTradeIn(true);
-            cartItemModel.setOldDevicePrice(product.getTradeInInfo().getOldDevicePrice());
-            cartItemModel.setNewDevicePrice(product.getTradeInInfo().getNewDevicePrice());
+            cartItemModel.setOldDevicePrice(product.getTradeInInfoData().getOldDevicePrice());
+            cartItemModel.setNewDevicePrice(product.getTradeInInfoData().getNewDevicePrice());
         }
 
         if (product.getPurchaseProtectionPlanData() != null) {

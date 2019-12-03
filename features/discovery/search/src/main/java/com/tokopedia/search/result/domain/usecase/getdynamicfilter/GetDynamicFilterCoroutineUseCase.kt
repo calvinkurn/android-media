@@ -4,7 +4,7 @@ import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.common.UseCase
 
-internal class GetDynamicFilterCoroutineUseCase(
+class GetDynamicFilterCoroutineUseCase(
         private val dynamicFilterRepository: Repository<DynamicFilterModel>
 ): UseCase<DynamicFilterModel>() {
 

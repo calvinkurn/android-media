@@ -33,6 +33,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.networkDependencies.glide
+
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
@@ -61,7 +62,7 @@ dependencies {
 project.ext {
     artifactId = "withdraw"
     groupId = "com.tokopedia.payment"
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "withdraw-release"
 }
 
