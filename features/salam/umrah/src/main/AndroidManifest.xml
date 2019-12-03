@@ -19,7 +19,7 @@
                 <data
                     android:host="@string/umrah_host_s"
                     android:pathPattern="@string/umrah_path_search"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
             <intent-filter
                 android:autoVerify="true"
@@ -32,7 +32,7 @@
                 <data
                     android:host="@string/umrah_host_s"
                     android:pathPattern="@string/umrah_path_category"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
@@ -50,7 +50,7 @@
                 <data
                     android:host="@string/umrah_host_s"
                     android:pathPattern="@string/umrah_path_pdp"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
@@ -74,7 +74,7 @@
                 <data
                     android:host="@string/umrah_host_s"
                     android:pathPattern="@string/umrah_home_page_path"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
@@ -90,7 +90,7 @@
                 <data
                     android:host="@string/umrah_host_order_detail"
                     android:pathPattern="@string/umrah_path_order_detail"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
@@ -108,7 +108,7 @@
                 <data
                     android:host="@string/umrah_host_s"
                     android:pathPattern="@string/umrah_checkout_path"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity

@@ -1,16 +1,5 @@
 <resources>
     <string name="app_name">Umrah</string>
-    <string name="umrah_host_umrah">umrah</string>
-    <string name="umrah_host_s">s</string>
-    <string name="umrah_path_search">/umroh/search</string>
-    <string name="umrah_last_path_segment_search">search</string>
-    <string name="umrah_path_category">/umroh/paket/.*\</string>
-    <string name="umrah_path_pdp">/umroh/produk/.*\</string>
-    <string name="umrah_home_page_path">/umroh</string>
-    <string name="umrah_checkout_path">/umroh/checkout</string>
-    <string name="umrah_host_order_detail">/order-details</string>
-    <string name="umrah_path_order_detail">/umroh</string>
-
 
     <string name="umrah_order_detail_status_label">Status</string>
     <string name="umrah_order_detail_detail_title">Detail Umroh</string>
@@ -43,6 +32,7 @@
     <string name="umrah_search_filter_departure_period">Bulan Keberangkatan</string>
     <string name="umrah_see_all">Lihat Semua</string>
     <string name="umrah_search_filter_travel_duration">Durasi Perjalanan (Hari)</string>
+    <string name="umrah_last_path_segment_search" translatable="false">search</string>
 
     <string name="umrah_dana_impian_link">https://tokopedia.com/reksa-dana/dana-impian?fromUmroh=true&amp;target_amount=5000000&amp;name=TabunganUmroh</string>
 
