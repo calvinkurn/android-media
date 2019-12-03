@@ -233,7 +233,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
 
     private fun renderMyUmrahWidget(data: UmrahMyUmrahWidgetModel) {
         if (data.header.isNotEmpty()) {
-            my_umrah_widget.umrahMyUmrahModel = data
+            my_umrah_widget.myUmrahModel = data
             my_umrah_widget.buildView(trackingUmrahUtil)
         } else {
             my_umrah_widget.visibility = View.GONE
