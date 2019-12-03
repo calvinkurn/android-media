@@ -26,6 +26,7 @@
         <activity
             android:name=".banklist.v2.view.activity.AddBankActivity"
             android:screenOrientation="portrait"
+            android:label="@string/add_bank_account"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

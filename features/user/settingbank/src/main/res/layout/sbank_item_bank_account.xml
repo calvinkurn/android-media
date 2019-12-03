@@ -46,7 +46,7 @@
         tools:text="BNA" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker2"
+        android:id="@+id/tickerBankAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
@@ -54,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvBankAccountHolderName"
         app:tickerShapeType="loose"
         app:tickerType="error"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAccountPrimaryTag"
@@ -68,11 +68,31 @@
         android:paddingEnd="@dimen/dp_4"
         android:paddingRight="@dimen/dp_4"
         android:paddingBottom="@dimen/dp_3"
-        android:text="Rekening Utama"
+        android:visibility="gone"
+        android:text="@string/main_account"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@+id/ticker2"
-        app:layout_constraintTop_toBottomOf="@+id/ticker2"
-        app:typographyType="body_3" />
+        app:layout_constraintStart_toStartOf="@+id/tickerBankAccount"
+        app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
+        app:typographyType="heading_5" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAccountPending"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/sbank_bg_in_process"
+        android:paddingStart="@dimen/dp_4"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingTop="@dimen/dp_3"
+        android:paddingEnd="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_3"
+        android:text="@string/sbank_verification_in_progress"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/tickerBankAccount"
+        app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
+        app:typographyType="heading_5" />
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -86,12 +106,12 @@
         android:paddingEnd="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_4"
-        android:text="Hapus"
+        android:text="@string/menu_delete"
         android:visibility="gone"
         android:layout_marginTop="@dimen/dp_16"
         android:textColor="@color/Neutral_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ticker2"
+        app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
         app:typographyType="heading_6" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -106,11 +126,11 @@
         android:paddingEnd="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_4"
-        android:text="Jadikan Utama"
+        android:text="@string/sbank_make_bank_primary"
         android:visibility="gone"
         android:textColor="@color/green_500"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ticker2"
+        app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
         app:typographyType="heading_6" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -125,11 +145,11 @@
         android:paddingEnd="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_4"
-        android:text="Isi Data"
+        android:text="@string/sbank_isi_data"
         android:visibility="gone"
         android:textColor="@color/green_500"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ticker2"
+        app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
         app:typographyType="heading_6" />
 
 

@@ -54,6 +54,33 @@
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/wrapperManualAccountHolderName"
+        style="@style/HintTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:layout_marginTop="@dimen/dp_39"
+        android:hint="@string/account_name_title"
+        android:textColorHint="@color/white"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/wrapperBankAccountNumber">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etManualAccountHolderName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:singleLine="true"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/sp_16" />
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+
+
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/wrapperBankAccountNumber"
         style="@style/HintTextInputLayout"
         android:layout_width="0dp"
@@ -78,6 +105,48 @@
             android:textSize="@dimen/sp_16" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
+    <TextView
+        android:id="@+id/tvAccountHolderNameTag"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_39"
+        android:text="@string/account_name_title"
+        android:textColor="@color/Neutral_N700_68"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/wrapperBankAccountNumber" />
+
+    <TextView
+        android:id="@+id/tvAccHolderNamePrefix"
+        android:layout_width="@dimen/dp_35"
+        android:layout_height="@dimen/dp_35"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_11"
+        android:background="@drawable/sbank_name_bg_circle"
+        android:gravity="center"
+        android:textColor="@color/Neutral_N0"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/tvAccountHolderNameTag"
+        tools:text="MR" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAccountHolderName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_9"
+        android:layout_marginLeft="@dimen/dp_9"
+        android:textColor="@color/black_70"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAccHolderNamePrefix"
+        app:layout_constraintStart_toEndOf="@+id/tvAccHolderNamePrefix"
+        app:layout_constraintTop_toTopOf="@+id/tvAccHolderNamePrefix"
+        app:typographyType="heading_5"
+        tools:text="MOHAMAD RAVENA UTAMA" />
+
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btnPeriksa"
@@ -97,6 +166,12 @@
         app:layout_constraintTop_toTopOf="@+id/guidelineNomorRekening"
         app:typographyType="heading_6" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupAccountNameAuto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tvAccHolderNamePrefix,tvAccountHolderName,tvAccountHolderNameTag"/>
 
     <View
         android:id="@+id/view_btn_top_shadow"
@@ -123,7 +198,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="heading_5"
         tools:visibility="visible" />
-
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAddBankTnc"

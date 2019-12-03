@@ -1,13 +1,24 @@
-mutation{
-  richieAddBankAccountNewFlow(bankID:71, bankName:"PT. BANK CENTRAL ASIA TBK", accountNo:"8765456787", accountName:"Ade Wijaya Test", isManual:false){
+mutation richieAddBankAccountNewFlow($bankID: Int!,
+  $bankName: String!,
+  $accountNo: String!,
+  $accountName:String!,
+  $isManual : Boolean!){
+  richieAddBankAccountNewFlow
+        (input:
+          {   bankID:$bankID,
+              bankID:$bankID,
+              accountNo:$accountNo,
+              accountName:$accountName,
+              isManual:$isManual
+          }){
      	status
     	message
     	data{
-        accID
-        accNo
-        accName
-      	bankID
-        userID
+            accID
+            accNo
+            accName
+            bankID
+            userID
       }
   }
 }

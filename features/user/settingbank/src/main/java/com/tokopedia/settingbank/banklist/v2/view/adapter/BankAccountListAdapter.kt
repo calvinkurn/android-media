@@ -66,6 +66,7 @@ class BankAccountListAdapter(var bankList: ArrayList<BankAccount>) : RecyclerVie
 interface BankAccountClickListener {
     fun createAccountPrimary(bankAccount: BankAccount)
     fun deleteBankAccount(bankAccount: BankAccount)
+    fun onClickDataContent(bankAccount: BankAccount)
 }
 
 /*[{"data":{"GetBankAccount":{"status":"REQUEST_DENIED","header":{"processTime":0.000232408,"message":["Mohon maaf, silahkan coba beberapa saat lagi"],"reason":"","errorCode":"30003"},"data":{"bankAccounts":[],"userInfo":{"message":"","isVerified":false}}}}}]

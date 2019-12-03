@@ -67,9 +67,12 @@ data class BankAccount(
         @SerializedName("bankImageUrl")
         @Expose
         val bankImageUrl: String? = null,
-        @SerializedName("status_fraud")
+        @SerializedName("statusFraud")
         @Expose
-        val statusFraud: Long)
+        val statusFraud: Int,
+        @SerializedName("copyWriting")
+        @Expose
+        val copyWriting: String?)
 
 data class UserInfo(
         @SerializedName("message")

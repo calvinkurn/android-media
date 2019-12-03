@@ -17,6 +17,7 @@ query {
         fsp
 		statusFraud
 		bankImageUrl
+		copyWriting
       }
       userInfo{
         message

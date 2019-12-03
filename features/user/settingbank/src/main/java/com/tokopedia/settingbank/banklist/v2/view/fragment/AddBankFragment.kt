@@ -1,43 +1,65 @@
 package com.tokopedia.settingbank.banklist.v2.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
+import com.tokopedia.settingbank.banklist.v2.domain.AddBankRequest
 import com.tokopedia.settingbank.banklist.v2.domain.Bank
 import com.tokopedia.settingbank.banklist.v2.domain.TemplateData
 import com.tokopedia.settingbank.banklist.v2.view.activity.ARG_BANK_DATA
-import com.tokopedia.settingbank.banklist.v2.view.viewModel.BankNumberTextWatcherViewModel
-import com.tokopedia.settingbank.banklist.v2.view.viewModel.SettingBankTNCViewModel
-import com.tokopedia.settingbank.banklist.v2.view.viewState.OnNoBankSelected
-import com.tokopedia.settingbank.banklist.v2.view.viewState.OnTextWatcherError
-import com.tokopedia.settingbank.banklist.v2.view.viewState.OnTextWatcherSuccess
+import com.tokopedia.settingbank.banklist.v2.view.viewModel.*
+import com.tokopedia.settingbank.banklist.v2.view.viewState.*
 import com.tokopedia.settingbank.banklist.v2.view.widgets.BankTNCBottomSheet
 import com.tokopedia.settingbank.banklist.v2.view.widgets.CloseableBottomSheetFragment
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_bank_v2.*
 import javax.inject.Inject
 
 class AddBankFragment : BaseDaggerFragment() {
+
+
+    private val REQUEST_OTP: Int = 103
 
     override fun getScreenName(): String? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private lateinit var tNCViewModel: SettingBankTNCViewModel
+    private lateinit var checkAccountNumberViewModel: CheckAccountNumberViewModel
     private lateinit var textWatcherViewModel: BankNumberTextWatcherViewModel
+    private lateinit var accountHolderNameViewModel: AccountHolderNameViewModel
+    private lateinit var addAccountViewModel: AddAccountViewModel
 
     private lateinit var tncBottomSheet: BankTNCBottomSheet
     private lateinit var bankListBottomSheet: CloseableBottomSheetFragment
+    private lateinit var confirmationDialog: AlertDialog
+
+    val builder: AddBankRequest.Builder = AddBankRequest.Builder()
 
     lateinit var bank: Bank
 
@@ -47,10 +69,10 @@ class AddBankFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let {
-            if (savedInstanceState.containsKey(ARG_BANK_DATA))
-                savedInstanceState.getParcelable<Bank>(ARG_BANK_DATA)?.let {
-                    bank = it
+        arguments?.let {
+            if (it.containsKey(ARG_BANK_DATA))
+                arguments?.getParcelable<Bank>(ARG_BANK_DATA)?.let { bank ->
+                    this.bank = bank
                 }
         }
         initViewModels()
@@ -60,6 +82,9 @@ class AddBankFragment : BaseDaggerFragment() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         tNCViewModel = viewModelProvider.get(SettingBankTNCViewModel::class.java)
         textWatcherViewModel = viewModelProvider.get(BankNumberTextWatcherViewModel::class.java)
+        checkAccountNumberViewModel = viewModelProvider.get(CheckAccountNumberViewModel::class.java)
+        accountHolderNameViewModel = viewModelProvider.get(AccountHolderNameViewModel::class.java)
+        addAccountViewModel = viewModelProvider.get(AddAccountViewModel::class.java)
         if (::bank.isInitialized)
             textWatcherViewModel.onBankSelected(bank)
     }
@@ -74,7 +99,78 @@ class AddBankFragment : BaseDaggerFragment() {
         startObservingViewModels()
         setBankName()
         etBankName.setOnClickListener { openBankListForSelection() }
+        btnPeriksa.setOnClickListener { checkAccountNumber() }
+        add_account_button.setOnClickListener { onClickAddBankAccount() }
         etBankAccountNumber.addTextChangedListener(textWatcherViewModel.getTextWatcher())
+    }
+
+    private fun startObservingViewModels() {
+        tNCViewModel.tncPopUpTemplate.observe(this, Observer {
+            openTNCBottomSheet(it)
+        })
+
+        textWatcherViewModel.textWatcherState.observe(this, Observer {
+            when (it) {
+                is OnNOBankSelected -> setAccountNumberError("Please select Nama Bank")
+                is OnTextChanged -> {
+                    setAccountNumberError(null)
+                    onTextChange(it)
+                }
+            }
+        })
+
+        checkAccountNumberViewModel.accountCheckState.observe(this, Observer {
+            when (it) {
+                is OnNetworkError -> {
+                }
+                is OnAccountCheckSuccess -> onAccountCheckSuccess(it.accountHolderName)
+                is OnErrorInAccountNumber -> {
+                    setAccountNumberError(it.errorMessage)
+                }
+            }
+        })
+
+        accountHolderNameViewModel.textWatcherState.observe(this, Observer {
+            when (it) {
+                is OnAccountNameError -> showManualAccountNameError(it.error)
+                is OnAccountNameValidated -> {
+                    builder.accountName(it.name, true)
+                    showManualAccountNameError(null)
+                    openConfirmationPopUp()
+                }
+            }
+        })
+
+        addAccountViewModel.addAccountState.observe(this, Observer {
+            when (it) {
+                is OnSuccessfullyAdded -> {
+                    activity?.finish()
+                }
+                is OnAccountAddingError -> {
+                    showErrorToaster(it.message)
+                }
+
+            }
+        })
+    }
+
+    private fun showErrorToaster(message: String) {
+        view?.let {
+            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun onClickAddBankAccount() {
+        val request = builder.build()
+        if (!request.isManual) {
+            openPinVerification()
+        } else {
+            accountHolderNameViewModel.onValidateAccountName(etManualAccountHolderName.text.toString())
+        }
+    }
+
+    private fun checkAccountNumber() {
+        checkAccountNumberViewModel.checkAccountNumber(bank.bankID, etBankAccountNumber.text.toString())
     }
 
     private fun openBankListForSelection() {
@@ -86,18 +182,52 @@ class AddBankFragment : BaseDaggerFragment() {
         bankListBottomSheet.showNow(activity!!.supportFragmentManager, "")
     }
 
-    private fun startObservingViewModels() {
-        tNCViewModel.tncPopUpTemplate.observe(this, Observer {
-            openTNCBottomSheet(it)
-        })
+    private fun showManualAccountNameError(error: String?) {
+        wrapperManualAccountHolderName.error = error
+    }
 
-        textWatcherViewModel.textWatcherState.observe(this, Observer {
-            when (it) {
-                is OnTextWatcherSuccess -> setAccountNumberError(null)
-                is OnNoBankSelected -> setAccountNumberError("Please Nama Bank")
-                is OnTextWatcherError -> setAccountNumberError(it.error)
+    private fun onTextChange(onTextChanged: OnTextChanged) {
+        btnPeriksa.isEnabled = onTextChanged.isCheckEnable
+        add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
+        if (onTextChanged.clearAccountHolderName) {
+            builder.accountNumber(onTextChanged.newAccountNumber)
+            groupAccountNameAuto.gone()
+            tvAccountHolderName.text = ""
+            btnPeriksa.isEnabled = onTextChanged.isCheckEnable
+            add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
+            etManualAccountHolderName.setText("")
+            wrapperManualAccountHolderName.error = null
+            wrapperManualAccountHolderName.gone()
+        }
+        if (onTextChanged.isTextUpdateRequired) {
+            etBankAccountNumber.setText(onTextChanged.newAccountNumber)
+            etBankAccountNumber.text?.let {
+                etBankAccountNumber.setSelection(it.length)
             }
-        })
+        }
+    }
+
+    private fun onAccountCheckSuccess(accountHolderName: String?) {
+        btnPeriksa.isEnabled = false
+        add_account_button.isEnabled = true
+        accountHolderName?.let {
+            if (it.isEmpty()) {
+                builder.isManual(true)
+                openManualNameEntryView()
+            } else {
+                builder.accountName(accountHolderName, false)
+                tvAccountHolderName.text = accountHolderName
+                wrapperManualAccountHolderName.gone()
+                groupAccountNameAuto.visible()
+            }
+        } ?: run {
+            openManualNameEntryView()
+        }
+    }
+
+    private fun openManualNameEntryView() {
+        groupAccountNameAuto.gone()
+        wrapperManualAccountHolderName.visible()
     }
 
     private fun setAccountNumberError(errorStr: String?) {
@@ -162,6 +292,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun setBankName() {
         if (::bank.isInitialized) {
+            builder.bank(bank.bankID, bank.bankName)
             etBankName.setText("${bank.abbreviation ?: ""} (${bank.bankName})")
         }
     }
@@ -169,6 +300,53 @@ class AddBankFragment : BaseDaggerFragment() {
     override fun onDestroy() {
         tNCViewModel.tncPopUpTemplate.removeObservers(this)
         textWatcherViewModel.textWatcherState.removeObservers(this)
+        checkAccountNumberViewModel.accountCheckState.removeObservers(this)
+        accountHolderNameViewModel.textWatcherState.removeObservers(this)
         super.onDestroy()
+    }
+
+    private fun openConfirmationPopUp() {
+        val addBankRequest = builder.build()
+        val dialogBuilder = AlertDialog.Builder(activity!!)
+        val inflater = activity!!.layoutInflater
+        val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
+        (dialogView.findViewById(R.id.heading) as TextView).text = "Tambah RekeningBank"
+        (dialogView.findViewById(R.id.description) as TextView).text = "Kamu akan menambahkan rekening ${bank?.abbreviation
+                ?: ""} ${addBankRequest.accountNo} a.n ${addBankRequest.accountName}."
+        dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
+            confirmationDialog.dismiss()
+            openPinVerification()
+        }
+        dialogView.findViewById<View>(R.id.back_btn).setOnClickListener {
+            if (::confirmationDialog.isInitialized)
+                confirmationDialog.dismiss()
+        }
+        confirmationDialog = dialogBuilder.setView(dialogView).show()
+    }
+
+    private fun openPinVerification() {
+        val OTP_TYPE_ADD_BANK_ACCOUNT = 12
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val bundle = Bundle()
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ADD_BANK_ACCOUNT)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_OTP)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_OTP -> onResultRequestOtp(resultCode)
+        }
+    }
+
+    private fun onResultRequestOtp(resultCode: Int) {
+        if (resultCode == Activity.RESULT_OK) {
+            addAccountViewModel.addBank(builder.build())
+        }
     }
 }

@@ -13,7 +13,6 @@ import dagger.multibindings.StringKey
 @Module
 class GqlRawQueryModule {
 
-
     @SettingBankScope
     @Provides
     @IntoMap
@@ -47,5 +46,11 @@ class GqlRawQueryModule {
     @StringKey(QUERY_GET_BANK_LIST)
     fun provideGetBankList(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_bank_list_v2)
+    @SettingBankScope
+    @Provides
+    @IntoMap
+    @StringKey(QUERY_CHECK_BANK_ACCOUNT)
+    fun provideCheckAccountNumber(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_check_account_number_v2)
 
 }

@@ -5,10 +5,8 @@ import android.text.TextWatcher
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.settingbank.banklist.v2.domain.Bank
-import com.tokopedia.settingbank.banklist.v2.view.viewState.OnNoBankSelected
-import com.tokopedia.settingbank.banklist.v2.view.viewState.OnTextWatcherError
-import com.tokopedia.settingbank.banklist.v2.view.viewState.OnTextWatcherSuccess
-import com.tokopedia.settingbank.banklist.v2.view.viewState.TextWatcherState
+import com.tokopedia.settingbank.banklist.v2.util.BankAccountNumber
+import com.tokopedia.settingbank.banklist.v2.view.viewState.*
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -16,9 +14,9 @@ import javax.inject.Inject
 class BankNumberTextWatcherViewModel @Inject constructor(dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    private val TEXT_WATCHER_DELAY = 300L
-
     val textWatcherState = MutableLiveData<TextWatcherState>()
+
+    private lateinit var textWatcher: TextWatcher
 
     private var job: Job? = Job()
 
@@ -26,17 +24,17 @@ class BankNumberTextWatcherViewModel @Inject constructor(dispatcher: CoroutineDi
 
     fun onBankSelected(bank: Bank?) {
         currentBank = bank
-        if(textWatcherState.value == OnNoBankSelected)
-            textWatcherState.value = OnTextWatcherSuccess
     }
 
     fun getTextWatcher(): TextWatcher {
+        if (::textWatcher.isInitialized)
+            return textWatcher
         return object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 currentBank?.let {
-                    onTextChanged(s.toString())
+                    onTextChanged(it, s.toString())
                 } ?: run {
-                    textWatcherState.value = OnNoBankSelected
+                    textWatcherState.value = OnNOBankSelected
                 }
             }
 
@@ -45,25 +43,45 @@ class BankNumberTextWatcherViewModel @Inject constructor(dispatcher: CoroutineDi
         }
     }
 
-    private fun onTextChanged(text: String) {
+    private fun onTextChanged(bank: Bank, text: String) {
         cancelCurrentJob()
         createNewJob()
         launchCatchError(block = {
-            val state = validateAccountNumber(text, job!!)
+            val state = validateAccountNumber(bank, text, job!!)
             textWatcherState.value = state
         }) {
             it.printStackTrace()
         }
     }
 
-    private suspend fun validateAccountNumber(numberStr: String, job: Job): TextWatcherState =
+    private suspend fun validateAccountNumber(bank: Bank, numberStr: String, job: Job): TextWatcherState =
             withContext(Dispatchers.IO + job) {
-                delay(TEXT_WATCHER_DELAY)
-                if(numberStr.length > 15){
-                    return@withContext OnTextWatcherError("Jumlah angka pada nomor rekening tidak sesuai")
-                }
-                return@withContext OnTextWatcherSuccess
+                val abbreviation = bank.abbreviation?.let { it } ?: ""
+                return@withContext validateBankAccountNumber(abbreviation, numberStr)
             }
+
+    private fun validateBankAccountNumber(abbreviation: String, numberStr: String): TextWatcherState {
+        val bankType = getBankTypeFromAbbreviation(abbreviation)
+
+        return when (numberStr.length) {
+            0 -> OnTextChanged(isCheckEnable = false, clearAccountHolderName = true,
+                    isAddBankButtonEnable = false,
+                    newAccountNumber = numberStr, isTextUpdateRequired = false)
+            in 1..bankType.count -> OnTextChanged(isCheckEnable = true, clearAccountHolderName = true,
+                    isAddBankButtonEnable = false,
+                    newAccountNumber = numberStr, isTextUpdateRequired = false)
+            else -> OnTextChanged(isCheckEnable = true, clearAccountHolderName = true,
+                    isAddBankButtonEnable = false,
+                    newAccountNumber = numberStr.substring(0, bankType.count), isTextUpdateRequired = true)
+        }
+    }
+
+    private fun getBankTypeFromAbbreviation(abbreviation: String): BankAccountNumber = when (abbreviation.toUpperCase()) {
+        BankAccountNumber.BRI.abbrevation.toUpperCase() -> BankAccountNumber.BRI
+        BankAccountNumber.BCA.abbrevation.toUpperCase() -> BankAccountNumber.BCA
+        BankAccountNumber.Mandiri.abbrevation.toUpperCase() -> BankAccountNumber.Mandiri
+        else -> BankAccountNumber.OTHER
+    }
 
     private fun createNewJob() {
         job = Job()

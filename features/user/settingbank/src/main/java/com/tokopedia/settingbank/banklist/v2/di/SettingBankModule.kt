@@ -1,9 +1,13 @@
 package com.tokopedia.settingbank.banklist.v2.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.settingbank.banklist.v2.view.adapter.BankAccountListAdapter
 import com.tokopedia.settingbank.banklist.v2.view.adapter.BankListAdapter
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,5 +31,12 @@ class SettingBankModule {
     @SettingBankScope
     @Provides
     fun provideBankAdapter(): BankListAdapter = BankListAdapter(arrayListOf())
+
+
+    @SettingBankScope
+    @Provides
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
 
 }

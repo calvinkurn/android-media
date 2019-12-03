@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.settingbank.banklist.v2.view.viewModel.BankNumberTextWatcherViewModel
-import com.tokopedia.settingbank.banklist.v2.view.viewModel.SelectBankViewModel
-import com.tokopedia.settingbank.banklist.v2.view.viewModel.SettingBankTNCViewModel
-import com.tokopedia.settingbank.banklist.v2.view.viewModel.SettingBankViewModel
+import com.tokopedia.settingbank.banklist.v2.view.viewModel.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -39,5 +36,20 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(BankNumberTextWatcherViewModel::class)
     internal abstract fun addAccountNumberTextWatcherViewModel(viewModel: BankNumberTextWatcherViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CheckAccountNumberViewModel::class)
+    internal abstract fun checkAccountNumberViewModel(viewModel: CheckAccountNumberViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AccountHolderNameViewModel::class)
+    internal abstract fun validateAccountViewModel(viewModel: AccountHolderNameViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AddAccountViewModel::class)
+    internal abstract fun addAddAccountViewModel(viewModel: AddAccountViewModel): ViewModel
 
 }
