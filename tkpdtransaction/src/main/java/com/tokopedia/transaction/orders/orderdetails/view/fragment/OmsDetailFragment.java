@@ -190,6 +190,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         policy = view.findViewById(R.id.policy);
         claim = view.findViewById(R.id.claim);
 
+
         initInjector();
         setMainViewVisible(View.GONE);
 

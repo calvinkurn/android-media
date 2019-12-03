@@ -245,6 +245,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 tapActionLayoutEvents = itemView.findViewById(R.id.tapAction_events);
                 llValid = itemView.findViewById(R.id.ll_valid);
             }
+
             if (itemType == ITEM_INSURANCE) {
                 dealImage = itemView.findViewById(R.id.img_product);
                 dealsDetails = itemView.findViewById(R.id.txt_product_name);
@@ -274,7 +275,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 doubleTextView.setBottomTextSize(TEXT_SIZE_LARGE);
                 statusDetail.addView(doubleTextView);
             }
-
 
         }
 
@@ -614,6 +614,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void setDetailTitle(String title);
 
         void setInsuranceDetail();
+
     }
 
     private class DefaultViewHolder extends RecyclerView.ViewHolder {

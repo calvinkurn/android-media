@@ -83,6 +83,7 @@ public class MetaDataInfo {
     @Expose
     private String productPrice;
 
+
     public String getEndDate() {
         return endDate;
     }

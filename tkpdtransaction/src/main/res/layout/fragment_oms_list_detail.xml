@@ -192,46 +192,47 @@
                 android:elevation="@dimen/dp_3"
                 android:layout_marginTop="@dimen/dp_16">
 
-                <RelativeLayout
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/dp_10">
+
+                <TextView
+                    android:id="@+id/insurance_claim"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/white"
-                    android:orientation="vertical"
-                    android:paddingBottom="@dimen/dp_10">
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:text="@string/insurance_claim"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/insurance_claim"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:text="@string/insurance_claim"
-                        android:textColor="@color/black_70"
-                        android:textSize="@dimen/sp_16"
-                        android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/insurance_claim_content"
+                    android:layout_below="@id/insurance_claim"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_12"
+                    android:text="@string/insurance_claim_content"
+                    android:textSize="@dimen/font_medium" />
 
-                    <TextView
-                        android:id="@+id/insurance_claim_content"
-                        android:layout_below="@id/insurance_claim"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/dp_12"
-                        android:text="@string/insurance_claim_content"
-                        android:textSize="@dimen/font_medium" />
+                <ImageView
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:tint="@color/tkpd_transaction_arrow_tint"
+                    app:srcCompat="@drawable/ic_arrow_right_grey" />
 
-                    <ImageView
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginTop="@dimen/dp_14"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:tint="@color/tkpd_transaction_arrow_tint"
-                        app:srcCompat="@drawable/ic_arrow_right_grey" />
-
-                </RelativeLayout>
+            </RelativeLayout>
             </androidx.cardview.widget.CardView>
+
 
             <View
                 android:id="@+id/divider_above_userInfo"
