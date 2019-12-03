@@ -45,7 +45,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             if (service != null && service is TokopediaPlayService.LocalBinder) {
                 val serviceInstance = service.service
-                serviceInstance.playVideoWithString("https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4")
+                serviceInstance.playVideoWithString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4")
                 launch {
                     EventBusFactory.get(viewLifecycleOwner)
                             .emit(

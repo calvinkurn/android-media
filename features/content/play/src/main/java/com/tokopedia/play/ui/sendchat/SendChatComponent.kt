@@ -6,7 +6,6 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -26,7 +25,7 @@ class SendChatComponent(
     }
 
     override fun getUserInteractionEvents(): Flow<SendChatInteractionEvent> {
-        return bus.getSafeManagedReceiveChannel(SendChatInteractionEvent::class.java)
+        return bus.getSafeManagedFlow(SendChatInteractionEvent::class.java)
     }
 
     override fun onChatFormClicked(view: SendChatView) {

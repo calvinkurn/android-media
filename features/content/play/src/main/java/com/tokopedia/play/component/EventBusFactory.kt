@@ -68,13 +68,13 @@ class EventBusFactory private constructor(val owner: LifecycleOwner) {
     }
 
     /**x
-     * getSafeManagedReceiveChannel returns a Receive Channel which is
+     * getSafeManagedFlow returns a Flow which is
      *  *Safe* against reentrant events as it is serialized and
      *  *Managed* since it disposes itself based on the lifecycle
      *
      *  @param clazz is the class of the event type used by this channel
      */
-    fun <T : ComponentEvent> getSafeManagedReceiveChannel(clazz: Class<T>): Flow<T> {
+    fun <T : ComponentEvent> getSafeManagedFlow(clazz: Class<T>): Flow<T> {
         return (if (map[clazz] != null) map[clazz] as BroadcastChannel<T> else create(clazz)).asFlow()
     }
 }

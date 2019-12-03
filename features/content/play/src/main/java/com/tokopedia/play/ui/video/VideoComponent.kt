@@ -3,12 +3,8 @@ package com.tokopedia.play.ui.video
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
-import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -26,7 +22,7 @@ class VideoComponent(
 
     init {
         launch {
-            bus.getSafeManagedReceiveChannel(ScreenStateEvent::class.java)
+            bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
                             is ScreenStateEvent.Play -> uiView.setPlayer(it.exoPlayer)
