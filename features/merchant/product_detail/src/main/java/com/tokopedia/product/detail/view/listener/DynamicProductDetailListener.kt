@@ -4,7 +4,6 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.spesification.Specification
@@ -25,10 +24,10 @@ interface DynamicProductDetailListener {
     /**
      * ProductInfoViewHolder
      */
-    fun openCategory(category: Category.Detail)
-    fun gotoEtalase(etalaseId: String, shopID: Int)
     fun gotoVideoPlayer(videos: List<Video>, index: Int)
+    fun gotoEtalase(etalaseId: String, shopID: Int)
     fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>)
+    fun onSubtitleInfoClicked(applink: String, etalaseId: String, shopId: Int, categoryId: String)
 
     /**
      * ProductDiscussionViewHolder

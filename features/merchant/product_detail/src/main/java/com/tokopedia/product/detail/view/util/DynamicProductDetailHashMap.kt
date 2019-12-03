@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.util
 import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
@@ -74,27 +73,6 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
     val getShopInfo: ProductShopInfoDataModel
         get() = shopInfoMap ?: ProductShopInfoDataModel()
 
-    fun updateDataP1(data: ProductInfoP1?) {
-        data?.let {
-            //            snapShotMap.productInfoP1 = it.productInfo
-//            snapShotMap.media = it.productInfo.media
-
-            productDiscussionMap?.run {
-                shopId = it.productInfo.basic.shopID.toString()
-                talkCount = it.productInfo.stats.countTalk
-            }
-
-            productInfoMap?.run {
-                productInfo = it.productInfo
-            }
-
-            productLastSeenMap?.run {
-                lastSeen = it.productInfo.basic.lastUpdatePrice
-            }
-
-        }
-    }
-
     fun updateDataP1Test(data: DynamicProductInfoP1?) {
         data?.let {
             snapShotMap.run {
@@ -134,7 +112,7 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
             }
 
             productInfoMap?.run {
-                shopInfo = it.shopInfo
+                shopName = it.shopInfo?.shopCore?.name ?: ""
             }
         }
     }

@@ -12,7 +12,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
-import android.view.Menu
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
@@ -70,7 +69,10 @@ import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.product.*
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
+import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
+import com.tokopedia.product.detail.common.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
@@ -349,7 +351,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                                 productInfo.data.preOrder)
 
                         if (productInfo.basic.category.isAdult) {
-                            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId ?: "")
+                            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId
+                                    ?: "")
                         }
                     }
 
@@ -622,11 +625,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         super.onDestroy()
     }
 
-    override fun openCategory(category: Category.Detail) {
+
+    /**
+     * ProductInfoViewHolder
+     */
+
+    private fun openCategory(categoryId: String) {
         if (GlobalConfig.isCustomerApp()) {
             RouteManager.route(context,
                     ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
-                    category.id)
+                    categoryId)
         }
     }
 
@@ -637,6 +645,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             UriUtil.buildUri(ApplinkConst.SHOP, shopID.toString())
         })
         startActivity(intent)
+    }
+
+    override fun onSubtitleInfoClicked(applink: String, etalaseId: String, shopId: Int, categoryId: String) {
+        when {
+            applink.startsWith(ApplinkConst.SHOP_ETALASE) -> {
+                gotoEtalase(etalaseId, shopId)
+            }
+            else -> {
+                openCategory(categoryId)
+            }
+        }
     }
 
     override fun gotoVideoPlayer(videos: List<Video>, index: Int) {
@@ -945,13 +964,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
         activity?.let {
             val intent = RouteManager.getIntent(it,
-                    ApplinkConst.PRODUCT_TALK, pdpHashMapUtil.productInfoMap?.productInfo?.basic?.id.toString())
+                    ApplinkConst.PRODUCT_TALK, viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
             startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT)
         }
-        pdpHashMapUtil.productInfoMap?.productInfo?.run {
-            productDetailTracking.sendMoEngageClickDiskusi(this,
-                    (viewModel.shopInfo?.goldOS?.isOfficial ?: 0) > 0,
-                    viewModel.shopInfo?.shopCore?.name ?: "")
+        viewModel.getDynamicProductInfoP1?.run {
+//            productDetailTracking.sendMoEngageClickDiskusi(this,
+//                    (viewModel.shopInfo?.goldOS?.isOfficial ?: 0) > 0,
+//                    viewModel.shopInfo?.shopCore?.name ?: "")
         }
     }
 
