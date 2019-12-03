@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.view.customview;
+package com.tokopedia.common_tradein.customviews;
 
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -12,11 +12,11 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
-import com.tokopedia.tradein.R;
-import com.tokopedia.tradein.viewmodel.ITradeInParamReceiver;
-import com.tokopedia.tradein.viewmodel.TradeInResponseObserver;
-import com.tokopedia.tradein.viewmodel.TradeInTextViewModel;
-import com.tokopedia.tradein.viewmodel.TradeInVMFactory;
+import com.tokopedia.common_tradein.R;
+import com.tokopedia.common_tradein.viewmodel.ITradeInParamReceiver;
+import com.tokopedia.common_tradein.viewmodel.TradeInResponseObserver;
+import com.tokopedia.common_tradein.viewmodel.TradeInTextViewModel;
+import com.tokopedia.common_tradein.viewmodel.CommonTradeInVMFactory;
 
 public class TradeInTextView extends ConstraintLayout {
     public static final String ACTION_TRADEIN_ELLIGIBLE = "ACTION_TRADE_IN_ELLIGIBLE";
@@ -54,7 +54,7 @@ public class TradeInTextView extends ConstraintLayout {
         inflate(getContext(), R.layout.trade_in_textview, this);
         if (!isInEditMode()) {
             viewModel = ViewModelProviders.of((FragmentActivity) getContext(),
-                    TradeInVMFactory.getInstance(((FragmentActivity) getContext()).getApplication()))
+                    CommonTradeInVMFactory.getInstance(((FragmentActivity) getContext()).getApplication()))
                     .get(TradeInTextViewModel.class);
             viewModel.setActivity((FragmentActivity) getContext());
             viewModel.getResponseData().observe((FragmentActivity) getContext(),
