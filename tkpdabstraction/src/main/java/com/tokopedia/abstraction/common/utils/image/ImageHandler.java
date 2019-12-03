@@ -207,7 +207,7 @@ public class ImageHandler {
     }
 
     public static void logError(GlideException e, String url) {
-        Timber.e(e, "Load image error: url= %s message= %s traceroute=", url, e != null ? e.getMessage() : "");
+        Timber.e(e, "P2Load image error: url= %s message= %s traceroute=", url, e != null ? e.getMessage() : "");
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
