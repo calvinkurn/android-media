@@ -32,7 +32,6 @@ class AddToCartUseCaseTest : Spek({
 
     Feature("AddToCartUseCase") {
         lateinit var subscriber: AssertableSubscriber<AddToCartDataModel>
-        lateinit var onErrorEvents: List<Throwable>
         lateinit var requestParam: RequestParams
         val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST";
 
