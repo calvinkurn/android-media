@@ -9,6 +9,22 @@ object DigitalHomepageTrackingActionConstant {
     const val BANNER_CLICK = "click banner"
     const val DYNAMIC_ICON_CLICK = "dynamic icon click"
     const val DYNAMIC_ICON_IMPRESSION = "dynamic icon impression"
+    const val BACK_BUTTON_CLICK = "click back button"
+    const val SEARCH_BOX_CLICK = "click search box"
+    const val SEARCH_CLICK = "click search"
+    const val ALL_BANNERS_CLICK = "click lihat semua banner"
+    const val SUBSCRIPTION_GUIDE_CLICK = "click cara langganan"
+    const val MORE_INFO_CLICK = "click selengkapnya"
+    const val BEHAVIORAL_CATEGORY_IMPRESSION = "impression behavioral category"
+    const val BEHAVIORAL_CATEGORY_CLICK = "click behavioral category"
+    const val NEW_USER_IMPRESSION = "impression new user banner"
+    const val NEW_USER_BANNER_CLICK = "click new user banner"
+    const val SPOTLIGHT_IMPRESSION = "impression spotlight banner"
+    const val SPOTLIGHT_BANNER_CLICK = "click spotlight banner"
+    const val SUBHOME_WIDGET_IMPRESSION = "impression subhome wisget"
+    const val SUBHOME_WIDGET_CLICK = "click spotlight banner"
+    const val SEARCH_RESULT_PAGE_ICON_IMPRESSION = "impression SRP icon"
+    const val SEARCH_RESULT_PAGE_ICON_CLICK = "click SRP icon"
 }
 
 object DigitalHomepageTrackingLabelConstant {

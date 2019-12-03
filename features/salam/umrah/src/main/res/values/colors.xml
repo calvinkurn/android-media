@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="solid_ticker">#fffbcd</color>
-    <color name="border_ticker">#ecdb77</color>
+    <color name="umrah_solid_ticker">#fffbcd</color>
+    <color name="umrah_border_ticker">#ecdb77</color>
 </resources>

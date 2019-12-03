@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import kotlinx.android.synthetic.main.home_item_review.view.*
 
@@ -41,11 +42,13 @@ class ReviewViewHolder(
                     element.suggestedProductReview.suggestedProductReview.title,
                     element.suggestedProductReview.suggestedProductReview.description
             )
-            ImageHandler.loadImage(
-                    itemView.context,
+
+            ImageHandler.loadRoundedImage(
                     itemView.img_review,
                     element.suggestedProductReview.suggestedProductReview.imageUrl,
-                    R.drawable.ic_loading_image
+                    8.dpToPx(itemView.resources.displayMetrics).toFloat(),
+                    R.drawable.ic_loading_image,
+                    -1
             )
 
             itemView.addOnImpressionListener(element, object : ViewHintListener {

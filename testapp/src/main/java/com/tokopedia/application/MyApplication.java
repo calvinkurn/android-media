@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import android.widget.Toast;
 
 import com.google.android.gms.security.ProviderInstaller;
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -23,15 +21,14 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.tkpd.BuildConfig;
-import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.tkpd.network.DataSource;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,9 +45,9 @@ import timber.log.Timber;
 public class MyApplication extends BaseMainApplication
         implements AbstractionRouter,
         NetworkRouter,
-        ApplinkRouter, CharacterPerMinuteInterface {
+        ApplinkRouter {
 
-    // Used to load the 'native-lib' library on application startup.
+    // Used to loadWishlist the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
@@ -60,9 +57,15 @@ public class MyApplication extends BaseMainApplication
         GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+
+        // for staging-only
+        /*TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
+        TokopediaUrl.Companion.deleteInstance();
+        TokopediaUrl.Companion.init(this);*/
 
         upgradeSecurityProvider();
 
@@ -76,8 +79,6 @@ public class MyApplication extends BaseMainApplication
 
         PersistentCacheManager.init(this);
         super.onCreate();
-        FlowManager.init(new FlowConfig.Builder(this)
-                .build());
         initCacheApi();
 
         if (BuildConfig.DEBUG) {
@@ -221,21 +222,6 @@ public class MyApplication extends BaseMainApplication
     @Override
     public void refreshToken() throws IOException {
 
-    }
-
-    @Override
-    public void saveCPM(@NonNull String cpm) {
-
-    }
-
-    @Override
-    public String getCPM() {
-        return null;
-    }
-
-    @Override
-    public boolean isEnable() {
-        return false;
     }
 
     /**
