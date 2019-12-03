@@ -55,11 +55,11 @@
         </activity>
         <activity
             android:name=".pdp.presentation.activity.UmrahPdpDetailActivity"
-            android:label="Pilih Detail"
+            android:label="@string/umrah_label_pdp"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".search.presentation.activity.UmrahSearchFilterActivity"
-            android:label="@string/label_filter"
+            android:label="@string/umrah_label_filter"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".homepage.presentation.activity.UmrahHomepageActivity"
@@ -95,7 +95,7 @@
         </activity>
         <activity
             android:name=".checkout.presentation.activity.UmrahCheckoutActivity"
-            android:label="@string/umrah_checkout_app_name"
+            android:label="@string/umrah_checkout_title_activity"
             android:theme="@style/Theme.White">
             <intent-filter
                 android:autoVerify="true"
@@ -113,17 +113,17 @@
         </activity>
         <activity
             android:name=".checkout.presentation.activity.UmrahCheckoutPilgrimsActivity"
-            android:label="@string/umrah_checkout_pilgrims_app_name"
+            android:label="@string/umrah_checkout_pilgrims_title_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".checkout.presentation.activity.UmrahCheckoutInstallmentActivity"
-            android:label="@string/umrah_checkout_installment_app_name"
+            android:label="@string/umrah_checkout_installment_title_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".checkout.presentation.activity.UmrahCheckoutContactDataActivity"
-            android:label="@string/umrah_checkout_contact_app_name"
+            android:label="@string/umrah_checkout_contact_title_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>

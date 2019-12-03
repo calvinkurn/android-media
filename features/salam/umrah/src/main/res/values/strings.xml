@@ -145,10 +145,10 @@
     <string name="umrah_checkout_bottom_sheet_pilgrims_label_name_first_label">Nama Depan</string>
     <string name="umrah_checkout_bottom_sheet_pilgrims_label_name_last_label">Nama Belakang</string>
     <string name="umrah_checkout_bottom_sheet_pilgrims_label_date_birth">Tanggal Lahir</string>
-    <string name="umrah_checkout_pilgrims_app_name">Isi Data Jamaah</string>
-    <string name="umrah_checkout_app_name">Pemesanan Umrah</string>
-    <string name="umrah_checkout_contact_app_name">Informasi Kontak</string>
-    <string name="umrah_checkout_installment_app_name">Pilihan Cicilan</string>
+    <string name="umrah_checkout_pilgrims_title_activity">Isi Data Jamaah</string>
+    <string name="umrah_checkout_title_activity">Pemesanan Umrah</string>
+    <string name="umrah_checkout_contact_title_activity">Informasi Kontak</string>
+    <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
 
     <string name="umrah_checkout_pilgrims_title_label">Title</string>
     <array name="umrah_checkout_pilgrims_titles">
@@ -200,6 +200,8 @@
     <string name="umrah_checkout_pilgrims_date_birth_error">Tanggal Lahir Kosong</string>
     <string name="umrah_checkout_pilgrims_title_error">Harap Pilih Title Anda</string>
     <string name="umrah_checkout_error_confirmation">OK</string>
+    <string name="umrah_label_filter">Filter</string>
+    <string name="umrah_label_pdp">Pilih Detail</string>
 
 
 

@@ -4,7 +4,7 @@
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"
     -->
-
+    <string name="title_umrah">Umrah</string>
     <!--host-->
     <string name="umrah_host_order_detail" translatable="false">order-details</string>
     <string name="umrah_host_s" translatable="false">s</string>

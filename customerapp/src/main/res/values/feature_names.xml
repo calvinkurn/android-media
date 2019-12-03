@@ -175,4 +175,14 @@
 
     <!-- Dynamic feature for manage product list-->
     <string name="title_product_manage">Daftar Produk</string>
+
+    <!-- Dynamic feature for manage product list-->
+    <string name="umrah_search_title">Cari Paket Umrah</string>
+    <string name="umrah_label_filter">Filter</string>
+    <string name="umrah_label_pdp">Pilih Detail</string>
+    <string name="umrah_checkout_pilgrims_title_activity">Isi Data Jamaah</string>
+    <string name="umrah_checkout_title_activity">Pemesanan Umrah</string>
+    <string name="umrah_checkout_contact_title_activity">Informasi Kontak</string>
+    <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
+
 </resources>
