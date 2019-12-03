@@ -17,8 +17,6 @@ class AccountHolderNameViewModel @Inject constructor(dispatcher: CoroutineDispat
 
     val textWatcherState = MutableLiveData<AccountNameTextWatcherState>()
 
-    private val restrictedKeyword = arrayListOf("Tokopedia", "Admin", "Bank", "Bca", "Bri", "Bni", "Cimb", "Cimb niaga")
-
     private var job: Job? = Job()
 
     fun onValidateAccountName(text: String) {
@@ -36,18 +34,9 @@ class AccountHolderNameViewModel @Inject constructor(dispatcher: CoroutineDispat
             withContext(Dispatchers.IO + job) {
                 if (!isLengthCorrect(name)) {
                     return@withContext OnAccountNameError("Length must in min 3 and max 128")
-                } else if (isNameContainsAnyRestrictedKeyword(text = name)) {
-                    return@withContext OnAccountNameError("Restricted Keywords")
                 }
                 return@withContext OnAccountNameValidated(name)
             }
-
-    private fun isNameContainsAnyRestrictedKeyword(text: String): Boolean {
-        for (keyword in restrictedKeyword) {
-            if (text.contains(keyword, true)) return true
-        }
-        return false
-    }
 
     private fun isLengthCorrect(text: String): Boolean {
         return when (text.length) {

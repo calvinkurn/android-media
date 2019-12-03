@@ -1,5 +1,5 @@
-mutation{
-  richieSetPrimaryBankAccount(AccountID:10){
+mutation($AccountID: Int!){
+  richieSetPrimaryBankAccount(AccountID:$AccountID){
     status
     header{
       processTime

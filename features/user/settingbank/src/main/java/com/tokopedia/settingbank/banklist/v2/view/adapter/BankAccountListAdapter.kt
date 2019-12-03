@@ -64,7 +64,7 @@ class BankAccountListAdapter(var bankList: ArrayList<BankAccount>) : RecyclerVie
 }
 
 interface BankAccountClickListener {
-    fun createAccountPrimary(bankAccount: BankAccount)
+    fun makeAccountPrimary(bankAccount: BankAccount)
     fun deleteBankAccount(bankAccount: BankAccount)
     fun onClickDataContent(bankAccount: BankAccount)
 }

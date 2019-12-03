@@ -38,7 +38,7 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     private fun addClickListener() {
         view.findViewById<View>(R.id.btnIsiData).setOnClickListener { listener?.onClickDataContent(view.tag as BankAccount) }
-        view.findViewById<View>(R.id.btnMakePrimary).setOnClickListener { listener?.createAccountPrimary(view.tag as BankAccount) }
+        view.findViewById<View>(R.id.btnMakePrimary).setOnClickListener { listener?.makeAccountPrimary(view.tag as BankAccount) }
         view.findViewById<View>(R.id.btnHapus).setOnClickListener { listener?.deleteBankAccount(view.tag as BankAccount) }
     }
 

@@ -52,4 +52,9 @@ abstract class ViewModelModule {
     @ViewModelKey(AddAccountViewModel::class)
     internal abstract fun addAddAccountViewModel(viewModel: AddAccountViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(MakeAccountPrimaryViewModel::class)
+    internal abstract fun addMakeAccountPrimaryViewModel(viewModel: MakeAccountPrimaryViewModel): ViewModel
+
 }

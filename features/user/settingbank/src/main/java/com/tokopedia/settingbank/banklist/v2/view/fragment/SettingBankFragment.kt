@@ -12,30 +12,28 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
-import com.tokopedia.settingbank.banklist.v2.domain.Bank
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.domain.TemplateData
-import com.tokopedia.settingbank.banklist.v2.view.activity.AddBankActivity
+import com.tokopedia.settingbank.banklist.v2.view.adapter.BankAccountClickListener
 import com.tokopedia.settingbank.banklist.v2.view.adapter.BankAccountListAdapter
+import com.tokopedia.settingbank.banklist.v2.view.viewModel.MakeAccountPrimaryViewModel
 import com.tokopedia.settingbank.banklist.v2.view.viewModel.SettingBankTNCViewModel
 import com.tokopedia.settingbank.banklist.v2.view.viewModel.SettingBankViewModel
-import com.tokopedia.settingbank.banklist.v2.view.viewState.BankAccountListLoadingError
-import com.tokopedia.settingbank.banklist.v2.view.viewState.NoBankAccountAdded
-import com.tokopedia.settingbank.banklist.v2.view.viewState.OnBankAccountListLoaded
-import com.tokopedia.settingbank.banklist.v2.view.viewState.OnShowLoading
+import com.tokopedia.settingbank.banklist.v2.view.viewState.*
 import com.tokopedia.settingbank.banklist.v2.view.widgets.BankTNCBottomSheet
 import com.tokopedia.settingbank.banklist.v2.view.widgets.CloseableBottomSheetFragment
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_setting_bank_new.*
 import javax.inject.Inject
 
-class SettingBankFragment : BaseDaggerFragment() {
-
+class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var tNCViewModel: SettingBankTNCViewModel
     private lateinit var settingBankViewModel: SettingBankViewModel
+    private lateinit var makeAccountPrimaryViewModel: MakeAccountPrimaryViewModel
 
     private lateinit var tncBottomSheet: BankTNCBottomSheet
 
@@ -59,6 +57,7 @@ class SettingBankFragment : BaseDaggerFragment() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         settingBankViewModel = viewModelProvider.get(SettingBankViewModel::class.java)
         tNCViewModel = viewModelProvider.get(SettingBankTNCViewModel::class.java)
+        makeAccountPrimaryViewModel = viewModelProvider.get(MakeAccountPrimaryViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -79,6 +78,7 @@ class SettingBankFragment : BaseDaggerFragment() {
     private fun initBankAccountRecyclerView() {
         account_list_rv.layoutManager = LinearLayoutManager(activity)
         account_list_rv.addItemDecoration(DividerItemDecoration(activity))
+        bankAccountListAdapter.bankAccountClickListener = this
         account_list_rv.adapter = bankAccountListAdapter
     }
 
@@ -122,6 +122,26 @@ class SettingBankFragment : BaseDaggerFragment() {
         tNCViewModel.tncPopUpTemplate.observe(this, Observer {
             openTNCBottomSheet(it)
         })
+
+        makeAccountPrimaryViewModel.makeAccountPrimaryState.observe(this, Observer {
+            handleMakeAccountPrimaryState(it)
+        })
+    }
+
+    private fun handleMakeAccountPrimaryState(state: MakePrimaryAccountResponseState) {
+        when (state) {
+            is OnMakePrimaryRequestStarted -> {
+            }
+            is OnMakePrimaryRequestEnded -> {
+            }
+            is OnMakePrimaryRequestSuccess -> {
+                showToasterOnUI(state.message)
+                loadUserBankAccountList()
+            }
+            is OnMakePrimaryRequestFailed -> {
+                showErrorOnUI(state.reason)
+            }
+        }
     }
 
     private fun openTNCBottomSheet(templateData: TemplateData?) {
@@ -142,8 +162,16 @@ class SettingBankFragment : BaseDaggerFragment() {
         tNCViewModel.loadTNCNoteTemplate()
     }
 
-    private fun showErrorOnUI(errMsg: String) {
-        //view?.let { Toaster.make(it, "error", Toast.LENGTH_SHORT) }
+    private fun showErrorOnUI(errorMessage: String?) {
+        errorMessage?.let {
+            view?.let { Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR) }
+        }
+    }
+
+    private fun showToasterOnUI(message: String?) {
+        message?.let {
+            view?.let { Toaster.make(it, message, Toaster.LENGTH_LONG) }
+        }
     }
 
     private fun populateBankList(bankList: List<BankAccount>, toastMessage: String) {
@@ -167,6 +195,7 @@ class SettingBankFragment : BaseDaggerFragment() {
         settingBankViewModel.getBankListState.removeObservers(this)
         tNCViewModel.tncPopUpTemplate.removeObservers(this)
         tNCViewModel.tncNoteTemplate.removeObservers(this)
+        makeAccountPrimaryViewModel.makeAccountPrimaryState.removeObservers(this)
         super.onDestroy()
     }
 
@@ -206,9 +235,22 @@ class SettingBankFragment : BaseDaggerFragment() {
 
     private fun getMenuRes(): Int = R.menu.menu_info_add_bank_account
 
-    fun closeBottomSheet(){
-        if(::bottomSheets.isInitialized)
+    fun closeBottomSheet() {
+        if (::bottomSheets.isInitialized)
             bottomSheets.dismiss()
     }
+
+    override fun makeAccountPrimary(bankAccount: BankAccount) {
+        makeAccountPrimaryViewModel.createBankAccountPrimary(bankAccount)
+    }
+
+    override fun deleteBankAccount(bankAccount: BankAccount) {
+
+    }
+
+    override fun onClickDataContent(bankAccount: BankAccount) {
+
+    }
+
 
 }
