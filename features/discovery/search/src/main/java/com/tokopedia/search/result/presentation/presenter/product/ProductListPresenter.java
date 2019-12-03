@@ -62,7 +62,7 @@ final class ProductListPresenter
         implements ProductListSectionContract.Presenter {
 
     private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
-    private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "search_not_found";
+    private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
 
     @Inject
