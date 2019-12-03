@@ -17,7 +17,7 @@ object SomConsts {
     const val PARAM_SHOP_ID = "shop_id"
     const val PARAM_IS_FROM_FINTECH = "is_from_fintech"
     const val PARAM_BOOKING_CODE = "bookingCode"
-    const val PARAM_BOOKING_TYPE = "bookingType"
+    const val PARAM_BARCODE_TYPE = "barcodeType"
     const val PARAM_BOOKING_MESSAGE_LIST = "message"
 
     const val VAR_PARAM_ORDERID = "orderID"
@@ -28,12 +28,14 @@ object SomConsts {
     const val CATEGORY_COURIER_TYPE = "courier"
 
     const val TAB_ACTIVE = "tab_active"
+    const val TAB_STATUS = "tab_status"
     const val FILTER_TYPE_CHECKBOX = "checkbox"
     const val FILTER_TYPE_RADIO = "radio"
     const val FILTER_TYPE_LABEL = "label"
     const val FILTER_TYPE_SEPARATOR = "separator"
 
     const val STATUS_ALL_ORDER = "all_order"
+    const val STATUS_DELIVERED = "delivered"
 
     const val DETAIL_HEADER_TYPE = "header"
     const val DETAIL_PRODUCTS_TYPE = "products"
@@ -122,4 +124,5 @@ object SomConsts {
 
     const val LIST_ORDER_SCREEN_NAME = "/myorder"
     const val DETAIL_ORDER_SCREEN_NAME = "/myorder/detail/"
+    const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
 }

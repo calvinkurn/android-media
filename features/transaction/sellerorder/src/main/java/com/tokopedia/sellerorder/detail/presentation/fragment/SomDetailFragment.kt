@@ -74,7 +74,6 @@ import kotlin.collections.HashMap
 import android.net.Uri
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.sellerorder.analytics.SomAnalytics
-import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickChatOnHeaderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -89,18 +88,19 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UPLOAD_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_MESSAGE_LIST
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_PRODUCT_NAME
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_UBAH_RESI
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
+import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
@@ -148,6 +148,26 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         }
     }
 
+    fun goToAskBuyer() {
+        val intent = RouteManager.getIntent(activity,
+                ApplinkConst.TOPCHAT_ASKBUYER,
+                detailResponse.customer.id.toString(), "",
+                PARAM_SOURCE_ASK_BUYER, detailResponse.customer.name, detailResponse.customer.image).apply {
+            putExtra(ApplinkConst.Chat.INVOICE_ID, detailResponse.invoice)
+            putExtra(ApplinkConst.Chat.INVOICE_CODE, detailResponse.invoice)
+
+            if (detailResponse.listProduct.isNotEmpty()) {
+                putExtra(ApplinkConst.Chat.INVOICE_TITLE, detailResponse.listProduct.first().name)
+            }
+
+            putExtra(ApplinkConst.Chat.INVOICE_URL, detailResponse.invoiceUrl)
+            putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, detailResponse.statusId)
+            putExtra(ApplinkConst.Chat.INVOICE_STATUS, detailResponse.statusText)
+            putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, detailResponse.paymentSummary.totalPriceText)
+        }
+        startActivity(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
@@ -169,21 +189,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.chat_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.som_action_chat -> {
-                onChatClicked()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    private fun onChatClicked() {
-        eventClickChatOnHeaderDetail()
-        RouteManager.route(activity, ApplinkConst.TOPCHAT_IDLESS)
     }
 
     private fun prepareLayout() {
@@ -917,7 +922,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private fun showDatePicker(tfEndShopClosed: TextFieldUnify, viewBottomSheet: View) {
         context?.let {  context ->
             val dateNow = GregorianCalendar(LocaleUtils.getCurrentLocale(context))
-            val dateMax = GregorianCalendar(2100, 0, 1)
+            val dateMax = GregorianCalendar(2100, 0, 2)
 
             val datePicker = DatePickerUnify(context, dateNow, dateNow, dateMax)
             datePicker.setTitle(getString(R.string.end_shop_closed_label))
@@ -942,7 +947,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     override fun onShowBookingCode(bookingCode: String, bookingType: String) {
         Intent(activity, SomDetailBookingCodeActivity::class.java).apply {
             putExtra(PARAM_BOOKING_CODE, detailResponse.bookingInfo.onlineBooking.bookingCode)
-            putExtra(PARAM_BOOKING_TYPE, detailResponse.bookingInfo.onlineBooking.barcodeType)
+            putExtra(PARAM_BARCODE_TYPE, detailResponse.bookingInfo.onlineBooking.barcodeType)
             startActivity(this)
         }
     }

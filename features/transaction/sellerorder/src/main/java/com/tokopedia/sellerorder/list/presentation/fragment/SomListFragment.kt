@@ -37,7 +37,9 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
+import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.detail.data.model.SomAcceptOrder
 import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
@@ -78,6 +80,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var refreshHandler: RefreshHandler? = null
     private var isLoading = false
     private var tabActive = ""
+    private var tabStatus = ""
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
     private val FLAG_CONFIRM_SHIPPING = 3555
@@ -94,6 +97,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             return SomListFragment().apply {
                 arguments = Bundle().apply {
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
+                    putString(TAB_STATUS, bundle.getString(TAB_STATUS))
                 }
             }
         }
@@ -109,6 +113,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).toString()
+            tabStatus = arguments?.getString(TAB_STATUS).toString()
         }
         loadInitial()
     }
@@ -245,12 +250,19 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             filterItem.type = it.key
 
             if (it.isChecked || tabActive.equals(it.key, true) || paramOrder.statusList == it.orderStatusIdList) {
-                SomAnalytics.eventClickQuickFilter(it.orderStatus)
                 currentIndex = index
                 filterItem.setColorBorder(R.color.tkpd_main_green)
                 filterItem.isSelected = true
-                if (paramOrder.statusList.isEmpty()) paramOrder.statusList = it.orderStatusIdList
-
+                if (paramOrder.statusList.isEmpty()) {
+                    if (tabStatus.equals(STATUS_DELIVERED, true)) {
+                        val listPesananTiba = ArrayList<Int>()
+                        if (it.orderStatusIdList.contains(600)) listPesananTiba.add(600)
+                        if (it.orderStatusIdList.contains(699)) listPesananTiba.add(699)
+                        paramOrder.statusList = listPesananTiba
+                    } else {
+                        paramOrder.statusList = it.orderStatusIdList
+                    }
+                }
             }  else {
                 filterItem.setColorBorder(R.color.gray_background)
                 filterItem.isSelected = false
@@ -267,6 +279,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             mapOrderStatus.forEach { (key, listOrderStatusId) ->
                 if (keySelected.equals(key, true)) {
                     tabActive = keySelected
+                    SomAnalytics.eventClickQuickFilter(tabActive)
                     println("++ selected tabActive = $tabActive")
                     if (listOrderStatusId.isNotEmpty()) {
                         paramOrder.statusList = listOrderStatusId
@@ -274,10 +287,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     }
                 }
             }
-
-            var intervalDays = -60
-            if (keySelected == STATUS_ALL_ORDER) intervalDays = -90
-            // paramOrder.startDate = getCalculatedFormattedDate("dd/MM/yyyy", intervalDays)
 
             println("++ paramOrder.startDate = ${paramOrder.startDate}")
             println("++ paramOrder.endDate = ${paramOrder.endDate}")
@@ -300,7 +309,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             val startDateStr = outputFormat.format(startDate)
                             val endDate = inputFormat.parse(paramOrder.endDate)
                             val endDateStr = outputFormat.format(endDate)
-                            renderFilterEmpty(getString(R.string.empty_search_title) + " " + startDateStr + " - " + endDateStr, getString(R.string.empty_search_desc))
+                            renderCekPeluang()
+                            // renderFilterEmpty(getString(R.string.empty_search_title) + " " + startDateStr + " - " + endDateStr, getString(R.string.empty_search_desc))
                         } else renderFilterEmpty(getString(R.string.empty_filter_title), getString(R.string.empty_filter_desc))
                     }
                 }
