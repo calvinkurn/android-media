@@ -107,7 +107,9 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
                                 voucherGameAnalytics.categoryName = categoryName
                                 voucherGameExtraParam.categoryId.toIntOrNull()?.let { id ->
                                     rechargeAnalytics.eventDigitalCategoryScreenLaunch(categoryName,
-                                            id.toString(), userSession.isLoggedIn)
+                                            id.toString())
+                                    rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, categoryName,
+                                            id.toString())
                                 }
                             }
 

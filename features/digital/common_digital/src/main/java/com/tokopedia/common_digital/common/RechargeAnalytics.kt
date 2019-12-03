@@ -11,27 +11,25 @@ import java.util.HashMap
 
 class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase) {
 
-    fun eventDigitalCategoryScreenLaunch(categoryName: String, categoryId: String, isLoginStatus: Boolean) {
+    fun eventDigitalCategoryScreenLaunch(categoryName: String, categoryId: String) {
         val value = DataLayer.mapOf(
                 PARAM_CATEGORY_NAME, categoryName,
                 PARAM_CATEGORY_ID, categoryId
         )
         TrackApp.getInstance().moEngage.sendTrackEvent(value, EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH)
-        val stringScreenName = StringBuilder(RECHARGE_SCREEN_NAME)
-        stringScreenName.append(categoryName)
-        eventOpenScreen(stringScreenName.toString(), isLoginStatus, categoryName, categoryId)
-
     }
 
-    private fun eventOpenScreen(screenName: String, isLoginStatus: Boolean, categoryName: String, categoryId: String) {
+    fun eventOpenScreen(isLoginStatus: Boolean, categoryName: String, categoryId: String) {
+        val stringScreenName = StringBuilder(RECHARGE_SCREEN_NAME)
+        stringScreenName.append(categoryName)
+
         val mapOpenScreen = HashMap<String, String>()
         mapOpenScreen[EVENT_NAME] = OPEN_SCREEN_EVENT
         mapOpenScreen[IS_LOGIN_STATUS] = if (isLoginStatus) "true" else "false"
         mapOpenScreen[CATEGORY] = categoryName
         mapOpenScreen[CATEGORY_ID] = categoryId
 
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(
-                screenName, mapOpenScreen)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(stringScreenName.toString(), mapOpenScreen)
     }
 
     fun trackVisitRechargePushEventRecommendation(categoryId: Int) {
