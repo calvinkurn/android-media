@@ -181,7 +181,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     override fun reloginAfterSQ(validateToken: String) {
         loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                 userSession, validateToken), LoginTokenSubscriber(userSession,
-                { getUserInfo() },
+                { getUserInfoAddPin() },
                 view.onErrorReloginAfterSQ(validateToken),
                 view.onGoToActivationPageAfterRelogin(),
                 view.onGoToSecurityQuestionAfterRelogin()))
@@ -212,6 +212,12 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     override fun getUserInfo() {
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
                 view.onSuccessGetUserInfo(),
+                view.onErrorGetUserInfo()))
+    }
+
+    override fun getUserInfoAddPin() {
+        getProfileUseCase.execute(GetProfileSubscriber(userSession,
+                view.onSuccessGetUserInfoAddPin(),
                 view.onErrorGetUserInfo()))
     }
 

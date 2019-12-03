@@ -842,6 +842,19 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
+    override fun onSuccessGetUserInfoAddPin(): (ProfilePojo) -> Unit {
+        return {
+
+            val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
+
+            if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
+                onGoToChangeName()
+            } else {
+                checkStatusPinAfterSQ()
+            }
+        }
+    }
+
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
             onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
@@ -989,6 +1002,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 val uuid = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                 val msisdn = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                 goToAddNameFromRegisterPhone(uuid, msisdn)
+            } else if(requestCode == REQUEST_ADD_NAME) {
+                checkStatusPinAfterSQ()
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 isAutoLogin = true
                 showLoading(true)
@@ -1010,6 +1025,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 analytics.trackLoginPhoneNumberFailed(getString(R.string.error_login_user_cancel_login_phone))
                 dismissLoadingLogin()
             } else if (requestCode == REQUEST_ADD_PIN) {
+                onSuccessLogin()
+            } else if (requestCode == REQUEST_ADD_PIN_AFTER_SQ){
                 onSuccessLogin()
             } else {
                 dismissLoadingLogin()
@@ -1162,6 +1179,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         presenter.checkStatusPin(onSuccessCheckStatusPin(), onErrorCheckStatusPin())
     }
 
+    private fun checkStatusPinAfterSQ(){
+        presenter.checkStatusPin(onSuccessCheckStatusPinAfterSQ(), onErrorCheckStatusPin())
+    }
+
     private fun onErrorCheckStatusPin(): (Throwable) -> Unit {
         return {
             it.printStackTrace()
@@ -1178,8 +1199,22 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             dismissLoadingLogin()
             if(!it.isRegistered && isFromAccountPage()){
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_LOGIN, true)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
                 startActivityForResult(intent, REQUEST_ADD_PIN)
+            }else{
+                onSuccessLogin()
+            }
+        }
+    }
+
+    private fun onSuccessCheckStatusPinAfterSQ(): (StatusPinData) -> Unit {
+        return {
+            dismissLoadingLogin()
+            if(!it.isRegistered && isFromAccountPage()){
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_AFTER_SQ, true)
+                startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_SQ)
             }else{
                 onSuccessLogin()
             }
@@ -1269,6 +1304,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         const val REQUEST_WELCOME_PAGE = 115
         const val REQUEST_LOGIN_GOOGLE = 116
         const val REQUEST_ADD_PIN = 117
+        const val REQUEST_ADD_PIN_AFTER_SQ = 120
         private val REQUEST_OTP_VALIDATE = 118
         private val REQUEST_PENDING_OTP_VALIDATE = 119
 

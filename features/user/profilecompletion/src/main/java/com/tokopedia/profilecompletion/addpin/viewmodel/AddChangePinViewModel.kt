@@ -231,6 +231,20 @@ class AddChangePinViewModel @Inject constructor(
         }
     }
 
+    fun checkSkipOtpPinAfterSQ(){
+        rawQueries[ProfileCompletionQueryConstant.QUERY_SKIP_OTP_PIN]?.let { query ->
+            val params = mapOf(ProfileCompletionQueryConstant.PARAM_OTP_TYPE to OTP_TYPE_SKIP_VALIDATION_AFTER_SQ)
+
+            skipOtpPinUseCase.setTypeClass(SkipOtpPinPojo::class.java)
+            skipOtpPinUseCase.setRequestParams(params)
+            skipOtpPinUseCase.setGraphqlQuery(query)
+            skipOtpPinUseCase.execute(
+                    onSuccessCheckSkipOtpPin(),
+                    onErrorCheckSkipOtpPin()
+            )
+        }
+    }
+
     private fun onErrorCheckSkipOtpPin(): (Throwable) -> Unit {
         return {
             it.printStackTrace()
@@ -260,5 +274,6 @@ class AddChangePinViewModel @Inject constructor(
   
     companion object {
         const val OTP_TYPE_SKIP_VALIDATION = 124
+        const val OTP_TYPE_SKIP_VALIDATION_AFTER_SQ = 134
     }
 }

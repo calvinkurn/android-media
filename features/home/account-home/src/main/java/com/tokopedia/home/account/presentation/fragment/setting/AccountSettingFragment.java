@@ -304,7 +304,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void goToPinOnboarding(){
-        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING);
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true);
+        startActivity(intent);
     }
 
     private void showAddPhoneDialog(){
