@@ -20,11 +20,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.cameraview)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -38,8 +40,8 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'gm-common'
-    groupId = 'com.tokopedia.merchant'
+    artifactId = 'gold_merchant_common'
+    groupId = 'com.tokopedia.gm.common'
     versionName = "1.0.0"
     artifactName ="gold_merchant_common-release"
 }

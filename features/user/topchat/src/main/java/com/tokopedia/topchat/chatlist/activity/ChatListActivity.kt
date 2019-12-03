@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
 import androidx.core.graphics.drawable.DrawableCompat
@@ -14,10 +15,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.coachmark.CoachMark
@@ -75,6 +78,10 @@ class ChatListActivity : BaseTabActivity()
         return R.layout.activity_chat_list
     }
 
+    override fun getScreenName(): String {
+        return "/${ChatListAnalytic.Category.CATEGORY_INBOX_CHAT}"
+    }
+
     override fun getViewPagerAdapter(): PagerAdapter? {
         fragmentAdapter = ChatListPagerAdapter(supportFragmentManager)
         fragmentAdapter.setItemList(tabList)
@@ -88,27 +95,45 @@ class ChatListActivity : BaseTabActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        if (userSession.shopId.toLongOrZero() > 0) {
-            tabList.add(ChatListPagerAdapter.ChatListTab(
-                    userSession.shopName,
-                    "0",
-                    ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER),
-                    R.drawable.ic_chat_icon_shop
-            ))
-        }
-        tabList.add(ChatListPagerAdapter.ChatListTab(
-                userSession.name,
-                "0",
-                ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_USER),
-                R.drawable.ic_chat_icon_account
-        ))
+        initTabList()
         super.onCreate(savedInstanceState)
-
         setupViewModel()
         initTabLayout()
         setObserver()
         initData()
         initOnBoarding()
+    }
+
+    private fun initTabList() {
+        if (userSession.hasShop()) {
+            addSellerTabFragment()
+        }
+
+        if (!GlobalConfig.isSellerApp()) {
+            addBuyerTabFragment()
+        }
+    }
+
+    private fun addSellerTabFragment() {
+        val sellerFragment = ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER)
+        val sellerTabFragment = ChatListPagerAdapter.ChatListTab(
+                userSession.shopName,
+                "0",
+                sellerFragment,
+                R.drawable.ic_chat_icon_shop
+        )
+        tabList.add(sellerTabFragment)
+    }
+
+    private fun addBuyerTabFragment() {
+        val buyerFragment = ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_USER)
+        val buyerTabFragment = ChatListPagerAdapter.ChatListTab(
+                userSession.name,
+                "0",
+                buyerFragment,
+                R.drawable.ic_chat_icon_account
+        )
+        tabList.add(buyerTabFragment)
     }
 
     private fun initOnBoarding() {
@@ -286,6 +311,11 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun initTabLayout() {
+        if (tabList.size == 1) {
+            tabLayout.hide()
+            return
+        }
+
         tabLayout.removeAllTabs()
         for (i in 0 until tabList.size) {
             tabLayout.addTab(tabLayout.newTab())
@@ -302,7 +332,10 @@ class ChatListActivity : BaseTabActivity()
             }
         }
 
-        tabLayout.setBackgroundResource(R.color.white)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tabLayout.elevation = 0f
+        }
+        tabLayout.background = ContextCompat.getDrawable(this, R.drawable.bg_chat_list_tab_layout)
         tabLayout.tabMode = TabLayout.MODE_FIXED
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

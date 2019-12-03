@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -26,12 +26,13 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {
     artifactId = 'wishlist-common'
     groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="wishlist_common-release"
 }
 

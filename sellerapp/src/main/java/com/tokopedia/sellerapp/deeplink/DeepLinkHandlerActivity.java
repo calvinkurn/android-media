@@ -4,8 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
@@ -27,8 +28,9 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
+import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModule;
 import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
@@ -72,6 +74,7 @@ import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 
@@ -181,10 +184,10 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
 
         //map applink to internal if any
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
-        if (!TextUtils.isEmpty(mappedDeeplink)) {
-            routeToApplink(deepLinkDelegate, mappedDeeplink);
-        } else {
+        if (TextUtils.isEmpty(mappedDeeplink)) {
             routeToApplink(deepLinkDelegate, applinkString);
+        } else {
+            routeToApplink(deepLinkDelegate, mappedDeeplink);
         }
     }
 

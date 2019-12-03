@@ -19,6 +19,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.inappupdate)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.atc_common)
@@ -70,12 +71,14 @@ dependencies {
     testImplementation "org.robolectric:multidex:3.4.2"
     testImplementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     testAnnotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    testImplementation "androidx.arch.core:core-testing:2.0.0-rc01"
 }
 
 project.ext {
     artifactId = 'navigation'
     groupId = 'com.tokopedia.home'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "navigation-release"
 }
 

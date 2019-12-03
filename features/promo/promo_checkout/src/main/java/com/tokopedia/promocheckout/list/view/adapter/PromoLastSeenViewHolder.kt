@@ -2,23 +2,24 @@ package com.tokopedia.promocheckout.list.view.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
-import kotlinx.android.synthetic.main.item_promo_last_seen.view.*
+import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
+import kotlinx.android.synthetic.main.item_last_seen_promo_history.view.*
 
-class PromoLastSeenViewHolder(val view : View, val listenerLastSeen: ListenerLastSeen) : RecyclerView.ViewHolder(view) {
-    fun bind(data: PromoCheckoutLastSeenModel) {
-        view.setOnClickListener { listenerLastSeen.onClickItemLastSeen(data) }
-        view.voucherCode.text = data.promoCode
-        view.descPromo.text = data.title.toUpperCase()
+import kotlinx.android.synthetic.main.item_promo_last_seen.view.layoutPromoLastSeen
 
-        if (data.promoCode.isEmpty()) {
-            view.layoutPromoLastSeen.visibility = View.GONE
+class PromoLastSeenViewHolder(val view: View, val listenerLastSeen: ListenerLastSeen) : RecyclerView.ViewHolder(view) {
+    fun bind(data: PromoHistoryItem) {
+        view.tvPromoCode.text = data.promoCode
+        view.tvTitleLastCard.text = data.promoContent?.description
+        view.btnGunakanLast.setOnClickListener { listenerLastSeen.onClickItemLastSeen(data) }
+        if (data.promoCode?.isEmpty()!!) {
+            view.ticketPromoHistory.visibility = View.GONE
         } else {
-            view.layoutPromoLastSeen.visibility = View.VISIBLE
+            view.ticketPromoHistory.visibility = View.VISIBLE
         }
     }
 
-    interface ListenerLastSeen{
-        fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel)
+    interface ListenerLastSeen {
+        fun onClickItemLastSeen(ppromoHistoryItem: PromoHistoryItem)
     }
 }

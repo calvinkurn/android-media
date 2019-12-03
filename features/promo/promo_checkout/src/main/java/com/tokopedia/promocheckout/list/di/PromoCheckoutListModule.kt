@@ -7,15 +7,13 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
+import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
-import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalPresenter
-import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListFlightPresenter
-import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
-import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
+import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
+import com.tokopedia.promocheckout.list.view.presenter.*
 import dagger.Module
 import dagger.Provides
 
@@ -25,7 +23,7 @@ class PromoCheckoutListModule {
     @PromoCheckoutListScope
     @Provides
     fun providePresenter() : PromoCheckoutListPresenter {
-        return PromoCheckoutListPresenter(GraphqlUseCase())
+        return PromoCheckoutListPresenter(GraphqlUseCase(),GraphqlUseCase())
     }
 
     @PromoCheckoutListScope
@@ -48,6 +46,12 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
+    fun provideHotelCheckVoucherUseCase(@ApplicationContext context: Context): HotelCheckVoucherUseCase {
+        return HotelCheckVoucherUseCase(context, GraphqlUseCase())
+    }
+
+    @PromoCheckoutListScope
+    @Provides
     fun provideMarketplacePresenter(checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : PromoCheckoutListMarketplacePresenter {
         return PromoCheckoutListMarketplacePresenter(checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper)
     }
@@ -63,6 +67,13 @@ class PromoCheckoutListModule {
     fun provideFlightPresenter(flightCheckVoucherUseCase: FlightCheckVoucherUseCase,
                                flightCheckVoucherMapper: FlightCheckVoucherMapper) : PromoCheckoutListFlightPresenter {
         return PromoCheckoutListFlightPresenter(flightCheckVoucherUseCase, flightCheckVoucherMapper)
+    }
+
+    @PromoCheckoutListScope
+    @Provides
+    fun provideHotelPresenter(hotelCheckVoucherUseCase: HotelCheckVoucherUseCase,
+                              hotelCheckVoucherMapper: HotelCheckVoucherMapper) : PromoCheckoutListHotelPresenter {
+        return PromoCheckoutListHotelPresenter(hotelCheckVoucherUseCase, hotelCheckVoucherMapper)
     }
 
     @PromoCheckoutListScope

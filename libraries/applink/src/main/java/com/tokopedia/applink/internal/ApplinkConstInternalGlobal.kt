@@ -1,6 +1,5 @@
 package com.tokopedia.applink.internal
 
-import android.webkit.WebView
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
@@ -30,6 +29,18 @@ object ApplinkConstInternalGlobal {
     val PARAM_EMAIL = "email"
     @JvmField
     val PARAM_SOURCE = "source"
+    @JvmField
+    val PARAM_NAME = "name"
+    @JvmField
+    val PARAM_PASS = "pass"
+    @JvmField
+    val PARAM_TOKEN = "token"
+    @JvmField
+    val PARAM_ACTION = "action"
+    @JvmField
+    val PARAM_IS_SMART_LOGIN = "isSmartLogin"
+    @JvmField
+    val PARAM_IS_PENDING = "isPending"
 
     //VerificationActivity Param
     @JvmField
@@ -88,18 +99,24 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
 
+    @JvmField
+    val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
+
     // UserIdentificationInfoActivity
     // tokopedia-android-internal://global/user-identification-info
     @JvmField
-    val USER_IDENTIFICATION_INFO = "$INTERNAL_GLOBAL/user-identification-info?projectId={projectId}"
+    val USER_IDENTIFICATION_INFO = "$USER_IDENTIFICATION_INFO_BASE?projectId={projectId}"
 
     @JvmField
     val PARAM_SOURCE_KYC_SELLER = "seller"
 
+    @JvmField
+    val USER_IDENTIFICATION_FORM_BASE = "$INTERNAL_GLOBAL/user-identification-form"
+
     // UserIdentificationFormActivity
     // tokopedia-android-internal://global/user-identification-form
     @JvmField
-    val USER_IDENTIFICATION_FORM = "$INTERNAL_GLOBAL/user-identification-form?projectId={projectId}"
+    val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}"
     @JvmField
     val PARAM_PROJECT_ID = "projectId"
 
@@ -107,6 +124,13 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/change-gender
     @JvmField
     val CHANGE_GENDER = "$INTERNAL_GLOBAL/change-gender"
+
+    // ChangeNameActivity
+    // tokopedia-android-internal://global/change-name
+    @JvmField
+    val CHANGE_NAME = "$INTERNAL_GLOBAL/change-name?oldName={oldName}"
+    @JvmField
+    val PARAM_FULL_NAME = "oldName"
 
     // AddEmailActivity
     // tokopedia-android-internal://global/add-email
@@ -143,6 +167,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
 
+    // ValidatorActivity
+    // tokopedia-android-internal://global/otp-validator
+    @JvmField
+    val OTP_VALIDATOR = "$INTERNAL_GLOBAL/otp-validator"
+
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     @JvmField
@@ -161,7 +190,7 @@ object ApplinkConstInternalGlobal {
 
 
     @JvmField
-    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}&title={title}"
+    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-profile-phone-verification
@@ -224,6 +253,35 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/saldo-intro
     @JvmField
     val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
+
+    // ChangeEmailActivity
+    // tokopedia-android-internal://global/change-email-register
+    @JvmField
+    val CHANGE_EMAIL_REGISTER = "$INTERNAL_GLOBAL/change-email-register"
+
+    // RegisterEmailActivity
+    // tokopedia-android-internal://global/email-register
+    @JvmField
+    val EMAIL_REGISTER = "$INTERNAL_GLOBAL/email-register"
+    // ChatbotActivity
+    // tokopedia-android-internal://global/chatbot
+    @JvmField
+    val CHAT_BOT = "$INTERNAL_GLOBAL/chatbot"
+
+    // PaymentQRSummaryActivity
+    // tokopedia-android-internal://global/ovo-pay-with-qr
+    @JvmField
+    val OVO_PAY_WITH_QR_ENTRY = "$INTERNAL_GLOBAL/ovo-pay-with-qr"
+
+    // QrOvoPayTxDetailActivity
+    // tokopedia-android-internal://global/ovoqrthanks/
+    @JvmField
+    val OQR_PIN_URL_ENTRY = "$INTERNAL_GLOBAL/ovoqrthanks/"
+
+    // QrOvoPayTxDetailActivity
+    // tokopedia-android-internal://global/ovoqrthanks/{transfer_id}
+    @JvmField
+    val OQR_PIN_URL_ENTRY_PATTERN = "$INTERNAL_GLOBAL/ovoqrthanks/{transfer_id}/"
 
 
     @JvmField

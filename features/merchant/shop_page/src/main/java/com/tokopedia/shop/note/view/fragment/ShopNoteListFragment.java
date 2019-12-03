@@ -76,7 +76,11 @@ public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, Ol
 
     @Override
     public void onItemClicked(ShopNoteViewModel shopNoteViewModel) {
-        startActivity(ShopNoteDetailActivity.createIntent(getActivity(), Long.toString(shopNoteViewModel.getShopNoteId())));
+        startActivity(ShopNoteDetailActivity.createIntent(
+                getActivity(),
+                shopInfo.getInfo().getShopId(),
+                Long.toString(shopNoteViewModel.getShopNoteId())
+        ));
     }
 
     @Override

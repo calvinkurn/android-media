@@ -220,8 +220,9 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             if (!TextUtils.isEmpty(appLink)) {
                 orderListAnalytics.sendProductClickEvent(status?.text.toString())
                 orderListAnalytics.sendPageClickEvent("order - detail")
+                orderListAnalytics.sendProductViewEvent(order, categoryName?.text.toString(), this.position, total?.text.toString())
 
-                RouteManager.route(itemView.context, appLink)
+                RouteManager.route(itemView.context, "${appLink}?upstream=${order.upstream}")
             }
         }
     }
@@ -241,7 +242,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                 }
                 R.id.action_order_detail -> {
                     if (order.appLink.isNotEmpty()) {
-                        RouteManager.route(context, order.appLink)
+                        RouteManager.route(context, "${order.appLink}?upstream=${order.upstream}")
                     }
                     true
                 }

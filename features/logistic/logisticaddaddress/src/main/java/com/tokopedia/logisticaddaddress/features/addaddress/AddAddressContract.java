@@ -39,7 +39,6 @@ public interface AddAddressContract {
 
         void stopPerformaceMonitoring();
 
-        CompositeSubscription getCompositeSubscription();
     }
 
     interface Presenter {
