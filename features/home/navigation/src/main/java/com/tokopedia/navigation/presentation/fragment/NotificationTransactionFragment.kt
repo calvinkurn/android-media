@@ -100,6 +100,10 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
+
+            /*
+            * add some delay for 1 sec to
+            * preventing twice swipe to refresh*/
             Handler().postDelayed({
                 loadInitialData()
             }, REFRESH_DELAY)
@@ -277,7 +281,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         private const val PARAM_BUTTON_TEXT = "button text"
         private const val PARAM_TEMPLATE_KEY = "template key"
 
-        private const val REFRESH_DELAY = 1500L
+        private const val REFRESH_DELAY = 1000L
     }
 
 }
