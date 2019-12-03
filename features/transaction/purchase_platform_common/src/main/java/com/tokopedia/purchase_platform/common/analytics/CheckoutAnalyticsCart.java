@@ -97,15 +97,6 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCartClickShopName(String shopName) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
-                EventCategory.CART,
-                EventAction.CLICK_SHOP_NAME,
-                shopName
-        );
-    }
-
     public void eventClickAtcCartClickShop(String shopId, String shopName) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,

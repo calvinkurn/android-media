@@ -1095,8 +1095,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onCartShopNameClicked(@NotNull CartShopHolderData cartShopHolderData) {
-        sendAnalyticsOnClickShopNameCartItem(cartShopHolderData.getShopGroupAvailableData().getShopName());
-
         sendAnalyticsOnClickShopCartItem(cartShopHolderData.getShopGroupAvailableData().getShopId(), cartShopHolderData.getShopGroupAvailableData().getShopName());
 
         if (getActivity() != null) {
@@ -2143,11 +2141,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void sendAnalyticsOnClickProductNameCartItem(String productName) {
         cartPageAnalytics.eventClickAtcCartClickProductName(productName);
-    }
-
-    @Override
-    public void sendAnalyticsOnClickShopNameCartItem(String shopName) {
-        cartPageAnalytics.eventClickAtcCartClickShopName(shopName);
     }
 
     @Override
