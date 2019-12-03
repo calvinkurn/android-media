@@ -585,7 +585,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             TickerCheckoutView.State.FAILED -> TickerPromoStackingCheckoutView.State.FAILED
             else -> TickerPromoStackingCheckoutView.State.EMPTY
         }
-        flight_promo_ticker_view.title = flightVoucher.promoData.title
+        flight_promo_ticker_view.title = flightVoucher.promoData.promoCode
         flight_promo_ticker_view.desc = flightVoucher.promoData.description
         flight_promo_ticker_view.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
             override fun onResetPromoDiscount() {
