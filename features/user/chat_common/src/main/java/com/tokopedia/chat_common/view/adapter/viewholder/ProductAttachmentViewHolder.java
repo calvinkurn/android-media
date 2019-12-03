@@ -215,7 +215,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             ((TextView) destination).setText(value);
         else if (destination instanceof ImageView) {
             ImageHandler.loadImageRounded2(destination.getContext(), (ImageView) destination,
-                    value);
+                    value, 8f);
             this.thumbnailsImage = (ImageView) destination;
 
         }
