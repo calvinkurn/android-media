@@ -26,14 +26,17 @@ import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
-import com.tokopedia.officialstore.common.RecyclerViewScrollListener
+import com.tokopedia.officialstore.common.listener.FeaturedShopListener
+import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationTitleViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
@@ -50,6 +53,7 @@ class OfficialHomeFragment :
         BaseDaggerFragment(),
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
+        FeaturedShopListener,
         DynamicChannelEventHandler
 {
 
@@ -209,7 +213,7 @@ class OfficialHomeFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title)
+                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
                     setLoadMoreListener()
                 }
                 is Fail -> {
@@ -568,6 +572,34 @@ class OfficialHomeFragment :
             sentDynamicChannelTrackers.add(channelData.id + impressionTag)
         }
     }
+
+    override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
+        tracking?.eventImpressionFeatureBrand(
+                categoryName,
+                position,
+                shopData.name.orEmpty(),
+                shopData.imageUrl.orEmpty(),
+                shopData.additionalInformation.orEmpty(),
+                shopData.featuredBrandId.orEmpty(),
+                viewModel.isLoggedIn(),
+                shopData.shopId.orEmpty()
+        )
+    }
+
+    override fun onShopClick(categoryName: String, position: Int, shopData: Shop) {
+        tracking?.eventClickFeaturedBrand(
+                categoryName,
+                position,
+                shopData.name.orEmpty(),
+                shopData.url.orEmpty(),
+                shopData.additionalInformation.orEmpty(),
+                shopData.featuredBrandId.orEmpty(),
+                viewModel.isLoggedIn(),
+                shopData.shopId.orEmpty()
+        )
+        RouteManager.route(context, shopData.url)
+    }
+
 
     private fun initFirebasePerformanceMonitoring() {
         val CATEGORY_CONST: String = category?.title?:""
