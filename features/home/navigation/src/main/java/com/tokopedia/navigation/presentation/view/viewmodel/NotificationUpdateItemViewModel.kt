@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateTypeFactory
 
-class NotificationUpdateItemViewModel(
+open class NotificationUpdateItemViewModel(
         var notificationId: String = "",
         var isRead: Boolean = false,
         var iconUrl: String? = "",

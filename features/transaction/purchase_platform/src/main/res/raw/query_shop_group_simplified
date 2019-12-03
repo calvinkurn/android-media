@@ -404,6 +404,10 @@ query shop_group_simplified{
             url
           }
           messages
+          nicotine_lite_message {
+            text
+            url
+          }
           product {
             product_tracker_data {
               attribution
