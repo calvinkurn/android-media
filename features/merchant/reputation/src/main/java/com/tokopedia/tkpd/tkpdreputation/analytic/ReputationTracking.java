@@ -170,7 +170,7 @@ public class ReputationTracking {
         String successState = isSuccessful ? "success" : "unsuccessful";
 
         tracker.sendGeneralEvent(createEventMap(
-                "clickReview",
+                "lalala",
                 "product review detail page" + getEditMarker(isEditReview),
                 "click - product star rating - " + ratingValue,
                 orderId + " - " + productId + " - " + successState
@@ -247,6 +247,8 @@ public class ReputationTracking {
                         " - anonim : " + anonymousState
         ));
     }
+
+
 
     private String getEditMarker(boolean isEditReview) {
         return isEditReview ? " - edit" : "";

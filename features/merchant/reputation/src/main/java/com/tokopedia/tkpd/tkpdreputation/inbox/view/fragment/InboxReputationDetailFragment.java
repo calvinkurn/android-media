@@ -264,7 +264,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                         element.getProductUrl(),
                         element.isReviewIsAnonymous(),
                         element.getRevieweeName(),
-                        element.getproductStatus()),
+                        element.getproductStatus(),
+                        element.getOrderId()),
                 REQUEST_EDIT_REVIEW
         );
     }

@@ -56,6 +56,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
@@ -119,6 +120,9 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Inject
     SessionHandler sessionHandler;
+
+    @Inject
+    ReputationTracking reviewTracker;
 
     public static InboxReputationFormFragment createInstance(Bundle bundle) {
         InboxReputationFormFragment fragment = new InboxReputationFormFragment();
@@ -307,6 +311,14 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                     isValidRating = false;
                 }
 
+                reviewTracker.reviewOnRatingChangedTracker(
+                        getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                        String.valueOf(rating),
+                        true,
+                        true
+                );
+
                 setButtonEnabled();
             }
         });
@@ -316,6 +328,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 if (getArguments() != null
                         && getArguments().getBoolean(InboxReputationFormActivity.ARGS_IS_EDIT)) {
+
                     presenter.editReview(
                             getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
                             getArguments().getString(InboxReputationFormActivity.ARGS_REPUTATION_ID),
