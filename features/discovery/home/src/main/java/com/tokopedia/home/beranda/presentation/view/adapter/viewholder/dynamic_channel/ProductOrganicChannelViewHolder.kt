@@ -86,8 +86,6 @@ class ProductOrganicChannelViewHolder(sprintView: View,
         override fun onBindViewHolder(holder: OrganicViewHolder, position: Int) {
             try {
                 val grid = grids[position]
-//                ImageHandler.loadImageThumbs(holder.context, holder.channelImage1, grid.imageUrl)
-//                HomeImageHandler.loadImage(holder.context, holder.channelImage1, grid.imageUrl)
                 holder.channelImage1.loadImage(grid.imageUrl)
                 holder.channelName.displayTextOrHide(grid.name)
                 holder.channelPrice1.displayTextOrHide(grid.price)
