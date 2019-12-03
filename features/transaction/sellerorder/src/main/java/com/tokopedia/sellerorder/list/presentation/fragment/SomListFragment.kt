@@ -38,6 +38,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DELIVERED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_600
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_699
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.detail.data.model.SomAcceptOrder
@@ -256,8 +258,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 if (paramOrder.statusList.isEmpty()) {
                     if (tabStatus.equals(STATUS_DELIVERED, true)) {
                         val listPesananTiba = ArrayList<Int>()
-                        if (it.orderStatusIdList.contains(600)) listPesananTiba.add(600)
-                        if (it.orderStatusIdList.contains(699)) listPesananTiba.add(699)
+                        if (it.orderStatusIdList.contains(STATUS_ORDER_600)) listPesananTiba.add(STATUS_ORDER_600)
+                        if (it.orderStatusIdList.contains(STATUS_ORDER_699)) listPesananTiba.add(STATUS_ORDER_699)
                         paramOrder.statusList = listPesananTiba
                     } else {
                         paramOrder.statusList = it.orderStatusIdList

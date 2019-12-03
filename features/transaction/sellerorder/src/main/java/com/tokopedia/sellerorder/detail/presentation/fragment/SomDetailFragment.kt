@@ -77,6 +77,7 @@ import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.ATTRIBUTE_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_URL_UPLOAD
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
@@ -149,17 +150,21 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     fun goToAskBuyer() {
+        val urlInvoice = detailResponse.invoiceUrl
+        val invoiceUri = Uri.parse(urlInvoice)
+        val invoiceId = invoiceUri.getQueryParameter(ATTRIBUTE_ID)
         val intent = RouteManager.getIntent(activity,
                 ApplinkConst.TOPCHAT_ASKBUYER,
                 detailResponse.customer.id.toString(), "",
                 PARAM_SOURCE_ASK_BUYER, detailResponse.customer.name, detailResponse.customer.image).apply {
-            putExtra(ApplinkConst.Chat.INVOICE_ID, detailResponse.invoice)
+            putExtra(ApplinkConst.Chat.INVOICE_ID, invoiceId)
             putExtra(ApplinkConst.Chat.INVOICE_CODE, detailResponse.invoice)
 
             if (detailResponse.listProduct.isNotEmpty()) {
                 putExtra(ApplinkConst.Chat.INVOICE_TITLE, detailResponse.listProduct.first().name)
+                putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, detailResponse.listProduct.first().thumbnail)
             }
-
+            putExtra(ApplinkConst.Chat.INVOICE_DATE, detailResponse.paymentDate)
             putExtra(ApplinkConst.Chat.INVOICE_URL, detailResponse.invoiceUrl)
             putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, detailResponse.statusId)
             putExtra(ApplinkConst.Chat.INVOICE_STATUS, detailResponse.statusText)
