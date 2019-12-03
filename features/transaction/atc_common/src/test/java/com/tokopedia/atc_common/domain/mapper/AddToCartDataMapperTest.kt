@@ -14,9 +14,12 @@ import org.spekframework.spek2.style.gherkin.Feature
 class AddToCartDataMapperTest : Spek({
     Feature("Add to cart") {
 
+        val mapper by memoized {
+            AddToCartDataMapper()
+        }
+
         Scenario("add to cart failed") {
 
-            val mapper = AddToCartDataMapper()
             lateinit var mockResponse: AddToCartGqlResponse
             lateinit var addToCartDataModel: AddToCartDataModel
 
@@ -44,7 +47,6 @@ class AddToCartDataMapperTest : Spek({
 
         Scenario("add to cart success") {
 
-            val mapper = AddToCartDataMapper()
             lateinit var mockResponse: AddToCartGqlResponse
             lateinit var addToCartDataModel: AddToCartDataModel
 
