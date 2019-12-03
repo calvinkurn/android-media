@@ -927,9 +927,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private fun showDatePicker(tfEndShopClosed: TextFieldUnify, viewBottomSheet: View) {
         context?.let {  context ->
             val dateNow = GregorianCalendar(LocaleUtils.getCurrentLocale(context))
-            val dateMax = GregorianCalendar(2100, 0, 2)
+            val maxDate = Calendar.getInstance()
+            maxDate.add(Calendar.YEAR, 100)
 
-            val datePicker = DatePickerUnify(context, dateNow, dateNow, dateMax)
+            val datePicker = DatePickerUnify(context, dateNow, dateNow, maxDate)
             datePicker.setTitle(getString(R.string.end_shop_closed_label))
             datePicker.show(fragmentManager, "")
             datePicker.datePickerButton.setOnClickListener {
