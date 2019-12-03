@@ -40,6 +40,11 @@ android {
             testLogging.events = ["passed", "skipped", "failed"]
         }
     }
+
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.search.application.SearchInstrumentationTestRunner"
+    }
 }
 
 dependencies {

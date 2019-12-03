@@ -4,7 +4,7 @@ public interface SearchEventTracking {
 
     interface Event {
         String EVENT_VIEW_SEARCH_RESULT = "viewSearchResult";
-        String SEARCH = "clickSearch";
+        String CLICK_SEARCH = "clickSearch";
         String SEARCH_RESULT = "clickSearchResult";
         String CLICK_WISHLIST = "clickWishlist";
         String CLICK_TOP_NAV = "clickTopNav";
@@ -45,12 +45,14 @@ public interface SearchEventTracking {
         String CLICK_BANNED_PRODUCT_TICKER_EMPTY = "click - banned product ticker - empty";
         String IMPRESSION_BANNED_PRODUCT_TICKER_RELATED = "impression - banned product ticker - related";
         String CLICK_BANNED_PRODUCT_TICKER_RELATED = "click - banned product ticker - related";
+        String CLICK_SEARCH = "click - search";
     }
 
     interface Label {
         String KEYWORD_PRODUCT_ID = "Keyword: %s - product id: %s";
         String TOPADS = "topads";
         String GENERAL = "general";
+        String KEYWORD = "keyword: %s";
     }
 
     interface MOENGAGE {
