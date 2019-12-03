@@ -425,8 +425,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String, activityType: String) {
     }
 
-    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
-
+    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta) {
     }
 
     override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
