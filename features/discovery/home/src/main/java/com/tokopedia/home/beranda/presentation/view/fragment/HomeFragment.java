@@ -472,9 +472,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void clearCache(){
         Context context = getContext();
         if(context != null) {
-            new Thread(() -> {
-                Glide.get(context).clearDiskCache();
-            }).start();
             Glide.get(context).clearMemory();
         }
     }
