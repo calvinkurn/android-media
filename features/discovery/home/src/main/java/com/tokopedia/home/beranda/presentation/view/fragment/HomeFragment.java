@@ -458,7 +458,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDestroy() {
         super.onDestroy();
-        clearCache();
         presenter.onDestroy();
         presenter.detachView();
         homeRecyclerView.setAdapter(null);
@@ -467,13 +466,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         layoutManager = null;
         presenter = null;
         unRegisterBroadcastReceiverTokoCash();
-    }
-
-    private void clearCache(){
-        Context context = getContext();
-        if(context != null) {
-            Glide.get(context).clearMemory();
-        }
     }
 
     private void initRefreshLayout() {
