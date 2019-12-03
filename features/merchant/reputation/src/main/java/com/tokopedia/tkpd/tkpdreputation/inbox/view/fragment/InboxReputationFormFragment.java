@@ -116,7 +116,6 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     TkpdProgressDialog progressDialog;
     private ShareDialog shareDialog;
     private CallbackManager callbackManager;
-    HashMap<String, String> checker = new HashMap<>();
     ArrayList<String> imageUrlOrPathList = new ArrayList<>();
 
     @Inject
@@ -321,16 +320,13 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                     isValidRating = false;
                 }
 
-                if(!checker.containsKey(getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID))) {
-                    reviewTracker.reviewOnRatingChangedTracker(
-                            getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
-                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                            String.valueOf(rating),
-                            true,
-                            true
-                    );
-                    checker.put(getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID), "");
-                }
+                reviewTracker.reviewOnRatingChangedTracker(
+                        getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                        String.valueOf(rating),
+                        true,
+                        true
+                );
 
                 setButtonEnabled();
             }
