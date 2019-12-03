@@ -330,7 +330,6 @@ dependencies {
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.withdraw)
-    implementation project(rootProject.ext.features.paymentSetting)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.phoneVerification)
@@ -355,17 +354,7 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlow
     implementation project(rootProject.ext.libraries.analytics)
 
-
-    implementation rootProject.ext.analyticsDependencies.moengageSdk
-    implementation rootProject.ext.analyticsDependencies.moengagePushbase
-    implementation rootProject.ext.analyticsDependencies.moengageInapp
-    implementation(rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-firebase'
-    }
-
-    implementation(rootProject.ext.analyticsDependencies.moengageMSG) {
-        exclude group: 'com.android.support'
-    }
+    implementation(rootProject.ext.analyticsDependencies.moengage) 
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
