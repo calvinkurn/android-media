@@ -27,13 +27,11 @@ class DiscoveryViewModel(application: Application) : BaseViewModel(application),
         launchCatchError(
                 block = {
                     val data = DiscoveryDataUseCase().getDiscoveryData(repository, endPoint)
-                    Log.d("langsukdata", data.title)
                     data?.let {
                         discoveryResponse.value = Success(it)
                     }
                 },
                 onError = {
-                    Log.d("langsukdataerr", "jdguycwveu")
                     discoveryResponse.value = Fail(it)
                 }
         )
