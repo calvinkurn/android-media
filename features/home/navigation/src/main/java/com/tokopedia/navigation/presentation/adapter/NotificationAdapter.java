@@ -94,8 +94,7 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
     }
 
     public void updateValue(NotificationsModel data, NotifcenterUnread unread) {
-        if (this.items == null)
-            return;
+        if (this.items == null) return;
 
         for (DrawerNotification item : items) {
             if (item.getId() != null) {
@@ -146,9 +145,7 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
     }
 
     private static Integer getNotifCenterUnread(NotifcenterUnread unread) {
-        if (unread == null) {
-            return 0;
-        }
+        if (unread == null) return 0;
 
         return TextUtils.equals(unread.getNotifUnread(), NOTIF_99)
                 ? NOTIF_99_NUMBER

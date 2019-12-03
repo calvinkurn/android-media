@@ -14,6 +14,10 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     companion object {
         val LAYOUT = R.layout.holder_item_cart_error
+
+        const val REPLACE_TAG_OPEN = "<replace>"
+        const val REPLACE_TAG_CLOSE = "</replace>"
+        const val LINK_TAG_CLOSE = "</a>"
     }
 
     var showDivider: Boolean = false
@@ -47,16 +51,28 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     private fun renderTickerMessage(data: DisabledCartItemHolderData) {
         itemView.ticker_message.apply {
-            if (data.tickerMessage != null) {
-                setHtmlDescription(data.tickerMessage!!)
+            if (data.nicotineLiteMessageData != null) {
+                val descriptionText = data.nicotineLiteMessageData!!.text
+                        .replace(REPLACE_TAG_OPEN,
+                                "<a href=\"${data.nicotineLiteMessageData!!.text}\">")
+                        .replace(REPLACE_TAG_CLOSE, LINK_TAG_CLOSE)
+                setHtmlDescription(descriptionText)
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        actionListener.onTickerDescriptionUrlClicked(linkUrl.toString())
+                        actionListener.onTobaccoLiteUrlClicked(data.nicotineLiteMessageData!!.url)
                     }
 
-                    override fun onDismiss() {
-                    }
+                    override fun onDismiss() {}
                 })
+                visibility = View.VISIBLE
+                post {
+                    measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                    requestLayout()
+                }
+                actionListener.onShowTickerTobacco()
+            } else if (data.tickerMessage != null) {
+                setTextDescription(data.tickerMessage!!)
                 visibility = View.VISIBLE
                 post {
                     measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),

@@ -2,7 +2,6 @@ package com.tokopedia.navigation.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.util.IntegerUtil;
@@ -11,15 +10,11 @@ import com.tokopedia.navigation_common.model.HomeFlagModel;
 import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 
-import rx.functions.Func1;
-
 import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99;
 import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99_NUMBER;
 
-/**
- * Created by meta on 25/07/18.
- */
-public class NotificationMapper implements Func1<GraphqlResponse, NotificationEntity> {
+public class NotificationMapper {
+
 
     public static boolean isHasShop(NotificationEntity entity) {
         return entity != null
@@ -82,8 +77,4 @@ public class NotificationMapper implements Func1<GraphqlResponse, NotificationEn
                 : IntegerUtil.tryParseInt(unread.getNotifUnread());
     }
 
-    @Override
-    public NotificationEntity call(GraphqlResponse graphqlResponse) {
-        return graphqlResponse.getData(NotificationEntity.class);
-    }
 }

@@ -132,9 +132,9 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
-import com.tokopedia.tradein.model.TradeInParams
-import com.tokopedia.tradein.view.customview.TradeInTextView
-import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
+import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.customviews.TradeInTextView
+import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.dialog.UnifyDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
@@ -176,6 +176,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var isFromDeeplink: Boolean = false
     private var isAffiliate: Boolean = false
     private var isLeasing: Boolean = false
+    private var deeplinkUrl: String = ""
 
     lateinit var headerView: PartialHeaderView
     lateinit var productStatsView: PartialProductStatisticView
@@ -295,6 +296,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         private const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
         private const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
         private const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
+        private const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
 
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
@@ -307,7 +309,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         isAffiliate: Boolean = false,
                         trackerAttribution: String? = null,
                         trackerListName: String? = null,
-                        affiliateString: String? = null) =
+                        affiliateString: String? = null,
+                        deeplinkUrl: String? = null) =
                 ProductDetailFragment().also {
                     it.arguments = Bundle().apply {
                         productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
@@ -317,6 +320,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         trackerAttribution?.let { attribution -> putString(ARG_TRACKER_ATTRIBUTION, attribution) }
                         trackerListName?.let { listName -> putString(ARG_TRACKER_LIST_NAME, listName) }
                         affiliateString?.let { affiliateString -> putString(ARG_AFFILIATE_STRING, affiliateString) }
+                        deeplinkUrl?.let { deeplinkUrl -> putString(ARG_DEEPLINK_URL, deeplinkUrl) }
                         putBoolean(ARG_FROM_DEEPLINK, isFromDeeplink)
                         putBoolean(ARG_FROM_AFFILIATE, isAffiliate)
                     }
@@ -347,6 +351,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             affiliateString = it.getString(ARG_AFFILIATE_STRING)
             isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
+            deeplinkUrl = it.getString(ARG_DEEPLINK_URL, "")
         }
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -1700,7 +1705,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         else
             tradeInParams.isPreorder = false
         tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
-        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
+        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false, activity?.application)
         tv_trade_in.setOnClickListener {
             goToNormalCheckout(TRADEIN_BUY)
             tradeInParams?.let {
@@ -1873,6 +1878,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
         productInfo?.run {
+            productDetailTracking.eventDiscussionClickedIris(this, deeplinkUrl, (shopInfo?.goldOS?.isOfficial
+                    ?: 0) > 0, shopInfo?.shopCore?.name ?: "")
             productDetailTracking.sendMoEngageClickDiskusi(this,
                     (shopInfo?.goldOS?.isOfficial ?: 0) > 0,
                     shopInfo?.shopCore?.name ?: "")
@@ -1881,6 +1888,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun onReviewClicked() {
         productInfo?.run {
+            productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
             productDetailTracking.eventReviewClicked()
             productDetailTracking.sendMoEngageClickReview(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")
@@ -1919,7 +1927,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
      */
     private fun onPictureProductClicked(position: Int) {
         activity?.let {
-            val intent = ImagePreviewPdpActivity.createIntent(it, productId ?: "", isWishlisted, getImageURIPaths(), null, position)
+            val intent = ImagePreviewPdpActivity.createIntent(it, productId
+                    ?: "", isWishlisted, getImageURIPaths(), null, position)
             startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW)
         }
     }
@@ -2244,8 +2253,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun trackProductView(isElligible: Boolean) {
         if (productInfo != null && shopInfo != null) {
+
             productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                    isElligible, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
+                    isElligible, tradeInParams.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment, deeplinkUrl)
         } else if (shopInfo == null) {
             delegateTradeInTracking = true
         }
