@@ -64,7 +64,6 @@ public class GTMAnalytics extends ContextAnalytics {
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
     private String clientIdString = "";
-    private Context mContext;
 
     // have status that describe pending.
 
@@ -75,7 +74,6 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
-        mContext = context;
     }
 
     @Override
@@ -825,7 +823,7 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString("appsflyerId", afUniqueId);
         bundle.putString("userId", sessionHandler.getLoginID());
         bundle.putString("clientId", getClientIDString());
-        bundle.putBoolean("isLoggedInStatus", new UserSession(mContext).isLoggedIn());
+        bundle.putBoolean("isLoggedInStatus", sessionHandler.isLoggedIn());
 
         if (customDimension != null) {
             for (String key : customDimension.keySet()) {
@@ -916,7 +914,6 @@ public class GTMAnalytics extends ContextAnalytics {
         if (TextUtils.isEmpty(screenName)) return;
         eventAuthenticate(null);
         sendScreen(screenName, null);
-
     }
 
     public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
