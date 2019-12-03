@@ -408,11 +408,6 @@ class TopChatViewStateImpl(
         getAdapter().showRetryFor(it, retry)
     }
 
-    fun onSendProductAttachment(item: ProductAttachmentViewModel) {
-        getAdapter().addElement(item)
-        scrollDownWhenInBottom()
-    }
-
     override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {
         attachmentPreviewContainer.show()
         attachmentPreviewAdapter.updateAttachments(attachmentPreview)

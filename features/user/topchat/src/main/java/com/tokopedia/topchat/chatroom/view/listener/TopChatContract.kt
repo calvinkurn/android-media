@@ -89,9 +89,6 @@ interface TopChatContract {
 
         fun isUploading(): Boolean
 
-        fun sendProductAttachment(messageId: String, item: ResultProduct,
-                                  startTime: String, opponentId: String)
-
         fun deleteChat(messageId: String,
                        onError: (Throwable) -> Unit,
                        onSuccessDeleteConversation: () -> Unit)

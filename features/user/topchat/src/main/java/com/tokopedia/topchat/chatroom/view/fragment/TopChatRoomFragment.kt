@@ -64,6 +64,7 @@ import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -586,31 +587,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
         val resultProducts: ArrayList<ResultProduct> = data.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
         presenter.initProductPreviewFromAttachProduct(resultProducts)
-//        attachProductRetrieved(resultProducts)
-    }
-
-//    private fun attachProductRetrieved(resultProducts: java.util.ArrayList<ResultProduct>) {
-//
-//        analytics.trackSendProductAttachment()
-//
-//        for (result in resultProducts) {
-//            val item = generateProductChatViewModel(result)
-//            getViewState().onSendProductAttachment(item)
-//            presenter.sendProductAttachment(messageId, result, item.startTime, opponentId)
-//        }
-//    }
-
-    private fun generateProductChatViewModel(product: ResultProduct): ProductAttachmentViewModel {
-        return ProductAttachmentViewModel(
-                getUserSession().userId,
-                product.productId,
-                product.name,
-                product.price,
-                product.productUrl,
-                product.productImageThumbnail,
-                SendableViewModel.generateStartTime(),
-                false,
-                shopId)
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
@@ -865,6 +841,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
         if (attachment is InvoicePreviewViewModel) {
             analytics.invoiceAttachmentSent(attachment)
+        } else if (attachment is SendableProductPreview) {
+            analytics.trackSendProductAttachment()
         }
     }
 

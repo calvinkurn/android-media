@@ -508,14 +508,6 @@ class TopChatRoomPresenter @Inject constructor(
         view.notifyAttachmentsSent()
     }
 
-    override fun sendProductAttachment(messageId: String, item: ResultProduct,
-                                       startTime: String, opponentId: String) {
-
-        RxWebSocket.send(SendWebsocketParam.generateParamSendProductAttachment(messageId, item, startTime,
-                opponentId), listInterceptor
-        )
-    }
-
     override fun deleteChat(messageId: String, onError: (Throwable) -> Unit, onSuccessDeleteConversation: () -> Unit) {
         deleteMessageListUseCase.execute(DeleteMessageListUseCase.generateParam(messageId),
                 DeleteMessageAllSubscriber(onError, onSuccessDeleteConversation))
