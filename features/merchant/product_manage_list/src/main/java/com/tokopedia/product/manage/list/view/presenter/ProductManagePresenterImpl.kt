@@ -262,7 +262,7 @@ class ProductManagePresenterImpl @Inject constructor(
                     override fun onNext(featuredProductResponse: FeaturedProductResponseDomainModel?) {
 //                        view.hideLoadingProgress()
                         if (featuredProductResponse?.errorCode.equals("")) {
-                            view.onSuccessChangeFeaturedProduct(status)
+                            view.onSuccessChangeFeaturedProduct(productId, status)
                         } else {
                             view.onFailedChangeFeaturedProduct(featuredProductResponse?.message?.get(0))
                         }

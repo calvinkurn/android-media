@@ -51,7 +51,7 @@ public interface ProductManageView extends CustomerView {
 
     void onErrorBulkUpdateProduct(Throwable e);
 
-    void onSuccessChangeFeaturedProduct(int status);
+    void onSuccessChangeFeaturedProduct(String productId, int status);
 
     void onFailedChangeFeaturedProduct(String errorMessage);
 }

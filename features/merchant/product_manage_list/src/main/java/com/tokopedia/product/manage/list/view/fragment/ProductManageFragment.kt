@@ -620,21 +620,27 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         renderCheckedView()
     }
 
-    override fun onSuccessChangeFeaturedProduct(status: Int) {
-        loadInitialData()
+    override fun onSuccessChangeFeaturedProduct(productId: String, status: Int) {
+        //Default feature product action is to remove the product from featured products.
+        //The value will change depends on the status code. 0 is remove, 1 is add
         var successMessage: String = getString(R.string.product_manage_success_remove_featured_product)
-        if (status == ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
+        var isFeaturedProduct = false
+        //If the action is to add featured product, invert the attributes value also
+        if (status == ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS) {
             successMessage = getString(R.string.product_manage_success_add_featured_product)
-
-        Toast.makeText(context,successMessage,Toast.LENGTH_SHORT)
-                .show()
+            isFeaturedProduct = true
+        }
+        productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
+        hideLoadingProgress()
+        showToasterNormal(successMessage)
     }
 
     override fun onFailedChangeFeaturedProduct(errorMessage: String?) {
         val error = errorMessage ?: getString(R.string.product_manage_failed_set_featured_product)
         hideLoadingProgress()
-        Toast.makeText(context, error ,Toast.LENGTH_SHORT)
-                .show()
+        showToasterError(error, "") {
+
+        }
     }
 
     private fun updateBulkLayout() {
