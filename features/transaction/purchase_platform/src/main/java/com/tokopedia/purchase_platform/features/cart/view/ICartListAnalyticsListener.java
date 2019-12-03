@@ -25,6 +25,8 @@ public interface ICartListAnalyticsListener {
 
     void sendAnalyticsOnClickShopNameCartItem(String shopName);
 
+    void sendAnalyticsOnClickShopCartItem(String shopId, String shopName);
+
     void sendAnalyticsOnClickCancelPromoCodeAndCouponBanner();
 
     void sendAnalyticsOnClickRemoveCartConstrainedProduct(Map<String, Object> eeDataLayerCart);

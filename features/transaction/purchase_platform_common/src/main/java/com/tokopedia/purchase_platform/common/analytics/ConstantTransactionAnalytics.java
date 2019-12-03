@@ -77,6 +77,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
         String CLICK_HAPUS_ON_TOP_RIGHT_CORNER = "click hapus on top right corner";
         String CLICK_SHOP_NAME = "click shop name";
+        String CLICK_SHOP = "click - shop - login";
         String CLICK_PRODUCT_NAME = "click product name";
         String CLICK_BUTTON_PLUS = "click button +";
         String CLICK_BUTTON_MIN = "click button -";
