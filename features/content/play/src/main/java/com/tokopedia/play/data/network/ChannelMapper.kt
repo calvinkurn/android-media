@@ -12,7 +12,14 @@ import rx.functions.Func1
 
 class ChannelMapper : Func1<Response<DataResponse<Channel.ChannelResponse>>, Channel> {
 
-    override fun call(t: Response<DataResponse<Channel.ChannelResponse>>?): Channel? {
+    override fun call(response: Response<DataResponse<Channel.ChannelResponse>>?): Channel? {
+        response?.let {
+            return if (it.isSuccessful) {
+                it.body()?.data?.channel
+            } else {
+                null
+            }
+        }
         return null
     }
 
