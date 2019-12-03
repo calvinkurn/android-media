@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -98,6 +99,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private static final String KEY_URI_PARAMETER = "idem_potency_key";
     private static final String KEY_URI_PARAMETER_EQUAL = "idem_potency_key=";
     public static final String CATEGORY_GIFT_CARD = "Gift-card";
+    private static final String INSURANCE_CLAIM = "tokopedia://webview?allow_override=false&url=https://www.tokopedia.com/asuransi/klaim";
     public static int RETRY_COUNT = 0;
 
     @Inject
@@ -130,6 +132,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     TextView userInfoLabel;
     private String categoryName;
     View dividerUserInfo, dividerActionBtn, dividerInfoLabel;
+    private CardView policy;
+    private CardView claim;
 
 
     @Override
@@ -183,7 +187,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         dividerInfoLabel = view.findViewById(R.id.divider_above_info_label);
         actionButtonText = view.findViewById(R.id.actionButton_text);
         recyclerView.setNestedScrollingEnabled(false);
-
+        policy = view.findViewById(R.id.policy);
+        claim = view.findViewById(R.id.claim);
 
         initInjector();
         setMainViewVisible(View.GONE);
@@ -667,5 +672,18 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         if (!TextUtils.isEmpty(title)) {
             detailLabel.setText(title);
         }
+    }
+
+    @Override
+    public void setInsuranceDetail() {
+        policy.setVisibility(View.VISIBLE);
+        claim.setVisibility(View.VISIBLE);
+        dividerInfoLabel.setVisibility(View.GONE);
+        claim.setOnClickListener(view -> {
+                    RouteManager.route(
+                            getContext(), INSURANCE_CLAIM
+                    );
+                }
+        );
     }
 }
