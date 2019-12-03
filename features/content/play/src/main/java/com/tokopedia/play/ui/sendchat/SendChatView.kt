@@ -17,11 +17,10 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 class SendChatView(container: ViewGroup, listener: Listener) : UIView(container) {
 
     private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_chat_form, container, false)
+            LayoutInflater.from(container.context).inflate(R.layout.view_chat_form, container, true)
+                    .findViewById(R.id.cl_chat_form)
 
     init {
-        container.addView(view)
-
         view.findViewById<EditText>(R.id.et_chat)
                 .setOnClickListener {
                     listener.onChatFormClicked(this)

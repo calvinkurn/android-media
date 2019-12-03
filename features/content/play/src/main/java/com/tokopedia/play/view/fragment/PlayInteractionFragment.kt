@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DimenRes
+import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -14,10 +14,13 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.like.LikeComponent
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
+import com.tokopedia.play.ui.pinned.PinnedComponent
+import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.ui.sendchat.SendChatComponent
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
+import com.tokopedia.play.ui.stats.StatsComponent
+import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.collect
 import kotlin.coroutines.CoroutineContext
 
@@ -52,6 +55,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
         super.onViewCreated(view, savedInstanceState)
 
         initComponents(view as ViewGroup)
+        setPinnedMessage("Yoenik Apparel", "Visit my collections here!")
     }
 
     override fun onDestroy() {
@@ -59,14 +63,19 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
         job.cancel()
     }
 
+    //region Component Initialization
     private fun initComponents(container: ViewGroup) {
         val sendChatComponent: UIComponent<*> = initSendChatComponent(container)
         val likeComponent: UIComponent<*> = initLikeComponent(container)
+        val statsComponent: UIComponent<*> = initStatsComponent(container)
+        val pinnedComponent: UIComponent<*> = initPinnedComponent(container)
 
         layoutView(
                 container = container,
                 sendChatComponentId = sendChatComponent.getContainerId(),
-                likeComponentId = likeComponent.getContainerId()
+                likeComponentId = likeComponent.getContainerId(),
+                statsComponentId = statsComponent.getContainerId(),
+                pinnedComponentId = pinnedComponent.getContainerId()
         )
     }
 
@@ -77,8 +86,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
             sendChatComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            SendChatInteractionEvent.FormClicked -> {}
-                            SendChatInteractionEvent.SendClicked -> {}
+                            SendChatInteractionEvent.FormClicked -> showToast("Chat Form Clicked")
+                            SendChatInteractionEvent.SendClicked -> showToast("Chat Send Clicked")
                         }
                     }
         }
@@ -93,7 +102,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
             likeComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            LikeInteractionEvent.LikeClicked -> {}
+                            LikeInteractionEvent.LikeClicked -> showToast("Like Clicked")
                         }
                     }
         }
@@ -101,10 +110,31 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
         return likeComponent
     }
 
+    private fun initStatsComponent(container: ViewGroup): UIComponent<Unit> {
+        return StatsComponent(container)
+    }
+
+    private fun initPinnedComponent(container: ViewGroup): UIComponent<PinnedInteractionEvent> {
+        val pinnedComponent = PinnedComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+
+        launch {
+            pinnedComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            PinnedInteractionEvent.ActionClicked -> showToast("Action Pinned Clicked")
+                        }
+                    }
+        }
+
+        return pinnedComponent
+    }
+
     private fun layoutView(
             container: ViewGroup,
             @IdRes sendChatComponentId: Int,
-            @IdRes likeComponentId: Int) {
+            @IdRes likeComponentId: Int,
+            @IdRes statsComponentId: Int,
+            @IdRes pinnedComponentId: Int) {
 
         fun layoutChat(container: ViewGroup, @IdRes id: Int, @IdRes likeComponentId: Int) {
             val constraintSet = ConstraintSet()
@@ -126,7 +156,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
             constraintSet.clone(container as ConstraintLayout)
 
             constraintSet.apply {
-                connect(id, ConstraintSet.START, sendChatComponentId, ConstraintSet.END, resources.getDimensionPixelSize(R.dimen.dp_8))
+                connect(id, ConstraintSet.START, sendChatComponentId, ConstraintSet.END, resources.getDimensionPixelOffset(R.dimen.dp_8))
                 connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
                 connect(id, ConstraintSet.BOTTOM, sendChatComponentId, ConstraintSet.BOTTOM)
                 connect(id, ConstraintSet.TOP, sendChatComponentId, ConstraintSet.TOP)
@@ -135,7 +165,51 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
             constraintSet.applyTo(container)
         }
 
+        fun layoutPinned(container: ViewGroup, @IdRes id: Int, @IdRes sendChatComponentId: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, sendChatComponentId, ConstraintSet.START)
+                connect(id, ConstraintSet.END, sendChatComponentId, ConstraintSet.END)
+                connect(id, ConstraintSet.BOTTOM, sendChatComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
+            }
+
+            constraintSet.applyTo(container)
+        }
+
+        fun layoutStats(container: ViewGroup, @IdRes id: Int, @IdRes pinnedComponentId: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, pinnedComponentId, ConstraintSet.START)
+                connect(id, ConstraintSet.BOTTOM, pinnedComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
+            }
+
+            constraintSet.applyTo(container)
+        }
+
         layoutChat(container, sendChatComponentId, likeComponentId)
         layoutLike(container, likeComponentId, sendChatComponentId)
+        layoutPinned(container, pinnedComponentId, sendChatComponentId)
+        layoutStats(container, statsComponentId, pinnedComponentId)
+    }
+    //endregion
+
+    private fun showToast(text: String) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun setPinnedMessage(author: String, message: String) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetPinned(author, message)
+                    )
+        }
     }
 }

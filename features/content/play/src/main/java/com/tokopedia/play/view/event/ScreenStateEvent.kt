@@ -9,4 +9,5 @@ import com.tokopedia.play.component.ComponentEvent
 sealed class ScreenStateEvent : ComponentEvent {
 
     data class Play(val exoPlayer: ExoPlayer) : ScreenStateEvent()
+    data class SetPinned(val author: String, val message: String) : ScreenStateEvent()
 }

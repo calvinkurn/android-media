@@ -1,44 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/cl_chat_form"
-    android:layout_width="0dp"
-    android:layout_height="@dimen/dp_40"
-    android:background="@drawable/bg_chat_form"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_10"
-    android:paddingBottom="@dimen/dp_10"
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <EditText
-        android:id="@+id/et_chat"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_chat_form"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:textColor="@color/Neutral_N0"
-        android:hint="@string/play_chat_placeholder"
-        android:textColorHint="@color/play_chat_text"
-        android:textSize="@dimen/sp_12"
-        android:lineHeight="@dimen/sp_20"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/iv_send"
-        />
+        android:layout_height="@dimen/dp_40"
+        android:background="@drawable/bg_chat_form"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        >
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_send"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@id/et_chat"
-        app:layout_constraintStart_toEndOf="@id/et_chat"
-        app:layout_constraintBottom_toBottomOf="@id/et_chat"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_play_send_white"
-        tools:visibility="visible"
-        />
+        <EditText
+            android:id="@+id/et_chat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textColor="@color/Neutral_N0"
+            android:hint="@string/play_chat_placeholder"
+            android:textColorHint="@color/play_chat_text"
+            android:textSize="@dimen/sp_12"
+            android:lineHeight="@dimen/sp_20"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_send"
+            />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_send"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/et_chat"
+            app:layout_constraintStart_toEndOf="@id/et_chat"
+            app:layout_constraintBottom_toBottomOf="@id/et_chat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_play_send_white"
+            tools:visibility="visible"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</merge>
