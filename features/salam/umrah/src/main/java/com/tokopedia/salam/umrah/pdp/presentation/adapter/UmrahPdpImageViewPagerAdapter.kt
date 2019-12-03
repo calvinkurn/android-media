@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.salam.umrah.R
-import kotlinx.android.synthetic.main.layout_image_slider.view.*
+import kotlinx.android.synthetic.main.layout_umrah_image_slider.view.*
 
 /**
  * @author by M on 8/11/19
@@ -25,7 +25,7 @@ class UmrahPdpImageViewPagerAdapter : PagerAdapter() {
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = LayoutInflater.from(container.context)
-                .inflate(R.layout.layout_image_slider, container, false)
+                .inflate(R.layout.layout_umrah_image_slider, container, false)
         container.addView(view)
         bind(imageUrls[position], view)
         view.image_banner.setOnClickListener {
