@@ -14,7 +14,7 @@ import com.bumptech.glide.request.transition.TransitionFactory
 
 class CrossFadeDrawable(previousDrawable: Drawable, currentDrawable: Drawable) : Drawable(), Drawable.Callback {
     private var previousDrawable: Drawable?
-    private val currentDrawable: Drawable?
+    private val currentDrawable: Drawable
     private var fadeDuration = 300f
     private var startTimeMillis = 0L
     private var animating = false
@@ -53,33 +53,33 @@ class CrossFadeDrawable(previousDrawable: Drawable, currentDrawable: Drawable) :
     override fun draw(canvas: Canvas) {
         if (!animating) {
             if (previousDrawable != null) {
-                previousDrawable!!.draw(canvas)
+                previousDrawable?.draw(canvas)
             } else {
-                currentDrawable!!.draw(canvas)
+                currentDrawable.draw(canvas)
             }
         } else {
             val normalized = normalizedTime
             if (normalized >= 1f) {
-                previousDrawable!!.callback = null
+                previousDrawable?.callback = null
                 animating = false
                 previousDrawable = null
-                currentDrawable!!.draw(canvas)
+                currentDrawable.draw(canvas)
             } else {
                 if (isCrossFadeEnabled) {
                     val partialAlpha = (alpha * normalized).toInt()
-                    if (previousDrawable != null) {
-                        previousDrawable!!.alpha = 255 - partialAlpha
-                        previousDrawable!!.draw(canvas)
-                        previousDrawable!!.alpha = alpha
+                    previousDrawable?.let { previousDrawable ->
+                        previousDrawable.alpha = 255 - partialAlpha
+                        previousDrawable.draw(canvas)
+                        previousDrawable.alpha = alpha
                     }
-                    currentDrawable!!.alpha = partialAlpha
+                    currentDrawable.alpha = partialAlpha
                     currentDrawable.draw(canvas)
                     currentDrawable.alpha = alpha
                 } else {
                     if (previousDrawable != null) {
-                        previousDrawable!!.draw(canvas)
+                        previousDrawable?.draw(canvas)
                     } else {
-                        currentDrawable!!.draw(canvas)
+                        currentDrawable.draw(canvas)
                     }
                 }
                 invalidateSelf()
@@ -99,7 +99,7 @@ class CrossFadeDrawable(previousDrawable: Drawable, currentDrawable: Drawable) :
     override fun onBoundsChange(bounds: Rect?) {
         super.onBoundsChange(bounds)
         if (previousDrawable != null) {
-            previousDrawable!!.bounds = bounds
+            previousDrawable?.bounds = bounds
         }
         if (currentDrawable != null) {
             currentDrawable.bounds = bounds
@@ -108,17 +108,17 @@ class CrossFadeDrawable(previousDrawable: Drawable, currentDrawable: Drawable) :
 
     override fun getIntrinsicWidth(): Int {
         return if (!animating && previousDrawable != null) {
-            previousDrawable!!.intrinsicWidth
+            previousDrawable?.intrinsicWidth ?: 0
         } else {
-            currentDrawable!!.intrinsicWidth
+            currentDrawable.intrinsicWidth
         }
     }
 
     override fun getIntrinsicHeight(): Int {
         return if (!animating && previousDrawable != null) {
-            previousDrawable!!.intrinsicHeight
+            previousDrawable?.intrinsicHeight ?: 0
         } else {
-            currentDrawable!!.intrinsicHeight
+            currentDrawable.intrinsicHeight
         }
     }
 
@@ -155,12 +155,12 @@ class CrossFadeFactory : TransitionFactory<Drawable> {
 }
 
 class CrossFadeTransition : Transition<Drawable> {
-    override fun transition(current: Drawable?, adapter: ViewAdapter): Boolean {
+    override fun transition(current: Drawable, adapter: ViewAdapter): Boolean {
         var previous = adapter.currentDrawable
         if (previous == null) {
             previous = ColorDrawable(Color.TRANSPARENT)
         }
-        val crossFadeDrawable = CrossFadeDrawable(previous, current!!)
+        val crossFadeDrawable = CrossFadeDrawable(previous, current)
         crossFadeDrawable.isCrossFadeEnabled = true
         crossFadeDrawable.startTransition()
         adapter.setDrawable(crossFadeDrawable)
