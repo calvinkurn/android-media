@@ -269,6 +269,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
+        partialRegisterInputView.initKeyboardListener(view)
     }
 
     @SuppressLint("RtlHardcoded")
@@ -1069,7 +1070,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     phoneNumbers.add(telephony.line1Number)
             }
 
-            if(!phoneNumbers.isEmpty())
+            if(phoneNumbers.isNotEmpty())
                 partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers))
         }
     }

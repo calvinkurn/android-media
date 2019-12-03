@@ -2,6 +2,7 @@ package com.tokopedia.search.analytics;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.SearchEvent;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
@@ -14,16 +15,20 @@ import com.tokopedia.user.session.UserSessionInterface;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.search.analytics.SearchTrackingConstant.CATEGORY_ID_MAPPING;
+import static com.tokopedia.search.analytics.SearchTrackingConstant.CATEGORY_NAME_MAPPING;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_ACTION;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_CATEGORY;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_LABEL;
+import static com.tokopedia.search.analytics.SearchTrackingConstant.IS_RESULT_FOUND;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.USER_ID;
 
 /**
@@ -588,5 +593,37 @@ public class SearchTracking {
                 SearchEventTracking.Action.CLICK_BANNED_PRODUCT_TICKER_RELATED,
                 keyword
         );
+    }
+
+    public static void trackMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category) {
+        Map<String, Object> value = DataLayer.mapOf(
+                SearchEventTracking.MOENGAGE.KEYWORD, query,
+                SearchEventTracking.MOENGAGE.IS_RESULT_FOUND, hasProductList
+        );
+
+        if (category != null) {
+            value.put(SearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
+            value.put(SearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
+        }
+
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
+    }
+
+    public static void trackGTMEventSearchAttempt(String query, boolean hasProductList, Map<String, String> category) {
+        if (category == null) {
+            category = new HashMap<>();
+        }
+
+        Map<String, Object> value = DataLayer.mapOf(
+                EVENT, SearchEventTracking.Event.CLICK_SEARCH,
+                EVENT_CATEGORY, SearchEventTracking.Category.EVENT_TOP_NAV,
+                EVENT_ACTION, SearchEventTracking.Action.CLICK_SEARCH,
+                EVENT_LABEL, String.format(SearchEventTracking.Label.KEYWORD, query),
+                IS_RESULT_FOUND, hasProductList,
+                CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())),
+                CATEGORY_NAME_MAPPING, new JSONArray(category.values())
+        );
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(value);
     }
 }

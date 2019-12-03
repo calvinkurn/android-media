@@ -54,3 +54,18 @@ fun String.getDigits(): Int? {
         null
     }
 }
+
+fun String?.convertStrObjToHashMap(): HashMap<String, Any> {
+    val arr = this?.split(",")
+    val map = HashMap<String, Any>()
+    if (arr != null) {
+        for (str in arr) {
+            val newStr = str.replace("{", "").replace("}", "").replace("\"", "")
+            val splited = newStr.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+            map[splited[0]] = splited[1].trim { it <= ' ' }
+
+        }
+    }
+    return map
+}

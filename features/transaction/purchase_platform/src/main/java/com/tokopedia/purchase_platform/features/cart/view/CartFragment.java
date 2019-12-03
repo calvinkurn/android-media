@@ -1079,22 +1079,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onTickerDescriptionUrlClicked(@NotNull String url) {
-        String finalUrl = url;
-        if (!url.startsWith("https://")) {
-            if (url.startsWith("http://")) {
-                finalUrl = url.replace("http", "https");
-            } else {
-                finalUrl = "https://" + url;
-            }
-        }
-        Intent view = new Intent();
-        view.setAction(Intent.ACTION_VIEW);
-        view.setData(Uri.parse(finalUrl));
-        startActivity(view);
-    }
-
-    @Override
     public void onShowCartTicker(@NotNull String tickerId) {
         cartPageAnalytics.eventViewInformationAndWarningTickerInCart(tickerId);
     }
@@ -2774,6 +2758,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         DialogUnify dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size());
 
+        for (CartItemData cartItemData : allDisabledCartItemDataList) {
+            if (cartItemData.getNicotineLiteMessageData() != null) {
+                cartPageAnalytics.eventClickHapusButtonOnProductContainTobacco();
+                break;
+            }
+        }
         sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
                 allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
         ));
@@ -2799,7 +2789,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onDeleteDisabledItem(CartItemData cartItemData) {
-        sendAnalyticsOnClickRemoveIconCartItem();
+        if (cartItemData.getNicotineLiteMessageData() != null) {
+            cartPageAnalytics.eventClickTrashIconButtonOnProductContainTobacco();
+        } else {
+            sendAnalyticsOnClickRemoveIconCartItem();
+        }
         List<CartItemData> cartItemDatas = Collections.singletonList(cartItemData);
         List<CartItemData> allCartItemDataList = cartAdapter.getAllDisabledCartItemData();
 
@@ -2820,5 +2814,21 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             return Unit.INSTANCE;
         });
         dialog.show();
+    }
+
+    @Override
+    public void onTobaccoLiteUrlClicked(@NotNull String url) {
+        cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco();
+        dPresenter.redirectToLite(url);
+    }
+
+    @Override
+    public void onShowTickerTobacco() {
+        cartPageAnalytics.eventViewTickerProductContainTobacco();
+    }
+
+    @Override
+    public void goToLite(String url) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 }

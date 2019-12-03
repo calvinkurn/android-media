@@ -78,6 +78,8 @@ public interface ProductListSectionContract {
 
         void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
 
+        void sendTrackingGTMEventSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
+
         void setFirstTimeLoad(boolean isFirstTimeLoad);
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);

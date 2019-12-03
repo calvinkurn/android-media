@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -77,7 +76,6 @@ import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
-import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -85,7 +83,6 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1018,7 +1015,12 @@ public class ProductListFragment
 
     @Override
     public void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category) {
-        sendMoEngageSearchAttempt(getActivity(), query, hasProductList, category);
+        SearchTracking.trackMoEngageSearchAttempt(query, hasProductList, category);
+    }
+
+    @Override
+    public void sendTrackingGTMEventSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category) {
+        SearchTracking.trackGTMEventSearchAttempt(query, hasProductList, category);
     }
 
     @Override
@@ -1038,18 +1040,6 @@ public class ProductListFragment
     @Override
     public boolean isAnyFilterActive() {
         return isFilterActive();
-    }
-
-    public void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {
-        Map<String, Object> value = DataLayer.mapOf(
-                SearchEventTracking.MOENGAGE.KEYWORD, keyword,
-                SearchEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
-        );
-        if (category != null) {
-            value.put(SearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
-            value.put(SearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
-        }
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
     }
 
     @Override

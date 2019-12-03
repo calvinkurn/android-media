@@ -186,14 +186,31 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     override fun executeBrizzi(refresh: Boolean, intent: Intent) {
-        brizziViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
-        brizziViewModel.tokenBrizzi.observe(this, Observer { token ->
-            brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
-            brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            var abiName = ""
+            val abis = mutableListOf<String>()
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                abiName = Build.CPU_ABI
+            } else {
+                abis.addAll(Build.SUPPORTED_ABIS)
+            }
 
-            briBrizzi = BrizziCheckBalance(brizziInstance, this)
-            briBrizzi.processTagIntent(intent)
-        })
+            if (abiName == ARCHITECTURE_ARM64 || abiName == ARCHITECTURE_ARM32 ||
+                    abis.contains(ARCHITECTURE_ARM64) || abis.contains(ARCHITECTURE_ARM32)) {
+                brizziViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
+                brizziViewModel.tokenBrizzi.observe(this, Observer { token ->
+                    brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
+                    brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
+
+                    briBrizzi = BrizziCheckBalance(brizziInstance, this)
+                    briBrizzi.processTagIntent(intent)
+                })
+            } else {
+                showError(resources.getString(R.string.emoney_device_isnot_supported))
+            }
+        } else {
+            showError(resources.getString(R.string.emoney_device_isnot_supported))
+        }
     }
 
     private fun getOperatorName(issuerId: Int): String {
@@ -313,6 +330,11 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         }
     }
 
+    private fun showErrorDeviceUnsupported(errorMessage: String) {
+        tapETollCardView.visibility = View.VISIBLE
+        tapETollCardView.showErrorDeviceUnsupportedState(errorMessage)
+    }
+
     override fun showCardLastBalance(emoneyInquiry: EmoneyInquiry) {
         emoneyAnalytics.onShowLastBalance()
         tapETollCardView.visibility = View.GONE
@@ -324,8 +346,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     private fun isDigitalSmartcardEnabled(): Boolean {
-//        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false)
-        return true
+        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false)
     }
 
     private fun directToNFCSettingsPage() {
@@ -352,26 +373,29 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
 
     override fun onResume() {
         super.onResume()
+        if (brizziInstance.nfcAdapter != null) {
+            if (!::permissionCheckerHelper.isInitialized) {
+                permissionCheckerHelper = PermissionCheckerHelper()
+            }
+            permissionCheckerHelper.checkPermission(this,
+                    PermissionCheckerHelper.Companion.PERMISSION_NFC,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
 
-        if (!::permissionCheckerHelper.isInitialized) {
-            permissionCheckerHelper = PermissionCheckerHelper()
+                        override fun onPermissionDenied(permissionText: String) {
+                            permissionCheckerHelper.onPermissionDenied(applicationContext, permissionText)
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper.onNeverAskAgain(applicationContext, permissionText)
+                        }
+
+                        override fun onPermissionGranted() {
+                            detectNFC()
+                        }
+                    }, getString(R.string.emoney_nfc_permission_rationale_message))
+        } else {
+            showErrorDeviceUnsupported(resources.getString(R.string.emoney_nfc_not_supported))
         }
-        permissionCheckerHelper.checkPermission(this,
-                PermissionCheckerHelper.Companion.PERMISSION_NFC,
-                object : PermissionCheckerHelper.PermissionCheckListener {
-
-                    override fun onPermissionDenied(permissionText: String) {
-                        permissionCheckerHelper.onPermissionDenied(applicationContext, permissionText)
-                    }
-
-                    override fun onNeverAskAgain(permissionText: String) {
-                        permissionCheckerHelper.onNeverAskAgain(applicationContext, permissionText)
-                    }
-
-                    override fun onPermissionGranted() {
-                        detectNFC()
-                    }
-                }, getString(R.string.emoney_nfc_permission_rationale_message))
     }
 
     private fun navigatePageToDigitalProduct(passData: DigitalCategoryDetailPassData) {
@@ -447,6 +471,9 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
 
         const val ISSUER_ID_EMONEY = 1
         const val ISSUER_ID_BRIZZI = 2
+
+        const val ARCHITECTURE_ARM64 = "arm64-v8a"
+        const val ARCHITECTURE_ARM32 = "armeabi-v7a"
 
         const val OPERATOR_NAME_EMONEY = "emoney"
         const val OPERATOR_NAME_BRIZZI = "brizzi"
