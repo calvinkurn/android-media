@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.activity
 
+import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -12,8 +13,18 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
 
+    companion object{
+        const val END_POINT = "end_point"
+    }
+
     override fun getNewFragment(): Fragment? {
+        val bundle = Bundle()
         val fragment = DiscoveryFragment()
+        val dupList = intent.data.toString().split("/")
+        if (!dupList.isNullOrEmpty()){
+            bundle.putString(END_POINT,dupList.last())
+        }
+        fragment.arguments = bundle
         return fragment
     }
 
@@ -23,6 +34,10 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     override fun setViewModel(viewModel: BaseViewModel?) {
         discoveryViewModel = viewModel as DiscoveryViewModel
+    }
+
+    fun getViewModel():DiscoveryViewModel{
+        return discoveryViewModel
     }
 
     override fun getVMFactory(): ViewModelProvider.AndroidViewModelFactory {
