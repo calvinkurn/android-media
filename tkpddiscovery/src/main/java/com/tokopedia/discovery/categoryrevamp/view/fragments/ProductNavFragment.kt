@@ -404,7 +404,6 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
             txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
             quickfilter_parent.hide()
-            subcategory_recyclerview.hide()
             val selectedFilterFromEmptyStateListener = getSelectedFilterAsOptionList()
             if (selectedFilterFromEmptyStateListener != null && selectedFilterFromEmptyStateListener.isNotEmpty()) {
                 selectedFilterRecyclerView.visibility = View.VISIBLE
@@ -415,9 +414,10 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         } else {
             layout_no_data.hide()
             quickfilter_parent.show()
-            if (isSubCategoryAvailable) {
-                subcategory_recyclerview.show()
-            }
+
+        }
+        if (isSubCategoryAvailable) {
+            subcategory_recyclerview.show()
         }
     }
 
