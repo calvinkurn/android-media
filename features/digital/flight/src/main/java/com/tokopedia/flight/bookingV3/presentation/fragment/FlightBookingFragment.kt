@@ -327,10 +327,16 @@ class FlightBookingFragment : BaseDaggerFragment() {
         newPriceTextView.text = FlightCurrencyFormatUtil.convertToIdrPrice(cart.configuration.price)
 
         if (cart.promoEligibility.message.isNotEmpty()) {
-            tickerBookingPromo.tickerType = if (cart.promoEligibility.success) Ticker.TYPE_ANNOUNCEMENT else Ticker.TYPE_WARNING
+            if (cart.promoEligibility.success) {
+                tickerBookingPromo.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                tickerBookingPromo.tickerTitle = ""
+            } else {
+                tickerBookingPromo.tickerType = Ticker.TYPE_WARNING
+                tickerBookingPromo.tickerTitle = getString(R.string.flight_booking_reprice_ticker_warning_title)
+            }
             tickerBookingPromo.setTextDescription(cart.promoEligibility.message)
+            tickerBookingPromo.tickerShape = Ticker.SHAPE_LOOSE
         } else tickerBookingPromo.visibility = View.GONE
-        tickerBookingPromo.tickerShape = Ticker.SHAPE_LOOSE
 
         continueToPayButton.setOnClickListener {
             showCheckBookingDetailPopUp()

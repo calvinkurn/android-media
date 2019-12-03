@@ -255,6 +255,7 @@
     <string name="flight_booking_passenger_first_name_alpha_space_error">Nama depan harus terdiri alfabet dan space</string>
     <string name="flight_booking_passenger_last_name_alpha_space_error">Nama belakang hanya alfabet dan spasi</string>
     <string name="flight_booking_passenger_choose_label">Pilih</string>
+    <string name="flight_booking_reprice_ticker_warning_title">Promo tidak bisa dipakai</string>
     <string name="flight_booking_new_price_strike_label"><![CDATA[<strike>%1$s</strike>]]></string>
     <string name="flight_label_detail_order">Detail Penerbangan</string>
     <string name="flight_label_invoice">INVOICE</string>
