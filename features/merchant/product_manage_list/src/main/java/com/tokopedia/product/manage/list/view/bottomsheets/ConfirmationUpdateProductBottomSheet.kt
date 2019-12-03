@@ -45,15 +45,15 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
     override fun title(): String {
         return if (model.first().statusStock != STOCK_DELETED) {
             if (model.size == 1) {
-                MethodChecker.fromHtml(getString(R.string.product_confirmation_bs_title_change_single)).toString()
+                MethodChecker.fromHtml(getString(com.tokopedia.product.manage.list.R.string.product_confirmation_bs_title_change_single)).toString()
             } else {
-                MethodChecker.fromHtml(getString(R.string.product_confirmation_bs_title_change, model.size.toString())).toString()
+                MethodChecker.fromHtml(getString(com.tokopedia.product.manage.list.R.string.product_confirmation_bs_title_change, model.size.toString())).toString()
             }
         } else {
             if (model.size == 1) {
-                MethodChecker.fromHtml(getString(R.string.product_confirmation_bs_title_delete_single)).toString()
+                MethodChecker.fromHtml(getString(com.tokopedia.product.manage.list.R.string.product_confirmation_bs_title_delete_single)).toString()
             } else {
-                MethodChecker.fromHtml(getString(R.string.product_confirmation_bs_title_delete, model.size.toString())).toString()
+                MethodChecker.fromHtml(getString(com.tokopedia.product.manage.list.R.string.product_confirmation_bs_title_delete, model.size.toString())).toString()
             }
         }
     }
@@ -62,16 +62,28 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
 
     override fun state(): BottomSheetsState = BottomSheetsState.FULL
 
-    override fun getLayoutResourceId(): Int = R.layout.confirmation_product_bottom_sheet
+    override fun getLayoutResourceId(): Int = com.tokopedia.product.manage.list.R.layout.confirmation_product_bottom_sheet
 
-    override fun getBaseLayoutResourceId(): Int = R.layout.base_confirmation_bottom_sheet
+    override fun getBaseLayoutResourceId(): Int = com.tokopedia.product.manage.list.R.layout.base_confirmation_bottom_sheet
 
     override fun getTheme(): Int = R.style.BaseBottomSheetDialog
+
+    override fun getBottomsheet_container(): Int {
+        return com.tokopedia.design.R.id.bottomsheet_container
+    }
+
+    override fun getTv_title(): Int {
+        return com.tokopedia.design.R.id.tv_title
+    }
+
+    override fun getLayout_title(): Int {
+        return com.tokopedia.design.R.id.layout_title
+    }
 
     override fun configView(parentView: View) {
         getArgument()
         super.configView(parentView)
-        btnClose = parentView.findViewById(R.id.btn_close_confirmation)
+        btnClose = parentView.findViewById(com.tokopedia.product.manage.list.R.id.btn_close_confirmation)
         btnClose.setOnClickListener {
             dismiss()
         }
@@ -79,9 +91,9 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
 
     override fun initView(view: View) {
         view.apply {
-            rvConfirmation = findViewById(R.id.rv_confirmation_product)
-            btnCancel = findViewById(R.id.btn_cancel_confirmation)
-            btnConfirmation = findViewById(R.id.btn_confirmation)
+            rvConfirmation = findViewById(com.tokopedia.product.manage.list.R.id.rv_confirmation_product)
+            btnCancel = findViewById(com.tokopedia.product.manage.list.R.id.btn_cancel_confirmation)
+            btnConfirmation = findViewById(com.tokopedia.product.manage.list.R.id.btn_confirmation)
         }
 
         btnCancel.setOnClickListener {
