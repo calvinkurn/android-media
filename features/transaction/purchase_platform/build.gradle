@@ -131,6 +131,8 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.basemvvm)
+    // seamlesslogin is used for tobacco redirect to lite
+    implementation project(rootProject.ext.features.seamlesslogin)
     //-------------------------------------------------------------------//
 
 
