@@ -15,8 +15,11 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.*
 import android.widget.*
+import androidx.annotation.MenuRes
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.Fragment
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -366,8 +369,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     override fun onSuccessGetProductList(list: MutableList<ProductManageViewModel>, totalItem: Int, hasNextPage: Boolean) {
         productManageViewModels = list
         renderList(list, hasNextPage)
-        //TODO: remove this
-        hideLoadingProgress()
     }
 
     override fun onSuccessGetShopInfo(goldMerchant: Boolean, officialStore: Boolean, shopDomain: String) {
@@ -719,18 +720,25 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         val bottomSheetBuilder = BottomSheetBuilder(activity)
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(productManageViewModel.productName)
+
         if (productManageViewModel.productStatus == StatusProductOption.EMPTY) {
-            if (productManageViewModel.isFeatureProduct) bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads_featured)
-            else bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads_not_featured)
+            if (productManageViewModel.isFeatureProduct)
+                bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads_featured)
+            else
+                bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads_not_featured)
         } else {
-            if (productManageViewModel.isFeatureProduct) bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_featured)
-            else bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_not_featured)
+            if (productManageViewModel.isFeatureProduct)
+                bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_featured)
+            else
+                bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_not_featured)
         }
+
         val bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
                 .createDialog()
         bottomSheetDialog.show()
     }
+
 
     private fun onOptionBottomSheetClicked(productManageViewModel: ProductManageViewModel): BottomSheetItemClickListener {
         return BottomSheetItemClickListener {
