@@ -64,8 +64,7 @@
         <activity
             android:name=".homepage.presentation.activity.UmrahHomepageActivity"
             android:theme="@style/Theme.White">
-            <intent-filter
-                android:autoVerify="true"
+            <intent-filter android:autoVerify="true"
                 tools:ignore="UnusedAttribute">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -73,29 +72,30 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="s"
-                    android:pathPattern="/umrah/homepage"
+                    android:host="@string/umrah_host_s"
+                    android:pathPattern="@string/umrah_home_page_path"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
         <activity
             android:name=".orderdetail.presentation.activity.UmrahOrderDetailActivity"
-            android:label="@string/umrah_order_detail_activity_label"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            <intent-filter android:autoVerify="true"
+                tools:ignore="UnusedAttribute">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_order_detail_umrah"
-                    android:pathPattern="@string/path_umrah_order_detail"
+                    android:host="@string/umrah_host_order_detail"
+                    android:pathPattern="@string/umrah_path_order_detail"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
         <activity
             android:name=".checkout.presentation.activity.UmrahCheckoutActivity"
+            android:label="@string/umrah_checkout_app_name"
             android:theme="@style/Theme.White">
             <intent-filter
                 android:autoVerify="true"
@@ -106,8 +106,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="s"
-                    android:pathPattern="/umrah/checkout"
+                    android:host="@string/umrah_host_s"
+                    android:pathPattern="@string/umrah_checkout_path"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
@@ -118,8 +118,14 @@
             android:theme="@style/Theme.White" />
         <activity
             android:name=".checkout.presentation.activity.UmrahCheckoutInstallmentActivity"
-            android:label="@string/umrah_checkout_pilgrims_app_name"
+            android:label="@string/umrah_checkout_installment_app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".checkout.presentation.activity.UmrahCheckoutContactDataActivity"
+            android:label="@string/umrah_checkout_contact_app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>
+
 </manifest>

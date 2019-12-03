@@ -21,7 +21,7 @@ import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.salam.umrah.R
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingUtil
+import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.DefaultOption
 import com.tokopedia.salam.umrah.common.data.UmrahOption
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
@@ -83,7 +83,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     lateinit var umrahSearchFilterSortViewModel: UmrahSearchFilterSortViewModel
 
     @Inject
-    lateinit var umrahTrackingUtil: UmrahTrackingUtil
+    lateinit var umrahTrackingUtil: UmrahTrackingAnalytics
 
     override fun getScreenName(): String = ""
 

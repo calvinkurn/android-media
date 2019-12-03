@@ -33,7 +33,7 @@ class UmrahHomepageChoosePacketAdapter(val onBindListener: onItemBindListener): 
                                 UmrahSearchActivity.createIntent(it,
                                         categories.title,
                                         categories.slugName
-                                       ))
+                                ))
                     }
                 }
             }

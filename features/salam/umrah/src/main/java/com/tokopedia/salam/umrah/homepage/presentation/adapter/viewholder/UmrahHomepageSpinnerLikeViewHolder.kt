@@ -83,8 +83,8 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
 
                 btn_umrah_home_page_search.setOnClickListener {
                     onBindListener.onSearchProduct(tvPeriod.text.toString(),
-                                                                tvLocation.text.toString(),
-                                                                tvPrice.text.toString())
+                            tvLocation.text.toString(),
+                            tvPrice.text.toString())
 
                     val umrahSearchDataParam = UmrahSearchProductDataParam(
                             departureCityId = departureCityId,
@@ -149,8 +149,8 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
     }
 
     private fun showBottomSheet(context: Context, title: String, listBottomSheet: UmrahHomepageBottomSheetData,
-                        defaultOption: Int,
-                        adapter: UmrahHomepageBottomSheetAdapter) {
+                                defaultOption: Int,
+                                adapter: UmrahHomepageBottomSheetAdapter) {
         adapter.lastCheckedPosition = defaultOption
         val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(context).apply {
             setCustomContentView(inflatingView(context, R.layout.bottom_sheets_umrah_home_page,

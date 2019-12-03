@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
-import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
+import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahMyUmrahWidgetModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_umrah_my_umrah.view.*
@@ -32,7 +32,7 @@ class UmrahMyUmrahWidget @JvmOverloads constructor(context: Context, attrs: Attr
         }
     }
 
-    fun buildView(trackingUmrahUtil: TrackingUmrahUtil) {
+    fun buildView(trackingUmrahUtil: UmrahTrackingAnalytics) {
         if (::myUmrahModel.isInitialized) {
             hideLoadingState()
 

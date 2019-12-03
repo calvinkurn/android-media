@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
+import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.di.UmrahComponentInstance
 import com.tokopedia.salam.umrah.orderdetail.di.DaggerUmrahOrderDetailComponent
 import com.tokopedia.salam.umrah.orderdetail.di.UmrahOrderDetailComponent
@@ -23,7 +23,7 @@ class UmrahOrderDetailActivity : BaseSimpleActivity(), HasComponent<UmrahOrderDe
         @Inject set
 
     @Inject
-    lateinit var trackingUmrahUtil: TrackingUmrahUtil
+    lateinit var trackingUmrahUtil: UmrahTrackingAnalytics
 
     override fun getComponent(): UmrahOrderDetailComponent =
             DaggerUmrahOrderDetailComponent.builder()

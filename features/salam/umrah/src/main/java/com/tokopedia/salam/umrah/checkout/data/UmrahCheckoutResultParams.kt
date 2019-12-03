@@ -1,7 +1,7 @@
 package com.tokopedia.salam.umrah.checkout.data
 
 class UmrahCheckoutResultParams (
-       val carts : Carts = Carts()
+        val carts : Carts = Carts()
 )
 
 class Carts(

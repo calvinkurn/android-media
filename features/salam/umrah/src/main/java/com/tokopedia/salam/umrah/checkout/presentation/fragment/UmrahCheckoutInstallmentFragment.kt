@@ -8,13 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.Schemes
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutInstallmentActivity
 import com.tokopedia.salam.umrah.checkout.presentation.adapter.UmrahCheckoutInstallmentAdapter
-import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
+import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.util.CommonParam
 import kotlinx.android.synthetic.main.fragment_umrah_checkout_installment.*
 import javax.inject.Inject
@@ -24,7 +23,7 @@ class UmrahCheckoutInstallmentFragment : BaseDaggerFragment(), UmrahCheckoutInst
     lateinit var schemes : ArrayList<Schemes>
 
     @Inject
-    lateinit var trackingUmrahUtil: TrackingUmrahUtil
+    lateinit var trackingUmrahUtil: UmrahTrackingAnalytics
 
     var defaultOptionSchemes = 0
 

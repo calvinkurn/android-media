@@ -23,10 +23,11 @@ import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahPdpTrackingUserAction
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingUtil
+import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
+import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDate
 import com.tokopedia.salam.umrah.common.util.UmrahHotelRating.getAllHotelRatings
 import com.tokopedia.salam.umrah.common.util.UmrahHotelVariant.getAllHotelVariants
@@ -65,7 +66,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
     @Inject
     lateinit var umrahPdpViewModel: UmrahPdpViewModel
     @Inject
-    lateinit var umrahTrackingUtil: UmrahTrackingUtil
+    lateinit var umrahTrackingUtil: UmrahTrackingAnalytics
 
     private val umrahPdpImageViewPagerAdapter by lazy { UmrahPdpImageViewPagerAdapter() }
     private val umrahPdpHotelAdapter by lazy { UmrahPdpHotelAdapter() }
@@ -255,8 +256,8 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
     }
 
     private fun setupCalendarItem() {
-        val departureDate = getDate("dd MMM", umrahProduct.departureDate)
-        val returningDate = getDate("dd MMM yyyy", umrahProduct.returningDate)
+        val departureDate = getDate(UmrahDateUtil.DATE_WITHOUT_YEAR_FORMAT, umrahProduct.departureDate)
+        val returningDate = getDate(UmrahDateUtil.DATE_WITH_YEAR_FORMAT, umrahProduct.returningDate)
         val umrahPdpItemWidgetModel = UmrahItemWidgetModel()
         umrahPdpItemWidgetModel.apply {
             imageDrawable = R.drawable.umrah_ic_calendar
@@ -408,7 +409,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
         }
         umrahPdpFacilityAdapter.facilities = umrahProduct.facilities
         facilitiesBottomSheet.setChild(view)
-        facilitiesBottomSheet.show(fragmentManager, "TEST")
+        facilitiesBottomSheet.show(fragmentManager, "")
     }
 
     private fun setupRVNonFacilities() {

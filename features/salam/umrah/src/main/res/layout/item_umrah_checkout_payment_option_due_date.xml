@@ -28,7 +28,7 @@
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         android:textColor="@color/Neutral_N700"
-         />
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_list_installment_price"

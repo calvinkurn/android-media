@@ -5,15 +5,12 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingUtil
+import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 
 /**
  * @author by furqan on 08/10/2019
@@ -21,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 @UmrahScope
 @Module
 class UmrahModule {
+
     @UmrahScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface =
@@ -37,15 +35,10 @@ class UmrahModule {
 
     @UmrahScope
     @Provides
-    fun provideUmrahTracking(): UmrahTrackingUtil = UmrahTrackingUtil()
-
-    @UmrahScope
-    @Provides
-    fun provideTrackingUmrah(): TrackingUmrahUtil = TrackingUmrahUtil()
+    fun provideUmrahTracking(): UmrahTrackingAnalytics = UmrahTrackingAnalytics()
 
     @UmrahScope
     @Provides
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
             MultiRequestGraphqlUseCase(graphqlRepository)
 }
-

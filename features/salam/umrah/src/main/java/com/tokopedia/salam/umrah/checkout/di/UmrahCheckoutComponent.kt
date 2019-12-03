@@ -2,6 +2,7 @@ package com.tokopedia.salam.umrah.checkout.di
 
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutInstallmentActivity
+import com.tokopedia.salam.umrah.checkout.presentation.fragment.UmrahCheckoutContactDataFragment
 import com.tokopedia.salam.umrah.checkout.presentation.fragment.UmrahCheckoutFragment
 import com.tokopedia.salam.umrah.checkout.presentation.fragment.UmrahCheckoutInstallmentFragment
 import com.tokopedia.salam.umrah.checkout.presentation.fragment.UmrahCheckoutPilgrimsFragment
@@ -20,5 +21,6 @@ interface UmrahCheckoutComponent {
     fun inject(umrahCheckoutActivity:UmrahCheckoutActivity)
     fun inject(umrahCheckoutPilgrimsFragment: UmrahCheckoutPilgrimsFragment)
     fun inject(umrahCheckoutInstallmentFragment: UmrahCheckoutInstallmentFragment)
+    fun inject(umrahCheckoutContactDataFragment: UmrahCheckoutContactDataFragment)
 
 }

@@ -26,7 +26,9 @@ class UmrahCheckoutInstallmentAdapter (context: Context, val umrahInstallmentLis
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var listBottomSheet = emptyList<Schemes>()
+    private val startCounter = 1
     var lastCheckedPosition = 0
+
 
     override fun getItemCount(): Int {
         return listBottomSheet.size
@@ -71,6 +73,7 @@ class UmrahCheckoutInstallmentAdapter (context: Context, val umrahInstallmentLis
                         rl_umrah_chekout_payment_option.visibility = View.VISIBLE
 
                         rv_umrah_checkout_list_due_date.apply {
+                            umrahCheckoutDueDateAdapter.counter = startCounter
                             adapter = umrahCheckoutDueDateAdapter
                             layoutManager = LinearLayoutManager(
                                     context,

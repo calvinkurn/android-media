@@ -1,14 +1,5 @@
 package com.tokopedia.salam.umrah.common.analytics
 
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingConstant.CLICK_BACA_ITINERARY_SELENGKAPNYA
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingConstant.CLICK_BELI
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingConstant.CLICK_FOTO_HOTEL
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingConstant.CLICK_FOTO_PRODUK
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingConstant.CLICK_LIHAT_SEMUA_FAQ
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingConstant.CLICK_LIHAT_SEMUA_FASILITAS
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingConstant.CLICK_PLIH_KAMAR
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingConstant.SCROLL_HOTEL
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingConstant.SCROLL_PENERBANGAN
 
 enum class UmrahPdpTrackingUserAction {
     CLICK_PACKAGE_PHOTOS {
@@ -36,16 +27,16 @@ enum class UmrahPdpTrackingUserAction {
         override fun getEventAction(): String = CLICK_LIHAT_SEMUA_FASILITAS
     },
     SCROLL_FAQ{
-        override fun getEventAction(): String = UmrahTrackingConstant.SCROLL_FAQ
+        override fun getEventAction(): String = SCROLL_FAQ_CONST
     },
     LIHAT_SEMUA_FAQ{
         override fun getEventAction(): String = CLICK_LIHAT_SEMUA_FAQ
     },
     CLICK_FAQ{
-        override fun getEventAction(): String = UmrahTrackingConstant.CLICK_FAQ
+        override fun getEventAction(): String = CLICK_FAQ_CONST
     },
     CLICK_BACK {
-        override fun getEventAction(): String = UmrahTrackingConstant.CLICK_BACK
+        override fun getEventAction(): String = CLICK_BACK_CONST
     };
 
     abstract fun getEventAction(): String

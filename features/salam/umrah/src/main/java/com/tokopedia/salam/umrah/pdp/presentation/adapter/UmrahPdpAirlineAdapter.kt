@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.salam.umrah.R
+import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDate
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDay
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpAirlineModel
@@ -39,7 +40,7 @@ class UmrahPdpAirlineAdapter : RecyclerView.Adapter<UmrahPdpAirlineAdapter.Umrah
                 tg_umrah_pdp_flight_departure.text = umrahPdpAirlineModel.departureCity.name
                 tg_umrah_pdp_flight_arrival.text = umrahPdpAirlineModel.arrivalCity.name
                 tg_umrah_pdp_airline_facility.visibility = INVISIBLE
-                tg_umrah_pdp_flight_header_title.text = resources.getString(R.string.umrah_pdp_airline_header,getDay("EEEE",umrahPdpAirlineModel.date),getDate("dd MMMM yyyy",umrahPdpAirlineModel.date))
+                tg_umrah_pdp_flight_header_title.text = resources.getString(R.string.umrah_pdp_airline_header,getDay("EEEE",umrahPdpAirlineModel.date),getDate(UmrahDateUtil.DATE_WITH_YEAR_FORMAT,umrahPdpAirlineModel.date))
             }
         }
     }

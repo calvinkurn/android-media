@@ -6,6 +6,11 @@
     <string name="umrah_last_path_segment_search">search</string>
     <string name="umrah_path_category">/umroh/paket/.*\</string>
     <string name="umrah_path_pdp">/umroh/produk/.*\</string>
+    <string name="umrah_home_page_path">/umroh</string>
+    <string name="umrah_checkout_path">/umroh/checkout</string>
+    <string name="umrah_host_order_detail">/order-details</string>
+    <string name="umrah_path_order_detail">/umroh</string>
+
 
     <string name="umrah_order_detail_status_label">Status</string>
     <string name="umrah_order_detail_detail_title">Detail Umroh</string>
@@ -78,7 +83,6 @@
     <string name="umrah_search_sort_by">Urutkan Berdasarkan</string>
     <string name="umrah_search_seekbar_number_7">7</string>
     <string name="umrah_search_title">Cari Paket Umrah</string>
-    <string name="umrah_search_title_sort_search">Urutkan</string>
     <string name="umrah_dream_fund_progress_percentage">%d%%</string>
     <string name="umrah_pdp_hotel_title">Hotel</string>
     <string name="umrah_pdp_airline_title">Penerbangan</string>
@@ -142,6 +146,7 @@
     <string name="umrah_checkout_bottom_sheet_contact_label_name">Nama Lengkap (Sesuai KTP/SIM/Paspor)</string>
     <string name="umrah_checkout_bottom_sheet_contact_label_email">Email</string>
     <string name="umrah_checkout_bottom_sheet_contact_label_phone">Nomor Telepon</string>
+    <string name="umrah_checkout_bottom_sheet_contact_phone_minimum">Minimum 9 Digit</string>
 
     <string name="umrah_checkout_bottom_sheet_installment_title">"Pilih Cicilan"</string>
     <string name="umrah_checkout_bottom_sheet_button">Simpan</string>
@@ -151,11 +156,15 @@
     <string name="umrah_checkout_bottom_sheet_pilgrims_label_name_last_label">Nama Belakang</string>
     <string name="umrah_checkout_bottom_sheet_pilgrims_label_date_birth">Tanggal Lahir</string>
     <string name="umrah_checkout_pilgrims_app_name">Isi Data Jamaah</string>
+    <string name="umrah_checkout_app_name">Pemesanan Umrah</string>
+    <string name="umrah_checkout_contact_app_name">Informasi Kontak</string>
+    <string name="umrah_checkout_installment_app_name">Pilihan Cicilan</string>
+
     <string name="umrah_checkout_pilgrims_title_label">Title</string>
     <array name="umrah_checkout_pilgrims_titles">
         <item>Tuan</item>
-        <item>Nona</item>
         <item>Nyonya</item>
+        <item>Nona</item>
     </array>
     <string name="umrah_checkout_installment_button_next">Lanjutkan</string>
     <string name="umrah_checkout_term_condition_bottom_sheet_title">Syarat &amp; Ketentuan</string>
@@ -190,5 +199,19 @@
     <string name="umrah_checkout_dialog_cancel_desc">Batalkan</string>
     <string name="umrah_checkout_dialog_ok_desc">Lanjut Pesan</string>
     <string name="umrah_checkout_pilgrims_title">%s %s %s</string>
+
+    <string name="umrah_checkout_contact_name_error">Nama belum diisi</string>
+    <string name="umrah_checkout_contact_email_error">Format e-mail salah</string>
+    <string name="umrah_checkout_contact_phone_error">Nomor telepon minimum 9 digit</string>
+    <string name="umrah_checkout_contact_phone_code_and_phone_number">+%s%s</string>
+
+    <string name="umrah_checkout_pilgrims_first_name_error">Nama Depan Kosong</string>
+    <string name="umrah_checkout_pilgrims_last_name_error">Nama Belakang Kosong</string>
+    <string name="umrah_checkout_pilgrims_date_birth_error">Tanggal Lahir Kosong</string>
+    <string name="umrah_checkout_pilgrims_title_error">Harap Pilih Title Anda</string>
+    <string name="umrah_checkout_error_confirmation">OK</string>
+
+
+
 
 </resources>

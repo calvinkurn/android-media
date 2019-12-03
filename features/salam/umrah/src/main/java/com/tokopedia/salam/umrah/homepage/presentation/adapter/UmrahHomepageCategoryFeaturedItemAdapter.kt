@@ -41,8 +41,8 @@ class UmrahHomepageCategoryFeaturedItemAdapter(val onItemBindListener: onItemBin
                 tg_umrah_mulai_dari.text = getSlashedPrice(resources,products.slashPrice)
                 tg_umrah_price.text = getRupiahFormat(products.originalPrice)
                 tg_umrah_calendar.text = resources.getString(R.string.umrah_home_page_departure_back_date,
-                        UmrahDateUtil.getDate("dd MMM", products.departureDate),
-                        UmrahDateUtil.getDate("dd MMM yyyy",products.returningDate))
+                        UmrahDateUtil.getDate(UmrahDateUtil.DATE_WITHOUT_YEAR_FORMAT, products.departureDate),
+                        UmrahDateUtil.getDate(UmrahDateUtil.DATE_WITH_YEAR_FORMAT,products.returningDate))
                 tg_umrah_hotel.text = resources.getString(R.string.umrah_home_page_hotel_stars,
                         UmrahHotelRating.getAllHotelRatings(products.hotels))
                 tg_umrah_plane.text = products.airlines[0].name

@@ -30,22 +30,15 @@ class UmrahSimpleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
             if (item.description.isNotEmpty()) {
                 tg_umrah_desc.text = item.description
-                if (item.title == TOTAL_PEMBAYARAN) {
-                    tg_umrah_desc.setTextColor(resources.getColor(R.color.orange_500))
-                    tg_umrah_desc.setTypeface(null, Typeface.BOLD)
-                }else if(item.textColor.isNotEmpty()){
+                if (item.textColor.isNotEmpty()) {
                     tg_umrah_desc.setTextColor(Color.parseColor(item.textColor))
-                }else {
+                } else {
                     tg_umrah_desc.setTextColor(resources.getColor(R.color.Neutral_N700_96))
                 }
             } else {
                 tg_umrah_desc.visibility = View.GONE
             }
         }
-    }
-
-    companion object{
-        const val TOTAL_PEMBAYARAN = "Total Pembayaran"
     }
 
 }

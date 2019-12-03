@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingUtil
+import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.UmrahVariant
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
@@ -26,7 +26,7 @@ import javax.inject.Inject
  */
 class UmrahPdpDetailFragment : BaseDaggerFragment(){
     @Inject
-    lateinit var umrahTrackingUtil: UmrahTrackingUtil
+    lateinit var umrahTrackingUtil: UmrahTrackingAnalytics
     private val umrahPdpDetailAdapter by lazy { UmrahPdpDetailAdapter() }
     override fun getScreenName(): String = ""
     override fun initInjector() = getComponent(UmrahPdpComponent::class.java).inject(this)

@@ -2,7 +2,6 @@ package com.tokopedia.salam.umrah.homepage.presentation.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageCategoryEntity
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageCategoryFeaturedEntity

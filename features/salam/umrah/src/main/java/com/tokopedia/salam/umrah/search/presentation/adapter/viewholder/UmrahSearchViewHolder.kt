@@ -7,6 +7,7 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.salam.umrah.R
+import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
 import com.tokopedia.salam.umrah.common.util.UmrahHotelRating.getAllHotelRatings
 import com.tokopedia.salam.umrah.common.util.UmrahPriceUtil.getSlashedPrice
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
@@ -34,9 +35,9 @@ class UmrahSearchViewHolder(view: View) : AbstractViewHolder<UmrahSearchProduct>
 
     private fun getFormattedCalendarString(resources: Resources, departureDate: String, returningDate: String): String {
         return resources.getString(R.string.umrah_pdp_calendar,
-                TravelDateUtil.dateToString("dd MMM", TravelDateUtil
+                TravelDateUtil.dateToString(UmrahDateUtil.DATE_WITHOUT_YEAR_FORMAT, TravelDateUtil
                         .stringToDate(TravelDateUtil.YYYY_MM_DD, departureDate)),
-                TravelDateUtil.dateToString("dd MMM yyyy", TravelDateUtil
+                TravelDateUtil.dateToString(UmrahDateUtil.DATE_WITH_YEAR_FORMAT, TravelDateUtil
                         .stringToDate(TravelDateUtil.YYYY_MM_DD, returningDate)))
     }
 
