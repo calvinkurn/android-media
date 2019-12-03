@@ -140,17 +140,23 @@ data class Channel(
         var background: Background = Background()
 
 ) {
+
+    data class ChannelResponse(
+            @SerializedName("channel")
+            var channel: Channel = Channel()
+    )
+
     data class Flashsale(
             @SerializedName("campaign_id")
-            var campaign_id: String = "",
+            var campaignId: String = "",
             @SerializedName("campaign_name")
-            var campaign_name: String = "",
+            var campaignName: String = "",
             @SerializedName("campaign_short_name")
-            var campaign_short_name: String = "",
+            var campaignShortName: String = "",
             @SerializedName("start_date")
-            var start_date: String = "",
+            var startDate: String = "",
             @SerializedName("end_date")
-            var end_date: String = "",
+            var endDate: String = "",
             @SerializedName("status")
             var status: String = "",
             @SerializedName("products")
@@ -160,25 +166,25 @@ data class Channel(
 
     data class PinnedMessage(
             @SerializedName("pinned_message_id")
-            var pinned_message_id: String = "",
+            var pinnedMessageId: String = "",
             @SerializedName("title")
             var title: String = "",
             @SerializedName("message")
             var message: String = "",
             @SerializedName("image_url")
-            var image_url: String = "",
+            var imageUrl: String = "",
             @SerializedName("redirect_url")
-            var redirect_url: String = "")
+            var redirectUrl: String = "")
 
     data class Settings(
             @SerializedName("ping_interval")
-            var ping_interval: Int = 0,
+            var pingInterval: Int = 0,
             @SerializedName("max_chars")
-            var max_chars: Int = 0,
+            var maxChars: Int = 0,
             @SerializedName("max_retries")
-            var max_retries: Int = 0,
+            var maxRetries: Int = 0,
             @SerializedName("min_reconnect_delay")
-            var min_reconnect_delay: Int = 0)
+            var minReconnectDelay: Int = 0)
 
     data class ExitMsg(
             @SerializedName("title")
@@ -194,13 +200,13 @@ data class Channel(
             @SerializedName("desc")
             var desc: String = "",
             @SerializedName("btn_title")
-            var btn_title: String = "",
+            var btnTitle: String = "",
             @SerializedName("btn_app_link")
-            var btn_app_link: String = "")
+            var btnAppLink: String = "")
 
     data class OverlayMessage(
             @SerializedName("overlay_id")
-            var overlay_id: String = "",
+            var overlayId: String = "",
             @SerializedName("type_message")
             var type_message: String = "",
             @SerializedName("status")
@@ -212,7 +218,7 @@ data class Channel(
             @SerializedName("type")
             var type: String = "",
             @SerializedName("link_url")
-            var link_url: String = ""
+            var linkUrl: String = ""
     ) {
 
         data class Assets(
@@ -221,19 +227,19 @@ data class Channel(
                 @SerializedName("description")
                 var description: String = "",
                 @SerializedName("image_url")
-                var image_url: String = "",
+                var imageUrl: String = "",
                 @SerializedName("image_link")
-                var image_link: String = "",
+                var imageLink: String = "",
                 @SerializedName("btn_title")
-                var btn_title: String = "",
+                var btnTitle: String = "",
                 @SerializedName("btn_link")
-                var btn_link: String = ""
+                var btnLink: String = ""
         )
     }
 
     data class Background(
             @SerializedName("background_default")
-            var background_default: String = "",
+            var backgroundDefault: String = "",
             @SerializedName("background_url")
-            var background_url: String = "")
+            var backgroundUrl: String = "")
 }
