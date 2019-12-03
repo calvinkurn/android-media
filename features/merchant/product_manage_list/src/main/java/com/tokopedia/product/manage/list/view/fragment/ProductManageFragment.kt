@@ -15,11 +15,8 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.*
 import android.widget.*
-import androidx.annotation.MenuRes
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.view.menu.MenuBuilder
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.fragment.app.Fragment
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -721,18 +718,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(productManageViewModel.productName)
 
-        if (productManageViewModel.productStatus == StatusProductOption.EMPTY) {
-            if (productManageViewModel.isFeatureProduct)
-                bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads_featured)
-            else
-                bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads_not_featured)
-        } else {
-            if (productManageViewModel.isFeatureProduct)
-//                bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_featured)
-            populateBottomSheetMenu(bottomSheetBuilder)
-            else
-                bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_not_featured)
-        }
+        populateBottomSheetMenu(bottomSheetBuilder, productManageViewModel)
 
         val bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
@@ -740,12 +726,29 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         bottomSheetDialog.show()
     }
 
-    private fun populateBottomSheetMenu(bottomSheetBuilder: BottomSheetBuilder) {
-        bottomSheetBuilder.setMenu(R.menu.menu_product_manage_top_part)
-        bottomSheetBuilder.setMenu(R.menu.menu_product_manage_add_featured_product)
+    /**
+     * Populate bottom sheet menu items according to shop states
+     */
+    private fun populateBottomSheetMenu(bottomSheetBuilder: BottomSheetBuilder, productManageViewModel: ProductManageViewModel) {
+        bottomSheetBuilder.addItem(R.id.edit_product_menu, R.string.title_edit, R.drawable.ic_menu_edit_product)
+        bottomSheetBuilder.addItem(R.id.duplicat_product_menu, R.string.product_manage_title_duplicate_product_menu, R.drawable.ic_menu_duplicate)
+        bottomSheetBuilder.addItem(R.id.delete_product_menu, R.string.label_delete_colored, R.drawable.ic_menu_delete)
+        //If shop is power merchant or official store, shop owner can add or remove featured product
+        if (productManagePresenter.isPowerMerchant() || isOfficialStore) {
+            //If the product is a featured product, show remove option. Show add option when the product is not.
+            if (productManageViewModel.isFeatureProduct)
+                bottomSheetBuilder.addItem(R.id.set_featured_product, R.string.product_manage_menu_remove_featured_product, R.drawable.ic_menu_set_featured_product)
+            else
+                bottomSheetBuilder.addItem(R.id.set_featured_product, R.string.product_manage_menu_add_featured_product, R.drawable.ic_menu_set_featured_product)
+        }
+        bottomSheetBuilder.addItem(R.id.set_cashback_product_menu, R.string.product_manage_menu_set_cashback, R.drawable.ic_menu_set_cashback)
+        if (productManageViewModel.productStatus != StatusProductOption.EMPTY) {
+            bottomSheetBuilder.addItem(R.id.set_promo_ads_product_menu, R.string.product_manage_menu_set_promo_ads, R.drawable.ic_menu_topads_ad)
+        }
+        bottomSheetBuilder.addItem(R.id.change_price_product_menu, R.string.product_manage_menu_set_price, R.drawable.ic_menu_set_price)
+        bottomSheetBuilder.addItem(R.id.share_product_menu, R.string.title_share, R.drawable.ic_menu_share)
 
     }
-
 
     private fun onOptionBottomSheetClicked(productManageViewModel: ProductManageViewModel): BottomSheetItemClickListener {
         return BottomSheetItemClickListener {
@@ -797,7 +800,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun onSetFeaturedProductClicked(productManageViewModel: ProductManageViewModel, setFeaturedType: Int) {
-        //TODO: Jalanin Use Case
         productManagePresenter.setFeaturedProduct(productManageViewModel.productId, setFeaturedType)
 
     }

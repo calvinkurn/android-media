@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group>
-        <item
-            android:title="@string/product_manage_menu_remove_featured_product"
-            android:id="@+id/set_featured_product"
-            android:icon="@drawable/ic_menu_set_featured_product"/>
-    </group>
-</menu>
