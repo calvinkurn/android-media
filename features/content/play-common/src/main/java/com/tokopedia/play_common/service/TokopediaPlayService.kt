@@ -1,6 +1,7 @@
 package com.tokopedia.play_common.service
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Binder
@@ -24,6 +25,18 @@ class TokopediaPlayService : Service() {
 
     companion object {
         private const val EXOPLAYER_AGENT = "com.tkpd.exoplayer"
+
+        fun start(context: Context) {
+            context.startService(
+                    Intent(context, TokopediaPlayService::class.java)
+            )
+        }
+
+        fun stop(context: Context) {
+            context.stopService(
+                    Intent(context, TokopediaPlayService::class.java)
+            )
+        }
     }
 
     private val mBinder = LocalBinder()
@@ -38,11 +51,16 @@ class TokopediaPlayService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return super.onStartCommand(intent, flags, startId)
+        return START_NOT_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? {
         return mBinder
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        videoPlayer.release()
     }
 
     //region public method
