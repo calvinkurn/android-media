@@ -103,7 +103,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         _flightPassengersData.value = listOf()
     }
 
-    fun getCart(rawQuery: String, cartId: String, autoVerify: Boolean = false, bookingVerifyParam: FlightVerifyParam? = null, verifyQuery: String = "", checkVoucherQuery: String = "") {
+    fun getCart(rawQuery: String, cartId: String, autoVerify: Boolean = false, bookingVerifyParam: FlightVerifyParam? = null,
+                verifyQuery: String = "", checkVoucherQuery: String = "", isRefreshCart: Boolean = false) {
         val params = mapOf(PARAM_CART_ID to cartId)
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
@@ -119,13 +120,14 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     flightBookingParam.departureDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.cartData.flight.journeys[0].departureTime))
                     flightBookingParam.isDomestic = data.cartData.flight.isDomestic
                     flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
-                    _flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
-                    if (flightPassengersData.value?.isEmpty() != false) _flightPassengersData.value =
-                            FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
-                            data.cartData.flight.child, data.cartData.flight.infant)
-                    _flightPriceData.value = data.cartData.flight.priceDetail
                     flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
-                    _flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
+                    if (flightPassengersData.value?.isEmpty() != false && !isRefreshCart) {
+                        _flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
+                        _flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
+                                        data.cartData.flight.child, data.cartData.flight.infant)
+                        _flightPriceData.value = data.cartData.flight.priceDetail
+                    }
+                    _flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data, isRefreshCart))
                 }
                 retryCount = 0
             } else {

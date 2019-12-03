@@ -148,9 +148,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     if (layout_loading.isVisible) launchLoadingPageJob.cancel()
-                    renderData(it.data)
+                    if (!it.data.isRefreshCart) {
+                        renderData(it.data)
+                        sendAddToCartTracking()
+                    }
                     setUpTimer(it.data.orderDueTimeStamp)
-                    sendAddToCartTracking()
                 }
                 is Fail -> {
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message
@@ -378,7 +380,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun refreshCart() {
         showLoadingDialog()
-        bookingViewModel.getCart(getGetCartQuery(), bookingViewModel.getCartId())
+        bookingViewModel.getCart(getGetCartQuery(), bookingViewModel.getCartId(), isRefreshCart = true)
     }
 
     private fun renderData(cart: FlightCartViewEntity) {
@@ -471,7 +473,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             val firstPassenger = passengers.first()
             val fullName = "${firstPassenger.passengerFirstName} ${firstPassenger.passengerLastName}"
             if (!fullName.equals(widget_traveller_info.getContactName(), true) ||
-                    !fullName.equals(firstPassenger.passengerFirstName, true)) {
+                    !firstPassenger.passengerFirstName.equals(widget_traveller_info.getContactName(), true)) {
                 needToDoChangesOnFirstPassenger = false
                 switch_traveller_as_passenger.isChecked = false
             }

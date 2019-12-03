@@ -13,7 +13,8 @@ data class FlightCartViewEntity(
         var insurances: List<FlightCart.Insurance> = listOf(),
         var luggageModels: ArrayList<FlightBookingAmenityMetaViewModel> = arrayListOf(),
         var mealModels: ArrayList<FlightBookingAmenityMetaViewModel> = arrayListOf(),
-        var orderDueTimeStamp: Date = Date()
+        var orderDueTimeStamp: Date = Date(),
+        var isRefreshCart: Boolean = false
 ) {
     data class JourneySummary(
             var journeyId: String = "",

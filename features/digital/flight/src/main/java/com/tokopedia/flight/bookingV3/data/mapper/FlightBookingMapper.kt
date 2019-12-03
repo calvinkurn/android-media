@@ -31,7 +31,7 @@ import java.util.*
 class FlightBookingMapper {
 
     companion object {
-        fun mapToFlightCartView(flightCart: FlightCart): FlightCartViewEntity {
+        fun mapToFlightCartView(flightCart: FlightCart, isRefreshCart: Boolean): FlightCartViewEntity {
             val journies: MutableList<FlightCartViewEntity.JourneySummary> = arrayListOf()
             for (item in flightCart.cartData.flight.journeys) {
 
@@ -97,7 +97,7 @@ class FlightBookingMapper {
             now.add(Calendar.MINUTE, flightCart.meta.refreshTime)
 
             return FlightCartViewEntity(journeySummaries = journies, insurances = flightCart.cartData.flight.insuranceOptions,
-                    luggageModels = luggageMetaModels, mealModels = mealMetaModels, orderDueTimeStamp = now.time)
+                    luggageModels = luggageMetaModels, mealModels = mealMetaModels, orderDueTimeStamp = now.time, isRefreshCart = isRefreshCart)
         }
 
         fun mapToFlightPromoViewEntity(voucher: FlightCart.Voucher): FlightPromoViewEntity {
