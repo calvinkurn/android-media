@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.viewmodel;
+package com.tokopedia.common_tradein.viewmodel;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
@@ -13,11 +13,11 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.tradein.R;
-import com.tokopedia.tradein.model.TradeInParams;
-import com.tokopedia.tradein.model.ValidateTradeInResponse;
-import com.tokopedia.tradein.model.ValidateTradePDP;
-import com.tokopedia.tradein.view.customview.TradeInTextView;
+import com.tokopedia.common_tradein.R;
+import com.tokopedia.common_tradein.model.TradeInParams;
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse;
+import com.tokopedia.common_tradein.model.ValidateTradePDP;
+import com.tokopedia.common_tradein.customviews.TradeInTextView;
 import com.tokopedia.tradein_common.viewcontrollers.AccessRequestFragment;
 
 import java.lang.ref.WeakReference;
@@ -26,15 +26,13 @@ import java.util.Map;
 
 import rx.Subscriber;
 
-public class TradeInTextViewModel extends AndroidViewModel implements ITradeInParamReceiver {
+public class TradeInTextViewModel extends ViewModel implements ITradeInParamReceiver {
     private MutableLiveData<ValidateTradeInResponse> responseData;
     private WeakReference<FragmentActivity> activityWeakReference;
-    private Application application;
 
-    public TradeInTextViewModel(Application application) {
-        super(application);
+    public TradeInTextViewModel(){
+        super();
         responseData = new MutableLiveData<>();
-        this.application = application;
     }
 
     public void setActivity(FragmentActivity activity) {
@@ -62,7 +60,7 @@ public class TradeInTextViewModel extends AndroidViewModel implements ITradeInPa
         this.responseData.setValue(responseData);
     }
 
-    public void checkTradeIn(TradeInParams tradeInParams, boolean hide) {
+    public void checkTradeIn(TradeInParams tradeInParams, boolean hide, Application application) {
         if (tradeInParams.getIsEligible() == 0) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("params", tradeInParams);

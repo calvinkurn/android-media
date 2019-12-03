@@ -298,6 +298,9 @@ public interface ApplinkConst {
     }
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
 
+    String MONEYIN = "tokopedia://money_in/device_validation";
+
+
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
     }
