@@ -13,9 +13,11 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
+import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdapter
 import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemDecoration
 import com.tokopedia.unifyprinciples.Typography
+import javax.inject.Inject
 
 class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFeaturedShopViewModel>(view){
 
@@ -23,6 +25,9 @@ class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFea
     private var recyclerView: RecyclerView? = null
     private var link: AppCompatTextView? = null
     private var title: Typography? = null
+
+    @Inject
+    lateinit var viewModel: OfficialStoreHomeViewModel
 
     private var adapter: FeaturedShopAdapter? = null
 
@@ -65,7 +70,9 @@ class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFea
                         shop.name.orEmpty(),
                         shop.imageUrl.orEmpty(),
                         shop.additionalInformation.orEmpty(),
-                        shop.featuredBrandId.orEmpty()
+                        shop.featuredBrandId.orEmpty(),
+                        viewModel.isLoggedIn(),
+                        shop.shopId.orEmpty()
                 )
             }
 
@@ -77,7 +84,9 @@ class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFea
                             shop.name.orEmpty(),
                             shop.url.orEmpty(),
                             shop.additionalInformation.orEmpty(),
-                            shop.featuredBrandId.orEmpty()
+                            shop.featuredBrandId.orEmpty(),
+                            viewModel.isLoggedIn(),
+                            shop.shopId.orEmpty()
                     )
 
                     RouteManager.route(context, shop.url)

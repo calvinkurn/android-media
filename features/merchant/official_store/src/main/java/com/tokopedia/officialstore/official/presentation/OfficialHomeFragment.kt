@@ -429,7 +429,9 @@ class OfficialHomeFragment :
                 category?.title.toEmptyStringIfNull(),
                 isAddWishlist,
                 viewModel.isLoggedIn(),
-                PRODUCT_RECOMMENDATION_TITLE_SECTION)
+                item.productId,
+                item.isTopAds
+        )
     }
 
     override fun onCountDownFinished() {
