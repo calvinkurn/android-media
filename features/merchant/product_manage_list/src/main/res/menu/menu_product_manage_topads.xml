@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:title="@string/product_manage_menu_set_promo_ads"
+            android:id="@+id/set_promo_ads_product_menu"
+            android:icon="@drawable/ic_menu_topads_ad"/>
+    </group>
+</menu>

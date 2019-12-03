@@ -728,7 +728,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_no_topads_not_featured)
         } else {
             if (productManageViewModel.isFeatureProduct)
-                bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_featured)
+//                bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_featured)
+            populateBottomSheetMenu(bottomSheetBuilder)
             else
                 bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_not_featured)
         }
@@ -737,6 +738,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
                 .createDialog()
         bottomSheetDialog.show()
+    }
+
+    private fun populateBottomSheetMenu(bottomSheetBuilder: BottomSheetBuilder) {
+        bottomSheetBuilder.setMenu(R.menu.menu_product_manage_top_part)
+        bottomSheetBuilder.setMenu(R.menu.menu_product_manage_add_featured_product)
+
     }
 
 
