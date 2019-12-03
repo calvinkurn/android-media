@@ -43,7 +43,7 @@ public class FlightAnalytics {
     private String PROMO_CLICK_EVENT = "promoClick";
     private String PRODUCT_CLICK_EVENT = "productClick";
     private String PRODUCT_VIEW_EVENT = "productView";
-    private String SEARCH_RESULT_EVENT = "searchResult";
+    private String SEARCH_RESULT_EVENT = "viewSearchResult";
     private String CLICK_SEARCH_EVENT = "clickSearch";
     private String GENERIC_CATEGORY = "digital - flight";
     private String EVENT_CATEGORY = "eventCategory";

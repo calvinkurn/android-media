@@ -16,9 +16,6 @@ import javax.inject.Inject;
 
 import static com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_CLICK;
 import static com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_VIEW;
-import static com.tokopedia.kol.analytics.KolEventTracking.Category.CONTENT_FEED;
-import static com.tokopedia.kol.analytics.KolEventTracking.Category.CONTENT_FEED_TIMELINE;
-import static com.tokopedia.kol.analytics.KolEventTracking.Category.CONTENT_FEED_TIMELINE_DETAIL;
 
 /**
  * @author by nisie on 10/3/18.
@@ -46,6 +43,12 @@ public class FeedAnalytics {
     private static final String SINGLE = "single";
     private static final String MULTIPLE = "multiple";
     private static final String FORMAT_PROMOTION_NAME = "%s - %s - %s - %s";
+
+    //region Content Feed
+    private static final String CONTENT_FEED = "content feed";
+    private static final String CONTENT_FEED_TIMELINE = "content feed timeline";
+    private static final String CONTENT_FEED_TIMELINE_DETAIL = "content feed timeline - product detail";
+    //endregion
 
     private UserSessionInterface userSession;
 

@@ -146,6 +146,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
 
+    @JvmField
+    val CHAT_SETTING_TEMPLATE = "$INTERNAL_MARKETPLACE/chat/settings/templatechat"
+
     //Report Product
     @JvmField
     val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product-report/{id}/"
@@ -161,5 +164,8 @@ object ApplinkConstInternalMarketplace {
     // PowerMerchantSubscribeActivity
     @JvmField
     val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
+
+    @JvmField
+    val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 
 }
