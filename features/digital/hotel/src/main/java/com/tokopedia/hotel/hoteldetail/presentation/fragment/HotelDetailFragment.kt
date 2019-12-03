@@ -1,16 +1,17 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import android.app.Activity
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.component.ButtonCompat
@@ -19,6 +20,9 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
+import com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWidget
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
@@ -35,6 +39,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -46,7 +51,7 @@ import kotlin.math.round
 /**
  * @author by furqan on 22/04/19
  */
-class HotelDetailFragment : HotelBaseFragment() {
+class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalSearchListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -88,6 +93,9 @@ class HotelDetailFragment : HotelBaseFragment() {
                                 TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2)))
                 hotelHomepageModel.roomCount = it.getInt(HotelDetailActivity.EXTRA_ROOM_COUNT)
                 hotelHomepageModel.adultCount = it.getInt(HotelDetailActivity.EXTRA_ADULT_COUNT, 1)
+                hotelHomepageModel.locName = it.getString(HotelDetailActivity.EXTRA_DESTINATION_NAME, "")
+                hotelHomepageModel.locType = it.getString(HotelDetailActivity.EXTRA_DESTINATION_TYPE,
+                        HotelHomepageActivity.TYPE_PROPERTY)
             }
             isButtonEnabled = hotelHomepageModel.checkInDate.isNotEmpty()
         }
@@ -100,7 +108,8 @@ class HotelDetailFragment : HotelBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_SEARCH_PARAMETER)) {
-            hotelHomepageModel = savedInstanceState.getParcelable(SAVED_SEARCH_PARAMETER) ?: HotelHomepageModel()
+            hotelHomepageModel = savedInstanceState.getParcelable(SAVED_SEARCH_PARAMETER)
+                    ?: HotelHomepageModel()
             isButtonEnabled = savedInstanceState.getBoolean(SAVED_ENABLE_BUTTON)
         }
 
@@ -120,7 +129,7 @@ class HotelDetailFragment : HotelBaseFragment() {
                     hotelHomepageModel.locId)
         }
 
-
+        setupGlobalSearchWidget()
 
     }
 
@@ -173,6 +182,33 @@ class HotelDetailFragment : HotelBaseFragment() {
         super.onSaveInstanceState(outState)
         outState.putParcelable(SAVED_SEARCH_PARAMETER, hotelHomepageModel)
         outState.putBoolean(SAVED_ENABLE_BUTTON, isButtonEnabled)
+    }
+
+    override fun onClick(intent: Intent) {
+        startActivityForResult(intent, REQUEST_CODE_GLOBAL_SEARCH)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_CODE_GLOBAL_SEARCH -> if (resultCode == Activity.RESULT_OK) {
+                data?.let {
+                    hotelHomepageModel.apply {
+                        if (it.hasExtra(HotelGlobalSearchActivity.CHECK_IN_DATE)) checkInDate = it.getStringExtra(HotelGlobalSearchActivity.CHECK_IN_DATE)
+                        if (it.hasExtra(HotelGlobalSearchActivity.CHECK_OUT_DATE)) checkOutDate = it.getStringExtra(HotelGlobalSearchActivity.CHECK_OUT_DATE)
+                        if (it.hasExtra(HotelGlobalSearchActivity.NUM_OF_ROOMS)) roomCount = it.getIntExtra(HotelGlobalSearchActivity.NUM_OF_ROOMS, 1)
+                        if (it.hasExtra(HotelGlobalSearchActivity.NUM_OF_GUESTS)) adultCount = it.getIntExtra(HotelGlobalSearchActivity.NUM_OF_GUESTS, 1)
+                    }
+                    showLoadingContainerBottom()
+                    hideRoomAvailableContainerBottom()
+                    hideRoomNotAvailableContainerBottom()
+                    detailViewModel.getRoomWithoutHotelData(
+                            GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                            hotelHomepageModel)
+                }
+            }
+        }
     }
 
     private fun setupLayout(data: PropertyDetailData) {
@@ -231,8 +267,9 @@ class HotelDetailFragment : HotelBaseFragment() {
         }
 
         if (!isButtonEnabled) {
-            container_shimmering_bottom.visibility = View.GONE
-            container_bottom.visibility = View.GONE
+            hideLoadingContainerBottom()
+            hideRoomNotAvailableContainerBottom()
+            hideRoomAvailableContainerBottom()
         }
     }
 
@@ -420,45 +457,57 @@ class HotelDetailFragment : HotelBaseFragment() {
     }
 
     private fun setupPriceButton(data: List<HotelRoom>) {
-        container_shimmering_bottom.visibility = View.GONE
-        container_bottom.visibility = View.VISIBLE
+        hideLoadingContainerBottom()
 
         if (data.isNotEmpty()) {
+            showRoomAvailableContainerBottom()
             roomPrice = data.first().roomPrice.roomPrice
             roomPriceAmount = round(data.first().roomPrice.priceAmount).toLong().toString()
-            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
+            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
 
             tv_hotel_price.text = roomPrice
 
-            if (data[0].additionalPropertyInfo.isDirectPayment) {
-                btn_see_room.text = getString(R.string.hotel_detail_coming_soon_text)
-                btn_see_room.isEnabled = false
-                btn_see_room.buttonCompatType = ButtonCompat.DISABLE
-            } else {
+            if (data[0].additionalPropertyInfo.isEnabled) {
+                btn_see_room.text = getString(R.string.hotel_detail_show_room_text)
+                btn_see_room.buttonCompatType = ButtonCompat.TRANSACTION
                 btn_see_room.setOnClickListener {
-                    trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPriceAmount)
+                    trackingHotelUtil.hotelChooseViewRoom(hotelHomepageModel, hotelId, hotelName)
                     context?.run {
                         startActivityForResult(HotelRoomListActivity.createInstance(this, hotelHomepageModel.locId, hotelName,
                                 hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
-                                hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
+                                hotelHomepageModel.roomCount, hotelHomepageModel.locType, hotelHomepageModel.locName), RESULT_ROOM_LIST)
                     }
                 }
+            } else {
+                btn_see_room.text = getString(R.string.hotel_detail_coming_soon_text)
+                btn_see_room.isEnabled = false
+                btn_see_room.buttonCompatType = ButtonCompat.DISABLE
             }
         } else {
-            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, false, "0", false)
-            tv_hotel_price_subtitle.visibility = View.GONE
-            tv_hotel_price.text = getString(R.string.hotel_detail_room_full_text)
-            context?.run { tv_hotel_price.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.light_disabled)) }
-            btn_see_room.buttonCompatType = ButtonCompat.PRIMARY
-            btn_see_room.text = getString(R.string.hotel_detail_change_search_text)
-            btn_see_room.setOnClickListener {
-                activity?.run { this.finish() }
-            }
+            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, false, "0", false)
+            showRoomNotAvailableContainerBottom()
         }
 
         if (!isButtonEnabled) {
             btn_see_room.isEnabled = false
             btn_see_room.buttonCompatType = ButtonCompat.DISABLE
+        }
+
+        setupGlobalSearchWidget()
+    }
+
+    private fun setupGlobalSearchWidget() {
+        // setup hotel global search widget
+        // add condition if checkin date & checkout date isNotEmpty, to prevent crash access hotel detail from applink
+        if (hotelHomepageModel.checkInDate.isNotEmpty() &&
+                hotelHomepageModel.checkOutDate.isNotEmpty()) {
+            widget_hotel_global_search.title = hotelName
+            widget_hotel_global_search.globalSearchListener = this
+            widget_hotel_global_search.setPreferencesData(hotelHomepageModel.checkInDate,
+                    hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, hotelHomepageModel.roomCount)
+            widget_hotel_global_search.buildView()
+        } else {
+            widget_hotel_global_search.hide()
         }
     }
 
@@ -484,7 +533,33 @@ class HotelDetailFragment : HotelBaseFragment() {
         }
     }
 
+    private fun showLoadingContainerBottom() {
+        container_shimmering_bottom.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingContainerBottom() {
+        container_shimmering_bottom.visibility = View.GONE
+    }
+
+    private fun showRoomAvailableContainerBottom() {
+        container_room_available.visibility = View.VISIBLE
+    }
+
+    private fun hideRoomAvailableContainerBottom() {
+        container_room_available.visibility = View.GONE
+    }
+
+    private fun showRoomNotAvailableContainerBottom() {
+        container_room_not_available.visibility = View.VISIBLE
+    }
+
+    private fun hideRoomNotAvailableContainerBottom() {
+        container_room_not_available.visibility = View.GONE
+    }
+
     companion object {
+
+        const val REQUEST_CODE_GLOBAL_SEARCH = 103
 
         const val SAVED_SEARCH_PARAMETER = "SAVED_SEARCH_PARAMETER"
         const val SAVED_ENABLE_BUTTON = "SAVED_ENABLE_BUTTON"
@@ -493,7 +568,7 @@ class HotelDetailFragment : HotelBaseFragment() {
         const val RESULT_REVIEW = 102
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
-                        adultCount: Int): HotelDetailFragment =
+                        adultCount: Int, destinationType: String, destinationName: String): HotelDetailFragment =
                 HotelDetailFragment().also {
                     it.arguments = Bundle().apply {
                         putString(HotelDetailActivity.EXTRA_CHECK_IN_DATE, checkInDate)
@@ -501,6 +576,8 @@ class HotelDetailFragment : HotelBaseFragment() {
                         putInt(HotelDetailActivity.EXTRA_PROPERTY_ID, propertyId)
                         putInt(HotelDetailActivity.EXTRA_ROOM_COUNT, roomCount)
                         putInt(HotelDetailActivity.EXTRA_ADULT_COUNT, adultCount)
+                        putString(HotelDetailActivity.EXTRA_DESTINATION_TYPE, destinationType)
+                        putString(HotelDetailActivity.EXTRA_DESTINATION_NAME, destinationName)
                     }
                 }
 

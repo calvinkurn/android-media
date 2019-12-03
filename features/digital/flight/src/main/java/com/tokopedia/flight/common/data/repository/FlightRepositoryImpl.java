@@ -185,7 +185,7 @@ public class FlightRepositoryImpl extends FlightOrderRepositoryImpl implements F
     }
 
     @Override
-    public Observable<List<Passenger>> getCancelablePassenger(String invoiceId) {
+    public Observable<Map<String, List<Passenger>>> getCancelablePassenger(String invoiceId) {
         return flightCancellationCloudDataSource.getCancelablePassenger(invoiceId);
     }
 

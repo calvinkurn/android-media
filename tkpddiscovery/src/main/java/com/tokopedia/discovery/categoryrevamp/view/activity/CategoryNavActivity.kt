@@ -37,6 +37,8 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
@@ -125,6 +127,10 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         private const val ORDER_BY = "ob"
         private const val IS_BANNED = 1
         private const val IS_ADULT = 1
+        fun isBannedNavigationEnabled(context: Context): Boolean {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BANNED_NAVIGATION, true)
+        }
 
         @JvmStatic
         fun isCategoryRevampEnabled(context: Context): Boolean {
@@ -210,40 +216,40 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         categoryNavViewModel.mBannedCheck.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    progressBar.visibility = View.GONE
-                    if (it.data.isBanned == IS_BANNED) {
-                        setEmptyView(it.data)
+                    progressBar.hide()
+                    if (it.data.appRedirectionURL != null && !it.data.appRedirectionURL?.equals("")!!) {
+                        RouteManager.route(this, it.data.appRedirectionURL)
+                        finish()
                     } else {
-                        layout_banned_screen.visibility = View.GONE
-                        searchNavContainer?.visibility = View.VISIBLE
+                        if (it.data.isBanned == IS_BANNED) {
+                            hideBottomNavigation()
+                        } else {
+                            showBottomNavigation()
+                        }
+                        layout_banned_screen.hide()
                         if (it.data.isAdult == IS_ADULT) {
                             AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, departmentId)
                         }
                         initViewPager()
-                        loadSection()
+                        loadSection(it.data)
                         initSwitchButton()
                         initBottomSheetListener()
                     }
                 }
                 is Fail -> {
-                    progressBar.visibility = View.GONE
-                    setEmptyView(null)
+                    progressBar.hide()
+                    setErrorPage()
                 }
             }
         })
         categoryNavViewModel.fetchBannedCheck(getSubCategoryParam())
     }
 
-    private fun setEmptyView(data: Data?) {
-        layout_banned_screen.visibility = View.VISIBLE
-        searchNavContainer?.visibility = View.GONE
-        if (data == null) {
-            txt_header.text = "There is some error on server"
-            txt_no_data_description.text = "try again"
-        } else {
-            txt_header.text = data?.bannedMsgHeader
-            txt_no_data_description.text = data?.bannedMessage
-        }
+    private fun setErrorPage() {
+        hideBottomNavigation()
+        layout_banned_screen.show()
+        txt_header.text = getString(R.string.category_server_error_header)
+        txt_sub_header.text = getString(R.string.try_again)
     }
 
     private fun getSubCategoryParam(): RequestParams {
@@ -311,8 +317,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         }
     }
 
-    private fun loadSection() {
-        populateTab(categorySectionItemList)
+    private fun loadSection(data: Data) {
+        populateTab(categorySectionItemList, data)
 
         categorySectionPagerAdapter = CategoryNavigationPagerAdapter(supportFragmentManager)
         categorySectionPagerAdapter?.setData(categorySectionItemList)
@@ -322,14 +328,14 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         setActiveTab()
     }
 
-    private fun populateTab(searchSectionItemList: ArrayList<CategorySectionItem>) {
+    private fun populateTab(searchSectionItemList: ArrayList<CategorySectionItem>, data: Data) {
         initFragments()
-        addFragmentsToList(searchSectionItemList)
+        addFragmentsToList(searchSectionItemList, data)
 
     }
 
-    private fun addFragmentsToList(searchSectionItemList: ArrayList<CategorySectionItem>) {
-        searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName)))
+    private fun addFragmentsToList(searchSectionItemList: ArrayList<CategorySectionItem>, data: Data) {
+        searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName, data)))
         searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
     }
 
@@ -393,9 +399,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             moveToAutoCompleteActivity(departmentName)
         }
 
-        image_button_close.setOnClickListener {
-            moveToAutoCompleteActivity("")
-        }
     }
 
     private fun moveToAutoCompleteActivity(departMentName: String) {

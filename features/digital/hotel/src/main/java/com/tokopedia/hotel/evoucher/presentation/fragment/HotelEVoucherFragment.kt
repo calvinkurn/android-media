@@ -218,9 +218,11 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
             if (propertyDetail.specialRequest.content.isEmpty()) {
                 tv_request_label.hide()
                 tv_request_info.hide()
+                hotel_detail_seperator.hide()
             } else {
                 tv_request_label.text = propertyDetail.specialRequest.title
                 tv_request_info.text = propertyDetail.specialRequest.content
+                hotel_detail_seperator.show()
             }
 
             if (propertyDetail.extraInfo.content.isEmpty() && propertyDetail.specialRequest.content.isEmpty()) hotel_detail_seperator.hide()

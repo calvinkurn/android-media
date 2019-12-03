@@ -210,8 +210,7 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                                     homeData.isCache()));
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size(),channel);
-
-                            HomePageTracking.eventEnhanceImpressionBanner(context, channel);
+                            if (!homeData.isCache()) HomePageTracking.eventEnhanceImpressionBanner(context, channel);
                             break;
                         case DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF:
                             list.add(mappingDynamicChannel(
@@ -221,7 +220,7 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                                     false,
                                     homeData.isCache()
                             ));
-                            HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
+                            if (!homeData.isCache()) HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
                             break;
                         case DynamicHomeChannel.Channels.LAYOUT_REVIEW:
                             if (!homeData.isCache()) {
@@ -229,8 +228,10 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                             }
                             break;
                         case DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER:
-                            HomeVisitable playBanner = mappingPlayChannel(channel, new HashMap<>(), homeData.isCache());
-                            if (!list.contains(playBanner)) list.add(playBanner);
+                            if (!homeData.isCache()) {
+                                HomeVisitable playBanner = mappingPlayChannel(channel, new HashMap<>(), homeData.isCache());
+                                if (!list.contains(playBanner)) list.add(playBanner);
+                            }
                             break;
                     }
                 }

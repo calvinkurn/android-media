@@ -1,6 +1,8 @@
 query productrevGetForm($reputationId:Int!,$productId:Int!){
   productrevGetForm(reputationID:$reputationId, productID:$productId){
     reputationID
+    orderID
+    validToReview
     productData{
       productID
       productName

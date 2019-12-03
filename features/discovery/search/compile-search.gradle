@@ -6,17 +6,16 @@ include "features:discovery:search"
 
 // search dependencies - features
 include "features:common:resources_common"
-
 include "features:content:kol_common"
-
 include "features:discovery:discovery_common"
 include "features:discovery:filter"
 include "features:discovery:productcard"
 include "features:discovery:topadssdk"
 include "features:discovery:wishlist_common"
 include "features:discovery:recommendation_widget_common"
-
 include "features:merchant:gold_merchant_resource"
+include "features:user:seamless_login"
+include "features:user:sessioncommon"
 
 // search dependencies - libraries
 include "libraries:analytics"
@@ -26,6 +25,7 @@ include "libraries:kotlin_extensions"
 include "libraries:remote_config"
 include "libraries:track"
 include "libraries:tracking_optimizer"
+include "libraries:promotions_target"
 
 // search dependencies - tkpdxxx
 include "tkpdabstraction"
