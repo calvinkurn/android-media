@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.like.LikeComponent
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import com.tokopedia.play.ui.pinned.PinnedComponent
@@ -69,13 +70,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
         val likeComponent: UIComponent<*> = initLikeComponent(container)
         val statsComponent: UIComponent<*> = initStatsComponent(container)
         val pinnedComponent: UIComponent<*> = initPinnedComponent(container)
+        val chatListComponent: UIComponent<*> = initChatListComponent(container)
 
         layoutView(
                 container = container,
                 sendChatComponentId = sendChatComponent.getContainerId(),
                 likeComponentId = likeComponent.getContainerId(),
                 statsComponentId = statsComponent.getContainerId(),
-                pinnedComponentId = pinnedComponent.getContainerId()
+                pinnedComponentId = pinnedComponent.getContainerId(),
+                chatListComponentId = chatListComponent.getContainerId()
         )
     }
 
@@ -129,12 +132,18 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
         return pinnedComponent
     }
 
+    private fun initChatListComponent(container: ViewGroup): UIComponent<Unit> {
+        return ChatListComponent(container)
+    }
+
     private fun layoutView(
             container: ViewGroup,
             @IdRes sendChatComponentId: Int,
             @IdRes likeComponentId: Int,
             @IdRes statsComponentId: Int,
-            @IdRes pinnedComponentId: Int) {
+            @IdRes pinnedComponentId: Int,
+            @IdRes chatListComponentId: Int
+    ) {
 
         fun layoutChat(container: ViewGroup, @IdRes id: Int, @IdRes likeComponentId: Int) {
             val constraintSet = ConstraintSet()
@@ -165,7 +174,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
             constraintSet.applyTo(container)
         }
 
-        fun layoutPinned(container: ViewGroup, @IdRes id: Int, @IdRes sendChatComponentId: Int) {
+        fun layoutChatList(container: ViewGroup, @IdRes id: Int, @IdRes sendChatComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
@@ -174,6 +183,20 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
                 connect(id, ConstraintSet.START, sendChatComponentId, ConstraintSet.START)
                 connect(id, ConstraintSet.END, sendChatComponentId, ConstraintSet.END)
                 connect(id, ConstraintSet.BOTTOM, sendChatComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
+            }
+
+            constraintSet.applyTo(container)
+        }
+
+        fun layoutPinned(container: ViewGroup, @IdRes id: Int, @IdRes chatListComponentId: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, chatListComponentId, ConstraintSet.START)
+                connect(id, ConstraintSet.END, chatListComponentId, ConstraintSet.END)
+                connect(id, ConstraintSet.BOTTOM, chatListComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
             }
 
             constraintSet.applyTo(container)
@@ -194,7 +217,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
 
         layoutChat(container, sendChatComponentId, likeComponentId)
         layoutLike(container, likeComponentId, sendChatComponentId)
-        layoutPinned(container, pinnedComponentId, sendChatComponentId)
+        layoutChatList(container, chatListComponentId, sendChatComponentId)
+        layoutPinned(container, pinnedComponentId, chatListComponentId)
         layoutStats(container, statsComponentId, pinnedComponentId)
     }
     //endregion
