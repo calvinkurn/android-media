@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
+
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.UriUtil;
@@ -32,8 +33,7 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
     private boolean isLocationUpdated;
     private CategoryDetailHomeFragment categoryDetailHomeFragment;
 
-    public Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
-        Intent destination = new Intent();
+    public Bundle getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
 
         Location location = Utils.getSingletonInstance().getLocation(context);
         String searchName = extras.getString("search_name");
@@ -42,7 +42,7 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
         if (!TextUtils.isEmpty(categoryId)) {
             categoriesModel.setCategoryId(Integer.parseInt(categoryId));
         }
-        categoriesModel.setTitle(extras.getString("name"));
+        categoriesModel.setTitle(extras.getString("search_name"));
         String categoryUrl = searchName + "?" + Utils.QUERY_PARAM_CITY_ID + "=" + location.getId();
         categoriesModel.setCategoryUrl(DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_CATEGORY + categoryUrl);
 
@@ -57,9 +57,7 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
         }
         extras.putString(CATEGORY_NAME, categoriesModel.getTitle());
         extras.putParcelable(CATEGORIES_DATA, categoriesModel);
-        destination = new Intent(context, CategoryDetailActivity.class)
-                .putExtras(extras);
-        return destination;
+        return extras;
     }
 
     @Override
@@ -68,22 +66,21 @@ public class CategoryDetailActivity extends DealsBaseActivity implements SelectL
         categoryName = getIntent().getStringExtra(CATEGORY_NAME);
         if (TextUtils.isEmpty(categoryName))
             categoryName = getString(com.tokopedia.digital_deals.R.string.text_deals);
-        categoryDetailHomeFragment = CategoryDetailHomeFragment.createInstance(getIntent().getExtras(), isLocationUpdated);
-        return categoryDetailHomeFragment;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        Uri uri = getIntent().getData();
-        if (uri != null) {
-            Map<String, Object> params = UriUtil.destructureUriToMap(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY, uri, true);
+        if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
-            for (String key :params.keySet()) {
-                extras.putString(key, (String) params.get(key));
+            Uri uri = getIntent().getData();
+            if (uri != null) {
+                Map<String, Object> params = UriUtil.destructureUriToMap(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY, uri, true);
+                for (String key : params.keySet()) {
+                    extras.putString(key, (String) params.get(key));
+                }
+                getInstanceIntentAppLinkBackToHome(this, extras);
             }
-            getInstanceIntentAppLinkBackToHome(this, extras);
+            categoryDetailHomeFragment = CategoryDetailHomeFragment.createInstance(extras, isLocationUpdated);
+            return categoryDetailHomeFragment;
+        } else {
+            return null;
         }
-        super.onCreate(savedInstanceState);
     }
 
     @Override

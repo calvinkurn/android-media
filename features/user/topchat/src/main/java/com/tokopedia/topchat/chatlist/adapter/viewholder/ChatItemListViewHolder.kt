@@ -42,10 +42,10 @@ class ChatItemListViewHolder(
     private val label: Label = itemView.findViewById(R.id.user_label)
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
 
-    private val menu = LongClickMenu()
-
     private val statusPinned = 1
     private val statusUnpinned = 0
+
+    private val menu = LongClickMenu()
 
     override fun bind(element: ItemChatListPojo) {
         val attributes = element.attributes
