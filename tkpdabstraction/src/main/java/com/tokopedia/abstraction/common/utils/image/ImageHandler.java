@@ -39,7 +39,9 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -59,6 +61,8 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+
+import timber.log.Timber;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -187,10 +191,24 @@ public class ImageHandler {
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .addListener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        logError(e, url);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        return false;
+                    }
+                })
                 .into(imageview);
     }
 
-
+    public static void logError(GlideException e, String url) {
+        Timber.e(e, "Load image error: url= %s message= %s traceroute=", url, e != null ? e.getMessage() : "");
+    }
 
     public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
         Glide.with(context)
