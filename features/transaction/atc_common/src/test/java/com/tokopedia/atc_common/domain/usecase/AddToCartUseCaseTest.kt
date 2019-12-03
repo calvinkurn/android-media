@@ -36,11 +36,12 @@ class AddToCartUseCaseTest : Spek({
         lateinit var requestParam: RequestParams
         val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST";
 
-        Scenario("success") {
+        Scenario("use case run successfully") {
 
-            Given("success response") {
+            Given("given api response") {
                 every { graphqlUseCase.createObservable(any()) } returns
-                        Observable.just(GraphqlResponse(mapOf(AddToCartGqlResponse::class.java to AddToCartGqlResponse(AddToCartResponse())), null, false))
+                        Observable.just(GraphqlResponse(mapOf(AddToCartGqlResponse::class.java to AddToCartGqlResponse(
+                                AddToCartResponse())), null, false))
             }
 
             When("create observable") {
