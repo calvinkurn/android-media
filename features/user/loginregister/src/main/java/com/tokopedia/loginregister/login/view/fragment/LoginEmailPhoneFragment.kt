@@ -1213,7 +1213,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             if(!it.isRegistered && isFromAccountPage()){
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_AFTER_SQ, true)
                 startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_SQ)
             }else{
                 onSuccessLogin()

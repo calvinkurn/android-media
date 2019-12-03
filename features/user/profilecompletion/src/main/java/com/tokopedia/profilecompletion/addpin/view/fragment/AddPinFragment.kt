@@ -49,7 +49,6 @@ class AddPinFragment: BaseDaggerFragment(){
 
     private var isConfirmPin = false
     private var isSkipOtp: Boolean = false
-    private var isAfterSQ: Boolean = false
     private var pin = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -72,12 +71,9 @@ class AddPinFragment: BaseDaggerFragment(){
                 if(s?.length == 6){
                     if(isConfirmPin){
                         if(s.toString() == pin){
-                            if(isSkipOtp && !isAfterSQ){
+                            if(isSkipOtp){
                                 showLoading()
                                 addChangePinViewModel.checkSkipOtpPin()
-                            }else if(isSkipOtp && isAfterSQ){
-                                showLoading()
-                                addChangePinViewModel.checkSkipOtpPinAfterSQ()
                             }else{
                                 goToVerificationActivity()
                             }
@@ -141,10 +137,6 @@ class AddPinFragment: BaseDaggerFragment(){
         val isSkipOtp = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, false)
         if(isSkipOtp != null)
             this.isSkipOtp = isSkipOtp
-
-        val isAfterSQ = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_AFTER_SQ, false)
-        if(isAfterSQ != null)
-            this.isAfterSQ = isAfterSQ
     }
 
     private fun goToVerificationActivity(){
