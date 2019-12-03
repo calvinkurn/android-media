@@ -4,7 +4,7 @@
         <attr format="boolean" name="showLoadingState"/>
     </declare-styleable>
 
-    <declare-styleable name="CustomTicketView">
+    <declare-styleable name="UmrahCustomTicketView">
         <attr name="backgroundColor" format="color" />
         <attr name="scallopRadius" format="dimension" />
         <attr name="showBorder" format="boolean" />
@@ -12,7 +12,7 @@
         <attr name="showBottomShadow" format="boolean" />
         <attr name="borderWidth" format="dimension" />
         <attr name="borderColor" format="color" />
-        <attr name="cornerType" format="enum">
+        <attr name="umrahCornerType" format="enum">
             <enum name="normal" value="0" />
             <enum name="allrounded" value="1" />
             <enum name="roundedscallop" value="2" />

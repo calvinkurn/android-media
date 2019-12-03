@@ -1,19 +1,19 @@
 package com.tokopedia.play.view.activity
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.play.R
 import com.tokopedia.play.view.fragment.PlayFragment
+import com.tokopedia.play.view.fragment.PlayInteractionFragment
 
 /**
  * Created by jegul on 29/11/19
  */
 class PlayActivity : BaseActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
 
         initView()

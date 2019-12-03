@@ -28,9 +28,10 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
-import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -53,7 +54,6 @@ import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
-import com.tokopedia.chatbot.view.adapter.viewholder.factory.ChatBotChatMenuFactory
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
@@ -85,7 +85,7 @@ import javax.inject.Inject
  */
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
-        ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener,ChatbotActivity.OnBackPressed {
+        ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener {
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -639,14 +639,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.detachView()
     }
 
-    override fun onClickImagePicker() {
+    override fun createAttachmentMenus(): List<AttachmentMenu> {
+        return listOf(
+                ImageMenu()
+        )
+    }
+
+    override fun onClickAttachImage(menu: AttachmentMenu) {
         onAttachImageClicked()
     }
-
-    override fun createChatMenuFactory(): ChatMenuFactory {
-        return ChatBotChatMenuFactory()
-    }
-
 
     override fun showErrorToast(it: Throwable) {
         view?.let { mView -> Toaster.showErrorWithAction(mView, it.message.toString(), Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { }) }
@@ -670,8 +671,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    override fun onBackPressed() {
-        if(!isBackAllowed){
+    override fun onBackPressed(): Boolean {
+        if (!isBackAllowed) {
             val dialog = Dialog(context as Activity, Dialog.Type.PROMINANCE)
             dialog.setTitle(context?.getString(R.string.cb_bot_leave_the_queue))
             dialog.setDesc(context?.getString(R.string.cb_bot_leave_the_queue_desc_one))
@@ -687,8 +688,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             }
             dialog.setCancelable(true)
             dialog.show()
-        }else{
-            (activity as ChatbotActivity).finish()
+            return true
         }
+        return super.onBackPressed()
     }
 }

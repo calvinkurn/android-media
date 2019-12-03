@@ -36,7 +36,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         if (rowCount == 0L) {
             tvDraftProductInfo.visibility = View.GONE
         } else {
-            tvDraftProductInfo.text = MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount))
+            tvDraftProductInfo.text = MethodChecker.fromHtml(getString(com.tokopedia.product.manage.list.R.string.product_manage_you_have_x_unfinished_product, rowCount))
             tvDraftProductInfo.setOnClickListener {
                 ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
                 startActivity(Intent(activity, ProductDraftListActivity::class.java))
@@ -46,7 +46,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.activity_manage_product_seller, container, false)
+        return inflater.inflate(com.tokopedia.product.manage.list.R.layout.activity_manage_product_seller, container, false)
     }
 
     override fun onDraftCountLoadError() {
@@ -57,8 +57,16 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tvDraftProductInfo = view.findViewById(R.id.tv_draft_product)
+        tvDraftProductInfo = view.findViewById(com.tokopedia.product.manage.list.R.id.tv_draft_product)
         tvDraftProductInfo.visibility = View.GONE
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return com.tokopedia.design.R.id.recycler_view
+    }
+
+    override fun getSearchInputViewResourceId(): Int {
+        return com.tokopedia.abstraction.R.id.search_input_view
     }
 
     override fun initInjector() {

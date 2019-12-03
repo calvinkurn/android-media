@@ -28,7 +28,9 @@ class ChatbotActivity : BaseChatToolbarActivity() {
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         val list = UriUtil.destructureUri(ApplinkConstInternalGlobal.CHAT_BOT+"/{id}",intent.data,true)
-        bundle.putString(MESSAGE_ID,list[0])
+        if(!list.isNullOrEmpty()){
+            bundle.putString(MESSAGE_ID,list[0])
+        }
         bundle.putString(DEEP_LINK_URI,intent.data.toString())
         val fragment = ChatbotFragment()
         fragment.arguments = bundle
@@ -85,21 +87,8 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         (findViewById<TextView>(R.id.title)).text = profileName
     }
 
-    override fun onBackPressed() {
-        val fragments = supportFragmentManager.fragments
-        for (mFragment in fragments) {
-            if (mFragment != null && mFragment is ChatbotFragment) {
-                mFragment.onBackPressed()
-            }
-        }
-    }
-
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
             inflateFragment()
-    }
-
-    interface OnBackPressed {
-        fun onBackPressed()
     }
 }

@@ -48,6 +48,7 @@ import com.tokopedia.transaction.orders.orderlist.data.Data;
 import com.tokopedia.transaction.orders.orderlist.data.FilterStatus;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.OrderFilter;
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.CheckBOMSurveyParams;
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.InsertBOMSurveyParams;
 import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.CheckSurveyResponse;
@@ -64,6 +65,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -234,6 +236,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         getOrderListUseCase = new GraphqlUseCase();
         getOrderListUseCase.clearRequest();
         getOrderListUseCase.addRequest(graphqlRequest);
+        getOrderListUseCase.addRequest(getorderFiltergqlRequest());
 
         getOrderListUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -271,6 +274,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                         getView().unregisterScrollListener();
                         getView().renderEmptyList(typeRequest);
                     }
+
+                    OrderFilter orderFilter = response.getData(OrderFilter.class);
+                    if (orderFilter != null && orderFilter != null) {
+                        getView().setFilterRange(orderFilter.getGetBomOrderFilter().getDefaultDate(), orderFilter.getGetBomOrderFilter().getCustomDate());
+                    }
                 } else {
                     getView().unregisterScrollListener();
                     getView().renderEmptyList(typeRequest);
@@ -278,6 +286,13 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             }
         });
+    }
+
+    private GraphqlRequest getorderFiltergqlRequest() {
+        GraphqlRequest orderfiltergqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.bomorderfilter), OrderFilter.class);
+        return orderfiltergqlRequest;
     }
 
     public void buildAndRenderFilterList(List<FilterStatus> filterItems) {
