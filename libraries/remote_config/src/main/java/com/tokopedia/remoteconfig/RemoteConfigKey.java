@@ -154,6 +154,7 @@ public class RemoteConfigKey {
     public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
 
     public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
+    public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
 
     public static final String APP_HOTLIST_NAV_ENABLE = "app_hotlist_nav_enable";
 
