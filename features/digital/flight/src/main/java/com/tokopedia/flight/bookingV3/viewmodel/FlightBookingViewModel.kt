@@ -561,7 +561,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             promoEligibility.success = true
 
             //update UI promoData
-            flightPromoViewEntity.promoData.description = "Anda akan mendapatkan" + voucher.message
+            flightPromoViewEntity.promoData.description = voucher.message
             _flightPromoResult.value = flightPromoViewEntity
 
             return promoEligibility
