@@ -125,8 +125,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         _flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
                         _flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
                                         data.cartData.flight.child, data.cartData.flight.infant)
-                        _flightPriceData.value = data.cartData.flight.priceDetail
                     }
+                    _flightPriceData.value = data.cartData.flight.priceDetail
                     _flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data, isRefreshCart))
                 }
                 retryCount = 0
