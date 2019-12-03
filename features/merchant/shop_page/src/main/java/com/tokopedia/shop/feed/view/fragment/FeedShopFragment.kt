@@ -563,7 +563,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
     }
 
-    override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String) {
+    override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String, postType: String, authorId: String) {
         onGoToLink(redirectLink)
     }
 
