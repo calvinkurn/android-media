@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -71,6 +72,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareM
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -114,6 +116,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     TkpdProgressDialog progressDialog;
     private ShareDialog shareDialog;
     private CallbackManager callbackManager;
+    HashMap<String, String> checker = new HashMap<>();
+    ArrayList<String> imageUrlOrPathList = new ArrayList<>();
 
     @Inject
     InboxReputationFormPresenter presenter;
@@ -197,6 +201,12 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                reviewTracker.reviewOnMessageChangedTracker(
+                        getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                        s.toString().isEmpty(),
+                        true
+                );
                 checkButtonShouldEnabled();
             }
         });
@@ -311,13 +321,16 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                     isValidRating = false;
                 }
 
-                reviewTracker.reviewOnRatingChangedTracker(
-                        getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
-                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
-                        String.valueOf(rating),
-                        true,
-                        true
-                );
+                if(!checker.containsKey(getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID))) {
+                    reviewTracker.reviewOnRatingChangedTracker(
+                            getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                            String.valueOf(rating),
+                            true,
+                            true
+                    );
+                    checker.put(getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID), "");
+                }
 
                 setButtonEnabled();
             }
@@ -326,6 +339,17 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                reviewTracker.reviewOnSubmitTracker(
+                        getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                        String.valueOf(rating.getRating()),
+                        review.getText().toString().isEmpty(),
+                        String.valueOf(imageUrlOrPathList.size()),
+                        anomymousSwitch.isChecked(),
+                        true
+                );
+
                 if (getArguments() != null
                         && getArguments().getBoolean(InboxReputationFormActivity.ARGS_IS_EDIT)) {
 
@@ -379,6 +403,18 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 setTips();
             }
         });
+
+        anomymousSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                reviewTracker.reviewOnAnonymousClickTracker(
+                        getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                        true
+                );
+            }
+        });
+
 
         if (getArguments().getInt
                 (InboxReputationFormActivity.ARGS_PRODUCT_STATUS, -1) ==
@@ -658,8 +694,17 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_IMAGE_REVIEW && resultCode == Activity.RESULT_OK && data!= null) {
-            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+            imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
             if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
+
+                reviewTracker.reviewOnImageUploadTracker(
+                        getArguments().getString(InboxReputationFormActivity.ARGS_ORDER_ID),
+                        getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_ID),
+                        true,
+                        String.valueOf(imageUrlOrPathList.size()),
+                        true
+                );
+
                 startActivityForResult(ImageUploadPreviewActivity.getCallingIntent(getActivity(),
                         imageUrlOrPathList), ImageUploadHandler.CODE_UPLOAD_IMAGE);
             }
