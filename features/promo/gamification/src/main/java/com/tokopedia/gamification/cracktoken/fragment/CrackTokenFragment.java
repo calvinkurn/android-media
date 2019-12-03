@@ -239,7 +239,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void setupBottomSheet() {
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer);
-        bottomSheetBehavior.setPeekHeight((int) dpToPx(getActivity(),120));
+        bottomSheetBehavior.setPeekHeight((int)getResources().getDimension(R.dimen.gamification_pdp_peek_height));
     }
 
     public float dpToPx(Context context, float dp) {

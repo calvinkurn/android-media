@@ -86,6 +86,7 @@ ext {
     unifyBannerVersion = '1.0.0'
     unifyDialogVersion = '1.0.0'
     unifyDatePickerVersion = '0.0.1'
+    unifyGlobalError = '1.0.1'
 
     gradlePlugin = [
         crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -305,6 +306,7 @@ ext {
        calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
        banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
        dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
-       datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar"
+       datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
+       globalError : "com.tokopedia.unify.compositions:global_error:${unifyGlobalError}@aar"
     ]
 }

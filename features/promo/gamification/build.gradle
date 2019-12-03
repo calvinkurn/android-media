@@ -48,6 +48,7 @@ dependencies {
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.globalError
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)

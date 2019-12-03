@@ -2,9 +2,11 @@ package com.tokopedia.gamification.pdp.presentation.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
@@ -19,14 +21,13 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.pdp.data.LiveDataResult
-import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapter
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewmodels.PdpDialogViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
@@ -39,15 +40,17 @@ class PdpGamificationView : FrameLayout {
     private val CONTAINER_LOADING = 1
     private val CONTAINER_ERROR = 2
 
-    private lateinit var PAGE_NAME :String
+    private lateinit var PAGE_NAME: String
 
     private lateinit var tvTitle: Typography
     private lateinit var recyclerView: RecyclerView
+    private lateinit var loadingView: LinearLayout
     private lateinit var viewFlipper: ViewFlipper
+    private lateinit var globalError: GlobalError
 
     private lateinit var adapter: PdpGamificationAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
-    private lateinit var dataList : ArrayList<Visitable<*>>
+    private lateinit var dataList: ArrayList<Visitable<*>>
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -86,10 +89,16 @@ class PdpGamificationView : FrameLayout {
         recyclerView = root.findViewById(R.id.recyclerView)
         viewFlipper = root.findViewById(R.id.viewFlipper)
         tvTitle = root.findViewById(R.id.tvTitle)
+        globalError = root.findViewById(R.id.globalError)
+        loadingView = root.findViewById(R.id.loadingView)
+        globalError.setType(GlobalError.SERVER_ERROR)
+        viewFlipper.displayedChild = CONTAINER_LOADING
 
+        prepareShimmer()
         setupRv()
         setListeners()
         getRecommendationParams()
+
     }
 
     private fun setupRv() {
@@ -101,7 +110,8 @@ class PdpGamificationView : FrameLayout {
 
         scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.getProducts()
+                log("onLoadMore")
+                viewModel.getProducts(page)
             }
 
         }
@@ -127,14 +137,27 @@ class PdpGamificationView : FrameLayout {
         viewModel.productLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
-                    if (it.data != null) {
-                        dataList.addAll(it.data)
-                        adapter.notifyDataSetChanged()
+                    if (it.data != null && it.data.isNotEmpty()) {
+                        val oldSize = dataList.size
+                        dataList.addAll(oldSize, it.data)
+                        adapter.notifyItemRangeInserted(oldSize, it.data.size)
+                        scrollListener.updateStateAfterGetData()
+                        log("data size = ${it.data.size}")
+                    } else {
+                        //todo Rahul remote later
+                        showErrorToast("List is empty")
+                        log("List is empty")
+                    }
+
+                    if (viewFlipper.displayedChild != CONTAINER_LIST) {
+                        viewFlipper.displayedChild = CONTAINER_LIST
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     //Do nothing
                     showErrorToast("Error prod live data")
+                    log("Error prod live data")
+                    viewFlipper.displayedChild = CONTAINER_ERROR
                 }
             }
         })
@@ -144,10 +167,10 @@ class PdpGamificationView : FrameLayout {
                 LiveDataResult.STATUS.ERROR -> {
                     //Do nothing
                     showErrorToast("Error recommendation data")
+                    viewFlipper.displayedChild = CONTAINER_ERROR
                 }
             }
         })
-
     }
 
     protected fun getRecommendationParams() {
@@ -212,6 +235,17 @@ class PdpGamificationView : FrameLayout {
                     RouteManager.route(context, ApplinkConst.LOGIN)
                 }
             }
+        }
+    }
+
+    fun log(message: String) {
+        Log.d("NOOB", message)
+    }
+
+    fun prepareShimmer() {
+        (0..1).forEach { _ ->
+            val v = LayoutInflater.from(context).inflate(R.layout.shimmer_pdp_gamification, null, false)
+            loadingView.addView(v)
         }
     }
 

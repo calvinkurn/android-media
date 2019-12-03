@@ -38,14 +38,12 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
     val recommendationLiveData: MutableLiveData<LiveDataResult<GamingRecommendationParamResponse>> = MutableLiveData()
     val productLiveData: MutableLiveData<LiveDataResult<List<Recommendation>>> = MutableLiveData()
 
-    var pageNumber = 1
-
     fun getRecommendationParams(pageName: String) {
         launchCatchError(block = {
             withContext(workerDispatcher) {
                 val response = paramUseCase.getResponse(paramUseCase.getRequestParams(pageName))
                 recommendationLiveData.postValue(LiveDataResult.success(response))
-                getProducts()
+                getProducts(0)
             }
         }, onError = {
             it.printStackTrace()
@@ -53,12 +51,12 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
         })
     }
 
-    fun getProducts() {
+    fun getProducts(page: Int) {
 
         launchCatchError(block = {
             withContext(workerDispatcher) {
                 val params = recommendationLiveData.value!!.data!!.params
-                val item = recommendationProductUseCase.getData(recommendationProductUseCase.getRequestParams(params, pageNumber)).first()
+                val item = recommendationProductUseCase.getData(recommendationProductUseCase.getRequestParams(params, page)).first()
                 val list = recommendationProductUseCase.mapper.recommWidgetToListOfVisitables(item)
                 productLiveData.postValue(LiveDataResult.success(list))
             }

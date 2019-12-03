@@ -14,4 +14,5 @@
     <color name="gf_tint_close_color">#6C727C</color>
     <color name="charcoal_gray_88">#e131353b</color>
     <color name="gf_tooltip_transparent">#4c31353b</color>
+    <color name="gf_clr_31353b">#31353b</color>
 </resources>
