@@ -472,7 +472,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         if (passengers.isNotEmpty() && switch_traveller_as_passenger.isChecked) {
             val firstPassenger = passengers.first()
             val fullName = "${firstPassenger.passengerFirstName} ${firstPassenger.passengerLastName}"
-            if (!fullName.equals(widget_traveller_info.getContactName(), true) ||
+            if (!fullName.equals(widget_traveller_info.getContactName(), true) &&
                     !firstPassenger.passengerFirstName.equals(widget_traveller_info.getContactName(), true)) {
                 needToDoChangesOnFirstPassenger = false
                 switch_traveller_as_passenger.isChecked = false
