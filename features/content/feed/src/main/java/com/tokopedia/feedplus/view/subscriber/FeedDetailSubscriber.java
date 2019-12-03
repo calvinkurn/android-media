@@ -143,7 +143,8 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
                 shop.getShopLink(),
                 shop.getShareLinkURL(),
                 shop.getShareLinkDescription(),
-                status_activity
+                status_activity,
+                activityId
         );
     }
 }
