@@ -149,6 +149,7 @@ object DeeplinkMapper {
             ApplinkConst.NEW_WISHLIST -> return ApplinkConsInternalHome.HOME_WISHLIST
             ApplinkConst.CREATE_SHOP -> return ApplinkConstInternalMarketplace.OPEN_SHOP
             ApplinkConst.CHAT_TEMPLATE -> return ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
+            ApplinkConst.PRODUCT_MANAGE -> return ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             else -> ""
         }
         when {
@@ -189,6 +190,7 @@ object DeeplinkMapper {
             ApplinkConst.ADD_CREDIT_CARD -> return ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.CREATE_SHOP -> return ApplinkConstInternalMarketplace.OPEN_SHOP
+            ApplinkConst.PRODUCT_MANAGE -> return ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             else -> ""
         }
     }
