@@ -14,8 +14,9 @@ import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.unifycomponents.Toaster
+import java.lang.ref.WeakReference
 
-class RecommendationVH(itemView: View, val recommendationListener: RecommendationListener) : AbstractViewHolder<Recommendation>(itemView) {
+class RecommendationVH(itemView: View, val weakRecommendationListener: WeakReference<RecommendationListener>) : AbstractViewHolder<Recommendation>(itemView) {
     private val productCardView = itemView.findViewById<ProductCardViewSmallGrid>(R.id.productCardView)
 
     override fun bind(element: Recommendation?) {
@@ -24,21 +25,21 @@ class RecommendationVH(itemView: View, val recommendationListener: Recommendatio
                 setProductModel(getProductModel(element))
                         setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener {
                     override fun onViewHint() {
-                        recommendationListener.onProductImpression(element.recommendationItem)
+                        weakRecommendationListener.get()?.onProductImpression(element.recommendationItem)
                     }
                 })
 
                 setOnClickListener {
-                    recommendationListener.onProductClick(element.recommendationItem, null, adapterPosition)
+                    weakRecommendationListener.get()?.onProductClick(element.recommendationItem, null, adapterPosition)
                 }
 
                 setButtonWishlistOnClickListener {
-                    //todo Rahul check this thing
-                    val rootView = (context as Activity).window.decorView
-                    recommendationListener.onWishlistClick(element.recommendationItem, !element.recommendationItem.isWishlist){ success, throwable ->
+
+                    weakRecommendationListener.get()?.onWishlistClick(element.recommendationItem, !element.recommendationItem.isWishlist){ success, throwable ->
                         if(success){
                             element.recommendationItem.isWishlist = !element.recommendationItem.isWishlist
                             setButtonWishlistImage(element.recommendationItem.isWishlist)
+                            val rootView = (context as Activity).window.decorView
                             if(element.recommendationItem.isWishlist){
                                 showSuccessAddWishlist(rootView, getString(R.string.msg_success_add_wishlist))
                             } else {

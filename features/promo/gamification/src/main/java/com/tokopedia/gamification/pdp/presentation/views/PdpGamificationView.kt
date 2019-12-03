@@ -22,7 +22,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment
 import com.tokopedia.gamification.pdp.data.LiveDataResult
+import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapter
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapterTypeFactory
@@ -32,6 +34,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifyprinciples.Typography
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class PdpGamificationView : FrameLayout {
@@ -47,6 +50,7 @@ class PdpGamificationView : FrameLayout {
     private lateinit var loadingView: LinearLayout
     private lateinit var viewFlipper: ViewFlipper
     private lateinit var globalError: GlobalError
+    var fragment: CrackTokenFragment? = null
 
     private lateinit var adapter: PdpGamificationAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
@@ -171,6 +175,11 @@ class PdpGamificationView : FrameLayout {
                 }
             }
         })
+
+        globalError.setOnClickListener {
+            viewFlipper.displayedChild = CONTAINER_LOADING
+            getRecommendationParams()
+        }
     }
 
     protected fun getRecommendationParams() {
@@ -181,7 +190,7 @@ class PdpGamificationView : FrameLayout {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
-    fun getRecommendationListener(): RecommendationListener {
+    fun getRecommendationListener(): WeakReference<RecommendationListener> {
 
         fun onImpressionOrganic(item: RecommendationItem) {
 //            InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.position, item.isTopAds)
@@ -200,7 +209,7 @@ class PdpGamificationView : FrameLayout {
             ImpresionTask().execute(item.trackerImageUrl)
 //            InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.position, item.isTopAds)
         }
-        return object : RecommendationListener {
+        val listener = object : RecommendationListener {
             override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
                 if (item.isTopAds) {
                     ImpresionTask().execute(item.clickUrl)
@@ -209,10 +218,8 @@ class PdpGamificationView : FrameLayout {
                     onClickOrganic(item)
                 }
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
-                if (position.size >= 1) intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position[0])
-                if (context is AppCompatActivity) {
-                    (context as AppCompatActivity).startActivityForResult(intent, REQUEST_FROM_PDP)
-                }
+                if (position.isNotEmpty()) intent.putExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, position[0])
+                    fragment?.startActivityForResult(intent, Wishlist.REQUEST_FROM_PDP)
             }
 
             override fun onProductImpression(item: RecommendationItem) {
@@ -236,6 +243,8 @@ class PdpGamificationView : FrameLayout {
                 }
             }
         }
+
+        return WeakReference(listener)
     }
 
     fun log(message: String) {
@@ -249,9 +258,17 @@ class PdpGamificationView : FrameLayout {
         }
     }
 
-    companion object Wishlist {
-        const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
-        const val REQUEST_FROM_PDP = 138
+    fun onActivityResult(position: Int, wishListStatusFromPdp: Boolean) {
+        if (adapter.list[position] is Recommendation) {
+            val recommendation = adapter.list[position] as Recommendation
+            recommendation.recommendationItem.isWishlist = wishListStatusFromPdp
+            adapter.notifyItemChanged(position)
+        }
     }
+}
 
+object Wishlist {
+    const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+    const val PDP_WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+    const val REQUEST_FROM_PDP = 138
 }

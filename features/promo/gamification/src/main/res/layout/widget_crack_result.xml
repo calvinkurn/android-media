@@ -18,6 +18,7 @@
         android:clipToPadding="false"
         android:gravity="center"
         android:orientation="vertical"
+        android:layout_marginTop="@dimen/gamification_pdp_peek_height_xml"
         android:weightSum="2">
 
         <FrameLayout
@@ -81,37 +82,45 @@
                     android:orientation="vertical" />
             </FrameLayout>
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/button_return"
-                style="@style/Button.Submit.Green.Rounded"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_64"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
-                app:typographyWeight="bold"
-                app:typographyType="body_2"
-                tools:text="Cek dan Gunakan Hadiah Anda" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/button_cta"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/Button.Submit.GreyRounded"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+            <LinearLayout
                 android:gravity="center"
-                android:textColor="@color/black_40"
-                app:typographyWeight="bold"
-                app:typographyType="body_2"
-                tools:text="Cek dan Gunakan Hadiah Anda" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_64"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/button_return"
+                    style="@style/Button.Submit.Green.Rounded"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginLeft="@dimen/dp_24"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    tools:text="Cek dan Gunakan " />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/button_cta"
+                    style="@style/Button.Submit.GreyRounded"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_24"
+                    android:layout_marginRight="@dimen/dp_24"
+                    android:layout_weight="1"
+                    android:textColor="@color/black_40"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    tools:text="Cek dan as as as as as" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

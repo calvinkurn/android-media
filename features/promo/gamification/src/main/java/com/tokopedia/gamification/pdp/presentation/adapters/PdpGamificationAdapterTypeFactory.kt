@@ -7,8 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.presentation.viewHolders.RecommendationVH
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import java.lang.ref.WeakReference
 
-class PdpGamificationAdapterTypeFactory(val recommendationListener: RecommendationListener) : BaseAdapterTypeFactory(), PdpGamificationTypeFactory{
+class PdpGamificationAdapterTypeFactory(val weakRecommendationListener: WeakReference<RecommendationListener>) : BaseAdapterTypeFactory(), PdpGamificationTypeFactory{
 
     override fun type(recomendation: Recommendation): Int {
         return RecommendationVH.LAYOUT
@@ -16,7 +17,7 @@ class PdpGamificationAdapterTypeFactory(val recommendationListener: Recommendati
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
-            RecommendationVH.LAYOUT->RecommendationVH(parent, recommendationListener)
+            RecommendationVH.LAYOUT->RecommendationVH(parent, weakRecommendationListener)
             else -> super.createViewHolder(parent, type)
         }
     }

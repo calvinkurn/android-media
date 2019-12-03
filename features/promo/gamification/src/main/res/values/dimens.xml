@@ -26,5 +26,6 @@
     <dimen name="translate_image_again_distance">-160dp</dimen>
 
     <dimen name="gamification_pdp_peek_height">80dp</dimen>
+    <dimen name="gamification_pdp_peek_height_xml">73dp</dimen>
     <dimen name="gamification_shimmer_w">150dp</dimen>
 </resources>

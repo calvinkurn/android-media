@@ -115,8 +115,8 @@
                         android:layout_gravity="end|center_vertical"
                         android:layout_marginEnd="@dimen/dp_64"
                         android:layout_marginRight="@dimen/dp_64"
-                        tools:visibility="visible"
-                        android:visibility="gone">
+                        android:visibility="gone"
+                        tools:visibility="visible">
 
                         <ImageView
                             android:id="@+id/daily_prize"
@@ -197,18 +197,21 @@
 
 
         </FrameLayout>
+
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/gamification_pdp_peek_height"/>
+            android:layout_height="@dimen/gamification_pdp_peek_height_xml" />
     </LinearLayout>
+
     <FrameLayout
         android:id="@+id/bottomSheetContainer"
         android:layout_width="match_parent"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
         <com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
+            android:id="@+id/pdpGamificationView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/pdpGamificationView" />
+            android:layout_height="wrap_content" />
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

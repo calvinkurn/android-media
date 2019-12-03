@@ -67,6 +67,7 @@ import com.tokopedia.gamification.data.entity.TokenUserEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.di.GamificationComponentInstance;
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView;
+import com.tokopedia.gamification.pdp.presentation.views.Wishlist;
 import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -166,6 +167,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         bottomSheetContainer = rootView.findViewById(R.id.bottomSheetContainer);
         setUpToolBar();
         setupBottomSheet();
+        pdpGamificationView.setFragment(this);
 
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
@@ -240,10 +242,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private void setupBottomSheet() {
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer);
         bottomSheetBehavior.setPeekHeight((int)getResources().getDimension(R.dimen.gamification_pdp_peek_height));
-    }
-
-    public float dpToPx(Context context, float dp) {
-        return dp * context.getResources().getDisplayMetrics().density;
     }
 
     private void showToolTip() {
@@ -855,6 +853,13 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             case REQUEST_CODE_LOGIN:
                 crackTokenPresenter.onLoginDataReceived();
                 break;
+            case Wishlist.REQUEST_FROM_PDP: {
+                if(data != null){
+                    boolean wishlistStatusFromPdp = data.getBooleanExtra(Wishlist.PDP_WIHSLIST_STATUS_IS_WISHLIST, false);
+                    int position = data.getIntExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, -1);
+                    pdpGamificationView.onActivityResult(position, wishlistStatusFromPdp);
+                }
+            }
         }
     }
 

@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -87,6 +88,14 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
     @Override
     public void crackToken(String tokenUserId, int campaignId) {
+        //todo Rahul remove later
+        if(true){
+            String s = "{\"crackResult\":{\"resultStatus\":{\"code\":\"200\",\"message\":[\"success\"],\"status\":\"\"},\"imageUrl\":\"https://ecs7.tokopedia.net/img/blog/promo/2019/03/Coupon-Reward-Ipad-635x364-Album.jpg\",\"benefitType\":\"coupon\",\"benefits\":[{\"text\":\"+1 Kupon Testing\",\"color\":\"#ffffff\",\"size\":\"small\",\"benefitType\":\"coupon\",\"templateText\":\"\",\"animationType\":\"\",\"valueBefore\":0,\"valueAfter\":1,\"tierInformation\":\"\",\"multiplier\":\"\"}],\"ctaButton\":{\"title\":\"Lihat Kupon Saya\",\"url\":\"https://www.tokopedia.com/tokopoints/kupon-saya?HCKQTUDVAMZTLT-0\",\"applink\":\"tokopedia://tokopoints/kupon-saya?HCKQTUDVAMZTLT-0\",\"type\":\"redirect\"},\"returnButton\":{\"title\":\"Lihat Kupon Saya\",\"url\":\"https://www.tokopedia.com/tokopoints/kupon-saya?HCKQTUDVAMZTLT-0\",\"applink\":\"tokopedia://tokopoints/kupon-saya?HCKQTUDVAMZTLT-0\",\"type\":\"redirect\"}}}";
+            ResponseCrackResultEntity r = new Gson().fromJson(s,ResponseCrackResultEntity.class);
+            getView().onSuccessCrackToken(r.getCrackResultEntity());
+            System.out.println(r);
+            return;
+        }
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.put(GamificationConstants.GraphQlVariableKeys.TOKEN_ID_STR, tokenUserId);
         queryParams.put(GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID, campaignId);
