@@ -602,7 +602,6 @@ class TopChatRoomPresenter @Inject constructor(
             val sendAbleProductPreview = SendableProductPreview(productPreview)
             attachmentsPreview.add(sendAbleProductPreview)
         }
-
     }
 
     override fun initInvoicePreview(savedInstanceState: Bundle?) {
@@ -664,5 +663,21 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
         }
+    }
+
+    override fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>) {
+        if (resultProducts.isNotEmpty()) clearAttachmentPreview()
+        for (resultProduct in resultProducts) {
+            val productPreview = ProductPreview(
+                    resultProduct.productId.toString(),
+                    resultProduct.productImageThumbnail,
+                    resultProduct.name,
+                    resultProduct.price
+            )
+            if (productPreview.notEnoughRequiredData()) continue
+            val sendAbleProductPreview = SendableProductPreview(productPreview)
+            attachmentsPreview.add(sendAbleProductPreview)
+        }
+        initAttachmentPreview()
     }
 }

@@ -124,5 +124,7 @@ interface TopChatContract {
         fun initInvoicePreview(savedInstanceState: Bundle?)
 
         fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
+
+        fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
     }
 }

@@ -585,19 +585,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             return
 
         val resultProducts: ArrayList<ResultProduct> = data.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
-        attachProductRetrieved(resultProducts)
+        presenter.initProductPreviewFromAttachProduct(resultProducts)
+//        attachProductRetrieved(resultProducts)
     }
 
-    private fun attachProductRetrieved(resultProducts: java.util.ArrayList<ResultProduct>) {
-
-        analytics.trackSendProductAttachment()
-
-        for (result in resultProducts) {
-            val item = generateProductChatViewModel(result)
-            getViewState().onSendProductAttachment(item)
-            presenter.sendProductAttachment(messageId, result, item.startTime, opponentId)
-        }
-    }
+//    private fun attachProductRetrieved(resultProducts: java.util.ArrayList<ResultProduct>) {
+//
+//        analytics.trackSendProductAttachment()
+//
+//        for (result in resultProducts) {
+//            val item = generateProductChatViewModel(result)
+//            getViewState().onSendProductAttachment(item)
+//            presenter.sendProductAttachment(messageId, result, item.startTime, opponentId)
+//        }
+//    }
 
     private fun generateProductChatViewModel(product: ResultProduct): ProductAttachmentViewModel {
         return ProductAttachmentViewModel(
