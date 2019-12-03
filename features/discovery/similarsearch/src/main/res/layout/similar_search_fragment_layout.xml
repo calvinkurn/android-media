@@ -14,9 +14,6 @@
 
     <include
         android:id="@+id/cardViewOriginalProductSimilarSearch"
-        app:layout_behavior=".originalproduct.OriginalProductLayoutBehavior"
-        app:layout_anchor="@+id/recyclerViewSimilarSearch"
-        app:layout_anchorGravity="top"
         layout="@layout/similar_search_original_product_layout" />
 
     <androidx.recyclerview.widget.RecyclerView
