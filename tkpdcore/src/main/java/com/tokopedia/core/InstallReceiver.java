@@ -8,11 +8,10 @@ import android.net.Uri;
 import com.appsflyer.SingleInstallBroadcastReceiver;
 import com.google.android.gms.analytics.CampaignTrackingReceiver;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.CampaignUtil;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.router.CustomerRouter;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -39,6 +38,8 @@ public class InstallReceiver extends BroadcastReceiver {
                         SingleInstallBroadcastReceiver appsflyerInstall = new SingleInstallBroadcastReceiver();
                         appsflyerInstall.onReceive(receiverData.contextData, receiverData.intentData);
                         new CampaignTrackingReceiver().onReceive(receiverData.contextData, receiverData.intentData);
+
+                        ((CustomerRouter.IrisInstallRouter) context.getApplicationContext()).sendIrisInstallEvent();
 
                         trackIfFromCampaignUrl(data.contextData, receiverData.intentData.getStringExtra(REFERRER));
                         return true;

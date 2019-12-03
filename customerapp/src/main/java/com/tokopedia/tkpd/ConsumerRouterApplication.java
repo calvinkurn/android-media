@@ -71,7 +71,6 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -91,7 +90,6 @@ import com.tokopedia.core.util.DataMapper;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
@@ -175,8 +173,6 @@ import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
@@ -330,7 +326,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ILoyaltyRouter,
         ResolutionRouter,
         ProductDetailRouter,
-        KYCRouter {
+        KYCRouter,
+        CustomerRouter.IrisInstallRouter {
 
     private static final String EXTRA = "extra";
     public static final String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
@@ -1899,4 +1896,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return baseDaggerFragment;
     }
 
+    @Override
+    public void sendIrisInstallEvent() {
+        
+    }
 }

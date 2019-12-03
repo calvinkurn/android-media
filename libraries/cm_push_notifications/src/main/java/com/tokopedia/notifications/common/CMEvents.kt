@@ -68,7 +68,7 @@ object IrisAnalyticsEvents {
 
     }
 
-    fun addBaseValues(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel): HashMap<String, Any> {
+    private fun addBaseValues(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel): HashMap<String, Any> {
         val values = HashMap<String, Any>()
 
         values[EVENT_NAME] = eventName
@@ -111,7 +111,7 @@ object IrisAnalyticsEvents {
 
     }
 
-    fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {
+    private fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {
         val values = HashMap<String, Any>()
 
         values[EVENT_NAME] = eventName
