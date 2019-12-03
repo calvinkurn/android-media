@@ -33,8 +33,7 @@ object RxWebSocket {
     fun send(msg: String, interceptors: List<Interceptor>?) {
         try {
             getInstance(interceptors)?.send(msg)
-        }catch(ignore : WebSocketException){
-        }
+        } catch(ignore : WebSocketException){ }
     }
 
     fun send(json: JsonObject, interceptors: List<Interceptor>?) {

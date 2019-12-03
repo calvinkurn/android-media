@@ -1,6 +1,5 @@
 package com.tokopedia.websocket
 
-import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.WebSocket
@@ -18,21 +17,19 @@ import java.util.concurrent.TimeUnit
 class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
                                           private val delay: Int,
                                           private val maxRetries: Int,
-                                          private val pingInterval: Long) {
+                                          pingInterval: Long) {
 
     private val client: OkHttpClient
 
     private var observableMap: Observable<WebSocketInfo>? = null
     private var webSocketMap: WebSocket? = null
-    private var showLog = true
-    private val logTag = "MainActRxWebSocket"
 
     init {
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
         builder.pingInterval(pingInterval, TimeUnit.MILLISECONDS)
         interceptors?.let {
-            for (i in 0 until interceptors.size) {
-                builder.addInterceptor(interceptors[i])
+            for (element in interceptors) {
+                builder.addInterceptor(element)
             }
         }
         client = builder.build()
@@ -46,12 +43,9 @@ class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
                     .doOnUnsubscribe {
                         observableMap = null
                         webSocketMap = null
-                        if (showLog) {
-                            Log.d(logTag, "unsubscribe")
-                        }
                     }
                     .doOnNext { webSocketInfo ->
-                        if (webSocketInfo.isOnOpen!!) {
+                        if (webSocketInfo.isOnOpen) {
                             retryObservable.resetMaxRetries()
                             webSocketMap = webSocketInfo.webSocket
                         }
@@ -60,8 +54,8 @@ class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
         } else {
-            if (webSocketMap != null) {
-                observableMap = observableMap!!.startWith(WebSocketInfo(webSocketMap, true))
+            webSocketMap?.let {
+                observableMap = observableMap!!.startWith(WebSocketInfo(it, true))
             }
         }
         return observableMap
@@ -69,13 +63,11 @@ class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
 
     fun send(msg: String) {
         val webSocket = webSocketMap
-        webSocket?.send(msg) ?: throw WebSocketException("The WebSokcet not open")
+        webSocket?.send(msg) ?: throw WebSocketException("websocket not open")
     }
 
     companion object {
-        private val DEFAULT_PING = 10000L
-        private val DEFAULT_MAX_RETRIES = 3
-        private val DEFAULT_DELAY = 5000
+
         private var instance: RxWebSocketUtil? = null
 
         @JvmOverloads
