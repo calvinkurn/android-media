@@ -10,10 +10,15 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.timber.TimberWrapper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ricoharisin on 11/22/16.
@@ -55,10 +60,19 @@ public class ConsumerSplashScreen extends SplashScreen {
 
         finishWarmStart();
 
+        trackIrisEventForAppOpen();
+
         CMPushNotificationManager.getInstance()
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
 
 
+    }
+
+    private void trackIrisEventForAppOpen() {
+        Iris instance = IrisAnalytics.Companion.getInstance(this);
+        Map<String, Object> map = new HashMap<>();
+        map.put("event", "appSiteOpen");
+        instance.saveEvent(map);
     }
 
     private void checkApkTempered() {

@@ -1898,6 +1898,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendIrisInstallEvent() {
-        
+        Map<String, Object> map = new HashMap<>();
+        map.put("event", "appInstall");
+        mIris.sendEvent(map);
     }
 }
