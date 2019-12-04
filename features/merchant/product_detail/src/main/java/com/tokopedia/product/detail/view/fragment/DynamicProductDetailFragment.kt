@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.fragment
 
 import android.animation.Animator
 import android.app.Activity
+import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -50,6 +51,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.customviews.TradeInTextView
+import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -70,7 +74,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
-import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -115,9 +118,6 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
-import com.tokopedia.tradein.model.TradeInParams
-import com.tokopedia.tradein.view.customview.TradeInTextView
-import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.dialog.UnifyDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
@@ -339,10 +339,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     getRecyclerView(view).addOnScrollListener(onScrollListener)
                     pdpHashMapUtil = DynamicProductDetailHashMap(DynamicProductDetailMapper.hashMapLayout(it.data))
                     viewModel.getDynamicProductInfoP1?.let { productInfo ->
-                        pdpHashMapUtil.updateDataP1Test(productInfo)
+                        pdpHashMapUtil.updateDataP1(productInfo)
                         shouldShowCodP1 = productInfo.data.isCOD
-
-                        if (productInfo.data.isTradeIn) renderTradein(productInfo) else dynamicAdapter.removeTradeinSection(pdpHashMapUtil.productTradeinMap)
 
                         actionButtonView.isLeasing = productInfo.basic.isLeasing
                         actionButtonView.renderData(!productInfo.basic.isActive(),
@@ -364,6 +362,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
                     activity?.invalidateOptionsMenu()
                     renderList(it.data)
+
                 }
                 is Fail -> {
                     actionButtonView.visibility = false
@@ -541,15 +540,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                                 MultiOriginWarehouse::class.java)
                         if (selectedProductInfo != null) {
                             userInputVariant = data.getStringExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
-                            //TODO asd
-                            viewModel.productInfoP1.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
-                            selectedWarehouse?.let {
-                                viewModel.multiOrigin = it.warehouseInfo
-                                viewModel.p2ShopDataResp.value = viewModel.p2ShopDataResp.value?.copy(
-                                        nearestWarehouse = it
-                                )
+                            val dynamicP1Copy = DynamicProductDetailMapper.mapProductInfoToDynamicProductInfo(selectedProductInfo, viewModel.getDynamicProductInfoP1
+                                    ?: DynamicProductInfoP1())
+                            viewModel.getDynamicProductInfoP1 = dynamicP1Copy
+                            pdpHashMapUtil.snapShotMap.apply {
+                                selectedWarehouse?.let {
+                                    nearestWarehouse = it
+                                    viewModel.multiOrigin = it.warehouseInfo
+                                }
                             }
-
+                            pdpHashMapUtil.updateDataP1(dynamicP1Copy)
+                            dynamicAdapter.notifyDataSetChanged()
                         }
                     }
                     //refresh variant
@@ -630,23 +631,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
      * ProductInfoViewHolder
      */
 
-    private fun openCategory(categoryId: String) {
-        if (GlobalConfig.isCustomerApp()) {
-            RouteManager.route(context,
-                    ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
-                    categoryId)
-        }
-    }
-
-    override fun gotoEtalase(etalaseId: String, shopID: Int) {
-        val intent = RouteManager.getIntent(context, if (etalaseId.isNotBlank()) {
-            UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopID.toString(), etalaseId)
-        } else {
-            UriUtil.buildUri(ApplinkConst.SHOP, shopID.toString())
-        })
-        startActivity(intent)
-    }
-
     override fun onSubtitleInfoClicked(applink: String, etalaseId: String, shopId: Int, categoryId: String) {
         when {
             applink.startsWith(ApplinkConst.SHOP_ETALASE) -> {
@@ -668,6 +652,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                         Uri.parse("https://www.youtube.com/watch?v=" + videos[index].url)))
             }
         }
+    }
+
+    override fun getApplicationContext(): Application? {
+        return activity?.application
     }
 
     override val onViewClickListener = View.OnClickListener {
@@ -964,11 +952,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
         activity?.let {
             val intent = RouteManager.getIntent(it,
-                    ApplinkConst.PRODUCT_TALK, viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
+                    ApplinkConst.PRODUCT_TALK, viewModel.getDynamicProductInfoP1?.basic?.productID
+                    ?: "")
             startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT)
         }
         viewModel.getDynamicProductInfoP1?.run {
-//            productDetailTracking.sendMoEngageClickDiskusi(this,
+            //            productDetailTracking.sendMoEngageClickDiskusi(this,
 //                    (viewModel.shopInfo?.goldOS?.isOfficial ?: 0) > 0,
 //                    viewModel.shopInfo?.shopCore?.name ?: "")
         }
@@ -1006,6 +995,23 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
         bottomSheet = ValuePropositionBottomSheet.newInstance(title, desc, url)
         bottomSheet.show(fragmentManager, "pdp_bs")
+    }
+
+    private fun openCategory(categoryId: String) {
+        if (GlobalConfig.isCustomerApp()) {
+            RouteManager.route(context,
+                    ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
+                    categoryId)
+        }
+    }
+
+    private fun gotoEtalase(etalaseId: String, shopID: Int) {
+        val intent = RouteManager.getIntent(context, if (etalaseId.isNotBlank()) {
+            UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopID.toString(), etalaseId)
+        } else {
+            UriUtil.buildUri(ApplinkConst.SHOP, shopID.toString())
+        })
+        startActivity(intent)
     }
 
     private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {

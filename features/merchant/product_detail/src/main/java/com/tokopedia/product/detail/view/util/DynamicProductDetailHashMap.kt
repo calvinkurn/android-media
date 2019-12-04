@@ -73,7 +73,7 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
     val getShopInfo: ProductShopInfoDataModel
         get() = shopInfoMap ?: ProductShopInfoDataModel()
 
-    fun updateDataP1Test(data: DynamicProductInfoP1?) {
+    fun updateDataP1(data: DynamicProductInfoP1?) {
         data?.let {
             snapShotMap.run {
                 dynamicProductInfoP1 = it

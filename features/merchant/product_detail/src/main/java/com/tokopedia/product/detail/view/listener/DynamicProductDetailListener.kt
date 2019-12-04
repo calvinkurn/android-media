@@ -1,17 +1,19 @@
 package com.tokopedia.product.detail.view.listener
 
+import android.app.Application
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.spesification.Specification
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.tradein.model.TradeInParams
 
 interface DynamicProductDetailListener {
     val onViewClickListener: View.OnClickListener
+    fun getApplicationContext(): Application?
 
     /**
      * ProductSnapshotViewHolder
@@ -25,7 +27,6 @@ interface DynamicProductDetailListener {
      * ProductInfoViewHolder
      */
     fun gotoVideoPlayer(videos: List<Video>, index: Int)
-    fun gotoEtalase(etalaseId: String, shopID: Int)
     fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>)
     fun onSubtitleInfoClicked(applink: String, etalaseId: String, shopId: Int, categoryId: String)
 

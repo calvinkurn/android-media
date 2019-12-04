@@ -8,6 +8,7 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductConditionT
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
+import com.tokopedia.product.detail.common.data.model.product.Menu
 
 data class BasicInfo(
         @SerializedName("alias")

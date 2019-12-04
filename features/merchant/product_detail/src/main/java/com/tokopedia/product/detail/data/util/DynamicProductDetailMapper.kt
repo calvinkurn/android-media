@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.model.datamodel.*
 
 object DynamicProductDetailMapper {
@@ -66,6 +67,60 @@ object DynamicProductDetailMapper {
         }?.componentData?.firstOrNull() ?: ComponentData()
 
         return DynamicProductInfoP1(basic = data.basicInfo, data = componentData)
+    }
+
+    fun mapProductInfoToDynamicProductInfo(newData: ProductInfo, oldData: DynamicProductInfoP1): DynamicProductInfoP1 {
+        return oldData.apply {
+            basic.copy(
+                    alias = newData.basic.alias,
+                    catalogID = newData.basic.catalogID.toString(),
+                    category = newData.category,
+                    gtin = newData.basic.gtin,
+                    isKreasiLokal = newData.basic.isKreasiLokal,
+                    isLeasing = newData.basic.isLeasing,
+                    isMustInsurance = newData.basic.isMustInsurance,
+                    maxOrder = newData.basic.maxOrder,
+                    minOrder = newData.basic.minOrder,
+                    menu = newData.menu,
+                    name = newData.basic.name,
+                    needPrescription = newData.basic.needPrescription,
+                    productID = newData.basic.id.toString(),
+                    shopID = newData.basic.shopID.toString(),
+                    sku = newData.basic.sku,
+                    status = newData.basic.status,
+                    url = newData.basic.url,
+                    condition = newData.basic.condition,
+                    weightUnit = newData.basic.weightUnit)
+
+            val campaignData = data.campaign
+            val mediaCopy: List<Media> = data.media.map {
+                Media(it.description, it.isAutoplay, it.type, it.uRL300, it.uRLOriginal,
+                        it.uRLThumbnail, it.videoURLAndroid, it.videoURLIOS)
+            }
+            val wholesaleCopy: List<Wholesale> = newData.wholesale?.map {
+                Wholesale(WholesalePrice(value = it.price.toInt()), it.minQty)
+            } ?: listOf()
+
+            data.copy(
+                    campaign = CampaignModular(campaignData.appLinks, campaignData.campaignID, campaignData.campaignType,
+                            campaignData.campaignTypeName, campaignData.discountedPrice, campaignData.endDate, campaignData.endDateUnix,
+                            campaignData.hideGimmick, campaignData.isActive, campaignData.isAppsOnly, campaignData.originalPrice,
+                            campaignData.percentageAmount, campaignData.startDate, campaignData.stock),
+                    isCOD = newData.basic.isEligibleCod,
+                    isCashback = newData.cashback,
+                    isFreeOngkir = IsFreeOngkir(newData.freeOngkir.freeOngkirImgUrl, newData.freeOngkir.isFreeOngkirActive),
+                    media = mediaCopy,
+                    pictures = newData.pictures ?: listOf(),
+                    price = Price(newData.basic.priceCurrency, newData.basic.lastUpdatePrice, newData.basic.price.toInt()),
+                    stock = newData.stock,
+                    variant = newData.variant,
+                    videos = newData.videos,
+                    wholesale = wholesaleCopy,
+                    preOrder = newData.preorder
+
+
+            )
+        }
     }
 
     fun hashMapLayout(data: List<DynamicPDPDataModel>): Map<String, DynamicPDPDataModel> {

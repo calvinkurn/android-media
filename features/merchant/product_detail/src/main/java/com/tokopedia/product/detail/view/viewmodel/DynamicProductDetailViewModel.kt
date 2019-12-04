@@ -23,6 +23,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductTradeinDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -152,12 +153,23 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
             val pdpLayout = getPdpLayout(productParams.productId ?: "")
             val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(pdpLayout.data.components)
-            if (isUserSessionActive() || isUserHasShop) {
+            if (isUserSessionActive() && !isUserHasShop) {
                 initialLayoutData.add(ProductOpenShopDataModel())
             }
             initialLayoutData.add(ProductLastSeenDataModel())
-
             getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(pdpLayout.data)
+
+            //Check trade-in
+            if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
+                var tradeInPosition = -1
+                initialLayoutData.forEachIndexed { index, dynamicPDPDataModel ->
+                    if (dynamicPDPDataModel is ProductTradeinDataModel) {
+                        tradeInPosition = index
+                    }
+                }
+                val tradeinData = initialLayoutData.toMutableList().removeAt(tradeInPosition)
+                initialLayoutData.remove(tradeinData)
+            }
 
             productLayout.value = Success(initialLayoutData)
 

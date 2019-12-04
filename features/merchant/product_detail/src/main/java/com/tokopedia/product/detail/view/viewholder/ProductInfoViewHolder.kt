@@ -44,8 +44,7 @@ class ProductInfoViewHolder(private val view: View,
             }
 
             val bottomData = data.find { it.row == "bottom" } ?: return
-            renderDescriptionData(bottomData.listOfContent, element.shopName
-                    ?: "", element.dynamicProductInfoP1 ?: DynamicProductInfoP1(),
+            renderDescriptionData(bottomData.listOfContent, element.shopName, element.dynamicProductInfoP1 ?: DynamicProductInfoP1(),
                     element.productSpecification ?: ProductSpecificationResponse())
         }
     }

@@ -17,7 +17,7 @@ class ProductTradeinViewHolder(val view: View, val listener: DynamicProductDetai
     override fun bind(element: ProductTradeinDataModel) {
         if (element.shouldRenderInitialData) {
             element.shouldRenderInitialData = false
-            view.tv_trade_in.tradeInReceiver.checkTradeIn(element.tradeInParams, false)
+            view.tv_trade_in.tradeInReceiver.checkTradeIn(element.tradeInParams, false, listener.getApplicationContext())
         }
 
         view.setOnClickListener {

@@ -26,8 +26,6 @@ data class CampaignModular(
         val isAppsOnly: Boolean = false,
         @SerializedName("originalPrice")
         val originalPrice: Int = 0,
-        @SerializedName("originalStock")
-        val originalStock: Int = 0,
         @SerializedName("percentageAmount")
         val percentageAmount: Int = 0,
         @SerializedName("startDate")
