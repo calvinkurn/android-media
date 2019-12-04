@@ -16,9 +16,8 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_COPY_BOOKING_CODE
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_MESSAGE_LIST
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_TYPE
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailBookingCodeMessageAdapter
 import com.tokopedia.unifycomponents.Toaster
 import io.hansel.core.utils.HSLUtils.dpToPx
@@ -31,7 +30,7 @@ import kotlin.collections.ArrayList
  */
 class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     private var bookingCode = ""
-    private var bookingType: String = ""
+    private var barcodeType: String = ""
     private lateinit var somBookingCodeMsgAdapter: SomDetailBookingCodeMessageAdapter
     private val CONST_INCREASE_DP = 50
     private val CONST_REDUCE_DP = -50
@@ -47,7 +46,7 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
             return SomDetailBookingCodeFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_BOOKING_CODE, bundle.getString(PARAM_BOOKING_CODE))
-                    putInt(PARAM_BOOKING_TYPE, bundle.getInt(PARAM_BOOKING_TYPE))
+                    putString(PARAM_BARCODE_TYPE, bundle.getString(PARAM_BARCODE_TYPE))
                 }
             }
         }
@@ -57,7 +56,7 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             bookingCode = arguments?.getString(PARAM_BOOKING_CODE).toString()
-            bookingType = arguments?.getString(PARAM_BOOKING_TYPE).toString()
+            barcodeType = arguments?.getString(PARAM_BARCODE_TYPE).toString()
         }
     }
 
@@ -81,7 +80,7 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
         somBookingCodeMsgAdapter.listMessage.add(getString(R.string.online_booking_msg_1))
         somBookingCodeMsgAdapter.listMessage.add(getString(R.string.online_booking_msg_2))
         somBookingCodeMsgAdapter.notifyDataSetChanged()
-        generateBarcode(bookingCode, bookingType)?.let { showBarcode(it) }
+        generateBarcode(bookingCode, barcodeType)?.let { showBarcode(it) }
     }
 
     private fun initListeners() {
