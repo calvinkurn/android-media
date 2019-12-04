@@ -14,14 +14,14 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
 
     implementation rootProject.ext.miscDependencies.exoPlayerCore
-    implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
 }
 

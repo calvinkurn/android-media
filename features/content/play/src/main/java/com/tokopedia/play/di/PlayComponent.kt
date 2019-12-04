@@ -11,7 +11,7 @@ import dagger.Component
  */
 @PlayScope
 @Component(
-        modules = [PlayModule::class],
+        modules = [PlayModule::class, PlayViewModelModule::class],
         dependencies = [BaseAppComponent::class]
 )
 interface PlayComponent {
