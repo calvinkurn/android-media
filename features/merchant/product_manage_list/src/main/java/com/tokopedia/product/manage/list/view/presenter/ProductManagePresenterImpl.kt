@@ -268,7 +268,7 @@ class ProductManagePresenterImpl @Inject constructor(
                     }
 
                     override fun onCompleted() {
-
+                        //No OP
                     }
 
                     override fun onError(e: Throwable?) {

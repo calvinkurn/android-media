@@ -13,10 +13,6 @@ data class GoldManageFeaturedProductV2 (
 )
 
 data class Header (
-        @SerializedName("process_time")
-        var processTime: Int = 0,
-        @SerializedName("reason")
-        var reason: String? = null,
         @SerializedName("error_code")
         var errorCode: String? = null,
         @SerializedName("message")

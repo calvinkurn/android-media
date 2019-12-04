@@ -18,8 +18,6 @@ class FeaturedProductResponseMapper @Inject constructor() : Func1<GraphqlRespons
         val featuredProductHeader = dataModel?.goldManageFeaturedProductV2?.header
         if (featuredProductHeader != null) {
             featuredProductResponseDomainModel = FeaturedProductResponseDomainModel(
-                    featuredProductHeader.processTime,
-                    featuredProductHeader.reason,
                     featuredProductHeader.errorCode,
                     featuredProductHeader.message
             )
