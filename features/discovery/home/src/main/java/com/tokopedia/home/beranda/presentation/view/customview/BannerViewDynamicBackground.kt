@@ -54,6 +54,8 @@ class BannerViewDynamicBackground : BannerView {
         cardBannerView = view.findViewById(R.id.card_banner_view)
         bannerSeeAll = view.findViewById(R.id.banner_see_all)
 
+        bannerSeeAll.text = context.getString(R.string.discovery_home_see_more_banner)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (::cardBannerView.isInitialized) {
                 cardBannerView.setMargin(
