@@ -5,11 +5,13 @@ import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
+import com.tokopedia.notifications.model.NotificationStatus
 
 class PersistentImageDownloader(baseNotificationModel: BaseNotificationModel) : NotificationImageDownloader(baseNotificationModel) {
     override suspend fun verifyAndUpdate() {
         baseNotificationModel.persistentButtonList?.forEach { persistentButton ->
             if (null == persistentButton.icon || persistentButton.icon!!.startsWith("http") || persistentButton.icon!!.startsWith("www")) {
+                baseNotificationModel.status = NotificationStatus.COMPLETED
                 baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
                 return
             }

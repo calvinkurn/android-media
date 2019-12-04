@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-const val PERIODIC_TIME_INTERVAL_MINUTE = 16L
+const val PERIODIC_TIME_INTERVAL_MINUTE = 15L
 const val PUSH_WORKER_UNIQUE_NAME = "PUSH_WORKER"
 
 class PushWorker(private val appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {

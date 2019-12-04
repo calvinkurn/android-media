@@ -5,17 +5,20 @@ import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
+import com.tokopedia.notifications.model.NotificationStatus
 
 class VisualImageDownloader(baseNotificationModel: BaseNotificationModel) : NotificationImageDownloader(baseNotificationModel) {
     override suspend fun verifyAndUpdate() {
         baseNotificationModel.visualCollapsedImageUrl?.run {
             if (startsWith("http") || startsWith("www")) {
+                baseNotificationModel.status = NotificationStatus.COMPLETED
                 baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
                 return
             }
         }
         baseNotificationModel.visualExpandedImageUrl?.run {
             if (startsWith("http") || startsWith("www")) {
+                baseNotificationModel.status = NotificationStatus.COMPLETED
                 baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
             }
         }
