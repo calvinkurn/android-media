@@ -193,6 +193,9 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
             moreInfoBottomSheet.setFullPage(false)
             moreInfoBottomSheet.setChild(moreInfoView)
             moreInfoBottomSheet.clearAction()
+            moreInfoBottomSheet.setCloseClickListener {
+                moreInfoBottomSheet.dismiss()
+            }
             moreInfoBottomSheet.show(fragmentManager,"E-gold more info bottom sheet")
         }
     }
