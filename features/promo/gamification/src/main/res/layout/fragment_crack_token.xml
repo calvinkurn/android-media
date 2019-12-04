@@ -199,6 +199,7 @@
         </FrameLayout>
 
         <View
+            android:id="@+id/emptyView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/gamification_pdp_peek_height_xml" />
     </LinearLayout>

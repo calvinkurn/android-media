@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -42,7 +43,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.gamification.GamificationEventTracking;
@@ -119,6 +119,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private Toolbar toolbar;
     private TextView toolbarTitle;
     private PdpGamificationView pdpGamificationView;
+    private View emptyView;
     private ViewGroup bottomSheetContainer;
 
     private PerformanceMonitoring fpmRender;
@@ -165,9 +166,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetTokenOnBoarding = rootView.findViewById(R.id.widget_token_onboarding);
         pdpGamificationView = rootView.findViewById(R.id.pdpGamificationView);
         bottomSheetContainer = rootView.findViewById(R.id.bottomSheetContainer);
+        emptyView = rootView.findViewById(R.id.emptyView);
         setUpToolBar();
         setupBottomSheet();
-        pdpGamificationView.setFragment(this);
 
         widgetCrackResult.setListener(new WidgetCrackResult.WidgetCrackResultListener() {
             @Override
@@ -239,9 +240,34 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         return rootView;
     }
 
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    private int getScreenHeightWithoutStatusBar(){
+        int statusBarHeight = getStatusBarHeight();
+        return getActivity().getResources().getDisplayMetrics().heightPixels - statusBarHeight;
+    }
+
     private void setupBottomSheet() {
+        int screenHeight = getScreenHeightWithoutStatusBar();
+        int peekHeight = (int) (screenHeight * 0.3f);
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer);
-        bottomSheetBehavior.setPeekHeight((int)getResources().getDimension(R.dimen.gamification_pdp_peek_height));
+        bottomSheetBehavior.setPeekHeight(peekHeight);
+
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) emptyView.getLayoutParams();
+        lp.height = peekHeight - dpToPx(getActivity(), 7);
+
+        pdpGamificationView.setFragment(this);
+    }
+
+    public int dpToPx(Context context, float dp) {
+        return (int) (dp * context.getResources().getDisplayMetrics().density);
     }
 
     private void showToolTip() {
@@ -449,7 +475,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void initTimerBound() {
         int rootHeight = rootView.getHeight();
-        int marginTop = TokenMarginUtil.getTimerMarginBottom(rootHeight);
+//        int marginTop = TokenMarginUtil.getTimerMarginBottom(rootHeight);
+        int marginTop = (int)(getScreenHeightWithoutStatusBar() - (getScreenHeightWithoutStatusBar() *0.47));
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) textCountdownTimer.getLayoutParams();
         ivFullLp.gravity = Gravity.CENTER_HORIZONTAL;
         ivFullLp.topMargin = marginTop;
@@ -854,7 +881,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 crackTokenPresenter.onLoginDataReceived();
                 break;
             case Wishlist.REQUEST_FROM_PDP: {
-                if(data != null){
+                if (data != null) {
                     boolean wishlistStatusFromPdp = data.getBooleanExtra(Wishlist.PDP_WIHSLIST_STATUS_IS_WISHLIST, false);
                     int position = data.getIntExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, -1);
                     pdpGamificationView.onActivityResult(position, wishlistStatusFromPdp);
