@@ -1,8 +1,9 @@
 package com.tokopedia.useridentification.view.activity;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.MenuItem;
+
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -16,8 +17,7 @@ import com.tokopedia.useridentification.view.fragment.UserIdentificationInfoFrag
 public class UserIdentificationInfoActivity extends BaseSimpleActivity {
 
     boolean isSourceSeller;
-
-    private static int projectId;
+    private int projectId = -1;
     public interface Listener {
         void onTrackBackPressed();
     }
@@ -48,7 +48,8 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
     protected Fragment getNewFragment() {
         try {
             projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId);

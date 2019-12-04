@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
 
-    <com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPicker
+    <com.tokopedia.datepicker.numberpicker.NumberPicker
         android:id="@+id/date_spinner"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_120"
@@ -26,7 +26,7 @@
         app:np_wheelItemCount="3"
         app:np_wrapSelectorWheel="true" />
 
-    <com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPicker
+    <com.tokopedia.datepicker.numberpicker.NumberPicker
         android:id="@+id/time_spinner"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_120"

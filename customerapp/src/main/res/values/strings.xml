@@ -131,7 +131,6 @@
     <string name="title_activity_login">Masuk</string>
 
     <!-- END NEW ON BOARDING RELATED STRING RESOURCE -->
-    <string name="drawer_title_challenges">Challenges</string>
     <string name="share_link">Share Link!!!</string>
     <string name="produk_yang_mungkin_anda_suka">Produk yang mungkin Anda suka</string>
     <string name="title_header_saldo_intro">Info Detail Saldo</string>
@@ -156,9 +155,12 @@
     <string name="home_recommendation_extra_ref">REF</string>
     <string name="title_homepage_digital">Digital</string>
     <string name="title_saldo_deposit">Saldo Deposit</string>
+    <string name="df_ovo_pay_with_qr_title">Ovo Pay By Qr DF</string>
 
     <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
     <string name="saldo_detail_title_header_saldo_intro">Info Detail Saldo</string>
+
+    <string name="oqr_payment_summary">Pembayaran</string>
     <string name="title_instantloan">Dana Instan</string>
 
     <string name="title_im_referral">referral</string>
@@ -166,4 +168,16 @@
     <string name="title_activity_all_brands">Brands</string>
     <string name="title_digital_deals">Deals</string>
     <string name="title_activity_deals">Deals</string>
+
+    <string name="title_emoney">emoney</string>
+
+    <!-- Content -->
+    <string name="title_profile">Profile</string>
+    <string name="title_profile_following">Following</string>
+    <string name="title_profile_follower">Followers</string>
+
+    <!--affilate page-->
+    <string name="posted_product" translatable="false">Produk Dipost</string>
+    <string name="title_af_dashboard_detail" translatable="false">Riwayat</string>
+    <string name="text_button_sort" translatable="false">Sort</string>
 </resources>

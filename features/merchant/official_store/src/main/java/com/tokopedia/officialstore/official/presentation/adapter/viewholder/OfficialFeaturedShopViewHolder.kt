@@ -2,8 +2,8 @@ package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
 import android.content.Context
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -15,13 +15,14 @@ import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
 import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdapter
 import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemDecoration
+import com.tokopedia.unifyprinciples.Typography
 
 class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFeaturedShopViewModel>(view){
 
     private var context: Context? = null
     private var recyclerView: RecyclerView? = null
-    private var link: TextView? = null
-    private var title: TextView? = null
+    private var link: AppCompatTextView? = null
+    private var title: Typography? = null
 
     private var adapter: FeaturedShopAdapter? = null
 
@@ -57,25 +58,26 @@ class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFea
             adapter?.shopList = it
             adapter?.notifyDataSetChanged()
 
-            val shopItem = it[0]
-            officialStoreTracking?.eventImpressionFeatureBrand(
-                    element.categoryName.toEmptyStringIfNull(),
-                    shopItem.shopId.toEmptyStringIfNull(),
-                    0,
-                    shopItem.name.toEmptyStringIfNull(),
-                    shopItem.imageUrl.toEmptyStringIfNull(),
-                    shopItem.additionalInformation.toEmptyStringIfNull()
-            )
+            it.forEachIndexed { index, shop ->
+                officialStoreTracking?.eventImpressionFeatureBrand(
+                        element.categoryName.orEmpty(),
+                        index + 1,
+                        shop.name.orEmpty(),
+                        shop.imageUrl.orEmpty(),
+                        shop.additionalInformation.orEmpty(),
+                        shop.featuredBrandId.orEmpty()
+                )
+            }
 
             adapter?.onItemClickListener = object: FeaturedShopAdapter.OnItemClickListener {
                 override fun onItemClick(position: Int, shop: Shop) {
                     officialStoreTracking?.eventClickFeaturedBrand(
-                            element.categoryName.toEmptyStringIfNull(),
-                            shop.shopId.toEmptyStringIfNull(),
+                            element.categoryName.orEmpty(),
                             position,
-                            shop.name.toEmptyStringIfNull(),
-                            shop.imageUrl.toEmptyStringIfNull(),
-                            shop.additionalInformation.toEmptyStringIfNull()
+                            shop.name.orEmpty(),
+                            shop.url.orEmpty(),
+                            shop.additionalInformation.orEmpty(),
+                            shop.featuredBrandId.orEmpty()
                     )
 
                     RouteManager.route(context, shop.url)

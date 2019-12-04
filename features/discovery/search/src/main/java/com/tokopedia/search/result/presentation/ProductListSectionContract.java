@@ -46,17 +46,23 @@ public interface ProductListSectionContract {
 
         void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
 
-        void backToTop();
+        void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);
 
-        List<Option> getQuickFilterOptions(DataValue dynamicFilterModel);
+        void trackEventImpressionBannedProducts(boolean isEmptySearch);
+
+        void backToTop();
 
         void addLoading();
 
         void removeLoading();
 
-        void onSuccessAddWishlist(String productId);
+        void successAddWishlist(ProductItemViewModel productItemViewModel);
 
-        void onErrorAddWishList(String errorMessage, String productId);
+        void errorAddWishList(String errorMessage, String productId);
+
+        void successRemoveWishlist(ProductItemViewModel productItemViewModel);
+
+        void errorRemoveWishlist(String errorMessage, String productId);
 
         void notifyAdapter();
 
@@ -71,6 +77,8 @@ public interface ProductListSectionContract {
         void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray);
 
         void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
+
+        void sendTrackingGTMEventSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
 
         void setFirstTimeLoad(boolean isFirstTimeLoad);
 
@@ -92,17 +100,13 @@ public interface ProductListSectionContract {
 
         void showAdultRestriction();
 
-        void sendTrackingWishlistNonLogin(String productId, boolean wishlistAction);
+        void sendTrackingWishlistNonLogin(ProductItemViewModel productItemViewModel);
 
         void redirectSearchToAnotherPage(String applink);
 
         void sendTrackingForNoResult(String resultCode, String alternativeKeyword);
 
         void setDefaultLayoutType(int defaultView);
-
-        void showErrorMessage(boolean isFullScreenMessage, String errorMessage);
-
-        void hideErrorMessage();
 
         void successRemoveRecommendationWishlist(String productId);
 
@@ -111,10 +115,13 @@ public interface ProductListSectionContract {
         void errorRecommendationWishlist(String errorMessage, String productId);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
+
+        boolean isTickerHasDismissed();
+
+        void redirectToBrowser(String url);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
-        void setWishlistActionListener(WishListActionListener wishlistActionListener);
 
         void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams);
 
@@ -123,5 +130,7 @@ public interface ProductListSectionContract {
         void handleWishlistButtonClicked(final ProductItemViewModel productItem);
 
         void handleWishlistButtonClicked(final RecommendationItem recommendationItem);
+
+        void onBannedProductsGoToBrowserClick(String url);
     }
 }

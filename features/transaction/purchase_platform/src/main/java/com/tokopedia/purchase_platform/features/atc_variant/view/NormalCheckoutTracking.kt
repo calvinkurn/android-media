@@ -9,6 +9,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import org.json.JSONArray
+import org.json.JSONObject
 
 class NormalCheckoutTracking {
     companion object {
@@ -258,14 +260,22 @@ class NormalCheckoutTracking {
                                 category: String) {
         TrackApp.getInstance()?.appsFlyer?.sendEvent(
             AFInAppEventType.ADD_TO_CART,
-            mutableMapOf<String, Any>(
-                AFInAppEventParameterName.CONTENT_ID to productId,
-                AFInAppEventParameterName.DESCRIPTION to productName,
-                AFInAppEventParameterName.CURRENCY to "IDR",
-                AFInAppEventParameterName.QUANTITY to quantity,
-                AFInAppEventParameterName.PRICE to priceItem,
-                "category" to category
-            ))
+                mutableMapOf(
+                        AFInAppEventParameterName.CONTENT_ID to productId,
+                        AFInAppEventParameterName.CONTENT_TYPE to "product",
+                        AFInAppEventParameterName.DESCRIPTION to productName,
+                        AFInAppEventParameterName.CURRENCY to "IDR",
+                        AFInAppEventParameterName.QUANTITY to quantity,
+                        AFInAppEventParameterName.PRICE to priceItem,
+                        "category" to category
+                ).also {
+                    val jsonArray = JSONArray()
+                    val jsonObject = JSONObject()
+                    jsonObject.put("id", productId)
+                    jsonObject.put("quantity", quantity)
+                    jsonArray.put(jsonObject)
+                    it[AFInAppEventParameterName.CONTENT] = jsonArray.toString()
+                })
     }
 
     private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {

@@ -2,7 +2,7 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            authentication          : "com.tokopedia.authentication:authentication:1.0.1",
+            authentication          : "com.tokopedia.authentication:authentication:1.0.6",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
             graphql                 : "com.tokopedia.graphql:graphql:1.0.18",
@@ -16,6 +16,7 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     libraries = [
+            adapterDelegate         : ":libraries:adapter_delegate",
             analytics               : ":libraries:analytics",
             applink                 : ":libraries:applink",
             baseAdapter             : ":libraries:base_adapter",
@@ -62,7 +63,7 @@ ext {
             videoplayer             : ":libraries:videoplayer",
             youtubeApi              : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil             : ":libraries:youtubeutil",
-
+            promotionsTarget        : ":libraries:promotions_target",
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
             translator              : ":libraries:translator"

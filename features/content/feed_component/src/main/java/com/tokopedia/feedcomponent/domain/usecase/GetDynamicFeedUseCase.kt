@@ -60,23 +60,42 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
 
         const val LIMIT_3 = 3
         const val SOURCE_FEEDS = "feeds"
-        const val SOURCE_PROFILE = "profile"
-        const val SOURCE_SHOP = "shop"
-        const val SOURCE_DETAIL = "detail"
-        const val SOURCE_TRENDING = "trending"
 
         @JvmOverloads
-        fun createRequestParams(userId: String, cursor: String = "", source: String,
+        fun createRequestParams(userId: String, cursor: String = "", source: FeedV2Source,
                                 sourceId: String = "", firstPageCursor: String = ""):
                 RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_USER_ID, if (userId == "") "0" else userId)
             requestParams.putInt(PARAM_LIMIT, LIMIT_3)
             requestParams.putString(PARAM_CURSOR, cursor)
-            requestParams.putString(PARAM_SOURCE, source)
+            requestParams.putString(PARAM_SOURCE, source.sourceString)
             requestParams.putString(PARAM_SOURCE_ID, sourceId)
             requestParams.putString(PARAM_REFRESH_CURSOR, firstPageCursor)
             return requestParams
+        }
+    }
+
+    enum class FeedV2Source(val sourceString: String) {
+
+        Feeds("feeds"),
+        Profile("profile"),
+        Shop("shop"),
+        Detail("detail"),
+        Trending("trending"),
+
+        Empty("");
+
+        companion object {
+            private val values = values()
+
+            @JvmStatic
+            fun getSourceByString(sourceString: String): FeedV2Source {
+                values.forEach {
+                    if (it.sourceString == sourceString) return it
+                }
+                return Empty
+            }
         }
     }
 }

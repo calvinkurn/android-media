@@ -14,6 +14,7 @@ import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
+import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.settingprofile.data.SubmitProfilePictureData
 import com.tokopedia.profilecompletion.settingprofile.data.UserProfileInfoData
@@ -27,6 +28,17 @@ import dagger.multibindings.StringKey
 @ProfileCompletionSettingScope
 @Module
 class ProfileCompletionQueryModule {
+
+    @ProfileCompletionSettingScope
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueryConstant.MUTATION_CHANGE_NAME)
+    fun provideRawMutationChangeName(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_name)
+
+    @Provides
+    fun provideChangeNameGraphQlUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<ChangeNamePojo> = GraphqlUseCase(graphqlRepository)
 
     @ProfileCompletionSettingScope
     @Provides

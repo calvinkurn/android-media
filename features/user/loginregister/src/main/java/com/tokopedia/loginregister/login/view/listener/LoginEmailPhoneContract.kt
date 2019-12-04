@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
@@ -60,6 +61,8 @@ interface LoginEmailPhoneContract {
 
         fun onErrorGetUserInfo(): Function1<Throwable, Unit>
 
+        fun onSuccessGetUserInfoAddPin(): Function1<ProfilePojo, Unit>
+
         fun onGoToCreatePassword(): Function2<String, String, Unit>
 
         fun onGoToActivationPage(email: String): Function1<MessageErrorException, Unit>
@@ -82,7 +85,7 @@ interface LoginEmailPhoneContract {
 
         fun onEmailExist(email: String)
 
-        fun showNotRegisteredEmailDialog(email: String)
+        fun showNotRegisteredEmailDialog(email: String, isPending: Boolean)
 
         fun onBackPressed()
 
@@ -102,9 +105,9 @@ interface LoginEmailPhoneContract {
 
         fun getUserInfo()
 
-        fun discoverLogin(context: Context)
+        fun getUserInfoAddPin()
 
-        fun checkLoginEmailPhone(emailPhone: String)
+        fun discoverLogin(context: Context)
 
         fun loginFacebook(context: Context, accessToken: AccessToken, email: String)
 
@@ -113,5 +116,7 @@ interface LoginEmailPhoneContract {
         fun getTickerInfo()
 
         fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
+
+        fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
     }
 }

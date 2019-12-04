@@ -13,10 +13,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 import com.tokopedia.otp.R
-import com.tokopedia.otp.common.OTPAnalytics
+import com.tokopedia.otp.common.analytics.OTPAnalytics
 import com.tokopedia.otp.cotp.view.viewlistener.OnboardingOtpMiscall
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.permissionchecker.request
 import com.tokopedia.unifycomponents.UnifyButton
+import javax.inject.Inject
 
 class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.View {
 
@@ -24,7 +27,6 @@ class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.
     private lateinit var textStep2: TextView
     private lateinit var imgAnimationPreview: LottieAnimationView
     private lateinit var btnCallMe: UnifyButton
-
     private lateinit var passModel: VerificationViewModel
 
     override fun getScreenName(): String = OTPAnalytics.Screen.SCREEN_COTP_MISCALL
@@ -39,9 +41,6 @@ class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.
         textStep2 = view.findViewById(R.id.otp_onboarding_desc_2)
         imgAnimationPreview = view.findViewById(R.id.otp_onboarding_image_animation)
         btnCallMe = view.findViewById(R.id.call_me)
-
-        startAnimation()
-
         return view
     }
 
@@ -63,6 +62,8 @@ class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.
                 fragmentTransaction?.commit()
             }
         }
+
+        startAnimation()
     }
 
     override fun startAnimation() {

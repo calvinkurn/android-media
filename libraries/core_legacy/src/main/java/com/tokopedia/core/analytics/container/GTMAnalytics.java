@@ -3,9 +3,10 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.common.api.PendingResult;
@@ -30,6 +31,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -59,6 +61,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private final Iris iris;
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
+    private String clientIdString = "";
 
     // have status that describe pending.
 
@@ -93,7 +96,7 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         // V4
         clearEnhanceEcommerce();
-        pushGeneral(clone(value));
+        pushGeneral(value);
 
         StringBuilder stacktrace = new StringBuilder();
 
@@ -201,6 +204,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private void productImpressionBundle(String keyEvent, Bundle bundle, Map<String, Object> ecommerce) {
         Object impressions = ecommerce.remove("impressions");
+        String list = "";
         if (impressions instanceof List) {
             List viewProduct = (List) impressions;
             ArrayList<Bundle> promotionBundles = new ArrayList<>();
@@ -212,21 +216,28 @@ public class GTMAnalytics extends ContextAnalytics {
 
                         for (int i = 0; i < promotions.length; i++) {
                             Map<String, Object> promotion = (Map<String, Object>) promotions[i];
-                            promotionBundles.add(viewProductMap(promotion, i + 1));
+                            ViewProductResult viewProductResult = viewProductMap(promotion, i + 1);
+                            list = viewProductResult.list;
+                            promotionBundles.add(viewProductResult.first);
                         }
                     } else if (promotionObj instanceof ArrayList) {
                         List promotions = (List) promotionObj;
 
                         for (int i = 0; i < promotions.size(); i++) {
                             Map<String, Object> promotion = (Map<String, Object>) promotions.get(i);
-                            promotionBundles.add(viewProductMap(promotion, i + 1));
+                            ViewProductResult viewProductResult = viewProductMap(promotion, i + 1);
+                            list = viewProductResult.list;
+                            promotionBundles.add(viewProductResult.first);
                         }
                     } else if (promotionObj instanceof Map) {
                         Map<String, Object> promotions = (Map<String, Object>) promotionObj;
-                        promotionBundles.add(viewProductMap(promotions, j + 1));
+                        ViewProductResult viewProductResult = viewProductMap(promotions, j + 1);
+                        list = viewProductResult.list;
+                        promotionBundles.add(viewProductResult.first);
                     }
                 }
             }
+            bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, list);
             bundle.putParcelableArrayList("items", promotionBundles);
         }
     }
@@ -257,14 +268,16 @@ public class GTMAnalytics extends ContextAnalytics {
 
                 for (int i = 0; i < promotions.length; i++) {
                     Map<String, Object> promotion = (Map<String, Object>) promotions[i];
-                    promotionBundles.add(viewProductMap(promotion, i + 1));
+                    ViewProductResult viewProductResult = viewProductMap(promotion, i + 1);
+                    promotionBundles.add(viewProductResult.first);
                 }
             } else if (promotionObj instanceof ArrayList) {
                 List promotions = (List) promotionObj;
 
                 for (int i = 0; i < promotions.size(); i++) {
                     Map<String, Object> promotion = (Map<String, Object>) promotions.get(i);
-                    promotionBundles.add(viewProductMap(promotion, i + 1));
+                    ViewProductResult viewProductResult = viewProductMap(promotion, i + 1);
+                    promotionBundles.add(viewProductResult.first);
                 }
             }
             bundle.putParcelableArrayList("items", promotionBundles);
@@ -304,6 +317,16 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
+    private double emptyDouble(String doubleRaw){
+        return TextUtils.isEmpty(doubleRaw) ? 0.0 :
+                Double.valueOf(PriceUtil.from(doubleRaw));
+    }
+
+    private double emptyInt(String intRaw){
+        return TextUtils.isEmpty(intRaw) ? 0 :
+                Double.valueOf(PriceUtil.from(intRaw));
+    }
+
     private void transactionBundle(Bundle bundle, Map<String, Object> ecommerce) {
         Object promotionObj;
         Map<String, Object> purchase = (Map<String, Object>) ecommerce.remove("purchase");
@@ -314,13 +337,12 @@ public class GTMAnalytics extends ContextAnalytics {
             Map<String, Object> actionField = (Map<String, Object>) purchase.remove("actionField");
 
             bundle.putString(FirebaseAnalytics.Param.TRANSACTION_ID, bruteForceCastToString(actionField.remove(PurchaseKey.KEY_ID)));
-            bundle.putString(FirebaseAnalytics.Param.AFFILIATION, (String) actionField.remove(PurchaseKey.KEY_AFFILIATION));
-            bundle.putDouble(FirebaseAnalytics.Param.VALUE, Double.valueOf((String) actionField.remove(PurchaseKey.KEY_REVENUE))); // Revenue
-            bundle.putDouble(FirebaseAnalytics.Param.TAX, Double.valueOf((String) actionField.remove(PurchaseKey.KEY_TAX)));
-            bundle.putDouble(FirebaseAnalytics.Param.SHIPPING, Double.valueOf((String) actionField.remove(PurchaseKey.KEY_SHIPPING)));
-            bundle.putString(FirebaseAnalytics.Param.COUPON, (String) actionField.remove(PurchaseKey.KEY_AFFILIATION));
+            bundle.putString(FirebaseAnalytics.Param.AFFILIATION, bruteForceCastToString(actionField.remove(PurchaseKey.KEY_AFFILIATION)));
+            bundle.putDouble(FirebaseAnalytics.Param.VALUE, emptyDouble(bruteForceCastToString(actionField.remove(PurchaseKey.KEY_REVENUE)))); // Revenue
+            bundle.putDouble(FirebaseAnalytics.Param.TAX, emptyDouble(bruteForceCastToString(actionField.remove(PurchaseKey.KEY_TAX))));
+            bundle.putDouble(FirebaseAnalytics.Param.SHIPPING, emptyDouble(bruteForceCastToString(actionField.remove(PurchaseKey.KEY_SHIPPING))));
+            bundle.putString(FirebaseAnalytics.Param.COUPON, bruteForceCastToString(actionField.remove(PurchaseKey.KEY_COUPON)));
         }
-
 
         // get products
         promotionObj = purchase.get("products");
@@ -403,7 +425,7 @@ public class GTMAnalytics extends ContextAnalytics {
             Map<String, Object> actionField = (Map<String, Object>) checkout.remove("actionField");
 
             String step = bruteForceCastToString(actionField.get("step"));
-            String option = (String) actionField.get("option");
+            String option = bruteForceCastToString(actionField.get("option"));
 
             bundle.putString(FirebaseAnalytics.Param.CHECKOUT_STEP, step);
             bundle.putString(FirebaseAnalytics.Param.CHECKOUT_OPTION, option);
@@ -446,7 +468,7 @@ public class GTMAnalytics extends ContextAnalytics {
         String id = bruteForceCastToString(value.remove(CheckoutKey.KEY_ID));
         String name = (String) value.remove(CheckoutKey.KEY_NAME);
         String brand = (String) value.remove(CheckoutKey.KEY_BRAND);
-        String category = (String) value.remove(CheckoutKey.KEY_CAT);
+        String category = bruteForceCastToString(value.remove(CheckoutKey.KEY_CAT));
         String variant = (String) value.remove(CheckoutKey.KEY_VARIANT);
         String priceString = bruteForceCastToString(value.remove(CheckoutKey.KEY_PRICE));
         double price = TextUtils.isEmpty(priceString) ? 0.0 :
@@ -489,9 +511,20 @@ public class GTMAnalytics extends ContextAnalytics {
         private static final String KEY_CAT = "category";
         private static final String KEY_VARIANT = "variant";
         private static final String KEY_POSITION = "quantity";
+        private static final String KEY_LIST = "list";
     }
 
-    private Bundle viewProductMap(Map<String, Object> value, int index) {
+    private static class ViewProductResult{
+        public Bundle first;
+        public String list;
+
+        public ViewProductResult(Bundle first, String list){
+            this.first = first;
+            this.list = list;
+        }
+    }
+
+    private ViewProductResult viewProductMap(Map<String, Object> value, int index) {
         String id = bruteForceCastToString(value.remove(ProductKey.KEY_ID));
         String name = (String) value.remove(ProductKey.KEY_NAME);
         String price = bruteForceCastToString(value.remove(ProductKey.KEY_PRICE));
@@ -499,6 +532,7 @@ public class GTMAnalytics extends ContextAnalytics {
         String category = bruteForceCastToString(value.remove(ProductKey.KEY_CAT));
         String variant = (String) value.remove(ProductKey.KEY_VARIANT);
         String position = bruteForceCastToString(value.remove(ProductKey.KEY_POSITION));
+        String list = bruteForceCastToString(value.remove(ProductKey.KEY_LIST));
 
         Bundle product1 = new Bundle();
         product1.putString(FirebaseAnalytics.Param.ITEM_ID, id);                    // dimension69 (Product_ID), mandatory
@@ -520,8 +554,20 @@ public class GTMAnalytics extends ContextAnalytics {
         for (Map.Entry<String, Object> entry : value.entrySet()) {
             product1.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
         }
-        return product1;
+        return new ViewProductResult(product1, list);
 
+    }
+
+    private String emptyString(Object string){
+        if(string instanceof String){
+            return emptyString(string);
+        }else{
+            return bruteForceCastToString(string);
+        }
+    }
+
+    private String emptyString(String string){
+        return !TextUtils.isEmpty(string) ? string : "";
     }
 
     private Bundle atcMap(Map<String, Object> value) {
@@ -675,12 +721,24 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public String getClientIDString() {
         try {
-            Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
-            return GoogleAnalytics.getInstance(getContext()).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
+            if(TextUtils.isEmpty(clientIdString)) {
+                Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
+                clientIdString = GoogleAnalytics.getInstance(getContext()).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
+            }
+            return clientIdString;
         } catch (Exception e) {
             e.printStackTrace();
+            return "NO_GA_ID";
+        }
+    }
+
+    @Override
+    public String getCachedClientIDString() {
+        if(clientIdString == null) {
             return "";
         }
+
+        return clientIdString;
     }
 
     @Override
@@ -693,21 +751,25 @@ public class GTMAnalytics extends ContextAnalytics {
                     bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
 
             pResult.setResultCallback(cHolder -> {
-                cHolder.setContainerAvailableListener((containerHolder, s) -> {
-                    if (!containerHolder.getStatus().isSuccess()) {
-                        Log.d("GTM TKPD", "Container Available Failed");
-                        return;
-                    }
-
-                    Log.d("GTM TKPD", "Container Available");
-
-                    if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, true)) {
-                        if (isAllowRefreshDefault(containerHolder)) {
-                            Log.d("GTM TKPD", "Refreshed Container ");
-                            refreshContainerInBackground(containerHolder);
+                try {
+                    cHolder.setContainerAvailableListener((containerHolder, s) -> {
+                        if (!containerHolder.getStatus().isSuccess()) {
+                            Log.d("GTM TKPD", "Container Available Failed");
+                            return;
                         }
-                    }
-                });
+
+                        Log.d("GTM TKPD", "Container Available");
+
+                        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, true)) {
+                            if (isAllowRefreshDefault(containerHolder)) {
+                                Log.d("GTM TKPD", "Refreshed Container ");
+                                refreshContainerInBackground(containerHolder);
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    eventError(getContext().getClass().toString(), e.toString());
+                }
             }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
             eventError(getContext().getClass().toString(), e.toString());
@@ -1002,6 +1064,10 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent("campaignTrack", bundle, context);
     }
 
+    public static String GENERAL_EVENT_KEYS[] = new String[]{
+            KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT
+    };
+
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
         pushGeneral(params);
 
@@ -1012,6 +1078,11 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
         bundle.putString(KEY_ACTION, params.get(KEY_ACTION) + "");
         bundle.putString(KEY_LABEL, params.get(KEY_LABEL) + "");
+
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            if (!Arrays.asList(GENERAL_EVENT_KEYS).contains(entry.getKey()))
+                bundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
+        }
 
         logEvent(params.get(KEY_EVENT) + "", bundle, context);
     }
@@ -1037,7 +1108,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void pushGeneral(Map<String, Object> values) {
-        Map<String, Object> data = new HashMap<>(values);
+        Map<String, Object> data = clone(values);
         Observable.just(data)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())

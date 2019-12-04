@@ -10,19 +10,34 @@
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_48">
+        android:layout_marginTop="@dimen/dp_6">
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/user_identification_final_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:closeButtonVisibility="gone"
+            app:descriptionText="@string/user_identification_final_retake_ktp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tickerShapeType="loose"
+            app:tickerType="error"
+            app:titleText="@string/user_identification_final_ktp_not_valid" />
 
         <ImageView
             android:id="@+id/image_ktp"
             android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_120"
-            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_24"
             android:layout_marginRight="@dimen/dp_16"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toTopOf="@+id/change_ktp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/image_face"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/user_identification_final_ticker"
+            android:layout_marginEnd="@dimen/dp_16" />
 
         <TextView
             android:id="@+id/change_ktp"
@@ -84,23 +99,32 @@
             app:layout_constraintTop_toBottomOf="@+id/change_ktp"
             tools:text="Sebelum klik “Unggah”, pastikan foto yang Anda ambil sudah benar dan terlihat jelas.
 Dengan mengunggah, saya menyatakan bahwa data yang saya berikan adalah benar dan telah menyetujui Syarat &amp; Ketentuan." />
+
+        <ImageView
+            android:id="@+id/user_identification_final_x_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_110"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/image_ktp"
+            app:layout_constraintStart_toStartOf="@+id/image_ktp"
+            app:layout_constraintTop_toTopOf="@+id/image_ktp"
+            app:srcCompat="@drawable/x_icon" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/upload_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_64"
-        android:background="@drawable/green_button_rounded"
         android:gravity="center"
         android:text="@string/upload_button"
-        android:textColor="@color/white"
-        android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

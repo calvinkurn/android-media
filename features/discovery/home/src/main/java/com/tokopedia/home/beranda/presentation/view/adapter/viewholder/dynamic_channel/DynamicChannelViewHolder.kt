@@ -78,7 +78,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
                         channel,
                         listener,
                         adapterPosition,
-                        getLayoutType(channel)))
+                        getLayoutType(channel),
+                        element.isCache))
             }
 
             /**
@@ -99,8 +100,10 @@ abstract class DynamicChannelViewHolder(itemView: View,
             /**
              * Requirement:
              * Only show `see all` button when it is exist
+             * Don't show `see all` button on dynamic channel mix carousel
              */
-            if (isHasSeeMoreApplink(channel)) {
+            if (isHasSeeMoreApplink(channel) &&
+                    getLayoutType(element.channel) != TYPE_BANNER_CAROUSEL) {
                 seeAllButton.visibility = View.VISIBLE
                 seeAllButton.setOnClickListener {
                     listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
@@ -165,9 +168,10 @@ abstract class DynamicChannelViewHolder(itemView: View,
     class OnItemImpressedListener(val channel: DynamicHomeChannel.Channels,
                                   val listener: HomeCategoryListener,
                                   val position: Int,
-                                  private val layoutType: Int) : ViewHintListener {
+                                  private val layoutType: Int,
+                                  val isCache: Boolean) : ViewHintListener {
         override fun onViewHint() {
-            sendIrisTracker(layoutType)
+            if (!isCache) sendIrisTracker(layoutType)
         }
 
         private fun sendIrisTracker(layoutType: Int) {

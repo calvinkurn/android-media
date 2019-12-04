@@ -1,14 +1,10 @@
 package com.tokopedia.digital_deals.view.activity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import android.view.View;
-
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.digital_deals.R;
@@ -40,30 +36,27 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
     }
 
     @Override
-    protected int getParentViewResourceID(){
+    protected int getParentViewResourceID() {
         return com.tokopedia.digital_deals.R.id.deals_home_parent_view;
     }
 
     @Override
     protected Fragment getNewFragment() {
         toolbar.setVisibility(View.GONE);
-        if (getIntent().getExtras() != null) {
-            return DealDetailsFragment.createInstance(getIntent().getExtras());
-        } else {
-            Uri uri = getIntent().getData();
-            Bundle extras = getIntent().getExtras();
-            if (uri != null) {
-                List<String> params = UriUtil.destructureUri(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri, true);
-                slug = params.get(0);
-                if (extras == null) {
-                    extras = new Bundle();
-                    extras.putString(DealDetailsPresenter.HOME_DATA, slug);
-                }
+        Uri uri = getIntent().getData();
+        Bundle extras = getIntent().getExtras();
+        if (uri != null) {
+            List<String> params = UriUtil.destructureUri(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri, true);
+            slug = params.get(0);
+            if (extras == null) {
+                extras = new Bundle();
+                extras.putString(DealDetailsPresenter.HOME_DATA, slug);
+            } else {
+                extras.putString(DealDetailsPresenter.HOME_DATA, slug);
             }
-            return DealDetailsFragment.createInstance(extras);
         }
-    }
-
+        return DealDetailsFragment.createInstance(extras);
+}
 
 
     @Override

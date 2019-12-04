@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
+import com.tokopedia.unifycomponents.ChipsUnify;
 
 /**
  * Created by stevenfredian on 11/29/17.
@@ -19,39 +20,19 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
     public static final int LAYOUT = com.tokopedia.topchat.R.layout.item_template_chat_layout;
 
     ChatTemplateListener viewListener;
-    TextView textHolder;
-    ImageView icon;
+    ChipsUnify textHolder;
 
     public TemplateChatViewHolder(View itemView, ChatTemplateListener viewListener) {
         super(itemView);
-        textHolder = itemView.findViewById(com.tokopedia.design.R.id.text);
-        icon = itemView.findViewById(com.tokopedia.topchat.R.id.setting);
+        textHolder = itemView.findViewById(R.id.chipsText);
         this.viewListener = viewListener;
     }
 
     @Override
     public void bind(final TemplateChatModel element) {
-        if (element.isIcon()) {
-            icon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    viewListener.goToSettingTemplate();
-                }
-            });
-            textHolder.setVisibility(View.GONE);
-            icon.setVisibility(View.VISIBLE);
-        } else {
-            textHolder.setText(element.getMessage());
-
-            textHolder.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    viewListener.addTemplateString(element.getMessage());
-                }
-            });
-
-            textHolder.setVisibility(View.VISIBLE);
-            icon.setVisibility(View.GONE);
-        }
+        textHolder.setChipText(element.getMessage());
+        textHolder.setOnClickListener(view ->
+                viewListener.addTemplateString(element.getMessage())
+        );
     }
 }

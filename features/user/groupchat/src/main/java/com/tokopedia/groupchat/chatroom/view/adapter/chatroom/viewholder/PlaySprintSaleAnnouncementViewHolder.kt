@@ -54,7 +54,7 @@ class PlaySprintSaleAnnouncementViewHolder(itemView: View, var listener: Chatroo
         }
 
         var item = element.listProducts[0]
-        ImageHandler.loadImage(contentImage.context, contentImage, item.productImage, R.drawable.ic_loading_toped_new)
+        ImageHandler.loadImage(contentImage.context, contentImage, item.productImage, com.tokopedia.design.R.drawable.ic_loading_toped_new)
         price.text = item.productPrice
         priceBefore.text = item.productPriceBeforeDiscount
         priceBefore.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG

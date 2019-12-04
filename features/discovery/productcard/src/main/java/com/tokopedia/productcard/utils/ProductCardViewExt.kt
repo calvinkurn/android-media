@@ -7,26 +7,26 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
-val View.isVisible: Boolean
+internal val View.isVisible: Boolean
     get() = visibility == View.VISIBLE
 
-val View?.isNotNullAndVisible
+internal val View?.isNotNullAndVisible
     get() = this != null && this.isVisible
 
-val View?.isNullOrNotVisible
+internal val View?.isNullOrNotVisible
     get() = this == null || !this.isVisible
 
-fun View.doIfVisible(action: (View) -> Unit) {
+internal fun View.doIfVisible(action: (View) -> Unit) {
     if(this.isVisible) {
         action(this)
     }
 }
 
-fun View.getDimensionPixelSize(@DimenRes id: Int): Int {
+internal fun View.getDimensionPixelSize(@DimenRes id: Int): Int {
     return this.context.resources.getDimensionPixelSize(id)
 }
 
-fun ConstraintLayout?.applyConstraintSet(configureConstraintSet: (ConstraintSet) -> Unit) {
+internal fun ConstraintLayout?.applyConstraintSet(configureConstraintSet: (ConstraintSet) -> Unit) {
     this?.let {
         val constraintSet = ConstraintSet()
 
@@ -36,13 +36,13 @@ fun ConstraintLayout?.applyConstraintSet(configureConstraintSet: (ConstraintSet)
     }
 }
 
-fun TextView?.setTextWithBlankSpaceConfig(textValue: String, blankSpaceConfigValue: Boolean) {
+internal fun TextView?.setTextWithBlankSpaceConfig(textValue: String, blankSpaceConfigValue: Boolean) {
     this?.configureVisibilityWithBlankSpaceConfig(textValue.isNotEmpty(), blankSpaceConfigValue) {
         it.text = MethodChecker.fromHtml(textValue)
     }
 }
 
-fun <T: View> T?.configureVisibilityWithBlankSpaceConfig(isVisible: Boolean, blankSpaceConfigValue: Boolean, action: (T) -> Unit) {
+internal fun <T: View> T?.configureVisibilityWithBlankSpaceConfig(isVisible: Boolean, blankSpaceConfigValue: Boolean, action: (T) -> Unit) {
     if (this == null) return
 
     visibility = if (isVisible) {
@@ -62,7 +62,7 @@ private fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean
     }
 }
 
-fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) {
+internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) {
     if (this == null) return
 
     if (shouldShow) {
@@ -71,4 +71,8 @@ fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) 
     } else {
         this.visibility = View.GONE
     }
+}
+
+internal operator fun Boolean.divAssign(toCompare: Boolean) {
+    this || toCompare
 }

@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.otp">
+  package="com.tokopedia.otp">
+
 
     <application
         android:allowBackup="true"
@@ -24,10 +25,30 @@
 
         </activity>
 
+        <activity
+            android:name=".validator.view.activity.ValidatorActivity"
+            android:label="@string/title_activity_activation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.White">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_otp_validator"/>
+            </intent-filter>
+
+        </activity>
+
         <receiver android:name=".common.util.SmsBroadcastReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED"/>
             </intent-filter>
         </receiver>
+
     </application>
 </manifest>

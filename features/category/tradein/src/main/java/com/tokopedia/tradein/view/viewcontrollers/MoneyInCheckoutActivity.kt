@@ -49,6 +49,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     private lateinit var destination: String
     private var isCourierSet: Boolean = false
     private var isTimeSet: Boolean = false
+    private var moneyInStringCancelled: String = ""
+    private var moneyInStringCancelledOrFailed: String = ""
 
     companion object {
         const val MONEY_IN_DEFAULT_ADDRESS = "MONEY_IN_DEFAULT_ADDRESS"
@@ -60,6 +62,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     }
 
     override fun initView() {
+        moneyInStringCancelled = getString(R.string.money_in_alert_payment_canceled)
+        moneyInStringCancelledOrFailed = getString(R.string.money_in_alert_payment_canceled_or_failed)
         sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_MONEYIN,
                 TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
                 TradeInGTMConstants.ACTION_VIEW_CHECKOUT_PAGE,
@@ -94,7 +98,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             }
 
             override fun updateDrawState(ds: TextPaint) {
-                ds.color = MethodChecker.getColor(this@MoneyInCheckoutActivity, R.color.g_500)
+                ds.color = MethodChecker.getColor(this@MoneyInCheckoutActivity, com.tokopedia.design.R.color.g_500)
                 ds.isUnderlineText = false
                 ds.typeface = Typeface.DEFAULT_BOLD
             }
@@ -133,13 +137,13 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                         setCourierRatesBottomSheet(it.data)
                     else {
                         val courierBtn = findViewById<Button>(R.id.courier_btn)
-                        showMessageWithAction(it.data.error?.message, getString(R.string.title_ok)) {}
+                        showMessageWithAction(it.data.error?.message, getString(com.tokopedia.abstraction.R.string.title_ok)) {}
                         courierBtn.setOnClickListener { v ->
                             sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
                                     TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
                                     TradeInGTMConstants.ACTION_CLICK_PILIH_KURIR,
                                     "")
-                            showMessageWithAction(it.data.error?.message, getString(R.string.title_ok)) {}
+                            showMessageWithAction(it.data.error?.message, getString(com.tokopedia.abstraction.R.string.title_ok)) {}
                         }
                     }
                 }
@@ -149,7 +153,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             when (it) {
                 is Success -> {
                     sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
-                            TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                            TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION_DROP,
                             TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
                             TradeInGTMConstants.SUCCESS)
                     val paymentPassData = PaymentPassData()
@@ -168,12 +172,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         moneyInCheckoutViewModel.getErrorLiveData().observe(this, Observer {
             when (it) {
                 is ScheduleTimeError -> {
-                    showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
+                    showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
                         moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
                     }
                 }
                 is CourierPriceError -> {
-                    showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
+                    showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
                         moneyInCheckoutViewModel.getCourierRates(getMeGQlString(R.raw.gql_courier_rates), destination)
                     }
                 }
@@ -182,7 +186,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                             TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
                             TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
                             TradeInGTMConstants.FAILURE)
-                    showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
+                    showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
                         moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
                     }
                 }
@@ -221,13 +225,13 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         courierLabel.text = getString(R.string.choose_courier)
         courierPrice.hide()
         courierButton.text = getString(R.string.choose)
-        MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, R.drawable.bg_green_rounded_tradein))
-        courierButton.setTextColor(MethodChecker.getColor(this, R.color.white))
+        MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, com.tokopedia.design.R.drawable.bg_green_rounded_tradein))
+        courierButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.white))
         retrieverTimeLabel.text = getString(R.string.retrieval_time)
         retrieverTime.hide()
         retrieverTimeButton.text = getString(R.string.choose)
-        MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, R.drawable.bg_green_rounded_tradein))
-        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, R.color.white))
+        MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, com.tokopedia.design.R.drawable.bg_green_rounded_tradein))
+        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.white))
         isCourierSet = false
         isTimeSet = false
     }
@@ -241,7 +245,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         courierPrice.text = price
         MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, R.drawable.rect_white_rounded_stroke_gray_trade_in))
         courierButton.text = getString(R.string.change_courier)
-        courierButton.setTextColor(MethodChecker.getColor(this, R.color.unify_N700_44))
+        courierButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.unify_N700_44))
         isCourierSet = true
     }
 
@@ -271,7 +275,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         retrieverTime.text = scheduleTime.timeFmt
         MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, R.drawable.rect_white_rounded_stroke_gray_trade_in))
         retrieverTimeButton.text = getString(R.string.change_time)
-        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, R.color.unify_N700_44))
+        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.unify_N700_44))
         isTimeSet = true
         sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
                 TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
@@ -307,8 +311,16 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             if (isTimeSet && isCourierSet) {
                 moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
             } else if (!isCourierSet) {
+                sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
+                        TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                        TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
+                        TradeInGTMConstants.SUCCESS)
                 showMessage(getString(R.string.select_shipping))
             } else if (!isTimeSet) {
+                sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
+                        TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                        TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
+                        TradeInGTMConstants.SUCCESS)
                 showMessage(getString(R.string.select_fetch_time))
             }
         }
@@ -370,10 +382,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                 finish()
             }
             PaymentConstant.PAYMENT_FAILED -> {
-                showMessage(getString(R.string.money_in_alert_payment_canceled_or_failed))
+                showMessage(moneyInStringCancelledOrFailed)
             }
             PaymentConstant.PAYMENT_CANCELLED -> {
-                showMessage(getString(R.string.money_in_alert_payment_canceled))
+                showMessage(moneyInStringCancelled)
             }
             else -> {
 
@@ -418,5 +430,9 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_money_in_checkout
+    }
+
+    override fun getRootViewId(): Int {
+        return R.id.root_view
     }
 }

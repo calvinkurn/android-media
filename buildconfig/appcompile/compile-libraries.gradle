@@ -1,4 +1,5 @@
 // Sort alphabetically by name
+include "libraries:adapter_delegate"
 include "libraries:analytics"
 include "libraries:applink"
 include "libraries:banner_dynamic"
@@ -43,6 +44,7 @@ include 'libraries:cpm'
 include "libraries:linker"
 include "libraries:webview"
 include "libraries:collapsing_tab_layout"
+include "libraries:promotions_target"
 
 include "libraries:videouploader"
 include "libraries:translator"

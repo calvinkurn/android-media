@@ -23,7 +23,7 @@ public class TemplateChatActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar.setTitle(getString(com.tokopedia.core2.R.string.drawer_title_setting));
+        toolbar.setTitle(getString(com.tokopedia.core2.R.string.title_template_chat));
     }
 
     @Override

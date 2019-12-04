@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user_identification_common.subscriber.GetKtpStatusSubscriber;
 import com.tokopedia.user_identification_common.view.viewmodel.ImageUploadModel;
 import com.tokopedia.user_identification_common.view.viewmodel.UserIdentificationStepperModel;
 
@@ -24,6 +25,8 @@ public interface UserIdentificationUploadImage  {
 
         void onErrorUpload(String error);
 
+        GetKtpStatusSubscriber.GetKtpStatusListener getKtpStatusListener();
+
         void showLoading();
 
         void hideLoading();
@@ -31,6 +34,8 @@ public interface UserIdentificationUploadImage  {
 
     interface Presenter extends CustomerPresenter<View> {
         void uploadImage(UserIdentificationStepperModel model, int projectid);
+        void checkKtp(String image);
+
         Observable<ImageUploadModel> uploadImageUseCase(ImageUploadModel imageUploadModel);
         Observable<ImageUploadModel> uploadIdentificationUseCase(List<ImageUploadModel> imageUploadModels, int projectId);
         Observable<Boolean> registerIdentificationUseCase(int projectId);

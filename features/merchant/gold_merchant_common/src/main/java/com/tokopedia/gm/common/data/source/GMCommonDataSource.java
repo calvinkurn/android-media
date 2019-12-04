@@ -28,15 +28,6 @@ public class GMCommonDataSource {
         this.gmCommonCloudDataSource = gmCommonCloudDataSource;
     }
 
-    public Observable<List<GMFeaturedProduct>> getFeaturedProductList(String shopId) {
-        return gmCommonCloudDataSource.getFeaturedProductList(shopId).flatMap(new Func1<Response<DataResponse<List<GMFeaturedProduct>>>, Observable<List<GMFeaturedProduct>>>() {
-            @Override
-            public Observable<List<GMFeaturedProduct>> call(Response<DataResponse<List<GMFeaturedProduct>>> dataResponseResponse) {
-                return Observable.just(dataResponseResponse.body().getData());
-            }
-        });
-    }
-
     public Observable<Boolean> setCashback(String productId, int cashback) {
         return gmCommonCloudDataSource.setCashback(new RequestCashbackModel(Long.parseLong(productId), cashback))
                 .map(new DataResponseMapper<String>())
@@ -48,23 +39,4 @@ public class GMCommonDataSource {
                 });
     }
 
-    public Observable<List<GMGetCashbackModel>> getCashbackList(List<String> productIdList, String shopId) {
-        List<Long> productIdsLong = new ArrayList<>();
-        for(String productId : productIdList){
-            productIdsLong.add(Long.parseLong(productId));
-        }
-        RequestGetCashbackModel.DataRequestGetCashback dataRequestGetCashback = new RequestGetCashbackModel.DataRequestGetCashback(productIdsLong, Long.parseLong(shopId));
-        List<RequestGetCashbackModel.DataRequestGetCashback> requestGetCashbackModelList = new ArrayList<>();
-        requestGetCashbackModelList.add(dataRequestGetCashback);
-        RequestGetCashbackModel requestGetCashbackModel = new RequestGetCashbackModel(requestGetCashbackModelList);
-        return gmCommonCloudDataSource.getCashbackList(requestGetCashbackModel)
-                .map(new DataResponseMapper<>())
-                .map(dataCashbackModels -> {
-                    if(dataCashbackModels == null){
-                        return new ArrayList<>();
-                    }else{
-                        return dataCashbackModels;
-                    }
-                });
-    }
 }

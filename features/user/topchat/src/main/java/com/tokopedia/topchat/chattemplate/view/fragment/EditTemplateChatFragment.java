@@ -196,10 +196,23 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                analytics.trackSaveTemplateChat();
+                int mode = getMode();
+                switch (mode) {
+                    case TemplateChatFragment.CREATE:
+                        analytics.trackCreateSaveTemplateChat();
+                        break;
+                    case TemplateChatFragment.EDIT:
+                        analytics.trackEditSaveTemplateChat();
+                        break;
+                }
                 presenter.submitText(editText.getText().toString(), message, list);
             }
         });
+    }
+
+    private int getMode() {
+        if (getArguments() == null) return -2;
+        return getArguments().getInt(InboxMessageConstant.PARAM_MODE, -2);
     }
 
     private void showErrorAndProceed(Integer integer, TextView proceed) {

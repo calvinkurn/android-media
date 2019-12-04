@@ -53,12 +53,13 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.DeeplinkDFMapper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
+import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -77,6 +78,7 @@ import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -97,7 +99,7 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
  */
 public class MainParentActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
-        MainParentView, ShowCaseListener, CartNotifyListener, RefreshNotificationListener {
+        MainParentView, ShowCaseListener, CartNotifyListener, RefreshNotificationListener, MainParentStatusBarListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -240,10 +242,12 @@ public class MainParentActivity extends BaseActivity implements
             }
         }
 
-        Intent intent = RouteManager.getIntent(this,
-                ApplinkConstInternalMarketplace.ONBOARDING);
-        startActivity(intent);
-        finish();
+        if (DFInstaller.isInstalled(this.getApplication(), DeeplinkDFMapper.DFM_ONBOARDING)) {
+            Intent intent = RouteManager.getIntent(this,
+                    ApplinkConstInternalMarketplace.ONBOARDING);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void setDefaultShakeEnable() {
@@ -405,8 +409,6 @@ public class MainParentActivity extends BaseActivity implements
             setOsIconProgress(OS_STATE_UNSELECTED);
         }
 
-        hideStatusBar();
-
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
@@ -425,7 +427,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void hideStatusBar() {
+    private void setupStatusBar() {
         //apply inset to allow recyclerview scrolling behind status bar
         fragmentContainer.setFitsSystemWindows(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
@@ -455,6 +457,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void selectFragment(Fragment fragment) {
+        configureStatusBarBasedOnFragment(fragment);
         openFragment(fragment);
         setBadgeNotifCounter(fragment);
     }
@@ -483,10 +486,33 @@ public class MainParentActivity extends BaseActivity implements
         });
     }
 
+    private void configureStatusBarBasedOnFragment(Fragment fragment) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setupStatusBarInMarshmallowAbove(fragment);
+        } else {
+            setupStatusBar();
+        }
+    }
+
     private void scrollToTop(Fragment fragment) {
         if (fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
         }
+    }
+
+    private void setupStatusBarInMarshmallowAbove(Fragment fragment) {
+        if (getIsFragmentLightStatusBar(fragment)) {
+            requestStatusBarLight();
+        } else {
+            requestStatusBarDark();
+        }
+    }
+
+    private boolean getIsFragmentLightStatusBar(Fragment fragment) {
+        if (fragment instanceof FragmentListener) {
+            return ((FragmentListener) fragment).isLightThemeStatusBar();
+        }
+        return false;
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -993,4 +1019,27 @@ public class MainParentActivity extends BaseActivity implements
         }
         lottieOsDrawable.setProgress(progress);
     }
+
+    @Override
+    public void requestStatusBarDark() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            this.getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+            this.getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    @Override
+    public void requestStatusBarLight() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            this.getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+            this.getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
 }

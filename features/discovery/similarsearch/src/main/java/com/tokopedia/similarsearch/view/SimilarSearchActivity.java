@@ -5,6 +5,8 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -12,9 +14,12 @@ import android.view.animation.AnimationUtils;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.similarsearch.R;
 
 import java.util.List;
+
+import static com.tokopedia.discovery.common.constants.SearchConstant.SimilarSearch.QUERY;
 
 public class SimilarSearchActivity extends BaseSimpleActivity implements SimilarSearchFragment.OnAnimationCompletelistner{
 
@@ -38,11 +43,13 @@ public class SimilarSearchActivity extends BaseSimpleActivity implements Similar
     @Override
     protected Fragment getNewFragment() {
         Uri uri = getIntent().getData();
-        if (uri != null) {
+        String query = getIntent().getStringExtra(QUERY);
+
+        if (uri != null && !TextUtils.isEmpty(query)) {
             List<String> paths = UriUtil.destructureUri(ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, uri);
             if (!paths.isEmpty()) {
                 String productId = paths.get(0);
-                return SimilarSearchFragment.newInstance(productId);
+                return SimilarSearchFragment.newInstance(productId, query);
             }
         }
         return null;

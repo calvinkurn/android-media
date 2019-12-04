@@ -61,7 +61,7 @@ public class ValidateMerchantPinPresenter extends BaseDaggerPresenter<ValidateMe
                 CouponSwipeUpdateOuter data = response.getData(CouponSwipeUpdateOuter.class);
                 if (data != null && data.getSwipeCoupon() != null) {
                     if (data.getSwipeCoupon().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
-                        getView().onSuccess();
+                        getView().onSuccess(data.getSwipeCoupon());
                     } else {
                         if (data.getSwipeCoupon().getResultStatus().getMessages().size() > 0) {
                             getView().onError(data.getSwipeCoupon().getResultStatus().getMessages().get(0));

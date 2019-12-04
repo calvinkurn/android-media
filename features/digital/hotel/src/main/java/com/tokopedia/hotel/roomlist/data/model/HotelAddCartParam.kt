@@ -30,7 +30,9 @@ data class HotelAddCartParam(
 
         @SerializedName("adult")
         @Expose
-        val adult: Int = 0
+        val adult: Int = 0,
+        val destinationType: String = "",
+        val destinationName: String = ""
 ) {
     data class Room(
             @SerializedName("roomID")

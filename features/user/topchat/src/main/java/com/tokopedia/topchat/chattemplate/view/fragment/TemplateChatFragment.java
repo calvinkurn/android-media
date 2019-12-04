@@ -74,7 +74,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     private Snackbar snackbarInfo;
     private BottomSheetView bottomSheetView;
-    private Boolean isSeller;
+    private Boolean isSeller = false;
 
     public static TemplateChatFragment createInstance(Bundle extras) {
         TemplateChatFragment fragment = new TemplateChatFragment();
