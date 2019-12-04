@@ -43,9 +43,9 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
             if (item.dataObject.deadlineText.isNotEmpty()) {
                 itemView.header_deadline_label?.visibility = View.VISIBLE
                 if (item.dataObject.statusId == 600 || item.dataObject.statusId == 699) {
-                    itemView.header_deadline_label?.text = itemView.context.getString(R.string.deadline_done)
+                    itemView.header_deadline_label?.text = itemView.context.getString(R.string.som_deadline_done)
                 } else {
-                    itemView.header_deadline_label?.text = itemView.context.getString(R.string.deadline)
+                    itemView.header_deadline_label?.text = itemView.context.getString(R.string.som_deadline)
                 }
 
                 itemView.label_due_response_day_count?.text = item.dataObject.deadlineText
@@ -98,7 +98,11 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     tickerShape = Ticker.SHAPE_FULL
                     tickerType = Ticker.TYPE_ERROR
                     closeButtonVisibility = View.GONE
-                    measureAllChildren = true
+                    post {
+                        measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        requestLayout()
+                    }
                     if (item.dataObject.awbUploadUrl.isNotEmpty()) {
                         setOnClickListener { actionListener.onInvalidResiUpload(item.dataObject.awbUploadUrl) }
                     }
