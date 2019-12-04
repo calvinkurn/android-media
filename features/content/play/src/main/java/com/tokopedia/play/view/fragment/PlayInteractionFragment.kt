@@ -8,10 +8,14 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.like.LikeComponent
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
@@ -21,8 +25,10 @@ import com.tokopedia.play.ui.sendchat.SendChatComponent
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import com.tokopedia.play.ui.stats.StatsComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -42,13 +48,24 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var playInteractionViewModel: PlayInteractionViewModel
+
     override fun getScreenName(): String = "Play Interaction"
 
     override fun initInjector() {
-
+        DaggerPlayComponent.builder()
+                .baseAppComponent(
+                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                )
+                .build()
+                .inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        playInteractionViewModel = ViewModelProvider(this, viewModelFactory).get(PlayInteractionViewModel::class.java)
         return inflater.inflate(R.layout.fragment_play_interaction, container, false)
     }
 
@@ -57,9 +74,30 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
 
         initComponents(view as ViewGroup)
         setPinnedMessage("Yoenik Apparel", "Visit my collections here!")
+        playInteractionViewModel.startObservingChatList()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        playInteractionViewModel.observableChatList.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.Chat(it)
+                        )
+            }
+        })
     }
 
     override fun onDestroy() {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.Destroy
+                    )
+        }
         super.onDestroy()
         job.cancel()
     }
@@ -133,7 +171,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun initChatListComponent(container: ViewGroup): UIComponent<Unit> {
-        return ChatListComponent(container)
+        return ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
     }
 
     private fun layoutView(
