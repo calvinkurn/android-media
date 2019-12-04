@@ -71,7 +71,7 @@ class UmrahPdpDetailAdapter : RecyclerView.Adapter<UmrahPdpDetailAdapter.UmrahPd
         val spannablePrice = SpannableString(resources.getString(R.string.umrah_pdp_detail_choose_room_desc, slashedPrice, price))
         val slashedPriceLength = slashedPrice.length
         val priceLength = price.length
-        val colorPrice = ForegroundColorSpan(ContextCompat.getColor(context, R.color.Yellow_Y500))
+        val colorPrice = ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y500))
         val stylePrice = StyleSpan(Typeface.BOLD)
         spannablePrice.setSpan(StrikethroughSpan(), 0, slashedPriceLength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         spannablePrice.setSpan(colorPrice, slashedPriceLength + 1, slashedPriceLength + 1 + priceLength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)

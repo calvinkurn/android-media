@@ -53,7 +53,7 @@ class UmrahCheckoutInstallmentAdapter (context: Context, val umrahInstallmentLis
 
                 val spannable = SpannableString(installmentTitle)
 
-                spannable.setSpan(ForegroundColorSpan(resources.getColor(R.color.orange_500)), data.title.length+3,
+                spannable.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.design.R.color.orange_500)), data.title.length+3,
                         (data.title.length+data.price.toString().length)+7 , Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 tv_umrah_checkout_bottom_sheet_payment_option.setText(spannable, TextView.BufferType.SPANNABLE)
