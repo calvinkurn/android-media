@@ -318,7 +318,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun playAnimation() {
-        if (shouldPlayAnimation && ::imgAnimationView.isInitialized && context != null) {
+        if (shouldPlayAnimation && ::imgAnimationView.isInitialized) {
             generateAnimationByIndex(animatedReviewPicker.getReviewClickAt())
             shouldPlayAnimation = false
         }
