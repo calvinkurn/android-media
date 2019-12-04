@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.*
+import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -17,6 +18,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -636,16 +638,23 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     override fun onFailedChangeFeaturedProduct(errorMessage: String?) {
         //Default error message
         var error = errorMessage ?: getString(R.string.product_manage_failed_set_featured_product)
-        //If no connection or endpoint error
-        if (error.contains("Unable to resolve host")) {
-            error = getString(R.string.product_manage_failed_no_internet)
-        }
-        //If timeout
-        else if (error.contains("timeout")) {
-            error = getString(R.string.product_manage_failed_set_featured_product)
+        var toasterError = ""
+        when {
+            //If no connection or endpoint error
+            error.contains("Unable to resolve host") -> {
+                error = getString(R.string.product_manage_failed_no_internet)
+            }
+            //If timeout
+            error.contains("timeout") -> {
+                error = getString(R.string.product_manage_failed_set_featured_product)
+            }
+            //If server error
+            error.contains("Terjadi kendala pada server") -> {
+                error = getString(R.string.product_manage_failed_set_featured_product)
+            }
         }
         hideLoadingProgress()
-        showToasterError(error, "") {}
+        showToasterError(error, toasterError) {}
     }
 
     private fun updateBulkLayout() {
@@ -737,9 +746,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
      * Populate bottom sheet menu items according to shop states
      */
     private fun populateBottomSheetMenu(bottomSheetBuilder: BottomSheetBuilder, productManageViewModel: ProductManageViewModel) {
+        val context: Context = this.context ?: return
+
         bottomSheetBuilder.addItem(R.id.edit_product_menu, R.string.title_edit, R.drawable.ic_menu_edit_product)
         bottomSheetBuilder.addItem(R.id.duplicat_product_menu, R.string.product_manage_title_duplicate_product_menu, R.drawable.ic_menu_duplicate)
-        bottomSheetBuilder.addItem(R.id.delete_product_menu, R.string.label_delete_colored, R.drawable.ic_menu_delete)
+        bottomSheetBuilder.addItem(R.id.delete_product_menu, R.string.label_delete_colored, R.drawable.ic_menu_delete, ContextCompat.getColor(context, R.color.product_manage_menu_delete_color))
         //If shop is power merchant or official store, shop owner can add or remove featured product
         if (productManagePresenter.isPowerMerchant() || isOfficialStore) {
             //If the product is a featured product, show remove option. Show add option when the product is not.
