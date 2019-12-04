@@ -28,6 +28,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/font_normal"
         android:textStyle="bold"
+        android:padding="@dimen/dp_10"
         app:layout_constraintBottom_toTopOf="@+id/kunjungi_toko"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintTop_toTopOf="parent"

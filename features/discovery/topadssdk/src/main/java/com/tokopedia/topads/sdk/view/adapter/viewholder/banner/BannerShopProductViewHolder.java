@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
@@ -29,10 +30,15 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     private ImpressedImageView imageView;
     private TextView descTxt;
     private TextView priceTxt;
+    private TextView reviewCountTxt;
+    private TextView discountTxt;
+    private TextView newLabelTxt;
+    private TextView slashedPrice;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
     private final TopAdsItemImpressionListener impressionListener;
     private Context context;
     private View container;
+    private ImageView rating1, rating2, rating3, rating4, rating5;
 
 
     public BannerShopProductViewHolder(View itemView, TopAdsBannerClickListener topAdsBannerClickListener,
@@ -45,6 +51,15 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         imageView = itemView.findViewById(R.id.icon);
         descTxt = itemView.findViewById(R.id.description);
         priceTxt = itemView.findViewById(R.id.price);
+        rating1 = itemView.findViewById(R.id.imageViewRating1);
+        rating2 = itemView.findViewById(R.id.imageViewRating2);
+        rating3 = itemView.findViewById(R.id.imageViewRating3);
+        rating4 = itemView.findViewById(R.id.imageViewRating4);
+        rating5 = itemView.findViewById(R.id.imageViewRating5);
+        reviewCountTxt = itemView.findViewById(R.id.textViewReviewCount);
+        discountTxt = itemView.findViewById(R.id.discount_txt);
+        newLabelTxt = itemView.findViewById(R.id.label_new);
+        slashedPrice = itemView.findViewById(R.id.slashed_price);
     }
 
     @Override
@@ -61,6 +76,19 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         });
         descTxt.setText(TopAdsBannerView.Companion.escapeHTML(element.getProduct().getName()));
         priceTxt.setText(element.getProduct().getPriceFormat());
+        reviewCountTxt.setText(String.format("(%s)", element.getProduct().getCountReviewFormat()));
+        if(element.getProduct().isProductNewLabel()){
+            newLabelTxt.setVisibility(View.VISIBLE);
+        } else {
+            newLabelTxt.setVisibility(View.GONE);
+        }
+        discountTxt.setText(element.getProduct().getProductCashbackRate());
+        if(element.getProduct().isProductCashback()){
+            discountTxt.setVisibility(View.VISIBLE);
+        } else {
+            discountTxt.setVisibility(View.GONE);
+        }
+        setRating(element.getProduct().getProductRating());
         container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,4 +101,20 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         });
     }
 
+    private void setRating(int productRating) {
+        int rating = Math.round(productRating / 20f);
+        rating1.setImageResource(getRatingDrawable(rating >= 1));
+        rating2.setImageResource(getRatingDrawable(rating >= 2));
+        rating3.setImageResource(getRatingDrawable(rating >= 3));
+        rating4.setImageResource(getRatingDrawable(rating >= 4));
+        rating5.setImageResource(getRatingDrawable(rating >= 5));
+    }
+
+    private int getRatingDrawable(Boolean isActive) {
+        if(isActive){
+            return R.drawable.topads_ic_rating_active;
+        } else {
+            return R.drawable.topads_ic_rating_default;
+        }
+    }
 }
