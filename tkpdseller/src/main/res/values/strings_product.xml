@@ -171,14 +171,5 @@
     <string name="product_variant_max_variant_has_been_reached">Jumlah variant yang ditambahkan sudah mencapai maksimum</string>
     <string name="product_variant_search_x">Cari %1$s</string>
 
-    <string name="product_manage_filter_menu_both_catalog">Dengan &amp; Tanpa Katalog</string>
-    <string name="product_manage_filter_menu_with_catalog">Dengan Katalog</string>
-    <string name="product_manage_filter_menu_without_catalog">Tanpa Katalog</string>
-    <string name="product_manage_filter_menu_both_condition">Semua Kondisi</string>
-    <string name="product_manage_filter_menu_condition_new">Baru</string>
-    <string name="product_manage_filter_menu_condition_old">Bekas</string>
-    <string name="product_manage_filter_menu_picture_both">Dengan &amp; Tanpa Gambar</string>
-    <string name="product_manage_filter_menu_with_picture">Dengan Gambar</string>
-    <string name="product_manage_filter_menu_without_picture">Tanpa Gambar</string>
 
 </resources>
