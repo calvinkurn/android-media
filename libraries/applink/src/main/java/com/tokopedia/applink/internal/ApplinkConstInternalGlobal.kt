@@ -55,8 +55,6 @@ object ApplinkConstInternalGlobal {
     val PARAM_OTP_CODE = "otp_code"
     @JvmField
     val PARAM_IS_SKIP_OTP = "is_skip_otp"
-    @JvmField
-    val PARAM_IS_AFTER_SQ = "is_after_sq"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
