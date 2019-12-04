@@ -27,7 +27,7 @@ class PlayViewModel @Inject constructor(private val getChannelInfoUseCase: GetCh
                                         dispatchers: CoroutineDispatcher) :
         BaseViewModel(dispatchers) {
 
-    val channelInfoResult: LiveData<Result<Channel>>
+    val observeChannel: LiveData<Result<Channel>>
         get() = _channelInfoResult
 
     private val _channelInfoResult by lazy {

@@ -5,13 +5,14 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.play.data.network.ChannelApi
-import com.tokopedia.play.data.network.ChannelMapper
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
 
 /**
@@ -57,13 +58,12 @@ class PlayModule {
 
     @PlayScope
     @Provides
-    fun provideChannelApi(retrofit: Retrofit): ChannelApi {
-        return retrofit.create(ChannelApi::class.java)
-    }
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
 
     @PlayScope
     @Provides
-    fun provideChannelMapper(): ChannelMapper {
-        return ChannelMapper()
+    fun provideChannelApi(retrofit: Retrofit): ChannelApi {
+        return retrofit.create(ChannelApi::class.java)
     }
 }
