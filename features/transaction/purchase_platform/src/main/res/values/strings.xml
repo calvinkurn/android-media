@@ -268,7 +268,7 @@
     <string name="emas_checkout_title">Bulatkan Tagihan dengan Nabung Emas</string>
     <string name="emas_checkout_desc" formatted="false"><![CDATA[%s <b>%s</b>]]></string>
     <string name="message_trade_in_checkout_delivery_info" formatted="false">Kurir akan menelfon %s untuk tukar HP di tujuan pengiriman. Ganti nomor</string>
-    <string name="message_trade_in_checkout_pickup_info">Barang akan dikirim ke titik Drop Off dan dilakukan penukaran dengan HP lama</string>
+    <string name="message_trade_in_checkout_pickup_info">Barang akan dikirim ke titik ambil dan dilakukan penukaran dengan HP lama</string>
     <string name="label_promo">Promo</string>
     <string name="label_total_nilai_promo">Total Nilai Promo</string>
 
