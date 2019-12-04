@@ -44,7 +44,7 @@ class ProductListMapper {
                                 productImpTrackingUrl = dataItem.product?.image?.sUrl ?: "",
                                 productClickTrackingUrl = dataItem.productClickUrl ?: "",
                                 productWishlistTrackingUrl = dataItem.productWishlistUrl ?: "",
-                                freeOngkir = FreeOngkir(dataItem.freeOngkir.isActive, dataItem.freeOngkir.imageUrl)
+                                freeOngkir = FreeOngkir(dataItem.product?.freeOngkir?.isActive ?: false, dataItem.product?.freeOngkir?.imageUrl ?: "")
                         )
 
                         productListResponse.searchProduct.products.add(0, item)

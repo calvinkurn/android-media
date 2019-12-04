@@ -35,8 +35,5 @@ data class DataItem(
         val adRefKey: String? = null,
 
         @field:SerializedName("product_click_url")
-        val productClickUrl: String? = null,
-
-        @SerializedName("freeOngkir")
-        val freeOngkir: FreeOngkir
+        val productClickUrl: String? = null
 )
