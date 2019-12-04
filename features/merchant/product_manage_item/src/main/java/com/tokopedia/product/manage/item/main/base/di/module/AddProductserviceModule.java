@@ -156,10 +156,4 @@ public class AddProductserviceModule {
     ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
         return productDraftDB.getProductDraftDao();
     }
-
-    @AddProductServiceScope
-    @Provides
-    SaveInstanceCacheManager provideSaveInstanceCacheManager(@ApplicationContext Context context){
-        return new SaveInstanceCacheManager(context, true);
-    }
 }

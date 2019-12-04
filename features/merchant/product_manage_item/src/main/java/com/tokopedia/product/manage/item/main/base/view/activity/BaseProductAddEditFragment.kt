@@ -399,7 +399,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     private fun startUploadProductServiceWithoutSaveToDraft() {
         currentProductAddViewModel?.let {
             cacheManager.put(PRODUCT_VIEW_MODEL, it.convertToProductViewModel())
-            activity?.startService(UploadProductService.getIntentUploadProductWithoutSaveToDraft(activity, isAddStatus()))
+            activity?.startService(UploadProductService.getIntentUploadProductWithoutSaveToDraft(activity, isAddStatus(), cacheManager.id))
         }
     }
 
