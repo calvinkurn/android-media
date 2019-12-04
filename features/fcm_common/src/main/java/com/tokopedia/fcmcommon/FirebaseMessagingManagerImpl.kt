@@ -50,6 +50,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
                 listener.onError(task.exception)
+                return@addOnCompleteListener
             }
 
             val currentFcmToken = task.result?.token
