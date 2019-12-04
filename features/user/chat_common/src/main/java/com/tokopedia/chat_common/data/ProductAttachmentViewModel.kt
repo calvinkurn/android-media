@@ -190,4 +190,20 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         return freeShipping.imageUrl
     }
 
+    fun getAtcEventLabel(): String {
+        val atcEventLabel =  when {
+            blastId == 0 -> "chat"
+            blastId == -1 -> "drop price alert"
+            blastId == -2 -> "limited stock"
+            blastId > 0 -> "broadcast"
+            else -> "chat"
+        }
+
+        return "$atcEventLabel - $blastId"
+    }
+
+    fun getAtcEventAction(): String {
+        return "click atc on bottom sheet"
+    }
+
 }

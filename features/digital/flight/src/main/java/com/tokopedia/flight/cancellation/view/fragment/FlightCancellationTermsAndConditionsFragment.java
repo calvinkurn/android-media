@@ -14,10 +14,6 @@ import android.widget.CompoundButton;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.component.TextViewCompat;
-import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.R;
-
-import static com.tokopedia.flight.common.constant.FlightUrl.TNC_LINK;
 
 /**
  * @author by furqan on 16/04/18.
@@ -41,11 +37,11 @@ public class FlightCancellationTermsAndConditionsFragment extends BaseDaggerFrag
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_cancellation_terms_and_conditions, container, false);
-        txtTerms = view.findViewById(R.id.txt_cancellation_tnc);
-        txtDescription = view.findViewById(R.id.tv_description);
-        btnSelengkapnya = view.findViewById(R.id.btn_next);
-        checkBox = view.findViewById(R.id.checkbox);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_cancellation_terms_and_conditions, container, false);
+        txtTerms = view.findViewById(com.tokopedia.flight.R.id.txt_cancellation_tnc);
+        txtDescription = view.findViewById(com.tokopedia.flight.R.id.tv_description);
+        btnSelengkapnya = view.findViewById(com.tokopedia.flight.R.id.btn_next);
+        checkBox = view.findViewById(com.tokopedia.flight.R.id.checkbox);
 
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -82,18 +78,11 @@ public class FlightCancellationTermsAndConditionsFragment extends BaseDaggerFrag
     }
 
     private void setTncText() {
-        txtTerms.setText(MethodChecker.fromHtml(getString(R.string.flight_cancellation_terms_and_cancellation_text)));
+        txtTerms.setText(MethodChecker.fromHtml(getString(com.tokopedia.flight.R.string.flight_cancellation_terms_and_cancellation_text)));
     }
 
     private void setDescText() {
-        txtDescription.setText(MethodChecker.fromHtml(getString(R.string.flight_cancellation_review_description)));
-    }
-
-    private void navigateToWebview() {
-        if (getActivity().getApplication() instanceof FlightModuleRouter) {
-            startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getWebviewActivity(getActivity(), TNC_LINK));
-        }
+        txtDescription.setText(MethodChecker.fromHtml(getString(com.tokopedia.flight.R.string.flight_cancellation_review_description)));
     }
 
     private void requestCancellation() {

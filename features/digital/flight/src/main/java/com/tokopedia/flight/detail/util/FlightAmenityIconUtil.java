@@ -2,8 +2,6 @@ package com.tokopedia.flight.detail.util;
 
 import androidx.annotation.DrawableRes;
 
-import com.tokopedia.flight.R;
-
 /**
  * Created by zulfikarrahman on 11/6/17.
  */
@@ -14,15 +12,15 @@ public class FlightAmenityIconUtil {
     public static int getImageResource(String icon) {
         switch (icon){
             case "baggage":
-                return R.drawable.ic_baggage;
+                return com.tokopedia.flight.R.drawable.flight_ic_baggage;
             case "meal":
-                return R.drawable.ic_meals;
+                return com.tokopedia.flight.R.drawable.flight_ic_meals;
             case "usb":
-                return R.drawable.ic_power;
+                return com.tokopedia.flight.R.drawable.flight_ic_power;
             case "wifi":
-                return R.drawable.ic_wifi_amenity;
+                return com.tokopedia.flight.R.drawable.flight_ic_wifi_amenity;
             default:
-                return R.drawable.ic_baggage;
+                return com.tokopedia.flight.R.drawable.flight_ic_baggage;
         }
     }
 }

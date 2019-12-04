@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.view.converter;
 
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.OntimeDeliveryGuarantee;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.PromoRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.RatesFeature;
 import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
@@ -169,13 +170,23 @@ public class ShipmentDataRequestConverter {
                     .productData(convertToProductDataCheckout(shipmentCartItemModel));
 
             ArrayList<String> promoCodes = new ArrayList<>();
+            List<PromoRequest> promoRequests = new ArrayList<>();
             if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
                 promoCodes.add(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
+                PromoRequest promoRequest = new PromoRequest();
+                promoRequest.setCode(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
+                promoRequest.setType(PromoRequest.TYPE_MERCHANT);
+                promoRequests.add(promoRequest);
             }
 
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                 promoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                PromoRequest promoRequest = new PromoRequest();
+                promoRequest.setCode(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                promoRequest.setType(PromoRequest.TYPE_LOGISTIC);
+                promoRequests.add(promoRequest);
             }
+            shopProductCheckoutBuilder.promos(promoRequests);
 
             if (promoCodes.size() > 0) {
                 shopProductCheckoutBuilder.promoCodes(promoCodes);

@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.explore.R
 import com.tokopedia.explore.domain.entity.PostKol
+import com.tokopedia.explore.domain.entity.Tracking
 import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
@@ -177,6 +178,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                     post_thumbnail.visible()
                     post_thumbnail.addOnImpressionListener(uiModel.impressHolder) {
                         listener?.onImageFirstTimeSeen(item, position)
+                        listener?.onAffiliateTrack(uiModel.postKol.tracking, false)
                     }
                     when {
                         item.content.size > 1 -> {
@@ -189,7 +191,10 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                         }
                         else -> badge.gone()
                     }
-                    post_thumbnail.setOnClickListener { listener?.onImageClick(item, position) }
+                    post_thumbnail.setOnClickListener {
+                        listener?.onImageClick(item, position)
+                        listener?.onAffiliateTrack(uiModel.postKol.tracking, true)
+                    }
                 }
 
                 creator_img.shouldShowWithAction(!item.userPhoto.isNullOrBlank()){
@@ -214,6 +219,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
         fun onImageClick(post: PostKol, position: Int)
         fun onUserImageClick(post: PostKol)
         fun onUserNameClick(post: PostKol)
+        fun onAffiliateTrack(trackingList: List<Tracking>, isClick: Boolean)
     }
 }
 

@@ -14,6 +14,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.gm.resource.GMConstant;
@@ -142,7 +143,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onBuyerTokopointClicked(BuyerCardViewModel element) {
         accountAnalytics.eventAccountPromoClick(CREATIVE_TOKOPOINTS, CREATIVE_TOKOPOINTS, POSITION_TOKOPOINT);
-        openApplink(ApplinkConst.TOKOPOINTS);
+        RouteManager.route(getContext(), ApplinkConstInternalPromo.TOKOPOINTS_HOME);
     }
 
     @Override

@@ -7,8 +7,6 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
-import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
 
 import java.util.List;
 

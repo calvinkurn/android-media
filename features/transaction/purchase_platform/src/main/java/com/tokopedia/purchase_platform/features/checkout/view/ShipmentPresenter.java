@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.features.checkout.view;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -13,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.PromoRequest;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -764,9 +766,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
         return originParams == null
                 ? AuthHelper.generateParamsNetwork(
-                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>())
+                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>())
                 : AuthHelper.generateParamsNetwork(
-                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), originParams);
+                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), originParams);
     }
 
     @Override
@@ -1201,10 +1203,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests,
-                                                    boolean hasInsurance,
-                                                    CheckPromoParam checkPromoParam,
-                                                    int isDonation,
-                                                    String leasingId) {
+                                                   boolean hasInsurance,
+                                                   CheckPromoParam checkPromoParam,
+                                                   int isDonation,
+                                                   String leasingId) {
         if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
             return null;
@@ -1238,6 +1240,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (checkPromoParam != null && checkPromoParam.getPromo() != null) {
             if (checkPromoParam.getPromo().getCodes() != null && checkPromoParam.getPromo().getCodes().size() > 0) {
                 builder.promoCodes(checkPromoParam.getPromo().getCodes());
+                List<PromoRequest> promoRequests = new ArrayList<>();
+                for (String promoCode : checkPromoParam.getPromo().getCodes()) {
+                    PromoRequest promoRequest = new PromoRequest();
+                    promoRequest.setCode(promoCode);
+                    promoRequest.setType(PromoRequest.TYPE_GLOBAL);
+
+                    promoRequests.add(promoRequest);
+                }
+                builder.promos(promoRequests);
             }
             builder.hasPromoStacking(true);
         }
