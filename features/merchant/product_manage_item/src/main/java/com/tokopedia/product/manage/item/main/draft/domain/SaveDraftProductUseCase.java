@@ -25,21 +25,21 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
 
     @Override
     public Observable<Long> createObservable(RequestParams requestParams) {
-        ProductViewModel inputModel;
-        if (isInputProductNotNull(requestParams) &&
-                isUploadProductDomainModel(requestParams)){
-            inputModel = (ProductViewModel)
-                    requestParams.getObject(UPLOAD_PRODUCT_INPUT_MODEL);
-        } else {
+//        ProductViewModel inputModel;
+//        if (isInputProductNotNull(requestParams) &&
+//                isUploadProductDomainModel(requestParams)){
+//            inputModel = (ProductViewModel)
+//                    requestParams.getObject(UPLOAD_PRODUCT_INPUT_MODEL);
+//        } else {
             throw new RuntimeException("Input model is missing");
-        }
-        long prevDraftId = requestParams.getLong(PREV_DRAFT_ID, 0);
-        boolean isUploading = requestParams.getBoolean(IS_UPLOADING, false);
-        if (prevDraftId <= 0) {
-            return productDraftRepository.saveDraft(inputModel, isUploading);
-        } else {
-            return productDraftRepository.updateDraftToUpload(prevDraftId, inputModel, isUploading);
-        }
+//        }
+//        long prevDraftId = requestParams.getLong(PREV_DRAFT_ID, 0);
+//        boolean isUploading = requestParams.getBoolean(IS_UPLOADING, false);
+//        if (prevDraftId <= 0) {
+//            return productDraftRepository.saveDraft(inputModel, isUploading);
+//        } else {
+//            return productDraftRepository.updateDraftToUpload(prevDraftId, inputModel, isUploading);
+//        }
     }
 
     private boolean isInputProductNotNull(RequestParams requestParams) {
