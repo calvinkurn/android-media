@@ -1,10 +1,10 @@
-package com.tokopedia.feedcomponent.helper
+package com.tokopedia.adapter_delegate
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.feedcomponent.helper.common.*
+import com.tokopedia.adapter_delegate.common.*
 import kotlin.reflect.KClass
 
 /**

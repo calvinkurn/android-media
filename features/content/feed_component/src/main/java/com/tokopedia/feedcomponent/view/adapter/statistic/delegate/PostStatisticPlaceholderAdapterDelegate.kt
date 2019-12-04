@@ -2,8 +2,8 @@ package com.tokopedia.feedcomponent.view.adapter.statistic.delegate
 
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.adapter_delegate.TypedAdapterDelegate
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.helper.TypedAdapterDelegate
 import com.tokopedia.feedcomponent.view.adapter.viewholder.statistic.PostStatisticViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticPlaceholderUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel

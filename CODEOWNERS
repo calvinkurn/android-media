@@ -129,6 +129,7 @@
 /features/im/challenges                 				@tokopedia/minion-yoda
 /features/im/referral                   				@tokopedia/minion-yoda
 
+/libraries/adapter_delegate/							@tokopedia/minion-stuart
 /libraries/analytics/							        @tokopedia/core-team
 /libraries/applink/										@tokopedia/core-team
 /libraries/banner_dynamic/								@tokopedia/core-team

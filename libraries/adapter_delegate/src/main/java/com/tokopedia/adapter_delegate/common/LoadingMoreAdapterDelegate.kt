@@ -1,10 +1,10 @@
-package com.tokopedia.feedcomponent.helper.common
+package com.tokopedia.adapter_delegate.common
 
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
-import com.tokopedia.feedcomponent.helper.TypedAdapterDelegate
+import com.tokopedia.adapter_delegate.TypedAdapterDelegate
 
 /**
  * Created by jegul on 2019-10-02.
