@@ -19,14 +19,14 @@ public class ReviewDomain {
     public ReviewDomain(List<ReviewItemDomain> data,
                         int reputationId, UserDataDomain userData,
                         ShopDataDomain shopData, String invoiceRefNum,
-                        String invoiceTime, String orderid) {
+                        String invoiceTime, String orderId) {
         this.data = data;
         this.reputationId = reputationId;
         this.userData = userData;
         this.shopData = shopData;
         this.invoiceRefNum = invoiceRefNum;
         this.invoiceTime = invoiceTime;
-        this.orderid = orderid;
+        this.orderId = orderId;
     }
 
     public List<ReviewItemDomain> getData() {
