@@ -35,13 +35,16 @@ class MarkReadNotificationUpdateItemUseCase @Inject constructor(
     }
 
     companion object {
-        const val PARAM_NOTIF_ID = "notifId"
+        private const val PARAM_NOTIF_ID = "notifId"
+        private const val PARAM_TYPE_OF_NOTIF = "typeOfNotif"
 
         fun getRequestParams(
-                lastNotifId: String
+                lastNotifId: String,
+                typeOfNotif: Int
         ): HashMap<String, Any> {
-            var variables = HashMap<String, Any>()
+            val variables = HashMap<String, Any>()
             variables[PARAM_NOTIF_ID] = lastNotifId
+            variables[PARAM_TYPE_OF_NOTIF] = typeOfNotif
             return variables
         }
     }
