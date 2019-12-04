@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
+import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
@@ -19,7 +20,7 @@ import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemD
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFeaturedShopViewModel>(view){
+class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener): AbstractViewHolder<OfficialFeaturedShopViewModel>(view){
 
     private var context: Context? = null
     private var recyclerView: RecyclerView? = null

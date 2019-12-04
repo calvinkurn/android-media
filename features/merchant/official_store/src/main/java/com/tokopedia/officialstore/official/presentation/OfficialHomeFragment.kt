@@ -129,7 +129,7 @@ class OfficialHomeFragment :
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
 
-        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this)
+        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this, this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
@@ -155,7 +155,7 @@ class OfficialHomeFragment :
 
     private fun resetData() {
         adapter?.clearAllElements()
-        adapter?.resetState()
+        adapter?.resetState(this)
         endlessScrollListener?.resetState()
     }
 
