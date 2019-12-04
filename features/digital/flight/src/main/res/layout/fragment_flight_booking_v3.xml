@@ -53,6 +53,7 @@
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginLeft="@dimen/dp_4"
                 android:text="@string/flight_booking_contact_sublabel"
+                android:layout_marginTop="@dimen/dp_1"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintTop_toTopOf="@id/tv_traveller_info_title"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_traveller_info_title"

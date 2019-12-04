@@ -24,7 +24,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_seperator_1"
-        app:use_gradient="true"
         app:width_weight="0.6" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -36,8 +35,7 @@
         app:corners="20"
         app:layout_constraintEnd_toStartOf="@+id/loader_iv_1"
         app:layout_constraintRight_toLeftOf="@+id/loader_iv_1"
-        app:layout_constraintTop_toTopOf="@+id/loader_tv_1"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toTopOf="@+id/loader_tv_1"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/loader_iv_1"
@@ -49,7 +47,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/loader_tv_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/loader_tv_2"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toTopOf="@+id/loader_tv_2"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

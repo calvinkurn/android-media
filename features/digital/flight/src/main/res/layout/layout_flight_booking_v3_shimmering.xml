@@ -43,7 +43,6 @@
         app:corners="20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_1"
-        app:use_gradient="true"
         app:width_weight="0.7" />
 
     <FrameLayout
@@ -57,10 +56,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_4"
             android:background="@drawable/flight_bg_card_white"
             android:elevation="@dimen/dp_1"
-            android:layout_marginBottom="@dimen/dp_4">
+            android:padding="@dimen/dp_16">
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/shimmering_layout_3"
@@ -71,8 +70,7 @@
                 app:corners="20"
                 app:layout_constraintEnd_toStartOf="@+id/shimmering_layout_4"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:use_gradient="true" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView
                 android:id="@+id/shimmering_layout_4"
@@ -80,8 +78,7 @@
                 android:layout_height="@dimen/dp_16"
                 app:corners="20"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/shimmering_layout_3"
-                app:use_gradient="true" />
+                app:layout_constraintTop_toTopOf="@+id/shimmering_layout_3" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/shimmering_layout_5"
@@ -90,7 +87,6 @@
                 android:layout_marginTop="@dimen/dp_12"
                 app:corners="20"
                 app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_3"
-                app:use_gradient="true"
                 app:width_weight="0.5" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -99,7 +95,6 @@
                 android:layout_marginTop="@dimen/dp_12"
                 app:corners="20"
                 app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_5"
-                app:use_gradient="true"
                 app:width_weight="0.5" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -122,7 +117,6 @@
         android:layout_marginTop="@dimen/dp_24"
         app:corners="20"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_6"
-        app:use_gradient="true"
         app:width_weight="0.7" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -135,7 +129,6 @@
         app:layout_constraintEnd_toStartOf="@+id/shimmering_layout_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_9"
-        app:use_gradient="true"
         app:width_weight="0.5" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
@@ -148,8 +141,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/shimmering_layout_7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/shimmering_layout_7"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toTopOf="@+id/shimmering_layout_7" />
 
     <LinearLayout
         android:id="@+id/shimmering_layout_10"
@@ -211,15 +203,13 @@
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
-                app:corners="20"
-                app:use_gradient="true" />
+                app:corners="20" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_10"
                 android:layout_gravity="center_vertical"
                 app:corners="20"
-                app:use_gradient="true"
                 app:width_weight="0.5" />
 
         </LinearLayout>
@@ -241,8 +231,7 @@
         android:layout_marginTop="@dimen/dp_20"
         app:corners="20"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_12"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_12" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_layout_14"
@@ -253,8 +242,7 @@
         android:layout_marginRight="@dimen/dp_16"
         app:corners="20"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_12"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_12" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/dp_100"
@@ -264,8 +252,7 @@
         app:corners="20"
         app:layout_constraintBottom_toBottomOf="@+id/shimmering_layout_13"
         app:layout_constraintEnd_toStartOf="@+id/shimmering_layout_13"
-        app:layout_constraintTop_toTopOf="@+id/shimmering_layout_13"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toTopOf="@+id/shimmering_layout_13" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/shimmering_layout_13"
@@ -277,8 +264,7 @@
         app:corners="20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_14"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_14" />
 
     <View
         android:id="@+id/shimmering_layout_15"
