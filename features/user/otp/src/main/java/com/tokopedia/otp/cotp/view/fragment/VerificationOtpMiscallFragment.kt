@@ -67,6 +67,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if (arguments != null && arguments?.getParcelable<Parcelable>(ARGS_PASS_DATA) != null) {
             viewModel = parseViewModel(arguments as Bundle)
         } else {
@@ -203,7 +204,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         startTimer()
     }
 
-    override fun updatePhoneHint(phoneHint: String?) {
+    override fun updatePhoneHint(phoneHint: String) {
         textPhoneHint?.text = phoneHint
     }
 
@@ -263,7 +264,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         textMessageVerify?.text = errorMessage
         textMessageVerify?.setTextColor(MethodChecker.getColor(activity, R.color.red_500))
         setLimitReachedCountdownText()
-
     }
 
     override fun logUnknownError(throwable: Throwable) {
@@ -399,6 +399,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
     private fun setLimitReachedCountdownText() {
         textInputOtp?.text?.clear()
+        textInputOtp?.isEnabled = false
 
         if (viewModel.canUseOtherMethod()) {
             textResend?.visibility = View.GONE

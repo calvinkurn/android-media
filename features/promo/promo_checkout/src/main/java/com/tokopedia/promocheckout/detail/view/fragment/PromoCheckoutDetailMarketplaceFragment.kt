@@ -6,15 +6,11 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.common.analytics.FROM_CART
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
-import com.tokopedia.promocheckout.common.data.*
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
 import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
-import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
 import javax.inject.Inject
@@ -25,8 +21,6 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
 
     private var isOneClickShipment: Boolean = false
     var promo: Promo? = null
-    lateinit var codeslug:String
-    lateinit var promoCheckoutDetailComponent:PromoCheckoutDetailComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

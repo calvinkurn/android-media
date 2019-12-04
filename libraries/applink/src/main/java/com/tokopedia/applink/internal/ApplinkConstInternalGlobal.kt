@@ -1,6 +1,5 @@
 package com.tokopedia.applink.internal
 
-import android.webkit.WebView
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
@@ -100,18 +99,24 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
 
+    @JvmField
+    val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
+
     // UserIdentificationInfoActivity
     // tokopedia-android-internal://global/user-identification-info
     @JvmField
-    val USER_IDENTIFICATION_INFO = "$INTERNAL_GLOBAL/user-identification-info?projectId={projectId}"
+    val USER_IDENTIFICATION_INFO = "$USER_IDENTIFICATION_INFO_BASE?projectId={projectId}"
 
     @JvmField
     val PARAM_SOURCE_KYC_SELLER = "seller"
 
+    @JvmField
+    val USER_IDENTIFICATION_FORM_BASE = "$INTERNAL_GLOBAL/user-identification-form"
+
     // UserIdentificationFormActivity
     // tokopedia-android-internal://global/user-identification-form
     @JvmField
-    val USER_IDENTIFICATION_FORM = "$INTERNAL_GLOBAL/user-identification-form?projectId={projectId}"
+    val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}"
     @JvmField
     val PARAM_PROJECT_ID = "projectId"
 
@@ -185,7 +190,7 @@ object ApplinkConstInternalGlobal {
 
 
     @JvmField
-    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}&title={title}"
+    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-profile-phone-verification

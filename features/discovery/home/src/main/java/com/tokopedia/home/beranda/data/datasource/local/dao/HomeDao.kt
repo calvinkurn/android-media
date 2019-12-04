@@ -1,8 +1,9 @@
 package com.tokopedia.home.beranda.data.datasource.local.dao
 
-import androidx.room.*
 import com.tokopedia.home.beranda.domain.model.HomeRoomData
 import kotlinx.coroutines.flow.Flow
+import androidx.room.*
+import retrofit2.http.Query
 
 @Dao
 abstract class HomeDao{
@@ -12,4 +13,7 @@ abstract class HomeDao{
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun save(item: HomeRoomData)
+
+    @Query("DELETE FROM HomeDbData")
+    abstract fun deleteHomeData()
 }

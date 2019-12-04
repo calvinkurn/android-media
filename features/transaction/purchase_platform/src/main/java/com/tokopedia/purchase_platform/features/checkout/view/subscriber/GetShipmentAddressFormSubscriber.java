@@ -18,15 +18,18 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
     private final ShipmentContract.View view;
     private final boolean isReloadData;
     private final boolean isOneClickShipment;
+    private final boolean isReloadAfterPriceChangeHinger;
 
     public GetShipmentAddressFormSubscriber(ShipmentPresenter shipmentPresenter,
                                             ShipmentContract.View view,
                                             boolean isReloadData,
+                                            boolean isReloadAfterPriceChangeHinger,
                                             boolean isOneClickShipment) {
         this.shipmentPresenter = shipmentPresenter;
         this.view = view;
         this.isReloadData = isReloadData;
         this.isOneClickShipment = isOneClickShipment;
+        this.isReloadAfterPriceChangeHinger = isReloadAfterPriceChangeHinger;
     }
 
     @Override
@@ -69,7 +72,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
                 view.renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
             } else {
                 shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
-                view.renderCheckoutPage(!isReloadData, isOneClickShipment);
+                view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment);
                 view.stopTrace();
             }
         }

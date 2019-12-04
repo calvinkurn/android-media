@@ -4,15 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
@@ -40,10 +41,10 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(this);
-        inflateView(R.layout.activity_simple_fragment);
+        inflateView(com.tokopedia.core2.R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new ProductManageSellerFragment(), TAG).commit();
+                    .replace(com.tokopedia.design.R.id.container, new ProductManageSellerFragment(), TAG).commit();
         }
     }
 

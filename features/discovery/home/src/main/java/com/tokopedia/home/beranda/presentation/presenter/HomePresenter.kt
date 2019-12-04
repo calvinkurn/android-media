@@ -168,11 +168,15 @@ class HomePresenter(private val userSession: UserSessionInterface,
             override fun onCompleted() {}
 
             override fun onError(e: Throwable?) {
-                view?.onErrorGetReviewData()
+                if(isViewAttached){
+                    view?.onErrorGetReviewData()
+                }
             }
 
             override fun onNext(suggestedProductReview: SuggestedProductReview?) {
-                view?.onSuccessGetReviewData(suggestedProductReview)
+                if(isViewAttached) {
+                    view?.onSuccessGetReviewData(suggestedProductReview)
+                }
             }
         })
     }
