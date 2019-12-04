@@ -8,6 +8,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.pdp.data.Recommendation
+import com.tokopedia.gamification.pdp.presentation.GamiPdpRecommendationListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardModel
@@ -16,7 +17,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.unifycomponents.Toaster
 import java.lang.ref.WeakReference
 
-class RecommendationVH(itemView: View, val weakRecommendationListener: WeakReference<RecommendationListener>) : AbstractViewHolder<Recommendation>(itemView) {
+class RecommendationVH(itemView: View, val weakRecommendationListener: WeakReference<GamiPdpRecommendationListener>) : AbstractViewHolder<Recommendation>(itemView) {
     private val productCardView = itemView.findViewById<ProductCardViewSmallGrid>(R.id.productCardView)
 
     override fun bind(element: Recommendation?) {
@@ -25,7 +26,7 @@ class RecommendationVH(itemView: View, val weakRecommendationListener: WeakRefer
                 setProductModel(getProductModel(element))
                         setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener {
                     override fun onViewHint() {
-                        weakRecommendationListener.get()?.onProductImpression(element.recommendationItem)
+                        weakRecommendationListener.get()?.onProductImpression(element.recommendationItem, adapterPosition)
                     }
                 })
 

@@ -1,13 +1,13 @@
 package com.tokopedia.gamification.pdp.presentation.views
 
 import android.content.Context
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -26,13 +26,13 @@ import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
+import com.tokopedia.gamification.pdp.presentation.*
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapter
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewmodels.PdpDialogViewModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unifyprinciples.Typography
 import java.lang.ref.WeakReference
 import javax.inject.Inject
@@ -138,6 +138,16 @@ class PdpGamificationView : FrameLayout {
 
     private fun setListeners() {
 
+        viewModel.titleLiveData.observe(context as AppCompatActivity, Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
+                    if (!TextUtils.isEmpty(it.data)) {
+                        tvTitle.text = it.data
+                    }
+                }
+            }
+        })
+
         viewModel.productLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
@@ -189,45 +199,96 @@ class PdpGamificationView : FrameLayout {
 //        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
-    fun getRecommendationListener(): WeakReference<RecommendationListener> {
+    fun getRecommendationListener(): WeakReference<GamiPdpRecommendationListener> {
 
-        fun onImpressionOrganic(item: RecommendationItem) {
-//            InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.position, item.isTopAds)
-        }
+        val listener = object : GamiPdpRecommendationListener {
 
-        fun onClickOrganic(item: RecommendationItem) {
-//            InboxGtmTracker.getInstance().eventInboxProductClick(context, item, item.position, item.isTopAds)
-        }
+            override fun onProductImpression(item: RecommendationItem, position: Int) {
+                val resultMap = mutableMapOf<String, Any>()
+                val eCommerceMap = HashMap<Any, Any>()
+                val clickMap = mutableMapOf<Any, Any>()
+                val actionFieldMap = mutableMapOf<Any, Any>()
 
-        fun onClickTopAds(item: RecommendationItem) {
-            ImpresionTask().execute(item.clickUrl)
-//            InboxGtmTracker.getInstance().eventInboxProductClick(context, item, item.position, item.isTopAds)
-        }
+                val eventName = "productView"
+                val eventCategory = "lucky egg - crack the egg"
+                val eventAction = "click - product recommendation{ - nonlogin}"
 
-        fun onImpressionTopAds(item: RecommendationItem) {
-            ImpresionTask().execute(item.trackerImageUrl)
-//            InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.position, item.isTopAds)
-        }
-        val listener = object : RecommendationListener {
+
+                //todo Rahul later
+//                clickMap["actionField"] =
+                val productItemMap = HashMap<Any, Any>()
+                val productArray = mutableListOf<HashMap<Any, Any>>()
+                productArray.add(productItemMap)
+
+                productItemMap[ProductKeys.NAME] = item.name
+                productItemMap[ProductKeys.ID] = item.productId
+                //todo Rahul later
+//                productItemMap["brand"]
+//                productItemMap["category"] = item.categoryBreadcrumbs
+//                productItemMap["variant"] = item.
+//                productItemMap["list"] = item.
+                productItemMap[ProductKeys.POSITION] = position
+
+                resultMap[TrackerConstants.EVENT] = eventName
+                resultMap[TrackerConstants.EVENT_CATEGORY] = eventCategory
+                resultMap[TrackerConstants.EVENT_ACTION] = eventAction
+                resultMap[TrackerConstants.ECOMMERCE] = eCommerceMap
+
+                eCommerceMap[EcommerceKeys.CLICK] = clickMap
+
+                clickMap[ClickKeys.ACTION_FIELD] = actionFieldMap
+                clickMap[ClickKeys.PRODUCTS] = productArray
+
+                TrackApp.getInstance().gtm.sendGeneralEvent(resultMap)
+
+            }
+
             override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-                if (item.isTopAds) {
-                    ImpresionTask().execute(item.clickUrl)
-                    onClickTopAds(item)
-                } else {
-                    onClickOrganic(item)
-                }
+
+                val resultMap = mutableMapOf<String, Any>()
+                val eCommerceMap = HashMap<Any, Any>()
+                val clickMap = mutableMapOf<Any, Any>()
+                val actionFieldMap = mutableMapOf<Any, Any>()
+
+                val eventName = "productClick"
+                val eventCategory = "lucky egg - crack the egg"
+                val eventAction = "click - product recommendation{ - nonlogin}"
+
+
+                //todo Rahul later
+//                clickMap["actionField"] =
+                val productItemMap = HashMap<Any, Any>()
+                val productArray = mutableListOf<HashMap<Any, Any>>()
+                productArray.add(productItemMap)
+
+                productItemMap[ProductKeys.NAME] = item.name
+                productItemMap[ProductKeys.ID] = item.productId
+                //todo Rahul later
+//                productItemMap["brand"]
+//                productItemMap["category"] = item.categoryBreadcrumbs
+//                productItemMap["variant"] = item.
+//                productItemMap["list"] = item.
+                productItemMap[ProductKeys.POSITION] = position
+
+                resultMap[TrackerConstants.EVENT] = eventName
+                resultMap[TrackerConstants.EVENT_CATEGORY] = eventCategory
+                resultMap[TrackerConstants.EVENT_ACTION] = eventAction
+                resultMap[TrackerConstants.ECOMMERCE] = eCommerceMap
+
+                eCommerceMap[EcommerceKeys.CLICK] = clickMap
+
+                clickMap[ClickKeys.ACTION_FIELD] = actionFieldMap
+                clickMap[ClickKeys.PRODUCTS] = productArray
+
+                TrackApp.getInstance().gtm.sendGeneralEvent(resultMap)
+
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
                 if (position.isNotEmpty()) intent.putExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, position[0])
-                    fragment?.startActivityForResult(intent, Wishlist.REQUEST_FROM_PDP)
+                fragment?.startActivityForResult(intent, Wishlist.REQUEST_FROM_PDP)
             }
 
             override fun onProductImpression(item: RecommendationItem) {
-//                if (item.isTopAds) {
-//                    ImpresionTask().execute(item.trackerImageUrl)
-//                    onImpressionTopAds(item)
-//                } else {
-//                    onImpressionOrganic(item)
-//                }
+
             }
 
             override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
@@ -240,6 +301,20 @@ class PdpGamificationView : FrameLayout {
                 } else {
                     RouteManager.route(context, ApplinkConst.LOGIN)
                 }
+
+                //send events
+                val resultMap = mutableMapOf<String, Any>()
+
+                val eventName = "productClick"
+                val eventCategory = "lucky egg - crack the egg"
+                val eventAction = "click - product recommendation{ - nonlogin}"
+                val type = if (item.isTopAds) "topads" else "general"
+                val label = "${item.productId} - $type - source : ${item}"
+
+                resultMap[TrackerConstants.EVENT] = eventName
+                resultMap[TrackerConstants.EVENT_CATEGORY] = eventCategory
+                resultMap[TrackerConstants.EVENT_ACTION] = eventAction
+                resultMap[TrackerConstants.EVENT_LABEL] = label
             }
         }
 

@@ -1,8 +1,6 @@
 package com.tokopedia.gamification.pdp.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gamification.pdp.data.GamingRecommendationParamResponse
 import com.tokopedia.gamification.pdp.data.LiveDataResult
@@ -15,7 +13,6 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -37,6 +34,7 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
 
     val recommendationLiveData: MutableLiveData<LiveDataResult<GamingRecommendationParamResponse>> = MutableLiveData()
     val productLiveData: MutableLiveData<LiveDataResult<List<Recommendation>>> = MutableLiveData()
+    val titleLiveData: MutableLiveData<LiveDataResult<String>> = MutableLiveData()
 
     fun getRecommendationParams(pageName: String) {
         launchCatchError(block = {
@@ -59,14 +57,17 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
                 val item = recommendationProductUseCase.getData(recommendationProductUseCase.getRequestParams(params, page)).first()
                 val list = recommendationProductUseCase.mapper.recommWidgetToListOfVisitables(item)
                 productLiveData.postValue(LiveDataResult.success(list))
+                if (titleLiveData.value == null) {
+                    titleLiveData.postValue(LiveDataResult.success(item.title))
+                }
             }
         }, onError = {
             productLiveData.postValue(LiveDataResult.error(it))
         })
     }
 
-    fun addToWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)){
-        if(model.isTopAds){
+    fun addToWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
+        if (model.isTopAds) {
             val params = RequestParams.create()
             params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
             topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
@@ -84,7 +85,7 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
                 }
             })
         } else {
-            addWishListUseCase.createObservable(model.productId.toString(), userSession.userId, object: WishListActionListener {
+            addWishListUseCase.createObservable(model.productId.toString(), userSession.userId, object : WishListActionListener {
                 override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                     callback.invoke(false, Throwable(errorMessage))
                 }
@@ -105,8 +106,8 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
     }
 
 
-    fun removeFromWishlist(model: RecommendationItem, wishlistCallback: (((Boolean, Throwable?) -> Unit))){
-        removeWishListUseCase.createObservable(model.productId.toString(), userSession.userId, object: WishListActionListener{
+    fun removeFromWishlist(model: RecommendationItem, wishlistCallback: (((Boolean, Throwable?) -> Unit))) {
+        removeWishListUseCase.createObservable(model.productId.toString(), userSession.userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 // do nothing
             }
