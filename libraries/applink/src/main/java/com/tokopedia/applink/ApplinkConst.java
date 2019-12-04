@@ -74,6 +74,8 @@ public interface ApplinkConst {
     String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
     String WISHLIST = "tokopedia://wishlist";
+    String NEW_WISHLIST = "tokopedia://new-wishlist";
+    String WISHLIST_HOME = "tokopedia://wishlisthome";
     String RECENT_VIEW = "tokopedia://recentlyviewed";
     String TOPPICKS = "tokopedia://toppicks";
     String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
@@ -295,6 +297,9 @@ public interface ApplinkConst {
         String COUPON_DETAIL4 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}/";
     }
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
+
+    String MONEYIN = "tokopedia://money_in/device_validation";
+
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";

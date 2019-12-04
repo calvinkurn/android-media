@@ -17,6 +17,7 @@ import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.applink.category.DeeplinkMapperMoneyIn.getRegisteredNavigationMoneyIn
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 
 /**
@@ -63,6 +64,8 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(deeplink)
                     deeplink.startsWith(ApplinkConst.CHAT_BOT,true) ->
                         getChatbotDeeplink(deeplink)
+                    deeplink.startsWith(ApplinkConst.MONEYIN, true) ->
+                        getRegisteredNavigationMoneyIn(deeplink)
                     deeplink.startsWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) ->
                         getRegisteredNavigationForFintech(deeplink)
                     else -> {
@@ -136,12 +139,17 @@ object DeeplinkMapper {
             ApplinkConst.FLIGHT -> return ApplinkConstInternalTravel.DASHBOARD_FLIGHT
             ApplinkConst.SALDO -> return ApplinkConstInternalGlobal.SALDO_DEPOSIT
             ApplinkConst.SALDO_INTRO -> return ApplinkConstInternalGlobal.SALDO_INTRO
+             ApplinkConst.AFFILIATE_EDUCATION -> return ApplinkConstInternalContent.AFFILIATE_EDUCATION
+             ApplinkConst.AFFILIATE_DASHBOARD -> return ApplinkConstInternalContent.AFFILIATE_DASHBOARD
+             ApplinkConst.AFFILIATE_EXPLORE -> return ApplinkConstInternalContent.AFFILIATE_EXPLORE
             ApplinkConst.INBOX_TICKET -> return ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
             ApplinkConst.INSTANT_LOAN -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN
             ApplinkConst.INSTANT_LOAN_TAB -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
             ApplinkConst.PINJAMAN_ONLINE_TAB -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
+            ApplinkConst.NEW_WISHLIST -> return ApplinkConsInternalHome.HOME_WISHLIST
             ApplinkConst.CREATE_SHOP -> return ApplinkConstInternalMarketplace.OPEN_SHOP
             ApplinkConst.CHAT_TEMPLATE -> return ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
+            ApplinkConst.PRODUCT_MANAGE -> return ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             else -> ""
         }
         when {
@@ -182,6 +190,7 @@ object DeeplinkMapper {
             ApplinkConst.ADD_CREDIT_CARD -> return ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.CREATE_SHOP -> return ApplinkConstInternalMarketplace.OPEN_SHOP
+            ApplinkConst.PRODUCT_MANAGE -> return ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             else -> ""
         }
     }
