@@ -170,6 +170,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     private fun changeTabPager(position: Int) {
         viewPager.setCurrentItem(position, true)
         cacheManager.entry(KEY_TAB_POSITION, position)
+        analytics.trackNotificationCenterTab(position)
     }
 
     private fun showOnBoarding(position: Int) {
