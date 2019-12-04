@@ -22,8 +22,6 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailBookingCod
 import com.tokopedia.unifycomponents.Toaster
 import io.hansel.core.utils.HSLUtils.dpToPx
 import kotlinx.android.synthetic.main.fragment_som_booking_code.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by fwidjaja on 2019-11-27.
@@ -99,7 +97,7 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     }
 
     private fun zoomBarcode() {
-        card_barcode?.isClickable = true
+        card_barcode?.isClickable = false
         changeBarcodeSize(CONST_INCREASE_DP)
         filter_view?.visibility = View.VISIBLE
         filter_view?.setOnClickListener { view ->
