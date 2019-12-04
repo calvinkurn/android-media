@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
+import com.tokopedia.play.view.viewmodel.PlayViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -19,6 +20,11 @@ abstract class PlayViewModelModule {
     @Binds
     @PlayScope
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PlayViewModel::class)
+    abstract fun getPlayViewModel(viewModel: PlayViewModel): ViewModel
 
     @Binds
     @IntoMap
