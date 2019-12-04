@@ -57,16 +57,13 @@ public class UploadProductService extends BaseService implements AddProductServi
     private static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
     private static final String IS_ADD = "IS_ADD";
     private static final String IS_UPLOAD_PRODUCT_FROM_DRAFT = "IS_UPLOAD_PRODUCT_FROM_DRAFT";
-
+    private static final String CACHE_MANAGER_ID = "CACHE_MANAGER_ID";
 
     @Inject
     AddProductServicePresenter presenter;
 
     @Inject
     UserSessionInterface userSession;
-
-    @Inject
-    SaveInstanceCacheManager cacheManager;
 
     private NotificationManager notificationManager;
     private HashMap<Integer, NotificationCompat.Builder> notificationBuilderMap = new HashMap<>();
@@ -78,10 +75,11 @@ public class UploadProductService extends BaseService implements AddProductServi
         return intent;
     }
 
-    public static Intent getIntentUploadProductWithoutSaveToDraft(Context context, boolean isAdd) {
+    public static Intent getIntentUploadProductWithoutSaveToDraft(Context context, boolean isAdd, String cacheManagerId) {
         Intent intent = new Intent(context, UploadProductService.class);
         intent.putExtra(IS_ADD, isAdd);
         intent.putExtra(IS_UPLOAD_PRODUCT_FROM_DRAFT, false);
+        intent.putExtra(CACHE_MANAGER_ID, cacheManagerId);
         return intent;
     }
 
@@ -105,9 +103,13 @@ public class UploadProductService extends BaseService implements AddProductServi
             final long draftProductId = intent.getLongExtra(DRAFT_PRODUCT_ID, Long.MIN_VALUE);
             presenter.uploadProduct(draftProductId, getProductSubmitNotificationListener((int) draftProductId, isAdd));
         } else {
-            int notificationId = new Random().nextInt();
-            ProductViewModel currentProductAddViewModel = cacheManager.get(PRODUCT_VIEW_MODEL, ProductViewModel.class);
-            presenter.uploadProduct(currentProductAddViewModel, getProductSubmitNotificationListener(notificationId, isAdd));
+            String cacheId = intent.getStringExtra(CACHE_MANAGER_ID);
+            if (null != cacheId) {
+                SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(this, cacheId);
+                int notificationId = new Random().nextInt();
+                ProductViewModel currentProductAddViewModel = cacheManager.get(PRODUCT_VIEW_MODEL, ProductViewModel.class);
+                presenter.uploadProduct(currentProductAddViewModel, getProductSubmitNotificationListener(notificationId, isAdd));
+            }
         }
         return START_NOT_STICKY;
     }
