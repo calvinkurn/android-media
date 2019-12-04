@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.loginphone.R
-import com.tokopedia.loginphone.chooseaccount.data.AccountList
+import com.tokopedia.loginphone.chooseaccount.data.AccountListPojo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -16,18 +16,18 @@ import javax.inject.Inject
  */
 class GetAccountsListUseCase @Inject
 constructor(private val resources: Resources,
-            private val graphqlUseCase: GraphqlUseCase) : UseCase<AccountList>() {
+            private val graphqlUseCase: GraphqlUseCase) : UseCase<AccountListPojo>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<AccountList> {
+    override fun createObservable(requestParams: RequestParams): Observable<AccountListPojo> {
         val graphqlRequest = GraphqlRequest(
                 GraphqlHelper.loadRawString(resources, R.raw.query_get_accounts_list),
-                AccountList::class.java,
+                AccountListPojo::class.java,
                 requestParams.parameters
         )
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
-            val data: AccountList? = it.getData(AccountList::class.java)
+            val data: AccountListPojo? = it.getData(AccountListPojo::class.java)
             data
         }
     }

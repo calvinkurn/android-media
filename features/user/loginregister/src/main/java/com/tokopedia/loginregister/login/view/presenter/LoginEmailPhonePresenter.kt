@@ -23,6 +23,7 @@ import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
+import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
@@ -116,10 +117,22 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
                 LoginTokenSubscriber(userSession,
-                        { getUserInfo() },
+                        view.onSuccessLoginFacebook(email),
                         view.onErrorLoginFacebook(email),
                         view.onGoToActivationPage(email),
                         view.onGoToSecurityQuestion(email)))
+    }
+
+    override fun loginFacebookPhone(context: Context, accessToken: AccessToken, phone: String){
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
+        view.showLoadingLogin()
+        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
+                accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
+                LoginTokenFacebookSubscriber(userSession,
+                        view.onSuccessLoginFacebookPhone(),
+                        view.onErrorLoginFacebookPhone(),
+                        view.onGoToSecurityQuestion(""))
+        )
     }
 
     /**

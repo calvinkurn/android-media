@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
-import com.tokopedia.loginphone.chooseaccount.data.AccountList;
+import com.tokopedia.loginphone.chooseaccount.data.AccountListPojo;
 import com.tokopedia.loginphone.chooseaccount.data.UserDetail;
 import com.tokopedia.sessioncommon.data.LoginTokenPojo;
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
@@ -32,7 +32,7 @@ public interface ChooseTokocashAccountContract {
 
         Context getContext();
 
-        void onSuccessGetAccountList(AccountList accountList);
+        void onSuccessGetAccountList(AccountListPojo accountListPojo);
 
         void onErrorGetAccountList(Throwable e);
 
@@ -60,7 +60,7 @@ public interface ChooseTokocashAccountContract {
     }
 
     public interface ViewAdapter {
-        void onSelectedTokocashAccount(UserDetail accountTokocash);
+        void onSelectedTokocashAccount(UserDetail accountTokocash, String phone);
     }
 
     interface Presenter extends CustomerPresenter<View> {

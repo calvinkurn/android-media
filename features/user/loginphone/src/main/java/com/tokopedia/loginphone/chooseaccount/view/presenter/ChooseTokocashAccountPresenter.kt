@@ -2,7 +2,7 @@ package com.tokopedia.loginphone.chooseaccount.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.loginphone.chooseaccount.data.AccountList
+import com.tokopedia.loginphone.chooseaccount.data.AccountListPojo
 import com.tokopedia.loginphone.chooseaccount.data.UserDetail
 import com.tokopedia.loginphone.chooseaccount.domain.GetAccountsListUseCase
 import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseTokocashAccountContract
@@ -50,7 +50,7 @@ constructor(private val getAccountsListUseCase: GetAccountsListUseCase,
     override fun getAccountList(validateToken: String, phoneNumber: String) {
         getAccountsListUseCase.execute(GetAccountsListUseCase.getParam(validateToken,
                 phoneNumber),
-                object : Subscriber<AccountList>() {
+                object : Subscriber<AccountListPojo>() {
                     override fun onCompleted() {
 
                     }
@@ -59,11 +59,11 @@ constructor(private val getAccountsListUseCase: GetAccountsListUseCase,
                         view.onErrorGetAccountList(e)
                     }
 
-                    override fun onNext(accountList: AccountList) {
-                        if (accountList.accountListPojo.errors.isEmpty()) {
-                            view.onSuccessGetAccountList(accountList)
+                    override fun onNext(accountListPojo: AccountListPojo) {
+                        if (accountListPojo.accountList.errors.isEmpty()) {
+                            view.onSuccessGetAccountList(accountListPojo)
                         } else {
-                            view.onErrorGetAccountList(MessageErrorException(accountList.accountListPojo.errors[0].message))
+                            view.onErrorGetAccountList(MessageErrorException(accountListPojo.accountList.errors[0].message))
                         }
                     }
                 })

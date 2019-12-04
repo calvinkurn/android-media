@@ -2,9 +2,6 @@ package com.tokopedia.loginregister.registerinitial.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -22,6 +19,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.*
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -52,7 +50,6 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.ActivateUserPojo
@@ -65,6 +62,7 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
@@ -77,6 +75,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -368,8 +367,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         })
         registerInitialViewModel.loginTokenFacebookResponse.observe(this, Observer {
             when (it) {
-                is Success -> onSuccessRegisterFacebook()
+                is Success -> onSuccessRegisterFacebook(it.data)
                 is Fail -> onFailedRegisterFacebook(it.throwable)
+            }
+        })
+        registerInitialViewModel.loginTokenFacebookPhoneResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessRegisterFacebookPhone(it.data)
+                is Fail -> onFailedRegisterFacebookPhone(it.throwable)
             }
         })
         registerInitialViewModel.loginTokenGoogleResponse.observe(this, Observer {
@@ -378,6 +383,18 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 is Fail -> onFailedRegisterGoogle(it.throwable)
             }
         })
+        registerInitialViewModel.loginTokenAfterSQResponse.observe(this, Observer {
+            if (it is Success) {
+                onSuccessReloginAfterSQ()
+            }
+        })
+        registerInitialViewModel.loginTokenAfterSQResponse
+                .combineWith(registerInitialViewModel.validateToken){
+                    loginToken: Result<LoginTokenPojo>?, validateToken: String? ->
+                    if (loginToken is Fail){
+                        validateToken?.let { onFailedReloginAfterSQ(it, loginToken.throwable) }
+                    }
+                }
         registerInitialViewModel.getUserInfoResponse.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetUserInfo(it.data)
@@ -407,6 +424,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         })
         registerInitialViewModel.goToSecurityQuestion.observe(this, Observer {
             if(it != null) onGoToSecurityQuestion(it)
+        })
+        registerInitialViewModel.goToActivationPageAfterRelogin.observe(this, Observer {
+            if(it != null) onGoToActivationPageAfterRelogin()
+        })
+        registerInitialViewModel.goToSecurityQuestionAfterRelogin.observe(this, Observer {
+            if(it != null) onGoToSecurityQuestionAfterRelogin()
         })
     }
 
@@ -456,10 +479,17 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onSuccessGetFacebookCredential(facebookCredentialData: FacebookCredentialData){
         try {
-            registerInitialViewModel.registerFacebook(
-                    facebookCredentialData.accessToken.token,
-                    facebookCredentialData.email
-            )
+            if(facebookCredentialData.email.isNotEmpty()){
+                registerInitialViewModel.registerFacebook(
+                        facebookCredentialData.accessToken.token,
+                        facebookCredentialData.email
+                )
+            }else if(facebookCredentialData.phone.isNotEmpty()){
+                registerInitialViewModel.registerFacebookPhone(
+                        facebookCredentialData.accessToken.token,
+                        facebookCredentialData.phone
+                )
+            }
         } catch (e: Exception) {
             e.message?.let { onErrorRegister(it) }
         }
@@ -471,11 +501,24 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
-    private fun onSuccessRegisterFacebook() {
+    private fun onSuccessRegisterFacebook(loginTokenPojo: LoginTokenPojo) {
         registerInitialViewModel.getUserInfo()
     }
 
     private fun onFailedRegisterFacebook(throwable: Throwable){
+        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        onErrorRegister(errorMessage)
+    }
+
+    private fun onSuccessRegisterFacebookPhone(loginTokenPojo: LoginTokenPojo) {
+        if(loginTokenPojo.loginToken.action == 1){
+            goToChooseAccountPageFacebook(loginTokenPojo.loginToken.accessToken)
+        }else{
+            registerInitialViewModel.getUserInfo()
+        }
+    }
+
+    private fun onFailedRegisterFacebookPhone(throwable: Throwable){
         val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
         onErrorRegister(errorMessage)
     }
@@ -490,7 +533,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         onErrorRegister(errorMessage)
     }
 
-    private fun     onSuccessGetUserInfo(profileInfo: ProfileInfo){
+    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo){
         val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         if (profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
@@ -594,6 +637,29 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onFailedActivateUser(throwable: Throwable){
         throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, throwable)) }
+    }
+
+    //Flow should not be possible
+    private fun onGoToActivationPageAfterRelogin(){
+        val errorMessage = ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context)
+        onErrorRegister(errorMessage)
+    }
+
+    //Flow should not be possible
+    private fun onGoToSecurityQuestionAfterRelogin(){
+        val errorMessage = ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context)
+        onErrorRegister(errorMessage)
+    }
+
+    fun onSuccessReloginAfterSQ(){
+        registerInitialViewModel.getUserInfo()
+    }
+
+    fun onFailedReloginAfterSQ(validateToken: String, throwable: Throwable){
+        val errorMessage = ErrorHandlerSession.getErrorMessage(throwable, context, true)
+        NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
+            registerInitialViewModel.reloginAfterSQ(validateToken)
+        }.showRetrySnackbar()
     }
 
     //Wrong flow implementation
@@ -714,7 +780,17 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 it.setResult(Activity.RESULT_OK)
-                it.finish()
+                if(data != null){
+                    data.extras?.let { bundle ->
+                        if(bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)){
+                            onGoToSecurityQuestion("")
+                        }else{
+                            it.finish()
+                        }
+                    }
+                }else{
+                    it.finish()
+                }
             } else if (requestCode == REQUEST_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
                 registerInitialViewModel.getUserInfo()
             } else if (requestCode == REQUEST_CHANGE_NAME && resultCode == Activity.RESULT_CANCELED) {
@@ -933,6 +1009,17 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
+    private fun goToChooseAccountPageFacebook(accessToken: String) {
+        activity?.let {
+            val intent = RouteManager.getIntent(it,
+                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, FACEBOOK_LOGIN_TYPE)
+
+            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
+        }
+    }
+
     private fun getChooseAccountData(data: Intent): ChooseTokoCashAccountViewModel {
         return data.getParcelableExtra(ChooseTokoCashAccountViewModel.ARGS_DATA)
     }
@@ -1096,6 +1183,20 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         if (googleSignInAccount != null) mGoogleSignInClient.signOut()
     }
 
+    private fun <T, K, R> LiveData<T>.combineWith(
+            liveData: LiveData<K>,
+            block: (T?, K?) -> R
+    ): LiveData<R> {
+        val result = MediatorLiveData<R>()
+        result.addSource(this) {
+            result.value = block.invoke(this.value, liveData.value)
+        }
+        result.addSource(liveData) {
+            result.value = block.invoke(this.value, liveData.value)
+        }
+        return result
+    }
+
     companion object {
 
         private val ID_ACTION_LOGIN = 112
@@ -1115,12 +1216,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private const val OTP_TYPE_ACTIVATE = "143"
         private const val OTP_TYPE_REGISTER = "126"
 
-        private val FACEBOOK = "facebook"
-        private val GPLUS = "gplus"
-        private val PHONE_NUMBER = "phonenumber"
+        private const val FACEBOOK = "facebook"
+        private const val GPLUS = "gplus"
+        private const val PHONE_NUMBER = "phonenumber"
 
-        private val PHONE_TYPE = "phone"
-        private val EMAIL_TYPE = "email"
+        private const val PHONE_TYPE = "phone"
+        private const val EMAIL_TYPE = "email"
+
+        private const val FACEBOOK_LOGIN_TYPE = "fb"
 
         fun createInstance(bundle : Bundle): RegisterInitialFragment {
             val fragment = RegisterInitialFragment()

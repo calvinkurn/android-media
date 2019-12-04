@@ -24,6 +24,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
+import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
@@ -69,9 +70,21 @@ class RegisterInitialViewModel @Inject constructor(
     val loginTokenFacebookResponse: LiveData<Result<LoginTokenPojo>>
         get() = mutableLoginTokenFacebookResponse
 
+    private val mutableLoginTokenFacebookPhoneResponse = MutableLiveData<Result<LoginTokenPojo>>()
+    val loginTokenFacebookPhoneResponse: LiveData<Result<LoginTokenPojo>>
+        get() = mutableLoginTokenFacebookPhoneResponse
+
     private val mutableLoginTokenGoogleResponse = MutableLiveData<Result<LoginTokenPojo>>()
     val loginTokenGoogleResponse: LiveData<Result<LoginTokenPojo>>
         get() = mutableLoginTokenGoogleResponse
+
+    private val mutableLoginTokenAfterSQResponse = MutableLiveData<Result<LoginTokenPojo>>()
+    val loginTokenAfterSQResponse: LiveData<Result<LoginTokenPojo>>
+        get() = mutableLoginTokenAfterSQResponse
+
+    private val mutableValidateToken = MutableLiveData<String>()
+    val validateToken: LiveData<String>
+        get() = mutableValidateToken
 
     private val mutableGoToActivationPage = MutableLiveData<MessageErrorException>()
     val goToActivationPage: LiveData<MessageErrorException>
@@ -80,6 +93,14 @@ class RegisterInitialViewModel @Inject constructor(
     private val mutableGoToSecurityQuestion = MutableLiveData<String>()
     val goToSecurityQuestion: LiveData<String>
         get() = mutableGoToSecurityQuestion
+
+    private val mutableGoToActivationPageAfterRelogin = MutableLiveData<MessageErrorException>()
+    val goToActivationPageAfterRelogin: LiveData<MessageErrorException>
+        get() = mutableGoToActivationPageAfterRelogin
+
+    private val mutableGoToSecurityQuestionAfterRelogin = MutableLiveData<String>()
+    val goToSecurityQuestionAfterRelogin: LiveData<String>
+        get() = mutableGoToSecurityQuestionAfterRelogin
 
     private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfo>>()
     val getUserInfoResponse: LiveData<Result<ProfileInfo>>
@@ -119,7 +140,8 @@ class RegisterInitialViewModel @Inject constructor(
                         callbackManager),
                 GetFacebookCredentialSubscriber(
                         resultUsecaseCoroutineToFacebookCredentialListener(
-                                onSuccessGetFacebookCredential(),
+                                onSuccessGetFacebookEmailCredential(),
+                                onSuccessGetFacebookPhoneCredential(),
                                 onFailedGetFacebookCredential()
                         )
                 )
@@ -137,6 +159,21 @@ class RegisterInitialViewModel @Inject constructor(
                         onFailedLoginTokenFacebook(),
                         onGoToActivationPage(),
                         onGoToSecurityQuestion(email)
+                )
+        )
+
+    }
+
+    fun registerFacebookPhone(accessToken: String, phone: String){
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
+
+        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
+                accessToken, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
+                LoginTokenFacebookSubscriber(
+                        userSession,
+                        onSuccessLoginTokenFacebookPhone(),
+                        onFailedLoginTokenFacebookPhone(),
+                        onGoToSecurityQuestion("")
                 )
         )
 
@@ -235,6 +272,15 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
+    fun reloginAfterSQ(validateToken: String) {
+        loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
+                userSession, validateToken), LoginTokenSubscriber(userSession,
+                onSuccessLoginTokenAfterSQ(),
+                onFailedLoginTokenAfterSQ(validateToken),
+                onGoToActivationPageAfterRelogin(validateToken),
+                onGoToSecurityQuestionAfterRelogin("")))
+    }
+
     private fun onSuccessGetProvider(): (DiscoverViewModel) -> Unit{
         return {
             if (!it.providers.isEmpty()) {
@@ -251,7 +297,13 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetFacebookCredential(): (FacebookCredentialData) -> Unit{
+    private fun onSuccessGetFacebookEmailCredential(): (FacebookCredentialData) -> Unit{
+        return {
+            mutableGetFacebookCredentialResponse.value = Success(it)
+        }
+    }
+
+    private fun onSuccessGetFacebookPhoneCredential(): (FacebookCredentialData) -> Unit{
         return {
             mutableGetFacebookCredentialResponse.value = Success(it)
         }
@@ -275,6 +327,18 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
+    private fun onSuccessLoginTokenFacebookPhone(): (LoginTokenPojo) -> Unit{
+        return {
+            mutableLoginTokenFacebookPhoneResponse.value = Success(it)
+        }
+    }
+
+    private fun onFailedLoginTokenFacebookPhone(): (Throwable) -> Unit{
+        return {
+            mutableLoginTokenFacebookPhoneResponse.value = Fail(it)
+        }
+    }
+
     private fun onSuccessLoginTokenGoogle(): (LoginTokenPojo) -> Unit{
         return {
             mutableLoginTokenGoogleResponse.value = Success(it)
@@ -284,6 +348,19 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onFailedLoginTokenGoogle(): (Throwable) -> Unit{
         return {
             mutableLoginTokenGoogleResponse.value = Fail(it)
+        }
+    }
+
+    private fun onSuccessLoginTokenAfterSQ(): (LoginTokenPojo) -> Unit{
+        return {
+            mutableLoginTokenAfterSQResponse.value = Success(it)
+        }
+    }
+
+    private fun onFailedLoginTokenAfterSQ(validateToken: String): (Throwable) -> Unit{
+        return {
+            mutableLoginTokenAfterSQResponse.value = Fail(it)
+            mutableValidateToken.value = validateToken
         }
     }
 
@@ -379,6 +456,19 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onGoToSecurityQuestion(email: String): () -> Unit{
         return {
             mutableGoToSecurityQuestion.value = email
+        }
+    }
+
+    private fun onGoToActivationPageAfterRelogin(validateToken: String): (MessageErrorException) -> Unit{
+        return {
+            mutableValidateToken.value = validateToken
+            mutableGoToActivationPageAfterRelogin.value = it
+        }
+    }
+
+    private fun onGoToSecurityQuestionAfterRelogin(email: String): () -> Unit{
+        return {
+            mutableGoToSecurityQuestionAfterRelogin.value = email
         }
     }
 

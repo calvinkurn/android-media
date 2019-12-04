@@ -9,12 +9,15 @@ public class ChooseTokoCashAccountViewModel {
     private AccountList accountList;
     private String phoneNumber;
     private String accessToken;
+    private String loginType;
 
     public ChooseTokoCashAccountViewModel(String phoneNumber,
-                                          String accessToken) {
+                                          String accessToken,
+                                          String loginType) {
         this.accountList = new AccountList();
         this.phoneNumber = phoneNumber;
         this.accessToken = accessToken;
+        this.loginType = loginType;
     }
 
     public AccountList getAccountList() {
@@ -32,5 +35,13 @@ public class ChooseTokoCashAccountViewModel {
     //UUID
     public String getAccessToken() {
         return accessToken;
+    }
+
+    public String getLoginType(){
+        return loginType;
+    }
+
+    public void setLoginType(String loginType){
+        this.loginType = loginType;
     }
 }

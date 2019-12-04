@@ -13,8 +13,11 @@ import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.abstraction.common.utils.view.PhoneNumberUtils;
 import com.tokopedia.loginregister.R;
+import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookRequestData;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 import com.tokopedia.usecase.RequestParams;
 
@@ -96,20 +99,30 @@ public class GetFacebookCredentialUseCase {
     private void getFacebookEmail(final AccessToken accessToken, final GetFacebookCredentialSubscriber subscriber, Context context) {
         GraphRequest request = GraphRequest.newMeRequest(
                 accessToken,
-                (object, response) -> {
-                    try {
-                        String email = object.getString("email");
-                        subscriber.onSuccess(accessToken, email);
-                    } catch (JSONException | NullPointerException e) {
-                        LoginManager.getInstance().logOut();
-                        subscriber.onError(new MessageErrorException(
-                                context.getString(R.string.facebook_error_not_authorized),
-                                String.valueOf(ErrorHandlerSession.ErrorCode
-                                        .FACEBOOK_EXCEPTION)));
+                ((object, response) -> {
+                    if(response.getError() == null && object != null){
+                        Gson gson=new Gson();
+                        FacebookRequestData data = gson.fromJson(object.toString(), FacebookRequestData.class);
+
+                        if(data != null){
+                            if(!data.getEmail().isEmpty()){
+                                subscriber.onSuccessEmail(accessToken, data.getEmail());
+                            }else if(!data.getPhone().isEmpty()){
+                                subscriber.onSuccessPhone(accessToken,
+                                        PhoneNumberUtils.INSTANCE.transform(data.getPhone()));
+                            }else{
+                                LoginManager.getInstance().logOut();
+                                subscriber.onError(new MessageErrorException(
+                                        context.getString(R.string.facebook_error_not_authorized),
+                                        String.valueOf(ErrorHandlerSession.ErrorCode
+                                                .FACEBOOK_EXCEPTION)));
+                            }
+                        }
                     }
-                });
+                })
+                );
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "email");
+        parameters.putString("fields", "email,verified_mobile_phone");
         request.setParameters(parameters);
         request.executeAsync();
 

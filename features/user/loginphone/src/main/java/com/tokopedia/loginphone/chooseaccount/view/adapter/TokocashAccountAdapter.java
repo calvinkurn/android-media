@@ -24,6 +24,7 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
 
     private ChooseTokocashAccountContract.ViewAdapter viewListener;
     private List<UserDetail> list;
+    private String phone;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -39,18 +40,20 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
             email = itemView.findViewById(R.id.email);
             mainView = itemView.findViewById(R.id.main_view);
 
-            mainView.setOnClickListener(v -> viewListener.onSelectedTokocashAccount(list.get(getAdapterPosition())));
+            mainView.setOnClickListener(v -> viewListener.onSelectedTokocashAccount(list.get(getAdapterPosition()),phone));
         }
 
     }
-    public static TokocashAccountAdapter createInstance(ChooseTokocashAccountContract.ViewAdapter
-                                                                viewListener, List<UserDetail> listAccount) {
-        return new TokocashAccountAdapter(viewListener, listAccount);
+    public static TokocashAccountAdapter createInstance(ChooseTokocashAccountContract.ViewAdapter viewListener,
+                                                        List<UserDetail> listAccount,
+                                                        String phone) {
+        return new TokocashAccountAdapter(viewListener, listAccount, phone);
     }
 
-    private TokocashAccountAdapter(ChooseTokocashAccountContract.ViewAdapter viewListener, List<UserDetail> listAccount) {
+    private TokocashAccountAdapter(ChooseTokocashAccountContract.ViewAdapter viewListener, List<UserDetail> listAccount, String phone) {
         this.list = listAccount;
         this.viewListener = viewListener;
+        this.phone = phone;
     }
 
     @NonNull
@@ -72,7 +75,8 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
         return list.size();
     }
 
-    public void setList(List<UserDetail> list) {
+    public void setList(List<UserDetail> list, String phone) {
+        this.phone = phone;
         this.list.clear();
         this.list.addAll(list);
         this.notifyDataSetChanged();

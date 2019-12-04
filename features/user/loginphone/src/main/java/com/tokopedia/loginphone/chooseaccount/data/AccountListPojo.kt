@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by nisie on 16/04/19.
  */
-data class AccountList(
+data class AccountListPojo(
         @SerializedName("accountsGetAccountsList")
         @Expose
-        var accountListPojo: AccountListPojo = AccountListPojo()
+        var accountList: AccountList = AccountList()
 )
 
-data class AccountListPojo(
+data class AccountList(
         @SerializedName("key")
     @Expose
     var key: String = "",
