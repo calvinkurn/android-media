@@ -170,7 +170,7 @@ public class ReputationTracking {
         String successState = isSuccessful ? "success" : "unsuccessful";
 
         tracker.sendGeneralEvent(createEventMap(
-                "lalala",
+                "clickReview",
                 "product review detail page" + getEditMarker(isEditReview),
                 "click - product star rating - " + ratingValue,
                 orderId + " - " + productId + " - " + successState
@@ -186,7 +186,7 @@ public class ReputationTracking {
         String messageState = isMessageEmpty ? "blank" : "filled";
 
         tracker.sendGeneralEvent(createEventMap(
-                "lalala2",
+                "clickReview",
                 "product review detail page" + getEditMarker(isEditReview),
                 "click - ulasan product description",
                 orderId + " - " + productId + " - " + messageState
@@ -203,7 +203,7 @@ public class ReputationTracking {
         String successState = isSuccessful ? "success" : "unsuccessful";
 
         tracker.sendGeneralEvent(createEventMap(
-                "lalala3",
+                "clickReview",
                 "product review detail page" + getEditMarker(isEditReview),
                 "click - upload gambar produk",
                 orderId + " - " + productId + " - " + successState + " - " + imageNum
@@ -216,7 +216,7 @@ public class ReputationTracking {
             boolean isEditReview
     ) {
         tracker.sendGeneralEvent(createEventMap(
-                "lalala4",
+                "clickReview",
                 "product review detail page" + getEditMarker(isEditReview),
                 "click - anonim on ulasan produk",
                 orderId + " - " + productId
@@ -236,7 +236,7 @@ public class ReputationTracking {
         String anonymousState = isAnonymous ? "true" : "false";
 
         tracker.sendGeneralEvent(createEventMap(
-                "lalala5",
+                "clickReview",
                 "product review detail page" + getEditMarker(isEditReview),
                 "click - kirim ulasan produk",
                 "order_id : " + orderId +
