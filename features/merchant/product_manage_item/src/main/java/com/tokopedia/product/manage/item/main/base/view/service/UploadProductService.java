@@ -15,6 +15,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
@@ -45,18 +46,25 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.PRODUCT_VIEW_MODEL;
+
 public class UploadProductService extends BaseService implements AddProductServiceListener {
     public static final String TAG = "upload_product";
 
     public static final String ACTION_DRAFT_CHANGED = "com.tokopedia.draft.changed";
     private static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
     private static final String IS_ADD = "IS_ADD";
+    private static final String IS_UPLOAD_PRODUCT_FROM_DRAFT = "IS_UPLOAD_PRODUCT_FROM_DRAFT";
+
 
     @Inject
     AddProductServicePresenter presenter;
 
     @Inject
     UserSessionInterface userSession;
+
+    @Inject
+    SaveInstanceCacheManager cacheManager;
 
     private NotificationManager notificationManager;
     private HashMap<Integer, NotificationCompat.Builder> notificationBuilderMap = new HashMap<>();
@@ -65,6 +73,13 @@ public class UploadProductService extends BaseService implements AddProductServi
         Intent intent = new Intent(context, UploadProductService.class);
         intent.putExtra(DRAFT_PRODUCT_ID, draftProductId);
         intent.putExtra(IS_ADD, isAdd);
+        return intent;
+    }
+
+    public static Intent getIntentUploadProductWithoutSaveToDraft(Context context, boolean isAdd) {
+        Intent intent = new Intent(context, UploadProductService.class);
+        intent.putExtra(IS_ADD, isAdd);
+        intent.putExtra(IS_UPLOAD_PRODUCT_FROM_DRAFT, false);
         return intent;
     }
 
@@ -84,20 +99,13 @@ public class UploadProductService extends BaseService implements AddProductServi
     public int onStartCommand(Intent intent, int flags, int startId) {
         final long draftProductId = intent.getLongExtra(DRAFT_PRODUCT_ID, Long.MIN_VALUE);
         boolean isAdd = intent.getBooleanExtra(IS_ADD, true);
-        presenter.uploadProduct(draftProductId, new ProductSubmitNotificationListener(
-                (int) draftProductId, isAdd ? ProductStatus.ADD : ProductStatus.EDIT) {
-            @Override
-            public void addProgress() {
-                super.addProgress();
-                updateNotification(getId(), getCurrentCount(), getMaxCount());
-            }
-
-            @Override
-            public void setProductViewModel(ProductViewModel productViewModel) {
-                super.setProductViewModel(productViewModel);
-                createNotification(getId(), productViewModel.getProductName());
-            }
-        });
+        boolean isUploadProductFromDraft = intent.getBooleanExtra(IS_UPLOAD_PRODUCT_FROM_DRAFT, true);
+        if(isUploadProductFromDraft) {
+            presenter.uploadProduct(draftProductId, getProductSubmitNotificationListener(draftProductId, isAdd));
+        }else{
+            ProductViewModel currentProductAddViewModel = cacheManager.get(PRODUCT_VIEW_MODEL, ProductViewModel.class);
+            presenter.uploadProduct(currentProductAddViewModel, getProductSubmitNotificationListener(draftProductId, isAdd));
+        }
         return START_NOT_STICKY;
     }
 
@@ -263,5 +271,22 @@ public class UploadProductService extends BaseService implements AddProductServi
                 .setOngoing(false)
                 .setAutoCancel(true)
                 .build();
+    }
+
+    private ProductSubmitNotificationListener getProductSubmitNotificationListener(long draftProductId, boolean isAdd){
+        return new ProductSubmitNotificationListener(
+                (int) draftProductId, isAdd ? ProductStatus.ADD : ProductStatus.EDIT) {
+            @Override
+            public void addProgress() {
+                super.addProgress();
+                updateNotification(getId(), getCurrentCount(), getMaxCount());
+            }
+
+            @Override
+            public void setProductViewModel(ProductViewModel productViewModel) {
+                super.setProductViewModel(productViewModel);
+                createNotification(getId(), productViewModel.getProductName());
+            }
+        };
     }
 }

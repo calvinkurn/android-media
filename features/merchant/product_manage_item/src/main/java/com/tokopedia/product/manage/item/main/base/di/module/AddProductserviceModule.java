@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.item.main.base.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -154,5 +155,11 @@ public class AddProductserviceModule {
     @Provides
     ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
         return productDraftDB.getProductDraftDao();
+    }
+
+    @AddProductServiceScope
+    @Provides
+    SaveInstanceCacheManager provideSaveInstanceCacheManager(@ApplicationContext Context context){
+        return new SaveInstanceCacheManager(context, true);
     }
 }
