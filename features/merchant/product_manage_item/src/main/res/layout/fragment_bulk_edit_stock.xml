@@ -13,7 +13,7 @@
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:padding="@dimen/dp_16"
-        app:lr_title="@string/product_label_stock_always_available" />
+        app:lr_title="@string/product_label_stock_active" />
 
     <View
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:padding="@dimen/dp_16"
-        app:lr_title="@string/product_label_stock_empty" />
+        app:lr_title="@string/product_label_stock_nonactive" />
 
     <View
         android:layout_width="match_parent"
