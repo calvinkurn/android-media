@@ -219,6 +219,10 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     }
 
     private fun mappingCtaButton(cta: DynamicHomeChannel.CtaData) {
+
+        //set false first to prevent unexpected behavior
+        bannerUnifyButton.isInverse = false
+
         if (cta.text.isEmpty()) {
             bannerUnifyButton.visibility = View.GONE
             return
@@ -230,18 +234,18 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
         if (cta.text.isNotEmpty()) type = cta.type
 
-        when (mode) {
-            CTA_MODE_MAIN -> bannerUnifyButton.buttonType = UnifyButton.Type.MAIN
-            CTA_MODE_TRANSACTION -> bannerUnifyButton.buttonType = UnifyButton.Type.TRANSACTION
-            CTA_MODE_ALTERNATE -> bannerUnifyButton.buttonType = UnifyButton.Type.ALTERNATE
-            CTA_MODE_INVERTED -> bannerUnifyButton.isInverse = true
-            CTA_MODE_DISABLED -> bannerUnifyButton.isEnabled = false
-        }
-
         when (type) {
             CTA_TYPE_FILLED -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.FILLED
             CTA_TYPE_GHOST -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.GHOST
             CTA_TYPE_TEXT -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.TEXT_ONLY
+        }
+
+        when (mode) {
+            CTA_MODE_MAIN -> bannerUnifyButton.buttonType = UnifyButton.Type.MAIN
+            CTA_MODE_TRANSACTION -> bannerUnifyButton.buttonType = UnifyButton.Type.TRANSACTION
+            CTA_MODE_ALTERNATE -> bannerUnifyButton.buttonType = UnifyButton.Type.ALTERNATE
+            CTA_MODE_DISABLED -> bannerUnifyButton.isEnabled = false
+            CTA_MODE_INVERTED -> bannerUnifyButton.isInverse = true
         }
 
         bannerUnifyButton.text = cta.text
