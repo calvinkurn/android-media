@@ -964,7 +964,7 @@ final class ProductListPresenter
     private void generateSeamlessLoginUrlForLoggedInUser(String liteUrl) {
         String liteUrlWithParameters = appendUrlWithParameters(liteUrl);
         SeamlessLoginSubscriber seamlessLoginSubscriber = createSeamlessLoginSubscriber(liteUrlWithParameters);
-        seamlessLoginUsecase.generateSeamlessUrl(liteUrl, seamlessLoginSubscriber);
+        seamlessLoginUsecase.generateSeamlessUrl(liteUrlWithParameters, seamlessLoginSubscriber);
     }
 
     private String appendUrlWithParameters(String liteUrl) {
