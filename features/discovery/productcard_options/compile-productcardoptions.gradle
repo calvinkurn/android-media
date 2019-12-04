@@ -1,0 +1,15 @@
+// project dependencies
+include "libraries:inappupdate"
+
+include ":features:discovery:productcard_options"
+
+include "features:common:resources_common"
+include "features:discovery:discovery_common"
+
+include "libraries:track"
+include "libraries:remote_config"
+include "libraries:promotions_target"
+include "libraries:applink"
+
+include "tkpdabstraction"
+include "tkpddesign"

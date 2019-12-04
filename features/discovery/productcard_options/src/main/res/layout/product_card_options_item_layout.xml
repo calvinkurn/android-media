@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifyprinciples.Typography
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/productCardOptionsItemTitle"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_56"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
+    android:textColor="@color/product_card_options_item_title"
+    android:foreground="?attr/selectableItemBackground"
+    app:typographyType="body_2"
+    app:typographyWeight="bold"
+    tools:text="Simpan ke Wishlist" />

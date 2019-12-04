@@ -46,6 +46,7 @@ include "features:salam:umrah"
 include "features:discovery:category_common"
 include "features:discovery:discovery_common"
 include 'features:discovery:productcard'
+include 'features:discovery:productcard_options'
 include 'features:discovery:carousel_productcard'
 include 'features:discovery:filter'
 include 'features:discovery:image_search'
