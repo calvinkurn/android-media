@@ -30,7 +30,7 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
-    // TODO remove this hardcoded channelId (1543, 1591)
+    // TODO remove this hardcoded channelId (1543, 1591, 1387)
     private var channelId = "1591"
 
     @Inject

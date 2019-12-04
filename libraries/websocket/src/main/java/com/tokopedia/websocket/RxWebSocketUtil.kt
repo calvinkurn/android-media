@@ -74,11 +74,11 @@ class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
         fun getInstance(interceptors: List<Interceptor>?,
                         delay: Int = DEFAULT_DELAY,
                         maxRetries: Int = DEFAULT_MAX_RETRIES,
-                        pingInterval: Long = DEFAULT_PING): RxWebSocketUtil? {
+                        pingInterval: Long = DEFAULT_PING): RxWebSocketUtil {
             if (instance == null) {
                 instance = RxWebSocketUtil(interceptors, delay, maxRetries, pingInterval)
             }
-            return instance
+            return instance!!
         }
 
     }

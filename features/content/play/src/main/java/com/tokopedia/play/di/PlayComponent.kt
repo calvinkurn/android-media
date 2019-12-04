@@ -17,8 +17,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 )
 interface PlayComponent {
 
-    fun getCoroutineDispatcher(): CoroutineDispatcher
-
     fun inject(playFragment: PlayFragment)
 
     fun inject(playVideoFragment: PlayVideoFragment)
