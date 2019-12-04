@@ -89,6 +89,14 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
 
     override fun getArrivalAirport(): FlightAirportViewModel = flightSearchPassData.departureAirport
 
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
     override fun isReturning(): Boolean = true
 
     override fun onSuccessGetDetailFlightDeparture(flightJourneyViewModel: FlightJourneyViewModel) {

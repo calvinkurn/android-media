@@ -484,13 +484,15 @@ class OfficialHomeFragment :
         return View.OnClickListener {
             val gridData = channelData.grids?.get(position)
             val applink = gridData?.applink ?: ""
+            val campaignId = channelData.campaignID
 
             gridData?.let {
                 tracking?.flashSalePDPClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it
+                        it,
+                        campaignId
                 )
             }
 
@@ -500,7 +502,8 @@ class OfficialHomeFragment :
 
     override fun flashSaleImpression(channelData: Channel) {
         if (!sentDynamicChannelTrackers.contains(channelData.id)) {
-            tracking?.flashSaleImpression(viewModel.currentSlug, channelData)
+            val campaignId = channelData.campaignID
+            tracking?.flashSaleImpression(viewModel.currentSlug, channelData, campaignId)
             sentDynamicChannelTrackers.add(channelData.id)
         }
     }
