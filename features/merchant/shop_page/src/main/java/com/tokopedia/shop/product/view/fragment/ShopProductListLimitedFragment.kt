@@ -397,28 +397,22 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        val emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_empty_list_product
+        val emptyOwnShopModel = EmptyOwnShopModel()
         if (shopInfo != null && viewModel.isMyShop(shopInfo!!.shopCore.shopID)) {
-            if (isCurrentlyShowAllEtalase) {
-                emptyModel.title = getString(R.string.shop_product_limited_empty_product_title_owner)
-            } else {
-                emptyModel.title = getString(R.string.shop_product_limited_empty_product_title_owner_at_etalase)
-            }
-            emptyModel.content = getString(R.string.shop_product_limited_empty_product_content_owner)
-            emptyModel.buttonTitle = getString(R.string.shop_page_label_add_product)
+            emptyOwnShopModel.title = getString(R.string.shop_product_limited_empty_products_title_owner)
+            emptyOwnShopModel.content = getString(R.string.shop_product_limited_empty_products_content_owner)
             if (shopInfo != null) {
                 shopPageTracking?.impressionZeroProduct(CustomDimensionShopPage.create(shopInfo!!.shopCore.shopID,
                         shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1))
             }
         } else {
             if (isCurrentlyShowAllEtalase) {
-                emptyModel.content = getString(R.string.shop_product_limited_empty_product_title)
+                emptyOwnShopModel.content = getString(R.string.shop_product_limited_empty_product_title)
             } else {
-                emptyModel.content = getString(R.string.shop_product_empty_title_etalase_desc)
+                emptyOwnShopModel.content = getString(R.string.shop_product_empty_title_etalase_desc)
             }
         }
-        return emptyModel
+        return emptyOwnShopModel
     }
 
     override fun initInjector() {
@@ -519,28 +513,14 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         updateScrollListenerState(hasNextPage)
 
         if (shopProductAdapter.shopProductViewModelList.size == 0) {
-            // only add the empty state when the shop has No Product And No Official URL
+            shopProductAdapter.removeElement(emptyDataViewModel)
+            shopProductAdapter.isNeedToShowEtalase = true
+            shopProductAdapter.addElement(emptyDataViewModel)
 
-            val needShowEmpty: Boolean
-            val officialWebViewUrl = getOfficialWebViewUrl(shopInfo)
-            if (TextUtils.isEmpty(officialWebViewUrl)) { // no promo web, show empty
-                needShowEmpty = true
-            } else {
-                // no need to show empty (even if the product is empty) when there is official web
-                // check if it is all product or specific etalase.
-                needShowEmpty = !isCurrentlyShowAllEtalase
-            }
-
-            if (needShowEmpty) {
-                shopProductAdapter.isNeedToShowEtalase = true
-                shopProductAdapter.addElement(emptyDataViewModel)
-            } else {
-                shopProductAdapter.isNeedToShowEtalase = false
-                shopProductAdapter.clearAllNonDataElement()
-            }
             bottom_action_view.visibility = View.GONE
             bottom_action_view.hide()
         } else {
+            shopProductAdapter.removeElement(emptyDataViewModel)
             shopProductAdapter.isNeedToShowEtalase = true
             bottom_action_view.visibility = View.VISIBLE
             bottom_action_view.show()
@@ -1155,6 +1135,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         private const val GRID_SPAN_COUNT = 2
 
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
+
 
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         const val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"

@@ -2,12 +2,16 @@ package com.tokopedia.otp.common.analytics;
 
 
 import android.app.Activity;
+import android.os.Build;
+
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 /**
  * @author by nisie on 1/26/18.
@@ -64,6 +68,9 @@ public class OTPAnalytics {
     }
 
     public void sendScreen(Activity activity, String screenName) {
+        Timber.w("P2screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
+                + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
+                + " | " + Build.TAGS);
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 

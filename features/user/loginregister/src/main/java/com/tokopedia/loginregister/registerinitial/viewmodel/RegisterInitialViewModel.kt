@@ -195,6 +195,19 @@ class RegisterInitialViewModel @Inject constructor(
 
     }
 
+    fun reloginAfterSQ(validateToken: String){
+        loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
+                userSession, validateToken),
+                LoginTokenSubscriber(
+                        userSession,
+                        onSuccessLoginAfterSQ(),
+                        onFailedLoginAfterSQ(),
+                        onFailedLoginAfterSQ(),
+                        { onFailedLoginAfterSQ() }
+                )
+        )
+    }
+
     fun getUserInfo() {
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
                 onSuccessGetUserInfo(),

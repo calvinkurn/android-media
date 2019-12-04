@@ -15,14 +15,12 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -30,10 +28,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.logisticaddaddress.AddressConstants
-import com.tokopedia.logisticaddaddress.AddressConstants.MONAS_LAT
-import com.tokopedia.logisticaddaddress.AddressConstants.MONAS_LONG
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.common.AddressConstants.MONAS_LAT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.MONAS_LONG
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
@@ -45,6 +43,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticaddaddress.utils.rxPinPoint
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
@@ -73,7 +72,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private val FINISH_FLAG = 1212
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
-    private var fusedLocationClient: FusedLocationProviderClient? = null
     private var token: Token? = null
     private var isPolygon: Boolean = false
     private var districtId: Int? = null
@@ -113,9 +111,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         fun newInstance(extra: Bundle): PinpointMapFragment {
             return PinpointMapFragment().apply {
                 arguments = Bundle().apply {
-                    putDouble(AddressConstants.EXTRA_LAT, extra.getDouble(AddressConstants.EXTRA_LAT))
-                    putDouble(AddressConstants.EXTRA_LONG, extra.getDouble(AddressConstants.EXTRA_LONG))
-                    putBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, extra.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE))
+                    putDouble(AddressConstants.EXTRA_LAT, extra.getDouble(AddressConstants.EXTRA_LAT, MONAS_LAT))
+                    putDouble(AddressConstants.EXTRA_LONG, extra.getDouble(AddressConstants.EXTRA_LONG, MONAS_LONG))
+                    putBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, extra.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, true))
                     putParcelable(AddressConstants.KERO_TOKEN, extra.getParcelable(AddressConstants.KERO_TOKEN))
                     putBoolean(AddressConstants.EXTRA_IS_POLYGON, extra.getBoolean(AddressConstants.EXTRA_IS_POLYGON))
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
@@ -154,6 +152,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
+        presenter.autofill(currentLat, currentLong)
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -235,7 +234,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
         activity?.let { MapsInitializer.initialize(activity) }
 
-        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong))
 
         if (this.isPolygon) {
             districtId?.let { districtId ->
@@ -293,13 +292,13 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
 
         if (lat == 0.0 && long == 0.0) {
-            currentLat = AddressConstants.MONAS_LAT
-            currentLong = AddressConstants.MONAS_LONG
+            currentLat = MONAS_LAT
+            currentLong = MONAS_LONG
         } else {
             currentLat = lat
             currentLong = long
         }
-        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong))
     }
 
     private fun moveMap(latLng: LatLng) {
@@ -372,7 +371,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         currentLat = getDistrictDataUiModel.latitude.toDouble()
         currentLong = getDistrictDataUiModel.longitude.toDouble()
         isGetDistrict = true
-        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong))
 
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.VISIBLE
@@ -455,7 +454,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 visibility = View.VISIBLE
                 setOnClickListener {
                     AddNewAddressAnalytics.eventClickButtonUnnamedRoad()
-                    goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true)
+                    goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true, isZipCodeNull = false)
                 }
             }
 
@@ -530,13 +529,13 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
             tkpdDialog.dismiss()
-            goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false)
+            goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false)
         }
         tkpdDialog.show()
         AddNewAddressAnalytics.eventViewFailedPinPointNotification()
     }
 
-    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean) {
+    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean) {
         val saveModel = if (isUnnamedRoad) presenter.getUnnamedRoadModelFormat() else presenter.getSaveAddressDataModel()
         Intent(context, AddEditAddressActivity::class.java).apply {
             if (isMismatch && !isMismatchSolved) {
@@ -547,6 +546,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             putExtra(AddressConstants.KERO_TOKEN, token)
             putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
             putExtra(AddressConstants.EXTRA_IS_UNNAMED_ROAD, isUnnamedRoad)
+            putExtra(AddressConstants.EXTRA_IS_NULL_ZIPCODE, isZipCodeNull)
             startActivityForResult(this, FINISH_FLAG)
         }
     }

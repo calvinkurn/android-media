@@ -48,6 +48,7 @@ import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.LinkerConstants
@@ -93,6 +94,10 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
+import kotlinx.android.synthetic.main.fragment_login_with_phone.container
+import kotlinx.android.synthetic.main.fragment_login_with_phone.emailExtension
+import kotlinx.android.synthetic.main.fragment_login_with_phone.progress_bar
+import kotlinx.android.synthetic.main.fragment_login_with_phone.socmed_btn
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -262,6 +267,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
 
         presenter.getTickerInfo()
+
+        val emailExtensionList = mutableListOf<String>()
+        emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
+        partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
+        partialRegisterInputView.initKeyboardListener(view)
     }
 
     private fun clearData() {
@@ -315,7 +325,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         bottomSheet.setChild(viewBottomSheetDialog)
         bottomSheet.setCloseClickListener{
             analytics.eventClickCloseSocmedButton()
-            dismissBottomSheet()
+            onDismissBottomSheet()
         }
 
         socmed_btn.setOnClickListener {
@@ -460,7 +470,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun onLoginGoogleClick() {
         if (activity != null) {
-            dismissBottomSheet()
+            onDismissBottomSheet()
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
             val intent = mGoogleSignInClient.signInIntent
@@ -472,16 +482,18 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun onLoginFacebookClick() {
 
         if (activity != null) {
-            dismissBottomSheet()
+            onDismissBottomSheet()
             analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this, callbackManager)
         }
     }
 
-    private fun dismissBottomSheet(){
+    private fun onDismissBottomSheet() {
         try {
-            bottomSheet.dismiss()
-        }catch (ignored:Exception) { }
+            if (bottomSheet != null) {
+                bottomSheet.dismiss()
+            }
+        } catch (e: Exception) { }
     }
 
     override fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener {
@@ -541,6 +553,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                         }
                     }
                 })
+        emailExtension?.hide()
 
     }
 
@@ -734,6 +747,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                             R.string.email_not_registered_info), email))
             dialog.setBtnOk(getString(R.string.not_registered_yes))
             dialog.setOnOkClickListener { v ->
+                analytics.eventClickYesSmartLoginDialogButton()
                 dialog.dismiss()
                 val intent = RouteManager.getIntent(context, ApplinkConst.REGISTER)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
@@ -745,6 +759,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }
             dialog.setBtnCancel(getString(R.string.already_registered_no))
             dialog.setOnCancelClickListener { v ->
+                analytics.eventClickNoSmartLoginDialogButton()
                 dialog.dismiss()
                 onChangeButtonClicked()
                 emailPhoneEditText.setText(email)

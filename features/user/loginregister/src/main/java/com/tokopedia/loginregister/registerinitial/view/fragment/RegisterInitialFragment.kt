@@ -41,6 +41,7 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.graphql.util.getParamBoolean
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils
@@ -78,6 +79,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_initial_register.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -263,6 +265,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerInitialViewModel.getProvider()
         partialRegisterInputView.setListener(this)
         registerInitialViewModel.getTickerInfo()
+
+        val emailExtensionList = mutableListOf<String>()
+        emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
+        partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
+        partialRegisterInputView.initKeyboardListener(view)
     }
 
     @SuppressLint("RtlHardcoded")
@@ -285,24 +292,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             }
 
             registerButton.visibility = View.GONE
-            partialRegisterInputView.visibility = View.GONE
+            partialRegisterInputView.visibility = View.VISIBLE
             partialRegisterInputView.setButtonValidator(true)
             checkPermissionGetPhoneNumber()
-
-            if (!GlobalConfig.isSellerApp()) {
-                optionTitle.setText(R.string.register_option_title)
-            }else{
-                separator.visibility = View.GONE
-                optionTitle.setText(R.string.register_now)
-                optionTitle.typeface = Typeface.DEFAULT_BOLD
-                optionTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-                val layoutParams: RelativeLayout.LayoutParams = optionTitle.layoutParams as RelativeLayout.LayoutParams
-                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, 0)
-                layoutParams.setMargins(0, 32, 0, 0)
-                optionTitle.layoutParams = layoutParams
-                optionTitle.setPadding(0, 0, 0, 0)
-                optionTitle.setTextColor(ContextCompat.getColor(this, R.color.black_70))
-            }
+            optionTitle.setText(R.string.register_option_title)
 
             registerButton.setColor(Color.WHITE)
             registerButton.setBorderColor(MethodChecker.getColor(activity, R.color.black_38))
@@ -312,12 +305,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_EMAIL)
                 goToRegisterEmailPage()
 
-            }
-
-            if (GlobalConfig.isSellerApp()) {
-                registerButton.visibility = View.VISIBLE
-            } else {
-                partialRegisterInputView.visibility = View.VISIBLE
             }
 
             val sourceString = resources.getString(R.string
@@ -532,7 +519,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
         onErrorRegister(errorMessage)
     }
-
+  
     private fun onSuccessGetUserInfo(profileInfo: ProfileInfo){
         val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
@@ -609,6 +596,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 }
             }
             EMAIL_TYPE -> {
+                registerAnalytics.trackClickEmailSignUpButton()
                 if(registerCheckData.isExist){
                     if(!registerCheckData.isPending){
                         showRegisteredEmailDialog(registerCheckData.view)
@@ -690,7 +678,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
 
         activity?.let {
-            registerAnalytics.trackClickEmailSignUpButton()
             showProgressBar()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.EMAIL_REGISTER)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
@@ -751,9 +738,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                             .RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-                it.setResult(Activity.RESULT_OK)
-                it.finish()
+            } else if (requestCode == REQUEST_SECURITY_QUESTION
+                    && resultCode == Activity.RESULT_OK
+                    && data != null){
+                data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")?.let {validateToken ->
+                    registerInitialViewModel.reloginAfterSQ(validateToken)
+                }
+
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
                             .RESULT_CANCELED) {
                 dismissProgressBar()
@@ -880,6 +871,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         if (socmedButtonsContainer.getChildAt(lastPos) !is ProgressBar) {
             socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
         }
+        emailExtension?.hide()
     }
 
     private fun setDiscoverOnClickListener(discoverItemViewModel: DiscoverItemViewModel,
@@ -941,7 +933,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun showRegisteredEmailDialog(email: String) {
-        registerAnalytics.trackClickEmailSignUpButton()
         registerAnalytics.trackFailedClickEmailSignUpButton(RegisterAnalytics.LABEL_EMAIL_EXIST)
         activity?.let {
             val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
@@ -1152,13 +1143,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     phoneNumbers.add(telephony.line1Number)
             }
 
-            if(!phoneNumbers.isEmpty())
+            if(phoneNumbers.isNotEmpty())
                 partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers))
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

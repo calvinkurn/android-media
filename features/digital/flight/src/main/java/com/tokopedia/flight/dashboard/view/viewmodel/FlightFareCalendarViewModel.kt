@@ -21,14 +21,14 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class FlightFareCalendarViewModel @Inject constructor(val dispatcher: CoroutineDispatcher,
+class FlightFareCalendarViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                       private val gqlRepository: GraphqlRepository)
     : BaseViewModel(dispatcher) {
 
     val fareFlightCalendarData = MutableLiveData<List<FlightFareAttributes>>()
 
     fun getFareFlightCalendar(rawQuery: String,
-                              mapParam: HashMap<String, kotlin.Any>,
+                              mapParam: HashMap<String, Any>,
                               minDate: Date, maxDate: Date) {
         launchCatchError(block = {
             val attributes = ArrayList<FlightFareAttributes>()

@@ -34,7 +34,7 @@ class PlaySprintSaleAnnouncementViewHolder(itemView: View, var listener: Chatroo
 
     init {
         icon = itemView.findViewById(R.id.icon)
-        title = itemView.findViewById(com.tokopedia.design.R.id.title)
+        title = itemView.findViewById(R.id.title)
         contentImage = itemView.findViewById(R.id.content_image)
         price = itemView.findViewById(R.id.price)
         priceBefore = itemView.findViewById(R.id.price_before_discount)
