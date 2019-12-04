@@ -165,6 +165,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun initChatListComponent(container: ViewGroup): UIComponent<Unit> {
         return ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+                .also(viewLifecycleOwner.lifecycle::addObserver)
     }
 
     private fun layoutView(

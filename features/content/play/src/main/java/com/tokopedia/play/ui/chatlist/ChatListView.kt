@@ -66,6 +66,5 @@ class ChatListView(
 
     fun onDestroy() {
         chatAdapter.unregisterAdapterDataObserver(adapterObserver)
-        Timber.tag("CHAT ADAPTER").d("UNREGISTERED")
     }
 }

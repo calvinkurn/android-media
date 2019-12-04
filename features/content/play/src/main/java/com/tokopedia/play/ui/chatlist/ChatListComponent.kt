@@ -1,6 +1,8 @@
 package com.tokopedia.play.ui.chatlist
 
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -26,7 +28,6 @@ class ChatListComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.Chat -> uiView.showChat(it.chat)
-                            is ScreenStateEvent.Destroy -> uiView.onDestroy()
                         }
                     }
         }
@@ -38,6 +39,11 @@ class ChatListComponent(
 
     override fun getUserInteractionEvents(): Flow<Unit> {
         throw IllegalArgumentException()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        uiView.onDestroy()
     }
 
     private fun initView(container: ViewGroup): ChatListView =
