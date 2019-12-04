@@ -148,7 +148,6 @@ class PdpGamificationView : FrameLayout {
                         scrollListener.updateStateAfterGetData()
                         log("data size = ${it.data.size}")
                     } else {
-                        //todo Rahul remote later
                         showErrorToast("List is empty")
                         log("List is empty")
                     }
@@ -187,7 +186,7 @@ class PdpGamificationView : FrameLayout {
     }
 
     fun showErrorToast(msg: String) {
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
     fun getRecommendationListener(): WeakReference<RecommendationListener> {
