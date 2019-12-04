@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.webview
+package com.tokopedia.webview
 
 import android.content.Context
 import android.net.Uri
@@ -13,7 +13,6 @@ import java.net.URLDecoder
  * ade.hadian@tokopedia.com
  */
 
-@Deprecated("please use class com.tokopedia.webview.WebViewHelper instead")
 object WebViewHelper {
 
     private const val PREFIX_PATTERN: String = "www."
