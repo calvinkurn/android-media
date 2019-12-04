@@ -54,9 +54,7 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
             val isSubscribed = view.digitalSubscriptionParams.isSubscribed
             view.renderMyBillsSusbcriptionView(bodyTitle, description, isChecked, isSubscribed)
         }
-        view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.run {
-            view.renderMyBillsEgoldView(info?.title, info?.subtitle, checkBoxDisabled)
-        }
+        view.renderMyBillsEgoldView(view.cartInfoData.attributes?.fintechProduct?.getOrNull(0))
     }
 
     override fun onEgoldCheckedListener(checked: Boolean) {
