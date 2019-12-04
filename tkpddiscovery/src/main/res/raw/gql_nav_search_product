@@ -94,6 +94,10 @@ query SearchProduct($params: String) {
       GAKey: ga_key
       preorder: is_preorder
       wishlist
+      free_ongkir{
+        is_active
+        img_url
+      }
       shop {
         id
         name
