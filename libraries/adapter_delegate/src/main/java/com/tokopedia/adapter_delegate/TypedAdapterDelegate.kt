@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.helper
+package com.tokopedia.adapter_delegate
 
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
