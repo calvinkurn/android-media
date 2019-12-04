@@ -193,6 +193,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun renderInfoTicker(tickerList: List<SomListTicker.Data.OrderTickers.Tickers>) {
         if (tickerList.isNotEmpty()) {
+            ticker_info?.visibility = View.VISIBLE
             if (tickerList.size > 1) {
                 val listTickerData = arrayListOf<TickerData>()
                 var indexTicker = 0
@@ -215,7 +216,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             } else {
                 tickerList.first().let {
-                    ticker_info?.visibility = View.VISIBLE
                     ticker_info?.setHtmlDescription(it.shortDesc)
                     ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
                     ticker_info?.setDescriptionClickEvent(object : TickerCallback {

@@ -122,7 +122,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private var editAwbResponse = SomEditAwbResponse.Data()
     private var rejectReasonResponse = listOf<SomReasonRejectData.Data.SomRejectReason>()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
-    private var listRejectTypeData: ArrayList<SomRejectTypeData> = arrayListOf()
     private lateinit var somDetailAdapter: SomDetailAdapter
     private lateinit var somBottomSheetRejectOrderAdapter:  SomBottomSheetRejectOrderAdapter
     private lateinit var somBottomSheetRejectReasonsAdapter:  SomBottomSheetRejectReasonsAdapter
@@ -132,6 +131,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private lateinit var bottomSheetUnify: BottomSheetUnify
     private val FLAG_CONFIRM_REQ_PICKUP = 3535
     private val FLAG_CONFIRM_SHIPPING = 3553
+    private lateinit var reasonCourierProblemText: String
 
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
@@ -770,11 +770,17 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             val orderRejectRequest = SomRejectRequest()
             orderRejectRequest.orderId = detailResponse.orderId.toString()
             orderRejectRequest.rCode = rCode
-            orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
-            if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString())) {
-                doRejectOrder(orderRejectRequest)
+
+            if (viewBottomSheet.tf_extra_notes.visibility == View.VISIBLE) {
+                orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
+                if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString())) {
+                    doRejectOrder(orderRejectRequest)
+                } else {
+                    showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+                }
             } else {
-                showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+                orderRejectRequest.reason = reasonCourierProblemText
+                doRejectOrder(orderRejectRequest)
             }
         }
 
@@ -867,6 +873,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             bottomSheetUnify.tf_extra_notes?.setLabelStatic(true)
             bottomSheetUnify.tf_extra_notes?.setPlaceholder(getString(R.string.placeholder_reject_reason))
         } else {
+            reasonCourierProblemText = optionCourierProblem.reasonText
             bottomSheetUnify.tf_extra_notes?.visibility = View.GONE
         }
     }
