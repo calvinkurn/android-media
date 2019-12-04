@@ -32,7 +32,6 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
 //            inputModel = (ProductViewModel)
 //                    requestParams.getObject(UPLOAD_PRODUCT_INPUT_MODEL);
 //        } else {
-            int a = 2/0;
             return Observable.error(new Exception());
 //        }
 //        long prevDraftId = requestParams.getLong(PREV_DRAFT_ID, 0);
