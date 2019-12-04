@@ -156,7 +156,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
     private val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
     private val ADVERTISINGID = "ADVERTISINGID"
-    private val QUERY_APP_CLIENT_ID = "{app_client_id}"
+    private val QUERY_APP_CLIENT_ID = "?appClientId="
 
     companion object {
         private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
@@ -422,8 +422,10 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 catAnalyticsInstance.eventBukaClick(bannedData?.appRedirection.toString(), mDepartmentId)
                 val localCacheHandler = LocalCacheHandler(activity, ADVERTISINGID)
                 val adsId = localCacheHandler.getString(KEY_ADVERTISINGID)
+                var url = Uri.parse(bannedData?.appRedirection).toString()
                 if (adsId != null && adsId.trim().isNotEmpty()) {
-                    productNavViewModel.openBrowserSeamlessly(Uri.parse(bannedData?.appRedirection).toString().replace(QUERY_APP_CLIENT_ID, adsId))
+                    url = url.plus(QUERY_APP_CLIENT_ID + adsId)
+                    productNavViewModel.openBrowserSeamlessly(url)
                 }
             }
         }
