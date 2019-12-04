@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
@@ -8,9 +9,12 @@ import android.widget.EditText
 import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
+import com.tokopedia.sellerorder.list.presentation.activity.SomListActivity
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.network.LogoutPojo
 import com.tokopedia.user.session.UserSession
@@ -192,6 +196,8 @@ class MainActivity : AppCompatActivity() {
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
 
+        // TODO : revert!
+        startActivity(Intent(this, SomListActivity::class.java))
     }
 
 }

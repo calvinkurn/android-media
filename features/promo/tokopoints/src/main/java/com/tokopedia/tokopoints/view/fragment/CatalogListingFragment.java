@@ -154,13 +154,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         serverErrorView = view.findViewById(R.id.server_error_view);
         initListener();
 
-        if (isSeeAllPage()) {
-            mPresenter.getHomePageData("", "", false);
-        } else {
-            mPresenter.getPointData();
-            mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
-                    getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
-        }
+        requestHomePageData();
     }
 
     @Override
@@ -415,14 +409,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         if (source.getId() == R.id.text_my_coupon) {
             gotoMyCoupons();
         } else if (source.getId() == R.id.text_failed_action) {
-            if (isSeeAllPage()) {
-                mPresenter.getHomePageData("", "", false);
-            } else {
-                mPresenter.getPointData();
-                mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
-                        getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
-            }
-
+            requestHomePageData();
             mPresenter.getPointData();
         } else if (source.getId() == R.id.text_token_title
                 || source.getId() == R.id.img_token) {
@@ -462,6 +449,16 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
                     "");
+        }
+    }
+
+    private void requestHomePageData(){
+        if (isSeeAllPage()) {
+            mPresenter.getHomePageData("", "", false);
+        } else {
+            mPresenter.getPointData();
+            mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
+                    getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
         }
     }
 
@@ -618,13 +615,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
             @Override
             public void onFinish() {
-                if (isSeeAllPage()) {
-                    mPresenter.getHomePageData("", "", false);
-                } else {
-                    mPresenter.getPointData();
-                    mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
-                            getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
-                }
+                requestHomePageData();
             }
         }.start();
     }

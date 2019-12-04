@@ -939,7 +939,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setItems(List<Items> items, boolean isTradeIn) {
         productInformationTitle.setVisibility(View.VISIBLE);
         itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn));
+        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status));
     }
 
     @Override
