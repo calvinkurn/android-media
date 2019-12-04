@@ -8,7 +8,7 @@
         android:id="@+id/sv_umrah_search_filter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bt_umrah_search_filter_save"
+        app:layout_constraintBottom_toTopOf="@+id/bt_umrah_search_filter_save"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="@dimen/dp_12">
@@ -32,7 +32,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_search_filter_departure_period_see_all"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tg_umrah_search_filter_departure_period"
+                app:layout_constraintTop_toTopOf="@+id/tg_umrah_search_filter_departure_period"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/umrah_see_all"
@@ -45,7 +45,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_umrah_search_filter_departure_period"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tg_umrah_search_filter_departure_period"
+                app:layout_constraintTop_toBottomOf="@+id/tg_umrah_search_filter_departure_period"
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_search_filter_departure_city"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_umrah_search_filter_departure_period"
+                app:layout_constraintTop_toBottomOf="@+id/rv_umrah_search_filter_departure_period"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/umrah_search_filter_departure_city"
@@ -70,7 +70,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_search_filter_departure_city_see_all"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tg_umrah_search_filter_departure_city"
+                app:layout_constraintTop_toTopOf="@+id/tg_umrah_search_filter_departure_city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/umrah_see_all"
@@ -83,7 +83,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_umrah_search_filter_departure_city"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tg_umrah_search_filter_departure_city"
+                app:layout_constraintTop_toBottomOf="@+id/tg_umrah_search_filter_departure_city"
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_search_filter_travel_duration"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_umrah_search_filter_departure_city"
+                app:layout_constraintTop_toBottomOf="@+id/rv_umrah_search_filter_departure_city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/umrah_search_filter_travel_duration"
@@ -107,9 +107,9 @@
 
             <com.tokopedia.salam.umrah.search.presentation.widget.UmrahSeekbarRangeWidget
                 android:id="@+id/sr_umrah_search_filter_travel_duration"
-                app:layout_constraintLeft_toLeftOf="@id/tg_umrah_search_filter_travel_duration"
-                app:layout_constraintTop_toBottomOf="@id/tg_umrah_search_filter_travel_duration"
-                app:layout_constraintRight_toRightOf="@id/tg_umrah_search_filter_departure_city_see_all"
+                app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_search_filter_travel_duration"
+                app:layout_constraintTop_toBottomOf="@+id/tg_umrah_search_filter_travel_duration"
+                app:layout_constraintRight_toRightOf="@+id/tg_umrah_search_filter_departure_city_see_all"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_12"/>
@@ -117,7 +117,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_search_filter_package_price"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sr_umrah_search_filter_travel_duration"
+                app:layout_constraintTop_toBottomOf="@+id/sr_umrah_search_filter_travel_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/umrah_search_filter_package_price"
@@ -129,9 +129,9 @@
 
             <com.tokopedia.design.text.RangeInputView
                 android:id="@+id/riv_umrah_search_filter_package_price"
-                app:layout_constraintLeft_toLeftOf="@id/sr_umrah_search_filter_travel_duration"
-                app:layout_constraintTop_toBottomOf="@id/tg_umrah_search_filter_package_price"
-                app:layout_constraintRight_toRightOf="@id/tg_umrah_search_filter_departure_city_see_all"
+                app:layout_constraintLeft_toLeftOf="@+id/sr_umrah_search_filter_travel_duration"
+                app:layout_constraintTop_toBottomOf="@+id/tg_umrah_search_filter_package_price"
+                app:layout_constraintRight_toRightOf="@+id/tg_umrah_search_filter_departure_city_see_all"
                 app:driv_label_max="@string/umrah_search_filter_package_price_maximum"
                 app:driv_label_min="@string/umrah_search_filter_package_price_minimum"
                 app:driv_typable="false"
@@ -143,7 +143,7 @@
     </ScrollView>
 
     <androidx.appcompat.widget.AppCompatImageView
-        app:layout_constraintTop_toBottomOf="@id/sv_umrah_search_filter"
+        app:layout_constraintTop_toBottomOf="@+id/sv_umrah_search_filter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

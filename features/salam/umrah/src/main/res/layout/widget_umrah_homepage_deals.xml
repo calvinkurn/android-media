@@ -95,7 +95,7 @@
             android:layout_marginBottom="@dimen/dp_3"
             android:textColor="@color/Neutral_N700_44"
             app:layout_constraintBottom_toBottomOf="@+id/tg_umrah_price"
-            app:layout_constraintStart_toEndOf="@id/tg_umrah_price"
+            app:layout_constraintStart_toEndOf="@+id/tg_umrah_price"
             app:typographyType="small"
             app:typographyWeight="reguler"
             android:text="@string/umrah_homepage_pax_all_in" />
@@ -108,7 +108,7 @@
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/umrah_ic_calendar"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_price"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_price" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_price" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_umrah_calendar"
@@ -132,7 +132,7 @@
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/umrah_ic_hotel"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_price"
-            app:layout_constraintTop_toBottomOf="@id/iv_umrah_calendar" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_umrah_calendar" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_umrah_hotel"
@@ -155,7 +155,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:adjustViewBounds="true"
             app:layout_constraintStart_toStartOf="@+id/iv_umrah_hotel"
-            app:layout_constraintTop_toBottomOf="@id/iv_umrah_hotel"
+            app:layout_constraintTop_toBottomOf="@+id/iv_umrah_hotel"
             app:srcCompat="@drawable/umrah_ic_plane" />
 
         <com.tokopedia.unifyprinciples.Typography

@@ -33,7 +33,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/iv_umrah_salam"
+            app:layout_constraintLeft_toRightOf="@+id/iv_umrah_salam"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_12"
@@ -45,17 +45,17 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_umrah_pdp_ic_add_1"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_pdp_ad_title"
-            app:layout_constraintLeft_toLeftOf="@id/tg_umrah_pdp_ad_title"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_ad_title"
+            app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_ad_title"
             android:layout_width="@dimen/dp_12"
             android:layout_height="@dimen/dp_12"
             app:srcCompat="@drawable/umrah_ic_pdp_add"
             android:layout_marginTop="@dimen/dp_8" />
 
         <com.tokopedia.unifyprinciples.Typography
-            app:layout_constraintTop_toTopOf="@id/iv_umrah_pdp_ic_add_1"
-            app:layout_constraintBottom_toBottomOf="@id/iv_umrah_pdp_ic_add_1"
-            app:layout_constraintLeft_toRightOf="@id/iv_umrah_pdp_ic_add_1"
+            app:layout_constraintTop_toTopOf="@+id/iv_umrah_pdp_ic_add_1"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_umrah_pdp_ic_add_1"
+            app:layout_constraintLeft_toRightOf="@+id/iv_umrah_pdp_ic_add_1"
             app:typographyType="body_3"
             android:textColor="@color/Neutral_N700_96"
             app:typographyWeight="reguler"
@@ -67,17 +67,17 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_umrah_pdp_ic_add_2"
-            app:layout_constraintTop_toBottomOf="@id/iv_umrah_pdp_ic_add_1"
-            app:layout_constraintLeft_toLeftOf="@id/iv_umrah_pdp_ic_add_1"
+            app:layout_constraintTop_toBottomOf="@+id/iv_umrah_pdp_ic_add_1"
+            app:layout_constraintLeft_toLeftOf="@+id/iv_umrah_pdp_ic_add_1"
             android:layout_width="@dimen/dp_12"
             android:layout_height="@dimen/dp_12"
             app:srcCompat="@drawable/umrah_ic_pdp_add"
             android:layout_marginTop="@dimen/dp_8" />
 
         <com.tokopedia.unifyprinciples.Typography
-            app:layout_constraintTop_toTopOf="@id/iv_umrah_pdp_ic_add_2"
-            app:layout_constraintBottom_toBottomOf="@id/iv_umrah_pdp_ic_add_2"
-            app:layout_constraintLeft_toRightOf="@id/iv_umrah_pdp_ic_add_2"
+            app:layout_constraintTop_toTopOf="@+id/iv_umrah_pdp_ic_add_2"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_umrah_pdp_ic_add_2"
+            app:layout_constraintLeft_toRightOf="@+id/iv_umrah_pdp_ic_add_2"
             app:typographyType="body_3"
             android:textColor="@color/Neutral_N700_96"
             app:typographyWeight="reguler"
@@ -89,8 +89,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_umrah_pdp_ic_add_3"
-            app:layout_constraintTop_toBottomOf="@id/iv_umrah_pdp_ic_add_2"
-            app:layout_constraintLeft_toLeftOf="@id/iv_umrah_pdp_ic_add_2"
+            app:layout_constraintTop_toBottomOf="@+id/iv_umrah_pdp_ic_add_2"
+            app:layout_constraintLeft_toLeftOf="@+id/iv_umrah_pdp_ic_add_2"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="@dimen/dp_12"
             android:layout_height="@dimen/dp_12"
@@ -99,9 +99,9 @@
             android:layout_marginBottom="@dimen/dp_16"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            app:layout_constraintTop_toTopOf="@id/iv_umrah_pdp_ic_add_3"
-            app:layout_constraintBottom_toBottomOf="@id/iv_umrah_pdp_ic_add_3"
-            app:layout_constraintLeft_toRightOf="@id/iv_umrah_pdp_ic_add_3"
+            app:layout_constraintTop_toTopOf="@+id/iv_umrah_pdp_ic_add_3"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_umrah_pdp_ic_add_3"
+            app:layout_constraintLeft_toRightOf="@+id/iv_umrah_pdp_ic_add_3"
             app:typographyType="body_3"
             android:textColor="@color/Neutral_N700_96"
             app:typographyWeight="reguler"

@@ -18,8 +18,8 @@
         app:typographyWeight="bold"/>
     
     <RadioButton
-        app:layout_constraintTop_toTopOf="@id/tv_umrah_home_page_bottom_sheet"
-        app:layout_constraintBottom_toBottomOf="@id/tv_umrah_home_page_bottom_sheet"
+        app:layout_constraintTop_toTopOf="@+id/tv_umrah_home_page_bottom_sheet"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_umrah_home_page_bottom_sheet"
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/radio_umrah_home_page_bottom_sheet"
         android:layout_width="@dimen/dp_32"
@@ -27,8 +27,8 @@
 
     <View
         android:id="@+id/bs_umrah_search_separator"
-        app:layout_constraintTop_toBottomOf="@id/tv_umrah_home_page_bottom_sheet"
-        app:layout_constraintLeft_toLeftOf="@id/tv_umrah_home_page_bottom_sheet"
+        app:layout_constraintTop_toBottomOf="@+id/tv_umrah_home_page_bottom_sheet"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_umrah_home_page_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="@color/Neutral_N75"

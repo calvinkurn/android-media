@@ -26,8 +26,8 @@
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_2"
         android:textColor="@color/Neutral_N700_68"
-        app:layout_constraintLeft_toRightOf="@id/item_tg_umrah_pdp_detail_room_title"
-        app:layout_constraintTop_toTopOf="@id/item_tg_umrah_pdp_detail_room_title"
+        app:layout_constraintLeft_toRightOf="@+id/item_tg_umrah_pdp_detail_room_title"
+        app:layout_constraintTop_toTopOf="@+id/item_tg_umrah_pdp_detail_room_title"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="1 kamar dengan 4 kasur" />
@@ -41,7 +41,7 @@
         android:textColor="@color/Neutral_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_tg_umrah_pdp_detail_room_title"
+        app:layout_constraintTop_toBottomOf="@+id/item_tg_umrah_pdp_detail_room_title"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Rp19.750.000 Rp.19.500.000" />
@@ -50,7 +50,7 @@
         android:id="@+id/item_rbu_umrah_pdp_detail_room"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_22"
-        app:layout_constraintBottom_toBottomOf="@id/item_tg_umrah_pdp_detail_room_price"
+        app:layout_constraintBottom_toBottomOf="@+id/item_tg_umrah_pdp_detail_room_price"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/item_tg_umrah_pdp_detail_room_title" />
+        app:layout_constraintTop_toTopOf="@+id/item_tg_umrah_pdp_detail_room_title" />
 </androidx.constraintlayout.widget.ConstraintLayout>

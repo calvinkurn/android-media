@@ -59,7 +59,7 @@
         android:layout_height="@dimen/dp_16"
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="@+id/tg_umrah_price_loading"
-        app:layout_constraintTop_toBottomOf="@id/tg_umrah_price_loading" />
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_price_loading" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/iv_umrah_hotel_loading"
@@ -68,7 +68,7 @@
         android:layout_height="@dimen/dp_16"
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="@+id/tg_umrah_price_loading"
-        app:layout_constraintTop_toBottomOf="@id/iv_umrah_calendar_loading" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_umrah_calendar_loading" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/iv_umrah_plane_loading"
@@ -77,5 +77,5 @@
         android:layout_height="@dimen/dp_16"
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="@+id/iv_umrah_hotel_loading"
-        app:layout_constraintTop_toBottomOf="@id/iv_umrah_hotel_loading" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_umrah_hotel_loading" />
 </androidx.constraintlayout.widget.ConstraintLayout>

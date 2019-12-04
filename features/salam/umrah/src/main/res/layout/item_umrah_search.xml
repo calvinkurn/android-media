@@ -24,7 +24,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tg_umrah_title"
+            app:layout_constraintEnd_toStartOf="@+id/tg_umrah_title"
             tools:src="@color/light_blue_300" />
 
         <com.tokopedia.unifycomponents.Label
@@ -52,7 +52,7 @@
             android:maxLines="2"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_umrah_image"
+            app:layout_constraintStart_toEndOf="@+id/iv_umrah_image"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6"
             tools:text="Umrah Silver 9 Hari Berangkat 20 November 2019" />
@@ -89,7 +89,7 @@
             android:text="@string/umrah_homepage_pax"
             android:textColor="@color/Neutral_N700_44"
             app:layout_constraintBottom_toBottomOf="@+id/tg_umrah_price"
-            app:layout_constraintStart_toEndOf="@id/tg_umrah_price"
+            app:layout_constraintStart_toEndOf="@+id/tg_umrah_price"
             app:typographyType="small"
             app:typographyWeight="reguler" />
 
@@ -100,7 +100,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:adjustViewBounds="true"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_title"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_title"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_title"
             app:srcCompat="@drawable/umrah_ic_calendar" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -127,7 +127,7 @@
             android:layout_marginTop="@dimen/dp_8"
             android:adjustViewBounds="true"
             app:layout_constraintStart_toStartOf="@+id/iv_umrah_calendar"
-            app:layout_constraintTop_toBottomOf="@id/iv_umrah_calendar"
+            app:layout_constraintTop_toBottomOf="@+id/iv_umrah_calendar"
             app:srcCompat="@drawable/umrah_ic_hotel" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -151,7 +151,7 @@
             android:layout_marginTop="@dimen/dp_8"
             android:adjustViewBounds="true"
             app:layout_constraintStart_toStartOf="@+id/iv_umrah_hotel"
-            app:layout_constraintTop_toBottomOf="@id/iv_umrah_hotel"
+            app:layout_constraintTop_toBottomOf="@+id/iv_umrah_hotel"
             app:srcCompat="@drawable/umrah_ic_plane" />
 
         <com.tokopedia.unifyprinciples.Typography

@@ -20,7 +20,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item_umrah_pdp_facility_text"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/item_umrah_pdp_facility_bullet"
+        app:layout_constraintLeft_toRightOf="@+id/item_umrah_pdp_facility_bullet"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         android:textColor="@color/Neutral_N700_96"

@@ -8,15 +8,15 @@
     <View
         android:id="@+id/ic_umrah_pdp_itinerary_bullet"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tg_umrah_pdp_itinerary_title"
-        app:layout_constraintBottom_toBottomOf="@id/tg_umrah_pdp_itinerary_title"
+        app:layout_constraintTop_toTopOf="@+id/tg_umrah_pdp_itinerary_title"
+        app:layout_constraintBottom_toBottomOf="@+id/tg_umrah_pdp_itinerary_title"
         android:layout_width="@dimen/dp_8"
         android:layout_height="@dimen/dp_8"
         android:background="@drawable/umrah_ic_pdp_itinerary_bullet"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_pdp_itinerary_title"
-        app:layout_constraintLeft_toRightOf="@id/ic_umrah_pdp_itinerary_bullet"
+        app:layout_constraintLeft_toRightOf="@+id/ic_umrah_pdp_itinerary_bullet"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,19 +29,19 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_umrah_pdp_itinerary_line"
-        app:layout_constraintLeft_toLeftOf="@id/ic_umrah_pdp_itinerary_bullet"
-        app:layout_constraintRight_toRightOf="@id/ic_umrah_pdp_itinerary_bullet"
-        app:layout_constraintTop_toTopOf="@id/tg_umrah_pdp_itinerary_desc"
-        app:layout_constraintBottom_toBottomOf="@id/tg_umrah_pdp_itinerary_desc"
+        app:layout_constraintLeft_toLeftOf="@+id/ic_umrah_pdp_itinerary_bullet"
+        app:layout_constraintRight_toRightOf="@+id/ic_umrah_pdp_itinerary_bullet"
+        app:layout_constraintTop_toTopOf="@+id/tg_umrah_pdp_itinerary_desc"
+        app:layout_constraintBottom_toBottomOf="@+id/tg_umrah_pdp_itinerary_desc"
         android:layout_width="@dimen/dp_2"
         android:layout_height="0dp"
         android:background="@drawable/umrah_img_pdp_itinerary_line" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_pdp_itinerary_desc"
-        app:layout_constraintTop_toBottomOf="@id/tg_umrah_pdp_itinerary_title"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_itinerary_title"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/tg_umrah_pdp_itinerary_title"
+        app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_itinerary_title"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         android:layout_width="0dp"

@@ -34,16 +34,16 @@
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_5"
-        app:layout_constraintTop_toBottomOf="@id/tg_widget_umrah_checkout_green_rect_title"
-        app:layout_constraintLeft_toLeftOf="@id/tg_widget_umrah_checkout_green_rect_title"
+        app:layout_constraintTop_toBottomOf="@+id/tg_widget_umrah_checkout_green_rect_title"
+        app:layout_constraintLeft_toLeftOf="@+id/tg_widget_umrah_checkout_green_rect_title"
         android:src="@color/light_blue_300"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_widget_umrah_checkout_green_rect_first_line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/iv_widget_umrah_checkout_green_rect_first_line"
-        app:layout_constraintTop_toTopOf="@id/iv_widget_umrah_checkout_green_rect_first_line"
+        app:layout_constraintLeft_toRightOf="@+id/iv_widget_umrah_checkout_green_rect_first_line"
+        app:layout_constraintTop_toTopOf="@+id/iv_widget_umrah_checkout_green_rect_first_line"
         tools:text="1 Jamaah"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
@@ -54,8 +54,8 @@
         android:id="@+id/iv_widget_umrah_checkout_green_rect_second_line"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/tg_widget_umrah_checkout_green_rect_first_line"
-        app:layout_constraintLeft_toLeftOf="@id/iv_widget_umrah_checkout_green_rect_first_line"
+        app:layout_constraintTop_toBottomOf="@+id/tg_widget_umrah_checkout_green_rect_first_line"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_widget_umrah_checkout_green_rect_first_line"
         app:layout_constraintBottom_toBottomOf="parent"
         android:src="@color/light_blue_300"
         android:layout_marginBottom="@dimen/dp_12"/>
@@ -66,8 +66,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/tg_widget_umrah_checkout_green_rect_first_line"
-        app:layout_constraintTop_toBottomOf="@id/tg_widget_umrah_checkout_green_rect_first_line"
+        app:layout_constraintLeft_toLeftOf="@+id/tg_widget_umrah_checkout_green_rect_first_line"
+        app:layout_constraintTop_toBottomOf="@+id/tg_widget_umrah_checkout_green_rect_first_line"
         tools:text="1 Jamaah"
         android:layout_marginBottom="@dimen/dp_12"
         app:typographyWeight="reguler"
@@ -76,7 +76,7 @@
     <View
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_12"
-        app:layout_constraintTop_toBottomOf="@id/tg_widget_umrah_checkout_green_rect_first_line"
+        app:layout_constraintTop_toBottomOf="@+id/tg_widget_umrah_checkout_green_rect_first_line"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageView

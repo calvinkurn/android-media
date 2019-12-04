@@ -22,7 +22,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/read_more"
-            app:layout_constraintTop_toBottomOf="@id/rv_widget_umrah_pdp_itinerary"
+            app:layout_constraintTop_toBottomOf="@+id/rv_widget_umrah_pdp_itinerary"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

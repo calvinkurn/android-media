@@ -34,7 +34,7 @@
         android:text="@string/umrah_checkout_order_desctiption"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tg_umrah_checkout_order_title"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_order_title"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         android:textColor="@color/Neutral_N700"
@@ -74,16 +74,16 @@
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_5"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_checkout_order_customer_title"
-            app:layout_constraintLeft_toLeftOf="@id/tg_umrah_checkout_order_customer_title"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_order_customer_title"
+            app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_checkout_order_customer_title"
             android:src="@color/light_blue_300"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_umrah_checkout_order_customer_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toRightOf="@id/iv_umrah_checkout_order_customer"
-            app:layout_constraintTop_toTopOf="@id/iv_umrah_checkout_order_customer"
+            app:layout_constraintLeft_toRightOf="@+id/iv_umrah_checkout_order_customer"
+            app:layout_constraintTop_toTopOf="@+id/iv_umrah_checkout_order_customer"
             tools:text="muhammad.salah@gmail.com"
             app:typographyWeight="reguler"
             app:typographyType="body_3"
@@ -93,8 +93,8 @@
             android:id="@+id/tg_umrah_checkout_order_customer_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toRightOf="@id/iv_umrah_checkout_order_customer"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_checkout_order_customer_email"
+            app:layout_constraintLeft_toRightOf="@+id/iv_umrah_checkout_order_customer"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_order_customer_email"
             tools:text="085327499272"
             app:typographyWeight="reguler"
             app:typographyType="body_3"
@@ -104,7 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_12"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_checkout_order_customer_email"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_order_customer_email"
             app:layout_constraintLeft_toLeftOf="parent"/>
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -147,7 +147,7 @@
         android:text="@string/umrah_checkout_order_description_pilgrims"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tg_umrah_checkout_order_list_title_pilgrims"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_order_list_title_pilgrims"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         android:textColor="@color/Neutral_N700"
@@ -160,7 +160,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tg_umrah_checkout_order_description_pilgrims"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_order_description_pilgrims"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

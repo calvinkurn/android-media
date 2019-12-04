@@ -48,7 +48,7 @@
             android:text="@string/umrah_checkout_bottom_sheet_contact_label_phone"
             app:fontSize="micro"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_umrah_checkout_contact_email"
+            app:layout_constraintTop_toBottomOf="@+id/til_umrah_checkout_contact_email"
             app:textViewTheme="lightDisabled" />
 
         <LinearLayout

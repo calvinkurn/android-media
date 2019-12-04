@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -18,8 +16,8 @@
         android:layout_height="@dimen/dp_36" />
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_widget_umrah_dream_fund_progress_title_loader"
-        app:layout_constraintTop_toTopOf="@id/iv_widget_umrah_dream_fund_progress_loader"
-        app:layout_constraintLeft_toRightOf="@id/iv_widget_umrah_dream_fund_progress_loader"
+        app:layout_constraintTop_toTopOf="@+id/iv_widget_umrah_dream_fund_progress_loader"
+        app:layout_constraintLeft_toRightOf="@+id/iv_widget_umrah_dream_fund_progress_loader"
         android:layout_width="120dp"
         android:layout_height="@dimen/dp_16"
         app:typographyType="heading_5"
@@ -30,8 +28,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_widget_umrah_dream_fund_progress_reach_est_loader"
-        app:layout_constraintTop_toBottomOf="@id/tg_widget_umrah_dream_fund_progress_title_loader"
-        app:layout_constraintLeft_toLeftOf="@id/tg_widget_umrah_dream_fund_progress_title_loader"
+        app:layout_constraintTop_toBottomOf="@+id/tg_widget_umrah_dream_fund_progress_title_loader"
+        app:layout_constraintLeft_toLeftOf="@+id/tg_widget_umrah_dream_fund_progress_title_loader"
         app:typographyWeight="reguler"
         app:typographyType="small"
         android:textColor="@color/Neutral_N700_68"
@@ -41,7 +39,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/pb_widget_umrah_dream_fund_progress_loader"
-        app:layout_constraintTop_toBottomOf="@id/iv_widget_umrah_dream_fund_progress_loader"
+        app:layout_constraintTop_toBottomOf="@+id/iv_widget_umrah_dream_fund_progress_loader"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_width="0dp"
@@ -55,8 +53,8 @@
         app:typographyType="small"
         app:typographyWeight="reguler"
         android:textColor="@color/Neutral_N700_68"
-        app:layout_constraintTop_toBottomOf="@id/pb_widget_umrah_dream_fund_progress_loader"
-        app:layout_constraintLeft_toLeftOf="@id/pb_widget_umrah_dream_fund_progress_loader"
+        app:layout_constraintTop_toBottomOf="@+id/pb_widget_umrah_dream_fund_progress_loader"
+        app:layout_constraintLeft_toLeftOf="@+id/pb_widget_umrah_dream_fund_progress_loader"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_12"
@@ -66,7 +64,7 @@
         android:id="@+id/tg_widget_umrah_dream_fund_progress_percentage_loader"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pb_widget_umrah_dream_fund_progress_loader"
+        app:layout_constraintTop_toBottomOf="@+id/pb_widget_umrah_dream_fund_progress_loader"
         android:layout_width="@dimen/dp_36"
         android:layout_height="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_16"

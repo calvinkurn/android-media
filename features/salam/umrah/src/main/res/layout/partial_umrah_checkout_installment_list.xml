@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         tools:text="3x Cicilan - Rp7.333.333"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tg_umrah_checkout_installment_label"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_installment_label"
         app:typographyType="body_2"
         android:textColor="@color/Neutral_N700"
         />
@@ -40,7 +40,7 @@
         android:layout_marginLeft="@dimen/dp_32"
         android:background="@color/Neutral_N100"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tg_umrah_checkout_installment_list"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_installment_list"
         />
 
 
@@ -50,7 +50,7 @@
         app:srcCompat="@drawable/umrah_ic_home_page_down"
         android:id="@+id/iv_umrah_checkout_installment_arrow_down"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tg_umrah_checkout_installment_label"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_installment_label"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -60,7 +60,7 @@
         tools:text="Tagihan selanjutnya 25 Agustus 2019"
         app:typographyType="small"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider_umrah_checkout_installment"
+        app:layout_constraintTop_toBottomOf="@+id/divider_umrah_checkout_installment"
         />
 
 

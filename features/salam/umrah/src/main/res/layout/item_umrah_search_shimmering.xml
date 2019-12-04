@@ -34,7 +34,7 @@
             android:maxLines="2"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_umrah_image_loading_1"
+            app:layout_constraintStart_toEndOf="@+id/iv_umrah_image_loading_1"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6" />
 
@@ -65,7 +65,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_title_loading_1"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_title_loading_1" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_title_loading_1" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tg_umrah_hotel_loading_1"
@@ -75,7 +75,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_calendar_loading_1"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_calendar_loading_1" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_calendar_loading_1" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tg_umrah_plane_loading_1"
@@ -85,7 +85,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_hotel_loading_1"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_hotel_loading_1" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_hotel_loading_1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -116,7 +116,7 @@
             android:maxLines="2"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_umrah_image_loading_2"
+            app:layout_constraintStart_toEndOf="@+id/iv_umrah_image_loading_2"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6" />
 
@@ -147,7 +147,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_title_loading_2"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_title_loading_2" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_title_loading_2" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tg_umrah_hotel_loading_2"
@@ -157,7 +157,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_calendar_loading_2"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_calendar_loading_2" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_calendar_loading_2" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tg_umrah_plane_loading_2"
@@ -167,7 +167,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_hotel_loading_2"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_hotel_loading_2" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_hotel_loading_2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -198,7 +198,7 @@
             android:maxLines="2"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_umrah_image_loading_3"
+            app:layout_constraintStart_toEndOf="@+id/iv_umrah_image_loading_3"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6" />
 
@@ -229,7 +229,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_title_loading_3"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_title_loading_3" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_title_loading_3" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tg_umrah_hotel_loading_3"
@@ -239,7 +239,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_calendar_loading_3"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_calendar_loading_3" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_calendar_loading_3" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tg_umrah_plane_loading_3"
@@ -249,7 +249,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_hotel_loading_3"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_hotel_loading_3" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_hotel_loading_3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -279,7 +279,7 @@
             android:maxLines="2"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_umrah_image_loading_4"
+            app:layout_constraintStart_toEndOf="@+id/iv_umrah_image_loading_4"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6" />
 
@@ -310,7 +310,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_title_loading_4"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_title_loading_4" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_title_loading_4" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tg_umrah_hotel_loading_4"
@@ -320,7 +320,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_calendar_loading_4"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_calendar_loading_4" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_calendar_loading_4" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tg_umrah_plane_loading_4"
@@ -330,7 +330,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_hotel_loading_4"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_hotel_loading_4" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_hotel_loading_4" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -359,7 +359,7 @@
             android:maxLines="2"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_umrah_image_loading_5"
+            app:layout_constraintStart_toEndOf="@+id/iv_umrah_image_loading_5"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6" />
 
@@ -390,7 +390,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_title_loading_5"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_title_loading_5" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_title_loading_5" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tg_umrah_hotel_loading_5"
@@ -400,7 +400,7 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_calendar_loading_5"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_calendar_loading_5" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_calendar_loading_5" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/tg_umrah_plane_loading_5"
@@ -410,6 +410,6 @@
             android:width="@dimen/dp_140"
             android:height="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@+id/tg_umrah_hotel_loading_5"
-            app:layout_constraintTop_toBottomOf="@id/tg_umrah_hotel_loading_5" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_hotel_loading_5" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
