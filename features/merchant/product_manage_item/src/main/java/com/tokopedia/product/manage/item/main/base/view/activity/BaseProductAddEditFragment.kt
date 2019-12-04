@@ -372,10 +372,12 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     private fun logException(error: String) {
         try {
             if (!BuildConfig.DEBUG) {
-                val errorMessage = String.format("Error save product. userId: %s | userEmail: %s | %s",
+                val errorMessage = String.format(
+                        getString(R.string.save_product_error_custom_exception_format),
                         userSessionInterface.userId,
                         userSessionInterface.email,
-                        error)
+                        error
+                )
                 Crashlytics.logException(Exception(errorMessage))
             }
         } catch (ex: IllegalStateException) {
