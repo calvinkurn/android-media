@@ -31,7 +31,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.OTPAnalytics
 import com.tokopedia.otp.common.di.DaggerOtpComponent
-import com.tokopedia.otp.common.util.PhoneCallReceiver
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
@@ -44,13 +43,12 @@ import kotlinx.android.synthetic.main.fragment_cotp_miscall_verification.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMiscall.View, PhoneCallReceiver.OnCallStateChange {
+class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMiscall.View {
 
     private var countDownTimer: CountDownTimer? = null
     private var isRunningTimer = false
     private lateinit var cacheHandler: LocalCacheHandler
     private lateinit var viewModel: VerificationViewModel
-    private lateinit var callReceiver: PhoneCallReceiver
 
     @Inject
     lateinit var presenter: VerificationPresenter
@@ -80,11 +78,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         }
 
         cacheHandler = LocalCacheHandler(activity, CACHE_OTP)
-
-        if (!::callReceiver.isInitialized) {
-            callReceiver = PhoneCallReceiver()
-        }
-        callReceiver.registerReceiver(activity, this)
     }
 
 
@@ -453,7 +446,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             countDownTimer = null
         }
         presenter.detachView()
-        activity?.unregisterReceiver(callReceiver)
     }
 
     fun setData(bundle: Bundle) {
@@ -466,34 +458,11 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         setData()
     }
 
-    override fun onIncomingCallEnded(phoneNumber: String) {
-
-    }
-
-    override fun onIncomingCallStart(phoneNumber: String) {
-        autoFillPhoneNumber(phoneNumber)
-    }
-
-    override fun onMissedCall(phoneNumber: String) {
-
-    }
-
-    private fun autoFillPhoneNumber(number: String) {
-        val regex = Regex(pattern = """[+()\-\s]""")
-        val phoneHint = textPhoneHint?.text?.toString()?.replace(regex, "") as String
-        val phoneNumber = number.replace(regex, "")
-
-        if ((phoneHint.isNotEmpty() || phoneHint != "") && phoneNumber.contains(phoneHint)) {
-            textInputOtp?.setText(phoneNumber.substring(phoneHint.length))
-            disableVerifyButton()
-        }
-    }
-
     private fun showKeyboard() {
         val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.toggleSoftInputFromWindow(textInputOtp.windowToken, InputMethodManager.SHOW_FORCED, 0)
     }
-
+  
     companion object {
         private const val ARGS_DATA = "ARGS_DATA"
         private const val ARGS_PASS_DATA = "pass_data"

@@ -40,6 +40,7 @@ class ViewHolderDataMapper @Inject constructor() {
                     originData.isWishlisted,
                     it.warningMessageTitle,
                     it.similarProductData,
+                    it.nicotineLiteMessageData,
                     showDivider,
                     it
             )
