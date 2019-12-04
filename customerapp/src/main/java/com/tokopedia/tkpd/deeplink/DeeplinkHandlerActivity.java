@@ -154,7 +154,7 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ShopAppLinkModule.class,
-        GamificationApplinkModule.class,
+//        GamificationApplinkModule.class,
         CreatePostModule.class,
         KolApplinkModule.class,
         ExploreApplinkModule.class,
