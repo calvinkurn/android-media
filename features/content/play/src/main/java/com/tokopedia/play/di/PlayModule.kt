@@ -8,6 +8,7 @@ import com.tokopedia.play.data.network.ChannelApi
 import com.tokopedia.play.data.network.ChannelMapper
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -21,6 +22,12 @@ class PlayModule {
     @PlayScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSession {
+        return UserSession(context)
+    }
+
+    @PlayScope
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 

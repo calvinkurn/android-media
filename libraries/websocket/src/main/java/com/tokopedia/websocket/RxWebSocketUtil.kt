@@ -71,8 +71,10 @@ class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
         private var instance: RxWebSocketUtil? = null
 
         @JvmOverloads
-        fun getInstance(interceptors: List<Interceptor>?, delay: Int =
-                                DEFAULT_DELAY, maxRetries: Int = DEFAULT_MAX_RETRIES, pingInterval: Long = DEFAULT_PING): RxWebSocketUtil? {
+        fun getInstance(interceptors: List<Interceptor>?,
+                        delay: Int = DEFAULT_DELAY,
+                        maxRetries: Int = DEFAULT_MAX_RETRIES,
+                        pingInterval: Long = DEFAULT_PING): RxWebSocketUtil? {
             if (instance == null) {
                 instance = RxWebSocketUtil(interceptors, delay, maxRetries, pingInterval)
             }
