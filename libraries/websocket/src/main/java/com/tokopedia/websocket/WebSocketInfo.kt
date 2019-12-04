@@ -40,7 +40,6 @@ class WebSocketInfo {
         this.response = GsonBuilder().create().fromJson(data, WebSocketResponse::class.java)
     }
 
-
     companion object {
 
         @JvmOverloads
