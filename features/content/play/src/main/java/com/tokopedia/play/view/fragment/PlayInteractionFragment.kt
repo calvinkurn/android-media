@@ -91,13 +91,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     override fun onDestroy() {
-        launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.Destroy
-                    )
-        }
         super.onDestroy()
         job.cancel()
     }

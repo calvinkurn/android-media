@@ -36,9 +36,11 @@ class PlayInteractionViewModel @Inject constructor() : ViewModel(), CoroutineSco
 
     fun startObservingChatList() {
         launch {
+            var id = 0
             while (job.isActive) {
                 _observableChatList.value =
                         PlayChat(
+                                ++id,
                                 listOfUser.random(),
                                 listOfMessage.random()
                         )
