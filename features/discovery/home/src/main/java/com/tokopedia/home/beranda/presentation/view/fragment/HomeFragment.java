@@ -1240,7 +1240,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void sendScreen() {
         if (getActivity() != null && System.currentTimeMillis() > lastSendScreenTimeMillis + SEND_SCREEN_MIN_INTERVAL_MILLIS) {
             lastSendScreenTimeMillis = System.currentTimeMillis();
-            IndexScreenTracking.sendScreen(getActivity(), this::getScreenName);
+            HomePageTracking.sendScreen(getActivity(), getScreenName(), userSession.isLoggedIn());
         }
     }
 

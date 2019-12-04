@@ -31,7 +31,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.affiliate.AffiliateRouter;
 import com.tokopedia.analytics.debugger.TetraDebugger;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
@@ -183,7 +182,6 @@ import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.product.detail.ProductDetailRouter;
-import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
@@ -270,7 +268,6 @@ import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
 import tradein_common.TradeInUtils;
-import tradein_common.router.TradeInRouter;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
@@ -299,7 +296,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         IHomeRouter,
         DiscoveryRouter,
         DigitalModuleRouter,
-        AffiliateRouter,
         ApplinkRouter,
         ShopModuleRouter,
         LoyaltyModuleRouter,
@@ -332,7 +328,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         CMRouter,
         ILoyaltyRouter,
         ResolutionRouter,
-        TradeInRouter,
         ProductDetailRouter,
         KYCRouter {
 
@@ -592,7 +587,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, ProductManageActivity.class);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -1201,12 +1196,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_ENABLE_BUY_AGAIN, true);
     }
 
-    @NonNull
-    @Override
-    public Intent getKYCIntent(Context context, int projectId) {
-        return RouteManager.getIntent(context, ApplinkConst.KYC_FORM, String.valueOf(projectId));
-    }
-
     @Override
     public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
             Context context, String platform, String category, String defaultSelectedTab
@@ -1272,15 +1261,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getInboxChannelsIntent(Context context) {
         return InboxChatActivity.getChannelCallingIntent(context);
-    }
-
-    @Override
-    public void openRedirectUrl(Activity activity, String url) {
-        if (isSupportedDelegateDeepLink(url)) {
-            actionApplinkFromActivity(activity, url);
-        } else {
-            activity.startActivity(RouteManager.getIntent(activity, ApplinkConstInternalGlobal.WEBVIEW, url));
-        }
     }
 
     @Override

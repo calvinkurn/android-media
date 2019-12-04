@@ -112,6 +112,7 @@
 
     <!--Age Restriction-->
     <string name="title_module_age_restriction">Konten Dewasa</string>
+    <string name="title_trade_in">Tukar Tambah</string>
     <string name="label_dob">Tanggal Lahir</string>
 
     <!--Contact Us-->
@@ -165,4 +166,13 @@
     <string name="payment_label_button_add_card">Tambah Kartu</string>
     <string name="payment_label_credit_card_verification">Verifikasi Kartu Kredit</string>
 
+
+    <!--Dynamic feature for affiliate-->
+    <string name="title_af_affiliate">Affiliate</string>
+    <string name="title_affiliate">Affiliate</string>
+    <string name="title_af_dashboard">Pencapaian Saya</string>
+    <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
+
+    <!-- Dynamic feature for manage product list-->
+    <string name="title_product_manage">Daftar Produk</string>
 </resources>

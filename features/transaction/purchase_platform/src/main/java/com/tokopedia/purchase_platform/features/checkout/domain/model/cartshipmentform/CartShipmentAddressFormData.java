@@ -44,6 +44,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private GlobalCouponAttrData globalCouponAttrData;
     private boolean isIneligbilePromoDialogEnabled;
     private TickerData tickerData;
+    private AddressesData addressesData;
 
     public boolean isHasError() {
         return hasError;
@@ -245,6 +246,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.tickerData = tickerData;
     }
 
+    public AddressesData getAddressesData() {
+        return addressesData;
+    }
+
+    public void setAddressesData(AddressesData addressesData) {
+        this.addressesData = addressesData;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -271,6 +280,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         autoApplyStackData = in.readParcelable(AutoApplyStackData.class.getClassLoader());
         isIneligbilePromoDialogEnabled = in.readByte() != 0;
         tickerData = in.readParcelable(TickerData.class.getClassLoader());
+        addressesData = in.readParcelable(AddressesData.class.getClassLoader());
     }
 
     @Override
@@ -297,6 +307,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(autoApplyStackData, flags);
         dest.writeByte((byte) (isIneligbilePromoDialogEnabled ? 1 : 0));
         dest.writeParcelable(tickerData, flags);
+        dest.writeParcelable(addressesData, flags);
     }
 
     @Override
