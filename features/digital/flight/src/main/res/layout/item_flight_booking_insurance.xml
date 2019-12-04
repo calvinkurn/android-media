@@ -19,7 +19,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_insurance_title"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toStartOf="@+id/cb_insurance"

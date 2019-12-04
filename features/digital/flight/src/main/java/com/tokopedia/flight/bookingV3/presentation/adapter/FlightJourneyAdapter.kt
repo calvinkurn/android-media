@@ -47,17 +47,18 @@ class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder
 
                 if (journey.isRefundable) {
                     iv_refundable.setImageResource(R.drawable.ic_flight_booking_refundable)
-                    tv_refundable_info.text = "Refundable"
+                    tv_refundable_info.text = context.getString(R.string.flight_label_refundable_info)
                 } else {
                     iv_refundable.setImageResource(R.drawable.ic_flight_booking_non_refundable)
-                    tv_refundable_info.text = "Non-Refundable"
+                    tv_refundable_info.text = context.getString(R.string.flight_label_non_refundable_info)
                 }
 
                 this.setOnClickListener {
                     listener?.onClickRouteDetail(journey.journeyId)
                 }
 
-                tv_transit_info.text = if (journey.transit == 0) "Langsung" else String.format("%d Transit", journey.transit)
+                tv_transit_info.text = if (journey.transit == 0) context.getString(R.string.flight_booking_directly_trip_card)
+                else String.format(context.getString(R.string.flight_booking_transit_with_value_trip_cart), journey.transit)
             }
         }
 

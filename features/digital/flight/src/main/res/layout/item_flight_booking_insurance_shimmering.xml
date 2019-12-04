@@ -11,7 +11,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_1"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_24"
         app:corners="20"
@@ -60,7 +60,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_3"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
@@ -73,7 +73,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_4"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_12"
         app:corners="20"
@@ -85,7 +85,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_5"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_12"
         app:corners="20"

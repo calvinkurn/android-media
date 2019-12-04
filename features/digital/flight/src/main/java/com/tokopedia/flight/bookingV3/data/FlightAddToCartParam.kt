@@ -61,6 +61,6 @@ data class FlightAddToCartParam (
 
             @SerializedName("term")
             @Expose
-            var term: String
+            var term: String = ""
     )
 }

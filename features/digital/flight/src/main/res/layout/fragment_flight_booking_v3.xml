@@ -96,7 +96,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_traveller_as_passenger"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"

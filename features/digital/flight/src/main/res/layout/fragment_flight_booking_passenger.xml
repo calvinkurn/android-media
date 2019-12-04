@@ -123,8 +123,8 @@
                         android:clickable="true"
                         android:focusable="false"
                         android:hint="@string/flight_booking_passenger_birthdate_secondary_hint"
-                        android:paddingEnd="10dp"
-                        android:paddingRight="10dp"
+                        android:paddingEnd="@dimen/dp_10"
+                        android:paddingRight="@dimen/dp_10"
                         android:singleLine="true"
                         android:textColor="@color/font_black_primary_70"
                         app:editTextDrawableRightCompat="@drawable/ic_system_action_dropdown_grayscale_24" />

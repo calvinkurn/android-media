@@ -73,7 +73,6 @@ class FlightBookingMapper {
                         arrivalCityName, item.arrivalAirportId)
                 newJourney.isRefundable = item.routes[0].refundable
                 newJourney.transit = item.routes.size - 1
-                newJourney.journeyDetailUrl //TOBEFILLED
                 newJourney.date = departureDateString
 
                 journies.add(newJourney)
