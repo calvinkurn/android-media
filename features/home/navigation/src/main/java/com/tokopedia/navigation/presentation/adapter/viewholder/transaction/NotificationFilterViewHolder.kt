@@ -21,15 +21,10 @@ class NotificationFilterViewHolder(
         val userSession: UserSessionInterface
 ): AbstractViewHolder<NotificationFilterSectionWrapper>(view), NotificationUpdateFilterAdapter.FilterAdapterListener {
 
-    private val container = view.findViewById<LinearLayout>(R.id.container_notification_filter)
     private val lstFilter = view.findViewById<RecyclerView>(R.id.filter_list)
     private var filterAdapter: NotificationUpdateFilterAdapter?= null
 
     override fun bind(element: NotificationFilterSectionWrapper) {
-        if (listener.isHasNotification()) {
-            container.show()
-        }
-
         if (userSession.hasShop()) {
             lstFilter.show()
         }
