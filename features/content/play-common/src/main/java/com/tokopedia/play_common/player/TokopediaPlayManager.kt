@@ -17,19 +17,24 @@ import com.tokopedia.play_common.type.getVideoTypeByUri
 /**
  * Created by jegul on 03/12/19
  */
-class TokopediaPlayManager private constructor(appCtx: Context) {
+class TokopediaPlayManager private constructor(applicationContext: Context) {
 
     companion object {
         private const val EXOPLAYER_AGENT = "com.tkpd.exoplayer"
+
+        @Volatile
         private var INSTANCE: TokopediaPlayManager? = null
 
-        fun getInstance(appCtx: Context): TokopediaPlayManager {
-            if (INSTANCE == null) INSTANCE = TokopediaPlayManager(appCtx)
-            return INSTANCE!!
+        fun getInstance(applicationContext: Context): TokopediaPlayManager {
+            return INSTANCE ?: synchronized(this) {
+                TokopediaPlayManager(applicationContext).also {
+                    INSTANCE = it
+                }
+            }
         }
     }
 
-    val videoPlayer: ExoPlayer = ExoPlayerFactory.newSimpleInstance(appCtx).apply {
+    val videoPlayer: ExoPlayer = ExoPlayerFactory.newSimpleInstance(applicationContext).apply {
         playWhenReady = true
     }
 
