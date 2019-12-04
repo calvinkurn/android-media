@@ -425,14 +425,14 @@ public class OrderListAnalytics {
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
                                         LIST, item.getName(),
-                                        PRODUCTS, DataLayer.listOf(
-                                                DataLayer.mapOf(
-                                                        NAME, item.getName(),
-                                                        ID, item.getId(),
-                                                        PRICE, item.getPrice(),
-                                                        LIST, item.getName(),
-                                                        POSITION, position + 1
-                                                )
+                                ),
+                                PRODUCTS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                NAME, item.getName(),
+                                                ID, item.getId(),
+                                                PRICE, item.getPrice(),
+                                                LIST, item.getName(),
+                                                POSITION, position + 1
                                         )
                                 )
                         )
