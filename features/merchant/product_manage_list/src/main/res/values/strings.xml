@@ -51,6 +51,7 @@
     <string name="product_manage_success_add_featured_product">Berhasil tambah Produk Unggulan</string>
     <string name="product_manage_success_remove_featured_product">Berhasil hapus Produk Unggulan</string>
     <string name="product_manage_failed_set_featured_product">Oops, ada gangguan yang perlu kami bereskan.</string>
+    <string name="product_manage_failed_no_internet">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
 
     <string name="product_bs_etalase_title">Etalase produk</string>
     <string name="product_bs_stock_title">Stok produk</string>

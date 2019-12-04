@@ -634,11 +634,18 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onFailedChangeFeaturedProduct(errorMessage: String?) {
-        val error = errorMessage ?: getString(R.string.product_manage_failed_set_featured_product)
-        hideLoadingProgress()
-        showToasterError(error, "") {
-
+        //Default error message
+        var error = errorMessage ?: getString(R.string.product_manage_failed_set_featured_product)
+        //If no connection or endpoint error
+        if (error.contains("Unable to resolve host")) {
+            error = getString(R.string.product_manage_failed_no_internet)
         }
+        //If timeout
+        else if (error.contains("timeout")) {
+            error = getString(R.string.product_manage_failed_set_featured_product)
+        }
+        hideLoadingProgress()
+        showToasterError(error, "") {}
     }
 
     private fun updateBulkLayout() {

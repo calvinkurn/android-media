@@ -260,7 +260,6 @@ class ProductManagePresenterImpl @Inject constructor(
         editFeaturedProductUseCase.execute(EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status),
                 object : Subscriber<FeaturedProductResponseDomainModel>() {
                     override fun onNext(featuredProductResponse: FeaturedProductResponseDomainModel?) {
-//                        view.hideLoadingProgress()
                         if (featuredProductResponse?.errorCode.equals("")) {
                             view.onSuccessChangeFeaturedProduct(productId, status)
                         } else {
@@ -273,7 +272,6 @@ class ProductManagePresenterImpl @Inject constructor(
                     }
 
                     override fun onError(e: Throwable?) {
-//                        view.hideLoadingProgress()
                         view.onFailedChangeFeaturedProduct(e?.message)
                     }
                 })
