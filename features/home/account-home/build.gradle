@@ -1,19 +1,66 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "de.mannodermaus.android-junit5"
 
 buildscript {
     repositories {
+        maven {
+            url "https://maven.google.com"
+        }
+        google()
+        maven { url 'https://maven.fabric.io/public' }
+        mavenCentral()
+        jcenter()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.gradlePlugin.crashlytics
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    defaultConfig {
+        multiDexEnabled(project.hasProperty('coverage') ? true : false)
+        testInstrumentationRunner 'com.tokopedia.home.application.MyRunner'
+    }
+    sourceSets.each {
+        it.java.srcDirs += "src/$it.name/kotlin"
+    }
+
+    testOptions {
+        junitPlatform {
+            filters {
+                engines {
+                    include 'spek2'
+                }
+            }
+        }
+        unitTests.all {
+            testLogging.events = ["passed", "skipped", "failed"]
+        }
+    }
+}
+
+
+
+buildscript {
+    repositories {
+        jcenter()
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
+        classpath rootProject.ext.gradlePlugin.googleServices
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
 
 dependencies {
+    androidTestImplementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -78,6 +125,16 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+    implementation project(rootProject.ext.libraries.webview)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    androidTestImplementation 'androidx.test:rules:1.1.0'
+    androidTestImplementation rootProject.ext.playServicesDependencies.core
+    androidTestImplementation rootProject.ext.firebase.core
 }
 
 project.ext {
