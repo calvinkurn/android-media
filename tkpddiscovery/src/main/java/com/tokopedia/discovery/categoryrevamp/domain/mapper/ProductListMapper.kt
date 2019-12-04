@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.categoryrevamp.domain.mapper
 
+import com.tokopedia.discovery.categoryrevamp.data.productModel.FreeOngkir
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.productModel.Shop
@@ -42,7 +43,8 @@ class ProductListMapper {
                                 categoryID = (dataItem.product?.category?.id?.toInt()) ?: 0,
                                 productImpTrackingUrl = dataItem.product?.image?.sUrl ?: "",
                                 productClickTrackingUrl = dataItem.productClickUrl ?: "",
-                                productWishlistTrackingUrl = dataItem.productWishlistUrl ?: ""
+                                productWishlistTrackingUrl = dataItem.productWishlistUrl ?: "",
+                                freeOngkir = FreeOngkir(dataItem.freeOngkir.isActive, dataItem.freeOngkir.imageUrl)
                         )
 
                         productListResponse.searchProduct.products.add(0, item)
