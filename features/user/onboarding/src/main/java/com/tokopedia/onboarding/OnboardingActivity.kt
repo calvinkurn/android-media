@@ -157,18 +157,30 @@ class OnboardingActivity : BaseActivity() {
 
         loginButton.setOnClickListener {
             analytics.trackClickLogin(currentPosition)
-            startActivityWithBackTask(ApplinkConst.LOGIN)
+            if(TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)){
+                startActivityWithBackTask(ApplinkConst.LOGIN)
+            }else{
+                RouteManager.route(this, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+            }
         }
 
         registerButton.setOnClickListener {
             analytics.trackClickRegister(currentPosition)
-            startActivityWithBackTask(ApplinkConst.REGISTER)
+            if(TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)){
+                startActivityWithBackTask(ApplinkConst.REGISTER)
+            }else{
+                RouteManager.route(this, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+            }
         }
 
         skipButton.setOnClickListener {
             analytics.eventOnboardingSkip(applicationContext, currentPosition)
             finishOnBoarding()
-            RouteManager.route(this, ApplinkConst.HOME)
+            if(TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)){
+                RouteManager.route(this, ApplinkConst.HOME)
+            }else{
+                RouteManager.route(this, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+            }
         }
     }
 
