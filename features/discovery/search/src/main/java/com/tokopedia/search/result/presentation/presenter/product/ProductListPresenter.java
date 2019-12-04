@@ -953,18 +953,14 @@ final class ProductListPresenter
 
     @Override
     public void onBannedProductsGoToBrowserClick(String liteUrl) {
+        String liteUrlWithParameters = appendUrlWithParameters(liteUrl);
+
         if (userSession.isLoggedIn()) {
-            generateSeamlessLoginUrlForLoggedInUser(liteUrl);
+            generateSeamlessLoginUrlForLoggedInUser(liteUrlWithParameters);
         }
         else {
-            getViewToRedirectToBrowser(liteUrl);
+            getViewToRedirectToBrowser(liteUrlWithParameters);
         }
-    }
-
-    private void generateSeamlessLoginUrlForLoggedInUser(String liteUrl) {
-        String liteUrlWithParameters = appendUrlWithParameters(liteUrl);
-        SeamlessLoginSubscriber seamlessLoginSubscriber = createSeamlessLoginSubscriber(liteUrlWithParameters);
-        seamlessLoginUsecase.generateSeamlessUrl(liteUrlWithParameters, seamlessLoginSubscriber);
     }
 
     private String appendUrlWithParameters(String liteUrl) {
@@ -977,6 +973,11 @@ final class ProductListPresenter
         }
 
         return liteUrlWithParametersUriBuilder.toString();
+    }
+
+    private void generateSeamlessLoginUrlForLoggedInUser(String liteUrl) {
+        SeamlessLoginSubscriber seamlessLoginSubscriber = createSeamlessLoginSubscriber(liteUrl);
+        seamlessLoginUsecase.generateSeamlessUrl(liteUrl, seamlessLoginSubscriber);
     }
 
     private SeamlessLoginSubscriber createSeamlessLoginSubscriber(String liteUrl) {
