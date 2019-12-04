@@ -12,6 +12,7 @@ import com.tokopedia.navigation.domain.model.NotificationFilterSectionWrapper
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
+import com.tokopedia.navigation.widget.ChipFilterItemDivider
 import com.tokopedia.user.session.UserSessionInterface
 
 class NotificationFilterViewHolder(
@@ -40,6 +41,7 @@ class NotificationFilterViewHolder(
                     userSession)
             lstFilter.adapter = filterAdapter
             filterAdapter?.updateData(map(element.filters))
+            lstFilter.addItemDecoration(ChipFilterItemDivider(view.context))
         }
     }
 
