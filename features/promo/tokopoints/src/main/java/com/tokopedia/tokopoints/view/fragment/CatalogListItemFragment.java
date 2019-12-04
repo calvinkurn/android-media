@@ -11,6 +11,8 @@ import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +23,12 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.library.baseadapter.BaseItem;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
@@ -38,6 +41,7 @@ import com.tokopedia.tokopoints.view.presenter.CatalogListItemPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.NetworkDetector;
+import com.tokopedia.tokopoints.view.util.TokoPointsRemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,7 +172,9 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     @Override
     public void openWebView(String url) {
-        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+        if (!TextUtils.isEmpty(url)) {
+            RouteManager.route(getActivity(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
+        }
     }
 
     @Override
@@ -192,7 +198,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getContext();
     }
 
     @Override
@@ -431,14 +437,14 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     private void decorateDialog(AlertDialog dialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.tkpd_main_green));
+                    com.tokopedia.design.R.color.tkpd_main_green));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         }
 
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.grey_warm));
+                    com.tokopedia.design.R.color.grey_warm));
         }
     }
 
@@ -460,8 +466,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     }
 
     private void fetchRemoteConfig() {
-        mRefreshTime = ((TokopointRouter) getAppContext())
-                .getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S);
+        mRefreshTime = TokoPointsRemoteConfig.Companion.instance(getContext()).getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S);
     }
 
     @Override
@@ -550,9 +555,9 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         this.showFirstTimeLoader = showLoader;
         mAdapter = new CatalogListAdapter(mPresenter, getContext(), this, categoryId, subCategoryId, pointRange, false);
         if (mRecyclerViewCatalog.getItemDecorationCount() == 0) {
-            mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10),
-                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14),
-                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14)));
+            mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10),
+                    getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14),
+                    getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14)));
         }
         mRecyclerViewCatalog.setAdapter(mAdapter);
         mAdapter.startDataLoading();

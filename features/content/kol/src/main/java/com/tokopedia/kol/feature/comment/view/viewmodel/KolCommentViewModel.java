@@ -3,6 +3,8 @@ package com.tokopedia.kol.feature.comment.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory;
 
@@ -16,17 +18,20 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
     protected String name;
     protected String review;
     protected String time;
-    protected String url;
+    @Nullable
+    protected String userUrl;
     protected boolean isOfficial;
     protected String userId;
     protected boolean canDeleteComment;
     protected String userBadges;
+    protected boolean isShop;
 
-    public KolCommentViewModel(String id, String userId, String avatarUrl, String name,
+    public KolCommentViewModel(String id, String userId, @Nullable String userUrl, String avatarUrl, String name,
                                String review, String time, boolean isOfficial,
-                               boolean canDeleteComment, String userBadges) {
+                               boolean canDeleteComment, String userBadges, boolean isShop) {
         this.id = id;
         this.userId = userId;
+        this.userUrl = userUrl;
         this.avatarUrl = avatarUrl;
         this.name = name;
         this.review = review;
@@ -34,6 +39,7 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
         this.isOfficial = isOfficial;
         this.canDeleteComment = canDeleteComment;
         this.userBadges = userBadges;
+        this.isShop = isShop;
     }
 
 
@@ -69,12 +75,13 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
         this.time = time;
     }
 
-    public String getUrl() {
-        return url;
+    @Nullable
+    public String getUserUrl() {
+        return userUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUserUrl(@Nullable String userUrl) {
+        this.userUrl = userUrl;
     }
 
     public String getUserBadges() {
@@ -106,10 +113,18 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
         return canDeleteComment;
     }
 
-
     public String getUserId() {
         return userId;
     }
+
+    public boolean isShop() {
+        return isShop;
+    }
+
+    public void setShop(boolean shop) {
+        isShop = shop;
+    }
+
 
     @Override
     public int describeContents() {
@@ -123,11 +138,12 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
         dest.writeString(this.name);
         dest.writeString(this.review);
         dest.writeString(this.time);
-        dest.writeString(this.url);
+        dest.writeString(this.userUrl);
         dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
         dest.writeString(this.userId);
         dest.writeByte(this.canDeleteComment ? (byte) 1 : (byte) 0);
         dest.writeString(this.userBadges);
+        dest.writeByte(this.isShop ? (byte) 1 : (byte) 0);
     }
 
     protected KolCommentViewModel(Parcel in) {
@@ -136,11 +152,12 @@ public class KolCommentViewModel implements Visitable<KolCommentTypeFactory>, Pa
         this.name = in.readString();
         this.review = in.readString();
         this.time = in.readString();
-        this.url = in.readString();
+        this.userUrl = in.readString();
         this.isOfficial = in.readByte() != 0;
         this.userId = in.readString();
         this.canDeleteComment = in.readByte() != 0;
         this.userBadges = in.readString();
+        this.isShop = in.readByte() != 0;
     }
 
     public static final Creator<KolCommentViewModel> CREATOR = new Creator<KolCommentViewModel>() {

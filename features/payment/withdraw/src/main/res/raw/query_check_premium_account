@@ -1,0 +1,18 @@
+query{
+    CheckEligible{
+        status
+        message
+        data {
+            isPowerWD
+            isPowerMerchant
+            shopID
+            accNum
+            bankID
+            userID
+            status
+            program
+            wdPoints
+            statusInt
+        }
+    }
+}

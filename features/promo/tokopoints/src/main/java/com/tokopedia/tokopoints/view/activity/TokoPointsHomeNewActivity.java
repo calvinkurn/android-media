@@ -94,14 +94,14 @@ public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements Has
     @Override
     public void showToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(getResources().getDimension(R.dimen.dp_4));
+            toolbar.setElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
         }
     }
 
     @Override
     public void hideToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(getResources().getDimension(R.dimen.dp_0));
+            toolbar.setElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_0));
         }
     }
 }

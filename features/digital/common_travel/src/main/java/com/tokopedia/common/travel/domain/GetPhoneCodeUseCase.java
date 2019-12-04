@@ -1,8 +1,8 @@
 package com.tokopedia.common.travel.domain;
 
 import com.tokopedia.common.travel.data.PhoneCodeRepository;
+import com.tokopedia.common.travel.database.CountryPhoneCodeTable;
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
-import com.tokopedia.flight.country.database.CountryPhoneCodeTable;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

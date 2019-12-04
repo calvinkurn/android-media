@@ -68,7 +68,8 @@ public class GetProfileKolDataMapper
                     "",
                     getTagType(tag),
                     getTagCaption(tag),
-                    !TextUtils.isEmpty(getTagLink(tag)) ? getTagLink(tag) : getTagUrl(tag)
+                    !TextUtils.isEmpty(getTagLink(tag)) ? getTagLink(tag) : getTagUrl(tag),
+                    new ArrayList<>()
             );
             kolPostViewModel.setShowTopShadow(true);
             kolPostViewModels.add(kolPostViewModel);

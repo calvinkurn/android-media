@@ -54,14 +54,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_above="@+id/bottom_layout_shadow"
-                    android:layout_alignParentTop="true"
+                    android:layout_above="@+id/card_footer"
+                    android:layout_below="@+id/card_header"
                     android:orientation="vertical">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_cart"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_weight="1" />
 
                 </LinearLayout>
@@ -75,113 +75,91 @@
                     app:cardElevation="@dimen/dp_2"
                     tools:visibility="visible">
 
+                    <include layout="@layout/item_select_all"/>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_footer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="-2dp"
+                    android:layout_marginTop="-2dp"
+                    android:layout_marginRight="-2dp"
+                    android:layout_marginBottom="-4dp"
+                    android:visibility="gone"
+                    app:cardPreventCornerOverlap="false"
+                    app:cardUseCompatPadding="true"
+                    tools:visibility="visible">
+
                     <LinearLayout
-                        android:id="@+id/ll_header"
+                        android:id="@+id/bottom_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:foreground="?selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingLeft="@dimen/dp_9"
-                        android:paddingTop="@dimen/dp_16"
-                        android:paddingRight="@dimen/dp_25"
-                        android:paddingBottom="@dimen/dp_16">
+                        android:orientation="vertical"
+                        tools:visibility="visible">
 
-                        <CheckBox
-                            android:id="@+id/cb_select_all"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_4"
-                            android:paddingRight="@dimen/dp_10"
-                            android:button="@drawable/ic_cart_check_box" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:background="@color/grey_shadow" />
 
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:id="@+id/layout_1"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:lineSpacingExtra="@dimen/sp_5"
-                            android:text="@string/label_select_all_product"
-                            android:textSize="@dimen/sp_12"
-                            app:typographyType="body_3"
-                            app:typographyWeight="reguler"
-                            tools:ignore="RelativeOverlap" />
+                            android:background="@color/white"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="@dimen/dp_16">
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/tv_item_count"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:lineSpacingExtra="4sp"
+                                    android:textColor="@color/text_black"
+                                    app:typographyType="body_2"
+                                    app:typographyWeight="bold"
+                                    android:text="@string/label_price_total" />
+
+                                <com.tokopedia.unifyprinciples.Typography
+                                    android:id="@+id/tv_total_prices"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:textColor="@color/price_label"
+                                    app:typographyType="heading_4"
+                                    app:typographyWeight="bold"
+                                    tools:text="Rp600.000" />
+
+                            </LinearLayout>
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/go_to_courier_page_button"
+                                android:layout_width="@dimen/dp_150"
+                                android:layout_height="@dimen/dp_40"
+                                android:layout_gravity="center_vertical"
+                                android:layout_margin="@dimen/dp_10"
+                                android:background="@drawable/transaction_checkout_red_button_rounded"
+                                android:gravity="center"
+                                android:textAllCaps="false"
+                                android:textColor="@color/white"
+                                app:typographyType="heading_5"
+                                app:typographyWeight="bold"
+                                tools:text="Checkout" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
-
-                <View
-                    android:id="@+id/bottom_layout_shadow"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_4"
-                    android:layout_above="@+id/bottom_layout"
-                    android:background="@drawable/bottom_sheet_shadow" />
-
-                <LinearLayout
-                    android:id="@+id/bottom_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:orientation="vertical"
-                    tools:visibility="visible">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/grey_shadow" />
-
-                    <LinearLayout
-                        android:id="@+id/layout_1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:padding="@dimen/dp_16">
-
-                            <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/tv_item_count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:lineSpacingExtra="4sp"
-                                android:text="@string/label_price_total"
-                                android:textColor="@color/text_black"
-                                app:typographyType="body_2"
-                                app:typographyWeight="bold" />
-
-                            <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/tv_total_prices"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="end"
-                                android:textColor="@color/price_label"
-                                app:typographyType="heading_4"
-                                app:typographyWeight="bold"
-                                tools:text="Rp600.000" />
-
-                        </LinearLayout>
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/go_to_courier_page_button"
-                            android:layout_width="@dimen/dp_150"
-                            android:layout_height="@dimen/dp_40"
-                            android:layout_gravity="center_vertical"
-                            android:layout_margin="@dimen/dp_10"
-                            android:background="@drawable/transaction_checkout_red_button_rounded"
-                            android:gravity="center"
-                            android:textAllCaps="false"
-                            android:textColor="@color/white"
-                            app:typographyType="heading_5"
-                            app:typographyWeight="bold"
-                            tools:text="Checkout" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
 
             </RelativeLayout>
 

@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.cancellation.constant.FlightCancellationStatus;
+import com.tokopedia.flight.orderlist.constant.FlightCancellationStatus;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
 
 public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<FlightDetailPassenger> {
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_review_passenger;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_review_passenger;
     private Context context;
     private ReviewPassengerDetailAdapter reviewPassengerDetailAdapter;
     private TextView passengerNumber;
@@ -61,11 +61,11 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
     private String getPassengerType(int flightDetailPassenger) {
         switch (flightDetailPassenger) {
             case FlightBookingPassenger.ADULT:
-                return getString(R.string.flight_label_adult_review);
+                return getString(com.tokopedia.flight.R.string.flight_label_adult_review);
             case FlightBookingPassenger.CHILDREN:
-                return getString(R.string.flight_label_child_review);
+                return getString(com.tokopedia.flight.R.string.flight_label_child_review);
             case FlightBookingPassenger.INFANT:
-                return getString(R.string.flight_label_infant_review);
+                return getString(com.tokopedia.flight.R.string.flight_label_infant_review);
             default:
                 return "";
         }
@@ -76,12 +76,12 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
 
         context = layoutView.getContext();
 
-        passengerNumber = layoutView.findViewById(R.id.passenger_number);
-        passengerName = layoutView.findViewById(R.id.passenger_name);
-        passengerCategory = layoutView.findViewById(R.id.passenger_category);
-        passengerCancellationStatus = layoutView.findViewById(R.id.txt_passenger_cancellation_status);
-        secondPassengerCancellationStatus = layoutView.findViewById(R.id.txt_second_passenger_cancellation_status);
-        recyclerViewPassengerDetail = layoutView.findViewById(R.id.recycler_view_passenger_detail);
+        passengerNumber = layoutView.findViewById(com.tokopedia.flight.R.id.passenger_number);
+        passengerName = layoutView.findViewById(com.tokopedia.flight.R.id.passenger_name);
+        passengerCategory = layoutView.findViewById(com.tokopedia.flight.R.id.passenger_category);
+        passengerCancellationStatus = layoutView.findViewById(com.tokopedia.flight.R.id.txt_passenger_cancellation_status);
+        secondPassengerCancellationStatus = layoutView.findViewById(com.tokopedia.flight.R.id.txt_second_passenger_cancellation_status);
+        recyclerViewPassengerDetail = layoutView.findViewById(com.tokopedia.flight.R.id.recycler_view_passenger_detail);
 
         recyclerViewPassengerDetail.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         reviewPassengerDetailAdapter = new ReviewPassengerDetailAdapter();
@@ -100,24 +100,24 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
             case FlightCancellationStatus.REQUESTED:
                 txtStatus.setText(cancellationStatusString);
                 txtStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
-                txtStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
+                txtStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.flight_bg_card_process));
                 return true;
             case FlightCancellationStatus.PENDING:
                 txtStatus.setText(cancellationStatusString);
                 txtStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
-                txtStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
+                txtStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.flight_bg_card_process));
                 return true;
             case FlightCancellationStatus.REFUNDED:
                 txtStatus.setText(cancellationStatusString);
                 txtStatus.setTextAppearance(context, R.style.CardSuccessStatusStyle);
-                txtStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_success));
+                txtStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.flight_bg_card_success));
                 return true;
             case FlightCancellationStatus.ABORTED:
                 return false;
             default:
                 txtStatus.setText(cancellationStatusString);
                 txtStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
-                txtStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
+                txtStatus.setBackground(context.getResources().getDrawable(com.tokopedia.flight.R.drawable.flight_bg_card_process));
                 return true;
         }
     }
@@ -131,7 +131,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
 
         @Override
         public PassengerDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_flight_detail_passenger_info, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(com.tokopedia.flight.R.layout.item_flight_detail_passenger_info, parent, false);
             return new PassengerDetailViewHolder(view);
         }
 
@@ -158,8 +158,8 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
 
         public PassengerDetailViewHolder(View itemView) {
             super(itemView);
-            titleInfo = (TextView) itemView.findViewById(R.id.title_info);
-            descInfo = (TextView) itemView.findViewById(R.id.desc_info);
+            titleInfo = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.title_info);
+            descInfo = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.desc_info);
         }
 
         public void bindData(SimpleViewModel info) {

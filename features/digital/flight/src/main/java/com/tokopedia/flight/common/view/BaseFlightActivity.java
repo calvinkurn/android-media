@@ -10,9 +10,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.R;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
@@ -56,7 +53,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
-        getMenuInflater().inflate(R.menu.menu_flight_dashboard, menu);
+        getMenuInflater().inflate(com.tokopedia.flight.R.menu.menu_flight_dashboard, menu);
         updateOptionMenuColorWhite(menu);
         return true;
     }
@@ -70,10 +67,10 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_promo) {
+        if (item.getItemId() == com.tokopedia.flight.R.id.menu_promo) {
             navigateToAllPromoPage();
             return true;
-        } else if (item.getItemId() == R.id.menu_transaction_list) {
+        } else if (item.getItemId() == com.tokopedia.flight.R.id.menu_transaction_list) {
             if (userSession.isLoggedIn()) {
                 flightAnalytics.eventClickTransactions(getScreenName());
                 startActivity(FlightOrderListActivity.getCallingIntent(this));
@@ -81,14 +78,8 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
                 RouteManager.route(this, ApplinkConst.LOGIN);
             }
             return true;
-        } else if (item.getItemId() == R.id.menu_help) {
-            if (getApplication() instanceof FlightModuleRouter
-                    && ((FlightModuleRouter) getApplication())
-                    .getDefaultContactUsIntent(this) != null) {
-                startActivity(((FlightModuleRouter) getApplication())
-                        .getDefaultContactUsIntent(this, CONTACT_US_FLIGHT));
-            }
-
+        } else if (item.getItemId() == com.tokopedia.flight.R.id.menu_help) {
+            RouteManager.route(this, CONTACT_US_FLIGHT);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -96,14 +87,6 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
     }
 
     private void navigateToAllPromoPage() {
-        if (getApplication() instanceof FlightModuleRouter) {
-            if (((FlightModuleRouter) getApplication())
-                    .isPromoNativeEnable()) {
-                RouteManager.route(this, ApplinkConst.PROMO_LIST);
-            } else {
-                startActivity(((FlightModuleRouter) getApplication())
-                        .getBannerWebViewIntent(this, FlightUrl.ALL_PROMO_LINK));
-            }
-        }
+        RouteManager.route(this, ApplinkConst.PROMO_LIST);
     }
 }

@@ -1435,11 +1435,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     shopInfo.shopCore.shopID,
                     shopInfo.goldOS.shopTypeString,
                     productId ?: "")
-            productDetailTracking.sendScreenV5(
-                    shopInfo.shopCore.shopID,
-                    shopInfo.goldOS.shopTypeString,
-                    productId ?: "",
-                    productInfo?.category?.detail?.firstOrNull()?.id ?: "")
+
 
             if (delegateTradeInTracking) {
                 trackProductView(tradeInParams.isEligible == 1)
