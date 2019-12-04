@@ -1,7 +1,5 @@
 package com.tokopedia.productcard.options
 
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
