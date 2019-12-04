@@ -118,7 +118,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.location
-//    implementation rootProject.ext.miscDependencies.liveDataKtx
 
     // Test
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
