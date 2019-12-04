@@ -166,7 +166,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             }
             putExtra(ApplinkConst.Chat.INVOICE_DATE, detailResponse.paymentDate)
             putExtra(ApplinkConst.Chat.INVOICE_URL, detailResponse.invoiceUrl)
-            putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, detailResponse.statusId)
+            putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, detailResponse.statusId.toString())
             putExtra(ApplinkConst.Chat.INVOICE_STATUS, detailResponse.statusText)
             putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, detailResponse.paymentSummary.totalPriceText)
         }
