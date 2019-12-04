@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_20">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmering_tv_1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_24"
+        app:corners="20"
+        app:layout_constraintEnd_toStartOf="@+id/shimmering_iv_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/shimmering_iv_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:use_gradient="true"
+        app:width_weight="0.7" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/shimmering_iv_1"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        app:corners="20"
+        app:layout_constraintBottom_toBottomOf="@+id/shimmering_tv_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/shimmering_tv_1"
+        app:use_gradient="true" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmering_tv_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_12"
+        app:corners="20"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_tv_1"
+        app:use_gradient="true"
+        app:width_weight="0.4" />
+
+    <View
+        android:id="@+id/shimmering_seperator_1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_22"
+        android:background="#f3f4f5"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_tv_2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/shimmering_iv_2"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_16"
+        app:corners="20"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_seperator_1"
+        app:use_gradient="true" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmering_tv_3"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_2"
+        app:corners="20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/shimmering_iv_2"
+        app:layout_constraintStart_toEndOf="@+id/shimmering_iv_2"
+        app:layout_constraintTop_toTopOf="@+id/shimmering_iv_2"
+        app:use_gradient="true" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmering_tv_4"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_12"
+        app:corners="20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/shimmering_tv_3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/shimmering_tv_3"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_tv_3"
+        app:use_gradient="true" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmering_tv_5"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_12"
+        app:corners="20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/shimmering_tv_3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/shimmering_tv_3"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_tv_4"
+        app:use_gradient="true"
+        app:width_weight="0.5" />
+
+    <View
+        android:id="@+id/shimmering_seperator_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_12"
+        android:background="#f3f4f5"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_tv_5" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/shimmering_iv_3"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        app:corners="20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_seperator_2"
+        app:use_gradient="true" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
+        app:corners="20"
+        app:layout_constraintBottom_toBottomOf="@+id/shimmering_iv_3"
+        app:layout_constraintEnd_toStartOf="@+id/shimmering_iv_3"
+        app:layout_constraintTop_toTopOf="@+id/shimmering_iv_3"
+        app:use_gradient="true" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

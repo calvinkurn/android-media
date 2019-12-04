@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
     android:padding="@dimen/dp_16">
 
     <LinearLayout
@@ -23,8 +26,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/travel_contact_data_name_hint"
-                android:inputType="textNoSuggestions|textVisiblePassword|textFilter"
-                android:importantForAutofill="no" />
+                android:importantForAutofill="no"
+                android:inputType="textNoSuggestions|textVisiblePassword|textFilter" />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -66,19 +69,18 @@
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/til_contact_phone_number"
                 style="@style/HintTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/sp_contact_phone_code"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="@dimen/dp_4"
-                >
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/sp_contact_phone_code"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:layout_width="match_parent"
