@@ -49,7 +49,7 @@ class FlightBookingPassengerAdapter: RecyclerView.Adapter<FlightBookingPassenger
                     tv_edit_passenger_info.text = "Isi Data"
                 }
 
-                layout_edit_passenger.setOnClickListener { listener?.onClickEditPassengerListener(passenger) }
+                itemView.setOnClickListener { listener?.onClickEditPassengerListener(passenger) }
             }
         }
 
