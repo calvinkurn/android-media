@@ -103,7 +103,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     private var currentCursor = ""
     private lateinit var headerViewModel: HeaderViewModel
     private var fetchFirstData = false
-    private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(10) // 10 minutes
+    private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(3) // 3 minutes
     private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
 
     override val coroutineContext: CoroutineContext

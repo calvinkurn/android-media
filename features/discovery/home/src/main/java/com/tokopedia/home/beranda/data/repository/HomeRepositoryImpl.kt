@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.repository
 
+import android.os.SystemClock
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -8,7 +9,6 @@ import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.source.HomeDataSource
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeRoomData
-import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Resource
 import com.tokopedia.home.beranda.helper.map
 import retrofit2.Response
@@ -22,9 +22,15 @@ class HomeRepositoryImpl @Inject constructor(
         private val homeRemoteDataSource: HomeRemoteDataSource
 ): HomeRepository {
 
+    private val timeout = TimeUnit.SECONDS.toMillis(10)
     override fun getHomeData(): LiveData<HomeData?> {
         return homeDao.getHomeData().map {
-            it?.homeData
+            if(SystemClock.uptimeMillis() - (it?.modificationDate?.time ?: SystemClock.uptimeMillis()) > timeout){
+                homeDao.deleteHomeData()
+                null
+            } else {
+                it?.homeData
+            }
         }
     }
 
