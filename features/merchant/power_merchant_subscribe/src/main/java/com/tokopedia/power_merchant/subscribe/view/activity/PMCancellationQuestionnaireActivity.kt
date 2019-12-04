@@ -65,13 +65,27 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
             return Intent(context, PMCancellationQuestionnaireActivity::class.java)
         }
     }
-
     override fun getListFragment(): MutableList<Fragment> {
         return listFragment
     }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_pm_cancellation_questionnaire
+    }
+
+    /**
+     * DF PURPOSE
+     */
+    override fun getProgressBar(): Int {
+        return R.id.stepper_progress_pm
+    }
+
+    override fun getParentView(): Int {
+        return R.id.parent_view_pm
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbarPm
     }
 
     private fun generateFragment() {
