@@ -247,6 +247,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
+    public boolean isLightThemeStatusBar() {
+        return false;
+    }
+
+    @Override
     public void onNotificationChanged(int notificationCount, int inboxCount) {
         setToolbarNotificationCount(notificationCount);
         setToolbarInboxCount(inboxCount);

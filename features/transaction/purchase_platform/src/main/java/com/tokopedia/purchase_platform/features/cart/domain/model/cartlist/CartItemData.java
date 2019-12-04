@@ -25,6 +25,7 @@ public class CartItemData implements Parcelable {
     private String errorMessageTitle;
     private String errorMessageDescription;
     private SimilarProductData similarProductData;
+    private NicotineLiteMessageData nicotineLiteMessageData;
     private boolean isDisableAllProducts;
     private boolean isFulfillment;
 
@@ -98,6 +99,14 @@ public class CartItemData implements Parcelable {
 
     public void setSimilarProductData(SimilarProductData similarProductData) {
         this.similarProductData = similarProductData;
+    }
+
+    public NicotineLiteMessageData getNicotineLiteMessageData() {
+        return nicotineLiteMessageData;
+    }
+
+    public void setNicotineLiteMessageData(NicotineLiteMessageData nicotineLiteMessageData) {
+        this.nicotineLiteMessageData = nicotineLiteMessageData;
     }
 
     public OriginData getOriginData() {

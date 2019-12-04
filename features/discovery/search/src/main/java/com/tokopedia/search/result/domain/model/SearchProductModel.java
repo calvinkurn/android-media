@@ -82,6 +82,9 @@ public class SearchProductModel {
         @SerializedName("errorMessage")
         @Expose
         private String errorMessage;
+        @SerializedName("lite_url")
+        @Expose
+        private String liteUrl;
         @SerializedName("isFilter")
         @Expose
         private boolean isFilter;
@@ -140,6 +143,10 @@ public class SearchProductModel {
 
         public String getErrorMessage() {
             return this.errorMessage;
+        }
+
+        public String getLiteUrl() {
+            return this.liteUrl;
         }
 
         public boolean isQuerySafe() {

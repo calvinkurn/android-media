@@ -25,6 +25,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.features.affiliateCommon)
+    implementation project(rootProject.ext.features.interestPickCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.kolCommon)

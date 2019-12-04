@@ -70,7 +70,7 @@ constructor(private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
 
         @JvmOverloads
         fun createRequestParams(userId: String, cursor: String = "",
-                                source: String,
+                                source: GetDynamicFeedUseCase.FeedV2Source,
                                 firstPageCursor: String = "",
                                 isLogin: Boolean = true): RequestParams {
             val requestParams = GetDynamicFeedUseCase.createRequestParams(
