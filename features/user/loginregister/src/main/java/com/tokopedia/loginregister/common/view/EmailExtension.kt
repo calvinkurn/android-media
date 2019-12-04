@@ -14,6 +14,8 @@ class EmailExtension @JvmOverloads constructor(
         defStyleAttr: Int = 0
 ) : BaseCustomView(context, attributeSet, defStyleAttr) {
 
+    private var view: View = View.inflate(context, R.layout.layout_email_extension, this)
+
     private lateinit var emailExtensionList: List<String>
     private lateinit var emailExtensionListFiltered: List<String>
     private var recyclerViewEmailExtension: RecyclerView? = null
@@ -21,7 +23,6 @@ class EmailExtension @JvmOverloads constructor(
     private var listener: EmailExtensionAdapter.ClickListener? = null
 
     init {
-        val view = View.inflate(context, R.layout.layout_email_extension, this)
         recyclerViewEmailExtension = view.findViewById(R.id.recyclerViewEmailExtension)
     }
 
@@ -29,7 +30,7 @@ class EmailExtension @JvmOverloads constructor(
         this.emailExtensionList = emailExtensionList
         this.listener = listener
 
-        emailExtensionAdapter = EmailExtensionAdapter(this.emailExtensionList, listener)
+        emailExtensionAdapter = EmailExtensionAdapter(this.emailExtensionList, listener, 7)
 
         val space = context.resources.getDimension(R.dimen.dp_18).toInt()
         recyclerViewEmailExtension?.addItemDecoration(EmailExtensionDecoration(space))
@@ -41,6 +42,8 @@ class EmailExtension @JvmOverloads constructor(
 
         if (emailExtensionList.isEmpty()) {
             recyclerViewEmailExtension?.visibility = View.GONE
+        } else {
+            recyclerViewEmailExtension?.visibility = View.VISIBLE
         }
 
         this.emailExtensionList = emailExtensionList
@@ -55,6 +58,8 @@ class EmailExtension @JvmOverloads constructor(
 
         if (emailExtensionListFiltered.isEmpty()) {
             recyclerViewEmailExtension?.visibility = View.GONE
+        } else {
+            recyclerViewEmailExtension?.visibility = View.VISIBLE
         }
 
         emailExtensionListFiltered.let {
@@ -63,4 +68,6 @@ class EmailExtension @JvmOverloads constructor(
             emailExtensionAdapter?.notifyDataSetChanged()
         }
     }
+
+    fun gelistCount(): Int? = emailExtensionAdapter?.itemCount
 }

@@ -20,7 +20,7 @@ public class FourthScreenState extends ScreenState {
 
     @Override
     public int getFourthEmoji() {
-        return R.drawable.rating_active_4;
+        return R.drawable.ic_rating_active_4;
     }
 
     @Override

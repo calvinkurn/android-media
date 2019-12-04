@@ -239,6 +239,11 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        if(this::trackingQueue.isInitialized && trackingQueue != null) trackingQueue.sendAll()
+    }
+
     override fun disableLoadMore() {
         super.disableLoadMore()
         getRecyclerView(view).isNestedScrollingEnabled = false

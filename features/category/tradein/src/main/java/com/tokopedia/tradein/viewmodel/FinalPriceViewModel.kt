@@ -8,6 +8,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import android.content.Intent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -60,7 +61,7 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseVi
 
             override fun onError(e: Throwable) {
                 e.printStackTrace()
-                warningMessage.value = applicationInstance.getString(R.string.default_request_error_timeout)
+                warningMessage.value = applicationInstance.getString(com.tokopedia.abstraction.R.string.default_request_error_timeout)
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse?) {

@@ -16,6 +16,7 @@
     <string name="emoney_update_card_balance_progress_label_title">Saldo sedang diperbarui…</string>
     <string name="emoney_update_card_balance_progress_label_message">Jangan mengubah posisi kartu selama proses berlangsung</string>
     <string name="emoney_card_isnot_supported">Kartu tidak didukung</string>
+    <string name="emoney_device_isnot_supported">Perangkat tidak didukung untuk kartu ini</string>
     <string name="emoney_update_balance_failed">Pembaruan informasi saldo Gagal, silakan tempelkan ulang kartu Anda.</string>
     <string name="emoney_failed_read_card" translatable="false">Gagal membaca kartu</string>
     <string name="emoney_toolbar_title_etoll_check_balance">Cek Saldo</string>
@@ -25,6 +26,7 @@
     <string name="emoney_activate" translatable="false">Aktifkan</string>
     <string name="emoney_cancel" translatable="false">Batalkan</string>
     <string name="emoney_nfc_permission_rationale_message" translatable="false">Aplikasi ini membutuhkan izin untuk mengakses NFC</string>
+    <string name="emoney_nfc_not_supported">Perangkat tidak didukung, aplikasi ini membutuhkan NFC</string>
     <string name="emoney_allow_nfc_permission">Izinkan</string>
     <string name="emoney_deny_nfc_permission">Tolak</string>
     <string name="emoney_nfc_permission_denied_message">Anda tidak memberikan izin akses untuk NFC</string>
