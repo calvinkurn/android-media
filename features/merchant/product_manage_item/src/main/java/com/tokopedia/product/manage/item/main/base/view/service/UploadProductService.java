@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -43,6 +44,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -97,14 +99,15 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        final long draftProductId = intent.getLongExtra(DRAFT_PRODUCT_ID, Long.MIN_VALUE);
         boolean isAdd = intent.getBooleanExtra(IS_ADD, true);
         boolean isUploadProductFromDraft = intent.getBooleanExtra(IS_UPLOAD_PRODUCT_FROM_DRAFT, true);
-        if(isUploadProductFromDraft) {
-            presenter.uploadProduct(draftProductId, getProductSubmitNotificationListener(draftProductId, isAdd));
-        }else{
+        if (isUploadProductFromDraft) {
+            final long draftProductId = intent.getLongExtra(DRAFT_PRODUCT_ID, Long.MIN_VALUE);
+            presenter.uploadProduct(draftProductId, getProductSubmitNotificationListener((int) draftProductId, isAdd));
+        } else {
+            int notificationId = new Random().nextInt();
             ProductViewModel currentProductAddViewModel = cacheManager.get(PRODUCT_VIEW_MODEL, ProductViewModel.class);
-            presenter.uploadProduct(currentProductAddViewModel, getProductSubmitNotificationListener(draftProductId, isAdd));
+            presenter.uploadProduct(currentProductAddViewModel, getProductSubmitNotificationListener(notificationId, isAdd));
         }
         return START_NOT_STICKY;
     }
@@ -139,7 +142,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         notificationManager.notify(TAG, productSubmitNotificationListener.getId(), notification);
         removeNotificationFromList(productSubmitNotificationListener.getId());
         eventAddProductErrorServer(errorMessage);
-        eventServerValidationAddProduct(userSession.getShopId(),errorMessage);
+        eventServerValidationAddProduct(userSession.getShopId(), errorMessage);
         Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
         Bundle bundle = new Bundle();
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
@@ -153,7 +156,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         lbm.sendBroadcast(new Intent(ACTION_DRAFT_CHANGED));
     }
 
-    public void eventAddProductErrorServer( String label) {
+    public void eventAddProductErrorServer(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
                 AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
@@ -161,7 +164,7 @@ public class UploadProductService extends BaseService implements AddProductServi
                 label);
     }
 
-    private void eventServerValidationAddProduct(String shopId, String errorText){
+    private void eventServerValidationAddProduct(String shopId, String errorText) {
         Map<String, Object> mapEvent = TrackAppUtils.gtmData(
                 AddProductTrackingConstant.Event.CLICK_ADD_PRODUCT,
                 AddProductTrackingConstant.Category.ADD_PRODUCT_PAGE,
@@ -239,7 +242,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         if (!GlobalConfig.isSellerApp()) {
             largeIconRes = R.drawable.ic_stat_notify;
         }
-        NotificationCompat.Builder notificationBuilder= new NotificationCompat.Builder(this, NotificationChannelId.GENERAL)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NotificationChannelId.GENERAL)
                 .setContentTitle(title)
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
@@ -273,9 +276,9 @@ public class UploadProductService extends BaseService implements AddProductServi
                 .build();
     }
 
-    private ProductSubmitNotificationListener getProductSubmitNotificationListener(long draftProductId, boolean isAdd){
+    private ProductSubmitNotificationListener getProductSubmitNotificationListener(int notificationId, boolean isAdd) {
         return new ProductSubmitNotificationListener(
-                (int) draftProductId, isAdd ? ProductStatus.ADD : ProductStatus.EDIT) {
+                notificationId, isAdd ? ProductStatus.ADD : ProductStatus.EDIT) {
             @Override
             public void addProgress() {
                 super.addProgress();

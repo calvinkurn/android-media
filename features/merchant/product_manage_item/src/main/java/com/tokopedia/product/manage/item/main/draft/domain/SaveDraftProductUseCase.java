@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.item.main.draft.domain;
 
+import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -32,6 +33,7 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
 //                    requestParams.getObject(UPLOAD_PRODUCT_INPUT_MODEL);
 //        } else {
             int a = 2/0;
+            throw new MessageErrorException("qwasdsa");
 //        }
 //        long prevDraftId = requestParams.getLong(PREV_DRAFT_ID, 0);
 //        boolean isUploading = requestParams.getBoolean(IS_UPLOADING, false);
