@@ -6,6 +6,7 @@ import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.play.data.network.ChannelApi
 import com.tokopedia.play.data.network.ChannelMapper
+import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,6 +19,10 @@ import retrofit2.Retrofit
  */
 @Module
 class PlayModule {
+
+    @PlayScope
+    @Provides
+    fun provideTokopediaPlayPlayerInstance(@ApplicationContext ctx: Context): TokopediaPlayManager = TokopediaPlayManager.getInstance(ctx)
 
     @PlayScope
     @Provides

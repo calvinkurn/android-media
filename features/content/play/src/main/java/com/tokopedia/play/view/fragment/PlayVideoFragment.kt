@@ -1,23 +1,21 @@
 package com.tokopedia.play.view.fragment
 
-import android.app.Service
-import android.content.ComponentName
-import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.ui.PlayerView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.video.VideoComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play_common.service.TokopediaPlayService
+import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import kotlinx.coroutines.*
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -34,36 +32,28 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     private val job: Job = SupervisorJob()
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var playVideoViewModel: PlayVideoViewModel
+
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
-
-    private val serviceConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceDisconnected(name: ComponentName?) {
-
-        }
-
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            if (service != null && service is TokopediaPlayService.LocalBinder) {
-                val serviceInstance = service.service
-                serviceInstance.playVideoWithString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4")
-                launch {
-                    EventBusFactory.get(viewLifecycleOwner)
-                            .emit(
-                                    ScreenStateEvent::class.java,
-                                    ScreenStateEvent.Play(serviceInstance.videoPlayer)
-                            )
-                }
-            }
-        }
-    }
 
     override fun getScreenName(): String = "Play Video"
 
     override fun initInjector() {
-
+        DaggerPlayComponent
+                .builder()
+                .baseAppComponent(
+                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                )
+                .build()
+                .inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        playVideoViewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
         return inflater.inflate(R.layout.fragment_play_video, container, false)
     }
 
@@ -74,10 +64,17 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         initVideo()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        requireContext().unbindService(serviceConnection)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        playVideoViewModel.observableVODPlayer.observe(this, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.Play(it)
+                        )
+            }
+        })
     }
 
     private fun initComponents(container: ViewGroup) {
@@ -85,12 +82,6 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun initVideo() {
-        val playServiceIntent = Intent(context, TokopediaPlayService::class.java)
-//        requireContext().startService(playServiceIntent)
-        requireContext().bindService(
-                playServiceIntent,
-                serviceConnection,
-                Service.BIND_AUTO_CREATE
-        )
+        playVideoViewModel.startVideoWithUrlString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4")
     }
 }
