@@ -5,6 +5,7 @@ import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayInteractionFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import dagger.Component
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * Created by jegul on 29/11/19
