@@ -15,7 +15,7 @@ internal class ProductCardOptionsViewModel(
     private val productCardOptionsItemList = MutableLiveData<List<Any>>()
 
     init {
-
+        productCardOptionsItemList.postValue(listOf())
     }
 
     fun getItemList(): LiveData<List<Any>> {
