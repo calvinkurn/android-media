@@ -14,7 +14,7 @@ public class ReviewDomain {
     private ShopDataDomain shopData;
     private String invoiceRefNum;
     private String invoiceTime;
-    private String orderid;
+    private String orderId;
 
     public ReviewDomain(List<ReviewItemDomain> data,
                         int reputationId, UserDataDomain userData,
@@ -53,7 +53,7 @@ public class ReviewDomain {
         return invoiceTime;
     }
 
-    public String getOrderid() {
-        return orderid;
+    public String getOrderId() {
+        return orderId;
     }
 }
