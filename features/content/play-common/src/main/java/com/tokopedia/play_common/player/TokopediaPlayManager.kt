@@ -32,6 +32,10 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
                 }
             }
         }
+
+        fun deleteInstance() = synchronized(this) {
+            INSTANCE = null
+        }
     }
 
     val videoPlayer: ExoPlayer = ExoPlayerFactory.newSimpleInstance(applicationContext).apply {
