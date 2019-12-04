@@ -61,6 +61,8 @@ interface LoginEmailPhoneContract {
 
         fun onErrorGetUserInfo(): Function1<Throwable, Unit>
 
+        fun onSuccessGetUserInfoAddPin(): Function1<ProfilePojo, Unit>
+
         fun onGoToCreatePassword(): Function2<String, String, Unit>
 
         fun onGoToActivationPage(email: String): Function1<MessageErrorException, Unit>
@@ -102,6 +104,8 @@ interface LoginEmailPhoneContract {
         fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager)
 
         fun getUserInfo()
+
+        fun getUserInfoAddPin()
 
         fun discoverLogin(context: Context)
 

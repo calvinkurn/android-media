@@ -1,6 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.statistic
 
-import com.tokopedia.feedcomponent.helper.BaseDiffUtilAdapter
+import com.tokopedia.adapter_delegate.BaseDiffUtilAdapter
 import com.tokopedia.feedcomponent.view.adapter.statistic.delegate.PostStatisticDetailAdapterDelegate
 import com.tokopedia.feedcomponent.view.adapter.statistic.delegate.PostStatisticPlaceholderAdapterDelegate
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType

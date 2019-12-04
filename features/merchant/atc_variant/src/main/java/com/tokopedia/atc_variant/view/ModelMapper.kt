@@ -303,8 +303,10 @@ object ModelMapper {
             return DEFAULT_MAX_ORDER
         } else if (listOfStocks.size == 3) {
             return minOf(listOfStocks[0], listOfStocks[1], listOfStocks[2])
-        } else if (listOfStocks.size < 3) {
+        } else if (listOfStocks.size == 2) {
             return minOf(listOfStocks[0], listOfStocks[1])
+        } else if (listOfStocks.size == 1) {
+            return listOfStocks[0]
         } else {
             return DEFAULT_MAX_ORDER
         }

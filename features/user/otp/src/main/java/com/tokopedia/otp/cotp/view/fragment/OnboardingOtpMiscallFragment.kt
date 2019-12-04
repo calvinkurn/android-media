@@ -27,13 +27,12 @@ class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.
     private lateinit var textStep2: TextView
     private lateinit var imgAnimationPreview: LottieAnimationView
     private lateinit var btnCallMe: UnifyButton
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var passModel: VerificationViewModel
 
     override fun getScreenName(): String = OTPAnalytics.Screen.SCREEN_COTP_MISCALL
 
     override fun initInjector() {
-        checkPermissionGetPhoneNumber()
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -86,24 +85,6 @@ class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.
     override fun onPause() {
         super.onPause()
         stopAnimation()
-    }
-
-    private fun checkPermissionGetPhoneNumber(){
-        if (!::permissionCheckerHelper.isInitialized) {
-            permissionCheckerHelper = PermissionCheckerHelper()
-        }
-
-        activity?.let {
-            permissionCheckerHelper.request(it, getPermissions()) { }
-        }
-    }
-
-    private fun getPermissions(): Array<String> {
-        return arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_READ_CALL_LOG,
-                PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
-                PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE
-        )
     }
 
     companion object {
