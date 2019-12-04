@@ -32,7 +32,7 @@ class HomeDataMapper(
     fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeViewModel?{
         if (homeData == null) return null
         val list: MutableList<Visitable<*>> = mutableListOf()
-        list.add(mappingBanner(homeVisitableFactory, homeData.banner, homeData.isCache))
+        list.add(mappingBanner(homeVisitableFactory, homeData.banner, isCache))
         if (homeData.ticker != null && homeData.ticker.tickers != null && homeData.ticker.tickers.isNotEmpty()
                 && !HomeFragment.HIDE_TICKER) {
             val ticker = mappingTicker(homeData.ticker.tickers)
@@ -41,7 +41,7 @@ class HomeDataMapper(
             }
         }
         if (homeData.homeFlag != null) {
-            val data = mappingOvoTokpoint(homeVisitableFactory, homeData.homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS), homeData.isCache)
+            val data = mappingOvoTokpoint(homeVisitableFactory, homeData.homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS), isCache)
             if (data != null) {
                 list.add(data)
             }
@@ -50,7 +50,7 @@ class HomeDataMapper(
         if (homeData.dynamicHomeIcon != null && homeData.dynamicHomeIcon.dynamicIcon != null && !homeData.dynamicHomeIcon.dynamicIcon.isEmpty()) {
             list.add(mappingDynamicIcon(
                     homeData.dynamicHomeIcon.dynamicIcon,
-                    homeData.isCache,
+                    isCache,
                     homeData.homeFlag.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)
             ))
         }
@@ -58,7 +58,7 @@ class HomeDataMapper(
             var position = 1
             for (channel in homeData.dynamicHomeChannel.channels) {
                 if (channel.layout != null) {
-                    if (!homeData.isCache) {
+                    if (!isCache) {
                         position++
                         if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT) {
                             channel.setPosition(position)
@@ -85,11 +85,11 @@ class HomeDataMapper(
                         DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET -> list.add(mappingDigitalWidget(
                                 context,
                                 channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
-                                homeData.isCache
+                                isCache
                         ))
-                        DynamicHomeChannel.Channels.LAYOUT_TOPADS -> list.add(mappingDynamicTopAds(channel, homeData.isCache))
-                        DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> list.add(mappingSpotlight(homeData.spotlight, homeData.isCache))
-                        DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> if (!homeData.isCache) {
+                        DynamicHomeChannel.Channels.LAYOUT_TOPADS -> list.add(mappingDynamicTopAds(channel, isCache))
+                        DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> list.add(mappingSpotlight(homeData.spotlight, isCache))
+                        DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> if (!isCache) {
                             list.add(
                                     BusinessUnitViewModel(context.getString(R.string.digital_widget_title), position)
                             )
@@ -100,7 +100,7 @@ class HomeDataMapper(
                                     null,
                                     channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
                                     true,
-                                    homeData.isCache))
+                                    isCache))
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size, channel)
                         }
@@ -110,7 +110,7 @@ class HomeDataMapper(
                                     null,
                                     channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
                                     true,
-                                    homeData.isCache))
+                                    isCache))
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size, channel)
                         }
@@ -120,7 +120,7 @@ class HomeDataMapper(
                                     null,
                                     null,
                                     false,
-                                    homeData.isCache))
+                                    isCache))
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size, channel)
                         }
@@ -130,7 +130,7 @@ class HomeDataMapper(
                                     null,
                                     channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination(),
                                     true,
-                                    homeData.isCache))
+                                    isCache))
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size, channel)
                         }
@@ -140,7 +140,7 @@ class HomeDataMapper(
                                     channel.enhanceImpressionDynamicSprintLegoHomePage,
                                     null,
                                     false,
-                                    homeData.isCache))
+                                    isCache))
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size, channel)
                         }
@@ -150,7 +150,7 @@ class HomeDataMapper(
                                     channel.enhanceImpressionProductChannelMix,
                                     null,
                                     false,
-                                    homeData.isCache))
+                                    isCache))
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size, channel)
                             HomePageTracking.eventEnhanceImpressionBanner(context, channel)
@@ -161,22 +161,22 @@ class HomeDataMapper(
                                     channel.enhanceImpressionProductChannelMix,
                                     null,
                                     false,
-                                    homeData.isCache
+                                    isCache
                             ))
                             HomePageTracking.eventEnhanceImpressionBannerGif(context, channel)
                         }
-                        DynamicHomeChannel.Channels.LAYOUT_REVIEW -> if (!homeData.isCache) {
+                        DynamicHomeChannel.Channels.LAYOUT_REVIEW -> if (!isCache) {
                             list.add(mappingToReviewViewModel(channel))
                         }
-                        DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> if (!homeData.isCache) {
-                            val playBanner = mappingPlayChannel(channel, HashMap(), homeData.isCache)
+                        DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> if (!isCache) {
+                            val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
                             if (!list.contains(playBanner)) list.add(playBanner)
                         }
                     }
                 }
             }
         }
-        return HomeViewModel(homeData.homeFlag, list, homeData.isCache)
+        return HomeViewModel(homeData.homeFlag, list, isCache)
     }
 
     private fun mappingToReviewViewModel(channel: DynamicHomeChannel.Channels): Visitable<*> {
