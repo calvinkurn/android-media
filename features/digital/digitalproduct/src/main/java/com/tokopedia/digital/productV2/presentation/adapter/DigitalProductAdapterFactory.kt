@@ -10,6 +10,7 @@ import com.tokopedia.digital.productV2.presentation.adapter.viewholder.DigitalPr
 import com.tokopedia.digital.productV2.presentation.adapter.viewholder.OnInputListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.digital.R
 
 
 /**
@@ -22,18 +23,18 @@ class DigitalProductAdapterFactory(val listener: OnInputListener): BaseAdapterTy
         val layoutParams = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         parent.layoutParams = layoutParams
         return when (type) {
-            1 -> DigitalProductInputViewHolder(parent, listener)
-            2 -> DigitalProductSelectViewHolder(parent, listener)
+            R.layout.view_digital_product_input_holder -> DigitalProductInputViewHolder(parent, listener)
+            R.layout.view_digital_product_select_holder -> DigitalProductSelectViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }
 
     fun type(digitalProductInput: DigitalProductInput): Int {
-        return 1
+        return R.layout.view_digital_product_input_holder
     }
 
     fun type(digitalProductItemData: DigitalProductItemData): Int {
-        return 2
+        return R.layout.view_digital_product_select_holder
     }
 
 }

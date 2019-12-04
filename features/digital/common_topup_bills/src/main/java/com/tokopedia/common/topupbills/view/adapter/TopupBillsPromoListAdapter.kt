@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.view.adapter
+package com.tokopedia.common.topupbills.view.adapter
 
 import android.content.Context
 import androidx.appcompat.content.res.AppCompatResources
@@ -10,15 +10,15 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.getColorFromResources
+import androidx.core.content.ContextCompat
+import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 
 /**
  * Created by nabillasabbaha on 23/04/19.
  */
-class DigitalPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
-        RecyclerView.Adapter<DigitalPromoListAdapter.PromoItemViewHolder>() {
+class TopupBillsPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
+        RecyclerView.Adapter<TopupBillsPromoListAdapter.PromoItemViewHolder>() {
 
     private lateinit var context: Context
     private lateinit var listener: ActionListener
@@ -90,12 +90,12 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
             var btnCopyBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_green_rounded)
             if (topupBillsPromo.voucherCodeCopied) {
                 btnCopyPromo.text = context.getString(R.string.text_has_copied_promo_code)
-                btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.white))
+                btnCopyPromo.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.white))
             } else {
-                containerBg = AppCompatResources.getDrawable(context, com.tokopedia.common.topupbills.R.drawable.common_topup_bg_transparent_round)
+                containerBg = AppCompatResources.getDrawable(context, R.drawable.common_topup_bg_transparent_round)
                 btnCopyBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_border_green)
                 btnCopyPromo.text = context.getString(R.string.text_copy_promo_code)
-                btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.tkpd_main_green))
+                btnCopyPromo.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.tkpd_main_green))
             }
             container.background = containerBg
             btnCopyPromo.background = btnCopyBg

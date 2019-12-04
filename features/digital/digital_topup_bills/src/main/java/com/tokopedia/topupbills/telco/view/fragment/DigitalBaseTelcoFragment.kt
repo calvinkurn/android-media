@@ -31,12 +31,12 @@ import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
-import com.tokopedia.topupbills.telco.view.model.DigitalTrackPromoTelco
-import com.tokopedia.topupbills.telco.view.model.DigitalTrackRecentTransactionTelco
+import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
+import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewModel
-import com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
-import com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -51,8 +51,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected lateinit var mainContainer: NestedScrollView
     protected lateinit var tickerView: Ticker
-    protected lateinit var recentNumbersWidget: DigitalRecentTransactionWidget
-    protected lateinit var promoListWidget: DigitalPromoListWidget
+    protected lateinit var recentNumbersWidget: TopupBillsRecentTransactionWidget
+    protected lateinit var promoListWidget: TopupBillsPromoListWidget
     protected lateinit var checkoutPassData: DigitalCheckoutPassData
     protected lateinit var customViewModel: DigitalTelcoCustomViewModel
     protected lateinit var catalogMenuDetailViewModel: TelcoCatalogMenuDetailViewModel
@@ -236,15 +236,15 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     private fun renderRecentTransactions(recentNumbers: List<TopupBillsRecommendation>) {
         if (recentNumbers.isNotEmpty()) {
-            recentNumbersWidget.setListener(object : DigitalRecentTransactionWidget.ActionListener {
+            recentNumbersWidget.setListener(object : TopupBillsRecentTransactionWidget.ActionListener {
                 override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int,
                                                  position: Int) {
                     topupBillsRecommendation.position = position
                     onClickItemRecentNumber(topupBillsRecommendation)
                 }
 
-                override fun onTrackImpressionRecentList(digitalTrackRecentList: List<DigitalTrackRecentTransactionTelco>) {
-                    topupAnalytics.impressionEnhanceCommerceRecentTransaction(digitalTrackRecentList)
+                override fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>) {
+                    topupAnalytics.impressionEnhanceCommerceRecentTransaction(topupBillsTrackRecentList)
                 }
             })
             recentNumbersWidget.setRecentNumbers(recentNumbers)
@@ -266,7 +266,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     private fun renderPromoList(promos: List<TopupBillsPromo>) {
         if (promos.isNotEmpty()) {
             promoListWidget.visibility = View.VISIBLE
-            promoListWidget.setListener(object : DigitalPromoListWidget.ActionListener {
+            promoListWidget.setListener(object : TopupBillsPromoListWidget.ActionListener {
                 override fun onCopiedPromoCode(promoId: Int, voucherCode: String) {
                     clickCopyOnPromoCode(promoId)
                     topupAnalytics.eventClickCopyPromoCode(voucherCode, promos.indexOfFirst { it.promoCode == voucherCode })
@@ -285,8 +285,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                     }
                 }
 
-                override fun onTrackImpressionPromoList(digitalTrackPromoList: List<DigitalTrackPromoTelco>) {
-                    topupAnalytics.impressionEnhanceCommercePromoList(digitalTrackPromoList)
+                override fun onTrackImpressionPromoList(topupBillsTrackPromoList: List<TopupBillsTrackPromo>) {
+                    topupAnalytics.impressionEnhanceCommercePromoList(topupBillsTrackPromoList)
                 }
 
                 override fun onClickItemPromo(topupBillsPromo: TopupBillsPromo, position: Int) {

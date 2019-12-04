@@ -13,13 +13,6 @@ class DigitalProductAdapter(val context: Context,
                             private val loaderListener: LoaderListener):
         BaseListAdapter<Visitable<DigitalProductAdapterFactory>, DigitalProductAdapterFactory>(adapterFactory) {
 
-    override fun onCreateViewItem(parent: ViewGroup?, viewType: Int): View {
-        if (viewType in 1..2) {
-            return TopupBillsInputFieldWidget(context)
-        }
-        return super.onCreateViewItem(parent, viewType)
-    }
-
     fun renderList(data: List<Visitable<*>>) {
         clearAllElements()
         addElement(data)

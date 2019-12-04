@@ -15,9 +15,9 @@ class DigitalProductActivity : BaseSimpleActivity(), HasComponent<DigitalProduct
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
-        val menuId = bundle?.getInt(PARAM_MENU_ID) ?: 0
         val categoryId = bundle?.getString(PARAM_CATEGORY_ID) ?: ""
-        return DigitalProductFragment.newInstance(menuId, categoryId)
+        val menuId = bundle?.getInt(PARAM_MENU_ID) ?: 0
+        return DigitalProductFragment.newInstance(categoryId, menuId)
     }
 
     override fun getComponent(): DigitalProductComponent {
@@ -29,13 +29,13 @@ class DigitalProductActivity : BaseSimpleActivity(), HasComponent<DigitalProduct
 
     companion object {
 
-        val PARAM_MENU_ID = "menu_id"
         val PARAM_CATEGORY_ID = "category_id"
+        val PARAM_MENU_ID = "menu_id"
 
-        fun newInstance(context: Context, menuId: Int, categoryId: String): Intent {
+        fun newInstance(context: Context, categoryId: String, menuId: Int): Intent {
             val intent = Intent(context, DigitalProductActivity::class.java)
-            intent.putExtra(PARAM_MENU_ID, menuId)
             intent.putExtra(PARAM_CATEGORY_ID, categoryId)
+            intent.putExtra(PARAM_MENU_ID, menuId)
             return intent
         }
     }

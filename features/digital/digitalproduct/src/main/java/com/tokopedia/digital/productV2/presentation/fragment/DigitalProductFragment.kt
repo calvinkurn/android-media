@@ -10,12 +10,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
+import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.digital.R
@@ -64,8 +66,8 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
         }
 
         arguments?.let {
-            menuId = it.getInt(EXTRA_PARAM_MENU_ID)
             categoryId = it.getString(EXTRA_PARAM_CATEGORY_ID, "")
+            menuId = it.getInt(EXTRA_PARAM_MENU_ID)
         }
     }
 
@@ -86,14 +88,6 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
         })
 
         loadData()
-    }
-
-    override fun getScreenName(): String {
-        return ""
-    }
-
-    override fun initInjector() {
-        getComponent(DigitalProductComponent::class.java).inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -177,6 +171,47 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
         }
     }
 
+    private fun renderFooter(data: TopupBillsMenuDetail) {
+        val promos = data.promos
+        val recommendations = data.recommendations
+
+        val listProductTab = mutableListOf<TopupBillsTabItem>()
+        if (recommendations.isNotEmpty()) {
+            listProductTab.add(TopupBillsTabItem(DigitalProductRecentTransactionFragment.newInstance(recommendations), "recent_transaction"))
+        }
+        if (promos.isNotEmpty()) {
+            listProductTab.add(TopupBillsTabItem(DigitalProductPromoListFragment.newInstance(promos), "promo_list"))
+        }
+
+        if (listProductTab.isNotEmpty()) {
+            val pagerAdapter = TopupBillsProductTabAdapter(listProductTab, childFragmentManager)
+            product_view_pager.adapter = pagerAdapter
+            product_view_pager.offscreenPageLimit = listProductTab.size
+
+            if (listProductTab.size > 1) {
+                tab_layout.setupWithViewPager(product_view_pager)
+                tab_layout.show()
+                product_view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                    override fun onPageScrollStateChanged(p0: Int) {
+
+                    }
+
+                    override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+                    }
+
+                    override fun onPageSelected(pos: Int) {
+//                topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
+                    }
+                })
+            }
+            product_view_pager.show()
+        } else {
+            tab_layout.hide()
+            product_view_pager.hide()
+        }
+    }
+
     private fun showGetListError(e: Throwable) {
         operator_cluster_select.hide()
         operator_select.hide()
@@ -201,7 +236,7 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        renderFooter(data)
     }
 
     override fun showError(t: Throwable) {
@@ -219,19 +254,25 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
         }
     }
 
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        getComponent(DigitalProductComponent::class.java).inject(this)
+    }
+
     companion object {
         const val EXTRA_PARAM_MENU_ID = "EXTRA_PARAM_MENU_ID"
         const val EXTRA_PARAM_CATEGORY_ID = "EXTRA_PARAM_CATEGORY_ID"
 
-        const val INPUT_DATA_SIZE = "INPUT_DATA_SIZE"
-
         val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
 
-        fun newInstance(menuId: Int, categoryId: String): DigitalProductFragment {
+        fun newInstance(categoryId: String, menuId: Int): DigitalProductFragment {
             val fragment = DigitalProductFragment()
             val bundle = Bundle()
-            bundle.putInt(EXTRA_PARAM_MENU_ID, menuId)
             bundle.putString(EXTRA_PARAM_CATEGORY_ID, categoryId)
+            bundle.putInt(EXTRA_PARAM_MENU_ID, menuId)
             fragment.arguments = bundle
             return fragment
         }
