@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.list.presentation.adapter
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -40,7 +39,6 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         return somItemList.size
     }
 
-    @SuppressLint("Range", "SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.label_status_order.text = somItemList[position].status
 
@@ -75,6 +73,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         }
 
         if (somItemList[position].listOrderLabel.isNotEmpty()) {
+            holder.itemView.ll_label_order?.visibility = View.VISIBLE
             createOrderLabelList(holder, position)
         } else {
             holder.itemView.ll_label_order?.visibility = View.GONE
@@ -85,7 +84,6 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         }
     }
 
-    @SuppressLint("Range", "InflateParams")
     private fun createOrderLabelList(holder: ViewHolder, position: Int) {
         holder.itemView.ll_label_order?.removeAllViews()
 
@@ -113,7 +111,6 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             }
             text.setMargin(marginRightLeft, marginTopBottom, marginRightLeft, marginTopBottom)
             cardView.addView(text)
-
             holder.itemView.ll_label_order.addView(cardView)
         }
     }

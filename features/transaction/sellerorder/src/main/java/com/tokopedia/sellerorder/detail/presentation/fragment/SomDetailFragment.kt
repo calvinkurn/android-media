@@ -770,11 +770,16 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             val orderRejectRequest = SomRejectRequest()
             orderRejectRequest.orderId = detailResponse.orderId.toString()
             orderRejectRequest.rCode = rCode
-            orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
-            if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString())) {
-                doRejectOrder(orderRejectRequest)
+
+            if (viewBottomSheet.tf_extra_notes.visibility == View.VISIBLE) {
+                orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
+                if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString())) {
+                    doRejectOrder(orderRejectRequest)
+                } else {
+                    showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+                }
             } else {
-                showToasterError(getString(R.string.cancel_order_notes_empty_warning))
+                doRejectOrder(orderRejectRequest)
             }
         }
 

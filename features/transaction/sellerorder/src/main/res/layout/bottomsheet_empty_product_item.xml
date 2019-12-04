@@ -52,6 +52,18 @@
         android:textColor="@color/Yellow_Y500"
         android:layout_marginTop="@dimen/dp_8"/>
 
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_empty_stock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:labelTitle="@string/label_empty_stock"
+        app:labelType="general_light_grey"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/tv_product_price"
+        android:layout_alignBottom="@id/tv_product_price"
+        android:visibility="gone"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
