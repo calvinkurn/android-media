@@ -4,15 +4,16 @@ import android.content.Context
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.promocheckout.common.R
 import kotlinx.android.synthetic.main.layout_checkout_ticker_promostacking.view.*
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 
 class TickerPromoStackingCheckoutView @JvmOverloads constructor(
@@ -58,6 +59,12 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             counterCoupons = styledAttributes.getString(R.styleable.TickerCheckoutView_counter) ?: ""
             desc = styledAttributes.getString(R.styleable.TickerCheckoutView_desc) ?: ""
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                bg_button_coupon.clipToOutline = true
+                bg_active_down.clipToOutline = true
+                bg_active_up.clipToOutline = true
+            }
+
         } finally {
             styledAttributes.recycle()
         }
@@ -83,6 +90,9 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             descCouponGlobal?.text = desc
             descCouponGlobal.visibility = View.VISIBLE
         }
+
+        relativeLayoutUsePromoGlobal.background = ViewUtils.generateBackgroundWithShadow(relativeLayoutUsePromoGlobal)
+        layoutState.background = ViewUtils.generateBackgroundWithShadow(layoutState)
 
         setActionListener()
         invalidate()
