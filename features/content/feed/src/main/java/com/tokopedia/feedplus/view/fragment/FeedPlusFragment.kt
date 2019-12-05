@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -76,6 +77,7 @@ import com.tokopedia.feedplus.KEY_FEED
 import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_CURSOR
 import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
 import com.tokopedia.feedplus.view.adapter.EntryPointAdapter
@@ -292,6 +294,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> onSuccessSubmitInterestPickData(it.data)
                 is Fail  -> onErrorSubmitInterestPickData(it.throwable)
+            }
+        })
+
+        feedOnboardingPresenter.getFeedFirstPageResp.observe(this, Observer {
+            finishLoading()
+            when (it) {
+                is Success -> onSuccessGetFirstFeed(it.data)
+                is Fail -> onErrorGetFirstFeed(it.throwable)
             }
         })
     }
@@ -1506,7 +1516,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun fetchFirstPage() {
         val firstPageCursor: String = if (afterRefresh) getFirstPageCursor() else ""
-        presenter.fetchFirstPage(firstPageCursor)
+        feedOnboardingPresenter.getFirstFeedPage(firstPageCursor)
         afterRefresh = false
     }
 
@@ -1560,13 +1570,45 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    private fun doShare(body: String, title: String) {
-        val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
-        sharingIntent.type = "text/plain"
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, body)
-        startActivity(
-                Intent.createChooser(sharingIntent, title)
-        )
+    private fun onSuccessGetFirstFeed(firstPageDomainModel: DynamicFeedFirstPageDomainModel) {
+        clearData()
+        val model = firstPageDomainModel.dynamicFeedDomainModel
+        if (model.postList.isNotEmpty()) {
+            setLastCursorOnFirstPage(model.cursor)
+            setFirstPageCursor(model.firstPageCursor)
+            onSuccessGetFeedFirstPage(model.postList)
+            if (model.hasNext) {
+                setEndlessScroll()
+            } else {
+                unsetEndlessScroll()
+            }
+        } else {
+            onShowEmpty()
+        }
+
+        if (firstPageDomainModel.isInterestWhitelist) {
+            showInterestPick()
+        }
+
+        sendMoEngageOpenFeedEvent()
+        sendFeedPlusScreenTracking()
+        stopTracePerformanceMon()
+    }
+
+    private fun onErrorGetFirstFeed(e: Throwable) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e.printStackTrace()
+        }
+        finishLoading()
+        val errorMessage = ErrorHandler.getErrorMessage(context, e)
+        if (adapter.itemCount == 0) {
+            NetworkErrorHelper.showEmptyState(activity, mainContent, errorMessage
+            ) { fetchFirstPage() }
+        } else {
+            NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        }
+        stopTracePerformanceMon()
+
     }
 
     private fun goToContentReport(contentId: Int) {

@@ -2,17 +2,18 @@ package com.tokopedia.feedplus.view.presenter
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.feedplus.NON_LOGIN_USER_ID
+import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
+import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.interest_pick_common.data.DataItem
 import com.tokopedia.interest_pick_common.data.OnboardingData
-import com.tokopedia.interest_pick_common.data.SubmitInterestResponse
-import com.tokopedia.feedplus.view.di.RawQueryKeyConstant
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.interest_pick_common.data.FeedUserOnboardingInterests
 import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
 import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCase
@@ -20,10 +21,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -31,8 +32,10 @@ import javax.inject.Inject
  */
 class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispatcher,
                                                   private val graphqlRepository: GraphqlRepository,
+                                                  private val userSession: UserSessionInterface,
                                                   private val getInterestPickUseCase: GetInterestPickUseCase,
                                                   private val submitInterestPickUseCase: SubmitInterestPickUseCase,
+                                                  private val getDynamicFeedFirstPageUseCase: GetDynamicFeedFirstPageUseCase,
                                                   private val rawQueries: Map<String, String>)
     : BaseViewModel(baseDispatcher) {
 
@@ -41,9 +44,18 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
         val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
     }
 
-    val onboardingResp = MutableLiveData<Result<OnboardingViewModel>> ()
+    private val userId: String
+        get() = if (userSession.isLoggedIn) userSession.userId else NON_LOGIN_USER_ID
 
+    val onboardingResp = MutableLiveData<Result<OnboardingViewModel>> ()
     val submitInterestPickResp = MutableLiveData<Result<SubmitInterestResponseViewModel>>()
+    val getFeedFirstPageResp = MutableLiveData<Result<DynamicFeedFirstPageDomainModel>>()
+    private var currentCursor = ""
+    private val pagingHandler: PagingHandler
+
+    init {
+        this.pagingHandler = PagingHandler()
+    }
 
     fun getOnboardingData(source: String, forceRefresh: Boolean) {
         getInterestPickUseCase.apply {
@@ -74,6 +86,18 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
         })
     }
 
+    fun getFirstFeedPage(firstPageCursor: String) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                getFeedDataResult(firstPageCursor)
+            }
+            currentCursor = results.dynamicFeedDomainModel.cursor
+            getFeedFirstPageResp.value = Success(results)
+        }) {
+            getFeedFirstPageResp.value = Fail(it)
+        }
+    }
+
     private fun OnboardingData.convertToViewModel(): OnboardingViewModel = feedUserOnboardingInterests.let { result ->
         mappingOnboardingData(result)
     }
@@ -102,6 +126,22 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
             ))
         }
         return dataList
+    }
+
+    private fun getFeedDataResult(firstPageCursor: String): DynamicFeedFirstPageDomainModel {
+        try {
+            val request = getDynamicFeedFirstPageUseCase.createObservable(GetDynamicFeedFirstPageUseCase.createRequestParams(
+                    userId,
+                    "",
+                    GetDynamicFeedUseCase.FeedV2Source.Feeds,
+                    firstPageCursor,
+                    userSession.isLoggedIn))
+                    .toBlocking().single()?: DynamicFeedFirstPageDomainModel()
+            return request
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            throw e
+        }
     }
 
 }
