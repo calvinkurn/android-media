@@ -58,10 +58,14 @@ open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPre
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = super.onCreateView(inflater, container, savedInstanceState)
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
             fetchInputData()
         }
-        return view
     }
 
     private fun fetchInputData() {
