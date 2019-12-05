@@ -3,11 +3,7 @@ package com.tokopedia.trackingoptimizer
 import android.content.Context
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
-import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
-import com.tokopedia.trackingoptimizer.db.model.TrackingRegularDbModel
-import com.tokopedia.trackingoptimizer.db.model.TrackingScreenNameDbModel
 import com.tokopedia.trackingoptimizer.model.EventModel
-import com.tokopedia.trackingoptimizer.model.ScreenCustomModel
 import com.tokopedia.trackingoptimizer.repository.ITrackingRepository
 import com.tokopedia.trackingoptimizer.repository.TrackingRepository
 import kotlinx.coroutines.CoroutineScope
@@ -50,8 +46,7 @@ class TrackingQueue(val context: Context) : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = TrackingExecutors.executor + TrackingExecutors.handler
 
-    val trackingRepository: ITrackingRepository<TrackingRegularDbModel, TrackingEEDbModel,
-        TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
+    val trackingRepository: ITrackingRepository<TrackingEEDbModel> by lazy {
         TrackingRepository(context)
     }
 
@@ -61,9 +56,6 @@ class TrackingQueue(val context: Context) : CoroutineScope {
      * The other keys will be considered as custom dimensions
      */
     fun putEETracking(map: HashMap<String, Any>? = null) {
-        if (!(map?.containsKey(ECOMMERCE) == true)) {
-            return
-        }
         launch {
             trackingRepository.put(map)
         }
@@ -78,17 +70,6 @@ class TrackingQueue(val context: Context) : CoroutineScope {
                       customDimension: HashMap<String, Any>? = null) {
         launch {
             trackingRepository.putEE(event, customDimension, enhanceECommerceMap)
-        }
-    }
-
-    /**
-     * to store the EE tracking into db, with no custom dimension
-     * Usually the map for enhanceECommerce is in form "ecommerce":<value>
-     */
-    fun putEETracking(map: HashMap<String, Any>? = null,
-                      enhanceECommerceMap: HashMap<String, Any>?) {
-        launch {
-            trackingRepository.putEE(map, enhanceECommerceMap)
         }
     }
 

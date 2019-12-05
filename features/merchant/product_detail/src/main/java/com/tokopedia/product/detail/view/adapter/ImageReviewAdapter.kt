@@ -9,12 +9,14 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.OnImageReviewClick
+import com.tokopedia.product.detail.data.util.OnSeeAllReviewClick
 import kotlinx.android.synthetic.main.item_image_review.view.*
 
 class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> = mutableListOf(),
                          private val showSeeAll: Boolean = true,
-                         private val onImageClickListener: ((ImageReviewItem, Boolean) -> Unit)? = null,
-                         private val onImageHelpfulReviewClick: ((List<String>, Int, String?) -> Unit)? = null):
+                         private val onOnImageReviewClick: OnImageReviewClick? = null,
+                         private val onOnSeeAllReviewClick: OnSeeAllReviewClick? = null) :
         RecyclerView.Adapter<ImageReviewAdapter.ImageReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageReviewViewHolder {
@@ -24,35 +26,31 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
     override fun getItemCount(): Int = imageReviews.size
 
     override fun onBindViewHolder(holder: ImageReviewViewHolder, position: Int) {
-        holder.bind(imageReviews[position], getItemViewType(position))
+        holder.bind(imageReviews[position], getItemViewType(position), imageReviews)
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (showSeeAll && position == imageReviews.size - 1) VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER else VIEW_TYPE_IMAGE
+        return if (showSeeAll && position == TOTAL_REVIEW_IMAGE_VISIBLE - 1) VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER else VIEW_TYPE_IMAGE
     }
 
-    fun replaceImages(list: List<ImageReviewItem>){
-        imageReviews.clear()
-        imageReviews.addAll(list)
-        notifyDataSetChanged()
-    }
+    inner class ImageReviewViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-    inner class ImageReviewViewHolder(view: View): RecyclerView.ViewHolder(view){
-
-        fun bind(item: ImageReviewItem, type: Int){
-            with(itemView){
-                ImageHandler.loadImageAndCache(image_review, item.imageUrlThumbnail)
-                if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER){
+        fun bind(item: ImageReviewItem, type: Int, listItem: List<ImageReviewItem>) {
+            with(view) {
+                ImageHandler.loadImageRounded(view.context, image_review, item.imageUrlThumbnail, 16F)
+                if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
                     overlay_see_all.visible()
+                    txt_see_all.text = item.imageCount
                     txt_see_all.visible()
+                    setOnClickListener {
+                        onOnSeeAllReviewClick?.invoke()
+                    }
                 } else {
                     overlay_see_all.gone()
                     txt_see_all.gone()
-                }
-                setOnClickListener {
-                    onImageClickListener?.invoke(item, type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER)
-                    onImageHelpfulReviewClick?.invoke(imageReviews.mapNotNull { it.imageUrlLarge }, adapterPosition,
-                            item.reviewId)
+                    setOnClickListener {
+                        onOnImageReviewClick?.invoke(listItem, adapterPosition)
+                    }
                 }
             }
         }
@@ -61,5 +59,6 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
     companion object {
         private const val VIEW_TYPE_IMAGE = 77
         private const val VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER = 88
+        private const val TOTAL_REVIEW_IMAGE_VISIBLE = 4
     }
 }

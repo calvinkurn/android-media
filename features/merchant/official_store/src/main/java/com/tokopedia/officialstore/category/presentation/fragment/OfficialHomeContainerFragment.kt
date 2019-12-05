@@ -95,8 +95,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     // config collapse & expand tablayout
-    override fun onContentScrolled(dy: Int, totalScrollY: Int) {
-        tabLayout?.adjustTabCollapseOnScrolled(dy, totalScrollY)
+    override fun onContentScrolled(dy: Int) {
+        tabLayout?.adjustTabCollapseOnScrolled(dy)
     }
 
     // from: GlobalNav, to show notification maintoolbar
@@ -154,25 +154,19 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                val categoryReselected = tabAdapter.categoryList[tab?.position.toZeroIfNull()]
-                tracking.eventClickCategory(
-                        categoryReselected.title,
-                        categoryReselected.categoryId,
-                        tab?.position.toZeroIfNull(),
-                        categoryReselected.icon
-                )
+                val categoryReselected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
+                categoryReselected?.let {
+                    tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val categorySelected = tabAdapter.categoryList[tab?.position.toZeroIfNull()]
-                tracking.eventClickCategory(
-                        categorySelected.title,
-                        categorySelected.categoryId,
-                        tab?.position.toZeroIfNull(),
-                        categorySelected.icon
-                )
+                val categorySelected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
+                categorySelected?.let {
+                    tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
+                }
             }
 
         })
@@ -181,7 +175,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private fun convertToCategoriesTabItem(data: List<Category>): List<OfficialCategoriesTab.CategoriesItemTab> {
         val tabItemDataList = ArrayList<OfficialCategoriesTab.CategoriesItemTab>()
         data.forEach {
-            tabItemDataList.add(OfficialCategoriesTab.CategoriesItemTab(it.title, it.icon))
+            tabItemDataList.add(OfficialCategoriesTab.CategoriesItemTab(it.title, it.icon, it.imageInactiveURL))
         }
         return tabItemDataList
     }

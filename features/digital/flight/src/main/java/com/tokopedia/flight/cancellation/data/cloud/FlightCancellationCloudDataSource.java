@@ -15,7 +15,9 @@ import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellati
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -28,6 +30,9 @@ import rx.functions.Func1;
  */
 
 public class FlightCancellationCloudDataSource {
+    private static final String CANCELLABLES_KEY = "cancellablePassengers";
+    private static final String NON_CANCELLABLES_KEY = "nonCancellablePassengers";
+
     private FlightApi flightApi;
     private Gson gsonWithDeserializer;
     private FlightCancellationReasonDataCacheSource flightCancellationReasonDataCacheSource;
@@ -44,7 +49,7 @@ public class FlightCancellationCloudDataSource {
         this.gsonWithDeserializer = new GsonBuilder().registerTypeAdapter(CancelPassengerEntity.class, this.flightCancellationJsonDeserializer).create();
     }
 
-    public Observable<List<Passenger>> getCancelablePassenger(String invoiceId) {
+    public Observable<Map<String, List<Passenger>>> getCancelablePassenger(String invoiceId) {
         return flightApi.getCancellablePassenger(invoiceId)
                 .map(new Func1<Response<String>, CancelPassengerEntity>() {
                     @Override
@@ -52,12 +57,16 @@ public class FlightCancellationCloudDataSource {
                         return gsonWithDeserializer.fromJson(stringResponse.body(), CancelPassengerEntity.class);
                     }
                 })
-                .flatMap(new Func1<CancelPassengerEntity, Observable<List<Passenger>>>() {
+                .flatMap(new Func1<CancelPassengerEntity, Observable<Map<String, List<Passenger>>>>() {
                     @Override
-                    public Observable<List<Passenger>> call(CancelPassengerEntity cancelPassengerEntity) {
+                    public Observable<Map<String, List<Passenger>>> call(CancelPassengerEntity cancelPassengerEntity) {
                         flightCancellationReasonDataCacheSource.saveCache(
                                 cancelPassengerEntity.getAttributes().getReasons());
-                        return Observable.just(cancelPassengerEntity.getAttributes().getPassengers());
+                        Map<String, List<Passenger>> passengerMap = new HashMap<>();
+                        passengerMap.put(CANCELLABLES_KEY, cancelPassengerEntity.getAttributes().getPassengers());
+                        passengerMap.put(NON_CANCELLABLES_KEY, cancelPassengerEntity.getAttributes().getNonCancellablePassengers());
+
+                        return Observable.just(passengerMap);
                     }
                 });
     }

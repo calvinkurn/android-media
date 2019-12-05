@@ -25,7 +25,7 @@ dependencies {
 project.ext {
     artifactId = 'bottom-sheet-builder'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "bottom_sheet_builder-release"
 }
 

@@ -343,14 +343,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         /**
          * Keep checklist after user search or filter
          */
-        val listPositionChecked = list.withIndex().filter {
-            itemsChecked.map { it.id }.contains(it.value.id)
-        }.map {
-            it.index
-        }.toHashSet()
 
-        productManageListAdapter.setCheckedPositionList(listPositionChecked)
-        productManageListAdapter.notifyDataSetChanged()
+        if (list.isEmpty()) {
+            containerChechBoxBulk.visibility = View.GONE
+        } else {
+            containerChechBoxBulk.visibility = View.VISIBLE
+        }
+        renderCheckedView()
     }
 
     override fun onSearchSubmitted(text: String) {
@@ -375,6 +374,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         this.goldMerchant = goldMerchant
         isOfficialStore = officialStore
         this.shopDomain = shopDomain
+    }
+
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        bulkCheckBox.isChecked = false
+        productManageListAdapter.resetCheckedItemSet()
+        itemsChecked.clear()
+        renderCheckedView()
     }
 
     override fun onErrorEditPrice(t: Throwable?, productId: String?, price: String?, currencyId: String?, currencyText: String?) {
@@ -587,14 +594,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         loadInitialData()
     }
 
-    override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
-        bulkCheckBox.isChecked = false
-        productManageListAdapter.resetCheckedItemSet()
-        itemsChecked.clear()
-        renderCheckedView()
-    }
-
     override fun onErrorBulkUpdateProduct(e: Throwable) {
         activity?.let {
             showToasterError(ViewUtils.getErrorMessage(it, e), getString(R.string.close)) {
@@ -676,7 +675,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         if (productManagePresenter.isIdlePowerMerchant()) {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS)
         } else if (!productManagePresenter.isPowerMerchant()) {
-            RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
+            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
         }
     }
 

@@ -23,7 +23,7 @@ dependencies {
 project.ext {
     artifactId = 'linker'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "linker-release"
 }
 

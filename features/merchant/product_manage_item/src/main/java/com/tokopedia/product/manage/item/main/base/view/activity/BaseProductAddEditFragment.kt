@@ -24,7 +24,6 @@ import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepicker.common.util.FileUtils
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
@@ -32,10 +31,7 @@ import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
 import com.tokopedia.product.manage.item.category.view.activity.ProductEditCategoryActivity
 import com.tokopedia.product.manage.item.category.view.model.ProductCategory
-import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
-import com.tokopedia.product.manage.item.common.util.ProductStatus
-import com.tokopedia.product.manage.item.common.util.ProductVariantConstant
-import com.tokopedia.product.manage.item.common.util.StockTypeDef
+import com.tokopedia.product.manage.item.common.util.*
 import com.tokopedia.product.manage.item.description.view.activity.ProductEditDescriptionActivity
 import com.tokopedia.product.manage.item.description.view.model.ProductDescription
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
@@ -46,6 +42,7 @@ import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView
 import com.tokopedia.product.manage.item.main.add.view.presenter.ProductAddPresenterImpl
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel
+import com.tokopedia.product.manage.item.main.base.view.listener.ListenerOnAddEditFragmentCreated
 import com.tokopedia.product.manage.item.main.base.view.listener.ListenerOnErrorAddProduct
 import com.tokopedia.product.manage.item.main.base.view.model.ProductAddViewModel
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
@@ -56,13 +53,14 @@ import com.tokopedia.product.manage.item.price.view.activity.ProductEditPriceAct
 import com.tokopedia.product.manage.item.stock.view.activity.ProductEditStockActivity
 import com.tokopedia.product.manage.item.stock.view.model.ProductStock
 import com.tokopedia.product.manage.item.utils.*
+import com.tokopedia.product.manage.item.utils.constant.AddProductTrackingConstant
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
-import kotlinx.android.synthetic.main.fragment_product_add_video_recommendation.*
 import javax.inject.Inject
 
 abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : ProductAddView> : BaseDaggerFragment(),
@@ -70,6 +68,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     @Inject
     lateinit var presenter: T
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     @ProductStatus
     protected abstract var statusUpload: Int
@@ -81,6 +82,14 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     private var isGoldMerchant: Boolean = false
     val appRouter: Context? by lazy { activity?.application as? Context }
     protected var currentProductAddViewModel: ProductAddViewModel? = null
+    protected abstract var addEditPageType: AddEditPageType
+    private var listenerOnAddEditFragmentCreated: ListenerOnAddEditFragmentCreated? = null
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is ListenerOnAddEditFragmentCreated)
+            listenerOnAddEditFragmentCreated = context
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,7 +125,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        listenerOnAddEditFragmentCreated?.setUserSession(userSessionInterface)
         currentProductAddViewModel?.productCategory?.categoryId?.let { if (it > 0) presenter.fetchProductVariantByCat(it.toLong()) }
 
         populateView(currentProductAddViewModel)
@@ -131,8 +140,21 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         labelViewVariantProduct.setOnClickListener { startProductVariantActivity() }
         containerImageProduct.setOnClickListener { onAddImagePickerClicked() }
         button_save.setOnClickListener {
+            if (addEditPageType == AddEditPageType.ADD) {
+                val listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(
+                        currentProductAddViewModel?.convertToProductViewModel(),
+                        false
+                )
+                eventClickSave(listLabelAnalytics, userSessionInterface.shopId)
+            }
             if (currentProductAddViewModel?.isDataValid(this) == true) {
                 saveDraft(true)
+            }else{
+                if (addEditPageType == AddEditPageType.ADD) {
+                    val productViewModel = currentProductAddViewModel?.convertToProductViewModel()
+                    val listInvalidField = AnalyticsMapper.getAllInvalidateDataFieldFromViewModel(productViewModel)
+                    eventSendAllInvalidField(listInvalidField, userSessionInterface.shopId)
+                }
             }
         }
     }
@@ -320,11 +342,15 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         NetworkErrorHelper.createSnackbarWithAction(activity, getString(R.string.title_try_again)) {
             saveDraft(currentProductAddViewModel?.isDataValid(this) == true)
         }.showRetrySnackbar()
+        if (addEditPageType == AddEditPageType.ADD)
+            eventServerValidationAddProduct(userSessionInterface.shopId, errorMessage ?: "")
     }
 
     override fun onErrorStoreProductToDraftWhenBackPressed(errorMessage: String?) {
         CommonUtils.UniversalToast(activity, errorMessage)
         activity?.finish()
+        if (addEditPageType == AddEditPageType.ADD)
+            eventServerValidationAddProduct(userSessionInterface.shopId, errorMessage ?: "")
     }
 
     override fun onSuccessLoadShopInfo(goldMerchant: Boolean, freeReturn: Boolean, officialStore: Boolean) {
@@ -553,6 +579,44 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 label)
     }
 
+    private fun eventClickSave(labels: MutableList<String>, shopId: String) {
+        val action = if(labels.isEmpty()){
+            AddProductTrackingConstant.Action.CLICK_ADD_NO_OPTIONAL_FIELD
+        }else{
+            AddProductTrackingConstant.Action.CLICK_ADD_OPTIONAL_FIELD
+        }
+        val mapEvent = TrackAppUtils.gtmData(
+                AddProductTrackingConstant.Event.CLICK_ADD_PRODUCT,
+                AddProductTrackingConstant.Category.ADD_PRODUCT_PAGE,
+                action,
+                labels.joinToString()
+        )
+        mapEvent[AddProductTrackingConstant.Key.SHOP_ID] = shopId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    private fun eventSendAllInvalidField(listInvalidField: List<String>, shopId: String){
+        val mapEvent = TrackAppUtils.gtmData(
+                AddProductTrackingConstant.Event.CLICK_ADD_PRODUCT,
+                AddProductTrackingConstant.Category.ADD_PRODUCT_PAGE,
+                AddProductTrackingConstant.Action.CLICK_ADD_ERROR_FIELD_VALIDATION,
+                listInvalidField.joinToString()
+        )
+        mapEvent[AddProductTrackingConstant.Key.SHOP_ID] = shopId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    private fun eventServerValidationAddProduct(shopId: String, errorText: String){
+        val mapEvent = TrackAppUtils.gtmData(
+                AddProductTrackingConstant.Event.CLICK_ADD_PRODUCT,
+                AddProductTrackingConstant.Category.ADD_PRODUCT_PAGE,
+                AddProductTrackingConstant.Action.CLICK_ADD_ERROR_SERVER_VALIDATION,
+                errorText
+        )
+        mapEvent[AddProductTrackingConstant.Key.SHOP_ID] = shopId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
     private fun isEdittingDraft() = isEditStatus() && productDraftId > 0
 
     open fun isEditStatus() = statusUpload == ProductStatus.EDIT
@@ -560,20 +624,23 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     private fun isAddStatus() = statusUpload == ProductStatus.ADD
 
     override fun onErrorName() {
-        showWarning(getString(R.string.product_error_product_name_empty), View.OnClickListener {
+        val errorName = getString(R.string.product_error_product_name_empty)
+        showWarning(errorName, View.OnClickListener {
             startNameActivity()
         })
     }
 
     override fun onErrorCategoryEmpty() {
-        showWarning(getString(R.string.product_error_product_category_empty), View.OnClickListener {
+        val errorName = getString(R.string.product_error_product_category_empty)
+        showWarning(errorName, View.OnClickListener {
             startCatalogActivity()
         })
         UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY)
     }
 
     override fun onErrorPrice() {
-        showWarning(getString(R.string.error_empty_price), View.OnClickListener {
+        val errorName = getString(R.string.error_empty_price)
+        showWarning(errorName, View.OnClickListener {
             startPriceActivity()
         })
         UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
@@ -587,6 +654,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     override fun onErrorImage() {
+        val errorName = getString(R.string.product_error_product_picture_empty)
         NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.product_error_product_picture_empty))
         UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_OPTIONAL_PICTURE)
     }
