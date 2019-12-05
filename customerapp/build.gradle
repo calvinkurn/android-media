@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 if (!project.hasProperty("disable-performance-plugin")) {
-    apply plugin: 'com.google.firebase.firebase-perf'
+    //apply plugin: 'com.google.firebase.firebase-perf'
 }
 
 if (hasProperty('buildScan')) {
