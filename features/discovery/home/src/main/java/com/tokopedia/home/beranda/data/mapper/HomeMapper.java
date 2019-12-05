@@ -333,6 +333,7 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                                                    boolean isCache) {
         DynamicChannelViewModel viewModel = new DynamicChannelViewModel();
         viewModel.setChannel(channel);
+        viewModel.setCache(isCache);
         if (!isCache) {
             viewModel.setTrackingData(trackingData);
             viewModel.setTrackingDataForCombination(trackingDataForCombination);

@@ -90,8 +90,6 @@ import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
-import com.tokopedia.product.manage.list.applink.ProductManageApplinkModule;
-import com.tokopedia.product.manage.list.applink.ProductManageApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
@@ -166,7 +164,6 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         RecentViewApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         InboxTalkApplinkModule.class,
-        ProductManageApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
@@ -218,7 +215,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new RecentViewApplinkModuleLoader(),
                     new ChangePasswordDeeplinkModuleLoader(),
                     new InboxTalkApplinkModuleLoader(),
-                    new ProductManageApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
@@ -278,6 +274,13 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         finish();
     }
 
+    public static void createApplinkDelegateInBackground(){
+        Observable.fromCallable(() -> {
+            getApplinkDelegateInstance();
+            return true;
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -325,7 +328,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     private void routeApplink(ApplinkDelegate deepLinkDelegate, String applinkString, Bundle defaultBundle) {
         if (deepLinkDelegate.supportsUri(applinkString)) {
-            routeFromApplink(Uri.parse(applinkString), defaultBundle);
+            routeFromApplink(deepLinkDelegate, Uri.parse(applinkString), defaultBundle);
         } else {
             Intent intent = RouteManager.getIntent(this, applinkString);
             if (defaultBundle != null) {
@@ -352,11 +355,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 label);
     }
 
-    private void routeFromApplink(Uri applink, Bundle defaultBudle) {
+    private void routeFromApplink(ApplinkDelegate applinkDelegate, Uri applink, Bundle defaultBudle) {
         if (applink != null) {
             try {
 
-                Intent nextIntent = ((ApplinkRouter) getApplicationContext()).applinkDelegate().getIntent(this, applink.toString());
+                Intent nextIntent = applinkDelegate.getIntent(this, applink.toString());
                 if (defaultBudle != null) {
                     nextIntent.putExtras(defaultBudle);
                 }
