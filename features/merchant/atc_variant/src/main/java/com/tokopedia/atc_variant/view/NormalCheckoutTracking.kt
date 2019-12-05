@@ -1,13 +1,10 @@
 package com.tokopedia.atc_variant.view
 
-import android.os.Bundle
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.tokopedia.atc_variant.model.ProductInfoAndVariant
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.atc_variant.model.ProductInfoAndVariant
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
-import com.tokopedia.purchase_platform.features.atc_variant.model.ProductInfoAndVariant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import org.json.JSONArray
@@ -59,7 +56,7 @@ class NormalCheckoutTracking {
     }
 
     fun eventClickInsuranceBuy(title: String, productId: String) {
-        val eventLabel =    "pdp page - $title"
+        val eventLabel = "pdp page - $title"
         val mapEvent = TrackAppUtils.gtmData(
                 "",
                 CATEGORY_FIN_PDP_INSURANCE,
