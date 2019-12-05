@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.UserCodStatus
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
@@ -17,13 +16,13 @@ import javax.inject.Inject
 class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<String, String>,
                                                   private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP3>() {
 
-    var weight: String = WeightTypeDef.UNKNOWN
+    var weight: Float = 0f
     var shopDomain = ""
     var needRequestCod = false
-    var origin = ""
+    var origin: String? = null
     var forceRefresh = false
 
-    fun createRequestParams(weight: String, shopDomain: String, needRequestCod: Boolean, origin: String, forceRefresh: Boolean) {
+    fun createRequestParams(weight: Float, shopDomain: String, needRequestCod: Boolean, forceRefresh: Boolean, origin: String?) {
         this.weight = weight
         this.shopDomain = shopDomain
         this.needRequestCod = needRequestCod

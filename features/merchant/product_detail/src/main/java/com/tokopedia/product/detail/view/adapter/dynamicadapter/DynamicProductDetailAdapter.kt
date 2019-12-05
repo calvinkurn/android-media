@@ -18,6 +18,11 @@ class DynamicProductDetailAdapter(
         notifyItemChanged(indexOfShopInfo, payload)
     }
 
+    fun notifyShipingInfo(shipingInfo: ProductGeneralInfoDataModel) {
+        val indexOfShipingInfo = list.indexOf(shipingInfo)
+        notifyItemChanged(indexOfShipingInfo)
+    }
+
     fun notifyRecomAdapter(listOfData: List<ProductRecommendationDataModel>?) {
         listOfData?.run {
             forEach {
@@ -39,6 +44,10 @@ class DynamicProductDetailAdapter(
     }
 
     fun removeDiscussionSection(data: ProductDiscussionDataModel?) {
+        clearElement(data)
+    }
+
+    fun removeInstallmentSection(data: ProductGeneralInfoDataModel?) {
         clearElement(data)
     }
 

@@ -35,8 +35,6 @@ data class BasicInfo(
         val menu: Menu = Menu(),
         @SerializedName("minOrder")
         val minOrder: Int = 0,
-        @SerializedName("name")
-        val name: String = "",
         @SerializedName("needPrescription")
         val needPrescription: Boolean = false,
         @SerializedName("productID")
@@ -52,8 +50,20 @@ data class BasicInfo(
         @SerializedName("condition")
         val condition: String = ProductConditionTypeDef.UNKNOWN,
         @SerializedName("weightUnit")
-        val weightUnit: String = WeightTypeDef.UNKNOWN
+        val weightUnit: String = WeightTypeDef.UNKNOWN,
+        @SerializedName("weight")
+        val weight: Int = 0
 ) {
+
+    companion object {
+        const val KG = "kilogram"
+        const val KILO = 1000
+
+        const val LABEL_KG = "Kg"
+        const val LABEL_GRAM = "gram"
+    }
+
+    fun getWeightUnit(): Float = if (weightUnit.toLowerCase() == KG) weight.toFloat() else weight.toFloat() / KILO
     fun getProductId(): Int = productID.toIntOrNull() ?: 0
     fun getShopId(): Int = shopID.toIntOrNull() ?: 0
     fun isActive(): Boolean {

@@ -59,6 +59,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -76,11 +77,13 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
+import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.spesification.Specification
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
@@ -88,6 +91,7 @@ import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimation
 import com.tokopedia.product.detail.view.activity.CourierActivity
 import com.tokopedia.product.detail.view.activity.ProductFullDescriptionTabActivity
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
+import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.DynamicProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
@@ -96,6 +100,7 @@ import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
+import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
 import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
 import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
 import com.tokopedia.product.share.ProductData
@@ -131,6 +136,7 @@ import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_product_detail_header.*
 import javax.inject.Inject
+import kotlin.math.roundToLong
 
 class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener {
 
@@ -337,9 +343,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             when (it) {
                 is Success -> {
                     getRecyclerView(view).addOnScrollListener(onScrollListener)
-                    pdpHashMapUtil = DynamicProductDetailHashMap(DynamicProductDetailMapper.hashMapLayout(it.data))
+                    context?.let { context ->
+                        pdpHashMapUtil = DynamicProductDetailHashMap(context, DynamicProductDetailMapper.hashMapLayout(it.data))
+                    }
                     viewModel.getDynamicProductInfoP1?.let { productInfo ->
                         pdpHashMapUtil.updateDataP1(productInfo)
+
+                        if (productInfo.data.isTradeIn) {
+                            renderTradein(productInfo)
+                        }
+
                         shouldShowCodP1 = productInfo.data.isCOD
 
                         actionButtonView.isLeasing = productInfo.basic.isLeasing
@@ -362,6 +375,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
                     activity?.invalidateOptionsMenu()
                     renderList(it.data)
+
 
                 }
                 is Fail -> {
@@ -386,7 +400,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringP2Login.stopTrace()
 
-            pdpHashMapUtil.updateDataP2Login(it)
             it.pdpAffiliate?.let { renderAffiliate(it) }
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOADS_WISHLIST)
 
@@ -408,7 +421,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 actionButtonView.visibility = !isAffiliate && it.shopInfo?.statusInfo?.shopStatus == 1
             }
 
-
 //            viewModel.getDynamicProductInfoP1?.let { data ->
 //                pdpHashMapUtil.getShopInfo.shopInfo?.let { shopInfo ->
 //                    productDetailTracking.sendMoEngageOpenProduct(data,
@@ -422,7 +434,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 //
 //                }
 //            }
-
 
             if (delegateTradeInTracking) {
                 trackProductView(tradeInParams.isEligible == 1)
@@ -448,6 +459,19 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 dynamicAdapter.removeMostHelpfulReviewSection(pdpHashMapUtil.productMostHelpfulMap)
             }
 
+            it.productFinancingRecommendationData.let { financingData ->
+                if (financingData.response.data.partnerCode.isNotBlank()) {
+                    pdpHashMapUtil.productInstallmentInfoMap?.run {
+                        description = String.format(getString(R.string.new_installment_template),
+                                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                        (if (viewModel.getDynamicProductInfoP1?.data?.isOS == true) financingData.response.data.osMonthlyPrice
+                                        else financingData.response.data.monthlyPrice).roundToLong(), false))
+                    }
+                } else {
+                    dynamicAdapter.removeInstallmentSection(pdpHashMapUtil.productInstallmentInfoMap)
+                }
+            }
+
             onSuccessGetProductVariantInfo(it.variantResp)
 
             pdpHashMapUtil.updateDataP2General(it)
@@ -463,10 +487,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringFull.stopTrace()
 
+            pdpHashMapUtil.productShipingInfoMap?.run {
+                description = " ${getString(R.string.shipping_pattern_string, it.ratesModel?.services?.size ?: 0)}${getString(R.string.ongkir_pattern_string, it.rateEstSummarizeText?.minPrice, "<b>${it.rateEstSummarizeText?.destination}</b>")}"
+                dynamicAdapter.notifyShipingInfo(this)
+            }
+
             shouldShowCodP3 = it.userCod
             pdpHashMapUtil.snapShotMap.shouldShowCod =
                     shouldShowCodP1 && shouldShowCodP2Shop && shouldShowCodP3
-
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOADS_COD)
         })
 
@@ -697,28 +725,27 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     /**
      * ProductGeneralInfoViewHolder Listener
      */
-    override fun onDescriptioInfonClicked(name: String) {
-        when (name) {
-            "shipping_info" -> {
-            }
-            "cicilan_info" -> {
-            }
-            "variant" -> {
-            }
-            "wholesale" -> {
-            }
-        }
-    }
 
     override fun onInfoClicked(name: String) {
         when (name) {
             "shipping_info" -> {
+                onShipmentClicked()
             }
             "cicilan_info" -> {
+//                openFtInstallmentBottomSheet()
             }
             "variant" -> {
+                productDetailTracking.eventClickVariant(generateVariantString(), productId ?: "")
+                goToNormalCheckout(ATC_AND_BUY)
             }
             "wholesale" -> {
+                val data = DynamicProductDetailMapper.mapToWholesale(viewModel.getDynamicProductInfoP1?.data?.wholesale)
+                if (data != null && data.isNotEmpty()) {
+                    context?.run {
+                        startActivity(WholesaleActivity.getIntent(this,
+                                (data as ArrayList<Wholesale>)))
+                    }
+                }
             }
         }
     }
@@ -788,7 +815,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             context?.let {
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, basic.productID)
                 intent?.run {
-                    intent.putExtra("x_prd_nm", basic.name)
+                    intent.putExtra("x_prd_nm", getProductName)
                     startActivity(intent)
                 }
             }
@@ -1032,7 +1059,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private fun showAddToCartDoneBottomSheet(successMessage: String) {
         viewModel.getDynamicProductInfoP1?.let {
             val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
-            val productName = it.basic.name
+            val productName = it.getProductName
             val productImageUrl = it.data.getFirstProductImage()
             val addedProductDataModel = AddToCartDoneAddedProductDataModel(
                     it.basic.productID,
@@ -1109,7 +1136,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 val productData = ProductData(
                         productInfo.data.price.value.getCurrencyFormatted(),
                         "${productInfo.data.isCashback.percentage}%",
-                        MethodChecker.fromHtml(productInfo.basic.name).toString(),
+                        MethodChecker.fromHtml(productInfo.getProductName).toString(),
                         productInfo.data.price.currency,
                         productInfo.basic.url,
                         viewModel.shopInfo?.shopCore?.url ?: "",
@@ -1399,6 +1426,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         delegateTradeInTracking = true
     }
 
+    private fun openFtInstallmentBottomSheet(installmentData: FinancingDataResponse) {
+
+        productDetailTracking.eventClickPDPInstallmentSeeMore(productId)
+
+        val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
+        val bundleData = Bundle()
+        bundleData.putParcelable(FtPDPInstallmentBottomSheet.KEY_PDP_FINANCING_DATA, installmentData)
+        bundleData.putFloat(FtPDPInstallmentBottomSheet.KEY_PDP_PRODUCT_PRICE, viewModel.getDynamicProductInfoP1?.data?.price?.value?.toFloat()
+                ?: 0f)
+        bundleData.putBoolean(FtPDPInstallmentBottomSheet.KEY_PDP_IS_OFFICIAL, viewModel.shopInfo?.goldOS?.isOfficial == 1)
+        pdpInstallmentBottomSheet.arguments = bundleData
+        pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
+    }
+
 
     private fun renderTradein(productInfoP1: DynamicProductInfoP1) {
         tradeInParams = TradeInParams()
@@ -1411,7 +1452,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         tradeInParams.setPrice(productInfoP1.data.price.value)
         tradeInParams.productId = productInfoP1.basic.getProductId()
         tradeInParams.shopId = productInfoP1.basic.getShopId()
-        tradeInParams.productName = productInfoP1.basic.name
+        tradeInParams.productName = productInfoP1.getProductName
 
         tradeInParams.isPreorder = productInfoP1.data.preOrder.isPreOrderActive()
         tradeInParams.isOnCampaign = productInfoP1.data.campaign.isActive
@@ -1471,9 +1512,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 val isOcsCheckoutType = (viewModel.p2Login.value)?.isOcsCheckoutType
                         ?: false
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, it.basic.name)
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, it.getProductName)
                     putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, it.data.price.value)
-//                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION, basic.condition)
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION, it.basic.condition)
                     putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, it.basic.category.id)
                     putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, it.basic.category.name)
                     putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, it.basic.shopID)
@@ -1541,6 +1582,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             }
         } else {
             goToNormalCheckout()
+        }
+    }
+
+    private fun generateVariantString(): String {
+        return try {
+            viewModel.p2General.value?.variantResp?.variant?.map { it.name }?.joinToString(separator = ", ")
+                    ?: ""
+        } catch (e: Throwable) {
+            ""
         }
     }
 

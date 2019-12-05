@@ -20,10 +20,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductTradeinDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -161,14 +158,11 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
             //Check trade-in
             if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
-                var tradeInPosition = -1
-                initialLayoutData.forEachIndexed { index, dynamicPDPDataModel ->
-                    if (dynamicPDPDataModel is ProductTradeinDataModel) {
-                        tradeInPosition = index
-                    }
-                }
-                val tradeinData = initialLayoutData.toMutableList().removeAt(tradeInPosition)
-                initialLayoutData.remove(tradeinData)
+                removeTradein(initialLayoutData)
+            }
+            //Check Wholesale
+            if (getDynamicProductInfoP1?.data?.hasWholesale == false) {
+                removeWholesale(initialLayoutData)
             }
 
             productLayout.value = Success(initialLayoutData)
@@ -188,7 +182,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                 val p2GeneralAsync: Deferred<ProductInfoP2General> = getProductInfoP2GeneralAsync(it.basic.getShopId(),
                         it.basic.getProductId(), it.data.price.value,
                         it.basic.condition,
-                        it.basic.name,
+                        it.getProductName,
                         categoryId, it.basic.catalogID, userIdInt)
 
                 shopInfo = p2ShopDeferred.await().shopInfo
@@ -203,9 +197,11 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                     val domain = productParams.shopDomain ?: p2Shop.shopInfo?.shopCore?.domain
                     ?: return@launchCatchError
 
-                    if (isUserSessionActive())
-                        productInfoP3resp.value = getProductInfoP3(it.basic.weightUnit, domain, true,
-                                it.shouldShowCod, if (multiOrigin.isFulfillment) multiOrigin.origin else null)
+                    if (isUserSessionActive()) {
+                        val origin = if (multiOrigin.isFulfillment) multiOrigin.origin else null
+                        productInfoP3resp.value = getProductInfoP3(it.basic.getWeightUnit(), domain, true,
+                                it.shouldShowCod, origin)
+                    }
                 }
             }
 
@@ -278,7 +274,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         if (intent == null) return
         val variants = mapSelectedProductVariants(userInputVariant)
         val productImageUrl = productInfo?.data?.getProductImageUrl()
-        val productName = productInfo?.basic?.name
+        val productName = productInfo?.getProductName
         val productPrice = productInfo?.data?.price?.value?.getCurrencyFormatted()
         val productUrl = productInfo?.basic?.url
         val productFsIsActive = productInfo?.data?.getFsProductIsActive()
@@ -407,7 +403,6 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                 })
     }
 
-
     fun generateVariantString(): String {
         return try {
             p2General.value?.variantResp?.variant?.map { it.name }?.joinToString(separator = ", ")
@@ -417,13 +412,36 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         }
     }
 
-
     fun cancelWarehouseUseCase() {
         moveProductToWarehouseUseCase.cancelJobs()
     }
 
     fun cancelEtalaseUseCase() {
         moveProductToEtalaseUseCase.cancelJobs()
+    }
+
+    private fun removeWholesale(initialLayoutData: MutableList<DynamicPDPDataModel>) {
+        var wholesalePosition = -1
+        initialLayoutData.forEachIndexed { index, dynamicPDPDataModel ->
+            if (dynamicPDPDataModel is ProductGeneralInfoDataModel && dynamicPDPDataModel.name == "wholesale") {
+                wholesalePosition = index
+                return@forEachIndexed
+            }
+        }
+        val wholesaleData = initialLayoutData.toMutableList().removeAt(wholesalePosition)
+        initialLayoutData.remove(wholesaleData)
+    }
+
+    private fun removeTradein(initialLayoutData: MutableList<DynamicPDPDataModel>) {
+        var tradeInPosition = -1
+        initialLayoutData.forEachIndexed { index, dynamicPDPDataModel ->
+            if (dynamicPDPDataModel is ProductTradeinDataModel) {
+                tradeInPosition = index
+                return@forEachIndexed
+            }
+        }
+        val tradeinData = initialLayoutData.toMutableList().removeAt(tradeInPosition)
+        initialLayoutData.remove(tradeinData)
     }
 
     private fun mapSelectedProductVariants(userInputVariant: String?): ArrayMap<String, ArrayMap<String, String>>? {
@@ -449,7 +467,6 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             getProductInfoP2LoginUseCase.createRequestParams(shopId, productId)
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
-
     }
 
     private fun getProductInfoP2GeneralAsync(shopId: Int, productId: Int, productPrice: Int,
@@ -462,10 +479,9 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         }
     }
 
-    private suspend fun getProductInfoP3(weight: String, shopDomain: String,
+    private suspend fun getProductInfoP3(weight: Float, shopDomain: String,
                                          forceRefresh: Boolean, needRequestCod: Boolean, origin: String?): ProductInfoP3 {
-        getProductInfoP3UseCase.createRequestParams(weight, shopDomain, needRequestCod, origin
-                ?: "", true)
+        getProductInfoP3UseCase.createRequestParams(weight, shopDomain, needRequestCod, forceRefresh, origin)
         return getProductInfoP3UseCase.executeOnBackground()
     }
 

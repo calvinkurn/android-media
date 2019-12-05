@@ -82,7 +82,6 @@ object DynamicProductDetailMapper {
                     maxOrder = newData.basic.maxOrder,
                     minOrder = newData.basic.minOrder,
                     menu = newData.menu,
-                    name = newData.basic.name,
                     needPrescription = newData.basic.needPrescription,
                     productID = newData.basic.id.toString(),
                     shopID = newData.basic.shopID.toString(),
@@ -116,7 +115,8 @@ object DynamicProductDetailMapper {
                     variant = newData.variant,
                     videos = newData.videos,
                     wholesale = wholesaleCopy,
-                    preOrder = newData.preorder
+                    preOrder = newData.preorder,
+                    name = newData.basic.name
 
 
             )
@@ -129,5 +129,15 @@ object DynamicProductDetailMapper {
         }, {
             it
         })
+    }
+
+    fun mapToWholesale(data: List<Wholesale>?): List<com.tokopedia.product.detail.common.data.model.product.Wholesale>? {
+        return if (data == null || data.isEmpty()) {
+            null
+        } else {
+            data.map {
+                com.tokopedia.product.detail.common.data.model.product.Wholesale(it.minQty, it.price.value.toFloat())
+            }
+        }
     }
 }

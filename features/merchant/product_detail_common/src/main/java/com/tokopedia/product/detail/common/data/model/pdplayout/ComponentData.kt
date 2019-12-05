@@ -46,11 +46,14 @@ data class ComponentData(
         @SerializedName("videos")
         val videos: List<Video> = listOf(),
         @SerializedName("wholesale")
-        val wholesale: List<Wholesale> = listOf(),
+        val wholesale: List<Wholesale>? = null,
         @SerializedName("preorder")
         val preOrder: PreOrder = PreOrder()
 
 ) {
+
+    val hasWholesale: Boolean
+        get() = wholesale != null && wholesale.isNotEmpty()
 
     fun getFirstProductImage(): String? {
         if (media.isEmpty()) return null

@@ -77,7 +77,7 @@ class ProductInfoViewHolder(private val view: View,
                 listener.gotoDescriptionTab(
                         DescriptionData(
                                 basicId = productInfo.basic.productID,
-                                basicName = productInfo.basic.name,
+                                basicName = productInfo.getProductName,
                                 basicPrice = productInfo.data.price.value.toFloat(),
                                 shopName = shopName,
                                 thumbnailPicture = productInfo.data.getFirstProductImage() ?: "",

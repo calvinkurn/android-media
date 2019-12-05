@@ -80,7 +80,6 @@ interface DynamicProductDetailListener {
     /**
      * ProductGeneralInfoViewHolder
      */
-    fun onDescriptioInfonClicked(name: String)
     fun onInfoClicked(name: String)
 
     fun onValuePropositionClicked(view: Int)

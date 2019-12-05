@@ -19,7 +19,6 @@ query pdpGetLayout($productID: String) {
         url
       }
       shopID
-      name
       alias
       minOrder
       maxOrder
@@ -27,6 +26,9 @@ query pdpGetLayout($productID: String) {
       url
       sku
       gtin
+      weight
+      weightUnit
+      condition
       isMustInsurance
       catalogID
       needPrescription

@@ -6,11 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_24"
+    android:padding="@dimen/dp_16"
     tools:ignore="RtlSymmetry">
 
     <ImageView
@@ -20,6 +16,7 @@
         android:visibility="gone"
         tools:visibility="visible"
         app:layout_constraintHorizontal_bias="0"
+        android:layout_marginRight="@dimen/dp_16"
         tools:src="@drawable/ic_product_fintech_qr_normal_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +36,6 @@
         android:id="@+id/pdp_info_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_14"
         app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
         app:layout_constraintStart_toEndOf="@+id/pdp_icon"
         app:layout_constraintTop_toTopOf="parent"
@@ -47,8 +43,7 @@
         app:typographyWeight="bold"
         tools:text="Varian Produk"
         android:layout_marginTop="@dimen/dp_10"
-        android:textColor="@color/charcoal_grey_88"
-        android:layout_marginStart="@dimen/dp_14" />
+        android:textColor="@color/charcoal_grey_88"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_info_desc"

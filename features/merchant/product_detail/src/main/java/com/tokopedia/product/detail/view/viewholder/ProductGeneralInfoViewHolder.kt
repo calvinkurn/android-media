@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
@@ -16,12 +17,13 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
 
     override fun bind(element: ProductGeneralInfoDataModel) {
         element.data?.run {
-            view.pdp_info_title.text = title
+            view.pdp_info_title.text = MethodChecker.fromHtml(title)
 
             if (element.description.isNotEmpty()) {
                 view.pdp_info_desc.show()
-                view.pdp_info_desc.text = element.description
-                view.pdp_info_desc.setOnClickListener {
+                view.pdp_info_desc.text = MethodChecker.fromHtml(element.description)
+                view.setOnClickListener {
+                    listener.onInfoClicked(element.name)
                 }
             }
 

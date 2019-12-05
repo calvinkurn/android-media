@@ -96,7 +96,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
                 ImageReviewGqlResponse::class.java, imageReviewParams)
 
         val productPPParams = mapOf("param" to PPItemDetailRequest(productId = productId, shopId = shopId, userId = userId, categoryId = categoryId,
-                condition = condition, productTitle = productTitle, price = productPrice))
+                condition = condition.toLowerCase(), productTitle = productTitle, price = productPrice))
         val productPurchaseProtectionRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_PP],
                 ProductPurchaseProtectionInfo::class.java, productPPParams)
 

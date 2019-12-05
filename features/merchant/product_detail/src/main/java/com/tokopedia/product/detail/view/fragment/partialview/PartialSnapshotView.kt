@@ -31,7 +31,7 @@ class PartialSnapshotView(private val view: View,
         val data = product.data
         val basic = product.basic
         with(view) {
-            product_name.text = MethodChecker.fromHtml(basic.name)
+            product_name.text = MethodChecker.fromHtml(data.name)
             when {
                 data.isFreeOngkir.isActive -> {
                     ImageHandler.loadImageRounded2(context, img_free_ongkir, data.isFreeOngkir.imageURL)

@@ -7,4 +7,7 @@ data class DynamicProductInfoP1(
     val shouldShowCod: Boolean
         get() = (!data.campaign.activeAndHasId) && data.isCOD
 
+    val getProductName: String
+        get() = data.name
+
 }
