@@ -815,7 +815,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
         datePickerUnify.getDatePickerButton().setOnClickListener((View v) -> {
             Integer[] date = datePickerUnify.getDate();
-            date[1] = date[1] + 1;
             if (title.equalsIgnoreCase(SAMPAI)) {
                 sampaiButton.setText(date[0] + " " + Utils.INSTANCE.convertMonth(date[1],getActivity()) + " " + date[2]);
             } else {
