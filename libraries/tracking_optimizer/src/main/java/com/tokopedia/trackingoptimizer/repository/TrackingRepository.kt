@@ -197,9 +197,6 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
     override fun getAllEEFull() = trackingEEFullDataSource.getAll()
     override fun getAllRegular() = trackingRegularDataSource.getAll()
     override fun getAllScreenName() = trackingScreenNameDataSource.getAll()
-    override fun getEE(limit:Int) = trackingEEDataSource.get(limit)
-    override fun getEEFull(limit:Int) = trackingEEFullDataSource.get(limit)
-    override fun getRegular(limit:Int) = trackingRegularDataSource.get(limit)
 
     override fun deleteRegular() {
         trackingRegularDataSource.delete()
@@ -211,18 +208,6 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
 
     override fun deleteEEFull() {
         trackingEEFullDataSource.delete()
-    }
-
-    override fun deleteRegular(regularList: List<TrackingRegularDbModel>) {
-        trackingRegularDataSource.delete(regularList.map { it.id.toString() })
-    }
-
-    override fun deleteEE(eeList: List<TrackingEEDbModel>) {
-        trackingEEDataSource.delete(eeList.map { it.key })
-    }
-
-    override fun deleteEEFull(eeFullList: List<TrackingEEFullDbModel>) {
-        trackingRegularDataSource.delete(eeFullList.map { it.id.toString() })
     }
 
     override fun deleteScreenName() {

@@ -16,15 +16,12 @@ import com.tokopedia.trackingoptimizer.repository.TrackingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Created by hendry on 01/03/19.
  */
 var atomicInteger = AtomicInteger()
-private const val ROW_LIMIT = 5
-private const val LOOP_LIMIT = 10
 
 fun decreaseCounter() {
     val value = atomicInteger.getAndDecrement()
@@ -37,52 +34,33 @@ fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackingReposi
               onFinished: (() -> Unit)) {
     atomicInteger.getAndIncrement()
     coroutineScope.launch {
-        sendEEFullAllThenDelete(trackingRepository)
-        sendEERegularAllThenDelete(trackingRepository)
+        val eeFullModelList = trackingRepository.getAllEEFull()
+        val deleteEEFullJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
+            trackingRepository.deleteEEFull()
+        }
+        eeFullModelList?.run {
+            map {
+                sendTrack(it)
+            }
+        }
+        val eeModelList = trackingRepository.getAllEE()
+        val deleteEEJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
+            trackingRepository.deleteEE()
+        }
+        eeModelList?.run {
+            map {
+                sendTrack(it)
+            }
+        }
+
+        deleteEEFullJob.join()
+        deleteEEJob.join()
         decreaseCounter()
         onFinished.invoke()
     }
 }
 
-private fun sendEEFullAllThenDelete(trackingRepository: TrackingRepository){
-    var counter = 0
-    while (counter < LOOP_LIMIT) {
-        val data = trackingRepository.getEEFull(ROW_LIMIT)
-        if (data?.isNotEmpty() == true) {
-            data.run {
-                map {
-                    sendTrack(it)
-                }
-            }
-            trackingRepository.deleteEEFull(data.toList())
-        } else {
-            // quit loop
-            break
-        }
-        counter++
-    }
-}
-
-private fun sendEERegularAllThenDelete(trackingRepository: TrackingRepository){
-    var counter = 0
-    while (counter < LOOP_LIMIT) {
-        val data = trackingRepository.getRegular(ROW_LIMIT)
-        if (data?.isNotEmpty() == true) {
-            data.run {
-                map {
-                    sendTrack(it)
-                }
-            }
-            trackingRepository.deleteRegular(data.toList())
-        } else {
-            // quit loop
-            break
-        }
-        counter++
-    }
-}
-
-private fun sendTrack(it: TrackingDbModel) {
+fun sendTrack(it: TrackingDbModel) {
     var hasSent = false
     val map = mutableMapOf<String, Any?>()
     val eventModel: EventModel = GsonSingleton.instance.fromJson(it.event,

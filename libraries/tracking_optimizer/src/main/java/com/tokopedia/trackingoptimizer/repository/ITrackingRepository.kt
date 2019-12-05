@@ -25,15 +25,8 @@ interface ITrackingRepository<T, U, V, W> {
     fun getAllEEFull(): Array<V>?
     fun getAllScreenName(): Array<W>?
 
-    fun getRegular(limit:Int): Array<T>?
-    fun getEE(limit:Int): Array<U>?
-    fun getEEFull(limit:Int): Array<V>?
-
     fun deleteRegular()
     fun deleteEE()
     fun deleteEEFull()
-    fun deleteRegular(keyList:List<T>)
-    fun deleteEE(keyList:List<U>)
-    fun deleteEEFull(keyList:List<V>)
     fun deleteScreenName()
 }
