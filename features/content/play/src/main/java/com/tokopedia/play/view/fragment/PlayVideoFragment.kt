@@ -32,13 +32,13 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     private val job: Job = SupervisorJob()
 
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var playVideoViewModel: PlayVideoViewModel
-
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
 
     override fun getScreenName(): String = "Play Video"
 

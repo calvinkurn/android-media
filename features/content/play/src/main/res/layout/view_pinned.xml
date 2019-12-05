@@ -13,7 +13,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_pinned_chat"
+            android:background="@drawable/bg_play_pinned_chat"
             android:paddingStart="@dimen/dp_8"
             android:paddingTop="@dimen/dp_4"
             android:paddingEnd="@dimen/dp_8"
@@ -58,7 +58,7 @@
             android:id="@+id/tv_pinned_action"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:background="@drawable/bg_pinned_action"
+            android:background="@drawable/bg_play_pinned_action"
             android:gravity="center"
             android:paddingStart="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"

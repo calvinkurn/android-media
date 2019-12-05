@@ -20,12 +20,9 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
             LayoutInflater.from(container.context).inflate(R.layout.view_chat_form, container, true)
                     .findViewById(R.id.cl_chat_form)
 
-    init {
-        view.findViewById<EditText>(R.id.et_chat)
-                .setOnClickListener {
-                    listener.onChatFormClicked(this)
-                }
+    private val etChat: EditText = view.findViewById(R.id.et_chat)
 
+    init {
         view.findViewById<ImageView>(R.id.iv_send)
                 .setOnClickListener {
                     listener.onSendChatClicked(this)
