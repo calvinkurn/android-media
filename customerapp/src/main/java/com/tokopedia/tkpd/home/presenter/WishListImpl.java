@@ -397,7 +397,7 @@ public class WishListImpl implements WishList {
         variables.put(ITEM_COUNT, 10);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_wishlist),
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
                 GqlWishListDataResponse.class,
                 variables, false);
 
