@@ -24,6 +24,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.imagePicker)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

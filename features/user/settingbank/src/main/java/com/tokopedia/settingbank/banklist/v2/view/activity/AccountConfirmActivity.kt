@@ -12,6 +12,7 @@ import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.view.fragment.ARG_ACCOUNT_TYPE
 import com.tokopedia.settingbank.banklist.v2.view.fragment.ARG_BANK_ACCOUNT_DATA
+import com.tokopedia.settingbank.banklist.v2.view.fragment.ARG_KYC_NAME
 import com.tokopedia.settingbank.banklist.v2.view.fragment.AccountConfirmFragment
 
 class AccountConfirmActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent> {
@@ -31,10 +32,13 @@ class AccountConfirmActivity : BaseSimpleActivity(), HasComponent<SettingBankCom
     }
 
     companion object {
-        fun createIntent(context: Context, bankAccount: BankAccount, accountType: Int): Intent {
-            return Intent(context, AddBankActivity::class.java).apply {
+        fun createIntent(context: Context, bankAccount: BankAccount, accountType: Int, kycName: String?): Intent {
+            return Intent(context, AccountConfirmActivity::class.java).apply {
                 putExtra(ARG_BANK_ACCOUNT_DATA, bankAccount)
                 putExtra(ARG_ACCOUNT_TYPE, accountType)
+                kycName?.let {
+                    putExtra(ARG_KYC_NAME, kycName)
+                }
             }
         }
     }

@@ -65,7 +65,7 @@ mempermudah proses penarikan dana</string>
     <string name="sbank_dont_have_personal_Account">Belum memiliki rekening pribadi</string>
     <string name="sbank_error_input_data">Kesalahan saat input data, dll</string>
     <string name="sbank_account_data">Data rekening</string>
-    <string name="sbank_attach_image">Foto Buku Tabungan</string>
+    <string name="sbank_attach_image_company">Foto Buku Tabungan</string>
     <string name="sbank_attach_image_constraints">Ukuran file maks. 2MB (.png, .jpg, .jpeg)</string>
     <string name="sbank_select_bank">Silakan pilih Bank</string>
     <string name="sbank_add_bank_account">Tambah Rekening Bank</string>
@@ -73,6 +73,9 @@ mempermudah proses penarikan dana</string>
     <string name="sbank_full_name">Nama Lengkap</string>
     <string name="sbank_yes_name_matched">Ya, Nama Sudah Sesuai</string>
     <string name="sbank_name_listed_on_ktp">Nama yang tercantum di KTP</string>
+    <string name="sbank_select_file">Pilih File</string>
+    <string name="sbank_complete_document">Lengkapi dokumen berikut</string>
+    <string name="sbank_pic_of_family_card">Foto Kartu Keluarga (KK)</string>
 
 
 </resources>

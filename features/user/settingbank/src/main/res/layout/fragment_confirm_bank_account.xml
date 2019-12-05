@@ -1,6 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-</LinearLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAccountDataTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sbank_account_data"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toTopOf="@+id/guidelineTop" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBankNameTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/bank_name_title"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/tvAccountDataTag"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBankName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/tvBankNameTag"
+        app:typographyType="body_1"
+        tools:text="@string/bank_name_title" />
+
+    <View
+        android:id="@+id/viewDividerBankName"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_3"
+        android:background="@color/Neutral_N50"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/tvBankName" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAccountNumberTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_34"
+        android:text="@string/account_number_title"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/viewDividerBankName"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAccountNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/tvAccountNumberTag"
+        app:typographyType="body_1"
+        tools:text="@string/account_number_title" />
+
+    <View
+        android:id="@+id/viewDividerAccountNumber"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_3"
+        android:background="@color/Neutral_N50"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/tvAccountNumber" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAccountHolderNameTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_34"
+        android:text="@string/account_name_title"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/viewDividerAccountNumber"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAccountHolderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_3"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/tvAccountHolderNameTag"
+        app:typographyType="body_1"
+        tools:text="@string/account_name_title" />
+
+    <View
+        android:id="@+id/viewAccountHolderName"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_3"
+        android:background="@color/Neutral_N50"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/tvAccountHolderName" />
+
+    <View
+        android:id="@+id/viewAccountDetailAndDocDivider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_39"
+        android:background="@color/Neutral_N50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewAccountHolderName" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDocKTPNameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/viewAccountDetailAndDocDivider"
+        tools:text="@string/sbank_complete_document" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDocumentTypeTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/account_name_title"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/tvDocKTPNameTitle"
+        app:typographyType="body_3" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDocPathOrKTPName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/tvDocumentTypeTag"
+        app:typographyType="body_1"
+        tools:text="@string/account_name_title" />
+
+
+    <View
+        android:id="@+id/viewFilePathOrKTPName"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_3"
+        android:background="@color/Neutral_N50"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/tvDocPathOrKTPName" />
+
+    <ImageView
+        android:id="@+id/ivSelectFile"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="@+id/tvDocPathOrKTPName"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:srcCompat="@drawable/sbank_ic_image_dark" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvImageConditionAndType"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:text="@string/sbank_attach_image_constraints"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/viewFilePathOrKTPName"
+        app:typographyType="body_3" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_uploadOrConfirmDocument"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:background="@drawable/sbank_bg_button_green"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="@string/sbank_save_account"
+        android:textColor="@color/sbank_btn_text_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:typographyType="heading_5"
+        tools:visibility="visible" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/dp_16" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/dp_16" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/dp_16" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

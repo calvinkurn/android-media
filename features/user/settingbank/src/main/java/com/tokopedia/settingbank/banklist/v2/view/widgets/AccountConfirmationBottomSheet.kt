@@ -51,7 +51,7 @@ class AccountConfirmationBottomSheet(val context: Context, val kycInfo: KYCInfo)
     }
 
     private fun openConfirmBankAccountActivity(accountType: Int) {
-        context.startActivity(AccountConfirmActivity.createIntent(context, bankAccount, accountType))
+        context.startActivity(AccountConfirmActivity.createIntent(context, bankAccount, accountType, kycInfo.fullName))
     }
 
 }
