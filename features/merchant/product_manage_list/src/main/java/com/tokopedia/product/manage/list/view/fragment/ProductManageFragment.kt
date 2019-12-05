@@ -52,6 +52,7 @@ import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
@@ -104,7 +105,9 @@ import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.UnknownHostException
 import java.util.*
+import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel, ProductManageFragmentFactoryImpl>(),
@@ -635,27 +638,21 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         showToasterNormal(successMessage)
     }
 
-    override fun onFailedChangeFeaturedProduct(errorMessage: String?) {
-        //Default error message
-        var error = errorMessage ?: getString(R.string.product_manage_failed_set_featured_product)
-        var toasterError = ""
-        when {
-            //If no connection or endpoint error
-            error.contains("Unable to resolve host") -> {
-                error = getString(R.string.product_manage_failed_no_internet)
-            }
-            //If timeout
-            error.contains("timeout") -> {
-                error = getString(R.string.product_manage_failed_set_featured_product)
-            }
-            //If server error
-            error.contains("Terjadi kendala pada server") -> {
-                error = getString(R.string.product_manage_failed_set_featured_product)
-            }
-        }
+    override fun onFailedChangeFeaturedProduct(throwable: Throwable) {
+        val toasterError = ""
         hideLoadingProgress()
-        showToasterError(error, toasterError) {}
+        showToasterError(getChangeFeaturedErrorMessage(throwable), toasterError) {}
     }
+
+    private fun getChangeFeaturedErrorMessage(throwable: Throwable): String =
+        when(throwable) {
+            is UnknownHostException -> getString(R.string.product_manage_failed_no_internet)
+            is TimeoutException -> getString(R.string.product_manage_failed_set_featured_product)
+            is com.tokopedia.network.exception.MessageErrorException ->
+                throwable.message?: getString(R.string.product_manage_failed_set_featured_product)
+            else -> ErrorHandler.getErrorMessage(context, throwable)
+        }
+
 
     private fun updateBulkLayout() {
         val containerFlags = containerChechBoxBulk.layoutParams as AppBarLayout.LayoutParams

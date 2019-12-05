@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.list.view.mapper
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.list.data.model.featuredproductresponse.FeaturedProductResponseDomainModel
 import com.tokopedia.product.manage.list.data.model.featuredproductresponse.FeaturedProductResponseModel
 import rx.functions.Func1
@@ -14,14 +15,16 @@ class FeaturedProductResponseMapper @Inject constructor() : Func1<GraphqlRespons
     }
 
     private fun mapResponseDataToDomainData(dataModel: FeaturedProductResponseModel?): FeaturedProductResponseDomainModel? {
-        var featuredProductResponseDomainModel: FeaturedProductResponseDomainModel? = null
         val featuredProductHeader = dataModel?.goldManageFeaturedProductV2?.header
         if (featuredProductHeader != null) {
-            featuredProductResponseDomainModel = FeaturedProductResponseDomainModel(
+            val featuredProductResponseDomainModel = FeaturedProductResponseDomainModel(
                     featuredProductHeader.errorCode,
                     featuredProductHeader.message
             )
-        }
-        return featuredProductResponseDomainModel
+            if (featuredProductResponseDomainModel.errorCode != "") {
+                val message = featuredProductResponseDomainModel.message[0]
+                throw MessageErrorException(message)
+            } else return featuredProductResponseDomainModel
+        } else throw MessageErrorException(null)
     }
 }

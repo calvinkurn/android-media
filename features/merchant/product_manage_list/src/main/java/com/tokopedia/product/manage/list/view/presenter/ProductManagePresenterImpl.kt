@@ -3,6 +3,8 @@ package com.tokopedia.product.manage.list.view.presenter
 import android.accounts.NetworkErrorException
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
 import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
@@ -36,6 +38,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import rx.Subscriber
+import java.lang.Exception
 import javax.inject.Inject
 
 class ProductManagePresenterImpl @Inject constructor(
@@ -260,19 +263,15 @@ class ProductManagePresenterImpl @Inject constructor(
         editFeaturedProductUseCase.execute(EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status),
                 object : Subscriber<FeaturedProductResponseDomainModel>() {
                     override fun onNext(featuredProductResponse: FeaturedProductResponseDomainModel?) {
-                        if (featuredProductResponse?.errorCode.equals("")) {
-                            view.onSuccessChangeFeaturedProduct(productId, status)
-                        } else {
-                            view.onFailedChangeFeaturedProduct(featuredProductResponse?.message?.get(0))
-                        }
+                        view.onSuccessChangeFeaturedProduct(productId, status)
                     }
 
                     override fun onCompleted() {
                         //No OP
                     }
 
-                    override fun onError(e: Throwable?) {
-                        view.onFailedChangeFeaturedProduct(e?.message)
+                    override fun onError(e: Throwable) {
+                        view.onFailedChangeFeaturedProduct(e)
                     }
                 })
 

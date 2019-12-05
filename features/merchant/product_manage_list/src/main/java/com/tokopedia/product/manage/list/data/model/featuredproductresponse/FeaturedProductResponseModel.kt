@@ -4,17 +4,17 @@ import com.google.gson.annotations.SerializedName
 
 data class FeaturedProductResponseModel (
         @SerializedName("GoldManageFeaturedProductV2")
-        var goldManageFeaturedProductV2: GoldManageFeaturedProductV2? = null
+        val goldManageFeaturedProductV2: GoldManageFeaturedProductV2? = null
 )
 
 data class GoldManageFeaturedProductV2 (
         @SerializedName("header")
-        var header: Header? = null
+        val header: Header? = null
 )
 
 data class Header (
         @SerializedName("error_code")
-        var errorCode: String? = null,
+        val errorCode: String = "",
         @SerializedName("message")
-        var message: ArrayList<String>? = null
+        val message: List<String> = listOf()
 )
