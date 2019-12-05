@@ -141,7 +141,7 @@ public class SearchTracking {
                         EVENT_LABEL, shopId + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoClick", DataLayer.mapOf(
-                                        "promotions", shopItem
+                                        "promotions", DataLayer.listOf(shopItem)
                                 )
                         )
                 )
@@ -187,7 +187,7 @@ public class SearchTracking {
                         EVENT_LABEL, shopId + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoClick", DataLayer.mapOf(
-                                        "promotions", shopItemClosed
+                                        "promotions", DataLayer.listOf(shopItemClosed)
                                 )
                         )
                 )
