@@ -127,7 +127,6 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingEED
             var count = 0
             while (iter.hasNext() && count < itemCountToAdd) {
                 iter.remove()
-                iter.next()
                 count++
             }
             // replacing old data
@@ -137,15 +136,15 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingEED
 
     }
 
-    private fun moveEETrackingToFull(trackingEEDbModel: TrackingEEDbModel,
-                                     inputEvent: EventModel, inputCustomDimension: HashMap<String, Any>?,
-                                     inputEnhanceECommerceMap: HashMap<String, Any>?) {
+    fun moveEETrackingToFull(trackingEEDbModel: TrackingEEDbModel,
+                             inputEvent: EventModel, inputCustomDimension: HashMap<String, Any>?,
+                             inputEnhanceECommerceMap: HashMap<String, Any>?) {
         sendTrack(trackingEEDbModel)
         directPutEE(inputEvent, inputCustomDimension, inputEnhanceECommerceMap)
     }
 
-    private fun directPutEE(inputEvent: EventModel, inputCustomDimensionMap: HashMap<String, Any>?,
-                            inputEnhanceECommerceMap: HashMap<String, Any>?) {
+    fun directPutEE(inputEvent: EventModel, inputCustomDimensionMap: HashMap<String, Any>?,
+                    inputEnhanceECommerceMap: HashMap<String, Any>?) {
         if (inputEnhanceECommerceMap == null && inputCustomDimensionMap!!.isEmpty()) {
             trackingEEDataSource.delete(inputEvent)
         } else {
