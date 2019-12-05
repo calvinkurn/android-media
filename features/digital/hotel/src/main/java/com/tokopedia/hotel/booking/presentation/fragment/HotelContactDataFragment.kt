@@ -26,8 +26,6 @@ import kotlinx.android.synthetic.main.fragment_hotel_contact_data.*
 import javax.inject.Inject
 import com.tokopedia.common.travel.data.entity.TravelContactListModel
 import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
-import com.tokopedia.hotel.R
-
 
 class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
 

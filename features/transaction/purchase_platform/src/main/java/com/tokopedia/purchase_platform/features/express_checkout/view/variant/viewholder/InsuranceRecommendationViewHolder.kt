@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.InsuranceApplicationValueViewModel
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.InsuranceProductApplicationDetailsViewModel
+import com.tokopedia.purchase_platform.common.view.model.InsuranceApplicationValueViewModel
+import com.tokopedia.purchase_platform.common.view.model.InsuranceProductApplicationDetailsViewModel
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.InsuranceRecommendationViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
