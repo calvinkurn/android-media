@@ -230,6 +230,13 @@ class ChooseAccountViewModel @Inject constructor(
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        getAccountsListPojoUseCase.cancelJobs()
+        loginTokenUseCase.unsubscribe()
+        getProfileUseCase.unsubscribe()
+    }
+
     companion object {
         const val LOGIN_TYPE_FACEBOOK = "fb"
     }

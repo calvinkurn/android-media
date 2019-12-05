@@ -130,6 +130,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     lateinit var callbackManager: CallbackManager
     lateinit var mGoogleSignInClient: GoogleSignInClient
+    lateinit var combineLoginTokenAndValidateToken: LiveData<Unit>
 
     private val draw: Drawable?
         get() {
@@ -375,7 +376,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 onSuccessReloginAfterSQ()
             }
         })
-        registerInitialViewModel.loginTokenAfterSQResponse
+        combineLoginTokenAndValidateToken = registerInitialViewModel.loginTokenAfterSQResponse
                 .combineWith(registerInitialViewModel.validateToken) { loginToken: Result<LoginTokenPojo>?, validateToken: String? ->
                     if (loginToken is Fail) {
                         validateToken?.let { onFailedReloginAfterSQ(it, loginToken.throwable) }
@@ -1181,6 +1182,26 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             result.value = block.invoke(this.value, liveData.value)
         }
         return result
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        registerInitialViewModel.getProviderResponse.removeObservers(this)
+        registerInitialViewModel.getFacebookCredentialResponse.removeObservers(this)
+        registerInitialViewModel.loginTokenFacebookResponse.removeObservers(this)
+        registerInitialViewModel.loginTokenFacebookPhoneResponse.removeObservers(this)
+        registerInitialViewModel.loginTokenGoogleResponse.removeObservers(this)
+        registerInitialViewModel.loginTokenAfterSQResponse.removeObservers(this)
+        registerInitialViewModel.getUserInfoResponse.removeObservers(this)
+        registerInitialViewModel.getTickerInfoResponse.removeObservers(this)
+        registerInitialViewModel.registerCheckResponse.removeObservers(this)
+        registerInitialViewModel.activateUserResponse.removeObservers(this)
+        registerInitialViewModel.goToActivationPage.removeObservers(this)
+        registerInitialViewModel.goToSecurityQuestion.removeObservers(this)
+        registerInitialViewModel.goToActivationPageAfterRelogin.removeObservers(this)
+        registerInitialViewModel.goToSecurityQuestionAfterRelogin.removeObservers(this)
+        combineLoginTokenAndValidateToken.removeObservers(this)
+        registerInitialViewModel.clear()
     }
 
     companion object {

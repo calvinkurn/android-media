@@ -434,6 +434,17 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         outState.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, viewModel.phoneNumber)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        chooseAccountViewModel.getAccountListFBResponse.removeObservers(this)
+        chooseAccountViewModel.getAccountListPhoneResponse.removeObservers(this)
+        chooseAccountViewModel.loginPhoneNumberResponse.removeObservers(this)
+        chooseAccountViewModel.getUserInfoResponse.removeObservers(this)
+        chooseAccountViewModel.goToActivationPage.removeObservers(this)
+        chooseAccountViewModel.goToSecurityQuestion.removeObservers(this)
+        chooseAccountViewModel.clear()
+    }
+
     companion object {
         private val MENU_ID_LOGOUT = 111
 
