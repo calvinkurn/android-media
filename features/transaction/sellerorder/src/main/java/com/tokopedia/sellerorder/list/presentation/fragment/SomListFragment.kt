@@ -85,7 +85,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var tabStatus = ""
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
-    private val FLAG_CONFIRM_SHIPPING = 3555
+    private var isFilterApplied = false
+    private var defaultStartDate = ""
+    private var defaultEndDate = ""
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -158,8 +160,10 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun setInitialValue() {
-        paramOrder.startDate = getCalculatedFormattedDate("dd/MM/yyyy", -90)
-        paramOrder.endDate = Date().toFormattedString("dd/MM/yyyy")
+        defaultStartDate = getCalculatedFormattedDate("dd/MM/yyyy", -90)
+        defaultEndDate = Date().toFormattedString("dd/MM/yyyy")
+        paramOrder.startDate = defaultStartDate
+        paramOrder.endDate = defaultEndDate
     }
 
     private fun loadInitial() {
@@ -289,9 +293,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     }
                 }
             }
-
-            println("++ paramOrder.startDate = ${paramOrder.startDate}")
-            println("++ paramOrder.endDate = ${paramOrder.endDate}")
         }
     }
 
@@ -303,17 +304,21 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     orderList = it.data
                     if (orderList.isNotEmpty()) renderOrderList()
                     else {
-                        if (tabActive == getString(R.string.key_all_order)) renderCekPeluang()
-                        else if (paramOrder.startDate.isNotEmpty() || paramOrder.endDate.isNotEmpty()) {
-                            val inputFormat = SimpleDateFormat("dd/MM/yyyy")
-                            val outputFormat = SimpleDateFormat("dd MMM yyyy")
-                            val startDate = inputFormat.parse(paramOrder.startDate)
-                            val startDateStr = outputFormat.format(startDate)
-                            val endDate = inputFormat.parse(paramOrder.endDate)
-                            val endDateStr = outputFormat.format(endDate)
+                        if (isFilterApplied) {
+                            if (!paramOrder.startDate.equals(defaultStartDate, true) || !paramOrder.endDate.equals(defaultEndDate, true)) {
+                                val inputFormat = SimpleDateFormat("dd/MM/yyyy")
+                                val outputFormat = SimpleDateFormat("dd MMM yyyy")
+                                val startDate = inputFormat.parse(paramOrder.startDate)
+                                val startDateStr = outputFormat.format(startDate)
+                                val endDate = inputFormat.parse(paramOrder.endDate)
+                                val endDateStr = outputFormat.format(endDate)
+                                renderFilterEmpty(getString(R.string.empty_search_title) + " " + startDateStr + " - " + endDateStr, getString(R.string.empty_search_desc))
+                            } else {
+                                renderFilterEmpty(getString(R.string.empty_filter_title), getString(R.string.empty_filter_desc))
+                            }
+                        } else {
                             renderCekPeluang()
-                            // renderFilterEmpty(getString(R.string.empty_search_title) + " " + startDateStr + " - " + endDateStr, getString(R.string.empty_search_desc))
-                        } else renderFilterEmpty(getString(R.string.empty_filter_title), getString(R.string.empty_filter_desc))
+                        }
                     }
                 }
                 is Fail -> {
@@ -391,28 +396,44 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         loadOrderList()
     }
 
+    private fun checkFilterApplied(paramOrder: SomListOrderParam): Boolean {
+        var isApplied = false
+        if (paramOrder.search.isNotEmpty()) isApplied = true
+        if (!paramOrder.startDate.equals(defaultStartDate, true)) isApplied = true
+        if (!paramOrder.endDate.equals(defaultEndDate, true)) isApplied = true
+        if (paramOrder.statusList.isNotEmpty()) isApplied = true
+        if (paramOrder.shippingList.isNotEmpty()) isApplied = true
+        if (paramOrder.orderTypeList.isNotEmpty()) isApplied = true
+        return isApplied
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 if (data.hasExtra(SomConsts.PARAM_LIST_ORDER)) {
                     paramOrder = data.getParcelableExtra(SomConsts.PARAM_LIST_ORDER)
+                    isFilterApplied = checkFilterApplied(paramOrder)
                     tabActive = ""
                     renderFilter()
                 }
             }
         } else if (requestCode == FLAG_DETAIL && resultCode == Activity.RESULT_OK) {
             if (data != null) {
-                if (data.hasExtra(RESULT_ACCEPT_ORDER)) {
-                    val resultAcceptOrder = data.getParcelableExtra<SomAcceptOrder.Data.AcceptOrder>(RESULT_ACCEPT_ORDER)
-                    refreshThenShowToasterOk(resultAcceptOrder.listMessage.first())
+                when {
+                    data.hasExtra(RESULT_ACCEPT_ORDER) -> {
+                        val resultAcceptOrder = data.getParcelableExtra<SomAcceptOrder.Data.AcceptOrder>(RESULT_ACCEPT_ORDER)
+                        refreshThenShowToasterOk(resultAcceptOrder.listMessage.first())
 
-                } else if (data.hasExtra(RESULT_REJECT_ORDER)) {
-                    val resultRejectOrder = data.getParcelableExtra<SomRejectOrder.Data.RejectOrder>(RESULT_REJECT_ORDER)
-                    refreshThenShowToasterOk(resultRejectOrder.message.first())
+                    }
+                    data.hasExtra(RESULT_REJECT_ORDER) -> {
+                        val resultRejectOrder = data.getParcelableExtra<SomRejectOrder.Data.RejectOrder>(RESULT_REJECT_ORDER)
+                        refreshThenShowToasterOk(resultRejectOrder.message.first())
 
-                } else if (data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
-                    val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
-                    refreshThenShowToasterOk(resultConfirmShippingMsg)
+                    }
+                    data.hasExtra(RESULT_CONFIRM_SHIPPING) -> {
+                        val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
+                        refreshThenShowToasterOk(resultConfirmShippingMsg)
+                    }
                 }
             }
         } else if (requestCode == FLAG_CONFIRM_REQ_PICKUP && resultCode == Activity.RESULT_OK) {
