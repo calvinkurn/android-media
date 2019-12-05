@@ -115,9 +115,9 @@ class TrackingHotelUtil {
             val map = HashMap<String, Any>()
             map[NAME_LABEL] = product.name
             map[ID_LABEL] = product.id
-            map[POSITION_LABEL] = index
+            map[POSITION_LABEL] = index+1
             map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
-            map[VARIANT_LABEL] = "{${product.isDirectPayment}} - {${product.roomAvailability > 0}}"
+            map[VARIANT_LABEL] = "${product.isDirectPayment} - ${product.roomAvailability > 0}"
             map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
             map[PRICE_LABEL] = if (product.roomPrice.isNotEmpty())
                 product.roomPrice.first().priceAmount.roundToLong() else 0
@@ -156,9 +156,9 @@ class TrackingHotelUtil {
         map[ID_LABEL] = property.id
         map[PRICE_LABEL] = if (property.roomPrice.isNotEmpty())
             property.roomPrice.first().priceAmount.roundToLong() else 0
-        map[POSITION_LABEL] = position
+        map[POSITION_LABEL] = position+1
         map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
-        map[VARIANT_LABEL] = "{${property.isDirectPayment}} - {${property.roomAvailability > 0}}"
+        map[VARIANT_LABEL] = "${property.isDirectPayment} - ${property.roomAvailability > 0}"
         map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
         list.add(map)
         return DataLayer.listOf(*list.toTypedArray<Any>())
@@ -207,7 +207,7 @@ class TrackingHotelUtil {
                         ID_LABEL, hotelId,
                         PRICE_LABEL, price,
                         LIST_LABEL, SLASH_HOTEL_SLASH_LABEL,
-                        VARIANT_LABEL, "{$directPayment} - {$available}",
+                        VARIANT_LABEL, "$directPayment - $available",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL
                 )
         )
@@ -263,9 +263,9 @@ class TrackingHotelUtil {
             val map = HashMap<String, Any>()
             map[NAME_LABEL] = hotelRoom.roomInfo.name
             map[ID_LABEL] = hotelRoom.roomId
-            map[POSITION_LABEL] = index
+            map[POSITION_LABEL] = index+1
             map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
-            map[VARIANT_LABEL] = "{${hotelRoom.additionalPropertyInfo.isDirectPayment}} - {${hotelRoom.available}}"
+            map[VARIANT_LABEL] = "${hotelRoom.additionalPropertyInfo.isDirectPayment} - ${hotelRoom.available}"
             map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
             map[PRICE_LABEL] = hotelRoom.roomPrice.priceAmount.roundToLong()
 
@@ -296,7 +296,7 @@ class TrackingHotelUtil {
                         ID_LABEL, room.roomId,
                         PRICE_LABEL, room.roomPrice.priceAmount.roundToLong(),
                         QUANTITY_LABEL, ONE_LABEL,
-                        VARIANT_LABEL, "{${room.additionalPropertyInfo.isDirectPayment} - ${room.available}",
+                        VARIANT_LABEL, "${room.additionalPropertyInfo.isDirectPayment} - ${room.available}",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL
                     )
                 )
@@ -332,9 +332,9 @@ class TrackingHotelUtil {
                                             ID_LABEL, hotelRoom.roomId,
                                             PRICE_LABEL, hotelRoom.roomPrice.priceAmount.roundToLong(),
                                             LIST_LABEL, SLASH_HOTEL_SLASH_LABEL,
-                                            VARIANT_LABEL, "{${hotelRoom.additionalPropertyInfo.isDirectPayment}} - {${hotelRoom.available}}",
+                                            VARIANT_LABEL, "${hotelRoom.additionalPropertyInfo.isDirectPayment} - ${hotelRoom.available}",
                                             CATEGORY_LABEL, HOTEL_CONTENT_LABEL,
-                                            POSITION_LABEL, position
+                                            POSITION_LABEL, position+1
                                     )
                             )
                 )
@@ -370,7 +370,7 @@ class TrackingHotelUtil {
                         ID_LABEL, room.roomId,
                         PRICE_LABEL, room.roomPrice.priceAmount.roundToLong(),
                         LIST_LABEL, SLASH_HOTEL_SLASH_LABEL,
-                        VARIANT_LABEL, "{${room.additionalPropertyInfo.isDirectPayment}} - {${room.available}}",
+                        VARIANT_LABEL, "${room.additionalPropertyInfo.isDirectPayment} - ${room.available}",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL,
                         POSITION_LABEL, "$position"
                         )
@@ -409,7 +409,7 @@ class TrackingHotelUtil {
             val map = HashMap<String, Any>()
             map[NAME_LABEL] = hotelRoom.roomName
             map[ID_LABEL] = hotelRoom.roomID
-            map[POSITION_LABEL] = index
+            map[POSITION_LABEL] = index+1
             map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
             map[VARIANT_LABEL] = "$isDirectPayment - true"
             map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
