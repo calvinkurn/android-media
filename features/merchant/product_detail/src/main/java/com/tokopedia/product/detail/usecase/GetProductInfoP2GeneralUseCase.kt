@@ -16,6 +16,8 @@ import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.common.data.model.product.WishlistCount
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
+import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
+import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailRequest
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
@@ -37,7 +39,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
     var productId: Int = 0
     var userId: Int = 0
     var categoryId: Int = 0
-
+    var minOrder: Int = 0
     var productPrice: Int = 0
     var condition: String = ""
     var productTitle: String = ""
@@ -48,7 +50,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
     fun createRequestParams(shopId: Int, productId: Int, productPrice: Int,
                             condition: String, productTitle: String, categoryId: Int, catalogId: String,
                             userId: Int,
-                            forceRefresh: Boolean) {
+                            forceRefresh: Boolean, minOrder: Int) {
         this.shopId = shopId
         this.productId = productId
         this.productPrice = productPrice
@@ -57,6 +59,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         this.categoryId = categoryId
         this.userId = userId
         this.catalogId = catalogId
+        this.minOrder = minOrder
         this.forceRefresh = forceRefresh
     }
 
@@ -117,10 +120,20 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         val productCatalogRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_CATALOG],
                 ProductSpecificationResponse::class.java, productCatalogParams)
 
+        val pdpFinancingRecommendationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
+                ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minOrder)
+        val pdpFinancingRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_RECOMMENDATION],
+                PDPInstallmentRecommendationResponse::class.java, pdpFinancingRecommendationParam)
+
+        val pdpFinancingCalculationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
+                ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minOrder)
+        val pdpFinancingCalculationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION],
+                FinancingDataResponse::class.java, pdpFinancingCalculationParam)
+
 
         val requests = mutableListOf(variantRequest, ratingRequest, wishlistCountRequest, voucherRequest,
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
-                helpfulReviewRequest, latestTalkRequest, productPurchaseProtectionRequest, shopFeatureRequest, productCatalogRequest)
+                helpfulReviewRequest, latestTalkRequest, productPurchaseProtectionRequest, shopFeatureRequest, productCatalogRequest, pdpFinancingRecommendationRequest, pdpFinancingCalculationRequest)
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
 
         try {
@@ -187,6 +200,17 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
             if (gqlResponse.getError(ProductSpecificationResponse::class.java)?.isNotEmpty() != true) {
                 val productSpesification: ProductSpecificationResponse = gqlResponse.getData(ProductSpecificationResponse::class.java)
                 productInfoP2.productSpecificationResponse = productSpesification
+            }
+
+            if (gqlResponse.getError(PDPInstallmentRecommendationResponse::class.java)?.isNotEmpty() != true) {
+                val installmentRecommendationData: PDPInstallmentRecommendationResponse =
+                        gqlResponse.getData(PDPInstallmentRecommendationResponse::class.java)
+                productInfoP2.productFinancingRecommendationData = installmentRecommendationData
+            }
+
+            if (gqlResponse.getError(FinancingDataResponse::class.java)?.isNotEmpty() != true) {
+                val financingCalculationData: FinancingDataResponse = gqlResponse.getData(FinancingDataResponse::class.java)
+                productInfoP2.productFinancingCalculationData = financingCalculationData
             }
 
         } catch (t: Throwable) {

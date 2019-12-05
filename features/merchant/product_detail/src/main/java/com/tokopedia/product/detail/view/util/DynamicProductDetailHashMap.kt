@@ -37,46 +37,46 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     }
 
     val socialProofMap: ProductSocialProofDataModel?
-        get() = mapOfData[SOCIAL_PROOF] as ProductSocialProofDataModel
+        get() = mapOfData[SOCIAL_PROOF] as? ProductSocialProofDataModel
 
     val snapShotMap: ProductSnapshotDataModel
         get() = mapOfData[PRODUCT_SNAPSHOT] as ProductSnapshotDataModel
 
     val shopInfoMap: ProductShopInfoDataModel?
-        get() = mapOfData[SHOP_INFO] as ProductShopInfoDataModel
+        get() = mapOfData[SHOP_INFO] as? ProductShopInfoDataModel
 
     val productInfoMap: ProductInfoDataModel?
-        get() = mapOfData[PRODUCT_INFO] as ProductInfoDataModel
+        get() = mapOfData[PRODUCT_INFO] as? ProductInfoDataModel
 
     val productDiscussionMap: ProductDiscussionDataModel?
-        get() = mapOfData[DISCUSSION] as ProductDiscussionDataModel
+        get() = mapOfData[DISCUSSION] as? ProductDiscussionDataModel
 
     val productImageReviewMap: ProductImageReviewDataModel?
-        get() = mapOfData[IMAGE_REVIEW] as ProductImageReviewDataModel
+        get() = mapOfData[IMAGE_REVIEW] as? ProductImageReviewDataModel
 
     val productMostHelpfulMap: ProductMostHelpfulReviewDataModel?
-        get() = mapOfData[MOST_HELPFUL_REVIEW] as ProductMostHelpfulReviewDataModel
+        get() = mapOfData[MOST_HELPFUL_REVIEW] as? ProductMostHelpfulReviewDataModel
 
     val productTradeinMap: ProductTradeinDataModel?
-        get() = mapOfData[TRADE_IN] as ProductTradeinDataModel
+        get() = mapOfData[TRADE_IN] as? ProductTradeinDataModel
 
     val productMerchantVoucherMap: ProductMerchantVoucherDataModel?
-        get() = mapOfData[SHOP_VOUCHER] as ProductMerchantVoucherDataModel
+        get() = mapOfData[SHOP_VOUCHER] as? ProductMerchantVoucherDataModel
 
     val productLastSeenMap: ProductLastSeenDataModel?
-        get() = mapOfData[PRODUCT_LAST_SEEN] as ProductLastSeenDataModel
+        get() = mapOfData[PRODUCT_LAST_SEEN] as? ProductLastSeenDataModel
 
     val productVariantInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[PRODUCT_VARIANT_INFO] as ProductGeneralInfoDataModel
+        get() = mapOfData[PRODUCT_VARIANT_INFO] as? ProductGeneralInfoDataModel
 
     val productWholesaleInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[PRODUCT_WHOLESALE_INFO] as ProductGeneralInfoDataModel
+        get() = mapOfData[PRODUCT_WHOLESALE_INFO] as? ProductGeneralInfoDataModel
 
     val productInstallmentInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[PRODUCT_INSTALLMENT_INFO] as ProductGeneralInfoDataModel
+        get() = mapOfData[PRODUCT_INSTALLMENT_INFO] as? ProductGeneralInfoDataModel
 
     val productShipingInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[PRODUCT_SHIPPING_INFO] as ProductGeneralInfoDataModel
+        get() = mapOfData[PRODUCT_SHIPPING_INFO] as? ProductGeneralInfoDataModel
 
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == TOP_ADS_LAIN || it == TOP_ADS_BERSAMA || it == TOP_ADS_PENCARIAN || it == TOP_ADS_SUKA

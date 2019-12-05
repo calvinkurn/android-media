@@ -52,6 +52,7 @@
         app:layout_constraintStart_toEndOf="@+id/pdp_icon"
         app:layout_constraintTop_toBottomOf="@+id/pdp_info_title"
         app:layout_constraintStart_toStartOf="@+id/pdp_info_title"
+        app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
         app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="body_2"
         android:visibility="gone"

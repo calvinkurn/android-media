@@ -183,7 +183,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                         it.basic.getProductId(), it.data.price.value,
                         it.basic.condition,
                         it.getProductName,
-                        categoryId, it.basic.catalogID, userIdInt)
+                        categoryId, it.basic.catalogID, userIdInt,it.basic.minOrder)
 
                 shopInfo = p2ShopDeferred.await().shopInfo
                 p2ShopDataResp.value = p2ShopDeferred.await()
@@ -471,10 +471,10 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
     private fun getProductInfoP2GeneralAsync(shopId: Int, productId: Int, productPrice: Int,
                                              condition: String, productTitle: String, categoryId: Int, catalogId: String,
-                                             userId: Int,
+                                             userId: Int, minOrder: Int,
                                              forceRefresh: Boolean = false): Deferred<ProductInfoP2General> {
         return async {
-            getProductInfoP2GeneralUseCase.createRequestParams(shopId, productId, productPrice, condition, productTitle, categoryId, catalogId, userId, true)
+            getProductInfoP2GeneralUseCase.createRequestParams(shopId, productId, productPrice, condition, productTitle, categoryId, catalogId, userId, true, minOrder)
             getProductInfoP2GeneralUseCase.executeOnBackground()
         }
     }

@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.data.model.spesification.ProductSpecificatio
 import com.tokopedia.product.detail.view.adapter.ProductInfoAdapter
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.SpaceItemDecoration
 import kotlinx.android.synthetic.main.partial_product_info.view.*
 
 class ProductInfoViewHolder(private val view: View,
@@ -53,6 +54,11 @@ class ProductInfoViewHolder(private val view: View,
         with(itemView.base_info_and_description) {
             val productInfo = infoData
             if (productInfo.data.videos.isNotEmpty()) {
+                view.youtube_scroll.layoutManager = LinearLayoutManager(context,
+                        LinearLayoutManager.HORIZONTAL, false)
+                view.youtube_scroll.addItemDecoration(SpaceItemDecoration(context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
+                        ?: 0,
+                        LinearLayoutManager.HORIZONTAL))
                 view.youtube_scroll.visible()
                 view.youtube_scroll.adapter = YoutubeThumbnailAdapter(productInfo.data.videos.toMutableList()) { _, index ->
                     productInfo.data.videos.run { listener.gotoVideoPlayer(this, index) }

@@ -365,6 +365,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                             AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId
                                     ?: "")
                         }
+                        // if when first time and the product is actually a variant product, then select the default variant
+                        if (userInputVariant == null && productInfo.data.variant.isVariant && productInfo.data.variant.parentID != productId) {
+                            userInputVariant = productId
+                        }
                     }
 
                     actionButtonView.visibility = !isAffiliate
@@ -1269,7 +1273,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
     private fun loadProductData(forceRefresh: Boolean = false) {
-        productId = "14285903"
+        productId = "15262791"
         if (productId != null || (productKey != null && shopDomain != null)) {
             viewModel.getProductP1(ProductParams(productId, shopDomain, productKey), true)
         }
@@ -1282,9 +1286,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     startActivity(RatesEstimationDetailActivity.createIntent(
                             context,
                             shopInfo.shopCore.domain,
-//                            productInfo.basic.weight,
-//                            productInfo.basic.weightUnit,
-                            0F, "0",
+                            productInfo.basic.weight.toFloat(),
+                            productInfo.basic.weightUnit,
                             if (viewModel.multiOrigin.isFulfillment)
                                 viewModel.multiOrigin.origin else null,
                             productInfo.data.isFreeOngkir.isActive
