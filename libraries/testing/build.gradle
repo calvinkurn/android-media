@@ -1,0 +1,105 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependency-libraries.gradle"
+apply plugin: "de.mannodermaus.android-junit5"
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.androidjunit5
+    }
+}
+
+
+android {
+    defaultConfig {
+        multiDexEnabled(project.hasProperty('coverage') ? true : false)
+        testInstrumentationRunner 'com.tokopedia.home.application.MyRunner'
+    }
+    sourceSets.each {
+        it.java.srcDirs += "src/$it.name/kotlin"
+    }
+
+    testOptions {
+        junitPlatform {
+            filters {
+                engines {
+                    include 'spek2'
+                }
+            }
+        }
+        unitTests.all {
+            testLogging.events = ["passed", "skipped", "failed"]
+        }
+    }
+}
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.0"
+
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.0"
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation 'junit:junit:4.12'
+    implementation 'androidx.test.ext:junit:1.1.0'
+    implementation ('androidx.test.espresso:espresso-core:3.1.0', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    implementation("androidx.test:runner:1.1.0") {
+        exclude module: 'support-annotations'
+    }
+    implementation "org.mockito:mockito-core:1.10.19",     { exclude group: 'net.bytebuddy' }
+    implementation 'org.mockito:mockito-android:2.6.3'
+
+    testImplementation 'org.assertj:assertj-core:3.8.0'
+
+    implementation "org.powermock:powermock:1.6.2"
+    implementation "org.powermock:powermock-module-junit4:1.6.2"
+    implementation "org.powermock:powermock-module-junit4-rule:1.6.2"
+    implementation "org.powermock:powermock-api-mockito:1.6.2"
+    implementation "org.powermock:powermock-classloading-xstream:1.6.2"
+    implementation "androidx.multidex:multidex:2.0.0"
+    implementation  "com.google.android.play:core:1.6.3"
+    implementation "com.google.firebase:firebase-core:16.0.6"
+
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation project(rootProject.ext.libraries.track)
+    implementation  "com.squareup.retrofit2:retrofit:2.6.0"
+    implementation "io.mockk:mockk:1.9"
+    implementation "org.spekframework.spek2:spek-runner-junit5:2.0.8"
+    implementation "org.spekframework.spek2:spek-dsl-jvm:2.0.8"
+}

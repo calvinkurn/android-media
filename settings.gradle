@@ -1,3 +1,4 @@
+include ':libraries:testing'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {

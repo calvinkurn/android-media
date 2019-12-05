@@ -125,16 +125,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation project(rootProject.ext.libraries.webview)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    testImplementation rootProject.ext.testDependencies.junitJupiterApi
-    androidTestImplementation 'androidx.test:rules:1.1.0'
-    androidTestImplementation rootProject.ext.playServicesDependencies.core
-    androidTestImplementation rootProject.ext.firebase.core
+    androidTestApi project(":libraries:testing")
 }
 
 project.ext {
