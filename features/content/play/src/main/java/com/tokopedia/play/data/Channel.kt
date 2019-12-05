@@ -141,7 +141,7 @@ data class Channel(
 
 ) {
 
-    data class ChannelResponse(
+    data class Response(
             @SerializedName("channel")
             val channel: Channel = Channel()
     )

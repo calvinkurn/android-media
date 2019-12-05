@@ -1,6 +1,6 @@
 package com.tokopedia.play.domain
 
-import com.tokopedia.play.data.Channel
+import com.tokopedia.play.data.StickyComponent
 import com.tokopedia.play.data.network.PlayApi
 import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.Dispatchers
@@ -11,16 +11,16 @@ import javax.inject.Inject
  * Created by mzennis on 2019-12-03.
  */
 
-class GetChannelInfoUseCase @Inject constructor(private val playApi: PlayApi) : UseCase<Channel>() {
+class GetStickyComponentUseCase @Inject constructor(private val playApi: PlayApi) : UseCase<StickyComponent>() {
 
     var channelId = ""
 
-    override suspend fun executeOnBackground(): Channel {
+    override suspend fun executeOnBackground(): StickyComponent {
         return withContext(Dispatchers.Default) {
-            var result = Channel()
+            var result = StickyComponent()
             try {
-                val response = playApi.getChannelInfoV3(channelId).await()
-                response.data?.channel?.let {
+                val response = playApi.getStickyComponents(channelId).await()
+                response.data?.stickyComponent?.let {
                     result = it
                 }
             } catch (e: Throwable) {

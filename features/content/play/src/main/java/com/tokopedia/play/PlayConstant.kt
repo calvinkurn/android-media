@@ -7,4 +7,7 @@ package com.tokopedia.play
 
 const val PLAY_KEY_CHANNEL_ID = "channelId"
 
-const val PLAY_GET_CHANNEL_INFO = "/gcn/api/v3/channel/{$PLAY_KEY_CHANNEL_ID}"
+const val PLAY_GET_CHANNEL_INFO_V3 = "/gcn/api/v3/channel/{$PLAY_KEY_CHANNEL_ID}"
+const val PLAY_GET_CHANNEL_INFO_V4 = "/gcn/api/v4/channel/{$PLAY_KEY_CHANNEL_ID}"
+
+const val PLAY_GET_STICKY_COMPONENTS = "${PLAY_GET_CHANNEL_INFO_V3}/sticky_components"
