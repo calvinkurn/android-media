@@ -1322,11 +1322,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void shareEvent(Context context, String uri, String name, String imageUrl) {
+    public void shareEvent(Context context, String uri, String name, String imageUrl,String desktopUrl) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType("")
                 .setName(name)
                 .setUri(uri)
+                .setDesktopUrl(desktopUrl)
                 .setImgUri(imageUrl)
                 .build();
 
@@ -1337,6 +1338,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         Intent share = new Intent(android.content.Intent.ACTION_SEND);
                         share.setType("text/plain");
                         share.putExtra(Intent.EXTRA_TEXT, linkerShareData.getUrl());
+                        share.putExtra(Intent.EXTRA_HTML_TEXT, linkerShareData.getUrl());
                         Intent intent = Intent.createChooser(share, getString(R.string.share_link));
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         context.startActivity(intent);
