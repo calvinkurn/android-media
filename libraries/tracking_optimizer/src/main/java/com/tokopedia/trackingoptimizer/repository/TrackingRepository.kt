@@ -126,8 +126,8 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingEED
             val iter = inputList.listIterator()
             var count = 0
             while (iter.hasNext() && count < itemCountToAdd) {
-                iter.next()
                 iter.remove()
+                iter.next()
                 count++
             }
             // replacing old data
