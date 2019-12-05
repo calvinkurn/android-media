@@ -3,9 +3,10 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.common.api.PendingResult;
@@ -732,6 +733,15 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     @Override
+    public String getCachedClientIDString() {
+        if(clientIdString == null) {
+            return "";
+        }
+
+        return clientIdString;
+    }
+
+    @Override
     public void initialize() {
         super.initialize();
         try {
@@ -741,21 +751,25 @@ public class GTMAnalytics extends ContextAnalytics {
                     bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
 
             pResult.setResultCallback(cHolder -> {
-                cHolder.setContainerAvailableListener((containerHolder, s) -> {
-                    if (!containerHolder.getStatus().isSuccess()) {
-                        Log.d("GTM TKPD", "Container Available Failed");
-                        return;
-                    }
-
-                    Log.d("GTM TKPD", "Container Available");
-
-                    if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, true)) {
-                        if (isAllowRefreshDefault(containerHolder)) {
-                            Log.d("GTM TKPD", "Refreshed Container ");
-                            refreshContainerInBackground(containerHolder);
+                try {
+                    cHolder.setContainerAvailableListener((containerHolder, s) -> {
+                        if (!containerHolder.getStatus().isSuccess()) {
+                            Log.d("GTM TKPD", "Container Available Failed");
+                            return;
                         }
-                    }
-                });
+
+                        Log.d("GTM TKPD", "Container Available");
+
+                        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, true)) {
+                            if (isAllowRefreshDefault(containerHolder)) {
+                                Log.d("GTM TKPD", "Refreshed Container ");
+                                refreshContainerInBackground(containerHolder);
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    eventError(getContext().getClass().toString(), e.toString());
+                }
             }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
             eventError(getContext().getClass().toString(), e.toString());

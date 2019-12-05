@@ -6,14 +6,15 @@ import android.graphics.Point
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
-import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
+import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
+import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 
 class CarouselProductCardView: BaseCustomView {
 
@@ -81,18 +82,18 @@ class CarouselProductCardView: BaseCustomView {
         }
 
         carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
-        carouselAdapter = CarouselProductCardAdapter(
-                productCardModelList, isScrollable, carouselProductCardListenerInfo, getMaxProductCardContentHeight(productCardModelList))
-
+        carouselAdapter = CarouselProductCardAdapter(productCardModelList, isScrollable, carouselProductCardListenerInfo, getMaxProductCardContentHeight(productCardModelList))
         carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
         carouselProductCardRecyclerView?.adapter = carouselAdapter
+        carouselProductCardRecyclerView.itemAnimator = null
+        carouselProductCardRecyclerView.setHasFixedSize(true)
     }
 
     /**
      * Use this function to update wishlist
      */
     fun updateWishlist(position: Int, isWishlist: Boolean) {
-        carouselAdapter?.updateWishlist(position, isWishlist)
+        (carouselProductCardRecyclerView.adapter as CarouselProductCardAdapter).updateWishlist(position, isWishlist)
     }
 
     private fun measureParentView(maxWidth: Int, parentView: View) {
@@ -142,6 +143,14 @@ class CarouselProductCardView: BaseCustomView {
             }
         }
         return contentHeight
+    }
+
+    fun setItemDecoration(itemDecoration: RecyclerView.ItemDecoration){
+        if(carouselProductCardRecyclerView?.itemDecorationCount == 0) carouselProductCardRecyclerView?.addItemDecoration(itemDecoration)
+    }
+
+    fun setSnapHelper(snapHelper: SnapHelper){
+        snapHelper.attachToRecyclerView(carouselProductCardRecyclerView)
     }
 
     private fun getSizeForEachSpan(maxWidth: Int, spanCount: Int) : Int {
