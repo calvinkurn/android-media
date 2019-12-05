@@ -8,6 +8,7 @@ import com.tokopedia.filter.newdynamicfilter.database.FilterDatabaseClient
 class DynamicFilterDbManager {
 
     companion object {
+        @JvmStatic
         fun store(context: Context, filterID: String, filterData: String) {
             FilterDatabaseClient
                     .getInstance(context)
@@ -16,6 +17,7 @@ class DynamicFilterDbManager {
                     .insert(FilterDBModel(filterID, filterData))
         }
 
+        @JvmStatic
         fun getFilterData(context: Context, filterId: String): String {
             return FilterDatabaseClient
                     .getInstance(context)

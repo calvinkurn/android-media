@@ -16,7 +16,7 @@ class Filter() : Parcelable {
 
     @SerializedName("template_name")
     @Expose
-    private var templateName: String = ""
+    var templateName: String = ""
 
     @SerializedName("search")
     @Expose

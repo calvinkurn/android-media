@@ -10,7 +10,7 @@ class DynamicFilterModel() : Parcelable {
 
     @SerializedName("process_time")
     @Expose
-    private var processTime: String = ""
+    var processTime: String = ""
 
     @SerializedName("data")
     @Expose
@@ -18,17 +18,21 @@ class DynamicFilterModel() : Parcelable {
 
     @SerializedName("status")
     @Expose
-    private var status: String = ""
+    var status: String = ""
 
     @SerializedName("isOfficialSelectedFlag")
     @Expose
-    private var isOfficialSelectedFlag = false
+    var isOfficialSelectedFlag = false
 
     constructor(data: DataValue, processTime: String, status: String, isOfficialFlag: Boolean) : this() {
         this.data = data
         this.processTime = processTime
         this.status = status
         this.isOfficialSelectedFlag = isOfficialFlag
+    }
+
+    fun getIsOfficialSelectedFlag() : Boolean {
+        return isOfficialSelectedFlag
     }
 
     override fun describeContents(): Int {
