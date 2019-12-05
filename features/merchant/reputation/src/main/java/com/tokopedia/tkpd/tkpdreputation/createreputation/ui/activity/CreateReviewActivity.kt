@@ -31,11 +31,10 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
         val reputationId: String
         val bundle = intent.extras
         val uri = intent.data
-        var rating = 5
+        val rating = uri?.getQueryParameter("rating")?.toIntOrNull()?: 5
 
         if (uri != null && uri.pathSegments.size > 0) {
             val uriSegment = uri.pathSegments
-            rating = Integer.parseInt(uri.getQueryParameter("rating")?: "5")
             productId = uri.lastPathSegment ?: ""
             reputationId = uriSegment[uriSegment.size - 2]
         } else {
