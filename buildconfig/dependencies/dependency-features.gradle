@@ -44,6 +44,7 @@ ext {
             flightOrderList                 : ":features:digital:flight_orderlist",
             hotel                           : ":features:digital:hotel",
             travelHomepage                  : ":features:digital:travel_homepage",
+            travelCountryCode               : ":features:digital:travel_country_code",
             imagePreviewSlider              : ":features:digital:imagepreviewslider",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
