@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.navigation.GlobalNavRouter
 import com.tokopedia.navigation.R
-import com.tokopedia.navigation.data.mapper.NotificationMapper
+import com.tokopedia.navigation.data.mapper.NotificationRequestMapper
 import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
 import com.tokopedia.navigation.domain.GetNewFeedCheckerUseCase
@@ -52,7 +52,7 @@ class GlobalNavModule {
 
     @Provides
     fun provideGetDrawerNotificationUseCase(graphqlUseCase: GraphqlUseCase, cartListener: CartListener): GetDrawerNotificationUseCase {
-        return GetDrawerNotificationUseCase(graphqlUseCase, NotificationMapper(), cartListener)
+        return GetDrawerNotificationUseCase(graphqlUseCase, NotificationRequestMapper(), cartListener)
     }
 
     @Provides
@@ -96,7 +96,6 @@ class GlobalNavModule {
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
-
 
     @Provides
     fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {

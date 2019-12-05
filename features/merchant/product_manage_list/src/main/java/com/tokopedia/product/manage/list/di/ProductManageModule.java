@@ -152,7 +152,7 @@ public class ProductManageModule {
     public String requestQuery(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(
                 context.getResources(),
-                R.raw.gql_popup_manager
+                com.tokopedia.product.manage.list.R.raw.gql_popup_manager
         );
     }
 
@@ -162,7 +162,7 @@ public class ProductManageModule {
     public String provideUpdateProduct(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(
                 context.getResources(),
-                R.raw.gql_mutation_edit_product
+                com.tokopedia.product.manage.list.R.raw.gql_mutation_edit_product
         );
     }
 

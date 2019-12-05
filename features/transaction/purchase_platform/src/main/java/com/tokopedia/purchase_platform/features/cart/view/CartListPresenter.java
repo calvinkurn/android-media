@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
@@ -33,9 +34,9 @@ import com.tokopedia.purchase_platform.common.data.model.response.insurance.enti
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProduct;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductItems;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase;
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase;
@@ -74,12 +75,16 @@ import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHold
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
+import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,6 +119,10 @@ public class CartListPresenter implements ICartListPresenter {
     public static final String CART_SRC = "cart";
     public static final String ITEM_REQUEST = "5";
 
+    private static final String ADVERTISINGID = "ADVERTISINGID";
+    private static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
+    private static final String QUERY_APP_CLIENT_ID = "{app_client_id}";
+
     private ICartListView view;
     private final GetCartListSimplifiedUseCase getCartListSimplifiedUseCase;
     private final CompositeSubscription compositeSubscription;
@@ -135,6 +144,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final GetWishlistUseCase getWishlistUseCase;
     private final GetRecommendationUseCase getRecommendationUseCase;
     private final AddToCartUseCase addToCartUseCase;
+    private final SeamlessLoginUsecase seamlessLoginUsecase;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
     private boolean insuranceChecked = true;
@@ -159,7 +169,8 @@ public class CartListPresenter implements ICartListPresenter {
                              AddToCartUseCase addToCartUseCase,
                              GetInsuranceCartUseCase getInsuranceCartUseCase,
                              RemoveInsuranceProductUsecase removeInsuranceProductUsecase,
-                             UpdateInsuranceProductDataUsecase updateInsuranceProductDataUsecase) {
+                             UpdateInsuranceProductDataUsecase updateInsuranceProductDataUsecase,
+                             SeamlessLoginUsecase seamlessLoginUsecase) {
         this.getCartListSimplifiedUseCase = getCartListSimplifiedUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartListUseCase = deleteCartListUseCase;
@@ -180,7 +191,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.getInsuranceCartUseCase = getInsuranceCartUseCase;
         this.removeInsuranceProductUsecase = removeInsuranceProductUsecase;
         this.updateInsuranceProductDataUsecase = updateInsuranceProductDataUsecase;
-
+        this.seamlessLoginUsecase = seamlessLoginUsecase;
     }
 
     @Override
@@ -1718,5 +1729,36 @@ public class CartListPresenter implements ICartListPresenter {
                 productsData, EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_WISHLIST_EMPTY_CART);
 
         return enhancedECommerceEmptyCart.getData();
+    }
+
+    @Override
+    public void redirectToLite(String url) {
+        if (view != null && view.getActivity() != null) {
+            view.showProgressLoading();
+            LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), ADVERTISINGID);
+            String adsId = localCacheHandler.getString(KEY_ADVERTISINGID);
+            if (adsId != null && !adsId.trim().isEmpty()) {
+                seamlessLoginUsecase.generateSeamlessUrl(url.replace(QUERY_APP_CLIENT_ID, adsId), new SeamlessLoginSubscriber() {
+                    @Override
+                    public void onUrlGenerated(@NotNull String url) {
+                        if (view != null) {
+                            view.hideProgressLoading();
+                            view.goToLite(url);
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NotNull String msg) {
+                        if (view != null) {
+                            view.hideProgressLoading();
+                            view.showToastMessageRed(msg);
+                        }
+                    }
+                });
+            } else {
+                view.hideProgressLoading();
+                view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), null));
+            }
+        }
     }
 }

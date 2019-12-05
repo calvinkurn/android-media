@@ -1,7 +1,9 @@
 package com.tokopedia.onboarding.analytics
 
 import android.content.Context
+import android.os.Build
 import com.tokopedia.track.TrackApp
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -33,6 +35,9 @@ class OnboardingAnalytics @Inject constructor() {
 
     fun sendScreen(position: Int) {
         val screenName = String.format(SCREEN_ONBOARDING, position.toString())
+        Timber.w("P2screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
+                + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
+                + " | " + Build.TAGS)
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 

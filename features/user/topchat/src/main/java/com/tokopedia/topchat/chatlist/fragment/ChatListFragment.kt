@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -50,6 +51,7 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
+import com.tokopedia.topchat.chatlist.widget.FilterMenu
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
@@ -89,6 +91,8 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
+
+    private var filterMenu = FilterMenu()
 
     private lateinit var broadCastButton: FloatingActionButton
 
@@ -353,6 +357,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     private fun showFilterDialog() {
         activity?.let {
+            if (filterMenu.isAdded) return@let
             val itemMenus = ArrayList<Menus.ItemMenus>()
             val arrayFilterString = arrayListOf(
                     it.getString(R.string.filter_chat_all),
@@ -365,18 +370,17 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 else itemMenus.add(Menus.ItemMenus(title, false))
             }
 
-            Menus(it, R.style.BottomFilterDialogTheme).apply {
-                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                setTitle(getString(R.string.label_filter))
-                itemMenuList = itemMenus
-                setOnItemMenuClickListener { menus, pos ->
-                    chatListAnalytics.eventClickListFilterChat(menus.title.toLowerCase())
-                    filterChecked = pos - 1
+            val title = getString(R.string.label_filter)
+            filterMenu.apply {
+                setTitle(title)
+                setItemMenuList(itemMenus)
+                setOnItemMenuClickListener { menu, pos ->
+                    chatListAnalytics.eventClickListFilterChat(menu.title.toLowerCase())
+                    filterChecked = pos
                     loadInitialData()
                     dismiss()
                 }
-                show()
-            }
+            }.show(childFragmentManager, FilterMenu.TAG)
         }
     }
 
@@ -561,6 +565,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     override fun isTabSeller(): Boolean {
         return sightTag == PARAM_TAB_SELLER
+    }
+
+    override fun getSupportChildFragmentManager(): FragmentManager {
+        return childFragmentManager
     }
 
     companion object {

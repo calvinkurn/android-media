@@ -77,10 +77,10 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartResponse;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
@@ -1076,22 +1076,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             linearSmoothScroller.setTargetPosition(cartAdapter.getDisabledItemHeaderPosition());
             cartRecyclerView.getLayoutManager().startSmoothScroll(linearSmoothScroller);
         }
-    }
-
-    @Override
-    public void onTickerDescriptionUrlClicked(@NotNull String url) {
-        String finalUrl = url;
-        if (!url.startsWith("https://")) {
-            if (url.startsWith("http://")) {
-                finalUrl = url.replace("http", "https");
-            } else {
-                finalUrl = "https://" + url;
-            }
-        }
-        Intent view = new Intent();
-        view.setAction(Intent.ACTION_VIEW);
-        view.setData(Uri.parse(finalUrl));
-        startActivity(view);
     }
 
     @Override
@@ -2774,6 +2758,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         DialogUnify dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size());
 
+        for (CartItemData cartItemData : allDisabledCartItemDataList) {
+            if (cartItemData.getNicotineLiteMessageData() != null) {
+                cartPageAnalytics.eventClickHapusButtonOnProductContainTobacco();
+                break;
+            }
+        }
         sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
                 allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
         ));
@@ -2799,7 +2789,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onDeleteDisabledItem(CartItemData cartItemData) {
-        sendAnalyticsOnClickRemoveIconCartItem();
+        if (cartItemData.getNicotineLiteMessageData() != null) {
+            cartPageAnalytics.eventClickTrashIconButtonOnProductContainTobacco();
+        } else {
+            sendAnalyticsOnClickRemoveIconCartItem();
+        }
         List<CartItemData> cartItemDatas = Collections.singletonList(cartItemData);
         List<CartItemData> allCartItemDataList = cartAdapter.getAllDisabledCartItemData();
 
@@ -2820,5 +2814,21 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             return Unit.INSTANCE;
         });
         dialog.show();
+    }
+
+    @Override
+    public void onTobaccoLiteUrlClicked(@NotNull String url) {
+        cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco();
+        dPresenter.redirectToLite(url);
+    }
+
+    @Override
+    public void onShowTickerTobacco() {
+        cartPageAnalytics.eventViewTickerProductContainTobacco();
+    }
+
+    @Override
+    public void goToLite(String url) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 }
