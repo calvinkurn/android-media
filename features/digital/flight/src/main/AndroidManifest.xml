@@ -148,12 +148,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".passenger.view.activity.FlightPassengerUpdateActivity"
-            android:label="@string/flight_passenger_update_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".cancellation.view.activity.FlightCancellationTermsAndConditionsActivity"
             android:label="@string/flight_cancellation_terms_and_condition_title"
             android:screenOrientation="portrait"

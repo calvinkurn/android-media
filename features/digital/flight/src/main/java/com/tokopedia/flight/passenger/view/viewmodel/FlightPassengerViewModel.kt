@@ -1,4 +1,4 @@
-package com.tokopedia.flight.passenger.viewmodel
+package com.tokopedia.flight.passenger.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel

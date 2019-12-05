@@ -53,7 +53,7 @@ import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivi
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_PASSENGER
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_REQUEST_ID
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_RETURN
-import com.tokopedia.flight.passenger.viewmodel.FlightPassengerViewModel
+import com.tokopedia.flight.passenger.view.viewmodel.FlightPassengerViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
