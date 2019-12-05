@@ -2,7 +2,6 @@ package com.tokopedia.purchase_platform.features.checkout.analytics;
 
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
-import com.tokopedia.track.TrackAppUtils;
 
 import java.util.Map;
 
@@ -22,12 +21,7 @@ public class CheckoutAnalyticsMacroInsurance extends TransactionAnalytics {
     }
 
     public void eventClickPaymentMethodWithInsurance(String productId, String title) {
-        Map<String, Object> mapEvent = TrackAppUtils.gtmData(
-                "",
-                ConstantTransactionAnalytics.EventCategory.FIN_INSURANCE_CHECKOUT,
-                ConstantTransactionAnalytics.EventAction.FIN_INSURANCE_CHECKOUT,
-                String.format("checkout - %s", title)
-        );
+        Map<String, Object> mapEvent = getGTMDataFromTrackAppUtils(title);
         mapEvent.put("productId", productId);
         sendGeneralEvent(mapEvent);
     }
