@@ -1,4 +1,5 @@
 // Sort alphabetically by name
+include "libraries:adapter_delegate"
 include "libraries:analytics"
 include "libraries:applink"
 include "libraries:banner_dynamic"
