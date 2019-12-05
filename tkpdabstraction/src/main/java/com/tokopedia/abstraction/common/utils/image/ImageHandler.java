@@ -52,6 +52,9 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.R;
+import com.wandroid.traceroute.TraceRoute;
+import com.wandroid.traceroute.TraceRouteCallback;
+import com.wandroid.traceroute.TraceRouteResult;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -208,6 +211,23 @@ public class ImageHandler {
 
     public static void logError(GlideException e, String url) {
         Timber.e(e, "P2Load image error: url= %s message= %s traceroute=", url, e != null ? e.getMessage() : "");
+        TraceRoute.INSTANCE.traceRoute(url, true);
+        TraceRoute.INSTANCE.setCallback(new TraceRouteCallback() {
+            @Override
+            public void onSuccess(@NotNull TraceRouteResult traceRouteResult) {
+
+            }
+
+            @Override
+            public void onUpdate(@NotNull String s) {
+
+            }
+
+            @Override
+            public void onFailed(int i, @NotNull String s) {
+
+            }
+        });
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
