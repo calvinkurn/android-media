@@ -485,6 +485,18 @@ public class ImageHandler {
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
+                    .addListener(new RequestListener<Bitmap>() {
+                        @Override
+                        public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                            logError(e, url);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
                     .into(getRoundedImageViewTarget(imageview, radius));
         }
     }
