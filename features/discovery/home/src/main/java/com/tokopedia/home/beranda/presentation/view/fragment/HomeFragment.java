@@ -88,6 +88,7 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
+import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -154,6 +155,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final String SOURCE_ACCOUNT = "account";
     private boolean shouldDisplayReview = true;
     private int reviewAdapterPosition = -1;
+    private MainParentStatusBarListener mainParentStatusBarListener;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private ActivityStateListener activityStateListener;
@@ -204,12 +206,32 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private StickyLoginTickerPojo.TickerDetail tickerDetail;
     private HomePerformanceMonitoringListener homePerformanceMonitoringListener;
 
+    private boolean isLightThemeStatusBar = true;
+    public static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
+
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
         args.putBoolean(SCROLL_RECOMMEND_LIST, scrollToRecommendList);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mainParentStatusBarListener = (MainParentStatusBarListener)context;
+        requestStatusBarDark();
+    }
+
+    private void requestStatusBarDark() {
+        isLightThemeStatusBar = false;
+        mainParentStatusBarListener.requestStatusBarDark();
+    }
+
+    private void requestStatusBarLight() {
+        isLightThemeStatusBar = true;
+        mainParentStatusBarListener.requestStatusBarLight();
     }
 
     @Override
@@ -434,6 +456,20 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR, isLightThemeStatusBar);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            isLightThemeStatusBar = savedInstanceState.getBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR);
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         sendScreen();
@@ -509,8 +545,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (offsetAlpha >= 255) {
             offsetAlpha = 255;
             homeMainToolbar.switchToDarkToolbar();
+            requestStatusBarDark();
         } else {
             homeMainToolbar.switchToLightToolbar();
+            requestStatusBarLight();
         }
 
         if (offsetAlpha >= 0 && offsetAlpha <= 255) {
@@ -1250,6 +1288,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (homeRecyclerView != null) {
             homeRecyclerView.smoothScrollToPosition(0);
         }
+    }
+
+    @Override
+    public boolean isLightThemeStatusBar() {
+        return isLightThemeStatusBar;
     }
 
     /**
