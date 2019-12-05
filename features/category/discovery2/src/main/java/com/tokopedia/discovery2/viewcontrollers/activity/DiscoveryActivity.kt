@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.activity
 
-import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +17,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
     override fun getNewFragment(): Fragment? {
-       return DiscoveryFragment.getInstance(intent)
+       return DiscoveryFragment.getInstance(intent?.data?.lastPathSegment)
     }
 
     override fun getViewModelType(): Class<DiscoveryViewModel> {

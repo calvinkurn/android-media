@@ -1,13 +1,11 @@
 package com.tokopedia.discovery2.viewcontrollers.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
@@ -18,10 +16,9 @@ class DiscoveryFragment : Fragment() {
 
 
     companion object{
-        fun getInstance(intent: Intent):Fragment{
+        fun getInstance(endPoint: String?):Fragment{
             val bundle = Bundle()
             val fragment = DiscoveryFragment()
-            val endPoint = intent.data.lastPathSegment
             if (!endPoint.isNullOrEmpty()){
                 bundle.putString(END_POINT,endPoint)
             }
