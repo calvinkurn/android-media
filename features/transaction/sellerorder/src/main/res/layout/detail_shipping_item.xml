@@ -206,7 +206,10 @@
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             android:textColor="@color/Neutral_N700_96"
-            tools:text="AS Misbeh"/>
+            tools:text="AS Misbeh"
+            app:layout_constrainedWidth="true"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_receiver_phone"
@@ -217,7 +220,10 @@
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             android:textColor="@color/Neutral_N700_96"
-            tools:text="08113400775"/>
+            tools:text="08113400775"
+            app:layout_constrainedWidth="true"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_receiver_street"
@@ -225,6 +231,10 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@+id/tv_receiver_phone"
             app:layout_constraintTop_toBottomOf="@+id/tv_receiver_phone"
+            app:layout_constrainedWidth="true"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             android:textColor="@color/Neutral_N700_96"
@@ -245,7 +255,11 @@
             tools:text="Slipi, Jakarta Barat 14410"
             android:lineSpacingMultiplier="0.8"
             android:scrollHorizontally="false"
-            android:inputType="textMultiLine"/>
+            android:inputType="textMultiLine"
+            app:layout_constrainedWidth="true"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_receiver_notes"
@@ -257,7 +271,11 @@
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             android:textColor="@color/Neutral_N700_96"
-            tools:text="Lantai 52"/>
+            tools:text="Lantai 52"
+            app:layout_constrainedWidth="true"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_notes_label"
@@ -337,8 +355,8 @@
                 android:id="@+id/booking_code_see_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="@string/lihat"
-                android:text="@string/lihat"
+                tools:text="@string/lihat_caps"
+                android:text="@string/lihat_caps"
                 android:textColor="@color/g_500"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"

@@ -9,7 +9,7 @@
     <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="title_som_booking_code">Detail Kode Booking</string>
     <string name="hint_search_product">Cari produk atau invoice</string>
-    <string name="response_due">Batas Response</string>
+    <string name="response_due">Batas Respons</string>
     <string name="seller_info">Seller Info</string>
     <string name="seller_filter">Filter</string>
 
@@ -47,8 +47,8 @@
     <string name="buyer">Nama Pembeli</string>
     <string name="purchasing_date">Tanggal Pembelian</string>
     <string name="nomor_resi">Nomor Resi</string>
-    <string name="deadline">Batas Respons</string>
-    <string name="deadline_done">Selesai Otomatis</string>
+    <string name="som_deadline">Batas Respons</string>
+    <string name="som_deadline_done">Selesai Otomatis</string>
     <string name="lihat_caps">LIHAT</string>
     <string name="lihat">Lihat</string>
     <string name="placeholder_kode_booking">Terima pesanan terlebih dahulu</string>
@@ -167,9 +167,5 @@
     <string name="online_booking_msg_1">Resi akan otomatis terisi maksimal 1 x 24 jam  setelah  kode booking  di-scan.</string>
     <string name="online_booking_msg_2">Lakukan cek berkala untuk memastikan pesanan sudah  pindah ke daftar transaksi.</string>
 
-    <string-array name="online_booking_msg">
-        <item>@string/online_booking_msg_1</item>
-        <item>@string/online_booking_msg_1</item>
-    </string-array>
-
+    <string name="label_empty_stock">Stok Kosong</string>
 </resources>

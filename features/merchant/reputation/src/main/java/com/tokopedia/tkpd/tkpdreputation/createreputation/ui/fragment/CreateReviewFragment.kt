@@ -367,28 +367,30 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun generateAnimationByIndex(index: Int) {
-        imgAnimationView.repeatCount = 0
-        imgAnimationView.repeatCount = LottieDrawable.INFINITE
-        when (index) {
-            1 -> {
-                imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_1)
-                imgAnimationView.playAnimation()
-            }
-            2 -> {
-                imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_2)
-                imgAnimationView.playAnimation()
-            }
-            3 -> {
-                imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_3)
-                imgAnimationView.playAnimation()
-            }
-            4 -> {
-                imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_4)
-                imgAnimationView.playAnimation()
-            }
-            5 -> {
-                imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_5)
-                imgAnimationView.playAnimation()
+        context?.let {
+            imgAnimationView.repeatCount = 0
+            imgAnimationView.repeatCount = LottieDrawable.INFINITE
+            when (index) {
+                1 -> {
+                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_1)
+                    imgAnimationView.playAnimation()
+                }
+                2 -> {
+                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_2)
+                    imgAnimationView.playAnimation()
+                }
+                3 -> {
+                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_3)
+                    imgAnimationView.playAnimation()
+                }
+                4 -> {
+                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_4)
+                    imgAnimationView.playAnimation()
+                }
+                5 -> {
+                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_5)
+                    imgAnimationView.playAnimation()
+                }
             }
         }
     }
