@@ -168,4 +168,6 @@
     <string name="online_booking_msg_2">Lakukan cek berkala untuk memastikan pesanan sudah  pindah ke daftar transaksi.</string>
 
     <string name="label_empty_stock">Stok Kosong</string>
+    <string name="automatic_shipping">Konfirmasi Otomatis</string>
+    <string name="understand">Mengerti</string>
 </resources>

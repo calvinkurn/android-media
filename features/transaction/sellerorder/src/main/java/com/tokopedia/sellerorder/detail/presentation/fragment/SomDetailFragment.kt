@@ -6,16 +6,18 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.dialog.DialogUnify
@@ -26,64 +28,24 @@ import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.convertStrObjToHashMap
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
-import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_COLON
-import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_END
-import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_START
-import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
-import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_ATUR_TOKO_TUTUP
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PRODUK_KOSONG
-import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OTHERS
-import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
-import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
-import com.tokopedia.sellerorder.detail.data.model.*
-import com.tokopedia.sellerorder.detail.di.SomDetailComponent
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetCourierProblemsAdapter
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetStockEmptyAdapter
-import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
-import com.tokopedia.unifycomponents.*
-import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.bottomsheet_secondary.*
-import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
-import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
-import kotlinx.android.synthetic.main.fragment_som_detail.*
-import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
-import java.util.*
-import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import android.net.Uri
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
 import com.tokopedia.sellerorder.common.util.SomConsts.ATTRIBUTE_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_URL_UPLOAD
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
@@ -95,24 +57,61 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIP
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_PRODUCT_NAME
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
+import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_COLON
+import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_END
+import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_START
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_ATUR_TOKO_TUTUP
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PRODUK_KOSONG
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_UBAH_RESI
+import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OTHERS
+import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
+import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
-import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
+import com.tokopedia.sellerorder.detail.data.model.*
+import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
+import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetCourierProblemsAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetStockEmptyAdapter
+import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
+import kotlinx.android.synthetic.main.bottomsheet_secondary.*
+import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
+import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
+import kotlinx.android.synthetic.main.fragment_som_detail.*
+import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
+import kotlinx.android.synthetic.main.partial_info_layout.view.*
+import java.util.*
+import javax.inject.Inject
+import kotlin.collections.HashMap
 
 
 /**x
  * Created by fwidjaja on 2019-09-30.
  */
 class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener,
-        SomBottomSheetCourierProblemsAdapter.ActionListener  {
+        SomBottomSheetCourierProblemsAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -124,8 +123,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private var rejectReasonResponse = listOf<SomReasonRejectData.Data.SomRejectReason>()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
     private lateinit var somDetailAdapter: SomDetailAdapter
-    private lateinit var somBottomSheetRejectOrderAdapter:  SomBottomSheetRejectOrderAdapter
-    private lateinit var somBottomSheetRejectReasonsAdapter:  SomBottomSheetRejectReasonsAdapter
+    private lateinit var somBottomSheetRejectOrderAdapter: SomBottomSheetRejectOrderAdapter
+    private lateinit var somBottomSheetRejectReasonsAdapter: SomBottomSheetRejectReasonsAdapter
     private lateinit var somBottomSheetStockEmptyAdapter: SomBottomSheetStockEmptyAdapter
     private lateinit var somBottomSheetCourierProblemsAdapter: SomBottomSheetCourierProblemsAdapter
     private lateinit var dialogUnify: DialogUnify
@@ -133,6 +132,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private val FLAG_CONFIRM_REQ_PICKUP = 3535
     private val FLAG_CONFIRM_SHIPPING = 3553
     private lateinit var reasonCourierProblemText: String
+    private val tagConfirm = "tag_confirm"
 
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
@@ -317,10 +317,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         if (receiverStreet.contains(RECEIVER_NOTES_START)) {
             val indexStart = receiverStreet.indexOf(RECEIVER_NOTES_START)
             val indexEnd = receiverStreet.indexOf(RECEIVER_NOTES_END)
-            val getAllNotes = receiverStreet.substring(indexStart, indexEnd+1)
+            val getAllNotes = receiverStreet.substring(indexStart, indexEnd + 1)
             val indexValueStart = getAllNotes.indexOf(RECEIVER_NOTES_COLON)
             val indexValueEnd = getAllNotes.indexOf(RECEIVER_NOTES_END)
-            notesValue = getAllNotes.substring(indexValueStart+1, indexValueEnd-1)
+            notesValue = getAllNotes.substring(indexValueStart + 1, indexValueEnd - 1)
         }
 
         val dataShipping = SomDetailShipping(
@@ -448,7 +448,19 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun setActionConfirmShipping() {
-        createIntentConfirmShipping(false)
+        if (detailResponse.onlineBooking.isRemoveInputAwb) {
+            val btSheet = BottomSheetUnify()
+            val infoLayout = View.inflate(context, R.layout.partial_info_layout, null)
+            infoLayout.tv_confirm_info?.text = detailResponse.onlineBooking.infoText
+            infoLayout.button_understand.setOnClickListener { btSheet.dismiss() }
+
+            btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
+            btSheet.setChild(infoLayout)
+            btSheet.setCloseClickListener { btSheet.dismiss() }
+            btSheet.show(fragmentManager, tagConfirm)
+        } else {
+            createIntentConfirmShipping(false)
+        }
     }
 
     private fun showTextOnlyBottomSheet() {
@@ -660,7 +672,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
         viewBottomSheet.rv_bottomsheet_secondary?.apply {
             layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-            adapter = somBottomSheetStockEmptyAdapter }
+            adapter = somBottomSheetStockEmptyAdapter
+        }
 
         viewBottomSheet.tf_extra_notes?.setLabelStatic(true)
         viewBottomSheet.tf_extra_notes?.textFiedlLabelText?.text = getString(R.string.empty_stock_extra_note)
@@ -772,7 +785,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
         viewBottomSheet.rv_bottomsheet_secondary?.apply {
             layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-            adapter = somBottomSheetCourierProblemsAdapter }
+            adapter = somBottomSheetCourierProblemsAdapter
+        }
 
         viewBottomSheet.fl_btn_primary?.visibility = View.VISIBLE
         viewBottomSheet.fl_btn_primary?.setOnClickListener {
@@ -932,7 +946,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
     @SuppressLint("SetTextI18n")
     private fun showDatePicker(tfEndShopClosed: TextFieldUnify, viewBottomSheet: View) {
-        context?.let {  context ->
+        context?.let { context ->
             val dateNow = GregorianCalendar(LocaleUtils.getCurrentLocale(context))
             val maxDate = Calendar.getInstance()
             maxDate.add(Calendar.YEAR, 100)
@@ -942,7 +956,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             datePicker.show(fragmentManager, "")
             datePicker.datePickerButton.setOnClickListener {
                 val resultDate = datePicker.getDate()
-                tfEndShopClosed.textFieldInput.setText("${resultDate[0]}/${resultDate[1]+1}/${resultDate[2]}")
+                tfEndShopClosed.textFieldInput.setText("${resultDate[0]}/${resultDate[1] + 1}/${resultDate[2]}")
                 updateClosingEndDate("${resultDate[0]} ${convertMonth(resultDate[1])} ${resultDate[2]}", viewBottomSheet)
                 datePicker.dismiss()
             }
