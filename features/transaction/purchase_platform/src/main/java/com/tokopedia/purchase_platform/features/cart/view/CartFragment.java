@@ -569,8 +569,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
                 if (!insuranceCartShopsArrayList.isEmpty()) {
                     deleteMacroInsurance(insuranceCartShopsArrayList, false);
+                } else if (cartAdapter.isInsuranceSelected()) {
+                    cartPageAnalytics.sendEventPurchaseInsurance(userSession.getUserId(),
+                            cartAdapter.getSelectedInsuranceProductId(),
+                            cartAdapter.getSelectedInsuranceProductTitle());
                 }
-
                 dPresenter.processToUpdateCartData(getSelectedCartDataList());
             } else {
                 showToastMessageRed(message);
@@ -2524,6 +2527,26 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void updateInsuranceProductData(InsuranceCartShops insuranceCartShops,
                                            ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
         dPresenter.updateInsuranceProductData(insuranceCartShops, updateInsuranceProductApplicationDetailsArrayList);
+    }
+
+    @Override
+    public void sendEventDeleteInsurance(String insuranceTitle) {
+        cartPageAnalytics.sendEventDeleteInsurance(insuranceTitle);
+    }
+
+    @Override
+    public void sendEventInsuranceImpression(String title) {
+        cartPageAnalytics.sendEventInsuranceImpression(title);
+    }
+
+    @Override
+    public void sendEventInsuranceImpressionForShipment(String title) {
+
+    }
+
+    @Override
+    public void sendEventChangeInsuranceState(boolean isChecked, String insuranceTitle) {
+        cartPageAnalytics.sendEventChangeInsuranceState(isChecked, insuranceTitle);
     }
 
     @Override

@@ -2,19 +2,19 @@ package com.tokopedia.atc_variant.view
 
 import android.app.Activity
 import android.app.ProgressDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -614,7 +614,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     }
 
     private fun goToApplyLeasing() {
-        val selectedProductId =  if (selectedVariantId.toIntOrZero() > 0) {
+        val selectedProductId = if (selectedVariantId.toIntOrZero() > 0) {
             selectedVariantId
         } else {
             productId
@@ -867,6 +867,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         addToInsuranceCart(onFinish = { message: String?, cartId: String? ->
 
             hideLoadingDialog()
+            if (isInsuranceSelected) {
+                normalCheckoutTracking.eventClickInsuranceBuy(getInsuranceTitle(), productId)
+            }
             normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
                     selectedProductInfo?.basic?.price.toString(),
                     quantity,
@@ -903,6 +906,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             }
         })
 
+    }
+
+    private fun getInsuranceTitle(): String {
+        return insuranceViewModel.cartShopsList.firstOrNull()?.shopItemsList?.firstOrNull()?.digitalProductList?.firstOrNull()?.productInfo?.title ?: ""
     }
 
     private fun isErrorInInsurance(): Boolean {
@@ -1267,6 +1274,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         outState.putString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
         outState.putInt(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
         outState.putString(ApplinkConst.Transaction.EXTRA_NOTES, notes)
+    }
+
+    override fun sendEventInsuranceSelectedStateChanged(isChecked: Boolean, title: String) {
+        normalCheckoutTracking.eventClickInsuranceState(productId, isChecked, title)
+    }
+
+    override fun sendEventInsuranceInfoClicked() {
+        normalCheckoutTracking.eventClickInsuranceInfo(productId)
     }
 
     override fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean) {

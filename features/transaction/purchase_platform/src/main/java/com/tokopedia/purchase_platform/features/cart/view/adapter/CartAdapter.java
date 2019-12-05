@@ -89,6 +89,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private CartWishlistAdapter cartWishlistAdapter;
     private CartRecentViewAdapter cartRecentViewAdapter;
     private int cartSelectAllViewHolderPosition = -1;
+    private boolean sendInsuranceImpressionEvent = false;
+    private boolean insuranceSelected;
+    private String selectedInsuranceProductId = "";
+    private String selectedInsuranceProductTitle = "";
 
     @Inject
     public CartAdapter(ActionListener actionListener,
@@ -298,6 +302,17 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holderView.bind(data);
         }
     }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if(holder instanceof InsuranceCartShopViewHolder && !sendInsuranceImpressionEvent) {
+            sendInsuranceImpressionEvent = true;
+            insuranceItemActionlistener.sendEventInsuranceImpression(((InsuranceCartShopViewHolder) holder).getProductTitle());
+        }
+    }
+
+
 
     @Override
     public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
@@ -713,25 +728,44 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public ArrayList<InsuranceCartDigitalProduct> isInsuranceCartProductUnSelected() {
 
+        insuranceSelected = true;
         ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
         for (InsuranceCartShops insuranceCartShops : insuranceCartList) {
-
             if (insuranceCartShops != null &&
                     !insuranceCartShops.getShopItemsList().isEmpty()) {
                 for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
                     if (insuranceCartShopItems.getDigitalProductList() != null &&
                             !insuranceCartShopItems.getDigitalProductList().isEmpty()) {
                         for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
+                            selectedInsuranceProductTitle = insuranceCartDigitalProduct.getProductInfo().getTitle();
+                            selectedInsuranceProductId = insuranceCartDigitalProduct.getProductId();
                             if (!insuranceCartDigitalProduct.getOptIn()) {
+                                insuranceSelected = false;
                                 insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct);
                             }
                         }
+                    } else {
+                        insuranceSelected = false;
                     }
                 }
+            } else {
+                insuranceSelected = false;
             }
 
         }
         return insuranceCartDigitalProductArrayList;
+    }
+
+    public String getSelectedInsuranceProductId() {
+        return selectedInsuranceProductId;
+    }
+
+    public String getSelectedInsuranceProductTitle() {
+        return selectedInsuranceProductTitle;
+    }
+
+    public boolean isInsuranceSelected(){
+        return insuranceSelected;
     }
 
     public ArrayList<InsuranceCartShops> getInsuranceCartShops() {
