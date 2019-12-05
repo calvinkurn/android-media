@@ -221,6 +221,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onAttach(Context context) {
         super.onAttach(context);
         mainParentStatusBarListener = (MainParentStatusBarListener)context;
+        homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context);
         requestStatusBarDark();
     }
 
@@ -288,13 +289,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         showRecomendation = firebaseRemoteConfig.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
         mShowTokopointNative = firebaseRemoteConfig.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context);
     }
 
     private HomePerformanceMonitoringListener castContextToHomePerformanceMonitoring(Context context) {
