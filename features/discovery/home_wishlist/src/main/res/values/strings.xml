@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string name="wishlist_see">Lihat</string>
+    <string name="wishlist_add_to_cart">Tambah ke Keranjang</string>
     <string name="wishlist_see_more_title">Lihat Semua</string>
     <string name="wishlist">Wishlist</string>
     <string name="wishlist_search_product">Cari Produk</string>
