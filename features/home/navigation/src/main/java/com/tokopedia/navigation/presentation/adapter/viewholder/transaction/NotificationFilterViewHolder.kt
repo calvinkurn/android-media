@@ -25,7 +25,7 @@ class NotificationFilterViewHolder(
     private var filterAdapter: NotificationUpdateFilterAdapter?= null
 
     override fun bind(element: NotificationFilterSectionWrapper) {
-        if (userSession.hasShop()) {
+        if (userSession.hasShop() && listener.isHasNotification()) {
             lstFilter.show()
         }
 

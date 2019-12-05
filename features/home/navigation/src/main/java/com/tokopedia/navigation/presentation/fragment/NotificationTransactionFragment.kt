@@ -93,6 +93,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         })
         viewModel.notification.observe(this, Observer {
             if (it.list.isEmpty()) {
+                _adapter.removeEmptyState()
                 updateScrollListenerState(false)
                 val emptyString = EmptyState(
                         R.drawable.bg_empty_state_notification,
