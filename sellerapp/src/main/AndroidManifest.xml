@@ -282,5 +282,9 @@
                 <data android:scheme="sellerapp" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.tokopedia.sellerapp.shopstatisticdetail.ShopStatisticDetail"
+            android:label="@string/title_activity_shop_statistic_detail"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

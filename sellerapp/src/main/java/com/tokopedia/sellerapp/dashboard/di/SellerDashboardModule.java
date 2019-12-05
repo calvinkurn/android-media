@@ -57,6 +57,8 @@ import com.tokopedia.seller.shopscore.data.repository.ShopScoreRepositoryImpl;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
+import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
@@ -73,7 +75,7 @@ import static com.tokopedia.core.drawer2.domain.GqlQueryConstant.GET_INFO_PENJUA
  */
 
 @SellerDashboardScope
-@Module(includes = {SellerDashboardGMCommonModule.class, GmCommonModule.class})
+@Module(includes = {SellerDashboardGMCommonModule.class, GmCommonModule.class, ShopCommonModule.class})
 public class SellerDashboardModule {
     @SellerDashboardScope
     @Provides
@@ -212,6 +214,27 @@ public class SellerDashboardModule {
 
     @SellerDashboardScope
     @Provides
+    @Named(GQLQueryNamedConstant.SHOP_RATING)
+    public String provideGqlQueryShopRating(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_rating);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_SATISFACTION)
+    public String provideGqlQueryShopSatisfaction(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_satisfaction);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_TRANSACTION_STATISTIC)
+    public String provideGqlQueryGetShopTransactionStatistic(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_transaction_statistic);
+    }
+
+    @SellerDashboardScope
+    @Provides
     NewNotificationUseCase provideNewNotificationUseCase(ThreadExecutor threadExecutor,
                                                          PostExecutionThread postExecutionThread,
                                                          NotificationUseCase
@@ -266,12 +289,6 @@ public class SellerDashboardModule {
         }else{
             return null;
         }
-    }
-
-    @SellerDashboardScope
-    @Provides
-    public UserSessionInterface provideUserSession(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
-        return new com.tokopedia.user.session.UserSession(context);
     }
 
     @SellerDashboardScope

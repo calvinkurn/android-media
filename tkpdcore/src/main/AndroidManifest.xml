@@ -146,10 +146,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.core.ShopStatisticDetail"
-            android:label="@string/title_activity_shop_statistic_detail"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.loyaltysystem.LoyaltyDetail"
             android:label="@string/title_activity_loyalty_detail"
             android:screenOrientation="portrait" />
