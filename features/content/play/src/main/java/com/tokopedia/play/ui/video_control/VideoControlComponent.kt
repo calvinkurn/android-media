@@ -1,8 +1,6 @@
-package com.tokopedia.play.ui.chatlist
+package com.tokopedia.play.ui.video_control
 
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -13,11 +11,11 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
- * Created by jegul on 03/12/19
+ * Created by jegul on 05/12/19
  */
-class ChatListComponent(
+class VideoControlComponent(
         container: ViewGroup,
-        bus: EventBusFactory,
+        private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
@@ -28,7 +26,7 @@ class ChatListComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Chat -> uiView.showChat(it.chat)
+                            is ScreenStateEvent.Play -> uiView.setPlayer(it.exoPlayer)
                         }
                     }
         }
@@ -42,11 +40,6 @@ class ChatListComponent(
         return emptyFlow()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        uiView.onDestroy()
-    }
-
-    private fun initView(container: ViewGroup): ChatListView =
-            ChatListView(container)
+    private fun initView(container: ViewGroup) =
+            VideoControlView(container)
 }

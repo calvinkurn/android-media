@@ -2,10 +2,12 @@ package com.tokopedia.play.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.data.Channel
 import com.tokopedia.play.domain.GetChannelInfoUseCase
+import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,13 +24,22 @@ import javax.inject.Inject
 /**
  * Created by jegul on 29/11/19
  */
-class PlayViewModel @Inject constructor(private val getChannelInfoUseCase: GetChannelInfoUseCase,
-                                        private val userSessionInterface: UserSessionInterface,
-                                        dispatchers: CoroutineDispatcher) :
-        BaseViewModel(dispatchers) {
+class PlayViewModel @Inject constructor(
+        private val playManager: TokopediaPlayManager,
+        private val getChannelInfoUseCase: GetChannelInfoUseCase,
+        private val userSessionInterface: UserSessionInterface,
+        dispatchers: CoroutineDispatcher
+) : BaseViewModel(dispatchers) {
+
+    val observableVODPlayer: LiveData<ExoPlayer>
+        get() = _observableVODPlayer
 
     val observeChannel: LiveData<Result<Channel>>
         get() = _channelInfoResult
+
+    private val _observableVODPlayer by lazy {
+        MutableLiveData<ExoPlayer>()
+    }
 
     private val _channelInfoResult by lazy {
         MutableLiveData<Result<Channel>>()
@@ -68,5 +79,10 @@ class PlayViewModel @Inject constructor(private val getChannelInfoUseCase: GetCh
 
         val websocket = RxWebSocket[url, userSessionInterface.accessToken]
         websocket?.subscribe(websocketSubscriber)
+    }
+
+    fun startVideoWithUrlString(urlString: String) {
+        playManager.playVideoWithString(urlString)
+        _observableVODPlayer.value = playManager.videoPlayer
     }
 }
