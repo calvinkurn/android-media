@@ -1,23 +1,34 @@
 package com.tokopedia.feedplus.view.presenter
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedplus.NON_LOGIN_USER_ID
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
+import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
+import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.interest_pick_common.data.DataItem
 import com.tokopedia.interest_pick_common.data.OnboardingData
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.interest_pick_common.data.FeedUserOnboardingInterests
 import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
 import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCase
+import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
+import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -30,14 +41,15 @@ import javax.inject.Inject
 /**
  * @author by yoasfs on 2019-09-18
  */
-class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispatcher,
-                                                  private val graphqlRepository: GraphqlRepository,
+class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private val context: Context,
+                                                  baseDispatcher: CoroutineDispatcher,
                                                   private val userSession: UserSessionInterface,
                                                   private val getInterestPickUseCase: GetInterestPickUseCase,
                                                   private val submitInterestPickUseCase: SubmitInterestPickUseCase,
                                                   private val getDynamicFeedFirstPageUseCase: GetDynamicFeedFirstPageUseCase,
                                                   private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-                                                  private val rawQueries: Map<String, String>)
+                                                  private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
+                                                  private val followKolPostGqlUseCase: FollowKolPostGqlUseCase )
     : BaseViewModel(baseDispatcher) {
 
     companion object {
@@ -52,6 +64,9 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
     val submitInterestPickResp = MutableLiveData<Result<SubmitInterestResponseViewModel>>()
     val getFeedFirstPageResp = MutableLiveData<Result<DynamicFeedFirstPageDomainModel>>()
     val getFeedNextPageResp = MutableLiveData<Result<DynamicFeedDomainModel>>()
+    val doFavoriteShopResp = MutableLiveData<Result<FeedPromotedShopViewModel>>()
+    val followKolResp = MutableLiveData<Result<FollowKolViewModel>>()
+
     private var currentCursor = ""
     private val pagingHandler: PagingHandler
 
@@ -120,6 +135,40 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
         }
     }
 
+    fun doFavoriteShop(promotedShopViewModel: Data, adapterPosition: Int) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                doFavoriteShopResult(promotedShopViewModel)
+            }
+            results.adapterPosition = adapterPosition
+            doFavoriteShopResp.value = Success(results)
+        }) {
+            doFavoriteShopResp.value = Fail(it)
+        }
+    }
+
+    fun doFollowKol(id: Int, rowNumber: Int) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                followKol(id, rowNumber)
+            }
+            followKolResp.value = Success(results)
+        }) {
+            followKolResp.value = Fail(it)
+        }
+    }
+
+    fun doUnfollowKol(id: Int, rowNumber: Int) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                unfollowKol(id, rowNumber)
+            }
+            followKolResp.value = Success(results)
+        }) {
+            followKolResp.value = Fail(it)
+        }
+    }
+
     private fun OnboardingData.convertToViewModel(): OnboardingViewModel = feedUserOnboardingInterests.let { result ->
         mappingOnboardingData(result)
     }
@@ -177,6 +226,92 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
             return request
         } catch (e: Throwable) {
             e.printStackTrace()
+            throw e
+        }
+    }
+
+    private fun doFavoriteShopResult(promotedShopViewModel: Data): FeedPromotedShopViewModel {
+        try {
+            val result = FeedPromotedShopViewModel()
+            val PARAM_SHOP_DOMAIN = "shop_domain"
+            val PARAM_SRC = "src"
+            val PARAM_AD_KEY = "ad_key"
+            val DEFAULT_VALUE_SRC = "fav_shop"
+            val params = ToggleFavouriteShopUseCase.createRequestParam(promotedShopViewModel.shop.id)
+
+            params.putString(PARAM_SHOP_DOMAIN, promotedShopViewModel.shop.domain)
+            params.putString(PARAM_SRC, DEFAULT_VALUE_SRC)
+            params.putString(PARAM_AD_KEY, promotedShopViewModel.adRefKey)
+            val requestSuccess = doFavoriteShopUseCase.createObservable(params).toBlocking().single()
+            val stringBuilder = StringBuilder()
+            if (requestSuccess) {
+                stringBuilder.append(MethodChecker.fromHtml(promotedShopViewModel.shop.name)).append(" ")
+                if (promotedShopViewModel.isFavorit) {
+                    stringBuilder.append(context.getString(R.string.shop_success_unfollow))
+                } else {
+                    stringBuilder.append(context.getString(R.string.shop_success_follow))
+                }
+            } else {
+                stringBuilder.append(context.getString(R.string.msg_network_error))
+            }
+            result.promotedShopViewModel = promotedShopViewModel
+            result.resultString = stringBuilder.toString()
+            return result
+        } catch (e: Throwable) {
+            throw e
+        }
+    }
+
+    private fun followKol(id: Int, rowNumber: Int): FollowKolViewModel {
+        try {
+            val data = FollowKolViewModel()
+            data.id = id
+            data.rowNumber = rowNumber
+            data.status = FollowKolPostGqlUseCase.PARAM_FOLLOW
+            followKolPostGqlUseCase.clearRequest()
+            val params = FollowKolPostGqlUseCase.getParam(id, FollowKolPostGqlUseCase.PARAM_FOLLOW)
+            val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
+
+            val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
+            if (query.getData() != null) {
+                val followKolDomain = FollowKolDomain(query.getData().getData().getStatus())
+                if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) data.isSuccess = true
+                else {
+                    data.errorMessage = context.getString(R.string
+                            .default_request_error_unknown)
+                }
+            } else {
+                data.errorMessage = ErrorHandler.getErrorMessage(context, Throwable())
+            }
+            return data
+        } catch (e: Throwable) {
+            throw e
+        }
+    }
+
+    private fun unfollowKol(id: Int, rowNumber: Int): FollowKolViewModel {
+        try {
+            val data = FollowKolViewModel()
+            data.id = id
+            data.rowNumber = rowNumber
+            data.status = FollowKolPostGqlUseCase.PARAM_UNFOLLOW
+            followKolPostGqlUseCase.clearRequest()
+            val params = FollowKolPostGqlUseCase.getParam(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
+            val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
+
+            val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
+            if (query.getData() != null) {
+                val followKolDomain = FollowKolDomain(query.getData().getData().getStatus())
+                if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) data.isSuccess = true
+                else {
+                    data.errorMessage = context.getString(R.string
+                            .default_request_error_unknown)
+                }
+            } else {
+                data.errorMessage = ErrorHandler.getErrorMessage(context, Throwable())
+            }
+            return data
+        } catch (e: Throwable) {
             throw e
         }
     }

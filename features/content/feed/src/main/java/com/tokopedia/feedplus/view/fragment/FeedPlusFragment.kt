@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RestrictTo
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -94,6 +95,7 @@ import com.tokopedia.feedplus.view.listener.FeedPlus
 import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
+import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
@@ -104,6 +106,7 @@ import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
+import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -281,37 +284,61 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        feedOnboardingPresenter.onboardingResp.observe(this, Observer {
-            hideAdapterLoading()
-            when (it) {
-                is Success -> onSuccessGetOnboardingData(it.data)
-                is Fail -> fetchFirstPage()
-            }
-        })
+        val lifecycleOwner: LifecycleOwner = this
+        feedOnboardingPresenter.run {
+            onboardingResp.observe(lifecycleOwner, Observer {
+                hideAdapterLoading()
+                when (it) {
+                    is Success -> onSuccessGetOnboardingData(it.data)
+                    is Fail -> fetchFirstPage()
+                }
+            })
 
-        feedOnboardingPresenter.submitInterestPickResp.observe(this, Observer {
-            view?.hideLoadingTransparent()
-            when (it) {
-                is Success -> onSuccessSubmitInterestPickData(it.data)
-                is Fail  -> onErrorSubmitInterestPickData(it.throwable)
-            }
-        })
+            submitInterestPickResp.observe(lifecycleOwner, Observer {
+                view?.hideLoadingTransparent()
+                when (it) {
+                    is Success -> onSuccessSubmitInterestPickData(it.data)
+                    is Fail  -> onErrorSubmitInterestPickData(it.throwable)
+                }
+            })
 
-        feedOnboardingPresenter.getFeedFirstPageResp.observe(this, Observer {
-            finishLoading()
-            when (it) {
-                is Success -> onSuccessGetFirstFeed(it.data)
-                is Fail -> onErrorGetFirstFeed(it.throwable)
-            }
-        })
+            getFeedFirstPageResp.observe(lifecycleOwner, Observer {
+                finishLoading()
+                when (it) {
+                    is Success -> onSuccessGetFirstFeed(it.data)
+                    is Fail -> onErrorGetFirstFeed(it.throwable)
+                }
+            })
 
-        feedOnboardingPresenter.getFeedNextPageResp.observe(this, Observer {
-            hideAdapterLoading()
-            when (it) {
-                is Success -> onSuccessGetNextFeed(it.data)
-                is Fail -> onErrorGetNextFeed(it.throwable)
-            }
-        })
+            getFeedNextPageResp.observe(lifecycleOwner, Observer {
+                hideAdapterLoading()
+                when (it) {
+                    is Success -> onSuccessGetNextFeed(it.data)
+                    is Fail -> onErrorGetNextFeed(it.throwable)
+                }
+            })
+
+            doFavoriteShopResp.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Success -> onSuccessFavoriteUnfavoriteShop(it.data)
+                    is Fail -> onErrorFavoriteUnfavoriteShop(it.throwable)
+                }
+            })
+
+            followKolResp.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Success -> {
+                        val data = it.data
+                        if (data.isSuccess) {
+                            onSuccessFollowUnfollowKol(it.data.rowNumber)
+                        } else {
+                            onErrorFollowUnfollowKol(data)
+                        }
+                    }
+                    is Fail -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(context,it.throwable))
+                }
+            })
+        }
     }
 
     private fun initVar() {
@@ -664,7 +691,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onAddFavorite(position: Int, dataShop: Data) {
-        presenter.favoriteShop(dataShop, position)
+        feedOnboardingPresenter.doFavoriteShop(dataShop, position)
         analytics.eventFeedClickShop(screenName,
                 dataShop.shop.id,
                 FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE)
@@ -770,7 +797,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
-            presenter.followKol(id, rowNumber)
+            feedOnboardingPresenter.doFollowKol(id, rowNumber)
         } else {
             onGoToLogin()
         }
@@ -778,7 +805,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
-            presenter.unfollowKol(id, rowNumber)
+            feedOnboardingPresenter.doUnfollowKol(id, rowNumber)
         } else {
             onGoToLogin()
         }
@@ -886,25 +913,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             comment.value = comment.value + totalNewComment
             adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_COMMENT)
-        }
-    }
-
-    override fun onErrorFollowKol(errorMessage: String, id: Int, status: Int, rowNumber: Int) {
-        view?.let {
-            Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
-                if (status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
-                    presenter.unfollowKol(id, rowNumber)
-                else
-                    presenter.followKol(id, rowNumber)
-            })
-        }
-    }
-
-    override fun onSuccessFollowUnfollowKol(rowNumber: Int) {
-        if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            header.followCta.isFollow = !header.followCta.isFollow
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
         }
     }
 
@@ -1626,6 +1634,37 @@ class FeedPlusFragment : BaseDaggerFragment(),
         unsetEndlessScroll()
         onShowRetryGetFeed()
         hideAdapterLoading()
+    }
+
+    private fun onSuccessFavoriteUnfavoriteShop(model : FeedPromotedShopViewModel) {
+        showSnackbar(model.resultString)
+        if (hasFeed())
+            updateFavorite(model.adapterPosition)
+        else
+            updateFavoriteFromEmpty(model.promotedShopViewModel.shop.id)
+    }
+
+    private fun onErrorFavoriteUnfavoriteShop(e: Throwable) {
+        NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(context, e))
+    }
+
+    fun onSuccessFollowUnfollowKol(rowNumber: Int) {
+        if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
+            val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+            header.followCta.isFollow = !header.followCta.isFollow
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
+        }
+    }
+
+    fun onErrorFollowUnfollowKol(data: FollowKolViewModel) {
+        view?.let {
+            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+                if (data.status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
+                    feedOnboardingPresenter.doUnfollowKol(data.id, data.rowNumber)
+                else
+                    feedOnboardingPresenter.doFollowKol(data.id, data.rowNumber)
+            })
+        }
     }
 
     private fun goToContentReport(contentId: Int) {

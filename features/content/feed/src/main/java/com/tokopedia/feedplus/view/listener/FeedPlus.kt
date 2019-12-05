@@ -46,10 +46,6 @@ interface FeedPlus {
 
         fun sendFeedPlusScreenTracking()
 
-        fun onErrorFollowKol(errorMessage: String, id: Int, status: Int, rowNumber: Int)
-
-        fun onSuccessFollowUnfollowKol(rowNumber: Int)
-
         fun onErrorLikeDislikeKolPost(errorMessage: String)
 
         fun onSuccessLikeDislikeKolPost(rowNumber: Int)
@@ -116,13 +112,7 @@ interface FeedPlus {
 
     interface Presenter : CustomerPresenter<View> {
 
-        fun favoriteShop(promotedShopViewModel: Data, adapterPosition: Int)
-
         fun setCursor(cursor: String)
-
-        fun followKol(id: Int, rowNumber: Int)
-
-        fun unfollowKol(id: Int, rowNumber: Int)
 
         fun likeKol(id: Int, rowNumber: Int)
 

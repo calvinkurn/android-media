@@ -46,21 +46,11 @@ internal constructor(@ApplicationContext private val context: Context,
                      private val likeKolPostUseCase: LikeKolPostUseCase,
                      private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
                      private val sendVoteUseCase: SendVoteUseCase,
-                     private val getDynamicFeedFirstPageUseCase: GetDynamicFeedFirstPageUseCase,
-                     private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
                      private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
                      private val atcUseCase: AddToCartUseCase,
                      private val deletePostUseCase: DeletePostUseCase) : BaseDaggerPresenter<FeedPlus.View>(), FeedPlus.Presenter {
     private var currentCursor = ""
     private lateinit var viewListener: FeedPlus.View
-    private val pagingHandler: PagingHandler
-
-    private val userId: String
-        get() = if (userSession.isLoggedIn) userSession.userId else NON_LOGIN_USER_ID
-
-    init {
-        this.pagingHandler = PagingHandler()
-    }
 
     override fun attachView(view: FeedPlus.View) {
         super.attachView(view)
@@ -75,110 +65,8 @@ internal constructor(@ApplicationContext private val context: Context,
         sendVoteUseCase.unsubscribe()
     }
 
-
-    override fun favoriteShop(promotedShopViewModel: Data, adapterPosition: Int) {
-        val PARAM_SHOP_DOMAIN = "shop_domain"
-        val PARAM_SRC = "src"
-        val PARAM_AD_KEY = "ad_key"
-        val DEFAULT_VALUE_SRC = "fav_shop"
-        val params = ToggleFavouriteShopUseCase.createRequestParam(promotedShopViewModel.shop.id)
-
-        params.putString(PARAM_SHOP_DOMAIN, promotedShopViewModel.shop.domain)
-        params.putString(PARAM_SRC, DEFAULT_VALUE_SRC)
-        params.putString(PARAM_AD_KEY, promotedShopViewModel.adRefKey)
-
-        doFavoriteShopUseCase.execute(params, object : Subscriber<Boolean>() {
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable) {
-            }
-
-            override fun onNext(isSuccess: Boolean?) {
-                val stringBuilder = StringBuilder()
-
-                if (isSuccess!!) {
-                    stringBuilder.append(MethodChecker.fromHtml(promotedShopViewModel.shop.name)).append(" ")
-                    if (promotedShopViewModel.isFavorit) {
-                        stringBuilder.append(viewListener.getString(R.string.shop_success_unfollow))
-                    } else {
-                        stringBuilder.append(viewListener.getString(R.string.shop_success_follow))
-                    }
-                } else {
-                    stringBuilder.append(viewListener.getString(R.string.msg_network_error))
-                }
-                viewListener.showSnackbar(stringBuilder.toString())
-
-                if (viewListener.hasFeed())
-                    viewListener.updateFavorite(adapterPosition)
-                else
-                    viewListener.updateFavoriteFromEmpty(promotedShopViewModel.shop.id)
-            }
-        })
-    }
-
     override fun setCursor(cursor: String) {
         this.currentCursor = cursor
-    }
-
-    override fun followKol(id: Int, rowNumber: Int) {
-        followKolPostGqlUseCase.clearRequest()
-        followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_FOLLOW))
-        followKolPostGqlUseCase.execute(object: Subscriber<GraphqlResponse>() {
-            override fun onNext(response: GraphqlResponse) {
-                val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
-                if (query.getData() != null) {
-                    val followKolDomain = FollowKolDomain(query.getData().getData().getStatus())
-                    if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS)
-                        view.onSuccessFollowUnfollowKol(rowNumber)
-                    else {
-                        view.onErrorFollowKol(context.getString(R.string
-                                .default_request_error_unknown), id, FollowKolPostGqlUseCase.PARAM_FOLLOW, rowNumber)
-                    }
-                } else {
-                    view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, Throwable()), id,
-                            FollowKolPostGqlUseCase.PARAM_FOLLOW, rowNumber)
-                }
-            }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable?) {
-                view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, e), id,
-                        FollowKolPostGqlUseCase.PARAM_FOLLOW, rowNumber)
-            }
-        })
-    }
-
-    override fun unfollowKol(id: Int, rowNumber: Int) {
-        followKolPostGqlUseCase.clearRequest()
-        followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW))
-        followKolPostGqlUseCase.execute(object: Subscriber<GraphqlResponse>() {
-            override fun onNext(response: GraphqlResponse) {
-                val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
-                if (query.getData() != null) {
-                    val followKolDomain = FollowKolDomain(query.getData().getData().getStatus())
-                    if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS)
-                        view.onSuccessFollowUnfollowKol(rowNumber)
-                    else {
-                        view.onErrorFollowKol(context.getString(R.string
-                                .default_request_error_unknown), id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber)
-                    }
-                } else {
-                    view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, Throwable()), id,
-                            FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber)
-                }
-            }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable?) {
-                view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, e), id,
-                        FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber)
-            }
-        })
     }
 
     override fun likeKol(id: Int, rowNumber: Int) {
@@ -240,12 +128,12 @@ internal constructor(@ApplicationContext private val context: Context,
                                 status == FollowKolPostGqlUseCase.PARAM_FOLLOW
                         )
                     } else {
-                        view.onErrorFollowKol(context.getString(R.string
-                                .failed_to_follow), id, status, rowNumber)
+//                        view.onErrorFollowKol(context.getString(R.string
+//                                .failed_to_follow), id, status, rowNumber)
                     }
                 } else {
-                    view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, Throwable()), id,
-                            status, rowNumber)
+//                    view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, Throwable()), id,
+//                            status, rowNumber)
                 }
             }
 
@@ -253,8 +141,8 @@ internal constructor(@ApplicationContext private val context: Context,
             }
 
             override fun onError(e: Throwable?) {
-                view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, e), id,
-                        FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber)
+//                view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, e), id,
+//                        FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber)
             }
         })
 
@@ -276,12 +164,12 @@ internal constructor(@ApplicationContext private val context: Context,
                                 status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW
                         )
                     } else {
-                        view.onErrorFollowKol(context.getString(R.string
-                                .failed_to_unfollow), id, status, rowNumber)
+//                        view.onErrorFollowKol(context.getString(R.string
+//                                .failed_to_unfollow), id, status, rowNumber)
                     }
                 } else {
-                    view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, Throwable()), id,
-                            status, rowNumber)
+//                    view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, Throwable()), id,
+//                            status, rowNumber)
                 }
             }
 
@@ -289,8 +177,8 @@ internal constructor(@ApplicationContext private val context: Context,
             }
 
             override fun onError(e: Throwable?) {
-                view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, e), id,
-                        FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber)
+//                view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, e), id,
+//                        FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber)
             }
         })
 
