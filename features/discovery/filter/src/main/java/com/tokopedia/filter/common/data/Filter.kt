@@ -24,7 +24,7 @@ class Filter() : Parcelable {
 
     @SerializedName("options")
     @Expose
-    var filterOptions: List<Option> = ArrayList()
+    var options: List<Option> = ArrayList()
 
     val isSeparator: Boolean
         get() = TEMPLATE_NAME_SEPARATOR.equals(templateName)
@@ -59,15 +59,7 @@ class Filter() : Parcelable {
     val isExpandableFilter: Boolean
         get() = (isCategoryFilter || isColorFilter || isRatingFilter
                 || isSizeFilter || isBrandFilter || isLocationFilter
-                || isOtherFilter || filterOptions.size > 1)
-
-    fun getOptions(): List<Option> {
-        return filterOptions
-    }
-
-    fun setOptions(options: List<Option>) {
-        this.filterOptions = options
-    }
+                || isOtherFilter || options.size > 1)
 
     override fun toString(): String {
         return Gson().toJson(this)
@@ -81,14 +73,14 @@ class Filter() : Parcelable {
         dest.writeString(this.title)
         dest.writeString(this.templateName)
         dest.writeParcelable(this.search, flags)
-        dest.writeTypedList(this.filterOptions)
+        dest.writeTypedList(this.options)
     }
 
     protected constructor(`in`: Parcel) : this() {
         this.title = `in`.readString()
         this.templateName = `in`.readString()
         this.search = `in`.readParcelable(Search::class.java.getClassLoader())
-        this.filterOptions = `in`.createTypedArrayList(Option.CREATOR)
+        this.options = `in`.createTypedArrayList(Option.CREATOR)
     }
 
     companion object {
