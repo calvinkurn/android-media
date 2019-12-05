@@ -1,6 +1,5 @@
 package com.tokopedia.product.manage.item.main.draft.domain;
 
-import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
