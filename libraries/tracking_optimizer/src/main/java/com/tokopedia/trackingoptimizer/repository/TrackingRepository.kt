@@ -134,6 +134,7 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingEED
             // will delete old data if the input list is empty
             directPutEE(inputEvent, inputCustomDimensionMap, inputEnhanceECommerceMap)
         }
+
     }
 
     private fun moveEETrackingToFull(trackingEEDbModel: TrackingEEDbModel,
