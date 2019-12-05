@@ -42,8 +42,6 @@ interface FeedPlus {
 
         fun onInfoClicked()
 
-        fun onSuccessGetFeedFirstPage(listFeed: List<Visitable<*>>)
-
         fun onErrorGetFeedFirstPage(errorMessage: String)
 
         fun sendFeedPlusScreenTracking()
@@ -71,8 +69,6 @@ interface FeedPlus {
         fun showInterestPick()
 
         fun updateCursor(currentCursor: String)
-
-        fun onSuccessGetFeed(visitables: List<Visitable<*>>)
 
         fun onRetryClicked()
 
@@ -119,10 +115,6 @@ interface FeedPlus {
     }
 
     interface Presenter : CustomerPresenter<View> {
-
-        fun fetchFirstPage(firstPageCursor: String)
-
-        fun fetchNextPage()
 
         fun favoriteShop(promotedShopViewModel: Data, adapterPosition: Int)
 

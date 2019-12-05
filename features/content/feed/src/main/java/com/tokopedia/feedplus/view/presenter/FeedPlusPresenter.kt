@@ -75,13 +75,6 @@ internal constructor(@ApplicationContext private val context: Context,
         sendVoteUseCase.unsubscribe()
     }
 
-    override fun fetchFirstPage(firstPageCursor: String) {
-        getFirstPageFeed(firstPageCursor)
-    }
-
-    override fun fetchNextPage() {
-        getNextPageFeed()
-    }
 
     override fun favoriteShop(promotedShopViewModel: Data, adapterPosition: Int) {
         val PARAM_SHOP_DOMAIN = "shop_domain"
@@ -358,114 +351,6 @@ internal constructor(@ApplicationContext private val context: Context,
                                     adapterPosition,
                                     shopId
                             )
-                        }
-                    }
-                }
-        )
-    }
-
-    private fun getFirstPageFeed(firstPageCursor: String) {
-        pagingHandler.resetPage()
-        viewListener.showRefresh()
-        currentCursor = ""
-
-        getDynamicFeedFirstPageUseCase.execute(
-                GetDynamicFeedFirstPageUseCase.createRequestParams(
-                        userId, "",
-                        GetDynamicFeedUseCase.FeedV2Source.Feeds, firstPageCursor,
-                        userSession.isLoggedIn),
-                object : Subscriber<DynamicFeedFirstPageDomainModel>() {
-                    override fun onCompleted() {
-
-                    }
-
-                    override fun onError(e: Throwable) {
-                        if (GlobalConfig.isAllowDebuggingTools()) {
-                            e.printStackTrace()
-                        }
-                        if (!isViewAttached) return
-                        view.finishLoading()
-                        view.onErrorGetFeedFirstPage(
-                                ErrorHandler.getErrorMessage(context, e)
-                        )
-                        view.stopTracePerformanceMon()
-                    }
-
-                    override fun onNext(firstPageDomainModel: DynamicFeedFirstPageDomainModel) {
-                        view.finishLoading()
-                        view.clearData()
-                        val model = firstPageDomainModel.dynamicFeedDomainModel
-                        if (hasFeed(model)) {
-                            view.updateCursor(model.cursor)
-                            view.setLastCursorOnFirstPage(model.cursor)
-                            view.setFirstPageCursor(model.firstPageCursor)
-                            view.onSuccessGetFeedFirstPage(model.postList)
-                            if (model.hasNext) {
-                                view.setEndlessScroll()
-                            } else {
-                                view.unsetEndlessScroll()
-                            }
-                        } else {
-                            view.onShowEmpty()
-                        }
-
-                        if (firstPageDomainModel.isInterestWhitelist) {
-                            view.showInterestPick()
-                        }
-
-                        view.sendMoEngageOpenFeedEvent()
-                        view.sendFeedPlusScreenTracking()
-                        view.stopTracePerformanceMon()
-                    }
-                }
-        )
-    }
-
-    private fun hasFeed(model: DynamicFeedDomainModel): Boolean {
-        return model.postList.isNotEmpty()
-    }
-
-    private fun getNextPageFeed() {
-        pagingHandler.nextPage()
-
-        if (currentCursor.isEmpty()) {
-            return
-        }
-
-        getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.createRequestParams(
-                        userId,
-                        currentCursor,
-                        GetDynamicFeedUseCase.FeedV2Source.Feeds),
-                object : Subscriber<DynamicFeedDomainModel>() {
-                    override fun onCompleted() {
-
-                    }
-
-                    override fun onError(e: Throwable) {
-                        if (GlobalConfig.isAllowDebuggingTools()) {
-                            e.printStackTrace()
-                        }
-
-                        if (!isViewAttached) return
-
-                        view.unsetEndlessScroll()
-                        view.onShowRetryGetFeed()
-                        view.hideAdapterLoading()
-                    }
-
-                    override fun onNext(model: DynamicFeedDomainModel) {
-
-                        view.hideAdapterLoading()
-
-                        if (model.postList.isNotEmpty()) {
-                            view.onSuccessGetFeed(model.postList)
-                        }
-
-                        if (model.hasNext) {
-                            view.updateCursor(model.cursor)
-                        } else {
-                            view.unsetEndlessScroll()
                         }
                     }
                 }

@@ -46,6 +46,7 @@ import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
@@ -80,7 +81,6 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
-import com.tokopedia.feedplus.view.adapter.EntryPointAdapter
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
@@ -304,6 +304,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 is Fail -> onErrorGetFirstFeed(it.throwable)
             }
         })
+
+        feedOnboardingPresenter.getFeedNextPageResp.observe(this, Observer {
+            hideAdapterLoading()
+            when (it) {
+                is Success -> onSuccessGetNextFeed(it.data)
+                is Fail -> onErrorGetNextFeed(it.throwable)
+            }
+        })
     }
 
     private fun initVar() {
@@ -313,7 +321,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val size = adapter.getlist().size
             val lastIndex = size - 1
             if (adapter.getlist()[0] !is EmptyModel && adapter.getlist()[lastIndex] !is RetryModel)
-                presenter.fetchNextPage()
+                feedOnboardingPresenter.getFeedNextPage()
         }
 
         val loginIdString = userSession.userId
@@ -466,18 +474,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onSuccessGetFeedFirstPage(listFeed: List<Visitable<*>>) {
-        parentFragment?.let {
-            (it as FeedPlusContainerFragment).showCreatePostOnBoarding()
-        }
-        swipe_refresh_layout.isEnabled = true
-        trackFeedImpression(listFeed)
-
-        adapter.setList(listFeed)
-        adapter.notifyDataSetChanged()
-        triggerClearNewFeedNotification()
-    }
-
     override fun onShowEmpty() {
         adapter.unsetEndlessScrollListener()
         adapter.showEmpty()
@@ -550,16 +546,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         presenter.setCursor(currentCursor)
     }
 
-
-    override fun onSuccessGetFeed(visitables: List<Visitable<*>>) {
-        trackFeedImpression(visitables)
-
-        adapter.removeEmpty()
-        val posStart = adapter.itemCount
-        adapter.addList(visitables)
-        adapter.notifyItemRangeInserted(posStart, visitables.size)
-    }
-
     override fun onShowRetryGetFeed() {
         adapter.showRetry()
     }
@@ -576,7 +562,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         adapter.removeRetry()
         adapter.showLoading()
         adapter.setEndlessScrollListener()
-        presenter.fetchNextPage()
+        feedOnboardingPresenter.getFeedNextPage()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1516,7 +1502,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun fetchFirstPage() {
         val firstPageCursor: String = if (afterRefresh) getFirstPageCursor() else ""
-        feedOnboardingPresenter.getFirstFeedPage(firstPageCursor)
+        showRefresh()
+        feedOnboardingPresenter.getFeedFirstPage(firstPageCursor)
         afterRefresh = false
     }
 
@@ -1576,7 +1563,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (model.postList.isNotEmpty()) {
             setLastCursorOnFirstPage(model.cursor)
             setFirstPageCursor(model.firstPageCursor)
-            onSuccessGetFeedFirstPage(model.postList)
+            parentFragment?.let {
+                (it as FeedPlusContainerFragment).showCreatePostOnBoarding()
+            }
+            swipe_refresh_layout.isEnabled = true
+            trackFeedImpression(model.postList)
+            adapter.setList(model.postList)
+            adapter.notifyDataSetChanged()
+            triggerClearNewFeedNotification()
             if (model.hasNext) {
                 setEndlessScroll()
             } else {
@@ -1608,7 +1602,30 @@ class FeedPlusFragment : BaseDaggerFragment(),
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
         }
         stopTracePerformanceMon()
+    }
 
+    private fun onSuccessGetNextFeed(model: DynamicFeedDomainModel) {
+        hideAdapterLoading()
+        if (model.hasNext.not()) {
+            unsetEndlessScroll()
+        }
+        if (model.postList.isNotEmpty()) {
+            trackFeedImpression(model.postList)
+
+            adapter.removeEmpty()
+            val posStart = adapter.itemCount
+            adapter.addList(model.postList)
+            adapter.notifyItemRangeInserted(posStart, model.postList.size)
+        }
+    }
+
+    private fun onErrorGetNextFeed(e: Throwable) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e.printStackTrace()
+        }
+        unsetEndlessScroll()
+        onShowRetryGetFeed()
+        hideAdapterLoading()
     }
 
     private fun goToContentReport(contentId: Int) {

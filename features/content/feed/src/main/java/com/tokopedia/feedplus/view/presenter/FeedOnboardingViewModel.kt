@@ -36,6 +36,7 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
                                                   private val getInterestPickUseCase: GetInterestPickUseCase,
                                                   private val submitInterestPickUseCase: SubmitInterestPickUseCase,
                                                   private val getDynamicFeedFirstPageUseCase: GetDynamicFeedFirstPageUseCase,
+                                                  private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
                                                   private val rawQueries: Map<String, String>)
     : BaseViewModel(baseDispatcher) {
 
@@ -50,6 +51,7 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
     val onboardingResp = MutableLiveData<Result<OnboardingViewModel>> ()
     val submitInterestPickResp = MutableLiveData<Result<SubmitInterestResponseViewModel>>()
     val getFeedFirstPageResp = MutableLiveData<Result<DynamicFeedFirstPageDomainModel>>()
+    val getFeedNextPageResp = MutableLiveData<Result<DynamicFeedDomainModel>>()
     private var currentCursor = ""
     private val pagingHandler: PagingHandler
 
@@ -86,7 +88,9 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
         })
     }
 
-    fun getFirstFeedPage(firstPageCursor: String) {
+    fun getFeedFirstPage(firstPageCursor: String) {
+        pagingHandler.resetPage()
+        currentCursor = ""
         launchCatchError(block = {
             val results = withContext(Dispatchers.IO) {
                 getFeedDataResult(firstPageCursor)
@@ -95,6 +99,24 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
             getFeedFirstPageResp.value = Success(results)
         }) {
             getFeedFirstPageResp.value = Fail(it)
+        }
+    }
+
+    fun getFeedNextPage() {
+        pagingHandler.nextPage()
+        if (currentCursor.isEmpty()) {
+            return
+        }
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                getFeedNextDataResult()
+            }
+            if (results.hasNext) {
+                currentCursor = results.cursor
+            }
+            getFeedNextPageResp.value = Success(results)
+        }) {
+            getFeedNextPageResp.value = Fail(it)
         }
     }
 
@@ -130,13 +152,28 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
 
     private fun getFeedDataResult(firstPageCursor: String): DynamicFeedFirstPageDomainModel {
         try {
-            val request = getDynamicFeedFirstPageUseCase.createObservable(GetDynamicFeedFirstPageUseCase.createRequestParams(
-                    userId,
-                    "",
-                    GetDynamicFeedUseCase.FeedV2Source.Feeds,
-                    firstPageCursor,
-                    userSession.isLoggedIn))
+            val request = getDynamicFeedFirstPageUseCase.createObservable(
+                    GetDynamicFeedFirstPageUseCase.createRequestParams(
+                            userId,
+                            "",
+                            GetDynamicFeedUseCase.FeedV2Source.Feeds,
+                            firstPageCursor, userSession.isLoggedIn))
                     .toBlocking().single()?: DynamicFeedFirstPageDomainModel()
+            return request
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            throw e
+        }
+    }
+
+    private fun getFeedNextDataResult(): DynamicFeedDomainModel{
+        try {
+            val request =  getDynamicFeedUseCase.createObservable(
+                    GetDynamicFeedUseCase.createRequestParams(
+                            userId,
+                            currentCursor,
+                            GetDynamicFeedUseCase.FeedV2Source.Feeds))
+                    .toBlocking().single()?: DynamicFeedDomainModel()
             return request
         } catch (e: Throwable) {
             e.printStackTrace()
