@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_card_attach_product"
-    android:orientation="vertical"
-    android:padding="@dimen/dp_8">
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/delete_button"
@@ -14,6 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         android:padding="@dimen/dp_8"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_action_x"
@@ -25,7 +26,10 @@
         android:layout_height="wrap_content"
         android:layout_toStartOf="@id/delete_button"
         android:layout_toLeftOf="@id/delete_button"
-        android:minWidth="270dp">
+        android:minWidth="270dp"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_8">
 
         <com.tokopedia.design.image.SquareImageView
             android:id="@+id/attach_product_chat_image"
@@ -49,12 +53,12 @@
                 android:id="@+id/attach_product_chat_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_19"
+                android:layout_marginRight="@dimen/dp_19"
                 android:ellipsize="end"
                 android:lineSpacingExtra="4sp"
                 android:maxWidth="172dp"
                 android:maxLines="1"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
                 android:textColor="@color/attach_product_title"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
@@ -118,10 +122,11 @@
         android:layout_alignEnd="@id/main_product_attach"
         android:layout_alignRight="@id/main_product_attach"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingBottom="@dimen/dp_8"
         android:visibility="gone"
         tools:visibility="visible">
 

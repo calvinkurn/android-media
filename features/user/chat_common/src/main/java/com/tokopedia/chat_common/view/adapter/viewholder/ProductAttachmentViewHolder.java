@@ -95,8 +95,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     private void setChatRight(View productContainerView, ProductAttachmentViewModel element) {
-        productContainerView.setBackground(context.getResources().getDrawable(R.drawable
-                .attach_product_right_bubble));
+        productContainerView.setBackgroundResource(R.drawable.bg_shadow_attach_product);
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, productContainerView);
         setChatReadStatus(element);
     }
