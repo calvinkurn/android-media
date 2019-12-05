@@ -9,6 +9,7 @@ import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
+import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
@@ -119,6 +120,7 @@ object DeeplinkDFMapper {
     private val DFM_PAYMENT_SETTING_SELLERAPP = "payment_setting_sellerapp"
     private val DFM_PRODUCT_MANAGE_CUSTOMER = "product_manage_customer"
     private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
+    private val DFM_WISHLIST = "home_wishlist"
 
     @JvmField
     val DFM_ONBOARDING = "onboarding"
@@ -178,6 +180,8 @@ object DeeplinkDFMapper {
 
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING, R.string.payment_settings_title))
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_SETTING_NOTIF, R.string.notif_settings_title))
+
+            add(DFP({ it.startsWith(HOME_WISHLIST) }, DFM_WISHLIST, R.string.title_wishlist))
         }
     }
 

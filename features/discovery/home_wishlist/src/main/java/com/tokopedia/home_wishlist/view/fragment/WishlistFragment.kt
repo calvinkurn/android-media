@@ -11,6 +11,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -18,18 +19,17 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.analytics.WishlistTracking
+import com.tokopedia.home_wishlist.common.EndlessRecyclerViewScrollListener
 import com.tokopedia.home_wishlist.common.ToolbarElevationOffsetListener
+import com.tokopedia.home_wishlist.component.HasComponent
 import com.tokopedia.home_wishlist.di.WishlistComponent
 import com.tokopedia.home_wishlist.model.action.*
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDataModel
@@ -82,7 +82,7 @@ import javax.inject.Inject
  * @constructor Creates an empty recommendation.
  */
 @SuppressLint("SyntheticAccessor")
-open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
+open class WishlistFragment: Fragment(), WishlistListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -128,6 +128,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
         activity?.let {
             trackingQueue = TrackingQueue(it)
         }
@@ -166,10 +167,13 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         if(this::trackingQueue.isInitialized) trackingQueue.sendAll()
     }
 
-    override fun getScreenName(): String = getString(R.string.wishlist_global)
 
-    override fun initInjector() {
-        getComponent(WishlistComponent::class.java).inject(this)
+    private fun initInjector() {
+        getComponent(WishlistComponent::class.java)?.inject(this)
+    }
+
+    private fun <C> getComponent(componentType: Class<C>): C? {
+        return componentType.cast((activity as HasComponent<C>?)?.getComponent())
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -220,20 +224,20 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             updateBottomMargin()
             endlessRecyclerViewScrollListener?.resetState()
             menu?.findItem(R.id.manage)?.isVisible = false
-            viewModel.getWishlistData(searchView?.searchText ?: "")
+            viewModel.getWishlistData(searchView?.getSearchText() ?: "")
         }
     }
 
     private fun initSearchView(){
         searchView?.setDelayTextChanged(250)
-        searchView?.setListener(object : SearchInputView.Listener{
+        searchView?.setListener(object : CustomSearchView.Listener {
             override fun onSearchSubmitted(text: String?) {
                 searchView?.hideKeyboard()
             }
 
-            override fun onSearchTextChanged(text: String) {
-                updateScrollFlagForSearchView(text.isNotEmpty())
-                viewModel.getWishlistData(text)
+            override fun onSearchTextChanged(text: String?) {
+                updateScrollFlagForSearchView(text?.isNotEmpty() ?: false)
+                viewModel.getWishlistData(text ?: "")
             }
         })
     }
@@ -289,9 +293,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             endlessRecyclerViewScrollListener?.let {
                 recyclerView?.removeOnScrollListener(it)
             }
-            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
-                override fun getCurrentPage(): Int = 1
-
+            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager, 1) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     if(state.isEmpty()){
                         updateBottomMargin()

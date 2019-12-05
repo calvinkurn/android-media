@@ -2,8 +2,6 @@ package com.tokopedia.home_wishlist.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import dagger.Binds
 import dagger.Module

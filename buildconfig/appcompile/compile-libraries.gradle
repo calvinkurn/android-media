@@ -18,6 +18,7 @@ include "libraries:image_picker"
 include "libraries:image_preview"
 include 'libraries:imageuploader'
 include "libraries:inappupdate"
+include "libraries:smart_recycler_diffutil_helper"
 include "libraries:kotlin_extensions"
 include 'libraries:locationmanager'
 include "libraries:logger"

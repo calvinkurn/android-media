@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.home_wishlist.component.HasComponent
 import com.tokopedia.home_wishlist.di.DaggerWishlistComponent
 import com.tokopedia.home_wishlist.di.WishlistComponent
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment

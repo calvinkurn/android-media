@@ -2,8 +2,7 @@ package com.tokopedia.home_wishlist.viewmodel
 
 import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import androidx.lifecycle.ViewModel
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -23,6 +22,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.smart_recycler_helper.SmartVisitable
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.datamodel.WishlistActionData
@@ -31,8 +31,12 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.BulkRemoveWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.isActive
 import rx.Subscriber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -51,14 +55,19 @@ import javax.inject.Inject
 open class WishlistViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getWishlistUseCase: GetWishlistDataUseCase,
-        wishlistCoroutineDispatcherProvider: WishlistDispatcherProvider,
+        private val wishlistCoroutineDispatcherProvider: WishlistDispatcherProvider,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val addToCartUseCase: AddToCartUseCase,
         private val bulkRemoveWishlistUseCase: BulkRemoveWishlistUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val getSingleRecommendationUseCase: GetSingleRecommendationUseCase
-) : BaseViewModel(wishlistCoroutineDispatcherProvider.ui()){
+) : ViewModel(), CoroutineScope{
+
+    private val masterJob = SupervisorJob()
+
+    override val coroutineContext: CoroutineContext
+        get() = wishlistCoroutineDispatcherProvider.ui() + masterJob
 
     private var tempSelectedProductIdInPdp: Int? = null
     private var tempSelectedPositionInPdp: Int? = null
@@ -385,7 +394,7 @@ open class WishlistViewModel @Inject constructor(
      * result will be notified to addWishlistRecommendationActionData or removeWishlistRecommendationActionData
      */
     fun setRecommendationItemWishlist(parentPosition: Int, childPosition: Int, currentWishlistState: Boolean){
-        val newWishlistData: MutableList<Visitable<*>> = wishlistData.value.toMutableList()
+        val newWishlistData: MutableList<SmartVisitable<*>> = wishlistData.value.toMutableList()
         if(parentPosition != -1) {
             val parentVisitable = newWishlistData[parentPosition]
 
@@ -437,7 +446,7 @@ open class WishlistViewModel @Inject constructor(
      */
     fun setEmptyWishlistRecommendationItemWishlist(recommendationPosition: Int,
                                                    currentWishlistState: Boolean){
-        val newWishlistData: MutableList<Visitable<*>> = wishlistData.value.toMutableList()
+        val newWishlistData: MutableList<SmartVisitable<*>> = wishlistData.value.toMutableList()
         val recommendationVisitable = newWishlistData[recommendationPosition]
         val DEFAULT_PARENT_POSITION_EMPTY_RECOM = -1
 
@@ -904,5 +913,12 @@ open class WishlistViewModel @Inject constructor(
             list.remove(list.last())
         }
         return list
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        if (isActive && !masterJob.isCancelled){
+            masterJob.children.map { it.cancel() }
+        }
     }
 }

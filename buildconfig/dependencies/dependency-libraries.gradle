@@ -50,6 +50,7 @@ ext {
             reactNative             : ":libraries:react_native",
             remoteConfig            : ":libraries:remote_config",
             sharedata               : ":libraries:sharedata",
+            diffUtilRecycler        : ":libraries:smart_recycler_diffutil_helper",
             track                   : ":libraries:track",
             trackingOptimizer       : ":libraries:tracking_optimizer",
             travelCalendar          : ":libraries:travel_calendar",
