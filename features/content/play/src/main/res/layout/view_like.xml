@@ -4,8 +4,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_like"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
         app:srcCompat="@drawable/ic_play_like_white_ghost"
         />
 </merge>

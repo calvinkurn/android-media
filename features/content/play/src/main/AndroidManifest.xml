@@ -4,7 +4,7 @@
     <application>
         <activity
             android:name=".view.activity.PlayActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/Play.FullScreen"
             />
     </application>
 </manifest>
