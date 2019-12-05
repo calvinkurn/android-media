@@ -3,8 +3,8 @@ package com.tokopedia.flight.cancellation.view.viewmodel;
 import android.os.Parcel;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPassengerAdapterTypeFactory;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderAmenityViewModel;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
 public class FlightCancellationListPassengerViewModel extends FlightCancellationPassengerViewModel
         implements Visitable<FlightCancellationDetailPassengerAdapterTypeFactory> {
 
-    private List<FlightBookingAmenityViewModel> amenities;
+    private List<FlightOrderAmenityViewModel> amenities;
     private long journeyId;
     private String arrivalAirportId;
     private String departureAiportId;
@@ -23,17 +23,17 @@ public class FlightCancellationListPassengerViewModel extends FlightCancellation
     public FlightCancellationListPassengerViewModel() {
     }
 
-    public List<FlightBookingAmenityViewModel> getAmenities() {
+    public List<FlightOrderAmenityViewModel> getAmenities() {
         return amenities;
     }
 
-    public void setAmenities(List<FlightBookingAmenityViewModel> amenities) {
+    public void setAmenities(List<FlightOrderAmenityViewModel> amenities) {
         this.amenities = amenities;
     }
 
     public FlightCancellationListPassengerViewModel(Parcel in) {
         super(in);
-        amenities = in.createTypedArrayList(FlightBookingAmenityViewModel.CREATOR);
+        amenities = in.createTypedArrayList(FlightOrderAmenityViewModel.CREATOR);
         journeyId = in.readLong();
         arrivalAirportId = in.readString();
         departureAiportId = in.readString();

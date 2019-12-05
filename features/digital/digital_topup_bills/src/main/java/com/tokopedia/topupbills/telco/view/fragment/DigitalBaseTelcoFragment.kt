@@ -309,8 +309,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     abstract fun onBackPressed()
 
     override fun onDestroy() {
-        customViewModel.clear()
-        catalogMenuDetailViewModel.clear()
+        customViewModel.flush()
+        catalogMenuDetailViewModel.flush()
         super.onDestroy()
     }
 

@@ -60,10 +60,14 @@ public interface KolComment {
 
         void showMentionUserSuggestionList(List<MentionableUserViewModel> userList);
 
+        void replyToUser(MentionableUserViewModel user);
+
         interface ViewHolder {
             void onGoToProfile(String url);
 
             void onClickMentionedProfile(String id);
+
+            void replyToUser(MentionableUserViewModel user);
 
             boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition);
         }

@@ -164,6 +164,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
             if (url.isNullOrEmpty()) return@Observer
             broadCastButton.setOnClickListener {
+                chatListAnalytics.eventClickBroadcastButton()
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
             }
         })
@@ -474,7 +475,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     override fun onDestroy() {
         super.onDestroy()
         removeLiveDataObserver()
-        chatItemListViewModel.clear()
+        chatItemListViewModel.flush()
     }
 
     private fun removeLiveDataObserver() {
@@ -549,6 +550,14 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
         activityContract?.loadNotificationCounter()
+    }
+
+    override fun trackChangeReadStatus(element: ItemChatListPojo) {
+        chatListAnalytics.trackChangeReadStatus(element)
+    }
+
+    override fun trackDeleteChat(element: ItemChatListPojo) {
+        chatListAnalytics.trackDeleteChat(element)
     }
 
     private fun isTabSeller(): Boolean {

@@ -162,15 +162,20 @@
     <string name="label_message_showcase_shipment">Gunakan layanan jasa pengiriman yang didukung oleh toko ini.</string>
     <string name="label_dialog_action_delete_and_add_to_wishlist">Pindahkan ke Wishlist</string>
     <string name="label_dialog_action_delete_and_add_to_wishlist_macro_insurance">Hapus Terpilih &amp; Tambah Wishlist</string>
-    <string name="label_dialog_title_delete_item">Hapus %1d barang dari keranjang?</string>
+    <string name="label_dialog_title_delete_item">Hapus barang?</string>
+    <string name="label_dialog_title_delete_multiple_item">Hapus %1d barang?</string>
+    <string name="label_dialog_title_delete_disabled_item">Hapus barang yang nggak bisa dibeli?</string>
+    <string name="label_dialog_title_delete_disabled_multiple_item">Hapus %1d barang yang nggak bisa dibeli?</string>
     <string name="label_dialog_title_delete_item_macro_insurance">Hapus Barang Terpilih?</string>
     <string name="label_dialog_action_delete">Hapus Barang</string>
+    <string name="label_dialog_action_cancel">Kembali</string>
     <string name="label_dialog_action_delete_macro_insurance">Hapus Terpilih</string>
     <string name="label_message_showcase_shipment_courier_recommendation">Pilih jangka waktu pengiriman yang didukung oleh toko ini.</string>
     <string name="label_message_showcase_shipment_courier_recommendation_blackbox">Pilih tipe pengiriman yang didukung oleh toko ini.</string>
     <string name="label_dialog_action_delete_all">Hapus Semua</string>
-    <string name="label_dialog_message_remove_cart_item">Eits, coba pindahkan ke Wishlist, siapa tahu nanti kamu butuh barang ini.</string>
-    <string name="label_dialog_message_remove_cart_multiple_item" formatted="false">Barang yang terpilih (%s) akan dihapus dari keranjang Anda</string>
+    <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjangmu.</string>
+    <string name="label_dialog_message_remove_cart_multiple_item">Barang yang kamu pilih akan dihapus dari keranjangmu.</string>
+    <string name="label_dialog_message_remove_cart_multiple_disabled_item">Semua barang ini akan dihapus dari keranjangmu.</string>
     <string name="label_dialog_message_remove_cart_multiple_item_with_insurance">Karena pembeliannya harus disertai min. 1 barang lain, produk asuransi akan ikut terhapus dan nggak bisa ditambah ke Wishlist.</string>
     <string name="label_delete_cart_item_success">Produk berhasil dihapus dari keranjang</string>
     <string name="label_delete_cart_item_failed">Gagal menghapus produk dari keranjang</string>
@@ -182,7 +187,7 @@
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="label_hardcoded_prioritas_ticker">Hanya berlaku untuk pembelian pada pukul 09.00 – 21.00 WIB.</string>
     <string name="label_hardcoded_courier_blackbox_ticker">Pembelian diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
-    <string name="cart_error_message" formatted="false">Terdapat %d Produk Bermasalah</string>
+    <string name="cart_error_message">Ada %1d barang yang tidak dapat dibeli</string>
     <string name="cart_error_message_no_count" formatted="false">Terdapat Produk Bermasalah</string>
     <string name="cart_error_action">Hapus Produk Bermasalah</string>
     <string name="checkout_module_title_error_empty_address">Terjadi Kesalahan</string>
@@ -324,8 +329,6 @@
 
     <string name="label_toko">Toko: </string>
 
-    <string name="ticker_action_link" formatted="false"><![CDATA[<a href="%1$s">%2$s</a>]]></string>
-    <string name="ticker_action_similar_product_link" formatted="false"><![CDATA[<a href="%1$s">Lihat produk serupa</a>]]></string>
     <string name="insurance_cart_label">Produk Asuransi</string>
     <string name="ticker_text">Polis akan dikirim ke email / no. ponsel / TopChat setelah pembayaran berhasil</string>
     <string name="text_details_change">Ubah</string>

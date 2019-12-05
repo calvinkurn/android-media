@@ -1031,7 +1031,13 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
-
+        if (activity != null) {
+            DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
+            Intent intent = activity.getIntent();
+            intent.setData(Uri.parse(applink));
+            intent.putExtras(bundle);
+            deepLinkDelegate.dispatchFrom(activity, intent);
+        }
     }
 
     @Override

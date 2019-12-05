@@ -50,17 +50,17 @@ public class FlightRadioLabelView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_flight_radio_label_view, this);
-        titleTextView = (TextView) view.findViewById(R.id.title);
-        toggleSwitchCompat = (SwitchCompat) view.findViewById(R.id.toggle);
-        toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_flight_uncheck_thumb));
+        View view = inflate(getContext(), com.tokopedia.flight.R.layout.widget_flight_radio_label_view, this);
+        titleTextView = (TextView) view.findViewById(com.tokopedia.flight.R.id.title);
+        toggleSwitchCompat = (SwitchCompat) view.findViewById(com.tokopedia.flight.R.id.toggle);
+        toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.ic_flight_uncheck_thumb));
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_flight_check_thumb));
+                    toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.ic_flight_check_thumb));
                 } else {
-                    toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_flight_uncheck_thumb));
+                    toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.ic_flight_uncheck_thumb));
                 }
                 if (listener != null) {
                     listener.onCheckedChanged(isChecked);
@@ -82,9 +82,9 @@ public class FlightRadioLabelView extends BaseCustomView {
 
     public void setChecked(boolean checked) {
         if (checked) {
-            toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_flight_check_thumb));
+            toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.ic_flight_check_thumb));
         } else {
-            toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_flight_uncheck_thumb));
+            toggleSwitchCompat.setThumbDrawable(ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.ic_flight_uncheck_thumb));
         }
         toggleSwitchCompat.setChecked(checked);
     }

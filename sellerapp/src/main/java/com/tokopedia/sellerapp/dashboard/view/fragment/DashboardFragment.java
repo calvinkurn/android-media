@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.dashboard.view.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -67,6 +68,8 @@ import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
+import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
+import com.tokopedia.sellerapp.dashboard.view.listener.OnNotificationDataUpdatedListener;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.dashboard.view.preference.PowerMerchantPopUpManager;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopScorePMWidget;
@@ -151,7 +154,15 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private View tickerContainer;
     private View buttonActivatePowerMerchant;
+    private OnNotificationDataUpdatedListener onNotificationDataUpdatedListener;
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof OnNotificationDataUpdatedListener){
+            onNotificationDataUpdatedListener = (OnNotificationDataUpdatedListener)context;
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -349,7 +360,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public void onResume() {
         super.onResume();
         sellerDashboardPresenter.getShopInfoWithScore();
-        sellerDashboardPresenter.getNotification();
+        sellerDashboardPresenter.getNotification(false);
     }
 
     @Override
@@ -662,6 +673,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         setCounterIfNotEmpty(discussionLabelView, discussCount);
         setCounterIfNotEmpty(reviewLabelView, reviewCount);
+        onNotificationDataUpdatedListener.notificationDataUpdated();
 
     }
 

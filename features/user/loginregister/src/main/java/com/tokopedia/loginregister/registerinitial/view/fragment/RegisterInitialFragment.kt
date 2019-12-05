@@ -176,8 +176,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         super.onStart()
         activity?.run {
             analytics.trackScreen(this, screenName)
-            analytics.initCashShield(this)
-            analytics.sendCashShield(this)
         }
     }
 
@@ -284,7 +282,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     private fun initData() {
         presenter.getProvider()
         partialRegisterInputView.setListener(this)
-        presenter.getTickerInfo()
+        if (!GlobalConfig.isSellerApp())
+            presenter.getTickerInfo()
     }
 
     @SuppressLint("RtlHardcoded")
@@ -928,7 +927,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
-        analytics.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

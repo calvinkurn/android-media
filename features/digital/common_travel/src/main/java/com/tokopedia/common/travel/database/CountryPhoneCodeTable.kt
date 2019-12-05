@@ -1,4 +1,4 @@
-package com.tokopedia.flight.country.database
+package com.tokopedia.common.travel.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
