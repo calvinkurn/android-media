@@ -215,7 +215,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
         feed_appbar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                if (verticalOffset + toolbar.height < 0) {
+                if (verticalOffset + (toolbar?.height ?: 0) < 0) {
                     showNormalTextWhiteToolbar()
                 } else {
                     showWhiteTextTransparentToolbar()
