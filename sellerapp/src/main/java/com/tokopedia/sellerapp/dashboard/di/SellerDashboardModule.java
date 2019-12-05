@@ -18,7 +18,9 @@ import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
 import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
+import com.tokopedia.core.drawer2.domain.interactor.DeleteNotificationCacheUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.GetChatNotificationUseCase;
+import com.tokopedia.core.drawer2.domain.interactor.GetInfoPenjualNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -64,6 +66,7 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 
 import static com.tokopedia.core.drawer2.domain.GqlQueryConstant.GET_CHAT_NOTIFICATION_QUERY;
+import static com.tokopedia.core.drawer2.domain.GqlQueryConstant.GET_INFO_PENJUAL_NOTIFICATION_QUERY;
 
 /**
  * @author sebastianuskh on 5/8/17.
@@ -188,9 +191,9 @@ public class SellerDashboardModule {
     @Provides
     GetChatNotificationUseCase provideTopChatNotificationUseCase(
             @Named(GET_CHAT_NOTIFICATION_QUERY) String queryString,
-            GraphqlUseCase graphqlUseCase,
-            LocalCacheHandler localCacheHandler) {
-        return new GetChatNotificationUseCase(queryString, graphqlUseCase, localCacheHandler);
+            GraphqlUseCase graphqlUseCase
+    ) {
+        return new GetChatNotificationUseCase(queryString, graphqlUseCase);
     }
 
     @SellerDashboardScope
@@ -202,14 +205,32 @@ public class SellerDashboardModule {
 
     @SellerDashboardScope
     @Provides
+    @Named(GET_INFO_PENJUAL_NOTIFICATION_QUERY)
+    String provideGET_INFO_PENJUAL_NOTIFICATION_QUERY(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_notification_center_total_unread);
+    }
+
+    @SellerDashboardScope
+    @Provides
     NewNotificationUseCase provideNewNotificationUseCase(ThreadExecutor threadExecutor,
                                                          PostExecutionThread postExecutionThread,
                                                          NotificationUseCase
                                                                  notificationUseCase,
+                                                         DeleteNotificationCacheUseCase
+                                                                 deleteNotificationCacheUseCase,
                                                          GetChatNotificationUseCase
-                                                                 getChatNotificationUseCase) {
-        return new NewNotificationUseCase(threadExecutor, postExecutionThread,
-                notificationUseCase, getChatNotificationUseCase);
+                                                                 getChatNotificationUseCase,
+                                                         GetInfoPenjualNotificationUseCase getInfoPenjualNotificationUseCase,
+                                                         LocalCacheHandler localCacheHandler) {
+        return new NewNotificationUseCase(
+                threadExecutor,
+                postExecutionThread,
+                notificationUseCase,
+                deleteNotificationCacheUseCase,
+                getChatNotificationUseCase,
+                getInfoPenjualNotificationUseCase,
+                localCacheHandler
+        );
     }
 
     @DeleteCacheScope

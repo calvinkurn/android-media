@@ -92,7 +92,8 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
         if(sellerInfoModel instanceof SellerInfoSectionModel)
             return;
         SellerInfoTracking.eventClickItemSellerInfo(sellerInfoModel.getTitle());
-
+        if(!sellerInfoModel.isRead())
+            sellerInfoPresenter.markReadNotification(sellerInfoModel.getInfoId());
         startActivity(SellerInfoWebViewActivity.getCallingIntent(getContext(), sellerInfoModel.getExternalLink()));
     }
 
