@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel
 import kotlinx.android.synthetic.main.item_flight_booking_v3_passenger_detail.view.*
 
 /**

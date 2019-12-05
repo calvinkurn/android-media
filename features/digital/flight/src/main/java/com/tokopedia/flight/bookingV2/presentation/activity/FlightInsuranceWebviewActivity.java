@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.booking.view.fragment.FlightInsuranceWebViewFragment;
+import com.tokopedia.flight.bookingV2.presentation.fragment.FlightInsuranceWebViewFragment;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
 public class FlightInsuranceWebviewActivity extends BaseSimpleActivity implements HasComponent<FlightComponent> {

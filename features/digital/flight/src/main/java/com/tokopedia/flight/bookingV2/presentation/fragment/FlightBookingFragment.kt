@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -22,14 +23,13 @@ import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.common.travel.widget.TravellerInfoWidget
-import com.tokopedia.flight.booking.di.FlightBookingComponent
-import com.tokopedia.flight.booking.view.adapter.*
-import com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment
-import com.tokopedia.flight.booking.view.viewmodel.*
-import com.tokopedia.flight.booking.widget.FlightInsuranceView
+import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV2.presentation.activity.FlightInsuranceWebviewActivity
+import com.tokopedia.flight.bookingV2.presentation.adapter.*
 import com.tokopedia.flight.bookingV2.presentation.contract.FlightBookingContract
 import com.tokopedia.flight.bookingV2.presentation.presenter.FlightBookingPresenter
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.*
+import com.tokopedia.flight.bookingV2.presentation.widget.FlightInsuranceView
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightDateUtil
@@ -390,7 +390,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     override fun getReturnTripId(): String = returnId
 
     override fun navigateToDetailTrip(departureTrip: FlightDetailViewModel) {
-        startActivity(FlightDetailActivity.createIntent(activity, departureTrip,false))
+        startActivity(FlightDetailActivity.createIntent(activity, departureTrip, false))
     }
 
     override fun getIdEmpotencyKey(tokenId: String): String = generateIdEmpotency(tokenId)
@@ -584,7 +584,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     private fun initializePassengerInfo() {
         val adapterTypeFactory = FlightBookingPassengerAdapterTypeFactory(this)
         passengerAdapter = FlightBookingPassengerAdapter(adapterTypeFactory, arrayListOf())
-        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         rv_passengers.layoutManager = layoutManager
         rv_passengers.setHasFixedSize(true)
         rv_passengers.isNestedScrollingEnabled = false
@@ -594,7 +594,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     private fun initializePriceList() {
         priceListAdapter = FlightSimpleAdapter()
         priceListAdapter.setDescriptionTextColor(resources.getColor(com.tokopedia.design.R.color.font_black_secondary_54))
-        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         rv_price_lists.layoutManager = layoutManager
         rv_price_lists.setHasFixedSize(true)
         rv_price_lists.isNestedScrollingEnabled = false

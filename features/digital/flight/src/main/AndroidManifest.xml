@@ -77,7 +77,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".booking.view.activity.FlightBookingAmenityActivity"
+            android:name=".passenger.view.activity.FlightBookingAmenityActivity"
             android:label="@string/flight_booking_luggage_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -88,7 +88,7 @@
             android:theme="@style/Theme.White.Flight"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".booking.view.activity.FlightBookingNationalityActivity"
+            android:name=".passenger.view.activity.FlightBookingNationalityActivity"
             android:label="@string/activity_label_flight_nationality"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />

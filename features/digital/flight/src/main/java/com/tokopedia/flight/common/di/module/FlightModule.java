@@ -13,8 +13,8 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
-import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
+import com.tokopedia.flight.bookingV2.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.db.FlightRoomDb;
