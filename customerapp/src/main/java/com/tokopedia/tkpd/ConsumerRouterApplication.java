@@ -1808,11 +1808,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return cache.getBoolean(DeveloperOptionActivity.IS_CHUCK_ENABLED, false);
     }
 
-    public String getDefferedDeeplinkPathIfExists() {
-        String dd4Seesion = AppsflyerAnalytics.getDefferedDeeplinkPathIfExists();
-        return dd4Seesion;
-    }
-
     @Override
     public String getDeviceId(Context context) {
         return TradeInUtils.getDeviceId(context);
