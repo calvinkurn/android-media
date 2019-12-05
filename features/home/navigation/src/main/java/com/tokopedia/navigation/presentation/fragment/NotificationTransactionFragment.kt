@@ -65,14 +65,6 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     * for tracking purpose*/
     private var lastListItem = 0
 
-    /* save recyclerView state of position */
-    private var listItemState: Parcelable? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        listItemState = savedInstanceState?.getParcelable(LIST_ITEM_STATE)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = viewModelProvider(viewModelFactory)
         return inflater.inflate(R.layout.fragment_notification_transaction, container, false)
@@ -281,12 +273,6 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     override fun getRecyclerViewResourceId() = R.id.lstNotification
     override fun onItemClicked(t: Visitable<*>?) = Unit
     override fun getScreenName() = SCREEN_NAME
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val recyclerView = super.getRecyclerView(view)
-        outState.putParcelable(LIST_ITEM_STATE, recyclerView.layoutManager?.onSaveInstanceState())
-    }
 
     companion object {
         private const val SCREEN_NAME = "Notification Transaction"
