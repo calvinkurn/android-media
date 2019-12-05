@@ -12,9 +12,12 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
 
+    companion object{
+        const val END_POINT = "end_point"
+    }
+
     override fun getNewFragment(): Fragment? {
-        val fragment = DiscoveryFragment()
-        return fragment
+       return DiscoveryFragment.getInstance(intent?.data?.lastPathSegment)
     }
 
     override fun getViewModelType(): Class<DiscoveryViewModel> {
@@ -23,6 +26,10 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     override fun setViewModel(viewModel: BaseViewModel?) {
         discoveryViewModel = viewModel as DiscoveryViewModel
+    }
+
+    fun getViewModel():DiscoveryViewModel{
+        return discoveryViewModel
     }
 
     override fun getVMFactory(): ViewModelProvider.AndroidViewModelFactory {
