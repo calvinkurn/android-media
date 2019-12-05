@@ -5,8 +5,11 @@ import com.tokopedia.play.*
 import com.tokopedia.play.data.Channel
 import com.tokopedia.play.data.Like
 import com.tokopedia.play.data.StickyComponent
+import com.tokopedia.play.data.VideoStream
 import kotlinx.coroutines.Deferred
+import retrofit2.http.Field
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 /**
@@ -20,6 +23,10 @@ interface PlayApi {
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
     ): Deferred<DataResponse<Channel.Response>>
 
+    @GET(PLAY_GET_VIDEO_STREAM)
+    fun getVideoStream(
+            @Path(PLAY_KEY_CHANNEL_ID) channelId: String
+    ): Deferred<DataResponse<VideoStream.Response>>
 
     @GET(PLAY_GET_STICKY_COMPONENTS)
     fun getStickyComponents(
@@ -30,5 +37,11 @@ interface PlayApi {
     fun getTotalLike(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
     ): Deferred<DataResponse<Like>>
+
+    @POST(PLAY_POST_LIKE)
+    fun postLike(
+            @Path(PLAY_KEY_CHANNEL_ID) channelId: String,
+            @Field("click") click: String
+            ): Deferred<DataResponse<Any>>
 
 }
