@@ -84,6 +84,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
             _adapter.addElement(it)
         })
         viewModel.notification.observe(this, Observer {
+            _adapter.removeEmptyState()
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
                 val emptyString = EmptyState(
@@ -91,7 +92,6 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
                         getString(R.string.notification_empty_message))
                 _adapter.addElement(emptyString)
             }  else {
-                _adapter.removeEmptyState()
                 onSuccessNotificationData(it)
             }
         })
@@ -186,6 +186,9 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun updateFilter(filter: HashMap<String, Int>) {
+        //preventing bounce notification
+        _adapter.addElement(EmptyState(0, ""))
+
         viewModel.updateNotificationFilter(filter)
         cursor = ""
         _adapter.removeItem()
@@ -283,6 +286,8 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         private const val PARAM_TEMPLATE_KEY = "template key"
 
         private const val REFRESH_DELAY = 1000L
+
+        private const val LIST_ITEM_STATE = "list_notif"
     }
 
 }

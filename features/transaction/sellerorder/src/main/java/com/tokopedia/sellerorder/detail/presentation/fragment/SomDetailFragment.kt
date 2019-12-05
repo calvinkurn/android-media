@@ -54,10 +54,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_PRODUCT_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_COLON
@@ -105,7 +103,6 @@ import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
-
 
 /**x
  * Created by fwidjaja on 2019-09-30.
@@ -430,12 +427,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private fun setActionGoToTrackingPage(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
         var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", detailResponse.orderId.toString())
 
-        val trackingUrl: String?
-        val uri = Uri.parse(buttonResp.url)
-        trackingUrl = uri.getQueryParameter("url")
-
         val uriBuilder = Uri.Builder()
-        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl)
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, buttonResp.url)
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, PARAM_SELLER)
         routingAppLink += uriBuilder.toString()
         RouteManager.route(context, routingAppLink)
     }
@@ -509,9 +503,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private fun createIntentConfirmShipping(isChangeShipping: Boolean) {
         Intent(activity, SomConfirmShippingActivity::class.java).apply {
             putExtra(PARAM_ORDER_ID, orderId)
-            putExtra(PARAM_CURR_SHIPMENT_ID, detailResponse.shipment.id)
-            putExtra(PARAM_CURR_SHIPMENT_NAME, detailResponse.shipment.name)
-            putExtra(PARAM_CURR_SHIPMENT_PRODUCT_NAME, detailResponse.shipment.productName)
             putExtra(PARAM_CURR_IS_CHANGE_SHIPPING, isChangeShipping)
             startActivityForResult(this, FLAG_CONFIRM_SHIPPING)
         }

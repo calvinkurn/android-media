@@ -17,7 +17,7 @@
             android:paddingTop="@dimen/dp_16"
             android:paddingEnd="@dimen/dp_16"
             android:paddingStart="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_8">
+            android:paddingBottom="@dimen/dp_16">
 
             <TextView
                 android:id="@+id/txt_title"

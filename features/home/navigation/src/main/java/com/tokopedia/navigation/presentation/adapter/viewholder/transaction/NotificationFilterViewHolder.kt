@@ -12,6 +12,7 @@ import com.tokopedia.navigation.domain.model.NotificationFilterSectionWrapper
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
+import com.tokopedia.navigation.widget.ChipFilterItemDivider
 import com.tokopedia.user.session.UserSessionInterface
 
 class NotificationFilterViewHolder(
@@ -20,16 +21,11 @@ class NotificationFilterViewHolder(
         val userSession: UserSessionInterface
 ): AbstractViewHolder<NotificationFilterSectionWrapper>(view), NotificationUpdateFilterAdapter.FilterAdapterListener {
 
-    private val container = view.findViewById<LinearLayout>(R.id.container_notification_filter)
     private val lstFilter = view.findViewById<RecyclerView>(R.id.filter_list)
     private var filterAdapter: NotificationUpdateFilterAdapter?= null
 
     override fun bind(element: NotificationFilterSectionWrapper) {
-        if (listener.isHasNotification()) {
-            container.show()
-        }
-
-        if (userSession.hasShop()) {
+        if (userSession.hasShop() && listener.isHasNotification()) {
             lstFilter.show()
         }
 
@@ -40,6 +36,7 @@ class NotificationFilterViewHolder(
                     userSession)
             lstFilter.adapter = filterAdapter
             filterAdapter?.updateData(map(element.filters))
+            lstFilter.addItemDecoration(ChipFilterItemDivider(view.context))
         }
     }
 
