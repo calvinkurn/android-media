@@ -12,6 +12,7 @@ import java.util.ArrayList
 
 object FilterHelper {
 
+    @JvmStatic
     fun getSelectedCategoryDetailsFromFilterList(filterList: List<Filter>, categoryId: String): CategoryFilterModel? {
         return getSelectedCategoryDetails(getCategoryFilterFromList(filterList), categoryId)
     }
@@ -24,6 +25,7 @@ object FilterHelper {
         return null
     }
 
+    @JvmStatic
     fun getSelectedCategoryDetails(categoryFilter: Filter?, categoryId: String): CategoryFilterModel? {
         return if (categoryFilter == null || TextUtils.isEmpty(categoryId)) {
             null
@@ -73,8 +75,9 @@ object FilterHelper {
         return null
     }
 
-    fun initializeFilterList(filterList: List<Filter>): List<Filter> {
-        val list = ArrayList(filterList)
+    @JvmStatic
+    fun initializeFilterList(filterList: List<Filter>?): List<Filter> {
+        val list = filterList?.toMutableList() ?: mutableListOf()
 
         removeFiltersWithEmptyOption(list)
         mergeSizeFilterOptionsWithSameValue(list)

@@ -107,7 +107,7 @@ class FilterSortManager {
     }
 
     interface Callback {
-        fun onFilterResult(queryParams: Map<String, String>, selectedFilters: Map<String, String>, selectedOptions: List<Option>)
-        fun onSortResult(selectedSort: Map<String, String>, selectedSortName: String, autoApplyFilter: String)
+        fun onFilterResult(queryParams: Map<String, String>?, selectedFilters: Map<String, String>?, selectedOptions: List<Option>?)
+        fun onSortResult(selectedSort: Map<String, String>?, selectedSortName: String?, autoApplyFilter: String?)
     }
 }

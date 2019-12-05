@@ -7,6 +7,7 @@ interface FilterEventTracking {
             const val CLICK_SEARCH_RESULT = "clickSearchResult"
             const val CLICK_CATEGORY = "clickCategory"
             const val CLICK_CATALOG_DETAIL = "clickCatalogDetail"
+            const val CLICK_IMAGE_SEARCH_RESULT = "clickImageSearchResult"
         }
     }
 
@@ -22,6 +23,7 @@ interface FilterEventTracking {
             const val PREFIX_SEARCH_RESULT_PAGE = "search result page"
             const val PREFIX_CATEGORY_PAGE = "category page"
             const val PREFIX_CATALOG_PAGE = "catalog page"
+            const val PREFIX_IMAGE_SEARCH_RESULT_PAGE = "image search result page"
         }
     }
 

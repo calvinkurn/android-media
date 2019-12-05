@@ -7,6 +7,7 @@ import com.tokopedia.track.TrackAppUtils
 
 object FilterTracking {
 
+    @JvmStatic
     fun eventFilterJourney(trackingData: FilterTrackingData,
                            filterName: String,
                            filterValue: String,
@@ -31,6 +32,7 @@ object FilterTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
     }
 
+    @JvmStatic
     fun eventApplyFilterDetail(trackingData: FilterTrackingData, filterName: String) {
 
         val trackingMap = TrackAppUtils.gtmData(
@@ -47,6 +49,7 @@ object FilterTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
     }
 
+    @JvmStatic
     fun eventBackFromFilterDetail(trackingData: FilterTrackingData, filterName: String) {
 
         val trackingMap = TrackAppUtils.gtmData(
@@ -63,6 +66,7 @@ object FilterTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
     }
 
+    @JvmStatic
     fun eventNavigateToFilterDetail(trackingData: FilterTrackingData, filterName: String) {
         val trackingMap = TrackAppUtils.gtmData(
                 trackingData.event,
@@ -78,6 +82,7 @@ object FilterTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
     }
 
+    @JvmStatic
     fun eventOpenFilterPage(trackingData: FilterTrackingData) {
         val trackingMap = TrackAppUtils.gtmData(
                 trackingData.event,
@@ -93,9 +98,10 @@ object FilterTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
     }
 
+    @JvmStatic
     fun eventApplyFilter(trackingData: FilterTrackingData,
                          screenName: String,
-                         selectedFilter: Map<String, String>) {
+                         selectedFilter: Map<String, String>?) {
 
         val trackingMap = TrackAppUtils.gtmData(
                 trackingData.event,

@@ -18,6 +18,7 @@ object OptionHelper {
 
     val VALUE_SEPARATOR = ","
 
+    @JvmStatic
     fun saveOptionShownInMainState(option: Option,
                                    shownInMainState: HashMap<String, Boolean>) {
 
@@ -28,6 +29,7 @@ object OptionHelper {
         }
     }
 
+    @JvmStatic
     fun saveOptionInputState(option: Option,
                              checkedState: HashMap<String, Boolean>,
                              savedTextInput: HashMap<String, String>) {
@@ -39,6 +41,7 @@ object OptionHelper {
         }
     }
 
+    @JvmStatic
     fun saveOptionInputState(option: Option, flagFilterHelper: HashMap<String, Boolean>) {
         saveCheckboxOptionInputState(option, flagFilterHelper)
     }
@@ -59,6 +62,7 @@ object OptionHelper {
         savedTextInput.put(option.key, option.inputState)
     }
 
+    @JvmStatic
     fun loadOptionInputState(option: Option,
                              checkedState: HashMap<String, Boolean>,
                              savedTextInput: HashMap<String, String>): String {
@@ -90,22 +94,26 @@ object OptionHelper {
         return if (TextUtils.isEmpty(result)) "" else result.toString()
     }
 
+    @JvmStatic
     fun parseKeyFromUniqueId(uniqueId: String): String {
         val firstSeparatorPos = uniqueId.indexOf(Option.UID_FIRST_SEPARATOR_SYMBOL)
         return uniqueId.substring(0, firstSeparatorPos)
     }
 
+    @JvmStatic
     fun parseValueFromUniqueId(uniqueId: String): String {
         val firstSeparatorPos = uniqueId.indexOf(Option.UID_FIRST_SEPARATOR_SYMBOL)
         val secondSeparatorPos = uniqueId.indexOf(Option.UID_SECOND_SEPARATOR_SYMBOL)
         return uniqueId.substring(firstSeparatorPos + Option.UID_FIRST_SEPARATOR_SYMBOL.length, secondSeparatorPos)
     }
 
+    @JvmStatic
     fun parseNameFromUniqueId(uniqueId: String): String {
         val secondSeparatorPos = uniqueId.indexOf(Option.UID_SECOND_SEPARATOR_SYMBOL)
         return uniqueId.substring(secondSeparatorPos + Option.UID_SECOND_SEPARATOR_SYMBOL.length, uniqueId.length)
     }
 
+    @JvmStatic
     fun bindOptionWithCheckbox(option: Option,
                                checkBox: CheckBox,
                                filterDetailView: DynamicFilterDetailView) {
@@ -125,6 +133,7 @@ object OptionHelper {
         })
     }
 
+    @JvmStatic
     fun convertToCategoryList(optionList: List<Option>): List<Category> {
         val categoryList = arrayListOf<Category>()
 
@@ -210,6 +219,7 @@ object OptionHelper {
         return category
     }
 
+    @JvmStatic
     fun generateOptionFromCategory(categoryId: String, categoryName: String): Option {
         val option = Option()
         option.name = categoryName
@@ -218,6 +228,7 @@ object OptionHelper {
         return option
     }
 
+    @JvmStatic
     fun generateOptionFromUniqueId(uniqueId: String): Option {
         val key = parseKeyFromUniqueId(uniqueId)
         val value = parseValueFromUniqueId(uniqueId)
@@ -231,10 +242,12 @@ object OptionHelper {
         return option
     }
 
+    @JvmStatic
     fun constructUniqueId(key: String, value: String, name: String): String {
         return key + Option.UID_FIRST_SEPARATOR_SYMBOL + value + Option.UID_SECOND_SEPARATOR_SYMBOL + name
     }
 
+    @JvmStatic
     fun combinePriceFilterIfExists(activeFilterOptionList: List<Option>, combinedPriceFilterName: String): List<Option> {
         val returnedActiveFilterOptionList = ArrayList(activeFilterOptionList)
 
