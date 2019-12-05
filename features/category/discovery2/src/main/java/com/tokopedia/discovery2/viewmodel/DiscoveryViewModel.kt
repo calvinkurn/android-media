@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -14,6 +15,7 @@ import kotlin.coroutines.CoroutineContext
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.withContext
 
 class DiscoveryViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
 
@@ -26,9 +28,11 @@ class DiscoveryViewModel(application: Application) : BaseViewModel(application),
         progBarVisibility.value = true
         launchCatchError(
                 block = {
-                    val data = DiscoveryDataUseCase().getDiscoveryData(repository, endPoint)
-                    data?.let {
-                        discoveryResponse.value = Success(it)
+                    withContext(Dispatchers.IO){
+                        val data = DiscoveryDataUseCase().getDiscoveryData(repository, GenerateUrl.getUrl(endPoint))
+                        data?.let {
+                            discoveryResponse.postValue(Success(it))
+                        }
                     }
                 },
                 onError = {

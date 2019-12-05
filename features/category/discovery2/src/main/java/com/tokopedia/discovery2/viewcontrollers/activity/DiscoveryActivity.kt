@@ -18,14 +18,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
     override fun getNewFragment(): Fragment? {
-        val bundle = Bundle()
-        val fragment = DiscoveryFragment()
-        val dupList = intent.data.toString().split("/")
-        if (!dupList.isNullOrEmpty()){
-            bundle.putString(END_POINT,dupList.last())
-        }
-        fragment.arguments = bundle
-        return fragment
+       return DiscoveryFragment.getInstance(intent)
     }
 
     override fun getViewModelType(): Class<DiscoveryViewModel> {

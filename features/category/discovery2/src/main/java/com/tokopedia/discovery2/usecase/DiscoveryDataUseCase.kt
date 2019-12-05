@@ -9,15 +9,12 @@ import com.tokopedia.usecase.RequestParams
 
 class DiscoveryDataUseCase {
 
-    suspend fun getDiscoveryData(repository: BaseRepository, endPoint: String):DiscoveryResponse{
-        val response = repository.getRestData(getUrl()+endPoint,
+    suspend fun getDiscoveryData(repository: BaseRepository, url: String):DiscoveryResponse{
+        val response = repository.getRestData(url,
                 object : TypeToken<DataResponse<DiscoveryResponse>>() {}.type,
                 RequestType.GET,
                 RequestParams.EMPTY.parameters)
         val discoveryResponse = response?.getData() as DataResponse<DiscoveryResponse>
         return discoveryResponse.data
     }
-
-    private fun getUrl() = "https://ace.tokopedia.com/hoth/discovery/api/page/"
-
 }
