@@ -232,71 +232,76 @@ query SearchProduct(
     }
 
     headlineAds: displayAdsV3(displayParams: $headline_params) {
-        status {
-            error_code
-            message
-        }
-        header {
-            process_time
-            total_data
-        }
-        data {
-            id
-            ad_ref_key
-            redirect
-            ad_click_url
-            headline{
-            template_id
-            name
-            image {
-                full_url
-                full_ecs
+            status {
+                error_code
+                message
             }
-            shop {
+            header {
+                process_time
+                total_data
+            }
+            data {
                 id
+                ad_ref_key
+                redirect
+                ad_click_url
+                headline{
+                template_id
                 name
-                domain
-                tagline
-                slogan
-                location
-                city
-                gold_shop
-                gold_shop_badge
-                shop_is_official
-                product {
+                image {
+                    full_url
+                    full_ecs
+                }
+                shop {
                     id
                     name
-                    price_format
-                    applinks
-                    image_product{
-                        product_id
-                        product_name
-                        image_url
-                        image_click_url
+                    domain
+                    tagline
+                    slogan
+                    location
+                    city
+                    gold_shop
+                    gold_shop_badge
+                    shop_is_official
+                    product {
+                        id
+                        name
+                        price_format
+                        applinks
+                        product_rating
+                        product_cashback
+                      	product_cashback_rate
+                      	product_new_label
+                      	count_review_format
+                      	image_product{
+                            product_id
+                            product_name
+                            image_url
+                            image_click_url
+                        }
+                    }
+                    image_shop {
+                        cover
+                        s_url
+                        xs_url
+                        cover_ecs
+                        s_ecs
+                        xs_ecs
                     }
                 }
-                image_shop {
-                    cover
-                    s_url
-                    xs_url
-                    cover_ecs
-                    s_ecs
-                    xs_ecs
+                badges{
+                image_url
+                show
+                title
                 }
+                button_text
+                promoted_text
+                description
+                uri
+                }
+                applinks
             }
-            badges{
-            image_url
-            show
-            title
-            }
-            button_text
-            promoted_text
-            description
-            uri
-            }
-            applinks
         }
-    }
 
     global_search_navigation(keyword:$query, device:"android", size:5) {
         data {
