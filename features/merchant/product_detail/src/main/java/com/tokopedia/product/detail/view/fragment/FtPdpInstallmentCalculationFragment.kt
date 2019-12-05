@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.R
@@ -42,11 +43,11 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
             context?.let {
 
                 var cacheManager = SaveInstanceCacheManager(it, true)
-                cacheManager.put(FtCalculationPartnerData::class.java.simpleName, dataList, TimeUnit.HOURS.toMillis(1))
+                cacheManager.put(FtCalculationPartnerData::class.java.simpleName, ArrayList<FtCalculationPartnerData>(dataList), TimeUnit.HOURS.toMillis(1))
                 bundle.putString(KEY_INSTALLMENT_CALCULATION_DATA, cacheManager.id!!)
 
                 cacheManager = SaveInstanceCacheManager(it, true)
-                cacheManager.put(FtCalculationPartnerData::class.java.simpleName, tncList, TimeUnit.HOURS.toMillis(1))
+                cacheManager.put(FtCalculationPartnerData::class.java.simpleName, ArrayList<FtInstallmentTnc>(tncList), TimeUnit.HOURS.toMillis(1))
                 bundle.putString(KEY_INSTALLMENT_TNC_LIST, cacheManager.id!!)
 
                 lendingPartnerFragment.arguments = bundle
@@ -70,21 +71,17 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
             tncDataListId = it.getString(KEY_INSTALLMENT_TNC_LIST) ?: ""
             var cacheManager = SaveInstanceCacheManager(context!!, tncDataListId)
 
-            tncDataList = cacheManager.get(
-                    FtInstallmentTnc::class.java.simpleName,
-                    FtInstallmentTnc::class.java
-            ) ?: ArrayList()
+            tncDataList = cacheManager.get(FtInstallmentTnc::class.java.simpleName,
+                    object : TypeToken<ArrayList<FtInstallmentTnc>>() {
 
+                    }.type) ?: ArrayList()
 
             partnerDataItemListId = it.getString(KEY_INSTALLMENT_CALCULATION_DATA) ?: ""
-
             cacheManager = SaveInstanceCacheManager(context!!, tncDataListId)
+            partnerDataItemList = cacheManager.get(FtCalculationPartnerData::class.java.simpleName,
+                    object : TypeToken<ArrayList<FtCalculationPartnerData>>() {
 
-            partnerDataItemList = cacheManager.get(
-                    FtCalculationPartnerData::class.java.simpleName,
-                    FtCalculationPartnerData::class.java
-            ) ?: ArrayList()
-
+                    }.type) ?: ArrayList()
         }
         prepareTncIDHashMap()
     }
