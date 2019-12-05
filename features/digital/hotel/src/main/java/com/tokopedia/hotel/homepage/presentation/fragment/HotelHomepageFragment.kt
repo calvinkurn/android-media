@@ -314,7 +314,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         context?.run {
             if (hotelHomepageModel.locType.equals(TYPE_PROPERTY, false)) {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this, hotelHomepageModel.checkInDate,
-                        hotelHomepageModel.checkOutDate, hotelHomepageModel.locId, hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
+                        hotelHomepageModel.checkOutDate, hotelHomepageModel.locId, hotelHomepageModel.roomCount, hotelHomepageModel.adultCount,
+                        hotelHomepageModel.locType, hotelHomepageModel.locName),
                         REQUEST_CODE_DETAIL)
             } else {
                 startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelHomepageModel.locName,

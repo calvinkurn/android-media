@@ -21,6 +21,7 @@
     <string name="title_digital_deals" >Deals</string>
 
     <string name="title_applink_pm_subscribe">Power Merchant</string>
+    <string name="title_applink_product_manage">Atur Produk</string>
 
     <string name="notif_settings_title">Pengaturan Notifikasi</string>
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
