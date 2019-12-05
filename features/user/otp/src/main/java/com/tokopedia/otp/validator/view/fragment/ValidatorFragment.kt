@@ -1,6 +1,7 @@
 package com.tokopedia.otp.validator.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -13,7 +14,9 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -41,6 +44,7 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_cotp_miscall_verification.*
 import javax.inject.Inject
 
 /**
@@ -146,6 +150,7 @@ class ValidatorFragment: BaseDaggerFragment(){
         }
 
         validatorViewModel.otpRequestEmail(otpType, email, false)
+        showKeyboard()
     }
 
     private fun prepareView(){
@@ -381,6 +386,11 @@ class ValidatorFragment: BaseDaggerFragment(){
     private fun dismissLoading() {
         parent.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
+    }
+
+    private fun showKeyboard() {
+        val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.toggleSoftInputFromWindow(textInputOtp.windowToken, InputMethodManager.SHOW_FORCED, 0)
     }
 
     companion object {
