@@ -140,7 +140,7 @@
     <string name="disabled_location_notif_title">Lokasi Anda Belum Terisi</string>
     <string name="disabled_location_notfi_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
     <string name="something_wrong_happened">Terjadi Kesalahan</string>
-    <string name="title_dropoff_picker">Pilih lokasi Titik Ambil</string>
+    <string name="title_dropoff_picker">Pilih Lokasi Titik Ambil</string>
     <string name="searchbar_dropoff_hint">Cari Tempat Titik Ambil…</string>
     <string name="searchbar_autocomplete_hint">Masukkan kata kunci lokasi</string>
     <string name="gps_empty_title">GPS tidak terdeteksi!</string>
@@ -159,7 +159,7 @@
     <string name="title_autocomplete_page">Cari Lokasi</string>
     <string name="tv_noresult_title">Lokasi tidak ketemu</string>
     <string name="tv_noresult_desc">Cek kata pencarian kamu atau cari lewat peta</string>
-    <string name="title_bottom_sheet_autocomplete">Lihat titik Ambil terdekat</string>
+    <string name="title_bottom_sheet_autocomplete">Lihat titik ambil terdekat</string>
     <string name="point_center">Point Center</string>
     <string name="no_pinpoint">Belum Pinpoint</string>
     <string name="havent_pinpoint">Sudah Pinpoint</string>
