@@ -4,6 +4,7 @@ includeDynamicFeatureIfEnabled("customerapp")
 include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
+include "features:common:common_tradein"
 
 include "features:communication:broadcast_message_common"
 
@@ -176,6 +177,8 @@ include "features:user:user_identification_common"
 include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 include "features:discovery:home_recom"
+include "features:discovery:home_wishlist"
+include "features:discovery:smart_recycler_diffutil_helper"
 include "features:user:seamless_login"
 
 include 'tkpdcore'

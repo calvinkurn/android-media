@@ -222,7 +222,7 @@ android {
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         resConfigs "en", "id"
         ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a"
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
         }
     }
 
@@ -307,6 +307,8 @@ dependencies {
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.homeRecom)
+    implementation project(rootProject.ext.features.homeWishlist)
+    implementation project(rootProject.ext.features.smartRecycler)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -343,6 +345,7 @@ dependencies {
     implementation project(rootProject.ext.features.digitalBrowse)
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.commonTravel)
+    implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)
@@ -408,7 +411,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.features.filter)
-    implementation project(rootProject.ext.features.tradeIn)
+    implementation project(rootProject.ext.features.commonTradein)
     implementation project(rootProject.ext.libraries.inappupdate)
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.features.tokopointsNotification)
@@ -428,6 +431,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.banner
+    implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession

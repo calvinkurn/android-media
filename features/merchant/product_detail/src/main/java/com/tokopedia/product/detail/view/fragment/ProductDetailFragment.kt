@@ -131,9 +131,9 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
-import com.tokopedia.tradein.model.TradeInParams
-import com.tokopedia.tradein.view.customview.TradeInTextView
-import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
+import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.customviews.TradeInTextView
+import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.dialog.UnifyDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
@@ -1702,7 +1702,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         else
             tradeInParams.isPreorder = false
         tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
-        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
+        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false, activity?.application)
         tv_trade_in.setOnClickListener {
             goToNormalCheckout(TRADEIN_BUY)
             tradeInParams?.let {
