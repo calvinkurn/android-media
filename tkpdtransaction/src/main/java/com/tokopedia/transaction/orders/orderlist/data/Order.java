@@ -9,6 +9,9 @@ public class Order {
     @SerializedName("conditionalInfo")
     @Expose
     private ConditionalInfo conditionalInfo;
+    @SerializedName("conditionalInfoBottom")
+    @Expose
+    private ConditionalInfo conditionalInfoBottom;
     @SerializedName("paymentData")
     @Expose
     private PaymentData paymentData;
@@ -105,6 +108,10 @@ public class Order {
 
     public ConditionalInfo conditionalInfo() {
         return conditionalInfo;
+    }
+
+    public ConditionalInfo conditionalInfoBottom() {
+        return conditionalInfoBottom;
     }
 
     public PaymentData paymentData() {

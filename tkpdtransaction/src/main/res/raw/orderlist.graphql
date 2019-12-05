@@ -35,6 +35,14 @@ query ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int, $orderId: Int) 
         textColor
       }
     }
+    conditionalInfoBottom{
+      title
+      color {
+        border
+        background
+        textColor
+      }
+    }
     dotMenuList {
       name
       uri
