@@ -3,11 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="128dp"
-    android:layout_height="wrap_content"
+    android:layout_height="256dp"
     android:layout_marginLeft="@dimen/dp_8"
     app:shadowColor="@color/grey_500"
-    app:shadowStrokeWidth="@dimen/dp_2"
-    app:blurRadius="@dimen/dp_8"
+    app:shadowBottomOffset="-2dp"
+    app:shadowEndOffset="2dp"
+    app:shadowStartOffset="2dp"
+    app:shadowTopOffset="2dp"
     app:cornerRadius="@dimen/dp_8">
 
     <com.tokopedia.topads.sdk.view.ImpressedImageView
@@ -56,12 +58,14 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp"
+        android:paddingLeft="@dimen/dp_2"
         app:layout_constraintBottom_toBottomOf="@+id/discount_txt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/discount_txt"
         app:layout_constraintTop_toTopOf="@+id/discount_txt"
         app:typographyType="small"
         android:visibility="gone"
+        android:layout_marginLeft="@dimen/dp_5"
         tools:visibility="visible"
         tools:text="1000.000" />
 
@@ -95,8 +99,6 @@
         android:contentDescription="rating1"
         android:gravity="center"
         android:scaleType="centerCrop"
-        android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/price"
         tools:src="@drawable/topads_ic_rating_active" />
@@ -109,8 +111,6 @@
         android:contentDescription="rating2"
         android:gravity="center"
         android:scaleType="centerCrop"
-        android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/imageViewRating1"
         app:layout_constraintStart_toEndOf="@+id/imageViewRating1"
         app:layout_constraintTop_toTopOf="@+id/imageViewRating1"
@@ -124,8 +124,6 @@
         android:contentDescription="rating3"
         android:gravity="center"
         android:scaleType="centerCrop"
-        android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintStart_toEndOf="@+id/imageViewRating2"
         app:layout_constraintTop_toTopOf="@+id/imageViewRating2"
         tools:src="@drawable/topads_ic_rating_active" />
@@ -138,8 +136,6 @@
         android:contentDescription="rating4"
         android:gravity="center"
         android:scaleType="centerCrop"
-        android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/imageViewRating3"
         app:layout_constraintStart_toEndOf="@+id/imageViewRating3"
         app:layout_constraintTop_toTopOf="@+id/imageViewRating3"
@@ -153,8 +149,6 @@
         android:contentDescription="rating5"
         android:gravity="center"
         android:scaleType="centerCrop"
-        android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/imageViewRating4"
         app:layout_constraintStart_toEndOf="@+id/imageViewRating4"
         app:layout_constraintTop_toTopOf="@+id/imageViewRating4"
@@ -166,13 +160,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:visibility="gone"
+        android:paddingLeft="@dimen/dp_2"
         app:layout_constraintBottom_toBottomOf="@+id/imageViewRating5"
         app:layout_constraintStart_toEndOf="@+id/imageViewRating5"
         app:layout_constraintTop_toTopOf="@+id/imageViewRating5"
         app:typographyType="body_3"
-        tools:text="(3000)"
-        tools:visibility="visible" />
+        tools:text="(3000)" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/label_new"
@@ -190,6 +183,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewRating1"
-        tools:text="Terbaru" />
+        android:text="Terbaru" />
 
 </com.tokopedia.topads.sdk.widget.ShadowConstraintLayout>

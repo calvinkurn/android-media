@@ -2,7 +2,6 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.banner;
 
 import android.content.Context;
 import androidx.annotation.LayoutRes;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.view.View;
 import android.widget.ImageView;

@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="128dp"
     android:layout_height="226dp"
-    app:blurRadius="@dimen/dp_8"
+    android:layout_marginLeft="@dimen/dp_8"
+    app:shadowBottomOffset="2dp"
+    app:shadowEndOffset="2dp"
+    app:shadowStartOffset="2dp"
+    app:shadowTopOffset="2dp"
     app:cornerRadius="@dimen/dp_8">
 
 
