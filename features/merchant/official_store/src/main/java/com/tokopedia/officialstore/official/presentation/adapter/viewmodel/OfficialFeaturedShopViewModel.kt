@@ -7,7 +7,7 @@ import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
 
 class OfficialFeaturedShopViewModel(
-        val featuredShop: MutableList<Shop>,
+        val featuredShop: List<Shop>,
         val headerShop: HeaderShop?,
         val categoryName: String,
         val listener: FeaturedShopListener
