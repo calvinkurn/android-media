@@ -58,6 +58,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     private var filterTrackingData: FilterTrackingData? = null;
 
     var totalCount = ""
+    var totalCountInt = 0
 
 
     private var bottomSheetListener: BottomSheetListener? = null
@@ -411,6 +412,11 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         if (bottomSheetListener != null) {
             bottomSheetListener?.setFilterResultCount(formattedResultCount)
         }
+    }
+
+    fun setTotalSearchResultCountInteger(count: Int?) {
+        if(count!=null)
+            totalCountInt = count
     }
 
     fun onBottomSheetHide() {

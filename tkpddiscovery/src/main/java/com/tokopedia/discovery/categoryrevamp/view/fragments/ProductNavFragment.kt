@@ -298,7 +298,7 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
                 if ((scrollY >= (v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight)) &&
                         scrollY > oldScrollY) {
                     if (isPagingAllowed) {
-                        val numOfPages: Int = (totalCount.toInt() - 1) / 10
+                        val numOfPages: Int = (totalCountInt - 1) / 10
                         if (getPage() < numOfPages) {
                             incrementpage()
                             fetchProductData(getProductListParamMap(getPage()))
@@ -359,9 +359,11 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
 
         productNavViewModel.mProductCount.observe(this, Observer {
             it?.let {
-                setTotalSearchResultCount(it)
-                if (!TextUtils.isEmpty(it)) {
-                    setQuickFilterAdapter(getString(R.string.result_count_template_text, it))
+                if(it.countText!=null)
+                    setTotalSearchResultCount(it.countText)
+                setTotalSearchResultCountInteger(it.totalData)
+                if (!TextUtils.isEmpty(it.countText)) {
+                    setQuickFilterAdapter(getString(R.string.result_count_template_text, it.countText))
                 } else {
                     setQuickFilterAdapter("")
                 }
@@ -425,15 +427,15 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
             quickfilter_parent.hide()
             val selectedFilterFromEmptyStateListener = getSelectedFilterAsOptionList()
             if (selectedFilterFromEmptyStateListener != null && selectedFilterFromEmptyStateListener.isNotEmpty()) {
-                selectedFilterRecyclerView.visibility = View.VISIBLE
+                selectedFilterRecyclerView.show()
                 populateSelectedFilterToRecylerView(selectedFilterFromEmptyStateListener)
             } else {
-                selectedFilterRecyclerView.visibility = View.GONE
+                selectedFilterRecyclerView.hide()
             }
         } else {
             layout_no_data.hide()
             quickfilter_parent.show()
-
+            selectedFilterRecyclerView.hide()
         }
         if (isSubCategoryAvailable) {
             subcategory_recyclerview.show()
