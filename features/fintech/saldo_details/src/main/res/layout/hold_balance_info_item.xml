@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/dp_8"
     android:layout_margin='@dimen/dp_16'
+    app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,110 +13,109 @@
         android:background="@drawable/bg_saldo_hold_item"
         android:padding="@dimen/dp_16">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_invoice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="INV/20161025/XVI/X/550697650"
-            android:textSize="@dimen/sp_12"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_6" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_fundHold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:text="Dana Tertahan"
-            android:textSize="@dimen/sp_12"
             app:layout_constraintStart_toStartOf="@id/tv_invoice"
-            app:layout_constraintTop_toBottomOf="@id/tv_invoice" />
+            app:layout_constraintTop_toBottomOf="@id/tv_invoice"
+            app:typographyType="body_3" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_valueFundhold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:text="Rp1.500.000"
-            android:textSize="@dimen/sp_12"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_invoice" />
+            app:layout_constraintTop_toBottomOf="@id/tv_invoice"
+            app:typographyType="heading_6" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_dateWithheld"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:text="Tanggal Ditahan"
-            android:textSize="@dimen/sp_12"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_fundHold" />
+            app:layout_constraintTop_toBottomOf="@id/tv_fundHold"
+            app:typographyType="body_3" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_valueDateWithheld"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:text="23 Okt 2019"
-            android:textSize="@dimen/sp_12"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_valueFundhold" />
+            app:layout_constraintTop_toBottomOf="@id/tv_valueFundhold"
+            app:typographyType="body_3" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_liquidOnDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:text="Akan Cair pada"
-            android:textSize="@dimen/sp_12"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_dateWithheld" />
+            app:layout_constraintTop_toBottomOf="@id/tv_dateWithheld"
+            app:typographyType="body_3" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_valueLiquidOnDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:text="Proses verifikasi selesai"
-            android:textSize="@dimen/sp_12"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_valueDateWithheld" />
+            app:layout_constraintTop_toBottomOf="@id/tv_valueDateWithheld"
+            app:typographyType="body_3" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
-            android:background="#f3f4f5"
+            android:background="@drawable/bg_hold_info_result"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="@id/tv_invoice"
             app:layout_constraintTop_toBottomOf="@id/tv_valueLiquidOnDate">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_8"
                 android:text="Alasan"
-                android:textSize="@dimen/sp_12" />
+                app:typographyType="body_3" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_reasonTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_8"
                 android:text="Perpindahan dana"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="bold" />
+                app:typographyType="heading_6" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_valueReason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_16"
                 android:text="Komisi Affiliate masuk dari Tokopedia ID Transaksi Affiliate 187830 "
-                android:textSize="@dimen/sp_12" />
+                app:typographyType="body_3" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

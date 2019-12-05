@@ -328,12 +328,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         });
 
         checkBalanceStatus.setOnClickListener(v -> {
-            try {
-                Intent intent = RouteManager.getIntent(context, ApplinkConst.INBOX_TICKET);
-                startActivity(intent);
-            } catch (Exception e) {
-
-            }
+            getFragmentManager().beginTransaction().add(new SaldoHoldInfoFragment(), "");
         });
 
         tickerMessageCloseButton.setOnClickListener(v -> tickerMessageRL.setVisibility(View.GONE));

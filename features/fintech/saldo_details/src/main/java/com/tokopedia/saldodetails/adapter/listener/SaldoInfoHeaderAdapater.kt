@@ -1,0 +1,3 @@
+package com.tokopedia.saldodetails.adapter.listener
+
+class SaldoInfoHeaderAdapater

@@ -14,20 +14,19 @@ import com.tokopedia.saldodetails.adapter.SaldoHoldInfoAdapter
 import com.tokopedia.saldodetails.contract.SaldoHoldInfoContract
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.presenter.SaldoHoldInfoPresenter
+import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.BuyerDataItem
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldDepositHistory
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SellerDataItem
+import kotlinx.android.synthetic.main.fragment_hold_info.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class SaldoHoldInfoFragment : BaseDaggerFragment(),SaldoHoldInfoContract.View {
-
-    lateinit var rvListOne: RecyclerView
-    lateinit var rvListTwo: RecyclerView
+class SaldoHoldInfoFragment : BaseDaggerFragment(), SaldoHoldInfoContract.View {
 
     @Inject
     lateinit var saldoInfoPresenter: SaldoHoldInfoPresenter
-    val saldoHoldInfoAdapter: SaldoHoldInfoAdapter by lazy { SaldoHoldInfoAdapter(ArrayList()) }
+    val saldoHoldInfoAdapter: SaldoHoldInfoAdapter by lazy { SaldoHoldInfoAdapter(ArrayList(), ArrayList()) }
 
     override fun getScreenName() = "SaldoHoldInfoFragment"
 
@@ -47,29 +46,36 @@ class SaldoHoldInfoFragment : BaseDaggerFragment(),SaldoHoldInfoContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_hold_info, container, false)
+        val view = inflater.inflate(R.layout.fragment_hold_info_new, container, false)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        rvListOne = view.findViewById(R.id.rv_list1)
-        rvListTwo = view.findViewById(R.id.rv_list2)
         initView()
     }
 
     fun initView() {
-        rvListOne.layoutManager = LinearLayoutManager(context)
-        rvListTwo.layoutManager = LinearLayoutManager(context)
-        rvListOne.adapter = saldoHoldInfoAdapter
-        rvListTwo.adapter = saldoHoldInfoAdapter
+        rv_list1.layoutManager = LinearLayoutManager(context)
+        rv_list1.adapter = saldoHoldInfoAdapter
     }
-
 
     override fun renderSaldoHoldInfo(saldoHoldDepositHistory: SaldoHoldDepositHistory?) {
-        saldoHoldInfoAdapter.list.clear()
-        saldoHoldInfoAdapter.list.addAll(saldoHoldDepositHistory?.sellerData as ArrayList<SellerDataItem>)
-        saldoHoldInfoAdapter.notifyDataSetChanged()
+
+        val headerList = ArrayList<String>(2)
+        val combinedList = ArrayList<Any>()
+        combinedList.addAll(headerList)
+        saldoHoldDepositHistory?.let {
+            combinedList.addAll(it.sellerData as ArrayList<SellerDataItem>)
+            combinedList.addAll(it.buyerData as ArrayList<BuyerDataItem>)
+        }
+        renderLists(combinedList)
     }
 
+    fun renderLists(combinedList: ArrayList<Any>) {
+        saldoHoldInfoAdapter.list.clear()
+        saldoHoldInfoAdapter.list.addAll(combinedList)
+        saldoHoldInfoAdapter.notifyDataSetChanged()
+
+    }
 }

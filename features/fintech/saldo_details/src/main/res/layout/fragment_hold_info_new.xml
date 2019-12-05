@@ -52,29 +52,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_totalSaldoHold" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_totalSaldoRefund"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_20"
-        android:text="Saldo Refund"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottom_sep1"
-        app:typographyType="heading_5" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_valueTotalSaldoRefund"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_40"
-        android:text="Rp3.000.000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottom_sep1"
-        app:typographyType="heading_5" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list1"
         android:layout_width="match_parent"
@@ -82,49 +59,8 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_20"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_totalSaldoRefund"
+        app:layout_constraintTop_toBottomOf="@+id/bottom_sep1"
         tool:layout="@layout/hold_balance_info_item" />
-
-    <View
-        android:id="@+id/bottom_sep2"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_20"
-        android:background="#f3f4f5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_list1" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_totalIncomeBalance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_20"
-        android:text="Saldo Penghasilan"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottom_sep2"
-        app:typographyType="heading_5" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_valueTotalIncomebalance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_40"
-        android:text="Rp1.000.000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottom_sep2"
-        app:typographyType="heading_5" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_20"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_totalIncomeBalance" />
 
     <View
         android:layout_width="match_parent"
