@@ -230,12 +230,12 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     private fun setUpData() {
         if (mSelectedFilter.isNotEmpty()) {
+            val filter = getSelectedFilter()
             for (element in mSelectedFilter.entries) {
-                val filter = getSelectedFilter()
                 filter[element.key] = element.value
-                applyFilterToSearchParameter(filter)
-                setSelectedFilter(filter)
             }
+            applyFilterToSearchParameter(filter)
+            setSelectedFilter(filter)
         }
         fetchProductData(getProductListParamMap(getPage()))
         productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
