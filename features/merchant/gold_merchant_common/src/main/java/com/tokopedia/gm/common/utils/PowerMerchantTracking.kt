@@ -119,7 +119,7 @@ class PowerMerchantTracking @Inject constructor() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
                 GMParamTracker.Category.PM_QUESTIONNAIRE,
-                GMParamTracker.Action.CLICK_FEATURES,
+                GMParamTracker.Action.CLICK_CANCELLATION_REASON,
                 GMParamTracker.Label.BACK_BUTTON
         )
     }
@@ -128,13 +128,13 @@ class PowerMerchantTracking @Inject constructor() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
                 GMParamTracker.Category.PM_QUESTIONNAIRE,
-                GMParamTracker.Action.CLICK_CANCELLATION_REASON,
+                GMParamTracker.Action.CLICK_FEATURES,
                 GMParamTracker.Label.BACK_BUTTON
         )
     }
 
     fun eventPMCancellationClickNextQuestionButtonFirstPage(rating: Int) {
-        val label = "${GMParamTracker.Label.NEXT}, $rating"
+        val label = "$rating, 1-5"
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
                 GMParamTracker.Category.PM_QUESTIONNAIRE,
@@ -143,12 +143,12 @@ class PowerMerchantTracking @Inject constructor() {
         )
     }
 
-    fun eventPMCancellationClickNextQuestionButtonMiddlePage() {
+    fun eventPMCancellationClickNextQuestionButtonMiddlePage(questionName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
                 GMParamTracker.Category.PM_QUESTIONNAIRE,
                 GMParamTracker.Action.CLICK_CANCELLATION_REASON,
-                GMParamTracker.Label.NEXT)
+                questionName)
     }
 
     fun eventPMCancellationClickOptionBackButtonFirstPage() {
@@ -156,7 +156,7 @@ class PowerMerchantTracking @Inject constructor() {
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
                 GMParamTracker.Category.PM_QUESTIONNAIRE,
                 GMParamTracker.Action.CLICK_RATING,
-                GMParamTracker.Label.OPTION_BACK_BUTTON
+                GMParamTracker.Label.BACK_BUTTON
         )
     }
 
@@ -165,7 +165,7 @@ class PowerMerchantTracking @Inject constructor() {
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
                 GMParamTracker.Category.PM_QUESTIONNAIRE,
                 GMParamTracker.Action.CLICK_CANCELLATION_REASON,
-                GMParamTracker.Label.OPTION_BACK_BUTTON
+                GMParamTracker.Label.BACK_BUTTON
         )
     }
 
@@ -174,7 +174,7 @@ class PowerMerchantTracking @Inject constructor() {
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
                 GMParamTracker.Category.PM_QUESTIONNAIRE,
                 GMParamTracker.Action.CLICK_FEATURES,
-                GMParamTracker.Label.OPTION_BACK_BUTTON
+                GMParamTracker.Label.BACK_BUTTON
         )
     }
 
