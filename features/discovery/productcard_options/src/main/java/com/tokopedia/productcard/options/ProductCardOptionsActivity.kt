@@ -5,11 +5,22 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.annotation.AnimRes
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_MODEL
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import kotlinx.android.synthetic.main.product_card_options_activity_layout.*
+import javax.inject.Inject
+import javax.inject.Named
 
 
 class ProductCardOptionsActivity : BaseSimpleActivity() {
+
+    @field:[Inject Named(PRODUCT_CARD_OPTIONS_VIEW_MODEL_FACTORY)]
+    lateinit var productCardOptionsViewModelFactory: ViewModelProvider.Factory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +39,33 @@ class ProductCardOptionsActivity : BaseSimpleActivity() {
 
     // setupStatusBar overriden as empty to disable status bar
     override fun setupStatusBar() { }
+
+    override fun setupFragment(savedInstance: Bundle?) {
+        injectDependencies()
+
+        setupViewModel()
+
+        super.setupFragment(savedInstance)
+    }
+
+    private fun injectDependencies() {
+        DaggerProductCardOptionsComponent
+                .builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .productCardOptionsViewModelFactoryModule(createProductCardOptionsViewModelFactoryModule())
+                .build()
+                .inject(this)
+    }
+
+    private fun createProductCardOptionsViewModelFactoryModule(): ProductCardOptionsViewModelFactoryModule {
+        val productCardOptionsModel = intent?.extras?.getParcelable<ProductCardOptionsModel>(PRODUCT_CARD_OPTIONS_MODEL)
+
+        return ProductCardOptionsViewModelFactoryModule(productCardOptionsModel)
+    }
+
+    private fun setupViewModel() {
+        ViewModelProviders.of(this, productCardOptionsViewModelFactory).get(ProductCardOptionsViewModel::class.java)
+    }
 
     override fun getNewFragment(): Fragment {
         return ProductCardOptionsFragment()

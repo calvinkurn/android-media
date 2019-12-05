@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.options
+package com.tokopedia.productcard.options.testutils
 
 internal inline fun <reified T> Any?.shouldBeInstanceOf() {
     if (this !is T) {
@@ -22,22 +22,12 @@ internal fun Any?.shouldBe(expectedValue: Any?, customFailMessage: String = "") 
     }
 }
 
-internal infix fun <T> Collection<T>?.shouldContain(predicate: (T) -> Boolean) {
+internal infix fun Collection<Any>?.shouldHaveSize(expectedSize: Int) {
     if (this == null) {
         throw AssertionError("Collection is null")
     }
 
-    if (!this.any(predicate)) {
-        throw AssertionError("Collection does not contain element with the given predicate")
-    }
-}
-
-internal infix fun <T> Collection<T>?.shouldNotContain(predicate: (T) -> Boolean) {
-    if (this == null) {
-        throw AssertionError("Collection is null")
-    }
-
-    if (this.any(predicate)) {
-        throw AssertionError("Collection contains element with the given predicate")
+    if (this.size != expectedSize) {
+        throw AssertionError("Collection size is ${this.size}, expected $expectedSize")
     }
 }

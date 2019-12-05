@@ -9,16 +9,54 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 
 internal class ProductCardOptionsViewModel(
         dispatcherProvider: DispatcherProvider,
-        productCardOptionsModel: ProductCardOptionsModel
+        private val productCardOptionsModel: ProductCardOptionsModel?
 ): BaseViewModel(dispatcherProvider.ui()) {
 
-    private val productCardOptionsItemList = MutableLiveData<List<Any>>()
+    private val productCardOptionsItemListLiveData = MutableLiveData<List<Any>>()
+    private val productCardOptionsItemList = mutableListOf<Any>()
+//    private val routeToSimilarProductsEventLiveData = MutableLiveData<Event<Boolean>>()
 
     init {
-        productCardOptionsItemList.postValue(listOf())
+        initSimilarSearchOption()
+        initWishlistOption()
+
+        postOptionListLiveData()
     }
 
-    fun getItemList(): LiveData<List<Any>> {
-        return productCardOptionsItemList
+    private fun initSimilarSearchOption() {
+        if (productCardOptionsModel?.hasSimilarSearch == true) {
+            productCardOptionsItemList.addOption(SEE_SIMILAR_PRODUCTS) { }
+            productCardOptionsItemList.addDivider()
+        }
     }
+
+    private fun MutableList<Any>.addOption(title: String, onClick: () -> Unit) {
+        this.add(ProductCardOptionsItemModel(title, onClick))
+    }
+
+    private fun MutableList<Any>.addDivider() {
+        this.add(ProductCardOptionsItemDivider())
+    }
+
+    private fun initWishlistOption() {
+        if (productCardOptionsModel?.hasWishlist == true) {
+            productCardOptionsItemList.addWishlistOptions(productCardOptionsModel.isWishlisted)
+        }
+    }
+
+    private fun MutableList<Any>.addWishlistOptions(isWishlisted: Boolean) {
+        if (!isWishlisted) {
+            this.addOption(SAVE_TO_WISHLIST) { }
+        } else {
+            this.addOption(DELETE_FROM_WISHLIST) { }
+        }
+    }
+
+    private fun postOptionListLiveData() {
+        productCardOptionsItemListLiveData.postValue(productCardOptionsItemList)
+    }
+
+    fun getOptionsListLiveData(): LiveData<List<Any>> = productCardOptionsItemListLiveData
+
+//    fun getRouteToSimilarSearchEventLiveData(): LiveData<Event<Boolean>> = routeToSimilarProductsEventLiveData
 }

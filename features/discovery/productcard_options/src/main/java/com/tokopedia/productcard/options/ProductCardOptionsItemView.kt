@@ -7,15 +7,16 @@ import kotlinx.android.synthetic.main.product_card_options_item_layout.view.*
 
 internal class ProductCardOptionsItemView(context: Context) : BaseCustomView(context) {
 
-    init {
+    constructor(context: Context, optionItem: ProductCardOptionsItemModel): this(context) {
         View.inflate(context, R.layout.product_card_options_item_layout, this)
+        setOption(optionItem)
     }
 
-    fun setOption(optionItem: ProductCardOptionsItemModel, onClick: (optionItem: ProductCardOptionsItemModel, view: View) -> Unit) {
+    private fun setOption(optionItem: ProductCardOptionsItemModel) {
         productCardOptionsItemTitle?.text = optionItem.title
 
         productCardOptionsItemTitle?.setOnClickListener {
-            onClick(optionItem, it)
+            optionItem.onClick()
         }
     }
 }

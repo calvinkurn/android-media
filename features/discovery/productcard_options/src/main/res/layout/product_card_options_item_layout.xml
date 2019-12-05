@@ -12,6 +12,8 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_16"
     android:textColor="@color/product_card_options_item_title"
+    android:clickable="true"
+    android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
     app:typographyType="body_2"
     app:typographyWeight="bold"
