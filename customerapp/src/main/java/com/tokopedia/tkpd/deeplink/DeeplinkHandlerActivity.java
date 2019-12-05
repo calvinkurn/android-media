@@ -415,17 +415,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         }
     }
 
-    @DeepLink({ApplinkConst.PROMO})
-    public static Intent getPromoIntent(Context context, Bundle bundle) {
-        String promoId = bundle.getString("promo_id", "");
-        String url = BerandaUrl.PROMO_URL;
-        if (!TextUtils.isEmpty(promoId)) {
-            url += promoId;
-        }
-        url += FLAG_APP;
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url);
-    }
-
     @DeepLink(ApplinkConst.BROWSER)
     public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
         String webUrl = extras.getString("url", TokopediaUrl.Companion.getInstance().getWEB()
