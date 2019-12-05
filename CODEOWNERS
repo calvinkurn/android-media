@@ -93,7 +93,7 @@
 /features/user/topchat/                         @tokopedia/minion-kevin
 /features/user/topchat_no_op/                   @tokopedia/minion-kevin
 /features/user/groupchat/                       @tokopedia/minion-kevin
-/features/user/profile/                         @tokopedia/minion-kevin
+/features/user/profilecompletion/               @tokopedia/minion-kevin
 /features/user/vote/                            @tokopedia/minion-kevin
 /features/user/otp/                             @tokopedia/minion-kevin
 /features/user/settingbank/                     @tokopedia/minion-kevin
