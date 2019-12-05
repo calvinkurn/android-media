@@ -26,6 +26,10 @@ data class SomListOrder (
                     @Expose
                     val orderId: String = "",
 
+                    @SerializedName("order_status_id")
+                    @Expose
+                    val orderStatusId: Int = -1,
+
                     @SerializedName("status")
                     @Expose
                     val status: String = "",
