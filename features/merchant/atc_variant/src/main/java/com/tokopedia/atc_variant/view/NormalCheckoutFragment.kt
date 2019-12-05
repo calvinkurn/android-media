@@ -6,9 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -912,7 +909,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     }
 
     private fun getInsuranceTitle(): String {
-        return insuranceViewModel.cartShopsList[0].shopItemsList[0].digitalProductList[0].productInfo.title
+        return insuranceViewModel.cartShopsList.firstOrNull()?.shopItemsList?.firstOrNull()?.digitalProductList?.firstOrNull()?.productInfo?.title ?: ""
     }
 
     private fun isErrorInInsurance(): Boolean {
