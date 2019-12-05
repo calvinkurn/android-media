@@ -7,12 +7,12 @@
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     android:layout_marginLeft="@dimen/dp_4"
-    android:layout_width="wrap_content"
+    android:layout_width="148dp"
     android:layout_height="wrap_content"
     tools:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="128dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
@@ -39,7 +39,7 @@
             android:textSize="@dimen/font_normal"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/kunjungi_toko"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="spread"
             tools:text="Hairdryer diskon hingga 50% Cek sekarang untuk kemilau rambut indahmu!" />

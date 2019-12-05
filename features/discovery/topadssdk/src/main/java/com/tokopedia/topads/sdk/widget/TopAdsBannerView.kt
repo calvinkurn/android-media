@@ -85,14 +85,14 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
             val mItemOffset = resources.getDimensionPixelOffset(R.dimen.dp_8)
-            list.addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                    if (parent.getChildAdapterPosition(view) == 0) {
-                        outRect.left = mItemOffset
-                    }
-                    outRect.right = mItemOffset
-                }
-            })
+//            list.addItemDecoration(object : RecyclerView.ItemDecoration() {
+//                override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+//                    if (parent.getChildAdapterPosition(view) == 0) {
+//                        outRect.left = mItemOffset
+//                    }
+//                    outRect.right = mItemOffset
+//                }
+//            })
             Glide.with(context).load(cpmData.cpm.cpmShop.imageShop.getsEcs()).into(shop_image)
             shop_image.addOnImpressionListener(cpmData.cpm.cpmShop.imageShop) {
                 impressionListener?.let {
