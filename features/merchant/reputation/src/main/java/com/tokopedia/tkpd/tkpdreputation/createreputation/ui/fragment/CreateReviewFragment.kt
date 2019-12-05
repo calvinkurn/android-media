@@ -407,12 +407,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     private fun generateAnonymousText(): String {
         if (reviewUserName.isNotEmpty()) {
-            val firstName = reviewUserName.substringBefore(" ")
-
+            val firstChar = reviewUserName.firstOrNull() ?: ""
+            val lastChar = reviewUserName.lastOrNull() ?: ""
             return getString(
                     R.string.anonymous_review_prefix,
-                    firstName.replaceRange(1, firstName.length - 1, "***")
-            )
+                    "$firstChar***$lastChar")
         }
 
         return ""
