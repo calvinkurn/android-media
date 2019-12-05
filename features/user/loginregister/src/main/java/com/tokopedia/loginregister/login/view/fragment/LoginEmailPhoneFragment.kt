@@ -508,14 +508,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
             override fun onSuccessGetFacebookEmailCredential(accessToken: AccessToken, email: String) {
                 context?.run {
-                    if(email.isNotEmpty())
+                    if (email.isNotEmpty())
                         presenter.loginFacebook(this, accessToken, email)
                 }
             }
 
             override fun onSuccessGetFacebookPhoneCredential(accessToken: AccessToken, phone: String) {
                 context?.run {
-                    if(phone.isNotEmpty())
+                    if (phone.isNotEmpty())
                         presenter.loginFacebookPhone(this, accessToken, phone)
                 }
             }
@@ -922,12 +922,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    override fun onSuccessLoginFacebook(email: String): (LoginTokenPojo) -> Unit{
-        return{
-            presenter.getUserInfo()
-        }
-    }
-
     override fun onErrorLoginFacebook(email: String): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
@@ -937,9 +931,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onSuccessLoginFacebookPhone(): (LoginTokenPojo) -> Unit {
         return {
-            if(it.loginToken.action == 1){
+            if (it.loginToken.action == 1) {
                 goToChooseAccountPageFacebook(it.loginToken.accessToken)
-            }else{
+            } else {
                 presenter.getUserInfo()
             }
         }
@@ -1062,15 +1056,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 }
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
                     && resultCode == Activity.RESULT_OK) {
-                if(data != null){
+                if (data != null) {
                     data.extras?.let {
-                        if(it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)){
+                        if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
                             onGoToSecurityQuestion("")
-                        }else{
+                        } else {
                             checkStatusPin()
                         }
                     }
-                }else{
+                } else {
                     checkStatusPin()
                 }
 
@@ -1082,7 +1076,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 onSuccessLogin()
             } else if (requestCode == REQUEST_ADD_PIN_AFTER_SQ) {
                 onSuccessLogin()
-            } else if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK){
+            } else if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else {
                 dismissLoadingLogin()

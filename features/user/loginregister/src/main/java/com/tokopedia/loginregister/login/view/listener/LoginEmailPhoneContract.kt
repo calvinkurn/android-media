@@ -54,8 +54,6 @@ interface LoginEmailPhoneContract {
 
         fun onErrorReloginAfterSQ(validateToken: String): Function1<Throwable, Unit>
 
-        fun onSuccessLoginFacebook(email: String): Function1<LoginTokenPojo, Unit>
-
         fun onErrorLoginFacebook(email: String): Function1<Throwable, Unit>
 
         fun onSuccessLoginFacebookPhone(): Function1<LoginTokenPojo, Unit>

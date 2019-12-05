@@ -2,7 +2,9 @@ package com.tokopedia.loginregister.loginthirdparty.facebook;
 
 import android.content.Context;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
+
 import android.text.TextUtils;
 
 import com.facebook.AccessToken;
@@ -100,17 +102,17 @@ public class GetFacebookCredentialUseCase {
         GraphRequest request = GraphRequest.newMeRequest(
                 accessToken,
                 ((object, response) -> {
-                    if(response.getError() == null && object != null){
-                        Gson gson=new Gson();
+                    if (response.getError() == null && object != null) {
+                        Gson gson = new Gson();
                         FacebookRequestData data = gson.fromJson(object.toString(), FacebookRequestData.class);
 
-                        if(data != null){
-                            if(!data.getEmail().isEmpty()){
+                        if (data != null) {
+                            if (!data.getEmail().isEmpty()) {
                                 subscriber.onSuccessEmail(accessToken, data.getEmail());
-                            }else if(!data.getPhone().isEmpty()){
+                            } else if (!data.getPhone().isEmpty()) {
                                 subscriber.onSuccessPhone(accessToken,
                                         PhoneNumberUtils.INSTANCE.transform(data.getPhone()));
-                            }else{
+                            } else {
                                 LoginManager.getInstance().logOut();
                                 subscriber.onError(new MessageErrorException(
                                         context.getString(R.string.facebook_error_not_authorized),
@@ -120,7 +122,7 @@ public class GetFacebookCredentialUseCase {
                         }
                     }
                 })
-                );
+        );
         Bundle parameters = new Bundle();
         parameters.putString("fields", "email,verified_mobile_phone");
         request.setParameters(parameters);
