@@ -58,7 +58,7 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_OTP_CODE = "otp_code"
     @JvmField
-    val PARAM_IS_FROM_LOGIN = "is_from_login"
+    val PARAM_IS_SKIP_OTP = "is_skip_otp"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -132,9 +132,11 @@ object ApplinkConstInternalGlobal {
     // ChangeNameActivity
     // tokopedia-android-internal://global/change-name
     @JvmField
-    val CHANGE_NAME = "$INTERNAL_GLOBAL/change-name?oldName={oldName}"
+    val CHANGE_NAME = "$INTERNAL_GLOBAL/change-name?oldName={oldName}&chances={chances}"
     @JvmField
     val PARAM_FULL_NAME = "oldName"
+    @JvmField
+    val PARAM_CHANCE_CHANGE_NAME = "chances"
 
     // AddEmailActivity
     // tokopedia-android-internal://global/add-email

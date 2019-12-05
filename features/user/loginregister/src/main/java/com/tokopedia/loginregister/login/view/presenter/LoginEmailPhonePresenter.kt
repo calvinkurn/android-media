@@ -1,8 +1,8 @@
 package com.tokopedia.loginregister.login.view.presenter
 
 import android.content.Context
-import androidx.fragment.app.Fragment
 import android.text.TextUtils
+import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
@@ -12,13 +12,12 @@ import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
-import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
+import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
@@ -60,45 +59,49 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     }
 
     override fun discoverLogin(context: Context) {
-        discoverUseCase.execute(RequestParams.EMPTY, object : Subscriber<DiscoverViewModel>() {
-            override fun onCompleted() {
+        view?.let { view ->
+            discoverUseCase.execute(RequestParams.EMPTY, object : Subscriber<DiscoverViewModel>() {
+                override fun onCompleted() {
 
-            }
-
-            override fun onError(e: Throwable) {
-                view.stopTrace()
-                view.dismissLoadingDiscover()
-                ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
-                    override fun onForbidden() {
-                        view.onGoToForbiddenPage()
-                    }
-
-                    override fun onError(errorMessage: String) {
-                        view.onErrorDiscoverLogin(errorMessage)
-                    }
-                }, e, context)
-            }
-
-            override fun onNext(discoverViewModel: DiscoverViewModel) {
-                view.stopTrace()
-                view.dismissLoadingDiscover()
-                if (!discoverViewModel.providers.isEmpty()) {
-                    view.onSuccessDiscoverLogin(discoverViewModel.providers)
-                } else {
-                    view.onErrorDiscoverLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
-                            ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
-                            context))
                 }
-            }
-        })
+
+                override fun onError(e: Throwable) {
+                    view.stopTrace()
+                    view.dismissLoadingDiscover()
+                    ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
+                        override fun onForbidden() {
+                            view.onGoToForbiddenPage()
+                        }
+
+                        override fun onError(errorMessage: String) {
+                            view.onErrorDiscoverLogin(errorMessage)
+                        }
+                    }, e, context)
+                }
+
+                override fun onNext(discoverViewModel: DiscoverViewModel) {
+                    view.stopTrace()
+                    view.dismissLoadingDiscover()
+                    if (!discoverViewModel.providers.isEmpty()) {
+                        view.onSuccessDiscoverLogin(discoverViewModel.providers)
+                    } else {
+                        view.onErrorDiscoverLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
+                                ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
+                                context))
+                    }
+                }
+            })
+        }
     }
 
     override fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
-        getFacebookCredentialUseCase.execute(GetFacebookCredentialUseCase.getParam(
-                fragment,
-                callbackManager),
-                GetFacebookCredentialSubscriber(view.getFacebookCredentialListener()))
+        view?.let { view ->
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
+            getFacebookCredentialUseCase.execute(GetFacebookCredentialUseCase.getParam(
+                    fragment,
+                    callbackManager),
+                    GetFacebookCredentialSubscriber(view.getFacebookCredentialListener()))
+        }
     }
 
     /**
@@ -112,15 +115,17 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
      * Step 6 : Proceed to home
      */
     override fun loginFacebook(context: Context, accessToken: AccessToken, email: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
-        view.showLoadingLogin()
-        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
-                accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
-                LoginTokenSubscriber(userSession,
-                        view.onSuccessLoginFacebook(email),
-                        view.onErrorLoginFacebook(email),
-                        view.onGoToActivationPage(email),
-                        view.onGoToSecurityQuestion(email)))
+        view?.let { view ->
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
+            view.showLoadingLogin()
+            loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
+                    accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
+                    LoginTokenSubscriber(userSession,
+                            { getUserInfo() },
+                            view.onErrorLoginFacebook(email),
+                            view.onGoToActivationPage(email),
+                            view.onGoToSecurityQuestion(email)))
+        }
     }
 
     override fun loginFacebookPhone(context: Context, accessToken: AccessToken, phone: String){
@@ -146,16 +151,18 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
      * Step 6 : Proceed to home
      */
     override fun loginGoogle(accessToken: String, email: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_GOOGLE
+        view?.let { view ->
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_GOOGLE
 
-        view.showLoadingLogin()
-        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
-                accessToken, LoginTokenUseCase.SOCIAL_TYPE_GOOGLE),
-                LoginTokenSubscriber(userSession,
-                        { getUserInfo() },
-                        view.onErrorLoginGoogle(email),
-                        view.onGoToActivationPage(email),
-                        view.onGoToSecurityQuestion(email)))
+            view.showLoadingLogin()
+            loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
+                    accessToken, LoginTokenUseCase.SOCIAL_TYPE_GOOGLE),
+                    LoginTokenSubscriber(userSession,
+                            { getUserInfo() },
+                            view.onErrorLoginGoogle(email),
+                            view.onGoToActivationPage(email),
+                            view.onGoToSecurityQuestion(email)))
+        }
     }
 
     /**
@@ -167,77 +174,94 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
      * Step 4 : If name contains blocked word, go to add name
      * Step 5 : Proceed to home
      */
-    override fun loginEmail(email: String, password: String, isSmartLock : Boolean) {
-        if(isSmartLock){
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
-        }else{
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
-        }
+    override fun loginEmail(email: String, password: String, isSmartLock: Boolean) {
+        view?.let { view ->
+            if (isSmartLock) {
+                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
+            } else {
+                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
+            }
 
-        view.resetError()
-        if (isValid(email, password)) {
-            view.showLoadingLogin()
-            loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
-                    email, password), LoginTokenSubscriber(userSession,
-                    {
-                        view.setSmartLock()
-                        getUserInfo()
-                    },
-                    view.onErrorLoginEmail(email),
-                    view.onGoToActivationPage(email),
-                    view.onGoToSecurityQuestion(email)))
-        } else {
-            viewEmailPhone.stopTrace()
+            view.resetError()
+            if (isValid(email, password)) {
+                view.showLoadingLogin()
+                loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
+                        email, password), LoginTokenSubscriber(userSession,
+                        {
+                            view.setSmartLock()
+                            getUserInfo()
+                        },
+                        view.onErrorLoginEmail(email),
+                        view.onGoToActivationPage(email),
+                        view.onGoToSecurityQuestion(email)))
+            } else {
+                viewEmailPhone.stopTrace()
+            }
         }
     }
 
     override fun reloginAfterSQ(validateToken: String) {
-        loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
-                userSession, validateToken), LoginTokenSubscriber(userSession,
-                { getUserInfo() },
-                view.onErrorReloginAfterSQ(validateToken),
-                view.onGoToActivationPageAfterRelogin(),
-                view.onGoToSecurityQuestionAfterRelogin()))
+        view?.let { view ->
+            loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
+                    userSession, validateToken), LoginTokenSubscriber(userSession,
+                    { getUserInfoAddPin() },
+                    view.onErrorReloginAfterSQ(validateToken),
+                    view.onGoToActivationPageAfterRelogin(),
+                    view.onGoToSecurityQuestionAfterRelogin()))
+        }
     }
 
     private fun isValid(email: String, password: String): Boolean {
+
         var isValid = true
 
-        if (TextUtils.isEmpty(password)) {
-            view.showErrorPassword(R.string.error_field_password_required)
-            isValid = false
-        } else if (password.length < 4) {
-            view.showErrorPassword(R.string.error_incorrect_password)
-            isValid = false
-        }
+        view?.let { view ->
+            if (TextUtils.isEmpty(password)) {
+                view.showErrorPassword(R.string.error_field_password_required)
+                isValid = false
+            } else if (password.length < 4) {
+                view.showErrorPassword(R.string.error_incorrect_password)
+                isValid = false
+            }
 
-        if (TextUtils.isEmpty(email)) {
-            view.showErrorEmail(R.string.error_field_required)
-            isValid = false
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            view.showErrorEmail(R.string.error_invalid_email)
-            isValid = false
+            if (TextUtils.isEmpty(email)) {
+                view.showErrorEmail(R.string.error_field_required)
+                isValid = false
+            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                view.showErrorEmail(R.string.error_invalid_email)
+                isValid = false
+            }
         }
 
         return isValid
     }
 
     override fun getUserInfo() {
-        getProfileUseCase.execute(GetProfileSubscriber(userSession,
-                view.onSuccessGetUserInfo(),
-                view.onErrorGetUserInfo()))
+        view?.let { view ->
+            getProfileUseCase.execute(GetProfileSubscriber(userSession,
+                    view.onSuccessGetUserInfo(),
+                    view.onErrorGetUserInfo()))
+        }
     }
 
-    override fun getTickerInfo(){
+    override fun getUserInfoAddPin() {
+        view?.let { view ->
+            getProfileUseCase.execute(GetProfileSubscriber(userSession,
+                    view.onSuccessGetUserInfoAddPin(),
+                    view.onErrorGetUserInfo()))
+        }
+    }
+
+    override fun getTickerInfo() {
         tickerInfoUseCase.execute(TickerInfoUseCase.createRequestParam(TickerInfoUseCase.LOGIN_PAGE),
                 TickerInfoLoginSubscriber(viewEmailPhone))
     }
 
-    override fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit){
+    override fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit) {
         statusPinUseCase.executeCoroutines(onSuccess, onError)
     }
 
-    override fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit){
+    override fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit) {
         registerCheckUseCase.apply {
             setRequestParams(this.getRequestParams(id))
             execute({

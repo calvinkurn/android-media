@@ -323,7 +323,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         bottomSheet = BottomSheetUnify()
         bottomSheet.setTitle(getString(R.string.choose_social_media))
         bottomSheet.setChild(viewBottomSheetDialog)
-        bottomSheet.setCloseClickListener{
+        bottomSheet.setCloseClickListener {
             analytics.eventClickCloseSocmedButton()
             onDismissBottomSheet()
         }
@@ -423,7 +423,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
 
-
     override fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemViewModel>) {
 
         val layoutParams = LinearLayout.LayoutParams(
@@ -435,12 +434,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             val tv = LoginTextView(activity, MethodChecker.getColor(context, R.color.white))
             tv.tag = it.id
             tv.setText(it.name)
-            if(userSession.name.isNotEmpty()){
+            if (userSession.name.isNotEmpty()) {
                 var name = userSession.name
-                if(name.split("\\s".toRegex()).size > 1)
+                if (name.split("\\s".toRegex()).size > 1)
                     name = name.substring(0, name.indexOf(" "))
                 if ((it.id.equals(FACEBOOK, ignoreCase = true) &&
-                        userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
+                                userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
                         (it.id.equals(GPLUS, ignoreCase = true) &&
                                 userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
                     tv.setText("${it.name} ${getString(R.string.socmed_account_as)} $name")
@@ -493,7 +492,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             if (bottomSheet != null) {
                 bottomSheet.dismiss()
             }
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+        }
     }
 
     override fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener {
@@ -597,7 +597,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
     }
 
-    private fun installDynamicFeatureAtLogin(){
+    private fun installDynamicFeatureAtLogin() {
         // for POC - start install when login
         activity?.run {
             val remoteConfig = FirebaseRemoteConfigImpl(this)
@@ -842,12 +842,21 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
         return {
 
-            val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
-
             if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
                 onGoToChangeName()
             } else {
                 onSuccessLogin()
+            }
+        }
+    }
+
+    override fun onSuccessGetUserInfoAddPin(): (ProfilePojo) -> Unit {
+        return {
+
+            if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
+                onGoToChangeName()
+            } else {
+                checkStatusPinAfterSQ()
             }
         }
     }
@@ -1035,6 +1044,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 val uuid = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                 val msisdn = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                 goToAddNameFromRegisterPhone(uuid, msisdn)
+            } else if (requestCode == REQUEST_ADD_NAME) {
+                checkStatusPinAfterSQ()
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 isAutoLogin = true
                 showLoading(true)
@@ -1068,6 +1079,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 analytics.trackLoginPhoneNumberFailed(getString(R.string.error_login_user_cancel_login_phone))
                 dismissLoadingLogin()
             } else if (requestCode == REQUEST_ADD_PIN) {
+                onSuccessLogin()
+            } else if (requestCode == REQUEST_ADD_PIN_AFTER_SQ) {
                 onSuccessLogin()
             } else if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK){
                 onSuccessLogin()
@@ -1218,15 +1231,19 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    private fun checkStatusPin(){
+    private fun checkStatusPin() {
         presenter.checkStatusPin(onSuccessCheckStatusPin(), onErrorCheckStatusPin())
+    }
+
+    private fun checkStatusPinAfterSQ() {
+        presenter.checkStatusPin(onSuccessCheckStatusPinAfterSQ(), onErrorCheckStatusPin())
     }
 
     private fun onErrorCheckStatusPin(): (Throwable) -> Unit {
         return {
             it.printStackTrace()
             dismissLoadingLogin()
-            view?.run{
+            view?.run {
                 val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
                 Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
             }
@@ -1236,18 +1253,31 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun onSuccessCheckStatusPin(): (StatusPinData) -> Unit {
         return {
             dismissLoadingLogin()
-            if(!it.isRegistered && isFromAccountPage()){
+            if (!it.isRegistered && isFromAccountPage()) {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_LOGIN, true)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
                 startActivityForResult(intent, REQUEST_ADD_PIN)
-            }else{
+            } else {
                 onSuccessLogin()
             }
         }
     }
 
-    private fun registerCheck(id: String){
-        if(id.isEmpty()) onErrorEmptyEmailPhone()
+    private fun onSuccessCheckStatusPinAfterSQ(): (StatusPinData) -> Unit {
+        return {
+            dismissLoadingLogin()
+            if (!it.isRegistered && isFromAccountPage()) {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+                startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_SQ)
+            } else {
+                onSuccessLogin()
+            }
+        }
+    }
+
+    private fun registerCheck(id: String) {
+        if (id.isEmpty()) onErrorEmptyEmailPhone()
         else presenter.registerCheck(id, onSuccessRegisterCheck(), onErrorRegisterCheck())
     }
 
@@ -1272,9 +1302,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
             if (TextUtils.equals(it.registerType, EMAIL_TYPE)) {
                 if (it.isExist) {
-                    if(!it.isPending){
+                    if (!it.isPending) {
                         onEmailExist(it.view)
-                    }else{
+                    } else {
                         showNotRegisteredEmailDialog(it.view, true)
                     }
                 } else {
@@ -1329,6 +1359,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         const val REQUEST_LOGIN_GOOGLE = 116
         const val REQUEST_ADD_PIN = 117
         const val REQUEST_COTP_PHONE_VERIFICATION = 118
+        const val REQUEST_ADD_PIN_AFTER_SQ = 119
+        private val REQUEST_OTP_VALIDATE = 120
+        private val REQUEST_PENDING_OTP_VALIDATE = 121
 
         private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"
@@ -1339,6 +1372,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         private const val SOURCE_ACCOUNT = "account"
 
         private const val FACEBOOK_LOGIN_TYPE = "fb"
+
+        const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()
