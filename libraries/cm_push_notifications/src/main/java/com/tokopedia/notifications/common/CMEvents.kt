@@ -31,6 +31,7 @@ object IrisAnalyticsEvents {
     const val PUSH_RECEIVED = "pushReceived"
     const val PUSH_CLICKED = "pushClicked"
     const val PUSH_DISMISSED = "pushDismissed"
+    const val PUSH_DELETED = "pushDeleted"
     const val INAPP_RECEIVED = "inappReceived"
     const val INAPP_CLICKED = "inappClicked"
     const val INAPP_DISMISSED = "inappDismissed"

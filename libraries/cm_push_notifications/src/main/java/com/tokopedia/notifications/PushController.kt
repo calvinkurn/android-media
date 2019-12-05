@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.IrisAnalyticsEvents
 import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
@@ -46,8 +47,10 @@ class PushController(val context: Context) : CoroutineScope {
     private suspend fun onLivePushPayloadReceived(baseNotificationModel: BaseNotificationModel) {
 
         var updatedBaseNotificationModel: BaseNotificationModel? = null
-        if (baseNotificationModel.type == CMConstant.NotificationType.DELETE_NOTIFICATION)
+        if (baseNotificationModel.type == CMConstant.NotificationType.DELETE_NOTIFICATION) {
             baseNotificationModel.status = NotificationStatus.COMPLETED
+            createAndPostNotification(baseNotificationModel)
+        }
         else if (baseNotificationModel.startTime == 0L
                 || baseNotificationModel.endTime > System.currentTimeMillis()) {
 
@@ -70,11 +73,13 @@ class PushController(val context: Context) : CoroutineScope {
     private suspend fun onOfflinePushPayloadReceived(baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.type == CMConstant.NotificationType.DELETE_NOTIFICATION) {
             baseNotificationModel.status = NotificationStatus.DELETE
+            IrisAnalyticsEvents.sendPushEvent(context, IrisAnalyticsEvents.PUSH_DELETED, baseNotificationModel)
             if (isOfflineNotificationActive(baseNotificationModel.notificationId)) {
                 cancelOfflineNotification(baseNotificationModel)
                 baseNotificationModel.status = NotificationStatus.COMPLETED
-                PushRepository.getInstance(context).pushDataStore.insertNotification(baseNotificationModel)
             }
+            PushRepository.getInstance(context).pushDataStore.insertNotification(baseNotificationModel)
+
         } else {
             baseNotificationModel.status = NotificationStatus.PENDING
             val updatedBaseNotificationModel = ImageDownloadManager.downloadImages(context, baseNotificationModel)
@@ -115,6 +120,9 @@ class PushController(val context: Context) : CoroutineScope {
                 notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
             }
         } catch (e: Exception) {
+            Log.d(
+                    "PushController", e.message
+            )
         }
     }
 

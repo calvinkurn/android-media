@@ -48,8 +48,13 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                     expandedView.setOnClickPendingIntent(R.id.img_big,
                             createMainPendingIntent(baseNotificationModel, requestCode))
                     expandedView.setViewVisibility(R.id.img_big, View.VISIBLE)
-                    expandedView.setImageViewBitmap(R.id.img_big,
-                            CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality))
+                    baseNotificationModel.media?.mediumQuality?.let {mq ->
+                        if (mq.startsWith("http") || mq.startsWith("www"))
+                            expandedView.setImageViewBitmap(R.id.img_big,
+                                    CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality))
+                        else expandedView.setImageViewBitmap(R.id.img_big,
+                                getBitmap(baseNotificationModel.media?.mediumQuality))
+                    }
                     baseNotificationModel.actionButton.isNotEmpty().let { isNonEmpty ->
                         if (isNonEmpty)
                             expandedView.setViewVisibility(R.id.layout_collapsed, View.GONE)
@@ -68,9 +73,10 @@ internal class ActionNotification internal constructor(context: Context, baseNot
     }
 
     private fun setCollapseData(remoteView: RemoteViews, baseNotificationModel: BaseNotificationModel, isCollapsed: Boolean) {
-        if (isCollapsed) {
+        if (isCollapsed || (!isCollapsed && (baseNotificationModel.media == null || baseNotificationModel.media?.mediumQuality == null
+                        || baseNotificationModel.media?.mediumQuality!!.isBlank()))) {
             when {
-                TextUtils.isEmpty(baseNotificationModel.icon) -> {
+                !TextUtils.isEmpty(baseNotificationModel.icon) -> {
                     val iconBitmap = getBitmap(baseNotificationModel.icon)
                     remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, iconBitmap)
                 }
