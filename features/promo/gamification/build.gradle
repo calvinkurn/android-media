@@ -57,7 +57,7 @@ dependencies {
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
