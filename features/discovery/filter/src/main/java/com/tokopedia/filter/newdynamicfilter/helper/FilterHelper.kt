@@ -34,7 +34,7 @@ object FilterHelper {
     }
 
     private fun findInRootCategoryList(categoryFilter: Filter, categoryId: String): CategoryFilterModel? {
-        val rootCategoryList = categoryFilter.filterOptions
+        val rootCategoryList = categoryFilter.options
 
         for (rootCategory in rootCategoryList) {
             if (categoryId.equals(rootCategory.value)) {
@@ -91,7 +91,7 @@ object FilterHelper {
         val iterator = filterList.iterator() as MutableIterator
         while (iterator.hasNext()) {
             val filter = iterator.next()
-            if (filter.getOptions().isEmpty() && !filter.isSeparator) {
+            if (filter.options.isEmpty() && !filter.isSeparator) {
                 iterator.remove()
             }
         }
@@ -100,7 +100,7 @@ object FilterHelper {
     private fun mergeSizeFilterOptionsWithSameValue(filterList: List<Filter>) {
         val sizeFilter = getSizeFilter(filterList) ?: return
 
-        val sizeFilterOptions = sizeFilter.filterOptions
+        val sizeFilterOptions = sizeFilter.options
         val iterator = sizeFilterOptions.iterator() as MutableIterator
         val optionMap = hashMapOf<String, Option>()
 
@@ -136,7 +136,7 @@ object FilterHelper {
     private fun removeBrandFilterOptionsWithSameValue(filterList: List<Filter>) {
         val brandFilter = getBrandFilter(filterList) ?: return
 
-        val brandFilterOptions = brandFilter.filterOptions
+        val brandFilterOptions = brandFilter.options
         val iterator = brandFilterOptions.iterator() as MutableIterator
         val optionMap = hashMapOf<String, Option>()
 
@@ -160,7 +160,7 @@ object FilterHelper {
 
     private fun removeValueFromOptionWithInputTypeTextBox(filterList: List<Filter>) {
         for (filter in filterList) {
-            for (option in filter.filterOptions) {
+            for (option in filter.options) {
                 if (option.inputType.equals(Option.INPUT_TYPE_TEXTBOX)) {
                     option.value = ""
                 }

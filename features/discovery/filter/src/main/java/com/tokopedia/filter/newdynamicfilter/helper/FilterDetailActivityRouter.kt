@@ -29,7 +29,7 @@ object FilterDetailActivityRouter {
             DynamicFilterColorActivity
                     .moveTo(activity,
                             filter.title,
-                            filter.filterOptions,
+                            filter.options,
                             filter.search.searchable == 1,
                             filter.search.placeholder, isUsingTracking, trackingData)
 
@@ -37,7 +37,7 @@ object FilterDetailActivityRouter {
             DynamicFilterOfferingActivity
                     .moveTo(activity,
                             filter.title,
-                            filter.filterOptions,
+                            filter.options,
                             filter.search.searchable == 1,
                             filter.search.placeholder, isUsingTracking, trackingData)
 
@@ -45,7 +45,7 @@ object FilterDetailActivityRouter {
             DynamicFilterRatingActivity
                     .moveTo(activity,
                             filter.title,
-                            filter.filterOptions,
+                            filter.options,
                             filter.search.searchable == 1,
                             filter.search.placeholder, isUsingTracking, trackingData)
 
@@ -53,7 +53,7 @@ object FilterDetailActivityRouter {
             DynamicFilterDetailBrandActivity
                     .moveTo(activity,
                             filter.title,
-                            filter.filterOptions,
+                            filter.options,
                             filter.search.searchable == 1,
                             filter.search.placeholder, isUsingTracking, trackingData)
 
@@ -63,7 +63,7 @@ object FilterDetailActivityRouter {
             DynamicFilterDetailGeneralActivity
                     .moveTo(activity,
                             filter.title,
-                            filter.filterOptions,
+                            filter.options,
                             filter.search.searchable == 1,
                             filter.search.placeholder, isUsingTracking, trackingData)
         }
@@ -74,7 +74,7 @@ object FilterDetailActivityRouter {
                                          isUsingTracking: Boolean, trackingData: FilterTrackingData?) {
         Observable.create(object : Observable.OnSubscribe<Boolean> {
             override fun call(subscriber: Subscriber<in Boolean>) {
-                FilterDbHelper.storeLocationFilterOptions(activity, filter.getOptions())
+                FilterDbHelper.storeLocationFilterOptions(activity, filter.options)
                 subscriber.onNext(true)
             }
         }).subscribeOn(Schedulers.newThread())
@@ -110,7 +110,7 @@ object FilterDetailActivityRouter {
                                trackingData: FilterTrackingData?) {
         DynamicFilterCategoryActivity
                 .moveTo(activity,
-                        filter.filterOptions,
+                        filter.options,
                         defaultCategoryRootId,
                         defaultCategoryId,
                         isUsingTracking,
