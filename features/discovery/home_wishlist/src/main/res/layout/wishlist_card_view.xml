@@ -389,7 +389,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="buttonWishlist,imageFreeOngkirPromo,textViewShopName,cardViewImageProduct,linearLayoutShopBadges,linearLayoutImageRating,labelCredibility,labelDiscount,textViewPrice,labelOffers,labelPromo,textViewShopLocation,textViewProductName,textViewSlashedPrice,textViewReviewCount" />
+            app:constraint_referenced_ids="textViewAddToCart,textViewShopName,imageTopAds,labelDiscount,labelOffers,textViewSlashedPrice,deleteAction,buttonWishlist,labelPromo,textViewProductName,cardViewImageProduct,textViewPrice,textViewReviewCount,labelCredibility,textViewShopLocation,linearLayoutShopBadges,linearLayoutImageRating,imageFreeOngkirPromo"
+            tools:layout_editor_absoluteY="184dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

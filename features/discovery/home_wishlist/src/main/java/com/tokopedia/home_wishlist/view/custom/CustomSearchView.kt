@@ -127,13 +127,13 @@ class CustomSearchView : FrameLayout{
     }
 
     private val searchImageViewResourceId: Int
-        get() = com.tokopedia.design.R.id.image_view_search
+        get() = R.id.image_view_search
 
     private val searchTextViewResourceId: Int
-        get() = com.tokopedia.design.R.id.edit_text_search
+        get() = R.id.edit_text_search
 
     private val closeImageButtonResourceId: Int
-        get() = com.tokopedia.design.R.id.image_button_close
+        get() = R.id.image_button_close
 
     fun hideKeyboard() {
         searchTextView?.clearFocus()
