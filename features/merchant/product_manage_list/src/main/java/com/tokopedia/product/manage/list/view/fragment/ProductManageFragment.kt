@@ -750,7 +750,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
         bottomSheetBuilder.addItem(R.id.edit_product_menu, R.string.title_edit, R.drawable.ic_menu_edit_product)
         bottomSheetBuilder.addItem(R.id.duplicat_product_menu, R.string.product_manage_title_duplicate_product_menu, R.drawable.ic_menu_duplicate)
-        bottomSheetBuilder.addItem(R.id.delete_product_menu, R.string.label_delete_colored, R.drawable.ic_menu_delete, ContextCompat.getColor(context, R.color.product_manage_menu_delete_color))
+        bottomSheetBuilder.addItem(R.id.delete_product_menu, R.string.product_manage_menu_delete_product, R.drawable.ic_menu_delete, ContextCompat.getColor(context, R.color.product_manage_menu_delete_color))
         //If shop is power merchant or official store, shop owner can add or remove featured product
         if (productManagePresenter.isPowerMerchant() || isOfficialStore) {
             //If the product is a featured product, show remove option. Show add option when the product is not.

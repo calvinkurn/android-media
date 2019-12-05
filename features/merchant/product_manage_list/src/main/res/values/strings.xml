@@ -19,6 +19,7 @@
     <string name="product_manage_menu_set_promo_ads">Iklan TopAds</string>
     <string name="product_manage_menu_set_featured_product">Atur Produk Unggulan</string>
     <string name="product_manage_menu_add_featured_product">Jadikan Produk Unggulan</string>
+    <string name="product_manage_menu_delete_product">Hapus</string>
     <string name="product_manage_menu_remove_featured_product">Hapus dari Produk Unggulan</string>
     <string name="product_manage_filter_menu_etalase_all">Semua Produk</string>
     <string name="product_manage_filter_menu_category_all">Semua Kategori</string>

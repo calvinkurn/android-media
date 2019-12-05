@@ -9,7 +9,6 @@
     <string name="label_save">Simpan</string>
     <string name="label_add">Tambah</string>
     <string name="label_delete">Delete</string>
-    <string name="label_delete_colored"><font color="#ef144a">Hapus</font></string>
     <string name="label_cancel">Batal</string>
     <string name="label_edit">Ubah</string>
     <string name="label_choose">Pilih</string>
