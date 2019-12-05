@@ -9,6 +9,9 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.discovery.common.EventObserver
+import com.tokopedia.discovery.common.manager.startSimilarSearch
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import kotlinx.android.synthetic.main.product_card_options_fragment_layout.*
 
 
@@ -36,6 +39,12 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     }
 
     private fun observeViewModelData() {
+        observeOptionListLiveData()
+        observeRouteToSimilarSearchEventLiveData()
+        observeFinishProductCardOoptionsEventLiveData()
+    }
+
+    private fun observeOptionListLiveData() {
         productCardOptionsViewModel?.getOptionsListLiveData()?.observe(viewLifecycleOwner, Observer {
             loadOptions(it)
         })
@@ -64,5 +73,30 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
 
     private fun LinearLayout?.addDividerView(context: Context) {
         View.inflate(context, R.layout.product_card_options_item_divider, this)
+    }
+
+    private fun observeRouteToSimilarSearchEventLiveData() {
+        productCardOptionsViewModel?.getRouteToSimilarSearchEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            routeToSimilarSearch()
+        })
+    }
+
+    private fun routeToSimilarSearch() {
+        activity?.let {
+            val productCardOptionsModel = productCardOptionsViewModel?.productCardOptionsModel
+                    ?: return
+
+            startSimilarSearch(it, productCardOptionsModel.productId, productCardOptionsModel.keyword)
+        }
+    }
+
+    private fun observeFinishProductCardOoptionsEventLiveData() {
+        productCardOptionsViewModel?.getCloseProductCardOptionsEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            finish()
+        })
+    }
+
+    private fun finish() {
+        activity?.finish()
     }
 }

@@ -9,25 +9,31 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 
 internal class ProductCardOptionsViewModel(
         dispatcherProvider: DispatcherProvider,
-        private val productCardOptionsModel: ProductCardOptionsModel?
+        val productCardOptionsModel: ProductCardOptionsModel?
 ): BaseViewModel(dispatcherProvider.ui()) {
 
     private val productCardOptionsItemListLiveData = MutableLiveData<List<Any>>()
     private val productCardOptionsItemList = mutableListOf<Any>()
-//    private val routeToSimilarProductsEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val routeToSimilarProductsEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val closeProductCardOptionsEventLiveData = MutableLiveData<Event<Boolean>>()
 
     init {
-        initSimilarSearchOption()
+        initSeeSimilarProductsOption()
         initWishlistOption()
 
         postOptionListLiveData()
     }
 
-    private fun initSimilarSearchOption() {
+    private fun initSeeSimilarProductsOption() {
         if (productCardOptionsModel?.hasSimilarSearch == true) {
-            productCardOptionsItemList.addOption(SEE_SIMILAR_PRODUCTS) { }
+            productCardOptionsItemList.addOption(SEE_SIMILAR_PRODUCTS) { onSeeSimilarProductsOptionClicked() }
             productCardOptionsItemList.addDivider()
         }
+    }
+
+    private fun onSeeSimilarProductsOptionClicked() {
+        routeToSimilarProductsEventLiveData.postValue(Event(true))
+        closeProductCardOptionsEventLiveData.postValue(Event(true))
     }
 
     private fun MutableList<Any>.addOption(title: String, onClick: () -> Unit) {
@@ -58,5 +64,7 @@ internal class ProductCardOptionsViewModel(
 
     fun getOptionsListLiveData(): LiveData<List<Any>> = productCardOptionsItemListLiveData
 
-//    fun getRouteToSimilarSearchEventLiveData(): LiveData<Event<Boolean>> = routeToSimilarProductsEventLiveData
+    fun getRouteToSimilarSearchEventLiveData(): LiveData<Event<Boolean>> = routeToSimilarProductsEventLiveData
+
+    fun getCloseProductCardOptionsEventLiveData(): LiveData<Event<Boolean>> = closeProductCardOptionsEventLiveData
 }

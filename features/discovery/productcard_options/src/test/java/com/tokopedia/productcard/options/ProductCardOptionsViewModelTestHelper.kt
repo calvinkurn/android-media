@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.options
 
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.productcard.options.testutils.TestDispatcherProvider
 import org.spekframework.spek2.dsl.TestBody
 
 internal fun TestBody.createProductCardOptionsViewModel(
@@ -17,4 +18,10 @@ internal fun TestBody.createProductCardOptionsViewModel(
             TestDispatcherProvider(),
             productCardOptionsModel
     )
+}
+
+internal fun ProductCardOptionsViewModel.getOption(optionTitle: String): ProductCardOptionsItemModel? {
+    return this.getOptionsListLiveData().value?.single {
+        it is ProductCardOptionsItemModel && it.title == optionTitle
+    } as ProductCardOptionsItemModel?
 }
