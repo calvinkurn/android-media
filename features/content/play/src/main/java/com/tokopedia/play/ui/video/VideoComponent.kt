@@ -26,7 +26,7 @@ class VideoComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Play -> uiView.setPlayer(it.exoPlayer)
+                            is ScreenStateEvent.Play -> uiView.setPlayer(it.vodType.exoPlayer)
                         }
                     }
         }

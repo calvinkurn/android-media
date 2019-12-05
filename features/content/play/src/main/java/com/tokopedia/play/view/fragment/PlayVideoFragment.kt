@@ -64,12 +64,11 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         super.onViewCreated(view, savedInstanceState)
 
         initComponents(view as ViewGroup)
-        initVideo()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        playViewModel.observableVODPlayer.observe(this, Observer {
+        playViewModel.observableVOD.observe(this, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -82,9 +81,5 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun initComponents(container: ViewGroup) {
         VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
-    }
-
-    private fun initVideo() {
-        playViewModel.startVideoWithUrlString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4")
     }
 }

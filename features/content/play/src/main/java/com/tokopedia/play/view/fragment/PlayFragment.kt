@@ -64,6 +64,8 @@ class PlayFragment : BaseDaggerFragment() {
         childFragmentManager.beginTransaction()
                 .replace(R.id.fl_interaction, PlayInteractionFragment.newInstance())
                 .commit()
+
+        playViewModel.initVideo()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -81,6 +83,4 @@ class PlayFragment : BaseDaggerFragment() {
             }
         })
     }
-
-
 }

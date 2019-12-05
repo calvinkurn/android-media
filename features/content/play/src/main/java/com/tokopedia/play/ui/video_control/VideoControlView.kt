@@ -28,7 +28,7 @@ class VideoControlView(
         view.hide()
     }
 
-    fun setPlayer(exoPlayer: ExoPlayer) {
+    fun setPlayer(exoPlayer: ExoPlayer?) {
         view.player = exoPlayer
     }
 }

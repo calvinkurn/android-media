@@ -83,7 +83,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        playViewModel.observableVODPlayer.observe(this, Observer {
+        playViewModel.observableVOD.observe(this, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -204,50 +204,48 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
 
             constraintSet.apply {
                 connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START)
-                connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.TOP)
+                connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, resources.getDimensionPixelOffset(R.dimen.dp_8))
+                connect(id, ConstraintSet.BOTTOM, likeComponentId, ConstraintSet.BOTTOM)
             }
 
             constraintSet.applyTo(container)
         }
 
-        fun layoutLike(container: ViewGroup, @IdRes id: Int, @IdRes sendChatComponentId: Int) {
+        fun layoutLike(container: ViewGroup, @IdRes id: Int, @IdRes videoControlComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
 
             constraintSet.apply {
-                connect(id, ConstraintSet.START, sendChatComponentId, ConstraintSet.END, resources.getDimensionPixelOffset(R.dimen.dp_8))
                 connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-                connect(id, ConstraintSet.BOTTOM, sendChatComponentId, ConstraintSet.BOTTOM)
-                connect(id, ConstraintSet.TOP, sendChatComponentId, ConstraintSet.TOP)
+                connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
             }
 
             constraintSet.applyTo(container)
         }
 
-        fun layoutChatList(container: ViewGroup, @IdRes id: Int, @IdRes sendChatComponentId: Int) {
+        fun layoutChatList(container: ViewGroup, @IdRes id: Int, @IdRes sendChatComponentId: Int, @IdRes likeComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
 
             constraintSet.apply {
-                connect(id, ConstraintSet.START, sendChatComponentId, ConstraintSet.START)
-                connect(id, ConstraintSet.END, sendChatComponentId, ConstraintSet.END)
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, resources.getDimensionPixelOffset(R.dimen.dp_8))
                 connect(id, ConstraintSet.BOTTOM, sendChatComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
             }
 
             constraintSet.applyTo(container)
         }
 
-        fun layoutPinned(container: ViewGroup, @IdRes id: Int, @IdRes chatListComponentId: Int) {
+        fun layoutPinned(container: ViewGroup, @IdRes id: Int, @IdRes chatListComponentId: Int, @IdRes likeComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
 
             constraintSet.apply {
-                connect(id, ConstraintSet.START, chatListComponentId, ConstraintSet.START)
-                connect(id, ConstraintSet.END, chatListComponentId, ConstraintSet.END)
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, resources.getDimensionPixelOffset(R.dimen.dp_8))
                 connect(id, ConstraintSet.BOTTOM, chatListComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
             }
 
@@ -260,7 +258,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
             constraintSet.clone(container as ConstraintLayout)
 
             constraintSet.apply {
-                connect(id, ConstraintSet.START, pinnedComponentId, ConstraintSet.START)
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
                 connect(id, ConstraintSet.BOTTOM, pinnedComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
             }
 
@@ -281,12 +279,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
             constraintSet.applyTo(container)
         }
 
-        layoutChat(container, sendChatComponentId, likeComponentId)
-        layoutLike(container, likeComponentId, sendChatComponentId)
-        layoutChatList(container, chatListComponentId, sendChatComponentId)
-        layoutPinned(container, pinnedComponentId, chatListComponentId)
-        layoutStats(container, statsComponentId, pinnedComponentId)
         layoutVideoControl(container, videoControlComponentId)
+        layoutLike(container, likeComponentId, videoControlComponentId)
+        layoutChat(container, sendChatComponentId, likeComponentId)
+        layoutChatList(container, chatListComponentId, sendChatComponentId, likeComponentId)
+        layoutPinned(container, pinnedComponentId, chatListComponentId, likeComponentId)
+        layoutStats(container, statsComponentId, pinnedComponentId)
     }
     //endregion
 
