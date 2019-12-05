@@ -29,15 +29,12 @@ import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.country.data.FlightCountryListDbSource;
 import com.tokopedia.flight.country.database.FlightAirportCountryDao;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.orderlist.data.FlightOrderApi;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
-import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
-import com.tokopedia.flight.passenger.data.db.FlightPassengerDao;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.review.data.FlightCancelVoucherDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
@@ -119,21 +116,19 @@ public class FlightModule {
     @FlightScope
     @Provides
     public FlightRepository provideFlightRepository(BannerDataSource bannerDataSource,
-                                                    FlightCountryListDbSource flightCountryListDbSource,
                                                     FlightClassesDataSource getFlightClassesUseCase,
                                                     FlightCartDataSource flightCartDataSource,
                                                     FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
                                                     FlightBookingDataSource flightBookingDataSource,
                                                     FlightOrderDataSource flightOrderDataSource,
                                                     FlightOrderMapper flightOrderMapper,
-                                                    FlightPassengerFactorySource flightPassengerFactorySource,
                                                     FlightCancellationCloudDataSource flightCancellationCloudDataSource,
                                                     FlightCancelVoucherDataSource flightCancelVoucherDataSource,
                                                     FlightBookingCartDataSource flightBookingCartDataSource) {
-        return new FlightRepositoryImpl(bannerDataSource, flightCountryListDbSource,
-                getFlightClassesUseCase, flightCartDataSource, flightCheckVoucheCodeDataSource,
-                flightBookingDataSource, flightOrderDataSource, flightOrderMapper, flightPassengerFactorySource, flightCancellationCloudDataSource,
-                flightCancelVoucherDataSource, flightBookingCartDataSource);
+        return new FlightRepositoryImpl(bannerDataSource, getFlightClassesUseCase, flightCartDataSource,
+                flightCheckVoucheCodeDataSource, flightBookingDataSource, flightOrderDataSource,
+                flightOrderMapper, flightCancellationCloudDataSource, flightCancelVoucherDataSource,
+                flightBookingCartDataSource);
     }
 
     @Provides
@@ -214,11 +209,6 @@ public class FlightModule {
     @Provides
     FlightAirportCountryDao provideFlightAirportCountryDao(FlightRoomDb flightRoomDb) {
         return flightRoomDb.flightAirportCountryDao();
-    }
-
-    @Provides
-    FlightPassengerDao provideFlightPassengerDao(FlightRoomDb flightRoomDb) {
-        return flightRoomDb.flightPassengerDao();
     }
 
     @FlightScope

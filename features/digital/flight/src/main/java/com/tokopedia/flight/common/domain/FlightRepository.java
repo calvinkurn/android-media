@@ -11,13 +11,9 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
-import com.tokopedia.flight.country.database.FlightAirportCountryTable;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.domain.FlightOrderRepository;
-import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
-import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
-import com.tokopedia.flight.passenger.data.db.FlightPassengerTable;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
@@ -35,8 +31,6 @@ import rx.Observable;
  */
 
 public interface FlightRepository extends FlightOrderRepository {
-
-    Observable<FlightAirportCountryTable> getAirportByCountryId(String id);
 
     Observable<List<FlightClassEntity>> getFlightClasses();
 
@@ -57,18 +51,6 @@ public interface FlightRepository extends FlightOrderRepository {
     Observable<OrderEntity> getOrderEntity(String id);
 
     Observable<List<BannerDetail>> getBanners(Map<String, String> params);
-
-    Observable<List<FlightAirportCountryTable>> getPhoneCodeList(String string);
-
-    Observable<List<FlightPassengerTable>> getPassengerList(String passengerId);
-
-    Observable<Boolean> updateIsSelected(String passengerId, int isSelected);
-
-    Observable<Boolean> deleteAllListPassenger();
-
-    Observable<Boolean> deletePassenger(DeletePassengerRequest request, String idempotencyKey);
-
-    Observable<Boolean> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey);
 
     Observable<Map<String, List<Passenger>>> getCancelablePassenger(String invoiceId);
 
