@@ -58,7 +58,9 @@ public class UploadProductService extends BaseService implements AddProductServi
     private static final String IS_ADD = "IS_ADD";
     private static final String IS_UPLOAD_PRODUCT_FROM_DRAFT = "IS_UPLOAD_PRODUCT_FROM_DRAFT";
     private static final String CACHE_MANAGER_ID = "CACHE_MANAGER_ID";
-
+    private ProductViewModel productViewModel = null;
+    private SaveInstanceCacheManager cacheManager = null;
+    private boolean isUploadProductFromDraft = true;
     @Inject
     AddProductServicePresenter presenter;
 
@@ -98,17 +100,17 @@ public class UploadProductService extends BaseService implements AddProductServi
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         boolean isAdd = intent.getBooleanExtra(IS_ADD, true);
-        boolean isUploadProductFromDraft = intent.getBooleanExtra(IS_UPLOAD_PRODUCT_FROM_DRAFT, true);
+        isUploadProductFromDraft = intent.getBooleanExtra(IS_UPLOAD_PRODUCT_FROM_DRAFT, true);
         if (isUploadProductFromDraft) {
             final long draftProductId = intent.getLongExtra(DRAFT_PRODUCT_ID, Long.MIN_VALUE);
             presenter.uploadProduct(draftProductId, getProductSubmitNotificationListener((int) draftProductId, isAdd));
         } else {
             String cacheId = intent.getStringExtra(CACHE_MANAGER_ID);
             if (null != cacheId) {
-                SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(this, cacheId);
+                cacheManager = new SaveInstanceCacheManager(this, cacheId);
                 int notificationId = new Random().nextInt();
-                ProductViewModel currentProductAddViewModel = cacheManager.get(PRODUCT_VIEW_MODEL, ProductViewModel.class);
-                presenter.uploadProduct(currentProductAddViewModel, getProductSubmitNotificationListener(notificationId, isAdd));
+                productViewModel = cacheManager.get(PRODUCT_VIEW_MODEL, ProductViewModel.class);
+                presenter.uploadProduct(productViewModel, getProductSubmitNotificationListener(notificationId, isAdd));
             }
         }
         return START_NOT_STICKY;
@@ -139,6 +141,8 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     @Override
     public void onFailedAddProduct(Throwable t, ProductSubmitNotificationListener productSubmitNotificationListener) {
+        if (!isUploadProductFromDraft)
+            cacheManager.put(PRODUCT_VIEW_MODEL, productViewModel);
         String errorMessage = ErrorHandlerAddProduct.getErrorMessage(getApplicationContext(), t);
         Notification notification = buildFailedNotification(errorMessage, productSubmitNotificationListener.getId(), productSubmitNotificationListener.getSubmitStatus());
         notificationManager.notify(TAG, productSubmitNotificationListener.getId(), notification);
@@ -260,10 +264,20 @@ public class UploadProductService extends BaseService implements AddProductServi
     }
 
     private Notification buildFailedNotification(String errorMessage, int notificationId, @ProductStatus int productStatus) {
-        Intent pendingIntent = ProductDraftAddActivity.Companion.createInstance(this, notificationId);
-        if (productStatus == ProductStatus.EDIT) {
-            pendingIntent = ProductDraftEditActivity.Companion.createInstance(this, notificationId);
+        Intent pendingIntent;
+        if(isUploadProductFromDraft){
+            pendingIntent = ProductDraftAddActivity.Companion.createInstance(this, notificationId);
+            if (productStatus == ProductStatus.EDIT) {
+                pendingIntent = ProductDraftEditActivity.Companion.createInstance(this, notificationId);
+            }
+        }else{
+            String cacheId = cacheManager.getId() != null ? cacheManager.getId() : "";
+            pendingIntent = ProductDraftAddActivity.Companion.createInstance(this, cacheId);
+            if (productStatus == ProductStatus.EDIT) {
+                pendingIntent = ProductDraftEditActivity.Companion.createInstance(this, cacheId);
+            }
         }
+
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (notificationBuilderMap.get(notificationId) == null) {
             createNotification(notificationId, "");
