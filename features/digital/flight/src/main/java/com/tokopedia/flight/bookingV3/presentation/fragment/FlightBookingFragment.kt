@@ -32,9 +32,9 @@ import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
-import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
+import com.tokopedia.flight.bookingV2.presentation.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingErrorCodeMapper
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
