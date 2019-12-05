@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -52,12 +54,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginLeft="@dimen/dp_4"
-                android:text="@string/flight_booking_contact_sublabel"
                 android:layout_marginTop="@dimen/dp_2"
+                android:text="@string/flight_booking_contact_sublabel"
                 android:textColor="@color/Neutral_N700_96"
-                app:layout_constraintTop_toTopOf="@id/tv_traveller_info_title"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_traveller_info_title"
                 app:layout_constraintStart_toEndOf="@+id/tv_traveller_info_title"
+                app:layout_constraintTop_toTopOf="@id/tv_traveller_info_title"
                 app:typographyType="body_2" />
 
             <com.tokopedia.common.travel.widget.TravellerInfoWidget
