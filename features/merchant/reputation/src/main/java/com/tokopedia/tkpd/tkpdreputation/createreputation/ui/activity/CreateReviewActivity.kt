@@ -20,10 +20,11 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationForm
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
 
     private var productId: String = ""
-
     lateinit var createReviewFragment: CreateReviewFragment
 
     companion object {
+        const val PARAM_RATING = "rating"
+        const val DEFAULT_PRODUCT_RATING = 5
         fun newInstance(context: Context) = Intent(context, CreateReviewActivity::class.java)
     }
 
@@ -31,7 +32,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
         val reputationId: String
         val bundle = intent.extras
         val uri = intent.data
-        val rating = uri?.getQueryParameter("rating")?.toIntOrNull()?: 5
+        val rating = uri?.getQueryParameter(PARAM_RATING)?.toIntOrNull()?: DEFAULT_PRODUCT_RATING
 
         if (uri != null && uri.pathSegments.size > 0) {
             val uriSegment = uri.pathSegments
