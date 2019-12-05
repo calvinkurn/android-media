@@ -27,7 +27,7 @@ class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder
     override fun getItemCount(): Int = journeys.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(journeys[position], listener)
+        holder.bind(journeys[position], position, listener)
     }
 
     fun updateRoutes(list: List<FlightCartViewEntity.JourneySummary>) {
@@ -37,7 +37,7 @@ class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder
 
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
-        fun bind(journey: FlightCartViewEntity.JourneySummary, listener: ActionListener?) {
+        fun bind(journey: FlightCartViewEntity.JourneySummary, position: Int, listener: ActionListener?) {
 
             with(view) {
                 tv_flight_airline_name.text = journey.airline
@@ -54,7 +54,7 @@ class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder
                 }
 
                 this.setOnClickListener {
-                    listener?.onClickRouteDetail(journey.journeyId)
+                    listener?.onClickRouteDetail(journey.journeyId, position)
                 }
 
                 tv_transit_info.text = if (journey.transit == 0) context.getString(R.string.flight_booking_directly_trip_card)
@@ -67,7 +67,7 @@ class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder
         }
 
         interface ActionListener{
-            fun onClickRouteDetail(id: String)
+            fun onClickRouteDetail(id: String, position: Int)
         }
     }
 }

@@ -14,14 +14,11 @@ import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModel
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel
-import com.tokopedia.flight.review.domain.verifybooking.model.response.Journey
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ONE
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ZERO
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.promocheckout.common.view.model.PromoData
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import java.util.*
 
 /**
