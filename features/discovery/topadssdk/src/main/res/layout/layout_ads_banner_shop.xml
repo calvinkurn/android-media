@@ -1,59 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.topads.sdk.widget.ShadowConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="128dp"
-    android:layout_height="226dp"
-    android:layout_marginLeft="@dimen/dp_8"
-    app:shadowBottomOffset="2dp"
-    app:shadowEndOffset="2dp"
-    app:shadowStartOffset="2dp"
-    app:shadowTopOffset="2dp"
-    app:cornerRadius="@dimen/dp_8">
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardElevation="@dimen/dp_4"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    android:layout_marginLeft="@dimen/dp_4"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:layout_height="wrap_content">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="128dp"
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/bg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="bg"
-        app:srcCompat="@drawable/bg_pm_ads" />
+        <ImageView
+            android:id="@+id/bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="bg"
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/bg_pm_ads" />
 
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_normal"
-        android:textStyle="bold"
-        android:padding="@dimen/dp_10"
-        app:layout_constraintBottom_toTopOf="@+id/kunjungi_toko"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread"
-        tools:text="Hairdryer diskon hingga 50% Cek sekarang untuk kemilau rambut indahmu!" />
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:padding="@dimen/dp_10"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_normal"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/kunjungi_toko"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread"
+            tools:text="Hairdryer diskon hingga 50% Cek sekarang untuk kemilau rambut indahmu!" />
 
-    <TextView
-        android:id="@+id/kunjungi_toko"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_btn_outline_white"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_small"
-        android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="@+id/bg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description"
-        tools:text="Cek Sekarang" />
+        <TextView
+            android:id="@+id/kunjungi_toko"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_btn_outline_white"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_small"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/description"
+            tools:text="Cek Sekarang" />
 
-</com.tokopedia.topads.sdk.widget.ShadowConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
