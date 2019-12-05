@@ -1,5 +1,6 @@
 package com.tokopedia.settingbank.banklist.v2.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,6 +15,8 @@ import com.tokopedia.settingbank.banklist.v2.view.fragment.OnBankSelectedListene
 import com.tokopedia.settingbank.banklist.v2.view.fragment.SettingBankFragment
 
 class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>, OnBankSelectedListener {
+
+    val ADD_ACCOUNT_REQUEST_CODE =101
 
     override fun getComponent(): SettingBankComponent = DaggerSettingBankComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication)
@@ -38,6 +41,18 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
         return SettingBankFragment::class.java.name
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == ADD_ACCOUNT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
+            fragment?.let {
+                if(fragment is SettingBankFragment){
+                    fragment.loadUserBankAccountList()
+                }
+            }
+        }
+    }
+
 
     override fun onBankSelected(bank: Bank) {
         val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
@@ -46,8 +61,7 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
                 fragment.closeBottomSheet()
             }
         }
-        startActivity(AddBankActivity.createIntent(this, bank))
-
+        startActivityForResult(AddBankActivity.createIntent(this, bank), ADD_ACCOUNT_REQUEST_CODE)
     }
 
 }

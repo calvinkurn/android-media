@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.settingbank.banklist.v2.di.QUERY_ADD_BANK_ACCOUNT
 import com.tokopedia.settingbank.banklist.v2.domain.AddBankRequest
 import com.tokopedia.settingbank.banklist.v2.domain.AddBankResponse
+import com.tokopedia.settingbank.banklist.v2.domain.RichieAddBankAccountNewFlow
 import com.tokopedia.settingbank.banklist.v2.view.viewState.*
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
@@ -28,28 +29,34 @@ class AddAccountViewModel @Inject constructor(private val graphqlRepository: Gra
     fun addBank(addBankRequest: AddBankRequest) {
         cancelCurrentJob()
         createNewJob()
+        if (addAccountState.value == OnAddBankRequestStarted)
+            return
+        addAccountState.value = OnAddBankRequestStarted
         launchCatchError(block = {
             val params = getAddBankParams(addBankRequest)
             val data = makeAddBankGQL(params, job!!)
             processResponse(data.getSuccessData())
+            addAccountState.value = OnAddBankRequestEnded
+
         }) {
+            addAccountState.value = OnAddBankRequestEnded
             addAccountState.value = OnAddAccountNetworkError
             it.printStackTrace()
         }
     }
 
-    private fun processResponse(successData: AddBankResponse) {
-        if (successData.status == 200) {
-            addAccountState.value = OnSuccessfullyAdded(successData)
+    private fun processResponse(response: RichieAddBankAccountNewFlow) {
+        if (response.response.status == 200) {
+            addAccountState.value = OnSuccessfullyAdded(response.response)
         } else {
-            addAccountState.value = OnAccountAddingError(successData.message)
+            addAccountState.value = OnAccountAddingError(response.response.message)
         }
     }
 
     private suspend fun makeAddBankGQL(params: Map<String, Any>, job: Job): GraphqlResponse =
             withContext(Dispatchers.IO + job) {
                 val graphRequest = GraphqlRequest(rawQueries[QUERY_ADD_BANK_ACCOUNT],
-                        AddBankResponse::class.java, params)
+                        RichieAddBankAccountNewFlow::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphRequest))
             }
 

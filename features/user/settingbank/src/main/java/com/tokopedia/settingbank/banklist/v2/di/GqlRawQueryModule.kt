@@ -40,17 +40,33 @@ class GqlRawQueryModule {
     @StringKey(QUERY_GET_ADD_BANK_TNC)
     fun provideAddBankAccountTNC(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_add_bank_tnc_v2)
+
     @SettingBankScope
     @Provides
     @IntoMap
     @StringKey(QUERY_GET_BANK_LIST)
     fun provideGetBankList(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_bank_list_v2)
+
     @SettingBankScope
     @Provides
     @IntoMap
     @StringKey(QUERY_CHECK_BANK_ACCOUNT)
     fun provideCheckAccountNumber(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_check_account_number_v2)
+
+    @SettingBankScope
+    @Provides
+    @IntoMap
+    @StringKey(QUERY_DELETE_BANK_ACCOUNT)
+    fun provideDeleteBankQuery(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_delete_bank_account)
+
+    @SettingBankScope
+    @Provides
+    @IntoMap
+    @StringKey(QUERY_GET_KYC_RESPONSE)
+    fun provideGetKYCInfoQuery(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_bank_kyc_check_v2)
 
 }

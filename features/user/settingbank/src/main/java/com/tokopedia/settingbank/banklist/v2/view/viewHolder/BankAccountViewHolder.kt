@@ -13,13 +13,9 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 
 class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-    val ticker: Ticker
+    private val ticker: Ticker = view.findViewById(R.id.tickerBankAccount)
 
     var listener: BankAccountClickListener? = null
-
-    init {
-        ticker = view.findViewById(R.id.tickerBankAccount)
-    }
 
     fun bind(bankAccount: BankAccount, listener: BankAccountClickListener?) {
         view.tag = bankAccount
@@ -32,26 +28,30 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             ImageLoader.LoadImage(view.findViewById(R.id.ivBankImage), bankAccount.bankImageUrl)
         }
         ticker.gone()
-        setBankStatus(bankAccount.statusFraud, bankAccount.copyWriting)
+        setBankStatus(
+                isPrimary = (bankAccount.fsp == 1),
+                status = 2/*bankAccount.statusFraud*/,
+                copyWriting = bankAccount.copyWriting
+        )
         addClickListener()
     }
 
     private fun addClickListener() {
         view.findViewById<View>(R.id.btnIsiData).setOnClickListener { listener?.onClickDataContent(view.tag as BankAccount) }
-        view.findViewById<View>(R.id.btnMakePrimary).setOnClickListener { listener?.makeAccountPrimary(view.tag as BankAccount) }
+        view.findViewById<View>(R.id.btnMakePrimary).setOnClickListener { listener?.onMakeAccountPrimary(view.tag as BankAccount) }
         view.findViewById<View>(R.id.btnHapus).setOnClickListener { listener?.deleteBankAccount(view.tag as BankAccount) }
     }
 
-    private fun setBankStatus(status: Int, copyWriting: String?) {
+    private fun setBankStatus(isPrimary: Boolean, status: Int, copyWriting: String?) {
+        if (isPrimary) {
+            hideShowPrimaryTag(isHide = false)
+            hideShowIsiData(isHide = true)
+            hideShowDeleteButton(isHide = true)
+            hideShowMakePrimary(isHide = true)
+            hideShowPendingAccountTag(isHide = true)
+        }
         when (status) {
-            0 -> {
-                hideShowPrimaryTag(isHide = false)
-                hideShowIsiData(isHide = true)
-                hideShowDeleteButton(isHide = true)
-                hideShowMakePrimary(isHide = true)
-                hideShowPendingAccountTag(isHide = true)
-            }
-            1 -> {
+            in 0..1 -> {
                 hideShowPrimaryTag(isHide = true)
                 hideShowMakePrimary(isHide = false)
                 hideShowIsiData(isHide = true)
@@ -110,7 +110,7 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
                 hideShowPrimaryTag(isHide = true)
                 hideShowMakePrimary(isHide = true)
                 hideShowIsiData(isHide = true)
-                hideShowDeleteButton(isHide = true)
+                hideShowDeleteButton(isHide = false)
             }
         }
     }

@@ -39,6 +39,12 @@
                     android:path="@string/path_add_bank"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".banklist.v2.view.activity.AccountConfirmActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/sbank_confirm_bank_account"
+            android:theme="@style/Theme.White">
+        </activity>
 
         <activity
             android:name=".choosebank.view.activity.ChooseBankActivity"

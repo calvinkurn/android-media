@@ -3,6 +3,12 @@ package com.tokopedia.settingbank.banklist.v2.domain
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+data class RichieAddBankAccountNewFlow(
+        @SerializedName("richieAddBankAccountNewFlow")
+        @Expose
+        val response: AddBankResponse
+)
+
 data class AddBankResponse(
         @SerializedName("status")
         @Expose
@@ -16,19 +22,19 @@ data class AddBankResponse(
 )
 
 data class AccountData(
-        @SerializedName("acc_id")
+        @SerializedName("accID")
         @Expose
         val accountId: Long,
-        @SerializedName("user_id")
+        @SerializedName("userID")
         @Expose
         val userId: Long,
-        @SerializedName("bank_id")
+        @SerializedName("bankID")
         @Expose
         val bankId: Long,
-        @SerializedName("acc_no")
+        @SerializedName("accNo")
         @Expose
         val accountNumber: String,
-        @SerializedName("acc_name")
+        @SerializedName("accName")
         @Expose
         val accountName: String
 )

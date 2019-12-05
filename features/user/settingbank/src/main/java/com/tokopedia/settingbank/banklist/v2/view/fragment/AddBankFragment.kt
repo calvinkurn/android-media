@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.AddBankRequest
+import com.tokopedia.settingbank.banklist.v2.domain.AddBankResponse
 import com.tokopedia.settingbank.banklist.v2.domain.Bank
 import com.tokopedia.settingbank.banklist.v2.domain.TemplateData
 import com.tokopedia.settingbank.banklist.v2.view.activity.ARG_BANK_DATA
@@ -31,10 +31,10 @@ import com.tokopedia.settingbank.banklist.v2.view.viewState.*
 import com.tokopedia.settingbank.banklist.v2.view.widgets.BankTNCBottomSheet
 import com.tokopedia.settingbank.banklist.v2.view.widgets.CloseableBottomSheetFragment
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_bank_v2.*
 import javax.inject.Inject
+
 
 class AddBankFragment : BaseDaggerFragment() {
 
@@ -104,6 +104,7 @@ class AddBankFragment : BaseDaggerFragment() {
         etBankAccountNumber.addTextChangedListener(textWatcherViewModel.getTextWatcher())
     }
 
+
     private fun startObservingViewModels() {
         tNCViewModel.tncPopUpTemplate.observe(this, Observer {
             openTNCBottomSheet(it)
@@ -111,7 +112,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
         textWatcherViewModel.textWatcherState.observe(this, Observer {
             when (it) {
-                is OnNOBankSelected -> setAccountNumberError("Please select Nama Bank")
+                is OnNOBankSelected -> setAccountNumberError(getString(R.string.sbank_select_bank))
                 is OnTextChanged -> {
                     setAccountNumberError(null)
                     onTextChange(it)
@@ -122,6 +123,7 @@ class AddBankFragment : BaseDaggerFragment() {
         checkAccountNumberViewModel.accountCheckState.observe(this, Observer {
             when (it) {
                 is OnNetworkError -> {
+
                 }
                 is OnAccountCheckSuccess -> onAccountCheckSuccess(it.accountHolderName)
                 is OnErrorInAccountNumber -> {
@@ -143,21 +145,49 @@ class AddBankFragment : BaseDaggerFragment() {
 
         addAccountViewModel.addAccountState.observe(this, Observer {
             when (it) {
+                is OnAddBankRequestStarted -> {
+                    progress_bar.visible()
+                }
+                is OnAddBankRequestEnded -> {
+                    progress_bar.gone()
+                }
                 is OnSuccessfullyAdded -> {
-                    activity?.finish()
+                    onBankSuccessfullyAdded(it.addBankResponse)
                 }
                 is OnAccountAddingError -> {
-                    showErrorToaster(it.message)
+                    showErrorOnUI(it.message) { requestAddBankAccount() }
                 }
 
             }
         })
     }
 
-    private fun showErrorToaster(message: String) {
-        view?.let {
-            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+    private fun showErrorOnUI(errorMessage: String?, retry: (() -> Unit)?) {
+        errorMessage?.let {
+            view?.let { view ->
+                retry?.let {
+                    Toaster.make(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                            getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() })
+                } ?: run {
+                    Toaster.make(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                }
+
+            }
         }
+    }
+
+    private fun onBankSuccessfullyAdded(addBankResponse: AddBankResponse) {
+        val intent = Intent()
+        val bundle = Bundle()
+        val data = addBankResponse.data
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_ID, data.accountId.toString())
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NAME, data.accountName)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NO, data.accountNumber)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_BANK_ID, data.bankId.toString())
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_BANK_NAME, builder.build().bankName)
+        intent.putExtras(bundle)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     private fun onClickAddBankAccount() {
@@ -297,20 +327,12 @@ class AddBankFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onDestroy() {
-        tNCViewModel.tncPopUpTemplate.removeObservers(this)
-        textWatcherViewModel.textWatcherState.removeObservers(this)
-        checkAccountNumberViewModel.accountCheckState.removeObservers(this)
-        accountHolderNameViewModel.textWatcherState.removeObservers(this)
-        super.onDestroy()
-    }
-
     private fun openConfirmationPopUp() {
         val addBankRequest = builder.build()
         val dialogBuilder = AlertDialog.Builder(activity!!)
         val inflater = activity!!.layoutInflater
         val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
-        (dialogView.findViewById(R.id.heading) as TextView).text = "Tambah RekeningBank"
+        (dialogView.findViewById(R.id.heading) as TextView).text = getString(R.string.sbank_add_bank_account)
         (dialogView.findViewById(R.id.description) as TextView).text = "Kamu akan menambahkan rekening ${bank?.abbreviation
                 ?: ""} ${addBankRequest.accountNo} a.n ${addBankRequest.accountName}."
         dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
@@ -346,7 +368,12 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun onResultRequestOtp(resultCode: Int) {
         if (resultCode == Activity.RESULT_OK) {
-            addAccountViewModel.addBank(builder.build())
+            requestAddBankAccount()
         }
+    }
+
+    private fun requestAddBankAccount() {
+        addAccountViewModel.addBank(builder.build())
+
     }
 }

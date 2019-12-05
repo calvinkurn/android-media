@@ -1,5 +1,7 @@
 package com.tokopedia.settingbank.banklist.v2.domain
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -63,7 +65,7 @@ data class BankAccount(
         val bankName: String? = null,
         @SerializedName("fsp")
         @Expose
-        val fsp: Long,
+        val fsp: Int,
         @SerializedName("bankImageUrl")
         @Expose
         val bankImageUrl: String? = null,
@@ -72,7 +74,45 @@ data class BankAccount(
         val statusFraud: Int,
         @SerializedName("copyWriting")
         @Expose
-        val copyWriting: String?)
+        val copyWriting: String?) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readLong(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readLong(),
+            parcel.readString(),
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readInt(),
+            parcel.readString() ?: "")
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(accID)
+        parcel.writeString(accName ?: "")
+        parcel.writeString(accNumber ?: "")
+        parcel.writeLong(bankID)
+        parcel.writeString(bankName ?: "")
+        parcel.writeInt(fsp)
+        parcel.writeString(bankImageUrl ?: "")
+        parcel.writeInt(statusFraud)
+        parcel.writeString(copyWriting ?: "")
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<BankAccount> {
+        override fun createFromParcel(parcel: Parcel): BankAccount {
+            return BankAccount(parcel)
+        }
+
+        override fun newArray(size: Int): Array<BankAccount?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}
 
 data class UserInfo(
         @SerializedName("message")

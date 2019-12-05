@@ -4,13 +4,12 @@ mutation richieAddBankAccountNewFlow($bankID: Int!,
   $accountName:String!,
   $isManual : Boolean!){
   richieAddBankAccountNewFlow
-        (input:
-          {   bankID:$bankID,
-              bankID:$bankID,
+        (   bankID:$bankID,
+              bankName:$bankName,
               accountNo:$accountNo,
               accountName:$accountName,
               isManual:$isManual
-          }){
+          ){
      	status
     	message
     	data{

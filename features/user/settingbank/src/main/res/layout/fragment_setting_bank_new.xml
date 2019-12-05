@@ -24,6 +24,7 @@
         android:layout_height="@dimen/dp_6"
         android:layout_marginBottom="@dimen/dp_8"
         android:background="@drawable/sbank_bg_button_container"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/add_account_button" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -39,9 +40,9 @@
         android:gravity="center"
         android:text="@string/add_bank_account"
         android:textColor="@color/white"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="heading_5"
-        tools:text="Tambah Rekening"
         tools:visibility="visible" />
 
     <ProgressBar
@@ -49,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,6 +62,7 @@
         android:layout_width="@dimen/dp_240"
         android:layout_height="@dimen/dp_240"
         android:src="@drawable/sbank_no_bank_added"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/guidelineBlankPage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -72,6 +74,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/sbank_no_saved_account"
         android:textColor="@color/clr_f531353b"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guidelineBlankPage"
@@ -82,41 +85,20 @@
         android:id="@+id/tv_comeOn_AddBankAccount"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/dp_24"
-        android:layout_marginLeft="@dimen/dp_24"
+        android:paddingStart="@dimen/dp_24"
+        android:paddingLeft="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_24"
+        android:paddingEnd="@dimen/dp_24"
         android:gravity="center_horizontal"
+        android:text="@string/sbank_comeon_add_bank_Account"
         android:textAlignment="center"
         android:textColor="@color/clr_ae31353b"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_no_save_account"
-        app:typographyType="body_3"
-        tools:text="@string/sbank_comeon_add_bank_Account" />
-
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupBankListAndButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:constraint_referenced_ids="account_list_rv,add_account_button,view_btn_top_shadow" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="progress_bar" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupBlankPage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="iv_noBankAccountAdded,tv_no_save_account,tv_comeOn_AddBankAccount" />
+        app:typographyType="body_3" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineBlankPage"

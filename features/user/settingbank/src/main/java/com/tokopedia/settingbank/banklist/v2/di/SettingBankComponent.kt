@@ -3,6 +3,7 @@ package com.tokopedia.settingbank.banklist.v2.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.settingbank.banklist.v2.view.fragment.AccountConfirmFragment
 import com.tokopedia.settingbank.banklist.v2.view.fragment.AddBankFragment
 import com.tokopedia.settingbank.banklist.v2.view.fragment.SelectBankFragment
 import com.tokopedia.settingbank.banklist.v2.view.fragment.SettingBankFragment
@@ -22,4 +23,5 @@ interface SettingBankComponent {
     fun inject(settingBankFragment: SettingBankFragment)
     fun inject(selectBankFragment: SelectBankFragment)
     fun inject(addBankFragment: AddBankFragment)
+    fun inject(accountConfirmFragment: AccountConfirmFragment)
 }
