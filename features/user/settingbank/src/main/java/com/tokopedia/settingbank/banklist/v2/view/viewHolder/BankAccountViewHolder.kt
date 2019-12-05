@@ -30,7 +30,7 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         ticker.gone()
         setBankStatus(
                 isPrimary = (bankAccount.fsp == 1),
-                status = 2/*bankAccount.statusFraud*/,
+                status = bankAccount.statusFraud,
                 copyWriting = bankAccount.copyWriting
         )
         addClickListener()
