@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.helper
+package com.tokopedia.adapter_delegate
 
 import android.view.View
 import android.view.ViewGroup

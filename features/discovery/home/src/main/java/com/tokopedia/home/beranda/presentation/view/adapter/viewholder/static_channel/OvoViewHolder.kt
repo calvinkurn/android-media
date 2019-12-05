@@ -34,7 +34,6 @@ import com.tokopedia.gamification.util.HexValidator
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.SectionContentItem
-import com.tokopedia.home.beranda.helper.HomeImageHandler
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.util.ViewUtils
@@ -75,13 +74,12 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
         containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.white, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
         val radius = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 8f, itemView.resources.displayMetrics)
+                TypedValue.COMPLEX_UNIT_DIP, 16f, itemView.resources.displayMetrics).roundToInt()
 
         Glide.with(itemView.context)
-                .asBitmap()
                 .load(BG_CONTAINER_URL)
-                .dontAnimate()
-                .into(getRoundedImageViewTarget(imgNonLogin, radius))
+                .transform(RoundedRightCornerTransformation(context, radius))
+                .into(imgNonLogin)
 
         container.setOnClickListener {
             HomePageTracking.eventTokopointNonLogin(itemView.context)
@@ -362,7 +360,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         }
 
         override fun updateDiskCacheKey(messageDigest: MessageDigest) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
         }
 
         private val mDiameter: Int = mRadius * 2

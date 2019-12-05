@@ -1,21 +1,21 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
-import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
-import com.tokopedia.home.beranda.helper.HomeImageHandler
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
@@ -73,10 +73,9 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
 
             }
-//            Glide.with(context)
-//                    .load(channel.header.backImage)
-//                    .into(backgroundThematic)
-            HomeImageHandler.loadImageWithOutPlaceHolder(context, backgroundThematic, channel.header.backImage)
+            Glide.with(context)
+                    .load(channel.header.backImage)
+                    .into(backgroundThematic)
         }else {
             seeAllButton.hide()
             seeAllButtonText.show()

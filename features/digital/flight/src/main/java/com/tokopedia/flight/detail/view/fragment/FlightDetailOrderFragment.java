@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -287,7 +288,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(FlightInvoiceActivity.newInstance(getActivity(), invoiceLink));
+                if (!TextUtils.isEmpty(invoiceLink)) {
+                    startActivity(FlightInvoiceActivity.newInstance(getActivity(), invoiceLink));
+                }
             }
         });
 
