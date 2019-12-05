@@ -282,7 +282,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     private fun initData() {
         presenter.getProvider()
         partialRegisterInputView.setListener(this)
-        presenter.getTickerInfo()
+        if (!GlobalConfig.isSellerApp())
+            presenter.getTickerInfo()
     }
 
     @SuppressLint("RtlHardcoded")
