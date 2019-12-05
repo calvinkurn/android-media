@@ -3,9 +3,7 @@ package com.tokopedia.product.manage.list.domain
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.manage.list.constant.GQL_FEATURED_PRODUCT
-import com.tokopedia.product.manage.list.data.model.featuredproductresponse.FeaturedProductResponseDomainModel
 import com.tokopedia.product.manage.list.data.model.featuredproductresponse.FeaturedProductResponseModel
-import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Param
 import com.tokopedia.product.manage.list.view.mapper.FeaturedProductResponseMapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -17,7 +15,7 @@ class EditFeaturedProductUseCase @Inject constructor(
       private val graphqlUseCase: GraphqlUseCase,
       @Named(GQL_FEATURED_PRODUCT) private val gqlMutation: String,
       private val featuredProductResponseMapper: FeaturedProductResponseMapper
-) : UseCase<FeaturedProductResponseDomainModel>() {
+) : UseCase<Nothing>() {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "productId"
@@ -33,7 +31,7 @@ class EditFeaturedProductUseCase @Inject constructor(
         }
     }
 
-    override fun createObservable(requestParams: RequestParams?): Observable<FeaturedProductResponseDomainModel> {
+    override fun createObservable(requestParams: RequestParams?): Observable<Nothing> {
         var graphqlRequest = GraphqlRequest(gqlMutation, FeaturedProductResponseModel::class.java, requestParams?.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

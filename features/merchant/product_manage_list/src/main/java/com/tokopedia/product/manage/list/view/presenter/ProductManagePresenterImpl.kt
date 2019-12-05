@@ -3,8 +3,6 @@ package com.tokopedia.product.manage.list.view.presenter
 import android.accounts.NetworkErrorException
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
 import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
@@ -14,7 +12,6 @@ import com.tokopedia.product.manage.list.data.ConfirmationProductData
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.ETALASE_DEFAULT
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.STOCK_DELETED
-import com.tokopedia.product.manage.list.data.model.featuredproductresponse.FeaturedProductResponseDomainModel
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductEditPriceParam
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Param
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Response
@@ -38,7 +35,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import rx.Subscriber
-import java.lang.Exception
 import javax.inject.Inject
 
 class ProductManagePresenterImpl @Inject constructor(
@@ -261,8 +257,8 @@ class ProductManagePresenterImpl @Inject constructor(
         view.showLoadingProgress()
 
         editFeaturedProductUseCase.execute(EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status),
-                object : Subscriber<FeaturedProductResponseDomainModel>() {
-                    override fun onNext(featuredProductResponse: FeaturedProductResponseDomainModel?) {
+                object : Subscriber<Nothing>() {
+                    override fun onNext(nothing: Nothing) {
                         view.onSuccessChangeFeaturedProduct(productId, status)
                     }
 
