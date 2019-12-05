@@ -45,18 +45,18 @@ class ChooseAccountViewModel @Inject constructor(
         private val getProfileUseCase: GetProfileUseCase,
         private val rawQueries: Map<String, String>,
         dispatcher: CoroutineDispatcher
-): BaseViewModel(dispatcher){
+) : BaseViewModel(dispatcher) {
 
     private val mutableGetAccountListFBResponse = MutableLiveData<Result<AccountList>>()
-    val getAccountListFBResponse : LiveData<Result<AccountList>>
+    val getAccountListFBResponse: LiveData<Result<AccountList>>
         get() = mutableGetAccountListFBResponse
 
     private val mutableGetAccountListPhoneResponse = MutableLiveData<Result<AccountList>>()
-    val getAccountListPhoneResponse : LiveData<Result<AccountList>>
+    val getAccountListPhoneResponse: LiveData<Result<AccountList>>
         get() = mutableGetAccountListPhoneResponse
 
     private val mutableLoginPhoneNumberResponse = MutableLiveData<Result<LoginToken>>()
-    val loginPhoneNumberResponse : LiveData<Result<LoginToken>>
+    val loginPhoneNumberResponse: LiveData<Result<LoginToken>>
         get() = mutableLoginPhoneNumberResponse
 
     private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfo>>()
@@ -71,7 +71,7 @@ class ChooseAccountViewModel @Inject constructor(
     val goToSecurityQuestion: LiveData<String>
         get() = mutableGoToSecurityQuestion
 
-    fun loginTokenPhone(key: String, email: String, phoneNumber: String){
+    fun loginTokenPhone(key: String, email: String, phoneNumber: String) {
         loginTokenUseCase.executeLoginPhoneNumber(LoginTokenUseCase.generateParamLoginPhone(
                 key,
                 email,
@@ -86,7 +86,7 @@ class ChooseAccountViewModel @Inject constructor(
         )
     }
 
-    fun loginTokenFacebook(key: String, email: String, phone: String){
+    fun loginTokenFacebook(key: String, email: String, phone: String) {
         loginTokenUseCase.executeLoginSocialMediaPhone(LoginTokenUseCase.generateParamSocialMediaPhone(
                 key,
                 email,
@@ -100,7 +100,7 @@ class ChooseAccountViewModel @Inject constructor(
         )
     }
 
-    fun getAccountListPhoneNumber(validateToken: String, phone: String){
+    fun getAccountListPhoneNumber(validateToken: String, phone: String) {
         rawQueries[QUERY_GET_ACCOUNT_LIST]?.let { query ->
             val params = mapOf(
                     PARAM_VALIDATE_TOKEN to validateToken,
@@ -120,7 +120,7 @@ class ChooseAccountViewModel @Inject constructor(
         }
     }
 
-    fun getAccountListFacebook(validateToken: String){
+    fun getAccountListFacebook(validateToken: String) {
         rawQueries[QUERY_GET_ACCOUNT_LIST]?.let { query ->
             val params = mapOf(
                     PARAM_VALIDATE_TOKEN to validateToken,
@@ -133,35 +133,35 @@ class ChooseAccountViewModel @Inject constructor(
                 setRequestParams(params)
                 setGraphqlQuery(query)
                 execute(
-                    onSuccessGetAccountListFacebook(),
-                    onFailedGetAccountListFacebook()
+                        onSuccessGetAccountListFacebook(),
+                        onFailedGetAccountListFacebook()
                 )
             }
         }
     }
 
-    fun getUserInfo(){
+    fun getUserInfo() {
         getProfileUseCase.execute(GetProfileSubscriber(userSessionInterface,
                 onSuccessGetUserInfo(),
                 onFailedGetUserInfo()))
     }
 
-    private fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit{
+    private fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit {
         return {
-            if(it.loginToken.accessToken.isNotEmpty() &&
+            if (it.loginToken.accessToken.isNotEmpty() &&
                     it.loginToken.refreshToken.isNotEmpty() &&
-                    it.loginToken.tokenType.isNotEmpty()){
+                    it.loginToken.tokenType.isNotEmpty()) {
                 mutableLoginPhoneNumberResponse.value = Success(it.loginToken)
-            }else if(it.loginToken.errors.isNotEmpty() &&
-                    it.loginToken.errors[0].message.isNotEmpty()){
+            } else if (it.loginToken.errors.isNotEmpty() &&
+                    it.loginToken.errors[0].message.isNotEmpty()) {
                 mutableLoginPhoneNumberResponse.value = Fail(com.tokopedia.network.exception.MessageErrorException(it.loginToken.errors[0].message))
-            }else{
+            } else {
                 mutableLoginPhoneNumberResponse.value = Fail(RuntimeException())
             }
         }
     }
 
-    private fun onFailedLoginToken(): (Throwable) -> Unit{
+    private fun onFailedLoginToken(): (Throwable) -> Unit {
         return {
             userSessionInterface.clearToken()
             mutableLoginPhoneNumberResponse.value = Fail(it)
@@ -170,12 +170,12 @@ class ChooseAccountViewModel @Inject constructor(
 
     private fun onSuccessGetAccountListPhoneNumber(): (AccountListPojo) -> Unit {
         return {
-            if(it.accountList.errors.isEmpty()){
+            if (it.accountList.errors.isEmpty()) {
                 mutableGetAccountListPhoneResponse.value = Success(it.accountList)
-            }else if(it.accountList.errors[0].message.isNotEmpty()){
+            } else if (it.accountList.errors[0].message.isNotEmpty()) {
                 mutableGetAccountListPhoneResponse.value =
                         Fail(com.tokopedia.network.exception.MessageErrorException(it.accountList.errors[0].message))
-            }else{
+            } else {
                 mutableGetAccountListPhoneResponse.value = Fail(RuntimeException())
             }
         }
@@ -189,12 +189,12 @@ class ChooseAccountViewModel @Inject constructor(
 
     private fun onSuccessGetAccountListFacebook(): (AccountListPojo) -> Unit {
         return {
-            if(it.accountList.errors.isEmpty()){
+            if (it.accountList.errors.isEmpty()) {
                 mutableGetAccountListFBResponse.value = Success(it.accountList)
-            }else if(it.accountList.errors[0].message.isNotEmpty()){
+            } else if (it.accountList.errors[0].message.isNotEmpty()) {
                 mutableGetAccountListFBResponse.value =
                         Fail(com.tokopedia.network.exception.MessageErrorException(it.accountList.errors[0].message))
-            }else{
+            } else {
                 mutableGetAccountListFBResponse.value = Fail(RuntimeException())
             }
         }
@@ -218,13 +218,13 @@ class ChooseAccountViewModel @Inject constructor(
         }
     }
 
-    private fun onGoToActivationPage(): (MessageErrorException) -> Unit{
+    private fun onGoToActivationPage(): (MessageErrorException) -> Unit {
         return {
             mutableGoToActivationPage.value = it
         }
     }
 
-    private fun onGoToSecurityQuestion(phone: String): () -> Unit{
+    private fun onGoToSecurityQuestion(phone: String): () -> Unit {
         return {
             mutableGoToSecurityQuestion.value = phone
         }

@@ -1,6 +1,6 @@
 package com.tokopedia.loginphone.chooseaccount.di;
 
-import com.tokopedia.loginphone.chooseaccount.view.fragment.ChooseTokocashAccountFragment;
+import com.tokopedia.loginphone.chooseaccount.view.fragment.ChooseAccountFragment;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
 
 import dagger.Component;
@@ -17,6 +17,6 @@ import dagger.Component;
 }, dependencies = LoginRegisterPhoneComponent.class)
 public interface ChooseAccountComponent {
 
-    void inject(ChooseTokocashAccountFragment fragment);
+    void inject(ChooseAccountFragment fragment);
 
 }

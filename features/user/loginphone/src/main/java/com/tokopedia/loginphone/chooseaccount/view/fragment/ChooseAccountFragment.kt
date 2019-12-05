@@ -37,11 +37,10 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginphone.R
 import com.tokopedia.loginphone.chooseaccount.data.AccountList
-import com.tokopedia.loginphone.chooseaccount.data.ChooseTokoCashAccountViewModel
 import com.tokopedia.loginphone.chooseaccount.data.UserDetail
 import com.tokopedia.loginphone.chooseaccount.di.DaggerChooseAccountComponent
-import com.tokopedia.loginphone.chooseaccount.view.adapter.TokocashAccountAdapter
-import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseTokocashAccountContract
+import com.tokopedia.loginphone.chooseaccount.view.adapter.AccountAdapter
+import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountContract
 import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountViewModel
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
@@ -62,8 +61,8 @@ import kotlin.collections.HashMap
  * @author by nisie on 12/4/17.
  */
 
-class ChooseTokocashAccountFragment : BaseDaggerFragment(),
-        ChooseTokocashAccountContract.ViewAdapter {
+class ChooseAccountFragment : BaseDaggerFragment(),
+        ChooseAccountContract.ViewAdapter {
 
     private val REQUEST_SECURITY_QUESTION = 101
 
@@ -71,9 +70,9 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(),
     lateinit var listAccount: RecyclerView
     lateinit var mainView: View
     lateinit var progressBar: ProgressBar
-    lateinit var adapter: TokocashAccountAdapter
+    lateinit var adapter: AccountAdapter
 
-    lateinit var viewModel: ChooseTokoCashAccountViewModel
+    lateinit var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -128,11 +127,11 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         when {
-            savedInstanceState != null -> viewModel = ChooseTokoCashAccountViewModel(
+            savedInstanceState != null -> viewModel = com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel(
                     savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, ""),
                     savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_UUID, ""),
                     savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, ""))
-            arguments != null -> viewModel = ChooseTokoCashAccountViewModel(
+            arguments != null -> viewModel = com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel(
                     arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, ""),
                     arguments?.getString(ApplinkConstInternalGlobal.PARAM_UUID, ""),
                     arguments?.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, ""))
@@ -158,7 +157,7 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(),
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         if (activity != null) {
-            menu?.let{
+            menu?.let {
                 it.add(Menu.NONE, MENU_ID_LOGOUT, 0, "")
                 val menuItem = it.findItem(MENU_ID_LOGOUT)
                 menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
@@ -192,33 +191,33 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(),
 
     @SuppressLint("WrongConstant")
     private fun prepareView() {
-        adapter = TokocashAccountAdapter.createInstance(this, ArrayList(), "")
+        adapter = AccountAdapter.createInstance(this, ArrayList(), "")
 
         listAccount.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         listAccount.adapter = adapter
     }
 
-    private fun initObserver(){
+    private fun initObserver() {
         chooseAccountViewModel.getAccountListFBResponse.observe(this, androidx.lifecycle.Observer {
-            when (it){
+            when (it) {
                 is Success -> onSuccessGetAccountList(it.data)
                 is Fail -> onErrorGetAccountList(it.throwable)
             }
         })
         chooseAccountViewModel.getAccountListPhoneResponse.observe(this, androidx.lifecycle.Observer {
-            when (it){
+            when (it) {
                 is Success -> onSuccessGetAccountList(it.data)
                 is Fail -> onErrorGetAccountList(it.throwable)
             }
         })
         chooseAccountViewModel.loginPhoneNumberResponse.observe(this, androidx.lifecycle.Observer {
-            when (it){
+            when (it) {
                 is Success -> onSuccessLoginToken()
                 is Fail -> onErrorLoginToken(it.throwable)
             }
         })
         chooseAccountViewModel.getUserInfoResponse.observe(this, androidx.lifecycle.Observer {
-            when (it){
+            when (it) {
                 is Success -> onSuccessGetUserInfo(it.data)
                 is Fail -> onErrorGetUserInfo(it.throwable)
             }
@@ -231,28 +230,28 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(),
         })
     }
 
-    override fun onSelectedTokocashAccount(accountTokocash: UserDetail, phone: String) {
-        loginToken(accountTokocash, phone)
+    override fun onSelectedAccount(account: UserDetail, phone: String) {
+        loginToken(account, phone)
     }
 
-    private fun getAccountList(){
-        when(viewModel.loginType){
+    private fun getAccountList() {
+        when (viewModel.loginType) {
             FACEBOOK_LOGIN_TYPE -> {
-                if(viewModel.accessToken.isNotEmpty())
+                if (viewModel.accessToken.isNotEmpty())
                     chooseAccountViewModel.getAccountListFacebook(viewModel.accessToken)
             }
             else -> {
-                if(viewModel.accessToken.isNotEmpty() && viewModel.phoneNumber.isNotEmpty())
+                if (viewModel.accessToken.isNotEmpty() && viewModel.phoneNumber.isNotEmpty())
                     chooseAccountViewModel.getAccountListPhoneNumber(viewModel.accessToken, viewModel.phoneNumber)
             }
         }
     }
 
-    private fun loginToken(account: UserDetail?, phone: String){
+    private fun loginToken(account: UserDetail?, phone: String) {
         account?.let {
-            when(viewModel.loginType){
+            when (viewModel.loginType) {
                 FACEBOOK_LOGIN_TYPE -> {
-                    if(phone.isNotEmpty()){
+                    if (phone.isNotEmpty()) {
                         chooseAccountViewModel.loginTokenFacebook(
                                 viewModel.accountList.key,
                                 it.email,
@@ -320,7 +319,7 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun loginEventAppsFlyer(userId:String, userEmail:String){
+    private fun loginEventAppsFlyer(userId: String, userEmail: String) {
         var dataMap = HashMap<String, Any>()
         dataMap["user_id"] = userId
         dataMap["user_email"] = userEmail
@@ -352,11 +351,11 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo){
+    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo) {
         onSuccessLogin(profileInfo.userId)
     }
 
-    private fun onErrorGetUserInfo(throwable: Throwable){
+    private fun onErrorGetUserInfo(throwable: Throwable) {
         onErrorLogin(ErrorHandlerSession.getErrorMessage(throwable, context, true))
         logUnknownError(Throwable("Login Phone Number Get User Info is not success"))
     }
@@ -370,7 +369,8 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(),
     }
 
     private fun onGoToSecurityQuestion(): () -> Unit {
-        return {8
+        return {
+            8
             activity?.let {
                 it.setResult(Activity.RESULT_OK, Intent().putExtra(PARAM_IS_SQ_CHECK, true))
                 it.finish()
@@ -440,7 +440,7 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(),
         const val FACEBOOK_LOGIN_TYPE = "fb"
 
         fun createInstance(bundle: Bundle): Fragment {
-            val fragment = ChooseTokocashAccountFragment()
+            val fragment = ChooseAccountFragment()
             fragment.arguments = bundle
             return fragment
         }

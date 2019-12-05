@@ -11,7 +11,7 @@ import rx.Subscriber
 class LoginFacebookSubscriber(val userSession: UserSessionInterface,
                               val onSuccessLoginToken: (pojo: LoginTokenPojo) -> Unit,
                               val onErrorLoginToken: (e: Throwable) -> Unit,
-                              val onGoToSecurityQuestion : () -> Unit) :
+                              val onGoToSecurityQuestion: () -> Unit) :
         Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
@@ -21,9 +21,9 @@ class LoginFacebookSubscriber(val userSession: UserSessionInterface,
         if (pojo.loginToken.errors.isEmpty()
                 && pojo.loginToken.accessToken.isNotBlank()) {
             saveAccessToken(pojo)
-            if(pojo.loginToken.sqCheck){
+            if (pojo.loginToken.sqCheck) {
                 onGoToSecurityQuestion()
-            }else{
+            } else {
                 onSuccessLoginToken(pojo)
             }
         } else if (pojo.loginToken.errors.isNotEmpty()) {
