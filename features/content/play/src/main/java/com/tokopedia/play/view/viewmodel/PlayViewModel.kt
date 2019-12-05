@@ -58,7 +58,7 @@ class PlayViewModel @Inject constructor(private val getChannelInfoUseCase: GetCh
             }
 
             override fun onMessage(webSocketResponse: WebSocketResponse) {
-
+                // TODO create mapper => PlayPresenter.kt
             }
 
             override fun onError(e: Throwable) {

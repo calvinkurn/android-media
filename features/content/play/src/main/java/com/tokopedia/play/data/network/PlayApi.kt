@@ -1,10 +1,9 @@
 package com.tokopedia.play.data.network
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
-import com.tokopedia.play.PLAY_GET_CHANNEL_INFO_V3
-import com.tokopedia.play.PLAY_GET_STICKY_COMPONENTS
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
+import com.tokopedia.play.*
 import com.tokopedia.play.data.Channel
+import com.tokopedia.play.data.Like
 import com.tokopedia.play.data.StickyComponent
 import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
@@ -26,5 +25,10 @@ interface PlayApi {
     fun getStickyComponents(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
     ): Deferred<DataResponse<StickyComponent.Response>>
+
+    @GET(PLAY_GET_TOTAL_LIKES)
+    fun getTotalLike(
+            @Path(PLAY_KEY_CHANNEL_ID) channelId: String
+    ): Deferred<DataResponse<Like>>
 
 }
