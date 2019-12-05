@@ -51,6 +51,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.customviews.TradeInTextView
+import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -131,9 +134,6 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
-import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.common_tradein.customviews.TradeInTextView
-import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.dialog.UnifyDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
@@ -160,6 +160,7 @@ import kotlinx.android.synthetic.main.partial_product_recom_4.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
@@ -1262,12 +1263,22 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productDetailTracking.eventClickPDPInstallmentSeeMore(productId)
 
         val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
-        val bundleData = Bundle()
-        bundleData.putParcelable(KEY_PDP_FINANCING_DATA, installmentData)
-        bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price ?: 0f)
-        bundleData.putBoolean(KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
-        pdpInstallmentBottomSheet.arguments = bundleData
-        pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
+
+        context?.let {
+            val cacheManager = SaveInstanceCacheManager(it, true)
+            cacheManager.put(FinancingDataResponse::class.java.simpleName, installmentData, TimeUnit.HOURS.toMillis(1))
+            val bundleData = Bundle()
+
+            bundleData.putString(KEY_PDP_FINANCING_DATA, cacheManager.id!!)
+//            bundleData.putParcelable(KEY_PDP_FINANCING_DATA, installmentData)
+            bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price ?: 0f)
+            bundleData.putBoolean(KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
+
+            pdpInstallmentBottomSheet.arguments = bundleData
+            pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
+        }
+
+
     }
 
     private fun showAddToCartDoneBottomSheet(successMessage: String) {
@@ -1885,7 +1896,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun onReviewClicked() {
         productInfo?.run {
-            productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
+            productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
+                    ?: "")
             productDetailTracking.eventReviewClicked()
             productDetailTracking.sendMoEngageClickReview(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")

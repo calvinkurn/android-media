@@ -8,17 +8,21 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.financing.FtCalculationPartnerData
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentTnc
 import com.tokopedia.product.detail.data.model.financing.FtTncData
 import com.tokopedia.product.detail.view.adapter.FtPDPInstallmentCalculationAdapter
+import java.util.concurrent.TimeUnit
 
 class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.GetTncDataFromFragment, TkpdBaseV4Fragment() {
 
     private var productPrice: Float? = 0f
     private var isOfficialStore: Boolean = false
     private lateinit var ftRecyclerView: RecyclerView
+    private var tncDataListId: String = ""
+    private var partnerDataItemListId: String = ""
     private lateinit var partnerDataItemList: ArrayList<FtCalculationPartnerData>
     private lateinit var tncDataList: ArrayList<FtInstallmentTnc>
     private var tncIdHashMap: HashMap<Int, ArrayList<FtTncData>> = HashMap()
@@ -29,15 +33,26 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
         const val KEY_INSTALLMENT_TNC_LIST = "keyInstallmentTncList"
         const val KEY_INSTALLMENT_IS_OFFICIAL_STORE = "keyInstallmentIsOfficialStore"
 
-        fun createInstance(productPrice: Float, tncList: ArrayList<FtInstallmentTnc>, isOfficialStore: Boolean,
+        fun createInstance(context: Context?, productPrice: Float, tncList: ArrayList<FtInstallmentTnc>, isOfficialStore: Boolean,
                            dataList: ArrayList<FtCalculationPartnerData>): FtPdpInstallmentCalculationFragment {
             val bundle = Bundle()
             bundle.putFloat(KEY_INSTALLMENT_PRODUCT_PRICE, productPrice)
             bundle.putBoolean(KEY_INSTALLMENT_IS_OFFICIAL_STORE, isOfficialStore)
-            bundle.putParcelableArrayList(KEY_INSTALLMENT_CALCULATION_DATA, dataList)
-            bundle.putParcelableArrayList(KEY_INSTALLMENT_TNC_LIST, tncList)
             val lendingPartnerFragment = FtPdpInstallmentCalculationFragment()
-            lendingPartnerFragment.arguments = bundle
+            context?.let {
+
+                var cacheManager = SaveInstanceCacheManager(it, true)
+                cacheManager.put(FtCalculationPartnerData::class.java.simpleName, dataList, TimeUnit.HOURS.toMillis(1))
+                bundle.putString(KEY_INSTALLMENT_CALCULATION_DATA, cacheManager.id!!)
+
+                cacheManager = SaveInstanceCacheManager(it, true)
+                cacheManager.put(FtCalculationPartnerData::class.java.simpleName, tncList, TimeUnit.HOURS.toMillis(1))
+                bundle.putString(KEY_INSTALLMENT_TNC_LIST, cacheManager.id!!)
+
+                lendingPartnerFragment.arguments = bundle
+            }
+
+
             return lendingPartnerFragment
         }
     }
@@ -51,10 +66,25 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
         arguments?.let {
             productPrice = it.getFloat(KEY_INSTALLMENT_PRODUCT_PRICE)
             isOfficialStore = it.getBoolean(KEY_INSTALLMENT_IS_OFFICIAL_STORE)
-            tncDataList = it.getParcelableArrayList<FtInstallmentTnc>(KEY_INSTALLMENT_TNC_LIST)
-                    ?: ArrayList()
-            partnerDataItemList = arguments?.getParcelableArrayList<FtCalculationPartnerData>(KEY_INSTALLMENT_CALCULATION_DATA)
-                    ?: ArrayList()
+
+            tncDataListId = it.getString(KEY_INSTALLMENT_TNC_LIST) ?: ""
+            var cacheManager = SaveInstanceCacheManager(context!!, tncDataListId)
+
+            tncDataList = cacheManager.get(
+                    FtInstallmentTnc::class.java.simpleName,
+                    FtInstallmentTnc::class.java
+            ) ?: ArrayList()
+
+
+            partnerDataItemListId = it.getString(KEY_INSTALLMENT_CALCULATION_DATA) ?: ""
+
+            cacheManager = SaveInstanceCacheManager(context!!, tncDataListId)
+
+            partnerDataItemList = cacheManager.get(
+                    FtCalculationPartnerData::class.java.simpleName,
+                    FtCalculationPartnerData::class.java
+            ) ?: ArrayList()
+
         }
         prepareTncIDHashMap()
     }
