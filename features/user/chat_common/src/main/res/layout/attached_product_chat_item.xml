@@ -69,8 +69,7 @@
     <include layout="@layout/attach_product_base_layout"
             android:id="@+id/attach_product_chat_container"
             android:layout_below="@id/name"
-            android:maxWidth="250dp"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_240"
             android:layout_height="wrap_content" />
 
     <ProgressBar

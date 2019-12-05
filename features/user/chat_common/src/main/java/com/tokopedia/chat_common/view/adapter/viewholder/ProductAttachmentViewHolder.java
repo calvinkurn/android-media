@@ -1,21 +1,24 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Paint;
-import androidx.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener;
-import com.tokopedia.design.component.ButtonCompat;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 /**
  * @author by nisie on 5/14/18.
@@ -35,7 +38,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private TextView label;
     private TextView dot;
     private ImageView thumbnailsImage;
-    private ButtonCompat tvBuy;
+    private UnifyButton tvBuy;
     private ImageView ivATC;
     private View footerLayout;
     private ImageView freeShipping;
@@ -133,7 +136,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             if (element.isDummy()) {
                 imageResource = R.drawable.ic_chat_pending;
             }
-            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(),imageResource));
+            chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(), imageResource));
         } else {
             chatStatus.setVisibility(View.GONE);
         }
@@ -168,8 +171,8 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private void setUIDiscount(View productContainer, ProductAttachmentViewModel element) {
         setUIVisibility(productContainer, R.id.discount, element.getPriceBefore());
         setUIValue(productContainer, R.id.attach_product_chat_price_old, element.getPriceBefore());
-        setUIValue(productContainer, R.id.discount_nominal, element.getDropPercentage()+"%");
-        setUIVisibility(productContainer, R.id.drop_price, element.getDropPercentage());
+        setUIValue(productContainer, R.id.discount, element.getDropPercentage() + "%");
+        setUIVisibility(productContainer, R.id.discount, element.getDropPercentage());
         setUIVisibility(productContainer, R.id.attach_product_chat_price_old, element.getPriceBefore());
         setStrikeThrough(productContainer, R.id.attach_product_chat_price_old);
     }
@@ -181,14 +184,11 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             destination.setVisibility(View.VISIBLE);
         } else {
             destination.setVisibility(View.GONE);
-
         }
     }
 
     private void setFooter(View productContainer, ProductAttachmentViewModel element) {
-        View separator = productContainer.findViewById(R.id.separator);
         if (element.getCanShowFooter() && !GlobalConfig.isSellerApp()) {
-            separator.setVisibility(View.VISIBLE);
             footerLayout.setVisibility(View.VISIBLE);
             tvBuy.setVisibility(View.VISIBLE);
             ivATC.setVisibility(View.VISIBLE);
@@ -201,31 +201,38 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             });
         } else {
             footerLayout.setVisibility(View.GONE);
-            separator.setVisibility(View.GONE);
             tvBuy.setVisibility(View.GONE);
             ivATC.setVisibility(View.GONE);
         }
-
     }
 
 
     private void setUIValue(View productContainer, int id, String value) {
         View destination = productContainer.findViewById(id);
-        if (destination instanceof TextView)
+        if (destination instanceof Label) {
+            ((Label) destination).setLabel(value);
+        } else if (destination instanceof TextView) {
             ((TextView) destination).setText(value);
-        else if (destination instanceof ImageView) {
-            ImageHandler.loadImageRounded2(destination.getContext(), (ImageView) destination,
-                    value, 8f);
+        } else if (destination instanceof ImageView) {
+            ImageHandler.loadImageRounded2(
+                    destination.getContext(),
+                    (ImageView) destination,
+                    value,
+                    toPx(8f)
+            );
             this.thumbnailsImage = (ImageView) destination;
-
         }
     }
 
     private void setStrikeThrough(View productContainer, int id) {
         View destination = productContainer.findViewById(id);
-        if (destination instanceof TextView)
+        if (destination instanceof TextView) {
             ((TextView) destination).setPaintFlags(((TextView) destination).getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+    }
 
+    private float toPx(float v) {
+        return Resources.getSystem().getDisplayMetrics().density * v;
     }
 
     @Override
