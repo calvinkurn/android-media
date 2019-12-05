@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
 import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.RingtoneManager
@@ -20,6 +19,7 @@ import android.text.TextUtils
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
@@ -134,21 +134,9 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             R.mipmap.ic_big_notif_seller
         else
             R.mipmap.ic_launcher
-    internal val bitmapLargeIcon : Bitmap
-    get() = createBitmap()
 
-    private fun createBitmap() : Bitmap {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val drawable = context.resources.getDrawable(drawableLargeIcon)
-            val bmp = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bmp)
-            drawable.setBounds(0, 0, canvas.width, canvas.height)
-            drawable.draw(canvas)
-            bmp
-        } else {
-            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
-        }
-    }
+    protected val bitmapLargeIcon: Bitmap
+        get() = BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
 
     private val actionButtonHeightWidth: Int
         get() = context.resources.getDimensionPixelSize(R.dimen.dp_20)

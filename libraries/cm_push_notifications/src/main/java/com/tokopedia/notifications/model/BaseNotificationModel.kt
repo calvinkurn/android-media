@@ -189,10 +189,10 @@ data class BaseNotificationModel(
         parcel.writeTypedList(productInfoList)
         parcel.writeLong(parentId)
         parcel.writeString(campaignUserToken)
-        parcel.writeInt(status.statusInt)
+        NotificationStatusConverter.instances.toStatus(status.statusInt)
         parcel.writeLong(startTime)
         parcel.writeLong(endTime)
-        parcel.writeInt(status.statusInt)
+        NotificationModeConverter.instances.toMode(status.statusInt)
     }
 
     override fun describeContents(): Int {

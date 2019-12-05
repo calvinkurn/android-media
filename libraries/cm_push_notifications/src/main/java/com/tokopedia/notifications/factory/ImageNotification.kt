@@ -35,7 +35,7 @@ class ImageNotification internal constructor(context: Context, baseNotificationM
     }
 
     private fun setBigPictureNotification(builder: NotificationCompat.Builder, baseNotificationModel: BaseNotificationModel) {
-        val bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality) ?: getBitmap(baseNotificationModel.media?.mediumQuality)
+        val bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality)
         if (null != bitmap) {
             builder.setLargeIcon(bitmap)
             val bigPictureStyle = NotificationCompat.BigPictureStyle()
