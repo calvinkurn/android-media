@@ -4,13 +4,11 @@ import androidx.annotation.StringRes
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
 import com.tokopedia.flight.booking.view.viewmodel.*
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
-import rx.Observable
 import java.util.*
 
 /**
@@ -95,8 +93,6 @@ interface FlightBookingContract {
         fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel,
                                           isMandatoryDoB: Boolean, departureDate: String,
                                           requestId: String)
-
-        fun getProfileObservable(): Observable<ProfileInfo>
 
         fun setContactBirthdate(birthdate: String)
 

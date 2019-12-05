@@ -1,10 +1,7 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate
 
-import android.graphics.Color
 import android.graphics.Typeface.BOLD
 import android.graphics.drawable.GradientDrawable
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -12,14 +9,14 @@ import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
+import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel.Companion.BUYER_TYPE
@@ -47,6 +44,11 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
         bindNotificationContent(element)
         bindNotificationPayload(element)
         bindOnNotificationClick(element)
+        trackImpression(element)
+    }
+
+    private fun trackImpression(element: NotificationUpdateItemViewModel) {
+        listener.trackNotificationImpression(element)
     }
 
     override fun bind(element: NotificationUpdateItemViewModel?, payloads: MutableList<Any>) {
@@ -74,7 +76,7 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
 
     protected open fun bindNotificationContent(element: NotificationUpdateItemViewModel) {
         title.text = element.title
-        if(element.body.length > MAX_CONTENT_LENGTH) {
+        if (element.body.length > MAX_CONTENT_LENGTH) {
             var shorten = element.body.take(MAX_CONTENT_LENGTH)
             val inFull = getStringResource(R.string.in_full)
             shorten = "$shorten... $inFull"
@@ -84,14 +86,14 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
             spannable.setSpan(
                     ForegroundColorSpan(color),
                     shorten.indexOf(inFull),
-                    shorten.indexOf(inFull)+ inFull.length,
+                    shorten.indexOf(inFull) + inFull.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
 
             spannable.setSpan(
                     StyleSpan(BOLD),
                     shorten.indexOf(inFull),
-                    shorten.indexOf(inFull)+ inFull.length,
+                    shorten.indexOf(inFull) + inFull.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
 
@@ -152,6 +154,10 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
 
     private fun getColorResource(colorId: Int): Int {
         return MethodChecker.getColor(itemView.context, colorId)
+    }
+
+    protected fun getAnalytic(): NotificationUpdateAnalytics {
+        return listener.getAnalytic()
     }
 
     companion object {

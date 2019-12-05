@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.passenger.di.DaggerFlightPassengerComponent;
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent;
@@ -66,16 +65,16 @@ public class FlightPassengerUpdateActivity extends BaseSimpleActivity
 
     private void showCancelUpdateDialog() {
         final Dialog dialog = new Dialog(this, Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.flight_passenger_update_abort_dialog_title));
-        dialog.setDesc(getString(R.string.flight_passenger_update_abort_dialog_description));
-        dialog.setBtnOk(getString(R.string.flight_passenger_update_ok_button));
+        dialog.setTitle(getString(com.tokopedia.flight.R.string.flight_passenger_update_abort_dialog_title));
+        dialog.setDesc(getString(com.tokopedia.flight.R.string.flight_passenger_update_abort_dialog_description));
+        dialog.setBtnOk(getString(com.tokopedia.flight.R.string.flight_passenger_update_ok_button));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel(getString(R.string.flight_passenger_update_cancel_button));
+        dialog.setBtnCancel(getString(com.tokopedia.flight.R.string.flight_passenger_update_cancel_button));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -77,7 +77,7 @@ class RecommendationTracking {
 
         private fun convertRecommendationItemToDataClickObject(item: RecommendationItem,
                                                                list: String,
-                                                               position: String): Any  {
+                                                               position: String): Map<String, Any>  {
             return DataLayer.mapOf(
                     FIELD_ACTION_FIELD, DataLayer.mapOf(
                     FIELD_PRODUCT_LIST, list
@@ -160,7 +160,7 @@ class RecommendationTracking {
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_LOGIN,
                     EVENT_LABEL, VALUE_EMPTY,
                     ECOMMERCE, DataLayer.mapOf(
-                    ECOMMERCE_CLICK, DataLayer.listOf(
+                    ECOMMERCE_CLICK,
                     convertRecommendationItemToDataClickObject(
                             recommendationItem,
                             String.format(
@@ -169,7 +169,7 @@ class RecommendationTracking {
                                     if(recommendationItem.isTopAds) PRODUCT_TOPADS else VALUE_EMPTY
                             ),
                             position)
-            )
+
             )
             )
            getTracker().sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
@@ -185,7 +185,7 @@ class RecommendationTracking {
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_NON_LOGIN,
                     EVENT_LABEL, VALUE_EMPTY,
                     ECOMMERCE, DataLayer.mapOf(
-                    ECOMMERCE_CLICK, DataLayer.listOf(
+                    ECOMMERCE_CLICK,
                     convertRecommendationItemToDataClickObject(
                             recommendationItem,
                             String.format(
@@ -194,7 +194,7 @@ class RecommendationTracking {
                                     if(recommendationItem.isTopAds) PRODUCT_TOPADS else VALUE_EMPTY
                             ),
                             position)
-            )
+
             )
             )
            getTracker().sendEnhanceEcommerceEvent(data as HashMap<String, Any>)

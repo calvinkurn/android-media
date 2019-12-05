@@ -246,7 +246,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
                         int minutes = (int) ((l / (1000 * 60)) % 60);
                         int hours = (int) ((l / (1000 * 60 * 60)) % 24);
                         holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
-                        holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
+                        holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.medium_green));
                         holder.progressTimer.setProgress((int) l / 1000);
                         holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
                                 holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
@@ -262,11 +262,11 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
             } else {
                 holder.progressTimer.setVisibility(View.GONE);
                 holder.value.setPadding(0, 0, 0, 0);
-                holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+                holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.black_70));
             }
         } else {
             holder.progressTimer.setVisibility(View.GONE);
-            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.black_70));
         }
     }
 }

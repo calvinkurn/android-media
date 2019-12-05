@@ -44,6 +44,6 @@ public class EditTemplateChatActivity extends BaseSimpleActivity {
 
     @Override
     public String getScreenName() {
-        return ChatTemplateAnalytics.Companion.SCREEN_TEMPLATE_CHAT_SET;
+        return ChatTemplateAnalytics.Companions.SCREEN_TEMPLATE_CHAT_SET;
     }
 }

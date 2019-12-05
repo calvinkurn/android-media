@@ -70,8 +70,8 @@ public class FlightBookingAmenityFragment extends BaseListFragment<FlightBooking
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_booking_luggage, container, false);
-        Button button = (Button) view.findViewById(R.id.button_save);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_booking_luggage, container, false);
+        Button button = (Button) view.findViewById(com.tokopedia.flight.R.id.button_save);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,5 +103,10 @@ public class FlightBookingAmenityFragment extends BaseListFragment<FlightBooking
     public void resetItemCheck() {
         selectedAmenity.setAmenities(new ArrayList<FlightBookingAmenityViewModel>());
         getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
     }
 }

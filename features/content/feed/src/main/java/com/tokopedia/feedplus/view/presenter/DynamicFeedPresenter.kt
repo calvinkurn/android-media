@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedplus.NON_LOGIN_USER_ID
@@ -10,6 +11,7 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.profile.view.subscriber.TrackPostClickSubscriber
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
@@ -19,7 +21,8 @@ import javax.inject.Inject
  */
 class DynamicFeedPresenter @Inject constructor(private val userSession: UserSessionInterface,
                                                private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-                                               private val likeKolPostUseCase: LikeKolPostUseCase):
+                                               private val likeKolPostUseCase: LikeKolPostUseCase,
+                                               private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase):
         BaseDaggerPresenter<DynamicFeedContract.View>(),
         DynamicFeedContract.Presenter {
 
@@ -126,10 +129,10 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
         )
     }
 
-    override fun trackPostClick(uniqueTrackingId: String, redirectLink: String) {
-    }
-
-    override fun trackPostClickUrl(url: String) {
+    override fun trackAffiliate(url: String) {
+        trackAffiliateClickUseCase.execute(
+                TrackAffiliateClickUseCase.createRequestParams(url),
+                TrackPostClickSubscriber())
     }
 
     override fun attachView(view: DynamicFeedContract.View?) {
