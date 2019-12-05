@@ -455,7 +455,7 @@ class TopChatRoomPresenter @Inject constructor(
         val addToCartRequestParams = AddToCartRequestParams()
         addToCartRequestParams.productId = Integer.parseInt(element.productId.toString()).toLong()
         addToCartRequestParams.shopId = shopId
-        addToCartRequestParams.quantity = 1
+        addToCartRequestParams.quantity = element.minOrder
         addToCartRequestParams.notes = ""
 
         val requestParams = RequestParams.create()

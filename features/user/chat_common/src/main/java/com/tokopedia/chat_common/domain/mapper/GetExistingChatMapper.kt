@@ -231,7 +231,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 pojoAttribute.productProfile.shopId,
                 pojoAttribute.productProfile.freeShipping,
                 pojoAttribute.productProfile.categoryId,
-                pojoAttribute.productProfile.playStoreData
+                pojoAttribute.productProfile.playStoreData,
+                pojoAttribute.productProfile.minOrder
         )
     }
 

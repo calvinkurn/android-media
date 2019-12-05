@@ -4,7 +4,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class ProductProfile {
-
+    @SerializedName("min_order")
+    @Expose
+    val minOrder: Int = 1
     @SerializedName("image_url")
     @Expose
     val imageUrl: String = ""

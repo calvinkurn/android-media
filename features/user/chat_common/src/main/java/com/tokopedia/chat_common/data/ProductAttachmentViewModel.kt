@@ -45,6 +45,8 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
 
     var categoryId: Int = 0
 
+    var minOrder: Int = 1
+
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,
                 replyTime: String, startTime: String, isRead: Boolean, isDummy: Boolean,
@@ -81,7 +83,8 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
             productImage: String, isSender: Boolean, message: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
             variant: String, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData
+            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData,
+            minOrder: Int
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             "", isRead, false, isSender, message
@@ -103,6 +106,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         this.freeShipping = freeShipping
         this.categoryId = categoryId
         this.playStoreData = playStoreData
+        this.minOrder = minOrder
     }
 
     /**
