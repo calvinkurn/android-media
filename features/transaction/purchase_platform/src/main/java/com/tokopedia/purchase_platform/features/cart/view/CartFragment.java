@@ -2778,6 +2778,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onDeleteAllDisabledProduct() {
         List<CartItemData> allDisabledCartItemDataList = cartAdapter.getAllDisabledCartItemData();
+        List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
 
         DialogUnify dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size());
 
@@ -2793,7 +2794,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         dialog.setPrimaryCTAClickListener(() -> {
             if (allDisabledCartItemDataList.size() > 0) {
-                dPresenter.processDeleteCartItem(allDisabledCartItemDataList, allDisabledCartItemDataList, null, false, false);
+                dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, null, false, false);
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
