@@ -104,9 +104,15 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         if (element.hasEmptyStock()) {
             tvBuy.setEnabled(false);
             tvBuy.setText(R.string.action_empty_stock);
+            ivATC.setImageDrawable(
+                    MethodChecker.getDrawable(itemView.getContext(), R.drawable.ic_cart_greyscale_disabled)
+            );
         } else {
             tvBuy.setEnabled(true);
             tvBuy.setText(R.string.action_buy);
+            ivATC.setImageDrawable(
+                    MethodChecker.getDrawable(itemView.getContext(), R.drawable.ic_cart_grayscale_20)
+            );
         }
     }
 
@@ -177,7 +183,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
 
     private void setChatLeft(View productContainerView) {
         productContainerView.setBackground(
-                MethodChecker.getDrawable(productContainerView.getContext(), R.drawable.bg_shadow_attach_product_left)
+                MethodChecker.getDrawable(productContainerView.getContext(), R.drawable.bg_shadow_attach_product)
         );
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, productContainerView);
         chatStatus.setVisibility(View.GONE);
@@ -188,7 +194,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
 
     private void setChatRight(View productContainerView, ProductAttachmentViewModel element) {
         productContainerView.setBackground(
-                MethodChecker.getDrawable(productContainerView.getContext(), R.drawable.bg_shadow_attach_product_right)
+                MethodChecker.getDrawable(productContainerView.getContext(), R.drawable.bg_shadow_attach_product)
         );
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, productContainerView);
         setChatReadStatus(element);
