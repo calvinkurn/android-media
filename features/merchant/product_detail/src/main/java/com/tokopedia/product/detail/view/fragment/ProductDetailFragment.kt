@@ -1270,7 +1270,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             val bundleData = Bundle()
 
             bundleData.putString(KEY_PDP_FINANCING_DATA, cacheManager.id!!)
-//            bundleData.putParcelable(KEY_PDP_FINANCING_DATA, installmentData)
             bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price ?: 0f)
             bundleData.putBoolean(KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
 

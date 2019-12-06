@@ -9,7 +9,7 @@ import java.lang.reflect.Field
 /*
  * This class is added to achieve the nested scrolling behaviour in view pager fragments which are at postion other than 0*/
 
-class BottomSheetViewPager(context: Context, attrs: AttributeSet?) : ViewPager(context, attrs) {
+public class BottomSheetViewPager(context: Context, attrs: AttributeSet?) : ViewPager(context, attrs) {
     constructor(context: Context) : this(context, null)
     private val positionField: Field =
             ViewPager.LayoutParams::class.java.getDeclaredField("position").also {

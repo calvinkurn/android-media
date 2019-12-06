@@ -20,7 +20,6 @@ import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.view.adapter.InstallmentDataPagerAdapter
 import com.tokopedia.product.detail.view.fragment.FtPdpInstallmentCalculationFragment
 import com.tokopedia.product.detail.view.util.FtInstallmentListItem
-import java.util.*
 
 class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 

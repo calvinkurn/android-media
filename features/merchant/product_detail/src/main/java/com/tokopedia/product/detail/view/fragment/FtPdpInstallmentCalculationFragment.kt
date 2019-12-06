@@ -22,13 +22,11 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
     private var isOfficialStore: Boolean = false
     private lateinit var ftRecyclerView: RecyclerView
     private var tncDataListId: String = ""
-    private var partnerDataItemListId: String = ""
     private lateinit var partnerDataItemList: ArrayList<FtCalculationPartnerData>
     private lateinit var tncDataList: ArrayList<FtInstallmentTnc>
     private var tncIdHashMap: HashMap<Int, ArrayList<FtTncData>> = HashMap()
 
     companion object {
-        const val KEY_INSTALLMENT_CALCULATION_DATA = "keyInstallmentData"
         const val KEY_INSTALLMENT_PRODUCT_PRICE = "keyInstallmentProductPrice"
         const val KEY_INSTALLMENT_TNC_LIST = "keyInstallmentTncList"
         const val KEY_INSTALLMENT_IS_OFFICIAL_STORE = "keyInstallmentIsOfficialStore"
@@ -49,7 +47,6 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
                 bundle.putString(KEY_INSTALLMENT_TNC_LIST, cacheManager.id!!)
                 lendingPartnerFragment.arguments = bundle
             }
-
 
             return lendingPartnerFragment
         }
@@ -109,5 +106,4 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
                     isOfficialStore, partnerDataItemList, this)
         }
     }
-
 }
