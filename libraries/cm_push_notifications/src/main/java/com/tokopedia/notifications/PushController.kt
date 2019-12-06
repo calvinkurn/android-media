@@ -22,6 +22,9 @@ class PushController(val context: Context) : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
 
+    private val isOfflinePushEnabled
+        get() = (context.applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_OFFLINE_PUSH_ENABLE, false)
+
     fun handleNotificationBundle(bundle: Bundle) {
         try {
             //todo event notification received offline
@@ -31,7 +34,8 @@ class PushController(val context: Context) : CoroutineScope {
 
                         val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
                         if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) {
-                            onOfflinePushPayloadReceived(baseNotificationModel)
+                            if (isOfflinePushEnabled)
+                                onOfflinePushPayloadReceived(baseNotificationModel)
                         } else {
                             onLivePushPayloadReceived(baseNotificationModel)
                         }

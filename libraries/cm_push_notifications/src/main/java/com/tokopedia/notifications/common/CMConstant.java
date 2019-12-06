@@ -7,6 +7,7 @@ public interface CMConstant {
 
     interface RemoteKeys{
         String KEY_IS_INAPP_ENABLE = "app_cm_inapp_enable";
+        String KEY_IS_OFFLINE_PUSH_ENABLE = "app_cm_offline_push_enabled";
     }
 
 
