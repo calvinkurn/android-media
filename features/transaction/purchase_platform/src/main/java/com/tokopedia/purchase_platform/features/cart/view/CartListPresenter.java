@@ -256,7 +256,10 @@ public class CartListPresenter implements ICartListPresenter {
             view.showProgressLoading();
         }
 
-        compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(RequestParams.EMPTY)
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetCartListSimplifiedUseCase.PARAM_SELECTED_CART_ID, cartId);
+
+        compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
