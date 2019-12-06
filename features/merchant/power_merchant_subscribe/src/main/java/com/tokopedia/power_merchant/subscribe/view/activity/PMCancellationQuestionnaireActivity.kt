@@ -298,15 +298,18 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
                         .listQuestionnaireAnswer[currentPosition - 1].answers[0].toIntOrZero()
                 powerMerchantTracking.eventPMCancellationClickNextQuestionButtonFirstPage(rating)
             }
-            else -> powerMerchantTracking.eventPMCancellationClickNextQuestionButtonMiddlePage()
+            else -> powerMerchantTracking.eventPMCancellationClickNextQuestionButtonMiddlePage(
+                    pmCancellationQuestionnaireStepperModel
+                            .listQuestionnaireAnswer[currentPosition - 1].question
+            )
         }
     }
 
     private fun sendClickBackButtonTrackingEvent() {
         when {
             isFirstPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonFirstPage()
-            isFinalPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonMiddlePage()
-            else -> powerMerchantTracking.eventPMCancellationClickBackButtonLastPage()
+            isFinalPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonLastPage()
+            else -> powerMerchantTracking.eventPMCancellationClickBackButtonMiddlePage()
         }
     }
 
