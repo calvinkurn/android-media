@@ -124,5 +124,6 @@
     <string name="swd_refund_empty_msg">Kamu tidak punya Saldo Refund untuk ditarik</string>
     <string name="admin_fee_msg">Dikenai biaya admin %s</string>
     <string name="swd_penghasilan_empty_msg">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
+    <string name="swd_earn_pint_on_withdraw">Dapatkan poin setiap penarikan</string>
 
 </resources>

@@ -6,8 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -408,7 +410,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             tvEmptySaldo.setText(R.string.swd_refund_empty_msg);
             editableGroup.setVisibility(View.GONE);
             emptyScreenGroup.setVisibility(View.VISIBLE);
-        }else if(currentTab == 1 && sellerSaldoBalance == 0){
+        } else if (currentTab == 1 && sellerSaldoBalance == 0) {
             tvEmptySaldo.setText(R.string.swd_penghasilan_empty_msg);
             editableGroup.setVisibility(View.GONE);
             emptyScreenGroup.setVisibility(View.VISIBLE);
@@ -716,9 +718,11 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 premiumAccountView.findViewById(R.id.tv_baru_tag).setVisibility(View.VISIBLE);
             } else
                 premiumAccountView.findViewById(R.id.tv_baru_tag).setVisibility(View.GONE);
-
             premiumAccountView.setVisibility(View.VISIBLE);
-            if (data.isIsPowerWD()) {
+
+            if (isRegisterForProgram) {
+                ((TextView) premiumAccountView.findViewById(R.id.tv_rekeningTitle))
+                        .setText(getString(R.string.swd_rekening_premium));
                 if (data.getWdPoints() == 0) {
                     setProgramStatus(getString(R.string.active_bri_Account, data.getProgram()),
                             getString(R.string.withdrawal_info));
@@ -728,12 +732,19 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                             getString(R.string.withdraw_help));
                 }
             } else {
-                if (data.getStatusInt() == 0)
-                    setProgramStatus(getString(R.string.withdraw_with_more),
+                ((TextView) premiumAccountView.findViewById(R.id.tv_rekeningTitle))
+                        .setText(getString(R.string.swd_program_tarik_saldo));
+
+                if (data.getStatusInt() == -1 || data.getStatusInt() == 1
+                        || data.getStatusInt() == 3 || data.getStatusInt() == 5
+                        || data.getStatusInt() == 6) {
+                    setProgramStatus(getString(R.string.swd_earn_pint_on_withdraw),
                             getString(R.string.bri_cek));
-                else
+                }
+                if (data.getStatusInt() == 2 || data.getStatusInt() == 0) {
                     setProgramStatus(getString(R.string.account_in_progress, data.getProgram()),
                             getString(R.string.bri_cek));
+                }
             }
             premiumAccountView.findViewById(R.id.tv_briProgramButton)
                     .setOnClickListener(new View.OnClickListener() {
@@ -756,6 +767,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     private void handleProgramWidgetClick() {
+        analytics.eventOnPremiumProgramWidgetClick();
         briProgramBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         View view = getLayoutInflater().inflate(R.layout.swd_program_tarik_saldo, null, true);
         if (isRegisterForProgram) {
@@ -777,6 +789,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         }
 
         view.findViewById(R.id.wdProgramContinue).setOnClickListener(v -> {
+            PersistentCacheManager.instance
+                    .put(WithdrawConstant.KEY_PREMIUM_ACCOUNT_NEW_TAG, true);
             briProgramBottomSheet.dismiss();
             RouteManager.route(getContext(), String.format("%s?url=%s",
                     ApplinkConst.WEBVIEW, WEB_REKENING_PREMIUM_URL));
@@ -866,11 +880,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.tkpd_main_green));
                     }
 
-                }
-                else if (resultCode == WithdrawConstant.ResultCode.GOTO_SALDO_DETAIL_PAGE){
+                } else if (resultCode == WithdrawConstant.ResultCode.GOTO_SALDO_DETAIL_PAGE) {
                     getActivity().finish();
-                }
-                else if(resultCode == WithdrawConstant.ResultCode.GOTO_TOKOPEDIA_HOME_PAGE){
+                } else if (resultCode == WithdrawConstant.ResultCode.GOTO_TOKOPEDIA_HOME_PAGE) {
                     getActivity().finish();
                     RouteManager.route(getContext(), ApplinkConst.HOME, "");
                 }
