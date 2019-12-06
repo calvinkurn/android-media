@@ -6,7 +6,7 @@ ext {
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
             graphql                 : "com.tokopedia.graphql:graphql:1.0.18",
-            network                 : "com.tokopedia.network:network:1.0.10-test",
+            network                 : "com.tokopedia.network:network:1.0.12",
             url                     : "com.tokopedia.url:url:1.0.2",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.2",
             usersession             : "com.tokopedia.user.session:user_session:1.0.7",
