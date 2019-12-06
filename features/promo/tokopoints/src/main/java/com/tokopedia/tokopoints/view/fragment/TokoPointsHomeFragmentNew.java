@@ -1021,6 +1021,10 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     @Override
     public void showTokopoint2020(PopupNotification data) {
 
+        if (data.getTitle().isEmpty() || data.isEmpty()) {
+            return;
+        }
+
         ButtonCompat btn;
         Typography titleDialog;
         Typography descDialog;
