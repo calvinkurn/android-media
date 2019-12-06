@@ -83,7 +83,6 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
         super.onViewCreated(view, savedInstanceState);
 
         initView();
-        renderData();
     }
 
     @Override
@@ -98,6 +97,7 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
 
     public void setDigitalPromoConnector(DigitalPromoConnector digitalPromoConnector) {
         this.digitalPromoConnector = digitalPromoConnector;
+        renderData();
     }
 
     private void initView() {
