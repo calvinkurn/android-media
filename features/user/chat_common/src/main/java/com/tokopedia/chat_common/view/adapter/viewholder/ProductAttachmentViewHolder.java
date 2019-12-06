@@ -165,8 +165,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     private void setChatLeft(View productContainerView) {
-        productContainerView.setBackground(context.getResources().getDrawable(R.drawable
-                .attach_product_left_bubble));
+        productContainerView.setBackground(context.getResources().getDrawable(R.drawable.bg_shadow_attach_product_left));
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, productContainerView);
         chatStatus.setVisibility(View.GONE);
         name.setVisibility(View.GONE);
@@ -175,7 +174,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     private void setChatRight(View productContainerView, ProductAttachmentViewModel element) {
-        productContainerView.setBackgroundResource(R.drawable.bg_shadow_attach_product);
+        productContainerView.setBackgroundResource(R.drawable.bg_shadow_attach_product_right);
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, productContainerView);
         setChatReadStatus(element);
     }
