@@ -195,7 +195,3 @@ class AccountConfirmFragment : BaseDaggerFragment() {
     }
 
 }
-
-/*view?.let {
-                        Toaster.make(it, "${getFileName(filePath)} ${getMimeType(context!!, File(filePath))} ${getFileExt(filePath)}", Toaster.LENGTH_LONG)
-                    }*/
