@@ -312,6 +312,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 );
             }
         }
+
+        rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn(), categoryDataState.getName(),
+                categoryDataState.getCategoryId());
     }
 
     @Override

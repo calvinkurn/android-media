@@ -81,6 +81,8 @@ public class CategoryItemsViewModel implements Parcelable {
     private Object forms;
     private int minLikes;
     private boolean isTrack = false;
+    private String webUrl;
+    private String appUrl;
 
     public CategoryItemsViewModel() {
     }
@@ -667,6 +669,21 @@ public class CategoryItemsViewModel implements Parcelable {
     public void setForms(Object forms) {
         this.forms = forms;
     }
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    public void setWebUrl(String webUrl) {
+        this.webUrl = webUrl;
+    }
+
+    public String getAppUrl() {
+        return appUrl;
+    }
+
+    public void setAppUrl(String appUrl) {
+        this.appUrl = appUrl;
+    }
 
 
     @Override
@@ -746,6 +763,8 @@ public class CategoryItemsViewModel implements Parcelable {
         dest.writeByte(this.wasLiked ? (byte) 1 : (byte) 0);
         dest.writeInt(this.minLikes);
         dest.writeByte(this.isTrack ? (byte) 1 : (byte) 0);
+        dest.writeString(this.webUrl);
+        dest.writeString(this.appUrl);
     }
 
     protected CategoryItemsViewModel(Parcel in) {
@@ -819,6 +838,8 @@ public class CategoryItemsViewModel implements Parcelable {
         this.wasLiked = in.readByte() != 0;
         this.minLikes = in.readInt();
         this.isTrack = in.readByte() != 0;
+        this.webUrl = in.readString();
+        this.appUrl = in.readString();
     }
 
     public static final Creator<CategoryItemsViewModel> CREATOR = new Creator<CategoryItemsViewModel>() {

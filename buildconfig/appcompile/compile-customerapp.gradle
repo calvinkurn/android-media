@@ -106,6 +106,7 @@ include "features:merchant:shop_settings"
 include "features:merchant:shop_etalase_picker"
 //include "features:merchant:shop_etalase_picker_no_op"
 include "features:merchant:official_store"
+include "features:merchant:atc_variant"
 
 include "features:operational:contact_us"
 include "features:operational:csat_rating"
