@@ -450,12 +450,14 @@ class TopChatRoomPresenter @Inject constructor(
             onSuccess: (addToCartResult: AddToCartDataModel) -> Unit,
             shopId: Int
     ) {
+        val minOrder = if (element.minOrder <= 0) { 1 } else { element.minOrder }
+
         addToCardSubscriber = addToCartSubscriber(onError, onSuccess)
 
         val addToCartRequestParams = AddToCartRequestParams()
         addToCartRequestParams.productId = Integer.parseInt(element.productId.toString()).toLong()
         addToCartRequestParams.shopId = shopId
-        addToCartRequestParams.quantity = element.minOrder
+        addToCartRequestParams.quantity = minOrder
         addToCartRequestParams.notes = ""
 
         val requestParams = RequestParams.create()
