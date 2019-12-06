@@ -165,4 +165,7 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
 
+    @JvmField
+    val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
+
 }

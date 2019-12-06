@@ -24,7 +24,9 @@ class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelBookingCompo
 
     override fun getNewFragment(): Fragment =
             HotelBookingFragment.getInstance(
-                    intent.getStringExtra(HotelBookingFragment.ARG_CART_ID)
+                    intent.getStringExtra(HotelBookingFragment.ARG_CART_ID),
+                    intent.getStringExtra(HotelBookingFragment.ARG_DESTINATION_TYPE),
+                    intent.getStringExtra(HotelBookingFragment.ARG_DESTINATION_NAME)
             )
 
     override fun shouldShowOptionMenu(): Boolean = false
@@ -45,8 +47,10 @@ class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelBookingCompo
     }
 
     companion object {
-        fun getCallingIntent(context: Context, cartId: String): Intent =
+        fun getCallingIntent(context: Context, cartId: String, destinationType: String, destinationName: String): Intent =
                 Intent(context, HotelBookingActivity::class.java)
                         .putExtra(HotelBookingFragment.ARG_CART_ID, cartId)
+                        .putExtra(HotelBookingFragment.ARG_DESTINATION_TYPE, destinationType)
+                        .putExtra(HotelBookingFragment.ARG_DESTINATION_NAME, destinationName)
     }
 }

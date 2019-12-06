@@ -4,8 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
 import kotlinx.android.synthetic.main.carousel_product_card_item_layout.view.*
 
@@ -53,5 +51,9 @@ internal class CarouselProductCardViewHolder(
         itemView.carouselProductCardItem?.setButtonWishlistOnClickListener {
             onWishlistClickListener?.onWishlistItemClick(productCardModel, adapterPosition)
         }
+    }
+
+    fun updateWishlist(isWishlist: Boolean){
+        itemView.carouselProductCardItem.setButtonWishlistImage(isWishlist)
     }
 }

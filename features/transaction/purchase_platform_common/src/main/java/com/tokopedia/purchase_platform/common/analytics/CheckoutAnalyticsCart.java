@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.common.analytics;
 import android.os.Bundle;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.Map;
 
@@ -97,12 +98,12 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCartClickShopName(String shopName) {
+    public void eventClickAtcCartClickShop(String shopId, String shopName) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
-                EventAction.CLICK_SHOP_NAME,
-                shopName
+                EventAction.CLICK_SHOP,
+                shopId + " - " + shopName
         );
     }
 
@@ -958,4 +959,80 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+    public void sendEventDeleteInsurance(String insuranceTitle) {
+
+        sendEventCategoryActionLabel(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CART_DELETE,
+                String.format("cart page - %s", insuranceTitle)
+        );
+    }
+
+    public void sendEventInsuranceImpression(String title) {
+        sendEventCategoryActionLabel(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CART_IMPRESSION,
+                String.format("cart - %s", title)
+        );
+    }
+
+    public void sendEventChangeInsuranceState(boolean isChecked, String title) {
+        String eventLabel = "";
+        if (isChecked) {
+            eventLabel = String.format("cart page - tick %s", title);
+        } else {
+            eventLabel = String.format("cart page - untick %s", title);
+        }
+        sendEventCategoryActionLabel(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_STATE_CHANGE,
+                eventLabel
+        );
+    }
+
+    public void sendEventPurchaseInsurance(String userID, String productId, String title) {
+        Map<String, Object> mapEvent = TrackAppUtils.gtmData(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CLICK_BUY,
+                String.format("cart page - %s", title)
+        );
+        mapEvent.put("userId", userID);
+        mapEvent.put("productId", productId);
+        sendGeneralEvent(mapEvent);
+    }
+    public void eventClickBrowseButtonOnTickerProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_BROWSE_BUTTON_ON_TICKER_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventViewTickerProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.VIEW_ATC_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_TICKER_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventClickHapusButtonOnProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventClickTrashIconButtonOnProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
 }

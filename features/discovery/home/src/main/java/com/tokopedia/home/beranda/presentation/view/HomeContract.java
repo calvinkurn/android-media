@@ -70,7 +70,7 @@ public interface HomeContract {
 
         void updateListOnResume(List<Visitable> visitables);
 
-        void addImpressionToTrackingQueue(List<HomeVisitable> visitables);
+        void addImpressionToTrackingQueue(List<Visitable> visitables);
 
         void configureHomeFlag(HomeFlag homeFlag);
 

@@ -56,7 +56,7 @@
                 android:layout_marginEnd="@dimen/dp_5"
                 android:layout_marginRight="@dimen/dp_5"
                 android:layout_marginTop="@dimen/dp_2"
-                app:srcCompat="@drawable/ic_kol_badge" />
+                app:srcCompat="@drawable/ic_verified_badge" />
 
             <TextView
                 android:id="@+id/name"
