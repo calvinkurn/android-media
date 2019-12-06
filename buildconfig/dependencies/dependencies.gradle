@@ -269,7 +269,7 @@ ext {
             spek2Api           : "org.spekframework.spek2:spek-runner-junit5:2.0.8",
             spek2Dsl           : "org.spekframework.spek2:spek-dsl-jvm:2.0.8",
             platformEngine     : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
-            junitPlatformRunner: "org.junit.platspek2Dslform:junit-platform-runner:1.0.0",
+            junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0",
             archCoreTesting    : "androidx.arch.core:core-testing:$lifeCycleVersion",
             couroutinesTest    : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineTestVersion"
     ]

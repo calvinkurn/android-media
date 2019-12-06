@@ -21,6 +21,9 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.interfaces.ContextAnalytics;
+
+import java.util.Map;
 
 import okhttp3.Response;
 
@@ -32,11 +35,54 @@ public class CustomApp extends BaseMainApplication implements TkpdCoreRouter, Ne
         FirebaseApp.initializeApp(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
         GraphqlClient.init(this);
         GlobalConfig.DEBUG = true;
         com.tokopedia.abstraction.common.utils.GlobalConfig.DEBUG = true;
         super.onCreate();
+    }
+
+    public static class DummyAppsFlyerAnalytics extends ContextAnalytics {
+
+        public DummyAppsFlyerAnalytics(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void sendGeneralEvent(Map<String, Object> value) {
+
+        }
+
+        @Override
+        public void sendGeneralEvent(String event, String category, String action, String label) {
+
+        }
+
+        @Override
+        public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
+
+        }
+
+        @Override
+        public void sendEvent(String eventName, Map<String, Object> eventValue) {
+
+        }
     }
 
     @Override
