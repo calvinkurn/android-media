@@ -101,6 +101,7 @@ class FeedAnalyticTracker
         const val ACTION_FEED_RECOM_USER = "click - %s - recommendation - %s"
         const val ACTION_CLICK_FEED_AVATAR = "click - %s - %s - %s"
         const val ACTION_CLICK_MEDIAPREVIEW_AVATAR = "click - %s - media preview - %s"
+        const val ACTION_CLICK_TOPADS_PROMOTED = "click - shop - topads shop recommendation - %s"
         const val FORMAT_TWO_PARAM = "%s - %s"
 
 
@@ -208,9 +209,20 @@ class FeedAnalyticTracker
     fun eventClickFeedDetailAvatar(activityId: String, shopId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_FEED,
-                Category.CATEGORY_FEED_TIMELINE,
+                Category.CATEGORY_FEED_TIMELINE_FEED_DETAIL,
                 Action.CLICK_FEED_PRODUCT_DETAIL,
                 String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
+        )
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
+    //    screenshot 7
+    fun eventClickTopadsPromoted(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CATEGORY_FEED_TIMELINE,
+                Action.ACTION_CLICK_TOPADS_PROMOTED,
+                shopId
         )
     }
 

@@ -1151,6 +1151,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     break
                 }
             }
+            feedAnalytics.eventClickTopadsPromoted(shop.id)
         }
     }
 
