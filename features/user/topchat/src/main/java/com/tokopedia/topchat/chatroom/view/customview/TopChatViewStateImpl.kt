@@ -1,11 +1,8 @@
 package com.tokopedia.topchat.chatroom.view.customview
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.NonNull
@@ -32,13 +29,14 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.Attachment
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.util.Utils
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * @author : Steven 29/11/18
@@ -113,6 +111,20 @@ class TopChatViewStateImpl(
 
     private fun hideProductPreviewLayout() {
         attachmentPreviewContainer.hide()
+        setChatTemplatesBottomPadding(0)
+    }
+
+    private fun setChatTemplatesBottomPadding(bottomPadding: Int) {
+        templateRecyclerView.post {
+            with(templateRecyclerView) {
+                setPadding(
+                        paddingLeft,
+                        paddingTop,
+                        paddingRight,
+                        bottomPadding
+                )
+            }
+        }
     }
 
     override fun onSetCustomMessage(customMessage: String) {
@@ -402,6 +414,7 @@ class TopChatViewStateImpl(
 
     override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {
         attachmentPreviewContainer.show()
+        setChatTemplatesBottomPadding(8.toPx())
         attachmentPreviewAdapter.updateAttachments(attachmentPreview)
     }
 
