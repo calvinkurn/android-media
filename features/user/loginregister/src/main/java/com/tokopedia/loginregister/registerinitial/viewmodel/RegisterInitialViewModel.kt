@@ -24,6 +24,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
+import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
@@ -51,11 +52,11 @@ class RegisterInitialViewModel @Inject constructor(
         private val getFacebookCredentialUseCase: GetFacebookCredentialUseCase,
         private val loginTokenUseCase: LoginTokenUseCase,
         private val getProfileUseCase: GetProfileUseCase,
-        private val tickerInfoUseCase : TickerInfoUseCase,
+        private val tickerInfoUseCase: TickerInfoUseCase,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
-        dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
+        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     private val mutableGetProviderResponse = MutableLiveData<Result<ArrayList<DiscoverItemViewModel>>>()
     val getProviderResponse: LiveData<Result<ArrayList<DiscoverItemViewModel>>>
@@ -69,13 +70,21 @@ class RegisterInitialViewModel @Inject constructor(
     val loginTokenFacebookResponse: LiveData<Result<LoginTokenPojo>>
         get() = mutableLoginTokenFacebookResponse
 
+    private val mutableLoginTokenFacebookPhoneResponse = MutableLiveData<Result<LoginTokenPojo>>()
+    val loginTokenFacebookPhoneResponse: LiveData<Result<LoginTokenPojo>>
+        get() = mutableLoginTokenFacebookPhoneResponse
+
     private val mutableLoginTokenGoogleResponse = MutableLiveData<Result<LoginTokenPojo>>()
     val loginTokenGoogleResponse: LiveData<Result<LoginTokenPojo>>
         get() = mutableLoginTokenGoogleResponse
 
-    private val mutableLoginAfterSQResponse = MutableLiveData<Result<LoginTokenPojo>>()
-    val loginAfterSQResponse: LiveData<Result<LoginTokenPojo>>
-        get() = mutableLoginAfterSQResponse
+    private val mutableLoginTokenAfterSQResponse = MutableLiveData<Result<LoginTokenPojo>>()
+    val loginTokenAfterSQResponse: LiveData<Result<LoginTokenPojo>>
+        get() = mutableLoginTokenAfterSQResponse
+
+    private val mutableValidateToken = MutableLiveData<String>()
+    val validateToken: LiveData<String>
+        get() = mutableValidateToken
 
     private val mutableGoToActivationPage = MutableLiveData<MessageErrorException>()
     val goToActivationPage: LiveData<MessageErrorException>
@@ -84,6 +93,14 @@ class RegisterInitialViewModel @Inject constructor(
     private val mutableGoToSecurityQuestion = MutableLiveData<String>()
     val goToSecurityQuestion: LiveData<String>
         get() = mutableGoToSecurityQuestion
+
+    private val mutableGoToActivationPageAfterRelogin = MutableLiveData<MessageErrorException>()
+    val goToActivationPageAfterRelogin: LiveData<MessageErrorException>
+        get() = mutableGoToActivationPageAfterRelogin
+
+    private val mutableGoToSecurityQuestionAfterRelogin = MutableLiveData<String>()
+    val goToSecurityQuestionAfterRelogin: LiveData<String>
+        get() = mutableGoToSecurityQuestionAfterRelogin
 
     private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfo>>()
     val getUserInfoResponse: LiveData<Result<ProfileInfo>>
@@ -123,14 +140,15 @@ class RegisterInitialViewModel @Inject constructor(
                         callbackManager),
                 GetFacebookCredentialSubscriber(
                         resultUsecaseCoroutineToFacebookCredentialListener(
-                                onSuccessGetFacebookCredential(),
+                                onSuccessGetFacebookEmailCredential(),
+                                onSuccessGetFacebookPhoneCredential(),
                                 onFailedGetFacebookCredential()
                         )
                 )
         )
     }
 
-    fun registerFacebook(accessToken: String, email: String){
+    fun registerFacebook(accessToken: String, email: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
 
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
@@ -146,7 +164,22 @@ class RegisterInitialViewModel @Inject constructor(
 
     }
 
-    fun registerGoogle(accessToken: String, email: String){
+    fun registerFacebookPhone(accessToken: String, phone: String) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
+
+        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
+                accessToken, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
+                LoginTokenFacebookSubscriber(
+                        userSession,
+                        onSuccessLoginTokenFacebookPhone(),
+                        onFailedLoginTokenFacebookPhone(),
+                        onGoToSecurityQuestion("")
+                )
+        )
+
+    }
+
+    fun registerGoogle(accessToken: String, email: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_GOOGLE
 
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
@@ -160,19 +193,6 @@ class RegisterInitialViewModel @Inject constructor(
                 )
         )
 
-    }
-
-    fun reloginAfterSQ(validateToken: String){
-        loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
-                userSession, validateToken),
-                LoginTokenSubscriber(
-                        userSession,
-                        onSuccessLoginAfterSQ(),
-                        onFailedLoginAfterSQ(),
-                        onFailedLoginAfterSQ(),
-                        { onFailedLoginAfterSQ() }
-                )
-        )
     }
 
     fun getUserInfo() {
@@ -190,7 +210,7 @@ class RegisterInitialViewModel @Inject constructor(
                 ))
     }
 
-    fun registerCheck(id: String){
+    fun registerCheck(id: String) {
         rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK]?.let { query ->
             val params = mapOf(RegisterInitialQueryConstant.PARAM_ID to id)
 
@@ -209,7 +229,7 @@ class RegisterInitialViewModel @Inject constructor(
             password: String,
             fullname: String,
             validateToken: String
-    ){
+    ) {
         rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
             val params = mapOf(
                     RegisterInitialQueryConstant.PARAM_EMAIL to email,
@@ -220,7 +240,7 @@ class RegisterInitialViewModel @Inject constructor(
                     RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
             )
 
-            userSession.setToken(TokenGenerator().createBasicTokenGQL(),"")
+            userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
             registerRequestUseCase.setTypeClass(RegisterRequestPojo::class.java)
             registerRequestUseCase.setRequestParams(params)
             registerRequestUseCase.setGraphqlQuery(query)
@@ -232,16 +252,16 @@ class RegisterInitialViewModel @Inject constructor(
     }
 
     fun activateUser(
-           email: String,
-           validateToken: String
-    ){
+            email: String,
+            validateToken: String
+    ) {
         rawQueries[RegisterInitialQueryConstant.MUTATION_ACTIVATE_USER]?.let { query ->
             val params = mapOf(
                     RegisterInitialQueryConstant.PARAM_EMAIL to email,
                     RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
             )
 
-            userSession.setToken(TokenGenerator().createBasicTokenGQL(),"")
+            userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
             activateUserUseCase.setTypeClass(ActivateUserPojo::class.java)
             activateUserUseCase.setRequestParams(params)
             activateUserUseCase.setGraphqlQuery(query)
@@ -252,7 +272,16 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetProvider(): (DiscoverViewModel) -> Unit{
+    fun reloginAfterSQ(validateToken: String) {
+        loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
+                userSession, validateToken), LoginTokenSubscriber(userSession,
+                onSuccessLoginTokenAfterSQ(),
+                onFailedLoginTokenAfterSQ(validateToken),
+                onGoToActivationPageAfterRelogin(validateToken),
+                onGoToSecurityQuestionAfterRelogin("")))
+    }
+
+    private fun onSuccessGetProvider(): (DiscoverViewModel) -> Unit {
         return {
             if (!it.providers.isEmpty()) {
                 mutableGetProviderResponse.value = Success(it.providers)
@@ -262,152 +291,184 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    private fun onFailedGetProvider(): (Throwable) -> Unit{
+    private fun onFailedGetProvider(): (Throwable) -> Unit {
         return {
             mutableGetProviderResponse.value = Fail(it)
         }
     }
 
-    private fun onSuccessGetFacebookCredential(): (FacebookCredentialData) -> Unit{
+    private fun onSuccessGetFacebookEmailCredential(): (FacebookCredentialData) -> Unit {
         return {
             mutableGetFacebookCredentialResponse.value = Success(it)
         }
     }
 
-    private fun onFailedGetFacebookCredential(): (Throwable) -> Unit{
+    private fun onSuccessGetFacebookPhoneCredential(): (FacebookCredentialData) -> Unit {
+        return {
+            mutableGetFacebookCredentialResponse.value = Success(it)
+        }
+    }
+
+    private fun onFailedGetFacebookCredential(): (Throwable) -> Unit {
         return {
             mutableGetFacebookCredentialResponse.value = Fail(it)
         }
     }
 
-    private fun onSuccessLoginTokenFacebook(): (LoginTokenPojo) -> Unit{
+    private fun onSuccessLoginTokenFacebook(): (LoginTokenPojo) -> Unit {
         return {
             mutableLoginTokenFacebookResponse.value = Success(it)
         }
     }
 
-    private fun onFailedLoginTokenFacebook(): (Throwable) -> Unit{
+    private fun onFailedLoginTokenFacebook(): (Throwable) -> Unit {
         return {
             mutableLoginTokenFacebookResponse.value = Fail(it)
         }
     }
 
-    private fun onSuccessLoginTokenGoogle(): (LoginTokenPojo) -> Unit{
+    private fun onSuccessLoginTokenFacebookPhone(): (LoginTokenPojo) -> Unit {
+        return {
+            mutableLoginTokenFacebookPhoneResponse.value = Success(it)
+        }
+    }
+
+    private fun onFailedLoginTokenFacebookPhone(): (Throwable) -> Unit {
+        return {
+            mutableLoginTokenFacebookPhoneResponse.value = Fail(it)
+        }
+    }
+
+    private fun onSuccessLoginTokenGoogle(): (LoginTokenPojo) -> Unit {
         return {
             mutableLoginTokenGoogleResponse.value = Success(it)
         }
     }
 
-    private fun onFailedLoginTokenGoogle(): (Throwable) -> Unit{
+    private fun onFailedLoginTokenGoogle(): (Throwable) -> Unit {
         return {
             mutableLoginTokenGoogleResponse.value = Fail(it)
         }
     }
 
-    private fun onSuccessLoginAfterSQ(): (LoginTokenPojo) -> Unit{
+    private fun onSuccessLoginTokenAfterSQ(): (LoginTokenPojo) -> Unit {
         return {
-            mutableLoginAfterSQResponse.value = Success(it)
+            mutableLoginTokenAfterSQResponse.value = Success(it)
         }
     }
 
-    private fun onFailedLoginAfterSQ(): (Throwable) -> Unit{
+    private fun onFailedLoginTokenAfterSQ(validateToken: String): (Throwable) -> Unit {
         return {
-            mutableLoginAfterSQResponse.value = Fail(it)
+            mutableLoginTokenAfterSQResponse.value = Fail(it)
+            mutableValidateToken.value = validateToken
         }
     }
 
-    private fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit{
+    private fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
         return {
             mutableGetUserInfoResponse.value = Success(it.profileInfo)
         }
     }
 
-    private fun onFailedGetUserInfo(): (Throwable) -> Unit{
-        return{
+    private fun onFailedGetUserInfo(): (Throwable) -> Unit {
+        return {
             mutableGetUserInfoResponse.value = Fail(it)
         }
     }
 
-    private fun onSuccessGetTickerInfo(): (List<TickerInfoPojo>) -> Unit{
+    private fun onSuccessGetTickerInfo(): (List<TickerInfoPojo>) -> Unit {
         return {
             mutableGetTickerInfoResponse.value = Success(it)
         }
     }
 
-    private fun onFailedGetTickerInfo(): (Throwable) -> Unit{
-        return{
+    private fun onFailedGetTickerInfo(): (Throwable) -> Unit {
+        return {
             mutableGetTickerInfoResponse.value = Fail(it)
         }
     }
 
-    private fun onSuccessRegisterCheck(): (RegisterCheckPojo) -> Unit{
+    private fun onSuccessRegisterCheck(): (RegisterCheckPojo) -> Unit {
         return {
-            if(it.data.errors.isEmpty())
+            if (it.data.errors.isEmpty())
                 mutableRegisterCheckResponse.value = Success(it.data)
-            else if(it.data.errors.isNotEmpty()) mutableRegisterCheckResponse.value =
+            else if (it.data.errors.isNotEmpty()) mutableRegisterCheckResponse.value =
                     Fail(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0]))
             else mutableRegisterRequestResponse.value = Fail(RuntimeException())
         }
     }
 
-    private fun onFailedRegisterCheck(): (Throwable) -> Unit{
-        return{
+    private fun onFailedRegisterCheck(): (Throwable) -> Unit {
+        return {
             mutableRegisterCheckResponse.value = Fail(it)
         }
     }
 
     private fun onSuccessRegisterRequest(): (RegisterRequestPojo) -> Unit {
-        return{
+        return {
             userSession.clearToken()
-            if(it.data.accessToken.isNotEmpty() &&
+            if (it.data.accessToken.isNotEmpty() &&
                     it.data.refreshToken.isNotEmpty() &&
-                    it.data.tokenType.isNotEmpty()){
+                    it.data.tokenType.isNotEmpty()) {
                 mutableRegisterRequestResponse.value = Success(it.data)
-            }else if(it.data.errors.isNotEmpty() && it.data.errors[0].message.isNotEmpty()){
+            } else if (it.data.errors.isNotEmpty() && it.data.errors[0].message.isNotEmpty()) {
                 mutableRegisterRequestResponse.value =
                         Fail(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0].message))
-            }else mutableRegisterRequestResponse.value = Fail(RuntimeException())
+            } else mutableRegisterRequestResponse.value = Fail(RuntimeException())
         }
     }
 
-    private fun onFailedRegisterRequest(): (Throwable) -> Unit{
-        return{
+    private fun onFailedRegisterRequest(): (Throwable) -> Unit {
+        return {
             userSession.clearToken()
             mutableRegisterRequestResponse.value = Fail(it)
         }
     }
 
     private fun onSuccessActivateUser(): (ActivateUserPojo) -> Unit {
-        return{
+        return {
             userSession.clearToken()
-            if(it.isSuccess &&
+            if (it.isSuccess &&
                     it.accessToken.isNotEmpty() &&
                     it.refreshToken.isNotEmpty() &&
-                    it.tokenType.isNotEmpty()){
+                    it.tokenType.isNotEmpty()) {
                 mutableActivateUserResponse.value = Success(it)
-            }else if(it.message.isNotEmpty()){
+            } else if (it.message.isNotEmpty()) {
                 mutableActivateUserResponse.value =
                         Fail(com.tokopedia.network.exception.MessageErrorException(it.message))
-            }else mutableActivateUserResponse.value = Fail(RuntimeException())
+            } else mutableActivateUserResponse.value = Fail(RuntimeException())
         }
     }
 
-    private fun onFailedActivateUser(): (Throwable) -> Unit{
-        return{
+    private fun onFailedActivateUser(): (Throwable) -> Unit {
+        return {
             userSession.clearToken()
             mutableActivateUserResponse.value = Fail(it)
         }
     }
 
-    private fun onGoToActivationPage(): (MessageErrorException) -> Unit{
+    private fun onGoToActivationPage(): (MessageErrorException) -> Unit {
         return {
             mutableGoToActivationPage.value = it
         }
     }
 
-    private fun onGoToSecurityQuestion(email: String): () -> Unit{
+    private fun onGoToSecurityQuestion(email: String): () -> Unit {
         return {
             mutableGoToSecurityQuestion.value = email
+        }
+    }
+
+    private fun onGoToActivationPageAfterRelogin(validateToken: String): (MessageErrorException) -> Unit {
+        return {
+            mutableValidateToken.value = validateToken
+            mutableGoToActivationPageAfterRelogin.value = it
+        }
+    }
+
+    private fun onGoToSecurityQuestionAfterRelogin(email: String): () -> Unit {
+        return {
+            mutableGoToSecurityQuestionAfterRelogin.value = email
         }
     }
 
