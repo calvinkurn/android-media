@@ -16,6 +16,7 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ONE
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ZERO
+import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -185,10 +186,11 @@ class FlightBookingMapper {
             return viewModel
         }
 
-        fun mapToFlightDetail(flight: FlightCart.Flight, included: List<FlightCart.Included>): List<FlightDetailViewModel> {
+        fun mapToFlightDetail(flight: FlightCart.Flight, included: List<FlightCart.Included>,
+                              flightPriceViewModel: FlightPriceViewModel): List<FlightDetailViewModel> {
 
             val list = listOf<FlightDetailViewModel>().toMutableList()
-            for (journey in flight.journeys) {
+            for ((index, journey) in flight.journeys.withIndex()) {
                 val flightDetailViewModel = FlightDetailViewModel()
 
                 flightDetailViewModel.beforeTotal = ""
@@ -206,9 +208,17 @@ class FlightBookingMapper {
 
                 flightDetailViewModel.totalTransit = journey.routes.size - 1
                 flightDetailViewModel.isRefundable = if (journey.routes[0].refundable) RefundableEnum.REFUNDABLE else RefundableEnum.NOT_REFUNDABLE
-                flightDetailViewModel.adultNumericPrice = journey.fare.adultNumeric
-                flightDetailViewModel.childNumericPrice = journey.fare.childNumeric
-                flightDetailViewModel.infantNumericPrice = journey.fare.infantNumeric
+
+                if (index == 0) {
+                    flightDetailViewModel.adultNumericPrice = flightPriceViewModel.departurePrice.adultNumeric
+                    flightDetailViewModel.childNumericPrice = flightPriceViewModel.departurePrice.childNumeric
+                    flightDetailViewModel.infantNumericPrice = flightPriceViewModel.departurePrice.infantNumeric
+                } else if (index == 1) {
+                    flightDetailViewModel.adultNumericPrice = flightPriceViewModel.returnPrice.adultNumeric
+                    flightDetailViewModel.childNumericPrice = flightPriceViewModel.returnPrice.childNumeric
+                    flightDetailViewModel.infantNumericPrice = flightPriceViewModel.returnPrice.infantNumeric
+                }
+
                 flightDetailViewModel.totalNumeric = flightDetailViewModel.adultNumericPrice + flightDetailViewModel.childNumericPrice + flightDetailViewModel.infantNumericPrice
                 flightDetailViewModel.countAdult = flight.adult
                 flightDetailViewModel.countChild = flight.child
