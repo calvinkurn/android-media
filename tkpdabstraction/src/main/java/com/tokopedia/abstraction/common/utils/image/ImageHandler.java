@@ -1030,7 +1030,7 @@ public class ImageHandler {
     public static void logError(Context context, GlideException e, String url) {
 
         if (!isNetworkAvailable(context)) {
-            Timber.e(e, "P2#Load image error network not available");
+            Timber.w("P2#Load image error network not available");
             return;
         }
 
@@ -1039,7 +1039,7 @@ public class ImageHandler {
 
             @Override
             public void onSuccess(@NotNull TraceRouteResult traceRouteResult) {
-                Timber.e(e, "P2#Load image error traceroute success: url= %s message= %s traceroute= %s",
+                Timber.w("P2#Load image error traceroute success: url= %s message= %s traceroute= %s",
                         url,
                         e != null ? e.getMessage() : "",
                         traceResult);
@@ -1053,7 +1053,7 @@ public class ImageHandler {
             @Override
             public void onFailed(int code, @NotNull String reason) {
                 traceResult += String.format("code: %d reason: %s", code, reason);
-                Timber.e(e, "P2#Load image error traceroute failed: url= %s message= %s traceroute= %s",
+                Timber.w("P2#Load image error traceroute failed: url= %s message= %s traceroute= %s",
                         url,
                         e != null ? e.getMessage() : "",
                         traceResult);
