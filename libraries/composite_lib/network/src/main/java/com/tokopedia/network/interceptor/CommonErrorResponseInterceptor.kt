@@ -29,7 +29,11 @@ class CommonErrorResponseInterceptor : Interceptor {
             responseBody = response.peekBody(BYTE_COUNT.toLong())
             responseBodyString = responseBody!!.string()
 
-            val jsonObject = JSONObject(responseBodyString)
+            val jsonObject = try{
+                JSONObject(responseBodyString)
+            }catch (e: Exception){
+                JSONObject()
+            }
             var errorKey: String = ""
             for (errItem in errorKeyList) {
                 if (jsonObject.has(errItem)) {
