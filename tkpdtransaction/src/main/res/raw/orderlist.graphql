@@ -35,7 +35,7 @@ query ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int, $orderId: Int) 
         textColor
       }
     }
-    conditionalInfoBottom{
+    conditionalInfoBottom {
       text
       color {
         border
