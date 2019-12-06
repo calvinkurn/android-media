@@ -36,6 +36,20 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 shopType, "/product", productId)
     }
 
+    fun trackTradeinBeforeDiagnotics(){
+        sendGeneralEvent(" clickPDP",
+                "product detail page",
+                "click trade in widget",
+                "before diagnostic")
+    }
+
+    fun trackTradeinAfterDiagnotics(){
+        sendGeneralEvent(" clickPDP",
+                "product detail page",
+                "click trade in widget",
+                "after diagnostic")
+    }
+
     fun eventTalkClicked() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,

@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -87,6 +88,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var shopInfo: ShopInfo? = null
+    var installmentData: FinancingDataResponse? = null
 
     private var submitTicketSubscription: Subscription? = null
 
@@ -183,7 +185,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                         it.basic.getProductId(), it.data.price.value,
                         it.basic.condition,
                         it.getProductName,
-                        categoryId, it.basic.catalogID, userIdInt,it.basic.minOrder)
+                        categoryId, it.basic.catalogID, userIdInt, it.basic.minOrder)
 
                 shopInfo = p2ShopDeferred.await().shopInfo
                 p2ShopDataResp.value = p2ShopDeferred.await()

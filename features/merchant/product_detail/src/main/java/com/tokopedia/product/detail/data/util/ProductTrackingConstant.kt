@@ -9,7 +9,50 @@ object ProductTrackingConstant {
         const val PDP_AFTER_ATC = "product detail page after atc"
         const val TOP_NAV_SEARCH_PDP = "top nav - search - product detail page"
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
+    }
 
+    object Tracking{
+        const val KEY_EVENT = "event"
+        const val KEY_CATEGORY = "eventCategory"
+        const val KEY_ACTION = "eventAction"
+        const val KEY_LABEL = "eventLabel"
+        const val KEY_ECOMMERCE = "ecommerce"
+        const val KEY_PRODUCT_PROMO = "promoClick"
+        const val KEY_PROMOTIONS = "promotions"
+        const val KEY_USER_ID = "user_id"
+        const val KEY_DETAIl = "detail"
+
+        const val PRODUCT_DETAIL_SCREEN_NAME = "/product"
+
+        const val ID = "id"
+        const val NAME = "name"
+        const val PROMO_POSITION = "position"
+        const val PROMO_ID = "promo_id"
+        const val PROMO_CODE = "promo_id"
+
+        const val ACTION_FIELD = "actionField"
+        const val LIST = "list"
+        const val PRODUCTS = "products"
+        const val IMPRESSIONS = "impressions"
+        const val PRICE = "price"
+        const val BRAND = "brand"
+        const val DEFAULT_VALUE = "none / other"
+        const val VARIANT = "variant"
+        const val CATEGORY = "category"
+        const val LIST_DEFAULT = "/product - "
+        const val LIST_RECOMMENDATION = " - rekomendasi untuk anda - "
+        const val LIST_PRODUCT_AFTER_ATC = "/productafteratc  - "
+        const val CURRENCY_CODE = "currencyCode"
+        const val CURRENCY_DEFAULT_VALUE = "IDR"
+        const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        const val VALUE_NONE_OTHER = "none / other"
+        const val KEY_PRODUCT_ID = "productId"
+
+        const val KEY_DIMENSION_81 = "dimension81"
+        const val KEY_DIMENSION_83 = "dimension83"
+        const val KEY_DIMENSION_54 = "dimension54"
+        const val KEY_DIMENSION_55 = "dimension55"
+        const val KEY_DIMENSION_38 = "dimension38"
     }
 
     object Action {

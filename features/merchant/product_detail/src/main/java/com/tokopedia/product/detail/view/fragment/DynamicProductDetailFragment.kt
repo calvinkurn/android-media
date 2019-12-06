@@ -149,6 +149,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     @Inject
     lateinit var productDetailTracking: ProductDetailTracking
     @Inject
+    lateinit var dynamicProductDetailTracking: DynamicProductDetailTracking
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var tradeInParams: TradeInParams
     private lateinit var tradeInBroadcastReceiver: TradeInBroadcastReceiver
@@ -171,6 +173,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private var shouldShowCodP3 = false
     private var isAffiliate = false
     private var affiliateString: String? = null
+    private var deeplinkUrl: String = ""
 
     private var userInputNotes = ""
     private var userInputQuantity = 0
@@ -425,19 +428,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 actionButtonView.visibility = !isAffiliate && it.shopInfo?.statusInfo?.shopStatus == 1
             }
 
-//            viewModel.getDynamicProductInfoP1?.let { data ->
-//                pdpHashMapUtil.getShopInfo.shopInfo?.let { shopInfo ->
-//                    productDetailTracking.sendMoEngageOpenProduct(data,
-//                            shopInfo.goldOS.isOfficial == 1, shopInfo.shopCore.name)
-//                    productDetailTracking.eventAppsFylerOpenProduct(data)
+            viewModel.getDynamicProductInfoP1?.let { data ->
+                pdpHashMapUtil.getShopInfo.shopInfo?.let { shopInfo ->
+                    dynamicProductDetailTracking.sendMoEngageOpenProduct(data, shopInfo.shopCore.name)
+                    dynamicProductDetailTracking.eventAppsFylerOpenProduct(data)
 
-//                    productDetailTracking.sendScreen(
-//                            shopInfo.shopCore.shopID,
-//                            shopInfo.goldOS.shopTypeString,
-//                            productId ?: "")
-//
-//                }
-//            }
+                    dynamicProductDetailTracking.sendScreen(
+                            shopInfo.shopCore.shopID,
+                            shopInfo.goldOS.shopTypeString,
+                            productId ?: "")
+
+                }
+            }
 
             if (delegateTradeInTracking) {
                 trackProductView(tradeInParams.isEligible == 1)
@@ -450,7 +452,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
         viewModel.p2General.observe(this, Observer {
             performanceMonitoringP2General.stopTrace()
-
+            viewModel.installmentData = it.productFinancingCalculationData
             if (it.latestTalk.id.isEmpty()) {
                 dynamicAdapter.removeDiscussionSection(pdpHashMapUtil.productDiscussionMap)
             }
@@ -480,9 +482,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
             pdpHashMapUtil.updateDataP2General(it)
 
-//            viewModel.getProductInfoP1?.run {
-//                productDetailTracking.eventBranchItemView(this, viewModel.userId)
-//            }
+            viewModel.getDynamicProductInfoP1?.run {
+                dynamicProductDetailTracking.eventBranchItemView(this, viewModel.userId, pdpHashMapUtil.productInfoMap?.data?.find { content ->
+                    content.row == "bottom"
+                }?.listOfContent?.firstOrNull()?.subtitle ?: "")
+            }
 
             adapter.notifyDataSetChanged()
         })
@@ -492,7 +496,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 performanceMonitoringFull.stopTrace()
 
             pdpHashMapUtil.productShipingInfoMap?.run {
-                description = " ${getString(R.string.shipping_pattern_string, it.ratesModel?.services?.size ?: 0)}${getString(R.string.ongkir_pattern_string, it.rateEstSummarizeText?.minPrice, "<b>${it.rateEstSummarizeText?.destination}</b>")}"
+                description = " ${getString(R.string.shipping_pattern_string, it.ratesModel?.services?.size
+                        ?: 0)}${getString(R.string.ongkir_pattern_string, it.rateEstSummarizeText?.minPrice, "<b>${it.rateEstSummarizeText?.destination}</b>")}"
                 dynamicAdapter.notifyShipingInfo(this)
             }
 
@@ -587,6 +592,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     }
                     //refresh variant
                     viewModel.p2General.value?.variantResp?.run {
+                        viewModel
                         onSuccessGetProductVariantInfo(this)
                     }
                     userInputNotes = data.getStringExtra(ApplinkConst.Transaction.EXTRA_NOTES)
@@ -736,7 +742,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 onShipmentClicked()
             }
             "cicilan_info" -> {
-//                openFtInstallmentBottomSheet()
+                openFtInstallmentBottomSheet(viewModel.installmentData ?: FinancingDataResponse() )
             }
             "variant" -> {
                 productDetailTracking.eventClickVariant(generateVariantString(), productId ?: "")
@@ -814,8 +820,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     override fun onReviewClick() {
         viewModel.getDynamicProductInfoP1?.run {
             productDetailTracking.eventReviewClicked()
-//            productDetailTracking.sendMoEngageClickReview(this, pdpHashMapUtil.snapShotMap.shopInfo?.goldOS?.isOfficial == 1, pdpHashMapUtil.snapShotMap.shopInfo?.shopCore?.name
-//                    ?: "")
+            dynamicProductDetailTracking.eventReviewClickedIris(this, deeplinkUrl, viewModel.shopInfo?.shopCore?.name
+                    ?: "")
+            dynamicProductDetailTracking.sendMoEngageClickReview(this, viewModel.shopInfo?.shopCore?.name
+                    ?: "")
             context?.let {
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, basic.productID)
                 intent?.run {
@@ -867,7 +875,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         activity?.let {
             viewModel.getDynamicProductInfoP1?.run {
                 productDetailTracking.eventClickMerchantVoucherSeeAll(basic.getProductId())
-
                 val intent = MerchantVoucherListActivity.createIntent(it, basic.shopID,
                         viewModel.shopInfo?.shopCore?.name)
                 startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_MERCHANT_VOUCHER)
@@ -890,15 +897,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     override fun onTradeinClicked(tradeInParams: TradeInParams) {
         goToNormalCheckout(TRADEIN_BUY)
         if (tradeInParams.usedPrice > 0)
-            productDetailTracking.sendGeneralEvent(" clickPDP",
-                    "product detail page",
-                    "click trade in widget",
-                    "after diagnostic")
+            productDetailTracking.trackTradeinAfterDiagnotics()
         else
-            productDetailTracking.sendGeneralEvent(" clickPDP",
-                    "product detail page",
-                    "click trade in widget",
-                    "before diagnostic")
+            productDetailTracking.trackTradeinBeforeDiagnotics()
     }
 
     /**
@@ -957,7 +958,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                                 onSuccessAddWishlist = this::onSuccessAddWishlist,
                                 onErrorAddWishList = this::onErrorAddWishList)
                         productInfo?.let {
-                            //                            productDetailTracking.eventPDPWishlistAppsFyler(it)
+                            dynamicProductDetailTracking.eventPDPWishlistAppsFyler(it)
                         }
                         productDetailTracking.eventPDPAddToWishlist(productInfo?.basic?.productID.toString())
                     }
@@ -988,9 +989,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT)
         }
         viewModel.getDynamicProductInfoP1?.run {
-            //            productDetailTracking.sendMoEngageClickDiskusi(this,
-//                    (viewModel.shopInfo?.goldOS?.isOfficial ?: 0) > 0,
-//                    viewModel.shopInfo?.shopCore?.name ?: "")
+            dynamicProductDetailTracking.eventDiscussionClickedIris(this, deeplinkUrl, viewModel.shopInfo?.shopCore?.name
+                    ?: "")
+            dynamicProductDetailTracking.sendMoEngageClickDiskusi(this, viewModel.shopInfo?.shopCore?.name
+                    ?: "")
         }
     }
 
@@ -1421,8 +1423,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private fun trackProductView(isElligible: Boolean) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
-                //                productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-//                        isElligible, tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment)
+                dynamicProductDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
+                        isElligible, tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment, deeplinkUrl)
                 return
             }
         }
@@ -1612,7 +1614,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         pdpHashMapUtil.snapShotMap.isWishlisted = true
         dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOADS_WISHLIST)
-//        productDetailTracking.eventBranchAddToWishlist(pdpHashMapUtil.snapShotMap.productInfoP1, (UserSession(activity)).userId)
+        dynamicProductDetailTracking.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, (UserSession(activity)).userId, pdpHashMapUtil.productInfoMap?.data?.find { content ->
+            content.row == "bottom"
+        }?.listOfContent?.firstOrNull()?.subtitle ?: "")
         sendIntentResultWishlistChange(productId ?: "", true)
     }
 
