@@ -151,6 +151,12 @@ public class DealsDetailsResponse implements Parcelable {
     private boolean isLiked;
     @SerializedName("desktop_url")
     private String desktopUrl;
+    @SerializedName("web_url")
+    @Expose
+    private String webUrl;
+    @SerializedName("app_url")
+    @Expose
+    private String appUrl;
 
 
     public final static Parcelable.Creator<DealsDetailsResponse> CREATOR = new Creator<DealsDetailsResponse>() {
@@ -215,7 +221,18 @@ public class DealsDetailsResponse implements Parcelable {
         this.tnc = in.readString();
         this.seoUrl = in.readString();
         this.desktopUrl = in.readString();
+        this.webUrl = in.readString();
+        this.appUrl = in.readString();
     }
+
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    public String getAppUrl() {
+        return appUrl;
+    }
+
 
     public DealsDetailsResponse() {
     }
@@ -628,6 +645,9 @@ public class DealsDetailsResponse implements Parcelable {
         dest.writeString(tnc);
         dest.writeString(seoUrl);
         dest.writeString(desktopUrl);
+        dest.writeString(webUrl);
+        dest.writeString(appUrl);
+
     }
 
     public int describeContents() {

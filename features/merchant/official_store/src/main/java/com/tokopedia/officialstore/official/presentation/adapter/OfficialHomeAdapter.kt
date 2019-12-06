@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
@@ -17,10 +16,10 @@ class OfficialHomeAdapter(adapterTypeFactory: OfficialHomeAdapterTypeFactory):
     /**
      * preparing space for banner, benefit, and featuredshop
      */
-    fun resetState(shopListener: FeaturedShopListener) {
+    fun resetState() {
         visitables.add(OfficialHomeMapper.BANNER_POSITION, OfficialBannerViewModel(mutableListOf(), ""))
         visitables.add(OfficialHomeMapper.BENEFIT_POSITION, OfficialBenefitViewModel(arrayListOf()))
-        visitables.add(OfficialHomeMapper.FEATURE_SHOP_POSITION, OfficialFeaturedShopViewModel(arrayListOf(), null, "", shopListener))
+        visitables.add(OfficialHomeMapper.FEATURE_SHOP_POSITION, OfficialFeaturedShopViewModel(arrayListOf(), null, ""))
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {

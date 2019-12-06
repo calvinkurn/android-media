@@ -4,6 +4,9 @@ query flightFareCalendar($departCode: String!, $arrivalCode: String!, $year: Str
     attributes {
       date
       cheapestPriceNumeric
+      cheapestPrice
+      displayedFare
+      isLowestFare
     }
   }
 }

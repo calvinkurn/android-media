@@ -162,6 +162,7 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_CLICK_ON_DYNAMIC_ICON = "click on dynamic icon";
     public static final String VALUE_NAME_DYNAMIC_ICON = "/ - dynamic icon";
     public static final String EVENT_ACTION_IMPRESSION_ON_DYNAMIC_ICON = "impression on dynamic icon";
+    public static final String SCREEN_DIMENSION_IS_LOGGED_IN_STATUS = "isLoggedInStatus";
 
     public static ContextAnalytics getTracker() {
         return TrackApp.getInstance().getGTM();
@@ -247,11 +248,15 @@ public class HomePageTracking {
         }
     }
 
-    public static void sendScreen(Activity activity, String screenName) {
+    public static void sendScreen(Activity activity, String screenName, boolean isUserLoggedIn) {
         if (activity != null) {
             ContextAnalytics tracker = getTracker();
             if (tracker != null) {
-                tracker.sendScreenAuthenticated(screenName);
+                HashMap<String, String> customDimensions = new HashMap<>();
+                customDimensions.put(SCREEN_DIMENSION_IS_LOGGED_IN_STATUS, String.valueOf(isUserLoggedIn));
+
+                tracker.sendScreenAuthenticated(
+                        screenName, customDimensions);
             }
         }
     }

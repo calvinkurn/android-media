@@ -91,7 +91,7 @@ object DeeplinkMapperDigital {
     fun getDigitalSmartcardNavigation(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        var paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD)
+        var paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD)?: ""
 
         return if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SMARTCARD_BRIZZI))
             UriUtil.buildUri(ApplinkConsInternalDigital.SMARTCARD_WITH_BRIZZI, paramValue)

@@ -11,24 +11,18 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
-import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
-import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdapter
 import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemDecoration
 import com.tokopedia.unifyprinciples.Typography
-import javax.inject.Inject
 
-class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener): AbstractViewHolder<OfficialFeaturedShopViewModel>(view){
+class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFeaturedShopViewModel>(view){
 
     private var context: Context? = null
     private var recyclerView: RecyclerView? = null
     private var link: AppCompatTextView? = null
     private var title: Typography? = null
-
-    @Inject
-    lateinit var viewModel: OfficialStoreHomeViewModel
 
     private var adapter: FeaturedShopAdapter? = null
 
@@ -65,20 +59,28 @@ class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener)
             adapter?.notifyDataSetChanged()
 
             it.forEachIndexed { index, shop ->
-                element.listener.onShopImpression(
+                officialStoreTracking?.eventImpressionFeatureBrand(
                         element.categoryName.orEmpty(),
                         index + 1,
-                        shop
+                        shop.name.orEmpty(),
+                        shop.imageUrl.orEmpty(),
+                        shop.additionalInformation.orEmpty(),
+                        shop.featuredBrandId.orEmpty()
                 )
             }
 
             adapter?.onItemClickListener = object: FeaturedShopAdapter.OnItemClickListener {
                 override fun onItemClick(position: Int, shop: Shop) {
-                    element.listener.onShopClick(
+                    officialStoreTracking?.eventClickFeaturedBrand(
                             element.categoryName.orEmpty(),
                             position,
-                            shop
+                            shop.name.orEmpty(),
+                            shop.url.orEmpty(),
+                            shop.additionalInformation.orEmpty(),
+                            shop.featuredBrandId.orEmpty()
                     )
+
+                    RouteManager.route(context, shop.url)
                 }
 
             }

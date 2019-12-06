@@ -38,6 +38,8 @@ class CategoryPageAnalytics {
     val KEY_ACTIONFIELD = "actionField"
     val KEY_CLICK = "click"
     val KEY_PROMOVIEW = "promoView"
+    val KEY_EVENT_BANNED_CLICK = "clickCategoryBanned"
+    val KEY_EVENT_BANNED_VIEW = "viewCategoryBannedIris"
 
     val EVENT_NAME_VALUE = "clickCategory"
     val EVENT_CATEGORY_VALUE = "category page"
@@ -393,4 +395,27 @@ class CategoryPageAnalytics {
         return ""
     }
 
+    fun eventBukaClick(destinationUrl: String, categoryId: String) {
+        getTracker().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        KEY_EVENT, KEY_EVENT_BANNED_CLICK,
+                        KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
+                        KEY_EVENT_ACTION, "click buka mobile web button",
+                        KEY_EVENT_LABEL, destinationUrl,
+                        KEY_CATEGORY_ID, categoryId
+                )
+        )
+    }
+
+    fun eventBukaView(destinationUrl: String, categoryId: String) {
+        val tracker = getTracker()
+        val map = DataLayer.mapOf(
+                KEY_EVENT, KEY_EVENT_BANNED_VIEW,
+                KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
+                KEY_EVENT_ACTION, "buka mobile web button impression",
+                KEY_EVENT_LABEL, destinationUrl,
+                KEY_CATEGORY_ID, categoryId
+        )
+        tracker.sendEnhanceEcommerceEvent(map)
+    }
 }

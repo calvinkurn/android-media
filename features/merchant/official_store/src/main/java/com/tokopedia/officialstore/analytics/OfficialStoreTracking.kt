@@ -207,16 +207,13 @@ class OfficialStoreTracking(context: Context) {
             shopName: String,
             url: String,
             additionalInformation: String,
-            featuredBrandId: String,
-            isLogin: Boolean,
-            shopId: String
+            featuredBrandId: String
     ) {
-        val statusLogin = if (isLogin) "login" else "nonlogin"
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
-                EVENT_ACTION, "$CLICK - shop - all brands - $statusLogin",
-                EVENT_LABEL, shopId,
+                EVENT_ACTION, "all brands - $CLICK",
+                EVENT_LABEL, "$CLICK shop logo",
                 ECOMMERCE, DataLayer.mapOf(
                 PROMO_CLICK, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
@@ -242,16 +239,13 @@ class OfficialStoreTracking(context: Context) {
             shopName: String,
             url: String,
             additionalInformation: String,
-            featuredBrandId: String,
-            isLogin: Boolean,
-            shopId: String
+            featuredBrandId: String
     ) {
-        val statusLogin = if (isLogin) "login" else "nonlogin"
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
-                EVENT_ACTION, "all brands - $IMPRESSION - $statusLogin",
-                EVENT_LABEL, shopId,
+                EVENT_ACTION, "all brands - $IMPRESSION",
+                EVENT_LABEL, "$IMPRESSION of brand",
                 ECOMMERCE, DataLayer.mapOf(
                 PROMO_VIEW, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
@@ -568,23 +562,18 @@ class OfficialStoreTracking(context: Context) {
         return "/official-store$stringIsLogin - rekomendasi untuk anda - $recommendationType$stringTopAds"
     }
 
-    fun eventClickWishlist(categoryName: String, isAddWishlist: Boolean, isLogin: Boolean, productId: Int, isTopAds: Boolean) {
+    fun eventClickWishlist(categoryName: String, isAddWishlist: Boolean, isLogin: Boolean, recommendationTitle: String) {
         val action = if (isAddWishlist) "remove" else  "add"
-        val statusTopads = if (isTopAds) "topads" else  "general"
         var eventAction = "$CLICK $action - wishlist on product recommendation"
-        val eventLabel = "$productId - $statusTopads"
-        if (!isLogin) {
+        if (!isLogin)
             eventAction += " - non login"
-        } else {
-            eventAction += " - login"
-        }
 
         tracker.sendGeneralEvent(
                 TrackAppUtils
                         .gtmData(CLICK_OS_MICROSITE,
                                 "$OS_MICROSITE$categoryName",
                                 eventAction,
-                                eventLabel))
+                                recommendationTitle))
     }
 
     fun sendAll() {

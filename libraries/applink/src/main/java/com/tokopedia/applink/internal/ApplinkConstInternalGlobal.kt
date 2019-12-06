@@ -41,6 +41,10 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_SMART_LOGIN = "isSmartLogin"
     @JvmField
     val PARAM_IS_PENDING = "isPending"
+    @JvmField
+    val PARAM_LOGIN_TYPE = "loginType"
+    @JvmField
+    val PARAM_IS_SQ_CHECK = "isSqCheck"
 
     //VerificationActivity Param
     @JvmField
@@ -54,7 +58,7 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_OTP_CODE = "otp_code"
     @JvmField
-    val PARAM_IS_FROM_LOGIN = "is_from_login"
+    val PARAM_IS_SKIP_OTP = "is_skip_otp"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -128,9 +132,11 @@ object ApplinkConstInternalGlobal {
     // ChangeNameActivity
     // tokopedia-android-internal://global/change-name
     @JvmField
-    val CHANGE_NAME = "$INTERNAL_GLOBAL/change-name?oldName={oldName}"
+    val CHANGE_NAME = "$INTERNAL_GLOBAL/change-name?oldName={oldName}&chances={chances}"
     @JvmField
     val PARAM_FULL_NAME = "oldName"
+    @JvmField
+    val PARAM_CHANCE_CHANGE_NAME = "chances"
 
     // AddEmailActivity
     // tokopedia-android-internal://global/add-email
@@ -190,7 +196,7 @@ object ApplinkConstInternalGlobal {
 
 
     @JvmField
-    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}&title={title}"
+    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-profile-phone-verification

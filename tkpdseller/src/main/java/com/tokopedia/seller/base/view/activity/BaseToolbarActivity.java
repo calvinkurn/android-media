@@ -123,13 +123,17 @@ abstract class BaseToolbarActivity extends BaseActivity {
     @CallSuper
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(getToolbar());
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle(this.getTitle());
         }
+    }
+
+    protected int getToolbar() {
+        return R.id.toolbar;
     }
 
     @Override

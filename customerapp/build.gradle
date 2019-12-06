@@ -4,6 +4,14 @@ apply plugin: 'io.fabric'
 if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
+
+if (hasProperty('buildScan')) {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
+}
+
 apply plugin: 'io.hansel.preprocessor'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
@@ -214,7 +222,7 @@ android {
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         resConfigs "en", "id"
         ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a"
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
         }
     }
 
@@ -265,7 +273,6 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.gamification)
-    implementation project(rootProject.ext.features.affiliate)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.feed)
@@ -274,6 +281,7 @@ dependencies {
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.explore)
     implementation project(rootProject.ext.features.interestPick)
+    implementation project(rootProject.ext.features.interestPickCommon)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.home)
@@ -291,13 +299,17 @@ dependencies {
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.tkpdtransaction)
     implementation project(rootProject.ext.features.tkpdseller)
+    implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.features.tkpddiscovery)
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.homeRecom)
+    implementation project(rootProject.ext.features.homeWishlist)
+    implementation project(rootProject.ext.features.smartRecycler)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -328,8 +340,6 @@ dependencies {
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.productCard)
-    implementation project(rootProject.ext.features.productManageItem)
-    implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.digitalBrowse)
     implementation project(rootProject.ext.features.notifCenter)
@@ -400,7 +410,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.features.filter)
-    implementation project(rootProject.ext.features.tradeIn)
+    implementation project(rootProject.ext.features.commonTradein)
     implementation project(rootProject.ext.libraries.inappupdate)
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.features.tokopointsNotification)
@@ -415,11 +425,13 @@ dependencies {
     implementation project(rootProject.ext.features.scanner)
     implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.adapterDelegate)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.banner
+    implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession

@@ -77,10 +77,10 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartResponse;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
@@ -569,8 +569,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
                 if (!insuranceCartShopsArrayList.isEmpty()) {
                     deleteMacroInsurance(insuranceCartShopsArrayList, false);
+                } else if (cartAdapter.isInsuranceSelected()) {
+                    cartPageAnalytics.sendEventPurchaseInsurance(userSession.getUserId(),
+                            cartAdapter.getSelectedInsuranceProductId(),
+                            cartAdapter.getSelectedInsuranceProductTitle());
                 }
-
                 dPresenter.processToUpdateCartData(getSelectedCartDataList());
             } else {
                 showToastMessageRed(message);
@@ -1079,22 +1082,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onTickerDescriptionUrlClicked(@NotNull String url) {
-        String finalUrl = url;
-        if (!url.startsWith("https://")) {
-            if (url.startsWith("http://")) {
-                finalUrl = url.replace("http", "https");
-            } else {
-                finalUrl = "https://" + url;
-            }
-        }
-        Intent view = new Intent();
-        view.setAction(Intent.ACTION_VIEW);
-        view.setData(Uri.parse(finalUrl));
-        startActivity(view);
-    }
-
-    @Override
     public void onShowCartTicker(@NotNull String tickerId) {
         cartPageAnalytics.eventViewInformationAndWarningTickerInCart(tickerId);
     }
@@ -1111,7 +1098,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onCartShopNameClicked(@NotNull CartShopHolderData cartShopHolderData) {
-        sendAnalyticsOnClickShopNameCartItem(cartShopHolderData.getShopGroupAvailableData().getShopName());
+        sendAnalyticsOnClickShopCartItem(cartShopHolderData.getShopGroupAvailableData().getShopId(), cartShopHolderData.getShopGroupAvailableData().getShopName());
 
         if (getActivity() != null) {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, cartShopHolderData.getShopGroupAvailableData().getShopId());
@@ -2160,8 +2147,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void sendAnalyticsOnClickShopNameCartItem(String shopName) {
-        cartPageAnalytics.eventClickAtcCartClickShopName(shopName);
+    public void sendAnalyticsOnClickShopCartItem(String shopId, String shopName) {
+        cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName);
     }
 
     @Override
@@ -2543,6 +2530,26 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
+    public void sendEventDeleteInsurance(String insuranceTitle) {
+        cartPageAnalytics.sendEventDeleteInsurance(insuranceTitle);
+    }
+
+    @Override
+    public void sendEventInsuranceImpression(String title) {
+        cartPageAnalytics.sendEventInsuranceImpression(title);
+    }
+
+    @Override
+    public void sendEventInsuranceImpressionForShipment(String title) {
+
+    }
+
+    @Override
+    public void sendEventChangeInsuranceState(boolean isChecked, String insuranceTitle) {
+        cartPageAnalytics.sendEventChangeInsuranceState(isChecked, insuranceTitle);
+    }
+
+    @Override
     public void deleteMacroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList, boolean showConfirmationDialog) {
         if (showConfirmationDialog) {
             View view = getLayoutInflater().inflate(R.layout.remove_insurance_product, null, false);
@@ -2774,6 +2781,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         DialogUnify dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size());
 
+        for (CartItemData cartItemData : allDisabledCartItemDataList) {
+            if (cartItemData.getNicotineLiteMessageData() != null) {
+                cartPageAnalytics.eventClickHapusButtonOnProductContainTobacco();
+                break;
+            }
+        }
         sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
                 allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
         ));
@@ -2799,7 +2812,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onDeleteDisabledItem(CartItemData cartItemData) {
-        sendAnalyticsOnClickRemoveIconCartItem();
+        if (cartItemData.getNicotineLiteMessageData() != null) {
+            cartPageAnalytics.eventClickTrashIconButtonOnProductContainTobacco();
+        } else {
+            sendAnalyticsOnClickRemoveIconCartItem();
+        }
         List<CartItemData> cartItemDatas = Collections.singletonList(cartItemData);
         List<CartItemData> allCartItemDataList = cartAdapter.getAllDisabledCartItemData();
 
@@ -2820,5 +2837,21 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             return Unit.INSTANCE;
         });
         dialog.show();
+    }
+
+    @Override
+    public void onTobaccoLiteUrlClicked(@NotNull String url) {
+        cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco();
+        dPresenter.redirectToLite(url);
+    }
+
+    @Override
+    public void onShowTickerTobacco() {
+        cartPageAnalytics.eventViewTickerProductContainTobacco();
+    }
+
+    @Override
+    public void goToLite(String url) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 }
