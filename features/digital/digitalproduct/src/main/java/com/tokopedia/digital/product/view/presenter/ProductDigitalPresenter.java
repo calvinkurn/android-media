@@ -164,7 +164,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
             @Override
             public void onNext(ProductDigitalData productDigitalData) {
                 getView().hideInitialProgressLoading();
-
+                getView().sendOpenScreenEventTracking(productDigitalData.getCategoryData());
                 getView().goToCartPage(productDigitalData);
             }
         });
