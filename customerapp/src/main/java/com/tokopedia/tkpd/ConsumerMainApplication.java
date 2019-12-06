@@ -107,7 +107,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             e.printStackTrace();
         }
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            Log.e("static NOOB",e.getLocalizedMessage());
             e.printStackTrace();
         });
     }
