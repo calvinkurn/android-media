@@ -160,8 +160,8 @@ public class CartItemData implements Parcelable {
         private String parentId;
         private String productId;
         private String productName;
-        private int minimalQtyOrder;
-        private int invenageValue;
+        private int minOrder;
+        private int maxOrder;
         private int priceChangesState;
         private String priceChangesDesc;
         private int productInvenageByUserInCart;
@@ -332,12 +332,20 @@ public class CartItemData implements Parcelable {
             this.productName = productName;
         }
 
-        public int getMinimalQtyOrder() {
-            return minimalQtyOrder;
+        public int getMinOrder() {
+            return minOrder;
         }
 
-        public void setMinimalQtyOrder(int minimalQtyOrder) {
-            this.minimalQtyOrder = minimalQtyOrder;
+        public void setMinOrder(int minOrder) {
+            this.minOrder = minOrder;
+        }
+
+        public int getMaxOrder() {
+            return maxOrder;
+        }
+
+        public void setMaxOrder(int maxOrder) {
+            this.maxOrder = maxOrder;
         }
 
         public String getFreeReturnLogo() {
@@ -418,14 +426,6 @@ public class CartItemData implements Parcelable {
 
         public void setPreOrderInfo(String preOrderInfo) {
             this.preOrderInfo = preOrderInfo;
-        }
-
-        public int getInvenageValue() {
-            return invenageValue;
-        }
-
-        public void setInvenageValue(int invenageValue) {
-            this.invenageValue = invenageValue;
         }
 
         public int getPriceChangesState() {
@@ -662,8 +662,8 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.parentId);
             dest.writeString(this.productId);
             dest.writeString(this.productName);
-            dest.writeInt(this.minimalQtyOrder);
-            dest.writeInt(this.invenageValue);
+            dest.writeInt(this.minOrder);
+            dest.writeInt(this.maxOrder);
             dest.writeDouble(this.pricePlan);
             dest.writeInt(this.pricePlanInt);
             dest.writeInt(this.priceCurrency);
@@ -713,8 +713,8 @@ public class CartItemData implements Parcelable {
             this.parentId = in.readString();
             this.productId = in.readString();
             this.productName = in.readString();
-            this.minimalQtyOrder = in.readInt();
-            this.invenageValue = in.readInt();
+            this.minOrder = in.readInt();
+            this.maxOrder = in.readInt();
             this.pricePlan = in.readDouble();
             this.pricePlanInt = in.readInt();
             this.priceCurrency = in.readInt();
@@ -775,7 +775,6 @@ public class CartItemData implements Parcelable {
     public static class UpdatedData implements Parcelable {
         private int quantity;
         private String remark;
-        private int maxQuantity;
         private int maxCharRemark;
 
         public int getQuantity() {
@@ -795,14 +794,6 @@ public class CartItemData implements Parcelable {
         }
 
         public UpdatedData() {
-        }
-
-        public int getMaxQuantity() {
-            return maxQuantity;
-        }
-
-        public void setMaxQuantity(int maxQuantity) {
-            this.maxQuantity = maxQuantity;
         }
 
         public int getMaxCharRemark() {
@@ -835,14 +826,12 @@ public class CartItemData implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.quantity);
             dest.writeString(this.remark);
-            dest.writeInt(this.maxQuantity);
             dest.writeInt(this.maxCharRemark);
         }
 
         protected UpdatedData(Parcel in) {
             this.quantity = in.readInt();
             this.remark = in.readString();
-            this.maxQuantity = in.readInt();
             this.maxCharRemark = in.readInt();
         }
 

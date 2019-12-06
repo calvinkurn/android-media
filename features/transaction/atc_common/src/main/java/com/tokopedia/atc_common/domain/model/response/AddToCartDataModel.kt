@@ -24,6 +24,7 @@ data class AddToCartDataModel(
 
     companion object {
         const val STATUS_OK = "OK"
+        const val STATUS_ERROR = "ERROR"
 
         @JvmField
         val CREATOR = object : Parcelable.Creator<AddToCartDataModel> {

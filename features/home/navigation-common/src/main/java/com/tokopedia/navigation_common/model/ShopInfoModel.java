@@ -16,9 +16,6 @@ public class ShopInfoModel {
     @SerializedName("shop_id")
     @Expose
     private String shopId = "";
-    @SerializedName("shop_domain")
-    @Expose
-    private String shopDomain = "";
     @SerializedName("shop_is_official")
     @Expose
     private String shopIsOfficial = "";
@@ -45,14 +42,6 @@ public class ShopInfoModel {
 
     public void setShopId(String shopId) {
         this.shopId = shopId;
-    }
-
-    public String getShopDomain() {
-        return shopDomain;
-    }
-
-    public void setShopDomain(String shopDomain) {
-        this.shopDomain = shopDomain;
     }
 
     public String getShopIsOfficial() {
