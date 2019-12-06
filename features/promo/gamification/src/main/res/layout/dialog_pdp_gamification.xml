@@ -11,7 +11,7 @@
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_4"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/dp_8"
         android:background="@drawable/close_button_bottom_sheet" />
 
     <ViewFlipper
@@ -22,7 +22,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/dp_12"
             android:orientation="vertical">
 
             <com.tokopedia.unifyprinciples.Typography
@@ -49,7 +49,7 @@
             android:id="@+id/loadingView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/dp_12"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_20" />
 

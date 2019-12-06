@@ -40,12 +40,6 @@ class PdpModule {
         return RemoveWishListUseCase(context)
     }
 
-//    @GamificationPdpScope
-//    @Provides
-//    fun provideTopAdsWishlishedUseCase(context: Context): TopAdsWishlishedUseCase {
-//        return TopAdsWishlishedUseCase(context)
-//    }
-
     @GamificationPdpScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
