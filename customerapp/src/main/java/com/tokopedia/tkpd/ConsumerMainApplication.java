@@ -12,12 +12,11 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
@@ -177,12 +176,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(subscriber);
-
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            e.printStackTrace();
-            Log.e("NOOB",e.getLocalizedMessage());
-            System.exit(2);
-        });
     }
 
     @Override
@@ -262,7 +255,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
     }
 
-    protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
+    protected AbTestPlatform.Listener getRemoteConfigListener() {
+        return null;
+    }
 
     private void setVersionCode() {
         try {
