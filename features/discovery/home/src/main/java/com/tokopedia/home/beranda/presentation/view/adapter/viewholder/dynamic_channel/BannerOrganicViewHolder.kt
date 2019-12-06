@@ -213,24 +213,33 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     }
 
     private fun mappingCtaButton(cta: DynamicHomeChannel.CtaData) {
+
+        //set false first to prevent unexpected behavior
+        bannerUnifyButton.isInverse = false
+
         if (cta.text.isEmpty()) {
             bannerUnifyButton.visibility = View.GONE
             return
         }
-        bannerUnifyButton.visibility = View.VISIBLE
-        when (cta.mode) {
-            CTA_MODE_MAIN -> bannerUnifyButton.buttonType = UnifyButton.Type.MAIN
-            CTA_MODE_TRANSACTION -> bannerUnifyButton.buttonType = UnifyButton.Type.TRANSACTION
-            CTA_MODE_INVERTED -> bannerUnifyButton.isInverse = true
-            CTA_MODE_DISABLED -> bannerUnifyButton.isEnabled = false
-            CTA_MODE_ALTERNATE -> bannerUnifyButton.isEnabled = false
-        }
+        var mode = CTA_MODE_MAIN
+        var type = CTA_TYPE_FILLED
 
-        when (cta.type) {
+        if (cta.mode.isNotEmpty()) mode = cta.mode
+
+        if (cta.text.isNotEmpty()) type = cta.type
+
+        when (type) {
             CTA_TYPE_FILLED -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.FILLED
             CTA_TYPE_GHOST -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.GHOST
             CTA_TYPE_TEXT -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.TEXT_ONLY
-            else -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.FILLED
+        }
+
+        when (mode) {
+            CTA_MODE_MAIN -> bannerUnifyButton.buttonType = UnifyButton.Type.MAIN
+            CTA_MODE_TRANSACTION -> bannerUnifyButton.buttonType = UnifyButton.Type.TRANSACTION
+            CTA_MODE_ALTERNATE -> bannerUnifyButton.buttonType = UnifyButton.Type.ALTERNATE
+            CTA_MODE_DISABLED -> bannerUnifyButton.isEnabled = false
+            CTA_MODE_INVERTED -> bannerUnifyButton.isInverse = true
         }
 
         bannerUnifyButton.text = cta.text
@@ -242,10 +251,6 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         }
     }
 
-    class SeeMoreItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val seeMoreCard: CardView by lazy { view.findViewById<CardView>(R.id.card_see_more_banner_mix) }
-    }
-
     private fun getRoundedImageViewTarget(imageView: ImageView, radius: Float): BitmapImageViewTarget {
         return object : BitmapImageViewTarget(imageView) {
             override fun setResource(resource: Bitmap?) {
@@ -255,7 +260,6 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
             }
         }
     }
-
 
     private fun measureParentView(deviceWidth: Int, parentView: View) {
         parentView.measure(

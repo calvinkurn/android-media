@@ -75,14 +75,10 @@ class RecomendationEntity {
         var isIsTopads: Boolean = false
         @SerializedName("isWishlist")
         var isWishlist: Boolean = false
-        @SerializedName("labels")
-        var labels: List<*>? = listOf<Any>()
         @SerializedName("labelgroup")
         var labelGroups: List<LabelGroup>? = listOf<LabelGroup>()
         @SerializedName("badges")
         var badges: List<Badges>? = listOf()
-        @SerializedName("wholesalePrice")
-        var wholesalePrice: List<*>? = listOf<Any>()
         @SerializedName("minOrder")
         var minOrder: Int? = 0
 
@@ -108,8 +104,6 @@ class RecomendationEntity {
 
         class Badges {
 
-            @SerializedName("title")
-            var title: String? = ""
             @SerializedName("imageUrl")
             var imageUrl: String? = ""
         }
