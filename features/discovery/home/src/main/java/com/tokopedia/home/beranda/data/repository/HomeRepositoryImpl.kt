@@ -23,7 +23,7 @@ class HomeRepositoryImpl @Inject constructor(
         private val homeRemoteDataSource: HomeRemoteDataSource
 ): HomeRepository {
 
-    private val timeout = TimeUnit.SECONDS.toMillis(10)
+    private val timeout = TimeUnit.DAYS.toMillis(30)
     override fun getHomeData(): LiveData<HomeData?> {
         return homeDao.getHomeData().map {
             if(Date().time - (it?.modificationDate?.time ?: Date().time) > timeout){
