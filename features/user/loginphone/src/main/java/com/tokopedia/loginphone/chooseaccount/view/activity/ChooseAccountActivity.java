@@ -1,14 +1,15 @@
-package com.tokopedia.loginphone.choosetokocashaccount.view.activity;
+package com.tokopedia.loginphone.chooseaccount.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
+import com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
-import com.tokopedia.loginphone.choosetokocashaccount.view.fragment.ChooseTokocashAccountFragment;
+import com.tokopedia.loginphone.chooseaccount.view.fragment.ChooseAccountFragment;
 
 /**
  * @author by nisie on 12/4/17.
@@ -16,14 +17,14 @@ import com.tokopedia.loginphone.choosetokocashaccount.view.fragment.ChooseTokoca
  * @see com.tokopedia.applink.internal.ApplinkConstInternalGlobal#CHOOSE_ACCOUNT
  */
 
-public class ChooseTokocashAccountActivity extends BaseSimpleActivity {
+public class ChooseAccountActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null)
             bundle.putAll(getIntent().getExtras());
-        return ChooseTokocashAccountFragment.Companion.createInstance(bundle);
+        return ChooseAccountFragment.Companion.createInstance(bundle);
     }
 
     @Override
@@ -37,8 +38,8 @@ public class ChooseTokocashAccountActivity extends BaseSimpleActivity {
         return LoginPhoneNumberAnalytics.Screen.SCREEN_CHOOSE_TOKOCASH_ACCOUNT;
     }
 
-    public static Intent getCallingIntent(Context context, ChooseTokoCashAccountViewModel model) {
-        Intent intent = new Intent(context, ChooseTokocashAccountActivity.class);
+    public static Intent getCallingIntent(Context context, ChooseAccountViewModel model) {
+        Intent intent = new Intent(context, ChooseAccountActivity.class);
         Bundle bundle = new Bundle();
         intent.putExtras(bundle);
         return intent;

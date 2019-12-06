@@ -1,4 +1,4 @@
-package com.tokopedia.loginphone.choosetokocashaccount.data
+package com.tokopedia.loginphone.chooseaccount.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -6,31 +6,31 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by nisie on 16/04/19.
  */
-data class AccountList(
+data class AccountListPojo(
         @SerializedName("accountsGetAccountsList")
         @Expose
-        var accountListPojo: AccountListPojo = AccountListPojo()
+        var accountList: AccountList = AccountList()
 )
 
-data class AccountListPojo(
+data class AccountList(
         @SerializedName("key")
-    @Expose
-    var key: String = "",
+        @Expose
+        var key: String = "",
         @SerializedName("msisdn_view")
-    @Expose
-    var msisdnView: String = "",
+        @Expose
+        var msisdnView: String = "",
         @SerializedName("msisdn")
-    @Expose
-    var msisdn: String = "",
+        @Expose
+        var msisdn: String = "",
         @SerializedName("users_details")
-    @Expose
-    var userDetails: ArrayList<UserDetail> = ArrayList(),
+        @Expose
+        var userDetails: ArrayList<UserDetail> = ArrayList(),
         @SerializedName("users_count")
-    @Expose
-    var userCount: Int = 0,
+        @Expose
+        var userCount: Int = 0,
         @SerializedName("errors")
-    @Expose
-    var errors: ArrayList<Error> = ArrayList()
+        @Expose
+        var errors: ArrayList<Error> = ArrayList()
 )
 
 data class UserDetail(
