@@ -266,8 +266,8 @@ class ProductManagePresenterImpl @Inject constructor(
                         //No OP
                     }
 
-                    override fun onError(e: Throwable) {
-                        view.onFailedChangeFeaturedProduct(e)
+                    override fun onError(throwable: Throwable) {
+                        view.onFailedChangeFeaturedProduct(throwable)
                     }
                 })
 

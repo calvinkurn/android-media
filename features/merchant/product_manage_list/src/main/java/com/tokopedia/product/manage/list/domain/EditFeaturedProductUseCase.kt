@@ -32,7 +32,7 @@ class EditFeaturedProductUseCase @Inject constructor(
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<Nothing> {
-        var graphqlRequest = GraphqlRequest(gqlMutation, FeaturedProductResponseModel::class.java, requestParams?.parameters)
+        val graphqlRequest = GraphqlRequest(gqlMutation, FeaturedProductResponseModel::class.java, requestParams?.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
