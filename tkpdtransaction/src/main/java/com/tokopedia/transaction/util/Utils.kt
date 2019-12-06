@@ -17,12 +17,13 @@ import java.util.concurrent.TimeUnit
 object Utils {
     val VIBRATE_DURATION = 150
 
+    @JvmStatic
     fun copyTextToClipBoard(label: String, textVoucherCode: String, context: Context) {
         val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(label, textVoucherCode)
         clipboard.primaryClip = clip
     }
-
+    @JvmStatic
     fun vibrate(context: Context) {
         val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (v != null) {
@@ -34,11 +35,13 @@ object Utils {
         }
     }
 
+    @JvmStatic
     fun convertMonth(num: Int, context: Context): String {
         val entries = context.resources.getStringArray(R.array.month_title)
         return entries[num]
     }
 
+    @JvmStatic
     fun setFormat(target: SimpleDateFormat, current: SimpleDateFormat, value: String): String? {
         var result: String? = null
         try {
