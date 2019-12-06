@@ -1,6 +1,7 @@
 package com.tokopedia.vouchergame.detail.widget
 
 import android.content.Context
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -9,8 +10,13 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethod
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchergame.R
+import com.tokopedia.vouchergame.detail.data.VoucherGameEnquiryFields
 import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
 import org.jetbrains.annotations.NotNull
 
@@ -19,9 +25,14 @@ import org.jetbrains.annotations.NotNull
  */
 open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                                  defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : BaseCustomView(context, attrs, defStyleAttr), VoucherGameInputDropdownBottomSheet.OnClickListener {
 
-    private lateinit var listener: ActionListener
+    private var listener: ActionListener? = null
+
+    private var isDropdown = false
+    private var dropdownBottomSheet = BottomSheetUnify()
+    private var dropdownView: VoucherGameInputDropdownBottomSheet? = null
+    private var fragmentManager: FragmentManager? = null
 
     init {
         View.inflate(context, getLayout(), this)
@@ -30,7 +41,7 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
 
         btn_clear_input.setOnClickListener {
             ac_input.setText("")
-            listener.onFinishInput()
+            listener?.onFinishInput()
             error_label.visibility = View.GONE
         }
 
@@ -44,7 +55,7 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (count == 0) {
+                if (count == 0 || isDropdown) {
                     btn_clear_input.visibility = View.GONE
                 } else {
                     if (count > 1) {
@@ -59,16 +70,29 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
 
         ac_input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                listener.onFinishInput()
+                listener?.onFinishInput()
                 clearFocus()
             }
             false
         }
         ac_input.setKeyImeChangeListener { _, event ->
             if (event.keyCode == KeyEvent.KEYCODE_BACK) {
-                listener.onFinishInput()
+                listener?.onFinishInput()
                 clearFocus()
             }
+        }
+
+        iv_input_dropdown.gone()
+
+        dropdownBottomSheet.setTitle(resources.getString(R.string.vg_input_field_dropdown_title))
+        dropdownBottomSheet.setFullPage(true)
+        dropdownBottomSheet.clearAction()
+        dropdownBottomSheet.setCloseClickListener {
+            dropdownBottomSheet.dismiss()
+        }
+
+        ac_input.setOnFocusChangeListener { _, b ->
+            onFocusChangeDropdown(b)
         }
     }
 
@@ -106,7 +130,45 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
         this.listener = listener
     }
 
+    override fun onItemClicked(item: VoucherGameEnquiryFields.DataCollection) {
+        ac_input.setText(item.value)
+        dropdownBottomSheet.dismiss()
+    }
+
+    fun setupDropdownBottomSheet(data: List<VoucherGameEnquiryFields.DataCollection>, fragmentManager: FragmentManager?) {
+        isDropdown = true
+        iv_input_dropdown.visible()
+
+        dropdownView = VoucherGameInputDropdownBottomSheet(context, listener = this)
+        dropdownView?.setData(data)
+
+        this.fragmentManager = fragmentManager
+        dropdownBottomSheet.setChild(dropdownView)
+    }
+
+    private fun showDropdownBottomSheet() {
+        if (isDropdown && fragmentManager != null) {
+            dropdownBottomSheet.show(fragmentManager,"Enquiry input field dropdown bottom sheet")
+            // Open keyboard with delay so it opens when bottom sheet is fully visible
+            Handler().postDelayed({
+                val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+            }, SHOW_KEYBOARD_DELAY)
+        }
+    }
+
+    private fun onFocusChangeDropdown(hasFocus: Boolean) {
+        if (hasFocus && isDropdown) {
+            ac_input.clearFocus()
+            showDropdownBottomSheet()
+        }
+    }
+
     interface ActionListener {
         fun onFinishInput()
+    }
+
+    companion object {
+        const val SHOW_KEYBOARD_DELAY: Long = 200
     }
 }

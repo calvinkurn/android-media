@@ -4,15 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +32,9 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.datepicker.DatePickerUnify;
+import com.tokopedia.datepicker.OnDateChangedListener;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
@@ -43,16 +50,20 @@ import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.RequestCancelActivity;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
+import com.tokopedia.transaction.orders.orderlist.common.util.Utils;
 import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.CustomDate;
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.DefaultDate;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListUseCaseModule;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.WishListResponseListener;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.OrderListAdapterFactory;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder.EmptyStateMarketPlaceFilterViewHolder;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder.OrderListRecomListViewHolder;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder.OrderListViewHolder;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
@@ -60,16 +71,24 @@ import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContra
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.UnifyButton;
+import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Locale;
 import javax.inject.Inject;
+import kotlin.Unit;
 
 
 public class OrderListFragment extends BaseDaggerFragment implements
@@ -77,7 +96,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         OrderListRecomListViewHolder.ActionListener, RefreshHandler.OnRefreshHandlerListener,
         OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener,QuickSingleFilterView.QuickFilterAnalytics,
         SearchInputView.ResetListener, OrderListViewHolder.OnMenuItemListener, View.OnClickListener,
-        OrderListViewHolder.OnActionButtonListener {
+        OrderListViewHolder.OnActionButtonListener, EmptyStateMarketPlaceFilterViewHolder.ActionListener {
 
 
     private static final String ORDER_CATEGORY = "orderCategory";
@@ -104,20 +123,51 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final String ACTION_TRACK_IT = "lacak";
     private static final String ACTION_SUBMIT_CANCELLATION = "ajukan pembatalan";
     private static final String ACTION_DONE = "selesai";
+    private static final String  MULAI_DARI= "Mulai Dari";
+    private static final String  SAMPAI= "Sampai";
+
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     LinearLayout filterDate;
+    ImageView check;
     RelativeLayout mainContent;
+    private View categoryView;
+    private ImageView crossIcon;
+    private EditText mulaiButton;
+    private EditText sampaiButton;
+    private UnifyButton terapkan;
+    private RelativeLayout datePickerlayout;
+    private RadioGroup radioGroup;
+    private RadioButtonUnify radio1,radio2;
+    private DatePickerUnify datePickerUnify;
     private RefreshHandler refreshHandler;
+    private TextView reset;
     private boolean isLoading = false;
     private int page_num = 1;
     private Bundle savedState;
     private String startDate = "";
     private String endDate = "";
+    private String defStartDate = "";
+    private String defEndDate = "";
+    private String customStartDate = "";
+    private String customEndDate = "";
+    private boolean customFilter = false;
+
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
+    private static final String DATE_FORMAT_1 = "yyyy/MM/dd";
+    private static final String DATE_FORMAT_2 = "d MMM yyyy";
+    private static final String DATE_FORMAT_3= "d M yyyy";
+    private static long _days90 = 90;
+
     private int orderId = 1;
     private String selectedOrderId = "0";
     private String actionButtonUri = "";
+    private HashMap<String,String>selectedDateMap= new HashMap<>();
+    private SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
+    private SimpleDateFormat format1 = new SimpleDateFormat(DATE_FORMAT_1, Locale.getDefault());
+    private SimpleDateFormat format2 = new SimpleDateFormat(DATE_FORMAT_2, new Locale("ind", "IND"));
+
     @Inject
     OrderListAnalytics orderListAnalytics;
 
@@ -144,6 +194,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private GridLayoutManager layoutManager;
     EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TrackingQueue trackingQueue;
+    private CloseableBottomSheetDialog changeDateBottomSheetDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -282,6 +333,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         }
     }
 
+    private Locale getCurrentLocale(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return context.getResources().getConfiguration().getLocales().get(0);
+        } else return context.getResources().getConfiguration().locale;
+    }
+
+
     protected void initView(View view) {
         recyclerView = view.findViewById(R.id.order_list_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
@@ -289,37 +347,31 @@ public class OrderListFragment extends BaseDaggerFragment implements
         simpleSearchView = view.findViewById(R.id.simpleSearchView);
         simpleSearchView.setSearchHint(getContext().getResources().getString(R.string.search_hint_text));
         filterDate = view.findViewById(R.id.filterDate);
+        check = view.findViewById(R.id.checkImageView);
         surveyBtn = view.findViewById(R.id.survey_bom);
         surveyBtn.setOnClickListener(this);
         mainContent = view.findViewById(R.id.mainContent);
+        //default 90 days filter
+        Date date = new Date();
+        Calendar cal = new GregorianCalendar();
+        cal.add(Calendar.DAY_OF_MONTH, -90);
+        Date today90 = cal.getTime();
+        endDate = selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : format.format(date);
+        startDate = selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : format.format(today90);
+        changeDateBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         if (orderLabelList != null && orderLabelList.getFilterStatusList() != null && orderLabelList.getFilterStatusList().size() > 0) {
             presenter.buildAndRenderFilterList(orderLabelList.getFilterStatusList());
         }
-
-        filterDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                orderListAnalytics.sendDateFilterClickEvent();
-                startActivityForResult(SaveDateBottomSheetActivity.getDateInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
-            }
-        });
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == FILTER_DATE_REQUEST) {
-                startDate = data.getStringExtra(SaveDateBottomSheetActivity.START_DATE);
-                endDate = data.getStringExtra(SaveDateBottomSheetActivity.END_DATE);
-                refreshHandler.startRefresh();
-                orderListAnalytics.sendDateFilterSubmitEvent();
-            } else if (requestCode == SUBMIT_SURVEY_REQUEST) {
+            if (requestCode == SUBMIT_SURVEY_REQUEST) {
                 presenter.insertSurveyRequest(data.getIntExtra(SaveDateBottomSheetActivity.SURVEY_RATING, 3), data.getStringExtra(SaveDateBottomSheetActivity.SURVEY_COMMENT));
             }
-        } else
-        if (requestCode == REQUEST_CANCEL_ORDER) {
+        } else if (requestCode == REQUEST_CANCEL_ORDER) {
             String reason = "";
             int reasonCode = 1;
             if (resultCode == REJECT_BUYER_REQUEST) {
@@ -339,7 +391,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         refreshHandler.setPullEnabled(true);
         layoutManager = new GridLayoutManager(getContext(), 2);
         layoutManager.setSpanSizeLookup(onSpanSizeLookup());
-        orderListAdapter = new OrderListAdapter(new OrderListAdapterFactory(orderListAnalytics, this, this, this));
+        orderListAdapter = new OrderListAdapter(new OrderListAdapterFactory(orderListAnalytics, this, this, this, this));
         orderListAdapter.setVisitables(new ArrayList<>());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(orderListAdapter);
@@ -348,6 +400,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         quickSingleFilterView.setquickFilterListener(this);
         simpleSearchView.setListener(this);
         simpleSearchView.setResetListener(this);
+        filterDate.setOnClickListener(this);
     }
 
     private void addRecyclerListener() {
@@ -424,14 +477,17 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void renderEmptyList(int typeRequest) {
+    public void renderEmptyList(int typeRequest, long elapsedDays) {
         if (typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL) {
             swipeToRefresh.setVisibility(View.VISIBLE);
             if (!hasRecyclerListener) {
                 addRecyclerListener();
             }
             if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
-                orderListAdapter.setEmptyMarketplace();
+                if (elapsedDays == _days90) {
+                    orderListAdapter.setEmptyMarketplaceFilter();
+                } else
+                    orderListAdapter.setEmptyMarketplace();
                 presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), true);
             } else {
                 orderListAdapter.setEmptyOrderList();
@@ -572,6 +628,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void setFilterRange(DefaultDate defaultDate, CustomDate customDate) {
+
+        defStartDate = Utils.INSTANCE.setFormat(format, format1, defaultDate.getStartRangeDate());
+        defEndDate = Utils.INSTANCE.setFormat(format, format1, defaultDate.getEndRangeDate());
+        customEndDate = Utils.INSTANCE.setFormat(format, format1, customDate.getEndRangeDate());
+        customStartDate = Utils.INSTANCE.setFormat(format, format1, customDate.getStartRangeDate());
+
+    }
+
+    @Override
     public void addData(List<Visitable> data, Boolean isRecommendation) {
         this.isRecommendation = isRecommendation;
         if (!hasRecyclerListener) {
@@ -640,7 +706,128 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void onClick(View v) {
         if (v.getId() == R.id.survey_bom) {
             startActivityForResult(SaveDateBottomSheetActivity.getSurveyInstance(getContext(), OPEN_SURVEY_PAGE), SUBMIT_SURVEY_REQUEST);
+        } else if (v.getId() == R.id.terapkan) {
+            if (radio1.isChecked()) {
+                startDate = defStartDate;
+                endDate = defEndDate;
+                customFilter = false;
+            } else {
+                customFilter = true;
+                startDate = Utils.INSTANCE.setFormat(format, format2, mulaiButton.getText().toString());
+                endDate = Utils.INSTANCE.setFormat(format, format2, sampaiButton.getText().toString());
+            }
+            selectedDateMap.clear();
+            selectedDateMap.put(SAMPAI, endDate);
+            selectedDateMap.put(MULAI_DARI, startDate);
+            check.setVisibility(View.VISIBLE);
+            refreshHandler.startRefresh();
+            orderListAnalytics.sendDateFilterSubmitEvent();
+            changeDateBottomSheetDialog.dismiss();
+
+        } else if (v.getId() == R.id.filterDate) {
+            filter();
         }
+    }
+
+    private void filter() {
+        initBottomSheet();
+        reset.setOnClickListener(view -> {
+            radio1.setChecked(true);
+            selectedDateMap.clear();
+            customFilter = false;
+            datePickerlayout.setVisibility(View.GONE);
+            sampaiButton.setText(Utils.INSTANCE.setFormat(format2, format, customEndDate));
+            mulaiButton.setText(Utils.INSTANCE.setFormat(format2, format, customStartDate));
+        });
+        if (customFilter) {
+            radio2.setChecked(true);
+            datePickerlayout.setVisibility(View.VISIBLE);
+        } else {
+            radio1.setChecked(true);
+        }
+        sampaiButton.setText(Utils.INSTANCE.setFormat(format2, format, selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate));
+        mulaiButton.setText(Utils.INSTANCE.setFormat(format2, format, selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate));
+
+        crossIcon.setOnClickListener((View view) -> {
+            changeDateBottomSheetDialog.dismiss();
+        });
+        changeDateBottomSheetDialog.setCustomContentView(categoryView, "", false);
+        changeDateBottomSheetDialog.show();
+
+        radioGroup.setOnCheckedChangeListener((RadioGroup group, int checkedId) -> {
+            if (checkedId == R.id.radio2) {
+                datePickerlayout.setVisibility(View.VISIBLE);
+
+            } else {
+                datePickerlayout.setVisibility(View.GONE);
+            }
+        });
+        mulaiButton.setOnClickListener((View view) -> {
+            showDatePicker(MULAI_DARI);
+        });
+        sampaiButton.setOnClickListener((View view) -> {
+            showDatePicker(SAMPAI);
+        });
+    }
+
+    private void initBottomSheet() {
+        categoryView = getLayoutInflater().inflate(R.layout.change_bom_deadline_bottomsheet, null);
+        crossIcon = categoryView.findViewById(R.id.cross_icon_bottomsheet);
+        mulaiButton = categoryView.findViewById(R.id.et_start_date);
+        sampaiButton = categoryView.findViewById(R.id.et_end_date);
+        terapkan = categoryView.findViewById(R.id.terapkan);
+        radio1 = categoryView.findViewById(R.id.radio1);
+        radio2 = categoryView.findViewById(R.id.radio2);
+        datePickerlayout = categoryView.findViewById(R.id.date_picker);
+        radioGroup = categoryView.findViewById(R.id.radio_grp);
+        reset = categoryView.findViewById(R.id.reset);
+        terapkan.setOnClickListener(this);
+        orderListAnalytics.sendDateFilterClickEvent();
+    }
+
+    private String[] split(String date) {
+        String[] dateFormat = new String[0];
+        if (date != null) {
+            dateFormat = date.split("/", 5);
+        }
+        return dateFormat;
+    }
+
+
+    private void showDatePicker(String title) {
+        String[] result = split(customStartDate);
+        Calendar minDate = new GregorianCalendar(Integer.parseInt(result[2]), Integer.parseInt(result[1]), Integer.parseInt(result[0]));
+        Calendar maxDate = new GregorianCalendar(getCurrentLocale(getActivity()));
+        Calendar defaultDate = new GregorianCalendar(getCurrentLocale(getActivity()));
+        datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
+            @Override
+            public void onDateChanged(long l) {
+                //
+            }
+        });
+        datePickerUnify.show(getFragmentManager(), "");
+        if (title.equalsIgnoreCase(MULAI_DARI)) {
+            datePickerUnify.setTitle(MULAI_DARI);
+
+        } else {
+            datePickerUnify.setTitle(SAMPAI);
+        }
+
+        datePickerUnify.getDatePickerButton().setOnClickListener((View v) -> {
+            Integer[] date = datePickerUnify.getDate();
+            if (title.equalsIgnoreCase(SAMPAI)) {
+                sampaiButton.setText(date[0] + " " + Utils.INSTANCE.convertMonth(date[1],getActivity()) + " " + date[2]);
+            } else {
+                mulaiButton.setText(date[0] + " " + Utils.INSTANCE.convertMonth(date[1],getActivity()) + " " + date[2]);
+            }
+            datePickerUnify.dismiss();
+        });
+
+        datePickerUnify.setCloseClickListener(view -> {
+            datePickerUnify.dismiss();
+            return Unit.INSTANCE;
+        });
+
     }
 
     private void setVisibilitySurveyBtn(boolean isVisible) {
@@ -797,6 +984,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void finishOrderDetail() {
         refreshHandler.startRefresh();
+    }
+
+    @Override
+    public void filterClicked() {
+        filter();
     }
 }
 

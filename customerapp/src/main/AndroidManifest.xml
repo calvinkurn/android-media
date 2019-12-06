@@ -100,7 +100,6 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
-            android:launchMode="singleTask"
             android:theme="@style/Theme.Tokopedia3.CustomerApp.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

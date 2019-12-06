@@ -16,7 +16,9 @@ data class HotelRoomListPageModel(
         var checkOutDateFmt: String = "",
         var adult: Int = 0,
         var child: Int = 0,
-        var room: Int = 0
+        var room: Int = 0,
+        var destinationType: String = "",
+        var destinationName: String = ""
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(

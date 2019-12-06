@@ -1,6 +1,8 @@
 package com.tokopedia.feedcomponent.analytics.tracker
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_FEED_EMPTY
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_LOGGED_IN_STATUS
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.track.TrackApp
@@ -65,6 +67,8 @@ class FeedAnalyticTracker
         const val CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
         const val CONTENT_HASHTAG = "content hashtag"
         const val CONTENT_INTEREST_PICK = "content interest pick"
+        const val CATEGORY_FEED_TIMELINE = "content feed timeline"
+        const val CATEGORY_FEED_TIMELINE_FEED_DETAIL = "content feed timeline - product detail"
     }
 
     private object Action {
@@ -85,10 +89,21 @@ class FeedAnalyticTracker
         const val CLICK_FOLLOW = "click follow"
         const val CLICK_UNFOLLOW = "click unfollow"
         const val CLICK_FOLLOW_ALL = "click follow semua"
+        const val CLICK_FEED_PRODUCT_DETAIL = "click - shop"
 
         const val IMPRESSION_PRODUCT_RECOM = "impression product recommendation"
         const val IMPRESSION_CONTENT_RECOM = "impression content recommendation"
         const val IMPRESSION_POST = "impression post"
+
+
+        const val PARAM_ACTION_LOGIN = "login"
+        const val PARAM_ACTION_NONLOGIN = "nonlogin"
+        const val ACTION_FEED_RECOM_USER = "click - %s - recommendation - %s"
+        const val ACTION_CLICK_FEED_AVATAR = "click - %s - %s - %s"
+        const val ACTION_CLICK_MEDIAPREVIEW_AVATAR = "click - %s - media preview - %s"
+        const val ACTION_CLICK_TOPADS_PROMOTED = "click - shop - topads shop recommendation - %s"
+        const val FORMAT_TWO_PARAM = "%s - %s"
+
 
         object Field {
             object List {
@@ -109,7 +124,11 @@ class FeedAnalyticTracker
         const val USER_PROFILE_PAGE = "/user profile page"
         const val USER_PROFILE_PAGE_DETAIL = "$USER_PROFILE_PAGE detail"
         const val INTEREST_PICK_DETAIL = "/feed/interest-pick"
+        const val HOME_FEED_SCREEN = "/feed"
         const val ONBOARDING_PROFILE_RECOM = "/feed/profile-recom"
+
+        const val SCREEN_DIMENSION_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
+        const val SCREEN_DIMENSION_IS_FEED_EMPTY = "isFeedEmpty"
     }
 
     private object Promotion {
@@ -146,6 +165,65 @@ class FeedAnalyticTracker
         const val PROFILE_FOLLOW_RECOM_USER_RECOM = "/feed follow recom - user recommendation"
         const val PROFILE_FOLLOW_RECOM_RECOM = "/feed follow recom - {usertype} recommendation"
         const val PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER ="{usertype}"
+    }
+
+
+    //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
+    //    screenshot 21
+    fun eventClickFeedProfileRecommendation(targetId: String, targetType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CATEGORY_FEED_TIMELINE,
+                String.format(Action.ACTION_FEED_RECOM_USER, targetType,
+                        if (userSessionInterface.isLoggedIn()) Action.PARAM_ACTION_LOGIN else Action.PARAM_ACTION_NONLOGIN),
+                targetId
+        )
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
+    //    screenshot 19
+    fun eventClickFeedAvatar(activityId: String, activityName: String, targetId: String, targetType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CATEGORY_FEED_TIMELINE,
+                String.format(Action.ACTION_CLICK_FEED_AVATAR, targetType, activityName,
+                        if (userSessionInterface.isLoggedIn()) Action.PARAM_ACTION_LOGIN else Action.PARAM_ACTION_NONLOGIN),
+                String.format(Action.FORMAT_TWO_PARAM, targetId, activityId)
+        )
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
+    //    screenshot 31
+    fun eventClickMediaPreviewAvatar(targetId: String, targetType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CATEGORY_FEED_TIMELINE,
+                String.format(Action.ACTION_CLICK_MEDIAPREVIEW_AVATAR, targetType,
+                        if (userSessionInterface.isLoggedIn()) Action.PARAM_ACTION_LOGIN else Action.PARAM_ACTION_NONLOGIN),
+                targetId
+        )
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
+    //    screenshot 15
+    fun eventClickFeedDetailAvatar(activityId: String, shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CATEGORY_FEED_TIMELINE_FEED_DETAIL,
+                Action.CLICK_FEED_PRODUCT_DETAIL,
+                String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
+        )
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
+    //    screenshot 7
+    fun eventClickTopadsPromoted(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CATEGORY_FEED_TIMELINE,
+                Action.ACTION_CLICK_TOPADS_PROMOTED,
+                shopId
+        )
     }
 
     /**
@@ -211,6 +289,17 @@ class FeedAnalyticTracker
      */
     fun eventOpenInterestPickDetail() {
         trackOpenScreenEvent(Screen.INTEREST_PICK_DETAIL)
+    }
+
+    /**
+     *
+     *  * docs: https://docs.google.com/spreadsheets/d/1IRr-k5qfzFUz43mbkZDRtjKPAbXVrWDlHus5gCIqzFg/edit#gid=1450459047
+     *
+     */
+    fun eventOpenFeedPlusFragment(isLoggedInStatus: Boolean, isFeedEmpty: Boolean) {
+        trackOpenScreenEventC2s(Screen.HOME_FEED_SCREEN,
+                isLoggedInStatus = isLoggedInStatus.toString(),
+                isFeedEmpty = isFeedEmpty.toString())
     }
 
     /**
@@ -862,6 +951,18 @@ class FeedAnalyticTracker
                 screenName,
                 mapOf(
                         EVENT.capitalize() to Event.OPEN_SCREEN
+                )
+        )
+    }
+
+    private fun trackOpenScreenEventC2s(screenName: String,
+                                        isLoggedInStatus: String,
+                                        isFeedEmpty: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+                screenName,
+                mapOf(
+                        SCREEN_DIMENSION_IS_LOGGED_IN_STATUS to isLoggedInStatus,
+                        SCREEN_DIMENSION_IS_FEED_EMPTY to isFeedEmpty
                 )
         )
     }
