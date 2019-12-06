@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
-import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -58,13 +57,15 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireFragmentManager().beginTransaction()
+        childFragmentManager.beginTransaction()
                 .replace(R.id.fl_video, PlayVideoFragment.newInstance())
                 .commit()
 
-        requireFragmentManager().beginTransaction()
+        childFragmentManager.beginTransaction()
                 .replace(R.id.fl_interaction, PlayInteractionFragment.newInstance())
                 .commit()
+
+        playViewModel.initVideo()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -82,6 +83,4 @@ class PlayFragment : BaseDaggerFragment() {
             }
         })
     }
-
-
 }

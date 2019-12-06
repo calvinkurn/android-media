@@ -2,6 +2,7 @@
 <resources>
     <string name="play_chat_placeholder">Chat di sini&#8230;</string>
     <string name="play_action_view">View</string>
+    <string name="play_duration_divider">/</string>
 
     <!--mock-->
     <string name="play_mock_view">2382</string>

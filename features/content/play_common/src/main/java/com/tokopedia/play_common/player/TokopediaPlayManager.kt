@@ -43,6 +43,12 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
     }
 
     //region public method
+    fun safePlayVideoWithUri(uri: Uri) {
+        if (!videoPlayer.isPlaying) playVideoWithUri(uri)
+    }
+
+    fun safePlayVideoWithUriString(uriString: String) = safePlayVideoWithUri(Uri.parse(uriString))
+
     fun playVideoWithUri(uri: Uri) {
         val videoType = TokopediaPlayVideoType.getVideoTypeByUri(uri)
         val mediaSource = getMediaSourceByVideoType(videoType)

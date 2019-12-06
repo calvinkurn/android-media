@@ -14,6 +14,7 @@ import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.video.VideoComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
+import com.tokopedia.play.view.viewmodel.PlayViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -38,7 +39,8 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var playVideoViewModel: PlayVideoViewModel
+    private lateinit var playViewModel: PlayViewModel
+    private lateinit var viewModel: PlayVideoViewModel
 
     override fun getScreenName(): String = "Play Video"
 
@@ -53,7 +55,8 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        playVideoViewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
+        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
         return inflater.inflate(R.layout.fragment_play_video, container, false)
     }
 
@@ -61,12 +64,11 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         super.onViewCreated(view, savedInstanceState)
 
         initComponents(view as ViewGroup)
-        initVideo()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        playVideoViewModel.observableVODPlayer.observe(this, Observer {
+        playViewModel.observableVOD.observe(this, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -79,9 +81,5 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun initComponents(container: ViewGroup) {
         VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
-    }
-
-    private fun initVideo() {
-        playVideoViewModel.startVideoWithUrlString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4")
     }
 }
