@@ -255,9 +255,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
     }
 
-    protected AbTestPlatform.Listener getRemoteConfigListener() {
-        return null;
-    }
+    protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
 
     private void setVersionCode() {
         try {
