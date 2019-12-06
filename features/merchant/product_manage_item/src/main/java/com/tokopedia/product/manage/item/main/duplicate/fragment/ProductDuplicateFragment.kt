@@ -11,7 +11,7 @@ import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFrag
 
 class ProductDuplicateFragment : ProductEditFragment(){
 
-    override var statusUpload: Int = ProductStatus.EDIT
+    override var statusUpload: Int = ProductStatus.ADD
 
     override fun onSuccessLoadProduct(model: ProductViewModel?) {
         model?.setProductId(null)
