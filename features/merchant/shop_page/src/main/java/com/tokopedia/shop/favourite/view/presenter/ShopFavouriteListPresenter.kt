@@ -11,7 +11,7 @@ import com.tokopedia.shop.favourite.domain.interactor.GetShopFollowerListUseCase
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView
 import com.tokopedia.shop.favourite.view.model.ShopFollowerUiModel
 import com.tokopedia.shop.favourite.view.model.ShopFollowerListResultUiModel
-import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase
+import com.tokopedia.shop.oldpage.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 

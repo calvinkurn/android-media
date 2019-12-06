@@ -9,10 +9,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
+import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
