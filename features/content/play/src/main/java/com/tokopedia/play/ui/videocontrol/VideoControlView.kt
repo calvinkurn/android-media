@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.video_control
+package com.tokopedia.play.ui.videocontrol
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

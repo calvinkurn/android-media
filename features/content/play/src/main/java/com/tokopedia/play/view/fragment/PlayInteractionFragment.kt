@@ -24,7 +24,7 @@ import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.ui.sendchat.SendChatComponent
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import com.tokopedia.play.ui.stats.StatsComponent
-import com.tokopedia.play.ui.video_control.VideoControlComponent
+import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel

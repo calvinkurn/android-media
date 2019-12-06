@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.video_control
+package com.tokopedia.play.ui.videocontrol
 
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
