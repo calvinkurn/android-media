@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,6 +23,9 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpdreactnative.BuildConfig;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
@@ -47,6 +51,8 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     private Context context;
     private ProgressDialog progressDialog;
     private Promise mNativeModulePromise;
+    private static SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     public ReactNavigationModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -134,6 +140,19 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
                     promise.resolve("OK");
                 } else {
                     promise.resolve("NOT OK");
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void showAppRating() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getCurrentActivity() != null && getCurrentActivity() instanceof ReputationRouter) {
+                    ((ReputationRouter) getCurrentActivity().getApplication())
+                            .showSimpleAppRatingDialog(getCurrentActivity());
                 }
             }
         });
