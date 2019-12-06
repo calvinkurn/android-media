@@ -14,7 +14,7 @@ class FeaturedProductResponseMapper @Inject constructor() : Func1<GraphqlRespons
     }
 
     /**
-     * Return Nothing? as we actually don't need to pass model data values back to presenter
+     * Return Unit? as we actually don't need to pass model data values back to presenter
      */
     private fun mapResponseDataToDomainData(dataModel: FeaturedProductResponseModel?) : Unit {
         val featuredProductHeader = dataModel?.goldManageFeaturedProductV2?.header
