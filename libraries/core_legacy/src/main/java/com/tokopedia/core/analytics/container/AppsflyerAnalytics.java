@@ -166,7 +166,6 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     public void initAppsFlyer(String key, String userID, AppsFlyerConversionListener conversionListener) {
         AppsFlyerLib.getInstance().init(key, conversionListener, getContext());
         initAppsFlyer(key, userID);
-        AppsFlyerLib.getInstance().setDebugLog(true);
     }
 
     public void initAppsFlyer(String key, String userID) {
