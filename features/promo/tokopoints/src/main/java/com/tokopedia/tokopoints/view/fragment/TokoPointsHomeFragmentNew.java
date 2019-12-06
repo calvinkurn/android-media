@@ -52,6 +52,7 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
+import com.tokopedia.tokopoints.notification.model.PopupNotification;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
@@ -335,6 +336,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         tokoPointToolbar.setTitle(R.string.tp_title_tokopoints);
         tokoPointToolbar.setOnTokoPointToolbarClickListener(this);
         TokoPointsNotificationManager.fetchNotification(getActivity(), "main", getChildFragmentManager());
+        mPresenter.tokopointOnboarding2020();
     }
 
     @Override
