@@ -1041,10 +1041,14 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         descDialog.setText(data.getText());
         btn.setText(data.getButtonText());
         ImageHandler.loadImageFitCenter(getContext(), boxImageView, data.getImageURL());
-        btn.setOnClickListener(v -> RouteManager.route(getContext(), data.getAppLink()));
-
         AlertDialog alertDialog = adb.create();
         alertDialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
+        alertDialog.setCancelable(false);
+        alertDialog.setCanceledOnTouchOutside(false);
+        btn.setOnClickListener(v -> {
+            RouteManager.route(getContext(), data.getAppLink());
+            alertDialog.dismiss();
+        });
         alertDialog.show();
     }
 
