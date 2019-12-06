@@ -230,7 +230,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                 renderCategoryDataAndBannerToView(
                         categoryData, bannerDataList, otherBannerDataList, guideDataList, historyClientNumber
                 );
-
+                getView().sendOpenScreenEventTracking(productDigitalData.getCategoryData());
                 digitalAnalytics.sendCategoryScreen(getView().getActivity(), productDigitalData.getCategoryData().getName());
             }
         };
