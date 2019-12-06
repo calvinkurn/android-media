@@ -46,7 +46,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
 
     implementation project(rootProject.ext.libraries.promotionsTarget)
-    implementation project (':traceroute')
+    implementation project(rootProject.ext.libraries.traceroute)
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
