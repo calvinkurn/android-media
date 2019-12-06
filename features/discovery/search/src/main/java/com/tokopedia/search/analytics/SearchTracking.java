@@ -5,8 +5,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.tokopedia.discovery.common.model.WishlistTrackingModel;
+import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -483,22 +484,43 @@ public class SearchTracking {
         );
     }
 
-    public void eventSuccessAddWishlistSearchResultProduct(String keyword, String productId) {
-        sendGeneralEventWithUserId(SearchEventTracking.Event.CLICK_WISHLIST,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.ADD_WISHLIST,
-                generateWishlistClickEventLabel(keyword, productId));
+    public static void eventSuccessWishlistSearchResultProduct(WishlistTrackingModel wishlistTrackingModel) {
+        Map<String, Object> eventTrackingMap = new HashMap<>();
+
+        eventTrackingMap.put(EVENT, SearchEventTracking.Event.CLICK_WISHLIST);
+        eventTrackingMap.put(EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT.toLowerCase());
+        eventTrackingMap.put(EVENT_ACTION, generateWishlistClickEventAction(wishlistTrackingModel.isAddWishlist(), wishlistTrackingModel.isUserLoggedIn()));
+        eventTrackingMap.put(EVENT_LABEL, generateWishlistClickEventLabel(wishlistTrackingModel.getProductId(), wishlistTrackingModel.isTopAds(), wishlistTrackingModel.getKeyword()));
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventTrackingMap);
     }
 
-    public void eventSuccessRemoveWishlistSearchResultProduct(String keyword, String productId) {
-        sendGeneralEventWithUserId(SearchEventTracking.Event.CLICK_WISHLIST,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.REMOVE_WISHLIST,
-                generateWishlistClickEventLabel(keyword, productId));
+    private static String generateWishlistClickEventAction(boolean isAddWishlist, boolean isLoggedIn) {
+        return getAddOrRemoveWishlistAction(isAddWishlist)
+                + " - "
+                + SearchEventTracking.Action.MODULE
+                + " - "
+                + getIsLoggedInWishlistAction(isLoggedIn);
     }
 
-    private String generateWishlistClickEventLabel(String keyword, String productId) {
-        return keyword + " - " + productId;
+    private static String getAddOrRemoveWishlistAction(boolean isAddWishlist) {
+        return isAddWishlist ? SearchEventTracking.Action.ADD_WISHLIST : SearchEventTracking.Action.REMOVE_WISHLIST;
+    }
+
+    private static String getIsLoggedInWishlistAction(boolean isLoggedIn) {
+        return isLoggedIn ? SearchEventTracking.Action.LOGIN : SearchEventTracking.Action.NON_LOGIN;
+    }
+
+    private static String generateWishlistClickEventLabel(String productId, boolean isTopAds, String keyword) {
+        return productId
+                + " - "
+                + getTopAdsOrGeneralLabel(isTopAds)
+                + " - "
+                + keyword;
+    }
+
+    private static String getTopAdsOrGeneralLabel(boolean isTopAds) {
+        return isTopAds ? SearchEventTracking.Label.TOPADS : SearchEventTracking.Label.GENERAL;
     }
 
     public void eventActionClickCartButton(String keyword) {

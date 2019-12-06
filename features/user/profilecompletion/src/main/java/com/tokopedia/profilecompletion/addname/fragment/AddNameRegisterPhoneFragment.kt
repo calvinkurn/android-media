@@ -63,7 +63,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
 
     companion object {
         val MIN_NAME = 3
-        val MAX_NAME = 128
+        val MAX_NAME = 35
 
         fun createInstance(bundle: Bundle): AddNameRegisterPhoneFragment {
             val fragment = AddNameRegisterPhoneFragment()

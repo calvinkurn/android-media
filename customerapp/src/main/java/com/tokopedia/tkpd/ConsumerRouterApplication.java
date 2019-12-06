@@ -45,10 +45,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOperational;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.challenges.ChallengesModuleRouter;
-import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
-import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
@@ -195,8 +192,6 @@ import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivation
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.product.detail.ProductDetailRouter;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
-import com.tokopedia.profile.ProfileModuleRouter;
-import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
@@ -318,7 +313,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoyaltyModuleRouter,
         ITkpdLoyaltyModuleRouter,
         GamificationRouter,
-        ProfileModuleRouter,
         ReactNativeRouter,
         ImageUploaderRouter,
         ITransactionOrderDetailRouter,
@@ -331,7 +325,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsWebViewRouter,
         ChangePasswordRouter,
         EventModuleRouter,
-        ChallengesModuleRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
@@ -347,7 +340,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsRouter,
         CMRouter,
         ILoyaltyRouter,
-        ChatbotRouter,
         ResolutionRouter,
         TradeInRouter,
         ProductDetailRouter,
@@ -1527,7 +1519,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getTopProfileIntent(Context context, String userId) {
-        return ProfileActivity.Companion.createIntent(context, userId);
+        return RouteManager.getIntent(context, ApplinkConst.PROFILE, userId);
     }
 
     @Override
@@ -1747,7 +1739,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
-        new IndiSession(activity).doLogout();
         refreshFCMTokenFromForegroundToCM();
 
         mIris.setUserId("");
@@ -1792,39 +1783,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isEnableInterestPick() {
         return remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE);
-    }
-
-    @Override
-    public void generateBranchUrlForChallenge(Activity context, String url, String title, String channel, String og_url, String og_title, String og_desc, String og_image, String deepLink, final BranchLinkGenerateListener listener) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setType(LinkerData.INDI_CHALLENGE_TYPE)
-                .setName(title)
-                .setUri(url)
-                .setSource(channel)
-                .setOgUrl(og_url)
-                .setOgTitle(og_title)
-                .setDescription(og_desc)
-                .setOgImageUrl(og_image)
-                .setDeepLink(deepLink)
-                .build();
-
-        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
-                    @Override
-                    public void urlCreated(LinkerShareResult linkerShareData) {
-                        listener.onGenerateLink(linkerShareData.getShareContents(), linkerShareData.getShareUri());
-                    }
-
-                    @Override
-                    public void onError(LinkerError linkerError) {
-
-                    }
-                }));
-    }
-
-    @Override
-    public void shareBranchUrlForChallenge(Activity context, String packageName, String url, String shareContents) {
-        ShareSocmedHandler.ShareBranchUrl(context, packageName, "text/plain", url, shareContents);
     }
 
     @Override
@@ -1899,11 +1857,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
                                       String source) {
         return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
-    }
-
-    @Override
-    public Fragment getFavoritedShopFragment(String userId) {
-        return ShopFollowingListFragment.createInstance(userId);
     }
 
     @Override

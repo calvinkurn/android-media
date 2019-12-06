@@ -62,7 +62,7 @@ dependencies {
 project.ext {
     artifactId = "withdraw"
     groupId = "com.tokopedia.payment"
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "withdraw-release"
 }
 

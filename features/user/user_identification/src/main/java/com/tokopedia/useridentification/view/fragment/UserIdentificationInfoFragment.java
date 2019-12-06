@@ -83,7 +83,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             isSourceSeller = getArguments().getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER);
-            projectId = getArguments().getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
+            projectId = getArguments().getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
         }
         if (isSourceSeller) {
             goToFormActivity();
@@ -126,7 +126,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
 
     private void getStatusInfo() {
         showLoading();
-        presenter.getInfo();
+        presenter.getInfo(projectId);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             hideLoading();
             showStatusBlacklist();
         } else {
-            presenter.getStatus();
+            presenter.getStatus(projectId);
         }
     }
 

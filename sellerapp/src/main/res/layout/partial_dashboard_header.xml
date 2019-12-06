@@ -149,7 +149,7 @@
                 android:id="@+id/pm_ticker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border_rectangle_yellow"
+                android:background="@drawable/border_rectangle_yellow_shop_settings"
                 app:cardBackgroundColor="@color/ticker_blue"
                 app:cardPreventCornerOverlap="true"
                 app:elevation="0dp"

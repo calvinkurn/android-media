@@ -344,14 +344,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         /**
          * Keep checklist after user search or filter
          */
-        val listPositionChecked = list.withIndex().filter {
-            itemsChecked.map { it.id }.contains(it.value.id)
-        }.map {
-            it.index
-        }.toHashSet()
 
-        productManageListAdapter.setCheckedPositionList(listPositionChecked)
-        productManageListAdapter.notifyDataSetChanged()
+        if (list.isEmpty()) {
+            containerChechBoxBulk.visibility = View.GONE
+        } else {
+            containerChechBoxBulk.visibility = View.VISIBLE
+        }
+        renderCheckedView()
     }
 
     override fun onSearchSubmitted(text: String) {

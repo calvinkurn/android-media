@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -193,7 +195,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             @Override
             public void onClick(View v) {
                 powerMerchantTracking.eventUpgradeShopHome();
-                RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+                RouteManager.route(getContext(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
             }
         });
 
@@ -797,7 +799,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                     IMG_URL_RM_ILLUSTRATION,
                     getString(R.string.pm_popup_regular_btn), ""
             );
-            redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
+            redirectUrl = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE;
         }
 
         if (!shopStatusModel.isTransitionPeriod() && popUpManager.isEverPowerMerchant(shopId)) {
@@ -833,7 +835,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         IMG_URL_PM_IDLE,
                         getString(R.string.pm_popup_deactivated_btn),""
                 );
-                redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
+                redirectUrl = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE;
             }
         }
 

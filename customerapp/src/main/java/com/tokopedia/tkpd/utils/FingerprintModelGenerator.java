@@ -118,8 +118,10 @@ public class FingerprintModelGenerator {
         String isNakama = "False";
         if(context instanceof UserSessionInterface)
             isNakama = Utilities.isNakama((UserSessionInterface)context);
+        String adsId = getGoogleAdId(context);
 
         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
+                .uniqueId(adsId)
                 .isNakama(isNakama)
                 .deviceName(deviceName)
                 .deviceManufacturer(deviceFabrik)

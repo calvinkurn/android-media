@@ -55,6 +55,7 @@ object DeepLinkChecker {
     const val SIMILAR_PRODUCT = 32
     const val PROMO_DETAIL = 33
     const val PROMO_LIST = 34
+    const val PRODUCT_REVIEW = 35
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -180,14 +181,13 @@ object DeepLinkChecker {
     }
 
     // function for enable Hansel
-    private fun getHotListClassName() = "com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity"
 
     private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalog.activity.CatalogDetailActivity"
 
     private fun getHotIntent(context: Context, url: String): Intent {
-        val intent = getIntentByClassName(context, getHotListClassName())
-        intent.putExtra("HOTLIST_URL", url)
-        return intent
+        val uri = Uri.parse(url)
+        uri.pathSegments[1]
+        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.HOME_HOTLIST + "/" + if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""))
     }
 
     private fun getCatalogIntent(context: Context, url: String): Intent {

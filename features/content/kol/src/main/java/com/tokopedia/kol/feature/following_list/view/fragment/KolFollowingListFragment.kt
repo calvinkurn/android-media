@@ -47,14 +47,6 @@ class KolFollowingListFragment : BaseFollowListFragment<KolFollowingViewModel, K
         if (viewModel.followingViewModelList.isEmpty()) {
             emptyButton.text = viewModel.buttonText
             emptyApplink = viewModel.buttonApplink
-
-            if (activity is KolFollowingListEmptyListener) {
-                (activity as KolFollowingListEmptyListener).onFollowingEmpty()
-            }
-        } else {
-            if (activity is KolFollowingListEmptyListener) {
-                (activity as KolFollowingListEmptyListener).onFollowingNotEmpty()
-            }
         }
     }
 

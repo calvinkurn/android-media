@@ -25,9 +25,12 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
-import com.tokopedia.power_merchant.subscribe.view.model.*
-import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancellationQuestionnaireMultipleOptionFragment
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancellationQuestionnaireIntroFragment
+import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancellationQuestionnaireMultipleOptionFragment
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireData
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireMultipleOptionModel
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireRateModel
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireStepperModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PMCancellationQuestionnaireViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -62,13 +65,27 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
             return Intent(context, PMCancellationQuestionnaireActivity::class.java)
         }
     }
-
     override fun getListFragment(): MutableList<Fragment> {
         return listFragment
     }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_pm_cancellation_questionnaire
+    }
+
+    /**
+     * DF PURPOSE
+     */
+    override fun getProgressBar(): Int {
+        return R.id.stepper_progress_pm
+    }
+
+    override fun getParentView(): Int {
+        return R.id.parent_view_pm
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbarPm
     }
 
     private fun generateFragment() {
@@ -210,7 +227,7 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
                 findViewById(android.R.id.content),
                 getString(R.string.pm_cancellation_questionnaire_some_question_not_answered_label),
                 Snackbar.LENGTH_LONG,
-                getString(R.string.close),
+                getString(com.tokopedia.design.R.string.close),
                 View.OnClickListener {}
         )
     }
@@ -218,9 +235,9 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
     private fun showToasterSuccessUnsubscribeReturnFalse() {
         Toaster.showErrorWithAction(
                 findViewById(android.R.id.content),
-                getString(R.string.default_request_error_unknown),
+                getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                 Snackbar.LENGTH_LONG,
-                getString(R.string.close),
+                getString(com.tokopedia.design.R.string.close),
                 View.OnClickListener {}
         )
     }

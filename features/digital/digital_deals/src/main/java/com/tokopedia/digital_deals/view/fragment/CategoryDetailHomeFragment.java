@@ -38,6 +38,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -208,7 +209,10 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         dealsAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.CATEGORY_PAGE, this, !IS_SHORT_LAYOUT);
         dealsAdapter.setCategoryName(categoriesModel.getTitle());
         recyclerViewDeals.setAdapter(dealsAdapter);
-        searchText = getArguments().getString(SEARCH_TEXT);
+        if (getArguments() != null)
+            searchText = getArguments().getString(SEARCH_TEXT);
+        searchInputView.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (getActivity(), com.tokopedia.digital_deals.R.drawable.ic_search_deal), null, null , null);
         if (!TextUtils.isEmpty(searchText)) {
             searchInputView.setText(String.format(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.search_input_hint_category), searchText.toLowerCase()));
         }

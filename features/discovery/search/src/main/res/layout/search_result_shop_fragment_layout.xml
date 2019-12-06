@@ -12,6 +12,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewSearchShop"
             android:clipToPadding="false"
+            android:paddingBottom="@dimen/dp_100"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@android:color/transparent"
