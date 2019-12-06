@@ -11,16 +11,16 @@ abstract class AttachmentPreviewViewHolder<in T: SendablePreview>(
 ) : RecyclerView.ViewHolder(itemView) {
 
     interface AttachmentItemPreviewListener {
-        fun closeItem(model: SendablePreview, position: Int)
+        fun closeItem(model: SendablePreview)
     }
 
     private val closeButton: ImageView? = getButtonView(itemView)
 
     abstract fun getButtonView(itemView: View): ImageView?
 
-    open fun bind(model: T, position: Int) {
+    open fun bind(model: T) {
         closeButton?.setOnClickListener {
-            attachmentItemPreviewListener.closeItem(model, position)
+            attachmentItemPreviewListener.closeItem(model)
         }
     }
 }

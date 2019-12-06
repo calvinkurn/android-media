@@ -22,6 +22,7 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
@@ -111,16 +112,7 @@ class TopChatViewStateImpl(
     }
 
     private fun hideProductPreviewLayout() {
-        attachmentPreviewContainer.animate()
-                .translationY(attachmentPreviewContainer.height.toFloat())
-                .setDuration(300)
-                .alpha(0f)
-                .setInterpolator(AccelerateDecelerateInterpolator())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        attachmentPreviewContainer.visibility = View.GONE
-                    }
-                })
+        attachmentPreviewContainer.hide()
     }
 
     override fun onSetCustomMessage(customMessage: String) {

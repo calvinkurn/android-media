@@ -31,7 +31,7 @@ class AttachmentPreviewAdapter(
     override fun getItemCount(): Int = attachments.size
 
     override fun onBindViewHolder(holder: AttachmentPreviewViewHolder<SendablePreview>, position: Int) {
-        holder.bind(attachments[position], position)
+        holder.bind(attachments[position])
     }
 
     fun updateAttachments(attachmentPreview: ArrayList<SendablePreview>) {
@@ -39,9 +39,13 @@ class AttachmentPreviewAdapter(
         notifyDataSetChanged()
     }
 
-    override fun closeItem(model: SendablePreview, position: Int) {
-        attachments.remove(model)
-        notifyItemRemoved(position)
+    override fun closeItem(model: SendablePreview) {
+        val modelPosition = attachments.indexOf(model)
+
+        if (modelPosition == RecyclerView.NO_POSITION) return
+
+        attachments.removeAt(modelPosition)
+        notifyItemRemoved(modelPosition)
         if (noAttachmentPreview()) {
             attachmentPreviewListener.clearAttachmentPreview()
         }

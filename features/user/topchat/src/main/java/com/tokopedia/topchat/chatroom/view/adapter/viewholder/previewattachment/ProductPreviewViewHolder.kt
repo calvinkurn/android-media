@@ -37,8 +37,7 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
         return itemView.findViewById(R.id.iv_close)
     }
 
-    override fun bind(model: SendableProductPreview, position: Int) {
-        super.bind(model, position)
+    override fun bind(model: SendableProductPreview) {
         val productPreview = model.productPreview
 
         ImageHandler.loadImageRounded(productImage?.context, productImage, productPreview.imageUrl, toDp(3))
@@ -60,10 +59,7 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
         productSizeVariant?.shouldShowWithAction(productHasSizeVariant) {
             productSizeVariantValue?.text = productPreview.sizeVariant
         }
-    }
-
-    private fun hideVariantLayout() {
-        productVariantContainer?.hide()
+        super.bind(model)
     }
 
     private fun getBackgroundDrawable(hexColor: String): Drawable? {
