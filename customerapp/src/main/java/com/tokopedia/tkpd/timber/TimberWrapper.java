@@ -38,7 +38,9 @@ public class TimberWrapper {
     public static void initByConfig(@NonNull RemoteConfig remoteConfig){
         Timber.uprootAll();
         boolean isDebug = BuildConfig.DEBUG;
-
+        if (isDebug) {
+            Timber.plant(new TimberDebugTree());
+        } else {
             String logConfigString = remoteConfig.getString(ANDROID_CUSTOMER_APP_LOG_CONFIG);
             if (!TextUtils.isEmpty(logConfigString)) {
                 DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString,
@@ -50,6 +52,6 @@ public class TimberWrapper {
                     }
                 }
             }
-
+        }
     }
 }
