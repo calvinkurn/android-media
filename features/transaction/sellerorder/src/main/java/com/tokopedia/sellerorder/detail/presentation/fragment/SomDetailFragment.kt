@@ -334,7 +334,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.bookingInfo.driver.phone,
                 detailResponse.bookingInfo.driver.licenseNumber,
                 detailResponse.bookingInfo.onlineBooking.bookingCode,
-                detailResponse.bookingInfo.onlineBooking.state)
+                detailResponse.bookingInfo.onlineBooking.state,
+                isRemoveAwb = detailResponse.onlineBooking.isRemoveInputAwb)
 
         val dataPayments = SomDetailPayments(
                 detailResponse.paymentSummary.productsPriceText,

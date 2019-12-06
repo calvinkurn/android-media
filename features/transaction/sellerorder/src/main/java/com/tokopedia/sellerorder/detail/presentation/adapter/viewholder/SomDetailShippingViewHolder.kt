@@ -31,7 +31,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 itemView.tv_notes_label.visibility = View.GONE
             }
 
-            if (item.dataObject.isFreeShipping) {
+            if (item.dataObject.isFreeShipping || item.dataObject.isRemoveAwb) {
                 itemView.label_harus_sesuai.visibility = View.VISIBLE
                 itemView.ic_harus_sesuai.visibility = View.VISIBLE
                 itemView.label_harus_sesuai.setOnClickListener {
