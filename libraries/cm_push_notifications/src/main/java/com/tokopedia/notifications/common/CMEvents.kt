@@ -52,7 +52,7 @@ object IrisAnalyticsEvents {
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, baseNotificationModel)
-            irisAnalytics.sendEvent(values)
+            trackEvent(context, irisAnalytics, values)
         }
     }
 
@@ -64,7 +64,8 @@ object IrisAnalyticsEvents {
                 values[CLICKED_ELEMENT_ID] = elementID
 
             }
-            irisAnalytics.sendEvent(values)
+
+            trackEvent(context, irisAnalytics, values)
         }
 
     }
@@ -93,7 +94,8 @@ object IrisAnalyticsEvents {
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, cmInApp)
-            irisAnalytics.sendEvent(values)
+
+            trackEvent(context, irisAnalytics, values)
         }
     }
 
@@ -106,10 +108,15 @@ object IrisAnalyticsEvents {
                 values[CLICKED_ELEMENT_ID] = elementID
             }
 
-
-            irisAnalytics.sendEvent(values)
+            trackEvent(context, irisAnalytics, values)
         }
 
+    }
+
+    private fun trackEvent(context: Context, irisAnalytics: IrisAnalytics, values: HashMap<String, Any>) {
+        if (CMNotificationUtils.isNetworkAvailable(context))
+            irisAnalytics.sendEvent(values)
+        else irisAnalytics.saveEvent(values)
     }
 
     fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {
