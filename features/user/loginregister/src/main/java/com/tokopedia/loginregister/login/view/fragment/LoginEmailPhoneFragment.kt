@@ -260,7 +260,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             showSmartLock()
         }
 
-        presenter.getTickerInfo()
+        if (!GlobalConfig.isSellerApp())
+            presenter.getTickerInfo()
     }
 
     private fun clearData() {

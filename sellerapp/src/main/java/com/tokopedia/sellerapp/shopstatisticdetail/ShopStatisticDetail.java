@@ -1,4 +1,4 @@
-package com.tokopedia.core;
+package com.tokopedia.sellerapp.shopstatisticdetail;
 
 import android.os.Bundle;
 import android.view.Menu;

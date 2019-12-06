@@ -263,7 +263,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         showLoadingDiscover()
         registerInitialViewModel.getProvider()
         partialRegisterInputView.setListener(this)
-        registerInitialViewModel.getTickerInfo()
+        if (!GlobalConfig.isSellerApp())
+            registerInitialViewModel.getTickerInfo()
     }
 
     @SuppressLint("RtlHardcoded")

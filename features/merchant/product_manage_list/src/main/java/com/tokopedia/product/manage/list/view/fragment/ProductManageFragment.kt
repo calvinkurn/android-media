@@ -42,6 +42,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.core.drawer2.service.DrawerGetNotificationService
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.ToasterError
@@ -376,14 +377,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         this.shopDomain = shopDomain
     }
 
-    override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
-        bulkCheckBox.isChecked = false
-        productManageListAdapter.resetCheckedItemSet()
-        itemsChecked.clear()
-        renderCheckedView()
-    }
-
     override fun onErrorEditPrice(t: Throwable?, productId: String?, price: String?, currencyId: String?, currencyText: String?) {
         context?.let {
             showSnackBarWithAction(ViewUtils.getErrorMessage(it, t)) {
@@ -594,6 +587,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         loadInitialData()
     }
 
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        if (GlobalConfig.isSellerApp()) {
+            DrawerGetNotificationService.startService(context, true, true)
+        }
+        bulkCheckBox.isChecked = false
+        productManageListAdapter.resetCheckedItemSet()
+        itemsChecked.clear()
+        renderCheckedView()
+    }
+
     override fun onErrorBulkUpdateProduct(e: Throwable) {
         activity?.let {
             showToasterError(ViewUtils.getErrorMessage(it, e), getString(R.string.close)) {
@@ -675,7 +679,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         if (productManagePresenter.isIdlePowerMerchant()) {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS)
         } else if (!productManagePresenter.isPowerMerchant()) {
-            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
+            RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
         }
     }
 
