@@ -567,7 +567,6 @@ class OfficialHomeFragment :
         }
     }
 
-
     private fun initFirebasePerformanceMonitoring() {
         val CATEGORY_CONST: String = category?.title?:""
 

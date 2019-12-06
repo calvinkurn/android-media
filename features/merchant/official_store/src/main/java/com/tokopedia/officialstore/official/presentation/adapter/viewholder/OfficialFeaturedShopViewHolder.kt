@@ -63,8 +63,8 @@ class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFea
                         element.categoryName.orEmpty(),
                         index + 1,
                         shop.name.orEmpty(),
-                        shop.imageUrl.orEmpty(),	
-                        shop.additionalInformation.orEmpty(),	
+                        shop.imageUrl.orEmpty(),
+                        shop.additionalInformation.orEmpty(),
                         shop.featuredBrandId.orEmpty()
                 )
             }
@@ -75,8 +75,8 @@ class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFea
                             element.categoryName.orEmpty(),
                             position,
                             shop.name.orEmpty(),
-                            shop.url.orEmpty(),	
-                            shop.additionalInformation.orEmpty(),	
+                            shop.url.orEmpty(),
+                            shop.additionalInformation.orEmpty(),
                             shop.featuredBrandId.orEmpty()
                     )
 
