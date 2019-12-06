@@ -54,7 +54,7 @@ dependencies {
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
 
-    implementation rootProject.ext.miscDependencies.workManager
+    implementation (rootProject.ext.miscDependencies.workManager)
 
 }
 
