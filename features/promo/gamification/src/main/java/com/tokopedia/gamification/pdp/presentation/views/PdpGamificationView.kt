@@ -295,6 +295,7 @@ class PdpGamificationView : FrameLayout {
                 resultMap[TrackerConstants.EVENT_CATEGORY] = eventCategory
                 resultMap[TrackerConstants.EVENT_ACTION] = eventAction
                 resultMap[TrackerConstants.EVENT_LABEL] = label
+                TrackApp.getInstance().gtm.sendGeneralEvent(resultMap)
             }
         }
 
