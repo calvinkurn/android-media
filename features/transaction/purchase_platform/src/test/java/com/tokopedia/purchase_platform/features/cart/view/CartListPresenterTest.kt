@@ -501,15 +501,10 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
             }
 
-            Then("should have no subtotal") {
-                verify {
-                    view.renderDetailInfoSubTotal("0", "-", false, true, false)
-                }
-            }
-
-            Then("should have no cashback") {
+            Then("should have no subtotal and no cashback") {
                 verify {
                     view.updateCashback(0.0)
+                    view.renderDetailInfoSubTotal("0", "-", false, true, false)
                 }
             }
         }
@@ -535,15 +530,10 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
             }
 
-            Then("should have some subtotal") {
-                verify {
-                    view.renderDetailInfoSubTotal("5", "Rp1.004", false, false, false)
-                }
-            }
-
-            Then("should have cashback") {
+            Then("should have 1004 subtotal and 100 cashback") {
                 verify {
                     view.updateCashback(100.0)
+                    view.renderDetailInfoSubTotal("5", "Rp1.004", false, false, false)
                 }
             }
         }
@@ -569,7 +559,7 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
             }
 
-            Then("should have some subtotal and selected all item") {
+            Then("should have 1000 subtotal, 100 cashback and selected all item") {
                 verify {
                     view.updateCashback(100.0)
                     view.renderDetailInfoSubTotal("1", "Rp1.000", true, false, false)
@@ -600,7 +590,7 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
             }
 
-            Then("should have all subtotal") {
+            Then("should have 1684 subtotal and 100 cashback") {
                 verify {
                     view.updateCashback(100.0)
                     view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
@@ -640,7 +630,7 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
             }
 
-            Then("should have all subtotal") {
+            Then("should have 1684 subtotal from 19 items and 100 cashback") {
                 verify {
                     view.updateCashback(100.0)
                     view.renderDetailInfoSubTotal("19", "Rp1.684", true, false, false)
@@ -679,7 +669,7 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
             }
 
-            Then("should have all subtotal") {
+            Then("should have 1684 subtotal and 100 cashback") {
                 verify {
                     view.updateCashback(100.0)
                     view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
@@ -717,7 +707,7 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
             }
 
-            Then("should have all subtotal") {
+            Then("should have 1684 subtotal and 160 cashback") {
                 verify {
                     view.updateCashback(160.0)
                     view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
@@ -756,7 +746,7 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
             }
 
-            Then("should have all subtotal") {
+            Then("should have 4084 subtotal and 400 cashback") {
                 verify {
                     view.updateCashback(400.0)
                     view.renderDetailInfoSubTotal("10", "Rp4.084", true, false, false)
