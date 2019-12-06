@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.common.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelPropertyRoom
 import com.tokopedia.hotel.common.util.HotelUtils
@@ -101,7 +102,7 @@ class TrackingHotelUtil {
         map[EVENT] = PRODUCT_VIEW
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = VIEW_HOTEL_LIST_IMPRESSION
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${searchParam.checkIn} - $duration"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 IMPRESSIONS_LABEL, getViewHotelListProducts(products)
@@ -140,7 +141,7 @@ class TrackingHotelUtil {
         map[EVENT] = PRODUCT_CLICK
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CHOOSE_HOTEL
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${searchParam.checkIn} - $duration"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CLICK_LABEL, DataLayer.mapOf(
                 ACTION_FIELD_LABEL, DataLayer.mapOf(LIST_LABEL, SLASH_HOTEL_SLASH_LABEL),
@@ -196,7 +197,7 @@ class TrackingHotelUtil {
         map[EVENT] = VIEW_PRODUCT
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = VIEW_HOTEL_PDP
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${hotelHomepageModel.checkInDate} - $duration"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelHomepageModel.checkInDate)} - $duration"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 DETAIL_LABEL, DataLayer.mapOf(
@@ -249,7 +250,7 @@ class TrackingHotelUtil {
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = VIEW_ROOM_LIST
 
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${hotelRoomListPageModel.checkIn} - $duration - $hotelId"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelRoomListPageModel.checkIn)} - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 IMPRESSIONS_LABEL, getViewHotelListRoom(roomList)
@@ -286,7 +287,7 @@ class TrackingHotelUtil {
         map[EVENT] = ADD_TO_CART
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CHOOSE_ROOM
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${hotelAddCartParam.checkIn} - $duration - $hotelId"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelAddCartParam.checkIn)} - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 ADD_LABEL, DataLayer.mapOf(
@@ -322,7 +323,7 @@ class TrackingHotelUtil {
         map[EVENT] = PRODUCT_CLICK
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CLICK_ROOM_DETAILS
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${hotelRoomListPageModel.checkIn} - $duration - $hotelId"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelRoomListPageModel.checkIn)} - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CLICK_LABEL, DataLayer.mapOf(
                     ACTION_FIELD_LABEL, DataLayer.mapOf( LIST_LABEL, SLASH_HOTEL_SLASH_LABEL ),
@@ -360,7 +361,7 @@ class TrackingHotelUtil {
         map[EVENT] = ADD_TO_CART
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CHOOSE_ROOM_DETAILS_PDP
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${hotelAddCartParam.checkIn} - $duration - $hotelId"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelAddCartParam.checkIn)} - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 ADD_LABEL, DataLayer.mapOf(
@@ -390,7 +391,7 @@ class TrackingHotelUtil {
         map[EVENT] = CHECKOUT
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CLICK_NEXT
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - ${hotelCart.cart.checkIn} - $duration - $hotelId - $personal"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - ${convertDate(hotelCart.cart.checkIn)} - $duration - $hotelId - $personal"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CHECKOUT, DataLayer.mapOf(
                 ACTION_FIELD_LABEL, DataLayer.mapOf(
@@ -424,4 +425,8 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, APPLY_PROMO,
                 "$HOTEL_LABEL - $promoCode")
     }
+
+    private fun convertDate(date: String): String =
+            TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.YYYYMMDD, date)
+
 }
