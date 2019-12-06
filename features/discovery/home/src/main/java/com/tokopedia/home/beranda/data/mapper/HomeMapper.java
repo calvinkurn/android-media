@@ -92,6 +92,8 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
             ));
         }
 
+        list.add(new PlayCardViewModel());
+
         if (homeData.getDynamicHomeChannel() != null
                 && homeData.getDynamicHomeChannel().getChannels() != null
                 && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {

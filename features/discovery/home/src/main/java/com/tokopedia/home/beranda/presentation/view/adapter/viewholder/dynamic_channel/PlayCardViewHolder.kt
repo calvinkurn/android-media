@@ -6,6 +6,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -17,6 +18,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.player.TokopediaPlayManager
 
 class PlayCardViewHolder(
         val view: View,
@@ -29,33 +31,36 @@ class PlayCardViewHolder(
     private val chipPlayViewers = view.findViewById<LinearLayout>(R.id.chipPlayViewers)
     private val txtTotalViewers = view.findViewById<TextView>(R.id.txtTotalViewers)
 
+    private val videoPlayer = view.findViewById<PlayerView>(R.id.video_player)
+
     private var playCardHome: PlayCardHome? = null
 
     override fun bind(element: PlayCardViewModel) {
-        element.getPlayCardHome()?.let { viewModel ->
-            this.playCardHome = viewModel //flag to preventing re-hit
-
-            bindCard(viewModel.playGetCardHome.data.card)
-            container.show()
-
-            //impression tracker
-            HomePageTracking.eventEnhanceImpressionPlayBanner(view.context, element.getChannel())
-
-            itemView.setOnClickListener {
-                val appLink = viewModel.playGetCardHome.data.card.applink
-                with(view.context) {
-                    //event click tracker
-                    HomePageTracking.eventClickPlayBanner(this, element.getChannel())
-
-                    //start applink
-                    startActivity(RouteManager.getIntent(this, appLink))
-                }
-            }
-        }
-
-        if (playCardHome == null) {
-            listener.onGetPlayBanner(adapterPosition)
-        }
+        videoPlayer.player = TokopediaPlayManager.getInstance().videoPlayer
+//        element.getPlayCardHome()?.let { viewModel ->
+//            this.playCardHome = viewModel //flag to preventing re-hit
+//
+//            bindCard(viewModel.playGetCardHome.data.card)
+//            container.show()
+//
+//            //impression tracker
+//            HomePageTracking.eventEnhanceImpressionPlayBanner(view.context, element.getChannel())
+//
+//            itemView.setOnClickListener {
+//                val appLink = viewModel.playGetCardHome.data.card.applink
+//                with(view.context) {
+//                    //event click tracker
+//                    HomePageTracking.eventClickPlayBanner(this, element.getChannel())
+//
+//                    //start applink
+//                    startActivity(RouteManager.getIntent(this, appLink))
+//                }
+//            }
+//        }
+//
+//        if (playCardHome == null) {
+//            listener.onGetPlayBanner(adapterPosition)
+//        }
     }
 
     private fun bindCard(card: PlayCard) {
@@ -75,7 +80,7 @@ class PlayCardViewHolder(
 
     companion object {
         const val ROUNDED_RADIUS = 20f
-        @LayoutRes val LAYOUT = R.layout.item_home_play_card
+        @LayoutRes val LAYOUT = R.layout.play_banner
     }
 
 }
