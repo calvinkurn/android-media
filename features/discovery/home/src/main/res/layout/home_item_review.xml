@@ -18,14 +18,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/review_card_content_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_4"
+        >
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_4"
             app:contentPadding="@dimen/dp_6"
             app:cardCornerRadius="@dimen/dp_12"
             app:cardPreventCornerOverlap="false"
@@ -42,15 +41,15 @@
 
         </androidx.cardview.widget.CardView>
 
+
         <ImageView
             android:id="@+id/img_review"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_margin="@dimen/dp_12"
             android:adjustViewBounds="true"
+            android:layout_marginRight="8dp"
             android:src="@color/fab_background_tint"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/animated_review"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/review_title" />
 
