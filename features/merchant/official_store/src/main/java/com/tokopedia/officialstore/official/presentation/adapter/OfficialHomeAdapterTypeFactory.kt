@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
@@ -13,8 +12,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 
 class OfficialHomeAdapterTypeFactory(
         private val recommendationListener: RecommendationListener,
-        private val dcEventHandler: DynamicChannelEventHandler,
-        private val featuredShopListener: FeaturedShopListener
+        private val dcEventHandler: DynamicChannelEventHandler
 ) : BaseAdapterTypeFactory(), OfficialHomeTypeFactory {
 
     override fun type(officialBannerViewModel: OfficialBannerViewModel): Int {
@@ -53,7 +51,7 @@ class OfficialHomeAdapterTypeFactory(
         return when (type) {
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent)
             OfficialBenefitViewHolder.LAYOUT -> OfficialBenefitViewHolder(parent)
-            OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent, featuredShopListener)
+            OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent)
             DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(parent, dcEventHandler)
             DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(parent, dcEventHandler)
             DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(parent, dcEventHandler)

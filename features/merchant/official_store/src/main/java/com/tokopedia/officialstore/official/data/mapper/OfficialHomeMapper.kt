@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
@@ -33,17 +32,10 @@ class OfficialHomeMapper {
             notifyElement(BENEFIT_POSITION, OfficialBenefitViewModel(benefits.benefits), adapter)
         }
 
-        fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?, categoryName: String?, listener: FeaturedShopListener) {
-            notifyElement(
-                    FEATURE_SHOP_POSITION,
-                    OfficialFeaturedShopViewModel(
-                            featuredShop.featuredShops,
-                            featuredShop.header,
-                            categoryName.toEmptyStringIfNull(),
-                            listener
-                    ),
-                    adapter
-            )
+        fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?, categoryName: String?) {
+            notifyElement(FEATURE_SHOP_POSITION,
+                    OfficialFeaturedShopViewModel(featuredShop.featuredShops, featuredShop.header,
+                    categoryName.toEmptyStringIfNull()), adapter)
         }
 
         fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?) {
