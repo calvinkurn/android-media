@@ -387,4 +387,18 @@ Anda di sini.</string>
     <string name="tkpdtransaction_filter_mulai">Mulai Dari</string>
     <string name="tkpdtransaction_filter_custom_date">"Pilih Tanggal Sendiri"</string>
     <string name="tkpdtransaction_filter_90_days">90 Hari Terakhir</string>
+    <string name="tkpdtransaction_90_days_found_nothing">Tidak ada transaksi dalam 90 hari terakhir</string>
+    <string name="month_1">Jan</string>
+    <string name="month_2">Feb</string>
+    <string name="month_3">Mar</string>
+    <string name="month_4">Apr</string>
+    <string name="month_5">Mei</string>
+    <string name="month_6">Jun</string>
+    <string name="month_7">Jul</string>
+    <string name="month_8">Ags</string>
+    <string name="month_9">Sep</string>
+    <string name="month_10">Okt</string>
+    <string name="month_11">Nov</string>
+    <string name="month_12">Des</string>
+
 </resources>

@@ -17,11 +17,13 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.Resource
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapResource
+import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -195,6 +197,16 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                         listener.onRequestPendingCashBack()
                     }
                 }
+            }
+        }
+    }
+
+    private fun getRoundedImageViewTarget(imageView: ImageView, radius: Float): BitmapImageViewTarget {
+        return object : BitmapImageViewTarget(imageView) {
+            override fun setResource(resource: Bitmap?) {
+                val circularBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
+                circularBitmapDrawable.cornerRadius = radius
+                imageView.setImageDrawable(circularBitmapDrawable)
             }
         }
     }

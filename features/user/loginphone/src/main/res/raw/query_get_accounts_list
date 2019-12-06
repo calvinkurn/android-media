@@ -1,5 +1,5 @@
-query get_accounts_list($validate_token: String!, $phone: String!) {
-  accountsGetAccountsList(validate_token: $validate_token, phone: $phone) {
+query get_accounts_list($validate_token: String!, $phone: String!, $login_type: String!) {
+  accountsGetAccountsList(validate_token: $validate_token, phone: $phone, login_type: $login_type) {
     key
     msisdn_view
     msisdn
