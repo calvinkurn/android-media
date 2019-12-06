@@ -200,6 +200,6 @@
     <string name="product_action_view_error">Lihat</string>
     <string name="product_category_locked">Kategori Terkunci</string>
     <string name="product_category_locked_description">Tidak dapat mengubah kategori dari produk yang sudah memiliki varian.</string>
-
+    <string name="save_product_error_custom_exception_format">Error save product. userId: %1$s | userEmail: %2$s | %3$s</string>
     <string name="product_stock_available_label">Tersedia</string>
 </resources>
