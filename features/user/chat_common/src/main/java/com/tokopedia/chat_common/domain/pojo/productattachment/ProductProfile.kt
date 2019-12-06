@@ -2,6 +2,7 @@ package com.tokopedia.chat_common.domain.pojo.productattachment
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.chat_common.data.AttachmentVariant
 
 class ProductProfile {
     @SerializedName("min_order")
@@ -30,7 +31,7 @@ class ProductProfile {
     val categoryId: Int = 0
     @SerializedName("variant")
     @Expose
-    val variant: Any? = null
+    val variant: List<AttachmentVariant> = listOf()
     @SerializedName("drop_percentage")
     @Expose
     val dropPercentage: String = ""

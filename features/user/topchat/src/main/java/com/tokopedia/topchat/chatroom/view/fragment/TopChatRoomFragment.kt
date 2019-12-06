@@ -317,7 +317,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 element.productId.toString(),
                 element.productName,
                 element.priceInt,
-                element.category, element.variant)
+                element.category, element.variants.toString())
 
         analytics.trackProductAttachmentClicked()
     }

@@ -780,8 +780,10 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val productUrl = productInfo?.getProductUrl() ?: ""
         val productFsIsActive = productInfo?.getFsProductIsActive() ?: false
         val productFsImageUrl = productInfo?.getFsProductImageUrl() ?: ""
+        val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
         val productColorVariant = variants?.get("colour")?.get("value") ?: ""
         val productColorHexVariant = variants?.get("colour")?.get("hex") ?: ""
+        val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
         val productSizeVariant = variants?.get("size")?.get("value") ?: ""
 
         val productPreviews = listOf(
@@ -790,8 +792,10 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                         productImageUrl,
                         productName,
                         productPrice,
+                        productColorVariantId,
                         productColorVariant,
                         productColorHexVariant,
+                        productSizeVariantId,
                         productSizeVariant,
                         productUrl,
                         productFsIsActive,

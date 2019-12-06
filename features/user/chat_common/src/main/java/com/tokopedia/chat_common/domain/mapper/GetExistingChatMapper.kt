@@ -132,7 +132,7 @@ open class GetExistingChatMapper @Inject constructor() {
 
     private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
         var fallbackMessage = ""
-        chatItemPojoByDateByTime.attachment?.fallback?.let{
+        chatItemPojoByDateByTime.attachment?.fallback?.let {
             fallbackMessage = it.message
         }
         return FallbackAttachmentViewModel(
@@ -172,6 +172,12 @@ open class GetExistingChatMapper @Inject constructor() {
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ProductAttachmentAttributes::class.java)
 
+        val variant: List<AttachmentVariant> = if (pojoAttribute.productProfile.variant == null) {
+            emptyList()
+        } else {
+            pojoAttribute.productProfile.variant
+        }
+
         if (pojoAttribute.isBannedProduct()) {
             return BannedProductAttachmentViewModel(
                     chatItemPojoByDateByTime.msgId.toString(),
@@ -194,7 +200,7 @@ open class GetExistingChatMapper @Inject constructor() {
                     chatItemPojoByDateByTime.blastId,
                     pojoAttribute.productProfile.priceInt,
                     pojoAttribute.productProfile.category,
-                    pojoAttribute.productProfile.variant.toString(),
+                    variant,
                     pojoAttribute.productProfile.dropPercentage,
                     pojoAttribute.productProfile.priceBefore,
                     pojoAttribute.productProfile.shopId,
@@ -226,7 +232,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.blastId,
                 pojoAttribute.productProfile.priceInt,
                 pojoAttribute.productProfile.category,
-                pojoAttribute.productProfile.variant.toString(),
+                variant,
                 pojoAttribute.productProfile.dropPercentage,
                 pojoAttribute.productProfile.priceBefore,
                 pojoAttribute.productProfile.shopId,

@@ -4,7 +4,7 @@ import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
 import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
-class BannedProductAttachmentViewModel: ProductAttachmentViewModel {
+class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
 
     /**
      * Constructor for API response.
@@ -33,7 +33,7 @@ class BannedProductAttachmentViewModel: ProductAttachmentViewModel {
             productPrice: String, productUrl: String,
             productImage: String, isSender: Boolean, message: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
-            variant: String, dropPercentage: String, priceBefore: String, shopId: Int,
+            variant: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
             freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData, minOrder: Int
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, isRead,
@@ -41,7 +41,6 @@ class BannedProductAttachmentViewModel: ProductAttachmentViewModel {
             canShowFooter, blastId, productPriceInt, category, variant, dropPercentage, priceBefore,
             shopId, freeShipping, categoryId, playStoreData, minOrder
     )
-
 
 
     /**
@@ -71,7 +70,7 @@ class BannedProductAttachmentViewModel: ProductAttachmentViewModel {
             productUrl: String, productImage: String,
             isSender: Boolean, message: String, startTime: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
-            variant: String, dropPercentage: String, priceBefore: String, shopId: Int,
+            variant: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
             freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, productId,

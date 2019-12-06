@@ -20,6 +20,10 @@ class SendableProductPreview(
         return productPreview.notEnoughRequiredData()
     }
 
+    fun hasVariant(): Boolean {
+        return !doesNotHaveVariant()
+    }
+
     fun doesNotHaveVariant(): Boolean {
         return productPreview.doesNotHaveVariant()
     }
@@ -45,8 +49,7 @@ class SendableProductPreview(
                 generateResultProduct(),
                 startTime,
                 opponentId,
-                productPreview.productFsIsActive,
-                productPreview.productFsImageUrl
+                productPreview
         )
         RxWebSocket.send(productPreviewParam, interceptors)
     }

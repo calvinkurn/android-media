@@ -14,6 +14,8 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 
@@ -43,12 +45,10 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
         productName?.text = productPreview.name
         productPrice?.text = productPreview.price
 
-        if (model.doesNotHaveVariant()) {
-            hideVariantLayout()
-            return
-        }
+        productVariantContainer?.showWithCondition(model.hasVariant())
 
         if (model.hasColorVariant()) {
+            productColorVariant.show()
             val backgroundDrawable = getBackgroundDrawable(productPreview.colorHexVariant)
             productColorVariantHex?.background = backgroundDrawable
             productColorVariantValue?.text = productPreview.colorVariant

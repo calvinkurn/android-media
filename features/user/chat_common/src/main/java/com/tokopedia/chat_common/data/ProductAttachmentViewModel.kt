@@ -31,8 +31,6 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         private set
     var category: String = ""
         private set
-    var variant: String = ""
-        private set
     var dropPercentage: String = ""
         private set
     var priceBefore: String = ""
@@ -46,6 +44,14 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
     var categoryId: Int = 0
 
     var minOrder: Int = 1
+
+    var variants: List<AttachmentVariant> = emptyList()
+
+    var colorVariantId: String = ""
+    var colorVariant: String = ""
+    var colorHexVariant: String = ""
+    var sizeVariantId: String = ""
+    var sizeVariant: String = ""
 
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,
@@ -82,7 +88,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
             productPrice: String, productUrl: String,
             productImage: String, isSender: Boolean, message: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
-            variant: String, dropPercentage: String, priceBefore: String, shopId: Int,
+            variants: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
             freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData,
             minOrder: Int
     ) : super(
@@ -99,7 +105,6 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         this.blastId = blastId
         this.priceInt = productPriceInt
         this.category = category
-        this.variant = variant
         this.dropPercentage = dropPercentage
         this.priceBefore = priceBefore
         this.shopId = shopId
@@ -107,6 +112,10 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         this.categoryId = categoryId
         this.playStoreData = playStoreData
         this.minOrder = minOrder
+        if (variants.isNotEmpty()) {
+            this.variants = variants
+            setupVariantsField()
+        }
     }
 
     /**
@@ -136,7 +145,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
             productUrl: String, productImage: String,
             isSender: Boolean, message: String, startTime: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
-            variant: String, dropPercentage: String, priceBefore: String, shopId: Int,
+            variants: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
             freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
@@ -152,13 +161,30 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         this.blastId = blastId
         this.priceInt = productPriceInt
         this.category = category
-        this.variant = variant
         this.dropPercentage = dropPercentage
         this.priceBefore = priceBefore
         this.shopId = shopId
         this.freeShipping = freeShipping
         this.categoryId = categoryId
         this.playStoreData = playStoreData
+        if (variants.isNotEmpty()) {
+            this.variants = variants
+            setupVariantsField()
+        }
+    }
+
+    private fun setupVariantsField() {
+        for (variant in variants) {
+            val variantOption = variant.options
+            if (variantOption.isColor()) {
+                colorVariantId = variantOption.id.toString()
+                colorVariant = variantOption.value
+                colorHexVariant = variantOption.hex
+            } else {
+                sizeVariantId = variantOption.id.toString()
+                sizeVariant = variantOption.value
+            }
+        }
     }
 
     /**
@@ -201,7 +227,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
     }
 
     fun getAtcEventLabel(): String {
-        val atcEventLabel =  when {
+        val atcEventLabel = when {
             blastId == 0 -> "chat"
             blastId == -1 -> "drop price alert"
             blastId == -2 -> "limited stock"
@@ -214,6 +240,18 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
 
     fun getAtcEventAction(): String {
         return "click atc on bottom sheet"
+    }
+
+    fun doesNotHaveVariant(): Boolean {
+        return variants.isEmpty()
+    }
+
+    fun hasColorVariant(): Boolean {
+        return colorVariantId.isNotEmpty()
+    }
+
+    fun hasSizeVariant(): Boolean {
+        return sizeVariant.isNotEmpty()
     }
 
 }

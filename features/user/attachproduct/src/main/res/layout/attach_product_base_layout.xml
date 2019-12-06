@@ -49,13 +49,82 @@
             android:layout_toRightOf="@id/attach_product_chat_image"
             android:maxWidth="172dp">
 
+            <LinearLayout
+                android:id="@+id/ll_variant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_variant_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:layout_marginRight="@dimen/dp_4"
+                    android:background="@drawable/bg_attach_product_variant"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/dp_8"
+                    android:paddingEnd="@dimen/dp_8">
+
+                    <ImageView
+                        android:id="@+id/iv_variant_color"
+                        android:layout_width="@dimen/dp_6"
+                        android:layout_height="@dimen/dp_6"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/dp_4"
+                        android:layout_marginRight="@dimen/dp_4"
+                        tools:background="@color/black" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_variant_color"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/Neutral_N200"
+                        app:typographyType="small"
+                        app:typographyWeight="bold"
+                        tools:text="Hitam" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_variant_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:background="@drawable/bg_attach_product_variant"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/dp_8"
+                    android:paddingEnd="@dimen/dp_8">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_variant_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/Neutral_N200"
+                        app:typographyType="small"
+                        app:typographyWeight="bold"
+                        tools:text="Besar" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/attach_product_chat_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/ll_variant"
                 android:layout_marginEnd="@dimen/dp_19"
                 android:layout_marginRight="@dimen/dp_19"
                 android:ellipsize="end"
+                android:includeFontPadding="false"
                 android:lineSpacingExtra="4sp"
                 android:maxWidth="172dp"
                 android:maxLines="1"

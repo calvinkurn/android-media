@@ -78,6 +78,12 @@ open class WebsocketMessageMapper @Inject constructor() {
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(jsonAttribute,
                 ProductAttachmentAttributes::class.java)
 
+        val variant: List<AttachmentVariant> = if (pojoAttribute.productProfile.variant == null) {
+            emptyList()
+        } else {
+            pojoAttribute.productProfile.variant
+        }
+
         return ProductAttachmentViewModel(
                 pojo.msgId.toString(),
                 pojo.fromUid,
@@ -99,7 +105,7 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.blastId,
                 pojoAttribute.productProfile.priceInt,
                 pojoAttribute.productProfile.category,
-                pojoAttribute.productProfile.variant.toString(),
+                variant,
                 pojoAttribute.productProfile.dropPercentage,
                 pojoAttribute.productProfile.priceBefore,
                 pojoAttribute.productProfile.shopId,
@@ -144,7 +150,7 @@ open class WebsocketMessageMapper @Inject constructor() {
 
     open fun convertToFallBackModel(pojo: ChatSocketPojo): Visitable<*> {
         var fallbackMessage = ""
-        pojo.attachment?.fallbackAttachment?.let{
+        pojo.attachment?.fallbackAttachment?.let {
             fallbackMessage = it.message
         }
         return FallbackAttachmentViewModel(

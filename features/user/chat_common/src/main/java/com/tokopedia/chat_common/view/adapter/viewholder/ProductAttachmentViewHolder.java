@@ -2,14 +2,21 @@ package com.tokopedia.chat_common.view.adapter.viewholder;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -19,6 +26,8 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener;
 import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.UnifyButton;
+
+import static com.tokopedia.unifycomponents.HelperFunctionKt.toDp;
 
 /**
  * @author by nisie on 5/14/18.
@@ -43,6 +52,13 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private View footerLayout;
     private ImageView freeShipping;
 
+    private LinearLayout productVariantContainer;
+    private LinearLayout productColorVariant;
+    private ImageView productColorVariantHex;
+    private TextView productColorVariantValue;
+    private LinearLayout productSizeVariant;
+    private TextView productSizeVariantValue;
+
     private Context context;
     private ProductAttachmentListener viewListener;
 
@@ -63,6 +79,12 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         tvBuy = chatBalloon.findViewById(R.id.tv_buy);
         ivATC = chatBalloon.findViewById(R.id.ic_add_to_cart);
         footerLayout = chatBalloon.findViewById(R.id.footer_layout);
+        productVariantContainer = itemView.findViewById(R.id.ll_variant);
+        productColorVariant = itemView.findViewById(R.id.ll_variant_color);
+        productColorVariantHex = itemView.findViewById(R.id.iv_variant_color);
+        productColorVariantValue = itemView.findViewById(R.id.tv_variant_color);
+        productSizeVariant = itemView.findViewById(R.id.ll_variant_size);
+        productSizeVariantValue = itemView.findViewById(R.id.tv_variant_size);
         this.viewListener = viewListener;
     }
 
@@ -73,7 +95,65 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         setupProductUI(element, chatBalloon);
         setupFreeShipping(element);
         setupChatBubbleAlignment(chatBalloon, element);
+        setupVariantLayout(element);
         viewListener.trackSeenProduct(element);
+    }
+
+    private void setupVariantLayout(ProductAttachmentViewModel element) {
+        if (element.doesNotHaveVariant()) {
+            hideVariantLayout();
+        } else {
+            showVariantLayout();
+        }
+
+        if (element.hasColorVariant()) {
+            productColorVariant.setVisibility(View.VISIBLE);
+            Drawable backgroundDrawable = getBackgroundDrawable(element.getColorHexVariant());
+            productColorVariantHex.setBackground(backgroundDrawable);
+            productColorVariantValue.setText(element.getColorVariant());
+        } else {
+            productColorVariant.setVisibility(View.GONE);
+        }
+
+        if (element.hasSizeVariant()) {
+            productColorVariant.setVisibility(View.VISIBLE);
+            productSizeVariantValue.setText(element.getSizeVariant());
+        } else {
+            productSizeVariant.setVisibility(View.GONE);
+        }
+    }
+
+    private void hideVariantLayout() {
+        productVariantContainer.setVisibility(View.GONE);
+    }
+
+    private void showVariantLayout() {
+        productVariantContainer.setVisibility(View.VISIBLE);
+    }
+
+    private Drawable getBackgroundDrawable(String hexColor) {
+        Drawable backgroundDrawable = ContextCompat.getDrawable(itemView.getContext(), R.drawable.circle_color_variant_indicator);
+
+        if (backgroundDrawable == null) return null;
+
+        if (isWhiteColor(hexColor)) {
+            applyStrokeTo(backgroundDrawable);
+            return backgroundDrawable;
+        }
+
+        backgroundDrawable.setColorFilter(new PorterDuffColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.SRC_ATOP));
+        return backgroundDrawable;
+    }
+
+    private void applyStrokeTo(Drawable backgroundDrawable) {
+        if (backgroundDrawable instanceof GradientDrawable) {
+            float strokeWidth = toDp(1);
+            ((GradientDrawable) backgroundDrawable).setStroke((int) strokeWidth, ContextCompat.getColor(itemView.getContext(), R.color.grey_300));
+        }
+    }
+
+    private boolean isWhiteColor(String hexColor) {
+        return hexColor.equals("#ffffff") || hexColor.equals("#fff");
     }
 
     private void setupChatBubbleAlignment(View productContainerView, ProductAttachmentViewModel element) {
