@@ -23,7 +23,7 @@ public interface ICartListAnalyticsListener {
 
     void sendAnalyticsOnClickProductNameCartItem(String productName);
 
-    void sendAnalyticsOnClickShopNameCartItem(String shopName);
+    void sendAnalyticsOnClickShopCartItem(String shopId, String shopName);
 
     void sendAnalyticsOnClickCancelPromoCodeAndCouponBanner();
 

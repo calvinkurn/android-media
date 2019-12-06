@@ -93,6 +93,8 @@
     <string name="feed_delete_post">Hapus Post</string>
     <string name="feed_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari kurasi ini</string>
     <string name="feed_post_deleted">Post berhasil dihapus</string>
+    <string name="feed_msg_remove_wishlist">Sukses menghapus wishlist</string>
+    <string name="feed_msg_add_wishlist">Sukses menambah wishlist</string>
 
     <!-- Onboarding -->
     <string name="feed_onboarding_create_post_title">Coba post di Feed, yuk!</string>

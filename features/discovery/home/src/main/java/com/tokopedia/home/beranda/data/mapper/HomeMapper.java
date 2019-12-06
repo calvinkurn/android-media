@@ -210,8 +210,7 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                                     homeData.isCache()));
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size(),channel);
-
-                            HomePageTracking.eventEnhanceImpressionBanner(context, channel);
+                            if (!homeData.isCache()) HomePageTracking.eventEnhanceImpressionBanner(context, channel);
                             break;
                         case DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF:
                             list.add(mappingDynamicChannel(
@@ -221,7 +220,7 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                                     false,
                                     homeData.isCache()
                             ));
-                            HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
+                            if (!homeData.isCache()) HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
                             break;
                         case DynamicHomeChannel.Channels.LAYOUT_REVIEW:
                             if (!homeData.isCache()) {
@@ -334,6 +333,7 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                                                    boolean isCache) {
         DynamicChannelViewModel viewModel = new DynamicChannelViewModel();
         viewModel.setChannel(channel);
+        viewModel.setCache(isCache);
         if (!isCache) {
             viewModel.setTrackingData(trackingData);
             viewModel.setTrackingDataForCombination(trackingDataForCombination);

@@ -85,9 +85,13 @@ import com.tokopedia.profile.view.preference.ProfilePreference
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
+import com.tokopedia.feedcomponent.view.widget.PostStatisticBottomSheet
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.profile.following_list.view.activity.FollowingListActivity
+import com.tokopedia.profile.following_list.view.activity.UserFollowerListActivity
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -122,65 +126,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
         HighlightAdapter.HighlightListener,
         ShareBottomSheets.OnShareItemClickListener {
-
-    override val androidContext: Context
-        get() = requireContext()
-
-    private var userId: Int = 0
-    private var afterPost: Boolean = false
-    private var afterEdit: Boolean = false
-    private var successPost: Boolean = false
-    private var onlyOnePost: Boolean = false
-    private var isAffiliate: Boolean = false
-    private var isOwner: Boolean = false
-    private var openShare: Boolean = false
-    private var resultIntent: Intent? = null
-    private var affiliatePostQuota: AffiliatePostQuota? = null
-    private var profileHeader: ProfileHeaderViewModel? = null
-    private val submitPostReceiver: BroadcastReceiver by lazy {
-        object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if (context == null || intent == null) {
-                    return
-                }
-
-                if (intent.action == BROADCAST_SUBMIT_POST
-                        && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS) == true) {
-                    onSwipeRefresh()
-                }
-            }
-        }
-    }
-    private var isAppBarCollapse = false
-    private var linkerData: LinkerData? = null
-    private var isShareProfile = false
-
-    lateinit var layoutManager: GridLayoutManager
-
-    lateinit var remoteConfig: RemoteConfig
-
-    @Inject
-    lateinit var presenter: ProfileContract.Presenter
-
-    @Inject
-    lateinit var profileAnalytics: ProfileAnalytics
-
-    @Inject
-    lateinit var feedAnalytics: FeedAnalyticTracker
-
-    @Inject
-    lateinit var postTagAnalytics: PostTagAnalytics
-
-    @Inject
-    lateinit var profilePreference: ProfilePreference
-
-    @Inject
-    lateinit var affiliatePreference: AffiliatePreference
-    
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    private lateinit var byMeInstastoryView: ByMeInstastoryView
 
     companion object {
         private const val PARAM_TAB_NAME = "{tab_name}"
@@ -226,6 +171,67 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             return fragment
         }
     }
+
+    override val androidContext: Context
+        get() = requireContext()
+
+    @Inject
+    lateinit var presenter: ProfileContract.Presenter
+
+    @Inject
+    lateinit var profileAnalytics: ProfileAnalytics
+
+    @Inject
+    lateinit var feedAnalytics: FeedAnalyticTracker
+
+    @Inject
+    lateinit var postTagAnalytics: PostTagAnalytics
+
+    @Inject
+    lateinit var profilePreference: ProfilePreference
+
+    @Inject
+    lateinit var affiliatePreference: AffiliatePreference
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    lateinit var layoutManager: GridLayoutManager
+
+    lateinit var remoteConfig: RemoteConfig
+
+    private lateinit var byMeInstastoryView: ByMeInstastoryView
+
+    private val submitPostReceiver: BroadcastReceiver by lazy {
+        object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (context == null || intent == null) {
+                    return
+                }
+
+                if (intent.action == BROADCAST_SUBMIT_POST
+                        && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS) == true) {
+                    onSwipeRefresh()
+                }
+            }
+        }
+    }
+    private var userId: Int = 0
+    private var afterPost: Boolean = false
+    private var afterEdit: Boolean = false
+    private var successPost: Boolean = false
+    private var onlyOnePost: Boolean = false
+    private var isAffiliate: Boolean = false
+    private var isOwner: Boolean = false
+    private var openShare: Boolean = false
+    private var resultIntent: Intent? = null
+    private var affiliatePostQuota: AffiliatePostQuota? = null
+    private var profileHeader: ProfileHeaderViewModel? = null
+    private var isAppBarCollapse = false
+    private var linkerData: LinkerData? = null
+    private var isShareProfile = false
+
+    private lateinit var postStatisticBottomSheet: PostStatisticBottomSheet
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -544,11 +550,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun goToFollowing() {
         profileAnalytics.eventClickFollowing(isOwner, userId.toString())
-        startActivity(FollowingListActivity.getFollowingInstance(requireContext(), userId))
+        startActivity(FollowingListActivity.createIntent(requireContext(), userId.toString()))
     }
 
     override fun goToFollower() {
-        startActivity(com.tokopedia.profile.following_list.view.activity.FollowingListActivity.getFollowerInstance(requireContext(), userId))
+        startActivity(UserFollowerListActivity.getFollowingIntent(requireContext(), userId))
     }
 
     override fun updateCursor(cursor: String) {
@@ -871,6 +877,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    override fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+        showPostStatistic(title, activityId, productIds, likeCount, commentCount)
+    }
+
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
         if (adapter.list[positionInFeed] is DynamicPostViewModel) {
@@ -1103,6 +1113,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 trackingPostModel.activityName,
                 trackingPostModel.mediaType
         )
+    }
+
+    override fun onSuccessGetPostStatistic(statisticCommissionModel: PostStatisticCommissionUiModel) {
+        getPostStatisticBottomSheet()
+                .setPostStatisticCommissionModel(statisticCommissionModel)
+    }
+
+    override fun onErrorGetPostStatistic(error: Throwable, activityId: String, productIds: List<String>) {
+        getPostStatisticBottomSheet()
+                .setError(error, activityId, productIds)
     }
 
     private fun initVar(savedInstanceState: Bundle?) {
@@ -1610,7 +1630,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToDashboard() {
-        RouteManager.route(requireContext(), ApplinkConst.AFFILIATE_DASHBOARD)
+        RouteManager.route(requireContext(), ApplinkConstInternalContent.AFFILIATE_DASHBOARD)
         profileAnalytics.eventClickStatistic(userId.toString())
     }
 
@@ -1820,5 +1840,38 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             profileAnalytics.eventClickShareProfileOpsiIni(isOwner, userId.toString(), packageName)
         else
             profileAnalytics.eventClickSharePostOpsiIni(isOwner, userId.toString(), packageName)
+    }
+
+    private fun getPostStatisticBottomSheet(): PostStatisticBottomSheet {
+        if (!::postStatisticBottomSheet.isInitialized) {
+            postStatisticBottomSheet = PostStatisticBottomSheet.newInstance(requireContext())
+        }
+        return postStatisticBottomSheet
+    }
+
+    private fun showPostStatistic(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+        getPostStatisticBottomSheet()
+                .show(
+                        fragmentManager = requireFragmentManager(),
+                        activityId = activityId,
+                        title = title,
+                        productIds = productIds,
+                        listener = object : PostStatisticBottomSheet.Listener {
+                            override fun onGetPostStatisticModelList(bottomSheet: PostStatisticBottomSheet, activityId: String, productIds: List<String>) {
+                                presenter.getPostStatistic(activityId, productIds, likeCount, commentCount)
+                            }
+
+                            override fun onSeeMoreDetailClicked(bottomSheet: PostStatisticBottomSheet, type: PostStatisticDetailType) {
+                                if (type == PostStatisticDetailType.Comment) {
+                                    RouteManager.route(
+                                            requireContext(),
+                                            ApplinkConst.KOL_COMMENT,
+                                            activityId
+                                    )
+                                    bottomSheet.dismiss()
+                                }
+                            }
+                        }
+                )
     }
 }

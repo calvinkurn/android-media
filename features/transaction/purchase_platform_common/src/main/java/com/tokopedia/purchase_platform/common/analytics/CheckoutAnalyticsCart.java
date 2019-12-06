@@ -3,8 +3,7 @@ package com.tokopedia.purchase_platform.common.analytics;
 import android.os.Bundle;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.Map;
 
@@ -99,12 +98,12 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCartClickShopName(String shopName) {
+    public void eventClickAtcCartClickShop(String shopId, String shopName) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
-                EventAction.CLICK_SHOP_NAME,
-                shopName
+                EventAction.CLICK_SHOP,
+                shopId + " - " + shopName
         );
     }
 
@@ -619,7 +618,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT, EventName.PRODUCT_CLICK,
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.CLICK_PRODUCT_RECOMMENDATION,
-                Key.EVENT_LABEL, position,
+                Key.EVENT_LABEL, "",
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -801,6 +800,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT, EventName.PRODUCT_VIEW,
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.IMPRESSION_ON_PRODUCT_RECOMMENDATION,
+                Key.EVENT_LABEL, "",
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -841,21 +841,35 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAddWishlistOnPrimaryProduct() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_RECOMMENDATION,
-                EventCategory.RECOMMENDATION_PAGE,
-                EventAction.CLICK_ADD_WISHLIST_ON_PRIMARY_PRODUCT,
-                EventLabel.SOURCE_CART
+    public void eventClickAddWishlistOnProductRecommendation() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION
         );
     }
 
-    public void eventClickRemoveWishlistOnPrimaryProduct() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_RECOMMENDATION,
-                EventCategory.RECOMMENDATION_PAGE,
-                EventAction.CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT,
-                EventLabel.SOURCE_CART
+    public void eventClickAddWishlistOnProductRecommendationEmptyCart() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART
+        );
+    }
+
+    public void eventClickRemoveWishlistOnProductRecommendation() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION
+        );
+    }
+
+    public void eventClickRemoveWishlistOnProductRecommendationEmptyCart() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART
         );
     }
 
@@ -873,4 +887,152 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
+    public void eventAddWishlistAvailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_AVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistAvailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_AVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventAddWishlistUnavailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_UNAVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistUnvailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_UNAVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventAddWishlistLastSeenSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_LAST_SEEN,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistLastSeenSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_LAST_SEEN,
+                productId
+        );
+    }
+
+    public void eventAddWishlistWishlistsSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_WISHLIST,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistWishlistsSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_WISHLIST,
+                productId
+        );
+    }
+
+    public void sendEventDeleteInsurance(String insuranceTitle) {
+
+        sendEventCategoryActionLabel(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CART_DELETE,
+                String.format("cart page - %s", insuranceTitle)
+        );
+    }
+
+    public void sendEventInsuranceImpression(String title) {
+        sendEventCategoryActionLabel(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CART_IMPRESSION,
+                String.format("cart - %s", title)
+        );
+    }
+
+    public void sendEventChangeInsuranceState(boolean isChecked, String title) {
+        String eventLabel = "";
+        if (isChecked) {
+            eventLabel = String.format("cart page - tick %s", title);
+        } else {
+            eventLabel = String.format("cart page - untick %s", title);
+        }
+        sendEventCategoryActionLabel(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_STATE_CHANGE,
+                eventLabel
+        );
+    }
+
+    public void sendEventPurchaseInsurance(String userID, String productId, String title) {
+        Map<String, Object> mapEvent = TrackAppUtils.gtmData(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CLICK_BUY,
+                String.format("cart page - %s", title)
+        );
+        mapEvent.put("userId", userID);
+        mapEvent.put("productId", productId);
+        sendGeneralEvent(mapEvent);
+    }
+    public void eventClickBrowseButtonOnTickerProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_BROWSE_BUTTON_ON_TICKER_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventViewTickerProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.VIEW_ATC_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_TICKER_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventClickHapusButtonOnProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventClickTrashIconButtonOnProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
 }

@@ -13,9 +13,6 @@ public class UserAttributeData {
     @SerializedName("profile")
     @Expose
     private Profile profile = new Profile();
-    @SerializedName("wallet")
-    @Expose
-    private Wallet wallet = new Wallet();
     @SerializedName("paymentAdminProfile")
     @Expose
     private PaymentAdminProfile paymentAdminProfile = new PaymentAdminProfile();
@@ -43,14 +40,6 @@ public class UserAttributeData {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
-    }
-
-    public Wallet getWallet() {
-        return wallet;
-    }
-
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
     }
 
     public SaldoModel getSaldo() {

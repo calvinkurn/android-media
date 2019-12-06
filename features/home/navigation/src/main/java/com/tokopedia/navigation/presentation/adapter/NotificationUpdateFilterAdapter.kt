@@ -28,8 +28,7 @@ class NotificationUpdateFilterAdapter(
         private val listener: FilterAdapterListener,
         private val userSession: UserSessionInterface
 ) : BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(notificationUpdateTypeFactory),
-        NotificationUpdateFilterSectionItemViewHolder.FilterSectionListener,
-        ChipFilterItemDivider.ChipFilterListener {
+        NotificationUpdateFilterSectionItemViewHolder.FilterSectionListener {
 
     private val filterTypePosition = HashMap<String, Int>()
     private val filterTypeId = HashMap<String, Int>()
@@ -113,7 +112,8 @@ class NotificationUpdateFilterAdapter(
             if (visitables.size <= filterPosition) continue
 
             val data = visitables[filterPosition]
-            if (data !is NotificationUpdateFilterSectionItemViewModel) continue
+                    as? NotificationUpdateFilterSectionItemViewModel
+                    ?: continue
 
             when (filterType) {
                 NotificationUpdateFilterItemViewModel.FilterType.TYPE_ID.type -> typeName = data.text
@@ -138,21 +138,6 @@ class NotificationUpdateFilterAdapter(
             visitable.addAll(type.list)
         }
         return visitable.toList()
-    }
-
-    override fun getDividerPositions(): List<Int> {
-        val positions = arrayListOf<Int>()
-        val lastFilterSize = data.size - 1
-        var previousItem = 0
-        for ((index, filter) in data.withIndex()) {
-            val filterSectionSize = filter.list.size
-            if (index != lastFilterSize) {
-                val dividerPosition = filterSectionSize + previousItem - 1
-                positions.add(dividerPosition)
-            }
-            previousItem += filterSectionSize
-        }
-        return positions
     }
 
     companion object {

@@ -20,6 +20,7 @@ import com.tokopedia.purchase_platform.features.cart.data.model.response.*
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.*
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
 import javax.inject.Inject
+import kotlin.math.min
 
 /**
  * Created by Irfan Khoirul on 2019-10-17.
@@ -240,6 +241,10 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
             if (similarProduct != null && !TextUtils.isEmpty(similarProduct.text) && !TextUtils.isEmpty(similarProduct.url)) {
                 it.similarProductData = SimilarProductData(similarProduct.text, similarProduct.url)
             }
+            val nicotineLiteMessage = cartDetail.nicotineLiteMessage
+            if (nicotineLiteMessage != null && !TextUtils.isEmpty(nicotineLiteMessage.text) && !TextUtils.isEmpty(nicotineLiteMessage.url)) {
+                it.nicotineLiteMessageData = NicotineLiteMessageData(nicotineLiteMessage.text, nicotineLiteMessage.url)
+            }
 
             if (cartDetail.errors.size > 1) {
                 it.errorMessageDescription = cartDetail.errors.subList(1, cartDetail.errors.size - 1).joinToString()
@@ -264,8 +269,12 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
             it.parentId = cartDetail.product.parentId.toString()
             it.productId = cartDetail.product.productId.toString()
             it.productName = cartDetail.product.productName
-            it.minimalQtyOrder = cartDetail.product.productMinOrder
-            it.invenageValue = cartDetail.product.productInvenageValue
+            it.minOrder = cartDetail.product.productMinOrder
+            it.maxOrder = if (cartDetail.product.productSwitchInvenage == 0) {
+                cartDetail.product.productMaxOrder
+            } else {
+                min(cartDetail.product.productMaxOrder, cartDetail.product.productInvenageValue)
+            }
             it.priceChangesState = cartDetail.product.priceChanges.changesState
             it.priceChangesDesc = cartDetail.product.priceChanges.description
             it.productInvenageByUserInCart = cartDetail.product.productInvenageTotal.byUser.inCart
@@ -393,7 +402,6 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
         return CartItemData.UpdatedData().let {
             it.quantity = cartDetail.product.productQuantity
             it.remark = cartDetail.product.productNotes
-            it.maxQuantity = cartDataListResponse.maxQuantity
             it.maxCharRemark = cartDataListResponse.maxCharNote
             it
         }

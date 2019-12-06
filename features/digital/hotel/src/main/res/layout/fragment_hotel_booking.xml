@@ -153,7 +153,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_2"
-                    android:text="@string/hotel_booking_room_general_info"
                     app:fontSize="micro"
                     app:textViewTheme="lightSecondary"
                     tools:text="2 Kamar • 2 Tamu" />
@@ -357,12 +356,11 @@
                 android:visibility="gone"
                 tools:visibility="visible">
 
-                <!--<com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView-->
-                    <!--android:id="@+id/booking_pay_now_promo_ticker"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_margin="@dimen/dp_16"-->
-                    <!--app:state="empty" />-->
+                <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_lvl4"
+                    android:id="@+id/booking_pay_now_promo_ticker" />
 
                 <View
                     android:layout_width="match_parent"
@@ -370,6 +368,7 @@
                     android:background="@color/divider_color" />
 
             </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/invoice_summary_container"

@@ -12,15 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.core.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +24,16 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -41,6 +42,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
@@ -48,6 +50,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
+import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
@@ -58,13 +61,11 @@ import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
-import com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
-import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.view.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter;
@@ -75,7 +76,6 @@ import com.tokopedia.digital.product.view.listener.IUssdUpdateListener;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ContactData;
-import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -91,6 +91,8 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
@@ -121,6 +123,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
             "ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE";
     private static final String ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE =
             "ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE";
+    private static final String ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME =
+            "ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME";
 
     private static final String EXTRA_STATE_OPERATOR_SELECTED = "EXTRA_STATE_OPERATOR_SELECTED";
     private static final String EXTRA_STATE_PRODUCT_SELECTED = "EXTRA_STATE_PRODUCT_SELECTED";
@@ -143,6 +147,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
     private static final String DIGITAL_DETAIL_TRACE = "dg_detail";
+    private static final String CLICK_PDP = "clickPDP";
+    private static final String DIGITAL_HOMEPAGE = "digital - homepage";
+    private static final String CLICK_UPDATE_SALDO = "click update saldo ";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int PANDUAN_TAB_POSITION = 1;
@@ -184,6 +191,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private boolean isFromWidget;
     private String additionalETollLastBalance;
     private String additionalETollLastUpdatedDate;
+    private String additionalETollOperatorName;
 
     private CheckPulsaBalanceView selectedCheckPulsaBalanceView;
 
@@ -222,7 +230,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
             boolean isFromWidget, boolean isCouponApplied, String additionalETollBalance,
-            String additionalETollLastUpdatedDate) {
+            String additionalETollLastUpdatedDate, String additionalETollOperatorName) {
         Fragment fragment = new DigitalProductFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
@@ -233,6 +241,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         bundle.putBoolean(ARG_PARAM_EXTRA_IS_COUPON_APPLIED, isCouponApplied);
         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE, additionalETollBalance);
         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE, additionalETollLastUpdatedDate);
+        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME, additionalETollOperatorName);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -303,6 +312,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 );
             }
         }
+
+        rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn(), categoryDataState.getName(),
+                categoryDataState.getCategoryId());
     }
 
     @Override
@@ -359,6 +371,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         isCouponApplied = arguments.getBoolean(ARG_PARAM_EXTRA_IS_COUPON_APPLIED);
         additionalETollLastBalance = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE);
         additionalETollLastUpdatedDate = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE);
+        additionalETollOperatorName = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME);
     }
 
     protected void initView(View view) {
@@ -386,8 +399,14 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
         selectedCheckPulsaBalanceView = null;
         checkETollBalanceView.setListener(() -> {
-            Intent intent = DigitalCheckETollBalanceNFCActivity.newInstance(getActivity(),
-                    DigitalCheckETollBalanceNFCActivity.DIGITAL_NFC_FROM_PDP);
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    CLICK_PDP,
+                    DIGITAL_HOMEPAGE,
+                    CLICK_UPDATE_SALDO + additionalETollOperatorName,
+                    additionalETollOperatorName
+            ));
+            Intent intent = RouteManager.getIntent(getActivity(),
+                    ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP);
             startActivityForResult(intent, REQUEST_CODE_CHECK_SALDO_EMONEY);
         });
     }
@@ -940,8 +959,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
             case REQUEST_CODE_CHECK_SALDO_EMONEY:
                 if (checkETollBalanceView != null) {
                     if (resultCode == Activity.RESULT_OK && data != null &&
-                            data.getParcelableExtra(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA) != null) {
-                        DigitalCategoryDetailPassData passData = data.getParcelableExtra(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA);
+                            data.getParcelableExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA) != null) {
+                        DigitalCategoryDetailPassData passData = data.getParcelableExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA);
                         Bundle bundle = new Bundle();
                         bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, passData.getCategoryId());
                         bundle.putString(ARG_PARAM_EXTRA_OPERATOR_ID, passData.getOperatorId());
@@ -951,8 +970,10 @@ public class DigitalProductFragment extends BaseDaggerFragment
                         bundle.putBoolean(ARG_PARAM_EXTRA_IS_COUPON_APPLIED, passData.isCouponApplied());
                         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE, passData.getAdditionalETollBalance());
                         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE, passData.getAdditionalETollLastUpdatedDate());
+                        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME, passData.getAdditionalETollOperatorName());
                         setupArguments(bundle);
                         setHasOptionsMenu(true);
+                        //clear cache
                         presenter.processGetCategoryAndBannerData(
                                 categoryId, operatorId, productId, clientNumber);
                     }

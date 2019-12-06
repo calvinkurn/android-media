@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.common.di
 
+import com.tokopedia.purchase_platform.common.data.api.CommonPurchaseAkamaiApi
 import com.tokopedia.purchase_platform.common.data.api.CommonPurchaseApi
 import com.tokopedia.purchase_platform.common.data.repository.CommonPurchaseRepository
 import com.tokopedia.purchase_platform.common.data.repository.ICommonPurchaseRepository
@@ -22,8 +23,13 @@ class PurchasePlatformCommonModule {
     }
 
     @Provides
-    fun provideCommonPurchaseRepository(commonPurchaseApi: CommonPurchaseApi): ICommonPurchaseRepository {
-        return CommonPurchaseRepository(commonPurchaseApi)
+    fun provideCommonPurchaseAkamaiApi(@PurchasePlatformAkamaiQualifier retrofit: Retrofit): CommonPurchaseAkamaiApi {
+        return retrofit.create(CommonPurchaseAkamaiApi::class.java)
+    }
+
+    @Provides
+    fun provideCommonPurchaseRepository(commonPurchaseApi: CommonPurchaseApi, commonPurchaseAkamaiApi: CommonPurchaseAkamaiApi): ICommonPurchaseRepository {
+        return CommonPurchaseRepository(commonPurchaseApi, commonPurchaseAkamaiApi)
     }
 
     @Provides

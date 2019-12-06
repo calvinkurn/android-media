@@ -6,22 +6,21 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.core.analytics.AppEventTracking
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
 import com.tokopedia.product.manage.list.R
-import com.tokopedia.product.manage.list.di.DaggerProductDraftListCountComponent
-import com.tokopedia.product.manage.list.di.ProductDraftListCountModule
+import com.tokopedia.product.manage.list.constant.DRAFT_PRODUCT
+import com.tokopedia.product.manage.list.di.DaggerProductManageComponent
+import com.tokopedia.product.manage.list.utils.ProductManageTracking
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter
-import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
 class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCountView {
@@ -37,9 +36,9 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         if (rowCount == 0L) {
             tvDraftProductInfo.visibility = View.GONE
         } else {
-            tvDraftProductInfo.text = MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount))
+            tvDraftProductInfo.text = MethodChecker.fromHtml(getString(com.tokopedia.product.manage.list.R.string.product_manage_you_have_x_unfinished_product, rowCount))
             tvDraftProductInfo.setOnClickListener {
-                eventManageProductClicked(AppEventTracking.EventLabel.DRAFT_PRODUCT)
+                ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
                 startActivity(Intent(activity, ProductDraftListActivity::class.java))
             }
             tvDraftProductInfo.visibility = View.VISIBLE
@@ -47,7 +46,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.activity_manage_product_seller, container, false)
+        return inflater.inflate(com.tokopedia.product.manage.list.R.layout.activity_manage_product_seller, container, false)
     }
 
     override fun onDraftCountLoadError() {
@@ -58,18 +57,27 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tvDraftProductInfo = view.findViewById(R.id.tv_draft_product)
+        tvDraftProductInfo = view.findViewById(com.tokopedia.product.manage.list.R.id.tv_draft_product)
         tvDraftProductInfo.visibility = View.GONE
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return com.tokopedia.design.R.id.recycler_view
+    }
+
+    override fun getSearchInputViewResourceId(): Int {
+        return com.tokopedia.abstraction.R.id.search_input_view
     }
 
     override fun initInjector() {
         super.initInjector()
-        DaggerProductDraftListCountComponent
-                .builder()
-                .productDraftListCountModule(ProductDraftListCountModule())
-                .productComponent(getComponent(ProductComponent::class.java))
-                .build()
-                .inject(this)
+        activity?.let{
+            val appComponent = (it.application as BaseMainApplication).baseAppComponent
+            DaggerProductManageComponent.builder()
+                    .baseAppComponent(appComponent)
+                    .build()
+                    .inject(this)
+        }
         productDraftListCountPresenter.attachView(this)
         productManagePresenter.attachView(this)
     }
@@ -78,7 +86,6 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         super.onDestroy()
         productDraftListCountPresenter.detachView()
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -131,14 +138,6 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     override fun onPause() {
         super.onPause()
         unregisterDraftReceiver()
-    }
-
-    private fun eventManageProductClicked(label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
-                AppEventTracking.Category.MANAGE_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                label)
     }
 
     override fun onErrorGetPopUp(e: Throwable) {

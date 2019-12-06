@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
@@ -8,30 +10,38 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
+import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
-import com.tokopedia.search.result.presentation.model.HeaderViewModel;
+import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
+import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
+import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
+import com.tokopedia.topads.sdk.domain.model.Cpm;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.LabelGroup;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -52,7 +62,7 @@ final class ProductListPresenter
         implements ProductListSectionContract.Presenter {
 
     private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
-    private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "search_not_found";
+    private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
 
     @Inject
@@ -70,6 +80,10 @@ final class ProductListPresenter
     AddWishListUseCase addWishlistActionUseCase;
     @Inject
     RemoveWishListUseCase removeWishlistActionUseCase;
+    @Inject
+    SeamlessLoginUsecase seamlessLoginUsecase;
+    @Inject
+    UserSessionInterface userSession;
     @Inject
     RemoteConfig remoteConfig;
 
@@ -685,12 +699,10 @@ final class ProductListPresenter
         getView().setDefaultLayoutType(productViewModel.getDefaultView());
 
         if (productViewModel.getProductList().isEmpty()) {
-            getViewToHandleErrorMessage(true, productViewModel.getErrorMessage());
-            getViewToShowEmptySearch(productViewModel);
+            getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
             getViewToShowRecommendationItem();
         } else {
-            getViewToHandleErrorMessage(false, productViewModel.getErrorMessage());
-            getViewToShowProductList(productViewModel);
+            getViewToShowProductList(searchProductModel, productViewModel);
         }
 
         getView().storeTotalData(productViewModel.getTotalData());
@@ -727,13 +739,26 @@ final class ProductListPresenter
         return productViewModel;
     }
 
-    private void getViewToHandleErrorMessage(boolean isFullScreenMessage, String errorMessage) {
-        if (errorMessage != null && errorMessage.length() > 0) {
-            getView().showErrorMessage(isFullScreenMessage, errorMessage);
+    private void getViewToHandleEmptyProductList(SearchProductModel.SearchProduct searchProduct, ProductViewModel productViewModel) {
+        if (productViewModel.getErrorMessage() != null && !productViewModel.getErrorMessage().isEmpty()) {
+            getViewToHandleEmptySearchWithErrorMessage(searchProduct);
         }
         else {
-            getView().hideErrorMessage();
+            getViewToShowEmptySearch(productViewModel);
         }
+    }
+
+    private void getViewToHandleEmptySearchWithErrorMessage(SearchProductModel.SearchProduct searchProduct) {
+        getView().removeLoading();
+        getView().setBannedProductsErrorMessage(createBannedProductsErrorMessageAsList(searchProduct));
+        getView().trackEventImpressionBannedProducts(true);
+        getView().setTotalSearchResultCount("0");
+    }
+
+    private List<Visitable> createBannedProductsErrorMessageAsList(SearchProductModel.SearchProduct searchProduct) {
+        List<Visitable> bannedProductsErrorMessageAsList = new ArrayList<>();
+        bannedProductsErrorMessageAsList.add(new BannedProductsEmptySearchViewModel(searchProduct.getErrorMessage(), searchProduct.getLiteUrl()));
+        return bannedProductsErrorMessageAsList;
     }
 
     private void getViewToShowEmptySearch(ProductViewModel productViewModel) {
@@ -774,29 +799,47 @@ final class ProductListPresenter
         );
     }
 
-    private void getViewToShowProductList(ProductViewModel productViewModel) {
+    private void getViewToShowProductList(SearchProductModel searchProductModel, ProductViewModel productViewModel) {
+        SearchProductModel.SearchProduct searchProduct = searchProductModel.getSearchProduct();
+
         List<Visitable> list = new ArrayList<>();
 
-        HeaderViewModel headerViewModel = new HeaderViewModel();
-        headerViewModel.setTickerViewModel(productViewModel.getTickerModel());
-        headerViewModel.setSuggestionViewModel(productViewModel.getSuggestionModel());
         if (!productViewModel.isQuerySafe()) {
             getView().showAdultRestriction();
         }
-        if (productViewModel.getQuickFilterModel() != null
-                && productViewModel.getQuickFilterModel().getFilter() != null) {
-            headerViewModel.setQuickFilterList(getView().getQuickFilterOptions(productViewModel.getQuickFilterModel()));
-        }
+
         boolean isGlobalNavWidgetAvailable
                 = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
+
+        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable && shouldShowCpmShop(productViewModel)) {
+            CpmViewModel cpmViewModel = new CpmViewModel();
+            cpmViewModel.setCpmModel(productViewModel.getCpmModel());
+            list.add(cpmViewModel);
+        }
+
         if (isGlobalNavWidgetAvailable) {
             list.add(productViewModel.getGlobalNavViewModel());
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
         }
-        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable) {
-            headerViewModel.setCpmModel(productViewModel.getCpmModel());
+
+        if (!getView().isTickerHasDismissed()
+                && !TextUtils.isEmpty(productViewModel.getTickerModel().getText())) {
+            list.add(productViewModel.getTickerModel());
         }
-        list.add(headerViewModel);
+
+        if (!TextUtils.isEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
+            list.add(productViewModel.getSuggestionModel());
+        }
+
+        if (searchProduct.getErrorMessage() != null && !searchProduct.getErrorMessage().isEmpty()) {
+            list.add(createBannedProductsTickerViewModel(searchProduct.getErrorMessage(), searchProduct.getLiteUrl()));
+            getView().trackEventImpressionBannedProducts(false);
+        }
+
+        if (productViewModel.getQuickFilterModel() != null) {
+            list.add(productViewModel.getQuickFilterModel());
+        }
+
         list.addAll(convertToListOfVisitable(productViewModel));
         if (productViewModel.getRelatedSearchModel() != null) {
             list.add(productViewModel.getRelatedSearchModel());
@@ -807,7 +850,7 @@ final class ProductListPresenter
         getView().setProductList(list);
         getView().showFreeOngkirShowCase(isExistsFreeOngkirBadge(list));
 
-        getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
+        getView().initQuickFilter(productViewModel.getQuickFilterModel().getQuickFilterList());
 
         if (productViewModel.getTotalData() > Integer.parseInt(getSearchRows())) {
             getView().addLoading();
@@ -815,6 +858,48 @@ final class ProductListPresenter
 
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
+    }
+
+    private boolean shouldShowCpmShop(ProductViewModel productViewModel) {
+        if (productViewModel.getCpmModel().getData().isEmpty()) {
+            return false;
+        }
+
+        CpmData cpmData = productViewModel.getCpmModel().getData().get(0);
+
+        if (cpmData == null) {
+            return false;
+        }
+
+        Cpm cpm = cpmData.getCpm();
+
+        if (cpm == null) {
+            return false;
+        }
+
+        if (isViewWillRenderCpmShop(cpm)) {
+            return true;
+        } else {
+            return isViewWillRenderCpmDigital(cpm);
+        }
+    }
+
+    private boolean isViewWillRenderCpmShop(Cpm cpm) {
+        return cpm.getCpmShop() != null
+                && !TextUtils.isEmpty(cpm.getCta())
+                && !TextUtils.isEmpty(cpm.getPromotedText());
+    }
+
+    private boolean isViewWillRenderCpmDigital(Cpm cpm) {
+        return cpm.getTemplateId() == 4;
+    }
+
+    private BannedProductsTickerViewModel createBannedProductsTickerViewModel(String errorMessage, String liteUrl) {
+        String htmlErrorMessage = errorMessage
+                + " "
+                + "Gunakan <a href=\"" + liteUrl + "\">browser</a>";
+
+        return new BannedProductsTickerViewModel(htmlErrorMessage);
     }
 
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
@@ -834,7 +919,8 @@ final class ProductListPresenter
 
     private void getViewToSendTrackingOnFirstTimeLoad(ProductViewModel productViewModel) {
         JSONArray afProdIds = new JSONArray();
-        HashMap<String, String> category = new HashMap<>();
+        HashMap<String, String> moengageTrackingCategory = new HashMap<>();
+        HashMap<String, String> gtmTrackingCategory = new HashMap<>();
         ArrayList<String> prodIdArray = new ArrayList<>();
 
         if (productViewModel.getProductList().size() > 0) {
@@ -842,21 +928,55 @@ final class ProductListPresenter
                 if (i < 3) {
                     prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
                     afProdIds.put(productViewModel.getProductList().get(i).getProductID());
-                } else {
-                    break;
+                    moengageTrackingCategory.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
                 }
-                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
 
+                gtmTrackingCategory.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
             }
         }
 
-        getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, productViewModel.getQuery(), prodIdArray);
-        getView().sendTrackingEventMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
+        getView().sendTrackingEventMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
+        getView().sendTrackingGTMEventSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), gtmTrackingCategory);
         getView().setFirstTimeLoad(false);
     }
 
     private void enrichWithRelatedSearchParam(RequestParams requestParams) {
         requestParams.putBoolean(SearchApiConst.RELATED, true);
+    }
+
+    @Override
+    public void onBannedProductsGoToBrowserClick(String liteUrl) {
+        if (userSession.isLoggedIn()) {
+            generateSeamlessLoginUrlForLoggedInUser(liteUrl);
+        }
+        else {
+            getViewToRedirectToBrowser(liteUrl);
+        }
+    }
+
+    private void generateSeamlessLoginUrlForLoggedInUser(String liteUrl) {
+        SeamlessLoginSubscriber seamlessLoginSubscriber = createSeamlessLoginSubscriber(liteUrl);
+        seamlessLoginUsecase.generateSeamlessUrl(liteUrl, seamlessLoginSubscriber);
+    }
+
+    private SeamlessLoginSubscriber createSeamlessLoginSubscriber(String liteUrl) {
+        return new SeamlessLoginSubscriber() {
+            @Override
+            public void onUrlGenerated(@NotNull String url) {
+                getViewToRedirectToBrowser(url);
+            }
+
+            @Override
+            public void onError(@NotNull String msg) {
+                getViewToRedirectToBrowser(liteUrl);
+            }
+        };
+    }
+
+    private void getViewToRedirectToBrowser(String url) {
+        if (getView() != null) {
+            getView().redirectToBrowser(url);
+        }
     }
 
     @Override
@@ -867,5 +987,6 @@ final class ProductListPresenter
         if(productWishlistUrlUseCase != null) productWishlistUrlUseCase.unsubscribe();
         if(addWishlistActionUseCase != null) addWishlistActionUseCase.unsubscribe();
         if(removeWishlistActionUseCase != null) removeWishlistActionUseCase.unsubscribe();
+        if(recommendationUseCase != null) recommendationUseCase.unsubscribe();
     }
 }

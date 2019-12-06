@@ -14,5 +14,10 @@
     <string name="post_time_hours_ago">\u0020jam yang lalu</string>
     <string name="post_time_hour">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
+    <string name="text_sub_history_product">Terakhir dilihat</string>
+    <string name="text_title_see_all">Lihat semua</string>
+    <string name="text_preorder">Pre Order</string>
+    <string name="text_feed_image_product_desc">Produk</string>
+
 
 </resources>

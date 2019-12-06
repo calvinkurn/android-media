@@ -76,10 +76,15 @@
 
     <string name="in_full">Selengkapnya</string>
 
+    <string name="notification_empty_message">Belum ada notifikasi</string>
+
     <string name="coachicon_title_filter">Cari notifikasi lebih cepat dengan filter</string>
     <string name="coachicon_description_filter">Klik salah satu filter buat menampilkan notifikasi sesuai kebutuhanmu</string>
     <string name="coachicon_title_tabs">Cek notifikasi terbaru di sini</string>
     <string name="coachicon_description_tabs">Dapatkan informasi transaksi dan promo terbaru untuk pembeli dan penjual di sini</string>
     <string name="coachicon_title_notification_setting">Tampilan baru pengaturan notifikasi</string>
     <string name="coachicon_description_notification_setting">Kini, kamu bisa atur notifikasi dari Tokopedia sesuai kebutuhan</string>
+    <string name="notif_transaction_for_you">Untuk Kamu</string>
+    <string name="notif_transaction_waiting_payment">Menunggu Pembayaran</string>
+    <string name="title_read_more">Lihat Semua</string>
 </resources>
