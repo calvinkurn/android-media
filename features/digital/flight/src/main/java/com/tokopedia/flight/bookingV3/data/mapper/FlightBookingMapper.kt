@@ -210,13 +210,26 @@ class FlightBookingMapper {
                 flightDetailViewModel.isRefundable = if (journey.routes[0].refundable) RefundableEnum.REFUNDABLE else RefundableEnum.NOT_REFUNDABLE
 
                 if (index == 0) {
-                    flightDetailViewModel.adultNumericPrice = flightPriceViewModel.departurePrice.adultNumeric
-                    flightDetailViewModel.childNumericPrice = flightPriceViewModel.departurePrice.childNumeric
-                    flightDetailViewModel.infantNumericPrice = flightPriceViewModel.departurePrice.infantNumeric
+                    if (flightPriceViewModel.comboKey.isNullOrEmpty()) {
+                        flightDetailViewModel.adultNumericPrice = flightPriceViewModel.departurePrice.adultNumeric
+                        flightDetailViewModel.childNumericPrice = flightPriceViewModel.departurePrice.childNumeric
+                        flightDetailViewModel.infantNumericPrice = flightPriceViewModel.departurePrice.infantNumeric
+                    } else {
+                        flightDetailViewModel.adultNumericPrice = flightPriceViewModel.departurePrice.adultNumericCombo
+                        flightDetailViewModel.childNumericPrice = flightPriceViewModel.departurePrice.childNumericCombo
+                        flightDetailViewModel.infantNumericPrice = flightPriceViewModel.departurePrice.infantNumericCombo
+                    }
+
                 } else if (index == 1) {
-                    flightDetailViewModel.adultNumericPrice = flightPriceViewModel.returnPrice.adultNumeric
-                    flightDetailViewModel.childNumericPrice = flightPriceViewModel.returnPrice.childNumeric
-                    flightDetailViewModel.infantNumericPrice = flightPriceViewModel.returnPrice.infantNumeric
+                    if (flightPriceViewModel.comboKey.isNullOrEmpty()) {
+                        flightDetailViewModel.adultNumericPrice = flightPriceViewModel.returnPrice.adultNumeric
+                        flightDetailViewModel.childNumericPrice = flightPriceViewModel.returnPrice.childNumeric
+                        flightDetailViewModel.infantNumericPrice = flightPriceViewModel.returnPrice.infantNumeric
+                    } else {
+                        flightDetailViewModel.adultNumericPrice = flightPriceViewModel.returnPrice.adultNumericCombo
+                        flightDetailViewModel.childNumericPrice = flightPriceViewModel.returnPrice.childNumericCombo
+                        flightDetailViewModel.infantNumericPrice = flightPriceViewModel.returnPrice.infantNumericCombo
+                    }
                 }
 
                 flightDetailViewModel.totalNumeric = flightDetailViewModel.adultNumericPrice + flightDetailViewModel.childNumericPrice + flightDetailViewModel.infantNumericPrice
