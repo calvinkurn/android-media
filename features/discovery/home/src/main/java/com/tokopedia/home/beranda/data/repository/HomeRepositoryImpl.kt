@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.helper.Resource
 import com.tokopedia.home.beranda.helper.map
 import retrofit2.Response
 import rx.Observable
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -25,8 +26,7 @@ class HomeRepositoryImpl @Inject constructor(
     private val timeout = TimeUnit.SECONDS.toMillis(10)
     override fun getHomeData(): LiveData<HomeData?> {
         return homeDao.getHomeData().map {
-            if(SystemClock.uptimeMillis() - (it?.modificationDate?.time ?: SystemClock.uptimeMillis()) > timeout){
-                homeDao.deleteHomeData()
+            if(Date().time - (it?.modificationDate?.time ?: Date().time) > timeout){
                 null
             } else {
                 it?.homeData
