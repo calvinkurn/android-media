@@ -244,6 +244,10 @@ data class SomDetailOrder (
                         @Expose
                         val message: String = "",
 
+                        @SerializedName("message_array")
+                        @Expose
+                        val messageArray: List<String> = arrayListOf(),
+
                         @SerializedName("barcode_type")
                         @Expose
                         val barcodeType: String = ""
