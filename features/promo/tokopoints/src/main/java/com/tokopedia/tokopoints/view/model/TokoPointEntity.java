@@ -17,9 +17,6 @@ public class TokoPointEntity {
     @SerializedName("sheetHowToGet")
     LobDetails lobs;
 
-    @SerializedName("popupNotif")
-    PopupNotification popupNotif;
-
     public LobDetails getLobs() {
         return lobs;
     }
