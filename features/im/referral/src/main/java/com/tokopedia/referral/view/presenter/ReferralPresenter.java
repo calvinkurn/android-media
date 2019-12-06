@@ -420,7 +420,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     }
                 })
         );
-        referralAnalytics.sendAnalyticsEventToGtm(media);
+        referralAnalytics.sendAnalyticsShareEventToGtm(media);
     }
 
     private static LinkerShareData mapperLinkerData(HashMap<String, String> keyValueMap) {
