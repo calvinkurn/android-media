@@ -430,7 +430,7 @@ class TrackingHotelUtil {
             TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.YYYYMMDD, date)
 
     private fun positionTracker(index: Int): Int {
-        return index+1
+        return index + 1
     }
 
 }
