@@ -474,8 +474,6 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     }
 
     private void initTimerBound() {
-        int rootHeight = rootView.getHeight();
-//        int marginTop = TokenMarginUtil.getTimerMarginBottom(rootHeight);
         int marginTop = (int)(getScreenHeightWithoutStatusBar() - (getScreenHeightWithoutStatusBar() *0.47));
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) textCountdownTimer.getLayoutParams();
         ivFullLp.gravity = Gravity.CENTER_HORIZONTAL;
