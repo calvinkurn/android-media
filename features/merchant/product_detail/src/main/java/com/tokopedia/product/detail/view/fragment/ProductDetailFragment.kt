@@ -51,6 +51,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.customviews.TradeInTextView
+import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -131,9 +134,6 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
-import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.common_tradein.customviews.TradeInTextView
-import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.dialog.UnifyDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
@@ -1513,40 +1513,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     wholesale_divider.gone()
                 }
                 base_view_wholesale.visible()
-
             } else {
-                base_view_wholesale.hide()
+                label_installment.hide()
+                label_desc_installment.hide()
                 iv_ovo_installment_icon.hide()
                 iv_arrow_next.hide()
-            }
-        }
-
-        /*productInfoP2.minInstallment?.let {
-            label_installment.visible()
-            label_installment.text = getString(R.string.new_installment_template,
-                    (if (shopInfo?.goldOS?.isOfficial == 1) it.osMonthlyPrice else it.monthlyPrice).getCurrencyFormatted())
-            label_desc_installment.visible()
-            label_desc_installment.setOnClickListener {
-                activity?.let {
-                    val price = (
-                            if (productInfo?.campaign?.isActive == true && (productInfo?.campaign?.id?.toIntOrNull()
-                                            ?: 0) > 0)
-                                productInfo?.campaign?.discountedPrice
-                            else
-                                productInfo?.basic?.price
-                            ) ?: 0f
-                    startActivity(ProductInstallmentActivity.createIntent(it,
-                            shopInfo?.goldOS?.isOfficial == 1,
-                            price))
-                }
-            }
-            if (label_min_wholesale.isVisible) {
-                wholesale_divider.visible()
-            } else {
                 wholesale_divider.gone()
             }
-            base_view_wholesale.visible()
-        }*/
+        }
 
         productShopView.renderShopFeature(productInfoP2.shopFeature)
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
@@ -1558,9 +1532,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
                 productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
-        /*if (!isAffiliate) {
-            otherProductView.renderData(productInfoP2.productOthers)
-        }*/
 
         partialVariantAndRateEstView.renderPurchaseProtectionData(productInfoP2.productPurchaseProtectionInfo)
         productInfo?.run {
@@ -1885,7 +1856,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun onReviewClicked() {
         productInfo?.run {
-            productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
+            productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
+                    ?: "")
             productDetailTracking.eventReviewClicked()
             productDetailTracking.sendMoEngageClickReview(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")
