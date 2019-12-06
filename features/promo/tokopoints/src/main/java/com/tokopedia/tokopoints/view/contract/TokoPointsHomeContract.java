@@ -61,6 +61,8 @@ public interface TokoPointsHomeContract {
         void renderExploreSectionTab(List<SectionContent> sections);
 
         void onSuccessResponse(TokoPointEntity data, List<SectionContent> sections);
+
+        void showTokopoint2020(PopupNotification data);
     }
 
     interface Presenter extends CustomerPresenter<View> {
