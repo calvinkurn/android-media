@@ -7,10 +7,10 @@ include "features:common:resources_common"
 include "features:discovery:discovery_common"
 include "features:discovery:wishlist_coomon"
 
-include "libraries:track"
-include "libraries:remote_config"
-include "libraries:promotions_target"
 include "libraries:applink"
+include "libraries:promotions_target"
+include "libraries:remote_config"
+include "libraries:track"
 
 include "tkpdabstraction"
 include "tkpddesign"

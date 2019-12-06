@@ -9,9 +9,10 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.manager.startSimilarSearch
-import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import kotlinx.android.synthetic.main.product_card_options_fragment_layout.*
 
 
@@ -41,7 +42,8 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     private fun observeViewModelData() {
         observeOptionListLiveData()
         observeRouteToSimilarSearchEventLiveData()
-        observeFinishProductCardOoptionsEventLiveData()
+        observeCloseProductCardOptionsEventLiveData()
+        observeRouteToLoginPageEventLiveData()
     }
 
     private fun observeOptionListLiveData() {
@@ -90,7 +92,7 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         }
     }
 
-    private fun observeFinishProductCardOoptionsEventLiveData() {
+    private fun observeCloseProductCardOptionsEventLiveData() {
         productCardOptionsViewModel?.getCloseProductCardOptionsEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             finish()
         })
@@ -98,5 +100,17 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
 
     private fun finish() {
         activity?.finish()
+    }
+
+    private fun observeRouteToLoginPageEventLiveData() {
+        productCardOptionsViewModel?.getRouteToLoginPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            routeToLoginPage()
+        })
+    }
+
+    private fun routeToLoginPage() {
+        activity?.let { activity ->
+            RouteManager.route(activity, ApplinkConst.LOGIN)
+        }
     }
 }
