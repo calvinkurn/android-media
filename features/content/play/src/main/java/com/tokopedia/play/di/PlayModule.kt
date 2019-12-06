@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.play.data.network.ChannelApi
+import com.tokopedia.play.data.network.PlayApi
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -63,7 +63,7 @@ class PlayModule {
 
     @PlayScope
     @Provides
-    fun provideChannelApi(retrofit: Retrofit): ChannelApi {
-        return retrofit.create(ChannelApi::class.java)
+    fun providePlayApi(retrofit: Retrofit): PlayApi {
+        return retrofit.create(PlayApi::class.java)
     }
 }

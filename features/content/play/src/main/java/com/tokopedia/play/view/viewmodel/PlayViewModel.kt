@@ -70,7 +70,7 @@ class PlayViewModel @Inject constructor(
             }
 
             override fun onMessage(webSocketResponse: WebSocketResponse) {
-
+                // TODO create mapper => PlayPresenter.kt
             }
 
             override fun onError(e: Throwable) {
