@@ -296,7 +296,9 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             });
 
             ivATC.setOnClickListener(v -> {
-                viewListener.onClickATCFromProductAttachment(element);
+                if (!element.hasEmptyStock()) {
+                    viewListener.onClickATCFromProductAttachment(element);
+                }
             });
         } else {
             footerLayout.setVisibility(View.GONE);

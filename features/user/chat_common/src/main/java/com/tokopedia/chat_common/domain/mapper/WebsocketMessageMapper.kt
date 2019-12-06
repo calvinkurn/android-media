@@ -112,7 +112,8 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojoAttribute.productProfile.freeShipping,
                 pojoAttribute.productProfile.categoryId,
                 pojoAttribute.productProfile.playStoreData,
-                pojoAttribute.productProfile.remainingStock
+                pojoAttribute.productProfile.remainingStock,
+                pojoAttribute.productProfile.status
         )
     }
 

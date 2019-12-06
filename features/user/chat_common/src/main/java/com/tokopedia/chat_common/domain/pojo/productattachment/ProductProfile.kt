@@ -50,4 +50,7 @@ class ProductProfile {
     @SerializedName("remaining_stock")
     @Expose
     val remainingStock: Int = 1
+    @SerializedName("status")
+    @Expose
+    val status: Int = 1
 }
