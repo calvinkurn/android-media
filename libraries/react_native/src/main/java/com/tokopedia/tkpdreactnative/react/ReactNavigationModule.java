@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Promise;
@@ -22,6 +25,7 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpdreactnative.R;
@@ -42,7 +46,7 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
  * @author ricoharisin .
  */
 
-public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback {
+public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback, ReputationRouter {
 
     private final Context appContext;
 
@@ -279,4 +283,44 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
             }
         }
     };
+
+    @Override
+    public Intent getInboxReputationIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Fragment getReputationHistoryFragment() {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getShopPageIntent(Context context, String shopId) {
+        return null;
+    }
+
+    @Override
+    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
+        return null;
+    }
+
+    @Override
+    public Intent getTopProfileIntent(Context context, String reviewUserId) {
+        return null;
+    }
+
+    @Override
+    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
+
+    }
+
+    @Override
+    public void showSimpleAppRatingDialog(Activity activity) {
+
+    }
 }

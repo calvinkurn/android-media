@@ -23,7 +23,6 @@ import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
@@ -33,8 +32,7 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 
 
-public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment>
-        implements ReputationRouter {
+public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
 
     private static final String PLATFORM = "platform";
@@ -184,45 +182,5 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     private void closeThankyouPage() {
         RouteManager.route(this, ApplinkConst.HOME);
         finish();
-    }
-
-    @Override
-    public Intent getInboxReputationIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Fragment getReputationHistoryFragment() {
-        return null;
-    }
-
-    @Override
-    public Intent getLoginIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getShopPageIntent(Context context, String shopId) {
-        return null;
-    }
-
-    @Override
-    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return null;
-    }
-
-    @Override
-    public Intent getTopProfileIntent(Context context, String reviewUserId) {
-        return null;
-    }
-
-    @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
-
-    }
-
-    @Override
-    public void showSimpleAppRatingDialog(Activity activity) {
-
     }
 }
