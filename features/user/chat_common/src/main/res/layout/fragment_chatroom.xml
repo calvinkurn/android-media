@@ -130,7 +130,11 @@
                 android:layout_marginLeft="@dimen/dp_3"
                 android:layout_marginTop="@dimen/dp_3"
                 android:layout_marginRight="@dimen/dp_3"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:orientation="horizontal"
+                tools:scrollbars="horizontal"
+                tools:visibility="visible" />
 
             <include layout="@layout/layout_product_preview" />
 
