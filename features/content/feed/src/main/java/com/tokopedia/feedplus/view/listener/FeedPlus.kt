@@ -46,10 +46,6 @@ interface FeedPlus {
 
         fun sendFeedPlusScreenTracking()
 
-        fun onErrorLikeDislikeKolPost(errorMessage: String)
-
-        fun onSuccessLikeDislikeKolPost(rowNumber: Int)
-
         fun onSuccessFollowKolFromRecommendation(rowNumber: Int, position: Int, isFollow: Boolean)
 
         fun onSearchShopButtonClicked()
@@ -113,10 +109,6 @@ interface FeedPlus {
     interface Presenter : CustomerPresenter<View> {
 
         fun setCursor(cursor: String)
-
-        fun likeKol(id: Int, rowNumber: Int)
-
-        fun unlikeKol(id: Int, rowNumber: Int)
 
         fun sendVote(rowNumber: Int, pollId: String, optionId: String)
 

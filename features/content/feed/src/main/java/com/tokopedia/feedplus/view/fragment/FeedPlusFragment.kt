@@ -284,7 +284,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val lifecycleOwner: LifecycleOwner = this
+        val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
         feedOnboardingPresenter.run {
             onboardingResp.observe(lifecycleOwner, Observer {
                 hideAdapterLoading()
@@ -330,12 +330,36 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     is Success -> {
                         val data = it.data
                         if (data.isSuccess) {
-                            onSuccessFollowUnfollowKol(it.data.rowNumber)
+                            onSuccessFollowUnfollowKol(data.rowNumber)
                         } else {
                             onErrorFollowUnfollowKol(data)
                         }
                     }
-                    is Fail -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(context,it.throwable))
+                    is Fail -> {
+                        val message = it.throwable.localizedMessage
+                        view?.let {
+                            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            })
+
+            likeKolResp.observe(lifecycleOwner, Observer {
+                when (it)  {
+                    is Success -> {
+                        val data = it.data
+                        if (data.isSuccess) {
+                            onSuccessLikeDislikeKolPost(data.rowNumber)
+                        } else {
+                            onErrorLikeDislikeKolPost(data.errorMessage)
+                        }
+                    }
+                    is Fail -> {
+                        val message = it.throwable.localizedMessage
+                        view?.let {
+                            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                        }
+                    }
                 }
             })
         }
@@ -815,7 +839,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                   activityType: String) {
         if (userSession.isLoggedIn) {
-            presenter.likeKol(id, rowNumber)
+            feedOnboardingPresenter.doLikeKol(id, rowNumber)
             trackCardPostElementClick(rowNumber, FeedAnalytics.Element.LIKE)
         } else {
             onGoToLogin()
@@ -825,7 +849,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                     activityType: String) {
         if (userSession.isLoggedIn) {
-            presenter.unlikeKol(id, rowNumber)
+            feedOnboardingPresenter.doUnlikeKol(id, rowNumber)
             trackCardPostElementClick(rowNumber, FeedAnalytics.Element.UNLIKE)
         } else {
             onGoToLogin()
@@ -913,39 +937,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             comment.value = comment.value + totalNewComment
             adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_COMMENT)
-        }
-    }
-
-    override fun onErrorLikeDislikeKolPost(errorMessage: String) {
-        view?.let {
-            Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-        }
-
-    }
-
-    override fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
-        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            val like = footer.like
-            like.isChecked = !like.isChecked
-            if (like.isChecked) {
-                try {
-                    val likeValue = Integer.valueOf(like.fmt) + 1
-                    like.fmt = likeValue.toString()
-                } catch (ignored: NumberFormatException) {
-                }
-
-                like.value = like.value + 1
-            } else {
-                try {
-                    val likeValue = Integer.valueOf(like.fmt) - 1
-                    like.fmt = likeValue.toString()
-                } catch (ignored: NumberFormatException) {
-                }
-
-                like.value = like.value - 1
-            }
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE)
         }
     }
 
@@ -1664,6 +1655,38 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 else
                     feedOnboardingPresenter.doFollowKol(data.id, data.rowNumber)
             })
+        }
+    }
+
+    fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
+        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
+            val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+            val like = footer.like
+            like.isChecked = !like.isChecked
+            if (like.isChecked) {
+                try {
+                    val likeValue = Integer.valueOf(like.fmt) + 1
+                    like.fmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                like.value = like.value + 1
+            } else {
+                try {
+                    val likeValue = Integer.valueOf(like.fmt) - 1
+                    like.fmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                like.value = like.value - 1
+            }
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE)
+        }
+    }
+
+    fun onErrorLikeDislikeKolPost(errorMessage: String) {
+        view?.let {
+            Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 

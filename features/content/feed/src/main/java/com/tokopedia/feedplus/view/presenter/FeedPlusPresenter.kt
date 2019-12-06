@@ -69,49 +69,6 @@ internal constructor(@ApplicationContext private val context: Context,
         this.currentCursor = cursor
     }
 
-    override fun likeKol(id: Int, rowNumber: Int) {
-        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
-                object : Subscriber<Boolean>() {
-                    override fun onNext(success: Boolean) {
-                        if (success) {
-                            view.onSuccessLikeDislikeKolPost(rowNumber)
-                        } else {
-                            view.onErrorLikeDislikeKolPost(view.getString(R
-                                    .string.default_request_error_unknown))
-                        }
-                    }
-
-                    override fun onCompleted() {
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        view.onErrorLikeDislikeKolPost(ErrorHandler.getErrorMessage(context, e))
-                    }
-                })
-
-    }
-
-    override fun unlikeKol(id: Int, rowNumber: Int) {
-        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
-                object : Subscriber<Boolean>() {
-                    override fun onNext(success: Boolean) {
-                        if (success) {
-                            view.onSuccessLikeDislikeKolPost(rowNumber)
-                        } else {
-                            view.onErrorLikeDislikeKolPost(view.getString(R
-                                    .string.default_request_error_unknown))
-                        }
-                    }
-
-                    override fun onCompleted() {
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        view.onErrorLikeDislikeKolPost(ErrorHandler.getErrorMessage(context, e))
-                    }
-                })
-    }
-
     override fun followKolFromRecommendation(id: Int, rowNumber: Int, position: Int) {
         val status = FollowKolPostGqlUseCase.PARAM_FOLLOW
         followKolPostGqlUseCase.clearRequest()

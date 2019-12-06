@@ -25,6 +25,8 @@ import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCa
 import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -49,7 +51,8 @@ class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private va
                                                   private val getDynamicFeedFirstPageUseCase: GetDynamicFeedFirstPageUseCase,
                                                   private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
                                                   private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
-                                                  private val followKolPostGqlUseCase: FollowKolPostGqlUseCase )
+                                                  private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
+                                                  private val likeKolPostUseCase: LikeKolPostUseCase )
     : BaseViewModel(baseDispatcher) {
 
     companion object {
@@ -66,6 +69,7 @@ class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private va
     val getFeedNextPageResp = MutableLiveData<Result<DynamicFeedDomainModel>>()
     val doFavoriteShopResp = MutableLiveData<Result<FeedPromotedShopViewModel>>()
     val followKolResp = MutableLiveData<Result<FollowKolViewModel>>()
+    val likeKolResp = MutableLiveData<Result<LikeKolViewModel>>()
 
     private var currentCursor = ""
     private val pagingHandler: PagingHandler
@@ -166,6 +170,28 @@ class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private va
             followKolResp.value = Success(results)
         }) {
             followKolResp.value = Fail(it)
+        }
+    }
+
+    fun doLikeKol(id: Int, rowNumber: Int) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                likeKol(id, rowNumber)
+            }
+            likeKolResp.value = Success(results)
+        }) {
+            likeKolResp.value = Fail(it)
+        }
+    }
+
+    fun doUnlikeKol(id: Int, rowNumber: Int) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                unlikeKol(id, rowNumber)
+            }
+            likeKolResp.value = Success(results)
+        }) {
+            likeKolResp.value = Fail(it)
         }
     }
 
@@ -309,6 +335,40 @@ class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private va
                 }
             } else {
                 data.errorMessage = ErrorHandler.getErrorMessage(context, Throwable())
+            }
+            return data
+        } catch (e: Throwable) {
+            throw e
+        }
+    }
+
+    private fun likeKol(id: Int, rowNumber: Int): LikeKolViewModel {
+        try {
+            val data = LikeKolViewModel()
+            data.id = id
+            data.rowNumber = rowNumber
+            val params = LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like)
+            val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().single()
+            data.isSuccess = isSuccess
+            if (!isSuccess) {
+                data.errorMessage = context.getString(R.string.default_request_error_unknown)
+            }
+            return data
+        } catch (e: Throwable) {
+            throw e
+        }
+    }
+
+    private fun unlikeKol(id: Int, rowNumber: Int): LikeKolViewModel {
+        try {
+            val data = LikeKolViewModel()
+            data.id = id
+            data.rowNumber = rowNumber
+            val params = LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike)
+            val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().single()
+            data.isSuccess = isSuccess
+            if (!isSuccess) {
+                data.errorMessage = context.getString(R.string.default_request_error_unknown)
             }
             return data
         } catch (e: Throwable) {
