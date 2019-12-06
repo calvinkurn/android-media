@@ -2,11 +2,12 @@ package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.search.di.module.AddWishListUseCaseModule;
+import com.tokopedia.search.di.module.GraphqlRepositoryModule;
+import com.tokopedia.search.di.module.RecommendationModule;
 import com.tokopedia.search.di.module.RemoteConfigModule;
 import com.tokopedia.search.di.module.RemoveWishListUseCaseModule;
+import com.tokopedia.search.di.module.ResourcesModule;
 import com.tokopedia.search.di.module.UserSessionModule;
-import com.tokopedia.search.di.scope.SearchScope;
-import com.tokopedia.search.di.module.*;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.productwishlisturl.ProductWishlistUrlUseCaseModule;
@@ -28,7 +29,9 @@ import dagger.Component;
         SearchProductUseCaseModule.class,
         GetDynamicFilterGqlUseCaseModule.class,
         SearchLocalCacheHandlerModule.class,
-        RemoteConfigModule.class
+        RemoteConfigModule.class,
+        ResourcesModule.class,
+        GraphqlRepositoryModule.class,
 }, dependencies = BaseAppComponent.class)
 public interface ProductListPresenterComponent {
 

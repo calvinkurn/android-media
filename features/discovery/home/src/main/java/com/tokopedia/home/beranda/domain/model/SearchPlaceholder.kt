@@ -7,16 +7,16 @@ class SearchPlaceholder {
 
     @SerializedName("data")
     @Expose
-    var data: Data? = null
+    var data: Data = Data()
 
     inner class Data {
         @SerializedName("placeholder")
         @Expose
-        var placeholder: String? = null
+        var placeholder: String = ""
 
         @SerializedName("keyword")
         @Expose
-        var keyword: String? = null
+        var keyword: String = ""
     }
 
 }

@@ -21,6 +21,16 @@ public abstract class TransactionAnalytics {
         return TrackApp.getInstance().getGTM();
     }
 
+    public Map<String, Object> getGTMDataFromTrackAppUtils(String title) {
+
+        return TrackAppUtils.gtmData(
+                "",
+                ConstantTransactionAnalytics.EventCategory.FIN_INSURANCE_CHECKOUT,
+                ConstantTransactionAnalytics.EventAction.FIN_INSURANCE_CHECKOUT,
+                String.format("checkout - %s", title)
+        );
+    }
+
     public void sendScreenName(Activity activity, String screenName) {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
@@ -41,5 +51,9 @@ public abstract class TransactionAnalytics {
 
     protected void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
+    }
+
+    protected void sendGeneralEvent(Map<String, Object> eventData) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventData);
     }
 }

@@ -2,9 +2,6 @@ package com.tokopedia.loginregister.registerinitial.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -22,6 +19,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.*
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -65,6 +63,7 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
@@ -77,6 +76,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_initial_register.*
@@ -101,8 +101,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private lateinit var socmedButtonsContainer: LinearLayout
 
     private var phoneNumber: String? = ""
-    private var source : String = ""
-    private var email : String = ""
+    private var source: String = ""
+    private var email: String = ""
     private var isSmartLogin: Boolean = false
     private var isPending: Boolean = false
 
@@ -130,6 +130,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     lateinit var callbackManager: CallbackManager
     lateinit var mGoogleSignInClient: GoogleSignInClient
+    lateinit var combineLoginTokenAndValidateToken: LiveData<Unit>
 
     private val draw: Drawable?
         get() {
@@ -212,10 +213,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         prepareView()
         setViewListener()
-        if(isSmartLogin){
-            if(isPending){
+        if (isSmartLogin) {
+            if (isPending) {
                 goToPendingOtpValidator(email)
-            }else{
+            } else {
                 goToOtpValidator(email)
             }
         }
@@ -269,6 +270,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
+        partialRegisterInputView.initKeyboardListener(view)
     }
 
     @SuppressLint("RtlHardcoded")
@@ -338,7 +340,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
-    private fun initObserver(){
+    private fun initObserver() {
         registerInitialViewModel.getProviderResponse.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetProvider(it.data)
@@ -353,8 +355,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         })
         registerInitialViewModel.loginTokenFacebookResponse.observe(this, Observer {
             when (it) {
-                is Success -> onSuccessRegisterFacebook()
+                is Success -> onSuccessRegisterFacebook(it.data)
                 is Fail -> onFailedRegisterFacebook(it.throwable)
+            }
+        })
+        registerInitialViewModel.loginTokenFacebookPhoneResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessRegisterFacebookPhone(it.data)
+                is Fail -> onFailedRegisterFacebookPhone(it.throwable)
             }
         })
         registerInitialViewModel.loginTokenGoogleResponse.observe(this, Observer {
@@ -363,12 +371,17 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 is Fail -> onFailedRegisterGoogle(it.throwable)
             }
         })
-        registerInitialViewModel.loginAfterSQResponse.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessReloginAfterSQ()
-                is Fail -> onFailedReloginAfterSQ(it.throwable)
+        registerInitialViewModel.loginTokenAfterSQResponse.observe(this, Observer {
+            if (it is Success) {
+                onSuccessReloginAfterSQ()
             }
         })
+        combineLoginTokenAndValidateToken = registerInitialViewModel.loginTokenAfterSQResponse
+                .combineWith(registerInitialViewModel.validateToken) { loginToken: Result<LoginTokenPojo>?, validateToken: String? ->
+                    if (loginToken is Fail) {
+                        validateToken?.let { onFailedReloginAfterSQ(it, loginToken.throwable) }
+                    }
+                }
         registerInitialViewModel.getUserInfoResponse.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetUserInfo(it.data)
@@ -394,14 +407,20 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             }
         })
         registerInitialViewModel.goToActivationPage.observe(this, Observer {
-            if(it != null) onGoToActivationPage(it)
+            if (it != null) onGoToActivationPage(it)
         })
         registerInitialViewModel.goToSecurityQuestion.observe(this, Observer {
-            if(it != null) onGoToSecurityQuestion(it)
+            if (it != null) onGoToSecurityQuestion(it)
+        })
+        registerInitialViewModel.goToActivationPageAfterRelogin.observe(this, Observer {
+            if (it != null) onGoToActivationPageAfterRelogin()
+        })
+        registerInitialViewModel.goToSecurityQuestionAfterRelogin.observe(this, Observer {
+            if (it != null) onGoToSecurityQuestionAfterRelogin()
         })
     }
 
-    private fun onSuccessGetProvider(discoverItems: ArrayList<DiscoverItemViewModel>){
+    private fun onSuccessGetProvider(discoverItems: ArrayList<DiscoverItemViewModel>) {
         dismissLoadingDiscover()
 
         val layoutParams = LinearLayout.LayoutParams(
@@ -429,7 +448,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
-    private fun onFailedGetProvider(throwable: Throwable){
+    private fun onFailedGetProvider(throwable: Throwable) {
         dismissLoadingDiscover()
 
         ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
@@ -445,52 +464,63 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }, throwable, context)
     }
 
-    private fun onSuccessGetFacebookCredential(facebookCredentialData: FacebookCredentialData){
+    private fun onSuccessGetFacebookCredential(facebookCredentialData: FacebookCredentialData) {
         try {
-            registerInitialViewModel.registerFacebook(
-                    facebookCredentialData.accessToken.token,
-                    facebookCredentialData.email
-            )
+            if (facebookCredentialData.email.isNotEmpty()) {
+                registerInitialViewModel.registerFacebook(
+                        facebookCredentialData.accessToken.token,
+                        facebookCredentialData.email
+                )
+            } else if (facebookCredentialData.phone.isNotEmpty()) {
+                registerInitialViewModel.registerFacebookPhone(
+                        facebookCredentialData.accessToken.token,
+                        facebookCredentialData.phone
+                )
+            }
         } catch (e: Exception) {
             e.message?.let { onErrorRegister(it) }
         }
     }
 
-    private fun onFailedGetFacebookCredential(throwable: Throwable){
+    private fun onFailedGetFacebookCredential(throwable: Throwable) {
         if (isAdded && activity != null) {
             throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, throwable)) }
         }
     }
 
-    private fun onSuccessRegisterFacebook() {
+    private fun onSuccessRegisterFacebook(loginTokenPojo: LoginTokenPojo) {
         registerInitialViewModel.getUserInfo()
     }
 
-    private fun onFailedRegisterFacebook(throwable: Throwable){
+    private fun onFailedRegisterFacebook(throwable: Throwable) {
         val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
         onErrorRegister(errorMessage)
     }
 
-    private fun onSuccessRegisterGoogle(){
+    private fun onSuccessRegisterFacebookPhone(loginTokenPojo: LoginTokenPojo) {
+        if (loginTokenPojo.loginToken.action == 1) {
+            goToChooseAccountPageFacebook(loginTokenPojo.loginToken.accessToken)
+        } else {
+            registerInitialViewModel.getUserInfo()
+        }
+    }
+
+    private fun onFailedRegisterFacebookPhone(throwable: Throwable) {
+        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        onErrorRegister(errorMessage)
+    }
+
+    private fun onSuccessRegisterGoogle() {
         registerInitialViewModel.getUserInfo()
     }
 
-    private fun onFailedRegisterGoogle(throwable: Throwable){
+    private fun onFailedRegisterGoogle(throwable: Throwable) {
         logoutGoogleAccountIfExist()
         val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
         onErrorRegister(errorMessage)
     }
 
-    private fun onSuccessReloginAfterSQ(){
-        registerInitialViewModel.getUserInfo()
-    }
-
-    private fun onFailedReloginAfterSQ(throwable: Throwable){
-        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
-        onErrorRegister(errorMessage)
-    }
-
-    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo){
+    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo) {
         val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         if (profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
@@ -500,7 +530,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
-    private fun onFailedGetUserInfo(throwable: Throwable){
+    private fun onFailedGetUserInfo(throwable: Throwable) {
         val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
         onErrorRegister(errorMessage)
     }
@@ -555,54 +585,77 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         error.printStackTrace()
     }
 
-    private fun onSuccessRegisterCheck(registerCheckData: RegisterCheckData){
-        when(registerCheckData.registerType){
+    private fun onSuccessRegisterCheck(registerCheckData: RegisterCheckData) {
+        when (registerCheckData.registerType) {
             PHONE_TYPE -> {
                 setTempPhoneNumber(registerCheckData.view)
-                if(registerCheckData.isExist){
+                if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
-                }else{
+                } else {
                     showProceedWithPhoneDialog(registerCheckData.view)
                 }
             }
             EMAIL_TYPE -> {
                 registerAnalytics.trackClickEmailSignUpButton()
-                if(registerCheckData.isExist){
-                    if(!registerCheckData.isPending){
+                if (registerCheckData.isExist) {
+                    if (!registerCheckData.isPending) {
                         showRegisteredEmailDialog(registerCheckData.view)
-                    }else{
+                    } else {
                         goToPendingOtpValidator(registerCheckData.view)
                     }
-                }else{
+                } else {
                     goToOtpValidator(registerCheckData.view)
                 }
             }
         }
     }
 
-    private fun onFailedRegisterCheck(throwable: Throwable){
+    private fun onFailedRegisterCheck(throwable: Throwable) {
         val messageError = ErrorHandlerSession.getErrorMessage(context, throwable)
         registerAnalytics.trackFailedClickSignUpButton(messageError)
         partialRegisterInputView.onErrorValidate(messageError)
         phoneNumber = ""
     }
 
-    private fun onSuccessActivateUser(activateUserPojo: ActivateUserPojo){
+    private fun onSuccessActivateUser(activateUserPojo: ActivateUserPojo) {
         userSession.clearToken()
         userSession.setToken(activateUserPojo.accessToken, activateUserPojo.tokenType, activateUserPojo.refreshToken)
         registerInitialViewModel.getUserInfo()
     }
 
-    private fun onFailedActivateUser(throwable: Throwable){
+    private fun onFailedActivateUser(throwable: Throwable) {
         throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, throwable)) }
     }
 
+    //Flow should not be possible
+    private fun onGoToActivationPageAfterRelogin() {
+        val errorMessage = ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context)
+        onErrorRegister(errorMessage)
+    }
+
+    //Flow should not be possible
+    private fun onGoToSecurityQuestionAfterRelogin() {
+        val errorMessage = ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context)
+        onErrorRegister(errorMessage)
+    }
+
+    private fun onSuccessReloginAfterSQ() {
+        registerInitialViewModel.getUserInfo()
+    }
+
+    private fun onFailedReloginAfterSQ(validateToken: String, throwable: Throwable) {
+        val errorMessage = ErrorHandlerSession.getErrorMessage(throwable, context, true)
+        NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
+            registerInitialViewModel.reloginAfterSQ(validateToken)
+        }.showRetrySnackbar()
+    }
+
     //Wrong flow implementation
-    private fun onGoToActivationPage(errorMessage: MessageErrorException){
+    private fun onGoToActivationPage(errorMessage: MessageErrorException) {
         NetworkErrorHelper.showSnackbar(activity, ErrorHandlerSession.getErrorMessage(context, errorMessage))
     }
 
-    private fun onGoToSecurityQuestion(email: String){
+    private fun onGoToSecurityQuestion(email: String) {
         val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                 activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, "", email)
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
@@ -646,7 +699,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
     }
 
-    private fun goToOtpValidator(email: String){
+    private fun goToOtpValidator(email: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OTP_VALIDATOR)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_REGISTER)
@@ -654,7 +707,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         startActivityForResult(intent, REQUEST_OTP_VALIDATE)
     }
 
-    private fun goToPendingOtpValidator(email: String){
+    private fun goToPendingOtpValidator(email: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OTP_VALIDATOR)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ACTIVATE)
@@ -687,8 +740,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_SECURITY_QUESTION
                     && resultCode == Activity.RESULT_OK
-                    && data != null){
-                data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")?.let {validateToken ->
+                    && data != null) {
+                data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")?.let { validateToken ->
                     registerInitialViewModel.reloginAfterSQ(validateToken)
                 }
 
@@ -718,7 +771,17 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 it.setResult(Activity.RESULT_OK)
-                it.finish()
+                if (data != null) {
+                    data.extras?.let { bundle ->
+                        if (bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
+                            onGoToSecurityQuestion("")
+                        } else {
+                            it.finish()
+                        }
+                    }
+                } else {
+                    it.finish()
+                }
             } else if (requestCode == REQUEST_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
                 registerInitialViewModel.getUserInfo()
             } else if (requestCode == REQUEST_CHANGE_NAME && resultCode == Activity.RESULT_CANCELED) {
@@ -728,26 +791,26 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 it.finish()
             } else if (requestCode == REQUEST_OTP_VALIDATE
                     && resultCode == Activity.RESULT_OK
-                    && data != null){
+                    && data != null) {
                 data.extras?.let { bundle ->
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
                     val source = bundle.getString(ApplinkConstInternalGlobal.PARAM_SOURCE)
-                    if(!email.isNullOrEmpty() && !token.isNullOrEmpty()){
-                        if(!source.isNullOrEmpty()) goToRegisterEmailPageWithEmail(email, token, source)
-                        else goToRegisterEmailPageWithEmail(email,token, "")
+                    if (!email.isNullOrEmpty() && !token.isNullOrEmpty()) {
+                        if (!source.isNullOrEmpty()) goToRegisterEmailPageWithEmail(email, token, source)
+                        else goToRegisterEmailPageWithEmail(email, token, "")
                     }
                 }
             } else if (requestCode == REQUEST_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE
                     && resultCode == Activity.RESULT_OK
-                    && data != null){
+                    && data != null) {
                 data.extras?.let { bundle ->
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
                     val source = bundle.getString(ApplinkConstInternalGlobal.PARAM_SOURCE)
-                    if(!email.isNullOrEmpty() && !token.isNullOrEmpty())
+                    if (!email.isNullOrEmpty() && !token.isNullOrEmpty())
                         registerInitialViewModel.activateUser(email, token)
                 }
             } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
@@ -878,7 +941,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     String.format(resources.getString(
                             R.string.email_already_registered_info), email))
             dialog.setBtnOk(getString(R.string.already_registered_yes))
-            dialog.setOnOkClickListener {v ->
+            dialog.setOnOkClickListener { v ->
                 registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
                 dialog.dismiss()
                 startActivity(LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email))
@@ -937,6 +1000,17 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
+    private fun goToChooseAccountPageFacebook(accessToken: String) {
+        activity?.let {
+            val intent = RouteManager.getIntent(it,
+                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, FACEBOOK_LOGIN_TYPE)
+
+            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
+        }
+    }
+
     private fun getChooseAccountData(data: Intent): ChooseTokoCashAccountViewModel {
         return data.getParcelableExtra(ChooseTokoCashAccountViewModel.ARGS_DATA)
     }
@@ -968,10 +1042,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onSuccessRegister() {
-        activity?.let{
+        activity?.let {
             registerAnalytics.trackSuccessRegister(userSession.loginMethod)
 
-            if(isFromAccount()) {
+            if (isFromAccount()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
                 startActivity(intent)
             }
@@ -1001,12 +1075,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     fun onGoToCreatePassword(): (fullName: String, userId: String) -> Unit {
         return { fullName: String, userId: String ->
 
-                activity?.let {
-                    val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.CREATE_PASSWORD)
-                    intent.putExtra("name", fullName)
-                    intent.putExtra("user_id", userId)
-                    startActivityForResult(intent, REQUEST_CREATE_PASSWORD)
-                }
+            activity?.let {
+                val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.CREATE_PASSWORD)
+                intent.putExtra("name", fullName)
+                intent.putExtra("user_id", userId)
+                startActivityForResult(intent, REQUEST_CREATE_PASSWORD)
+            }
 
         }
     }
@@ -1025,8 +1099,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
-    private fun checkPermissionGetPhoneNumber(){
-        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE, object: PermissionCheckerHelper.PermissionCheckListener{
+    private fun checkPermissionGetPhoneNumber() {
+        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE, object : PermissionCheckerHelper.PermissionCheckListener {
             override fun onPermissionDenied(permissionText: String) {
                 context?.let {
                     permissionCheckerHelper.onPermissionDenied(it, permissionText)
@@ -1047,29 +1121,29 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     @SuppressLint("MissingPermission", "HardwareIds")
-    fun getPhoneNumber(){
+    fun getPhoneNumber() {
         activity?.let {
             val phoneNumbers = arrayListOf<String>()
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 val subscription = it.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-                if(subscription.activeSubscriptionInfoList != null && subscription.activeSubscriptionInfoCount > 0){
+                if (subscription.activeSubscriptionInfoList != null && subscription.activeSubscriptionInfoCount > 0) {
                     for (info in subscription.activeSubscriptionInfoList) {
-                        if(!info.number.isNullOrEmpty() &&
+                        if (!info.number.isNullOrEmpty() &&
                                 PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
                                 PartialRegisterInputUtils.isValidPhone(info.number))
                             phoneNumbers.add(info.number)
                     }
                 }
-            }else{
+            } else {
                 val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
-                if(!telephony.line1Number.isNullOrEmpty() &&
+                if (!telephony.line1Number.isNullOrEmpty() &&
                         PartialRegisterInputUtils.getType(telephony.line1Number) == PartialRegisterInputUtils.PHONE_TYPE &&
                         PartialRegisterInputUtils.isValidPhone(telephony.line1Number))
                     phoneNumbers.add(telephony.line1Number)
             }
 
-            if(!phoneNumbers.isEmpty())
+            if (phoneNumbers.isNotEmpty())
                 partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers))
         }
     }
@@ -1096,6 +1170,40 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         if (googleSignInAccount != null) mGoogleSignInClient.signOut()
     }
 
+    private fun <T, K, R> LiveData<T>.combineWith(
+            liveData: LiveData<K>,
+            block: (T?, K?) -> R
+    ): LiveData<R> {
+        val result = MediatorLiveData<R>()
+        result.addSource(this) {
+            result.value = block.invoke(this.value, liveData.value)
+        }
+        result.addSource(liveData) {
+            result.value = block.invoke(this.value, liveData.value)
+        }
+        return result
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        registerInitialViewModel.getProviderResponse.removeObservers(this)
+        registerInitialViewModel.getFacebookCredentialResponse.removeObservers(this)
+        registerInitialViewModel.loginTokenFacebookResponse.removeObservers(this)
+        registerInitialViewModel.loginTokenFacebookPhoneResponse.removeObservers(this)
+        registerInitialViewModel.loginTokenGoogleResponse.removeObservers(this)
+        registerInitialViewModel.loginTokenAfterSQResponse.removeObservers(this)
+        registerInitialViewModel.getUserInfoResponse.removeObservers(this)
+        registerInitialViewModel.getTickerInfoResponse.removeObservers(this)
+        registerInitialViewModel.registerCheckResponse.removeObservers(this)
+        registerInitialViewModel.activateUserResponse.removeObservers(this)
+        registerInitialViewModel.goToActivationPage.removeObservers(this)
+        registerInitialViewModel.goToSecurityQuestion.removeObservers(this)
+        registerInitialViewModel.goToActivationPageAfterRelogin.removeObservers(this)
+        registerInitialViewModel.goToSecurityQuestionAfterRelogin.removeObservers(this)
+        combineLoginTokenAndValidateToken.removeObservers(this)
+        registerInitialViewModel.clear()
+    }
+
     companion object {
 
         private val ID_ACTION_LOGIN = 112
@@ -1115,14 +1223,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private const val OTP_TYPE_ACTIVATE = "143"
         private const val OTP_TYPE_REGISTER = "126"
 
-        private val FACEBOOK = "facebook"
-        private val GPLUS = "gplus"
-        private val PHONE_NUMBER = "phonenumber"
+        private const val FACEBOOK = "facebook"
+        private const val GPLUS = "gplus"
+        private const val PHONE_NUMBER = "phonenumber"
 
-        private val PHONE_TYPE = "phone"
-        private val EMAIL_TYPE = "email"
+        private const val PHONE_TYPE = "phone"
+        private const val EMAIL_TYPE = "email"
 
-        fun createInstance(bundle : Bundle): RegisterInitialFragment {
+        private const val FACEBOOK_LOGIN_TYPE = "fb"
+
+        fun createInstance(bundle: Bundle): RegisterInitialFragment {
             val fragment = RegisterInitialFragment()
             fragment.arguments = bundle
             return fragment
