@@ -17,7 +17,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.unifycomponents.Toaster
 import java.lang.ref.WeakReference
 
-class RecommendationVH(itemView: View, val weakRecommendationListener: WeakReference<GamiPdpRecommendationListener>) : AbstractViewHolder<Recommendation>(itemView) {
+class RecommendationVH(itemView: View, val recommendationListener: GamiPdpRecommendationListener) : AbstractViewHolder<Recommendation>(itemView) {
     private val productCardView = itemView.findViewById<ProductCardViewSmallGrid>(R.id.productCardView)
 
     override fun bind(element: Recommendation?) {
@@ -26,29 +26,34 @@ class RecommendationVH(itemView: View, val weakRecommendationListener: WeakRefer
                 setProductModel(getProductModel(element))
                         setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener {
                     override fun onViewHint() {
-                        weakRecommendationListener.get()?.onProductImpression(element.recommendationItem, adapterPosition)
+                        recommendationListener.onProductImpression(element.recommendationItem, adapterPosition)
                     }
                 })
 
                 setOnClickListener {
-                    weakRecommendationListener.get()?.onProductClick(element.recommendationItem, null, adapterPosition)
+                    recommendationListener.onProductClick(element.recommendationItem, null, adapterPosition)
                 }
 
                 setButtonWishlistOnClickListener {
 
-                    weakRecommendationListener.get()?.onWishlistClick(element.recommendationItem, !element.recommendationItem.isWishlist){ success, throwable ->
-                        if(success){
-                            element.recommendationItem.isWishlist = !element.recommendationItem.isWishlist
-                            setButtonWishlistImage(element.recommendationItem.isWishlist)
-                            val rootView = (context as Activity).window.decorView
-                            if(element.recommendationItem.isWishlist){
-                                showSuccessAddWishlist(rootView, getString(R.string.msg_success_add_wishlist))
-                            } else {
-                                showSuccessRemoveWishlist(rootView, getString(R.string.msg_success_remove_wishlist))
+                    recommendationListener.onWishlistClick(element.recommendationItem, !element.recommendationItem.isWishlist){ success, throwable ->
+                        val activity = (context as Activity)
+                        if(!activity.isFinishing){
+                            if(success){
+                                element.recommendationItem.isWishlist = !element.recommendationItem.isWishlist
+                                setButtonWishlistImage(element.recommendationItem.isWishlist)
+
+                                val rootView = (context as Activity).window.decorView
+                                if(element.recommendationItem.isWishlist){
+                                    showSuccessAddWishlist(rootView, getString(R.string.msg_success_add_wishlist))
+                                } else {
+                                    showSuccessRemoveWishlist(rootView, getString(R.string.msg_success_remove_wishlist))
+                                }
+                            }else {
+                                showError(rootView, throwable)
                             }
-                        }else {
-                            showError(rootView, throwable)
                         }
+
                     }
                 }
             }

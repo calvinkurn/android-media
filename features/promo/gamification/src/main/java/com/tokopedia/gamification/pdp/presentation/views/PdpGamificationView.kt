@@ -3,7 +3,6 @@ package com.tokopedia.gamification.pdp.presentation.views
 import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -13,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -34,7 +33,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifyprinciples.Typography
-import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class PdpGamificationView : FrameLayout {
@@ -44,6 +42,7 @@ class PdpGamificationView : FrameLayout {
     private val CONTAINER_ERROR = 2
 
     private lateinit var PAGE_NAME: String
+    private var DEFAULT_SPAN_COUNT = 2
 
     private lateinit var tvTitle: Typography
     private lateinit var recyclerView: RecyclerView
@@ -59,6 +58,7 @@ class PdpGamificationView : FrameLayout {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: PdpDialogViewModel
+    var listener: GamiPdpRecommendationListener? = null
 
     fun getLayout() = R.layout.dialog_pdp_gamification
 
@@ -106,20 +106,25 @@ class PdpGamificationView : FrameLayout {
     }
 
     private fun setupRv() {
-        val typeFactory = PdpGamificationAdapterTypeFactory(getRecommendationListener())
+        listener = getRecommendationListener()
+        val typeFactory = PdpGamificationAdapterTypeFactory(listener!!)
         adapter = PdpGamificationAdapter(dataList, typeFactory)
-        val layoutManager = GridLayoutManager(context, 2)
+        val layoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 
         scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                log("onLoadMore")
                 viewModel.getProducts(page)
             }
 
         }
         recyclerView.addOnScrollListener(scrollListener)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        listener = null
     }
 
 
@@ -156,10 +161,6 @@ class PdpGamificationView : FrameLayout {
                         dataList.addAll(oldSize, it.data)
                         adapter.notifyItemRangeInserted(oldSize, it.data.size)
                         scrollListener.updateStateAfterGetData()
-                        log("data size = ${it.data.size}")
-                    } else {
-                        showErrorToast("List is empty")
-                        log("List is empty")
                     }
 
                     if (viewFlipper.displayedChild != CONTAINER_LIST) {
@@ -168,8 +169,6 @@ class PdpGamificationView : FrameLayout {
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     //Do nothing
-                    showErrorToast("Error prod live data")
-                    log("Error prod live data")
                     viewFlipper.displayedChild = CONTAINER_ERROR
                 }
             }
@@ -178,8 +177,6 @@ class PdpGamificationView : FrameLayout {
         viewModel.recommendationLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.ERROR -> {
-                    //Do nothing
-                    showErrorToast("Error recommendation data")
                     viewFlipper.displayedChild = CONTAINER_ERROR
                 }
             }
@@ -195,11 +192,8 @@ class PdpGamificationView : FrameLayout {
         viewModel.getRecommendationParams(PAGE_NAME)
     }
 
-    fun showErrorToast(msg: String) {
-//        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-    }
 
-    fun getRecommendationListener(): WeakReference<GamiPdpRecommendationListener> {
+    fun getRecommendationListener(): GamiPdpRecommendationListener {
 
         val listener = object : GamiPdpRecommendationListener {
 
@@ -214,19 +208,12 @@ class PdpGamificationView : FrameLayout {
                 val eventAction = "click - product recommendation{ - nonlogin}"
 
 
-                //todo Rahul later
-//                clickMap["actionField"] =
                 val productItemMap = HashMap<Any, Any>()
                 val productArray = mutableListOf<HashMap<Any, Any>>()
                 productArray.add(productItemMap)
 
                 productItemMap[ProductKeys.NAME] = item.name
                 productItemMap[ProductKeys.ID] = item.productId
-                //todo Rahul later
-//                productItemMap["brand"]
-//                productItemMap["category"] = item.categoryBreadcrumbs
-//                productItemMap["variant"] = item.
-//                productItemMap["list"] = item.
                 productItemMap[ProductKeys.POSITION] = position
 
                 resultMap[TrackerConstants.EVENT] = eventName
@@ -255,19 +242,12 @@ class PdpGamificationView : FrameLayout {
                 val eventAction = "click - product recommendation{ - nonlogin}"
 
 
-                //todo Rahul later
-//                clickMap["actionField"] =
                 val productItemMap = HashMap<Any, Any>()
                 val productArray = mutableListOf<HashMap<Any, Any>>()
                 productArray.add(productItemMap)
 
                 productItemMap[ProductKeys.NAME] = item.name
                 productItemMap[ProductKeys.ID] = item.productId
-                //todo Rahul later
-//                productItemMap["brand"]
-//                productItemMap["category"] = item.categoryBreadcrumbs
-//                productItemMap["variant"] = item.
-//                productItemMap["list"] = item.
                 productItemMap[ProductKeys.POSITION] = position
 
                 resultMap[TrackerConstants.EVENT] = eventName
@@ -318,14 +298,10 @@ class PdpGamificationView : FrameLayout {
             }
         }
 
-        return WeakReference(listener)
+        return listener
     }
 
-    fun log(message: String) {
-        Log.d("NOOB", message)
-    }
-
-    fun prepareShimmer() {
+    private fun prepareShimmer() {
         (0..1).forEach { _ ->
             val v = LayoutInflater.from(context).inflate(R.layout.shimmer_pdp_gamification, null, false)
             loadingView.addView(v)
