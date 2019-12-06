@@ -19,27 +19,27 @@ import retrofit2.http.Path
 interface PlayApi {
 
     @GET(PLAY_GET_CHANNEL_INFO_V3)
-    fun getChannelInfoV3(
+    suspend fun getChannelInfoV3(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
     ): DataResponse<Channel.Response>
 
     @GET(PLAY_GET_VIDEO_STREAM)
-    fun getVideoStream(
+    suspend fun getVideoStream(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
     ): DataResponse<VideoStream.Response>
 
     @GET(PLAY_GET_STICKY_COMPONENTS)
-    fun getStickyComponents(
+    suspend fun getStickyComponents(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
     ): DataResponse<StickyComponent.Response>
 
     @GET(PLAY_GET_TOTAL_LIKES)
-    fun getTotalLike(
+    suspend fun getTotalLike(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
     ): DataResponse<Like>
 
     @POST(PLAY_POST_LIKE)
-    fun postLike(
+    suspend fun postLike(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String,
             @Field("click") click: String
     ): DataResponse<Any>
