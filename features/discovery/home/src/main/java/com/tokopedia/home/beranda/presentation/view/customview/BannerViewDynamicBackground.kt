@@ -83,7 +83,8 @@ class BannerViewDynamicBackground : BannerView {
 
     override fun buildView() {
         bannerSeeAll.setTextColor(ContextCompat.getColor(context, R.color.medium_green));
-        bannerSeeAll.typeface = Typeface.DEFAULT
+        bannerSeeAll.typeface = Typeface.DEFAULT_BOLD
+
         super.buildView()
         bannerRoot.visibility = View.VISIBLE
         val url = promoImageUrls[0]
