@@ -16,8 +16,6 @@ import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
-import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
-import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
@@ -41,8 +39,6 @@ import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
-import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModule;
-import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
@@ -106,8 +102,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         PhoneVerificationApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         UserIdentificationApplinkModule.class,
-        ChatbotApplinkModule.class,
-        PowerMerchantSubscribeDeeplinkModule.class,
         AutoAdsLinkModule.class,
         FlashsaleDeeplinkModule.class,
         RNDevOptionsApplinkModule.class
@@ -144,8 +138,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new PhoneVerificationApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
                 new UserIdentificationApplinkModuleLoader(),
-                new ChatbotApplinkModuleLoader(),
-                new PowerMerchantSubscribeDeeplinkModuleLoader(),
                 new AutoAdsLinkModuleLoader(),
                 new FlashsaleDeeplinkModuleLoader(),
                 new RNDevOptionsApplinkModuleLoader()

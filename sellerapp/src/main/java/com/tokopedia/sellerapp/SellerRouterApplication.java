@@ -31,7 +31,6 @@ import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.ChangePasswordRouter;
-import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
@@ -114,7 +113,6 @@ import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureView
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
-import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -197,7 +195,7 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
-        ReputationRouter, LogisticRouter, ProfileModuleRouter,
+        ReputationRouter, LogisticRouter,
         MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
         ApplinkRouter, ImageUploaderRouter,
         NetworkRouter, TopChatRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
@@ -209,7 +207,6 @@ public abstract class SellerRouterApplication extends MainApplication
         UnifiedOrderListRouter,
         com.tokopedia.product.detail.ProductDetailRouter,
         CoreNetworkRouter,
-        ChatbotRouter,
         FlashSaleRouter,
         LinkerRouter,
         CharacterPerMinuteInterface,
@@ -1125,12 +1122,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void onAppsFlyerInit() {
 
-    }
-
-    @NonNull
-    @Override
-    public Fragment getFavoritedShopFragment(@NonNull String userId) {
-        return ShopFollowingListFragment.createInstance(userId);
     }
 
     @Override
