@@ -17,6 +17,9 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -197,7 +200,7 @@ public class ImageHandler {
                 .addListener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        logError(e, url);
+                        logError(context, e, url);
                         return false;
                     }
 
@@ -207,27 +210,6 @@ public class ImageHandler {
                     }
                 })
                 .into(imageview);
-    }
-
-    public static void logError(GlideException e, String url) {
-        Timber.e(e, "P2Load image error: url= %s message= %s traceroute=", url, e != null ? e.getMessage() : "");
-        TraceRoute.INSTANCE.traceRoute(url, true);
-        TraceRoute.INSTANCE.setCallback(new TraceRouteCallback() {
-            @Override
-            public void onSuccess(@NotNull TraceRouteResult traceRouteResult) {
-
-            }
-
-            @Override
-            public void onUpdate(@NotNull String s) {
-
-            }
-
-            @Override
-            public void onFailed(int i, @NotNull String s) {
-
-            }
-        });
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
@@ -508,7 +490,7 @@ public class ImageHandler {
                     .addListener(new RequestListener<Bitmap>() {
                         @Override
                         public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                            logError(e, url);
+                            logError(context, e, url);
                             return false;
                         }
 
@@ -1043,5 +1025,54 @@ public class ImageHandler {
 
                     }
                 });
+    }
+
+    public static void logError(Context context, GlideException e, String url) {
+
+        if (!isNetworkAvailable(context)) {
+            Timber.e(e, "P2#Load image error network not available");
+            return;
+        }
+
+        TraceRoute.INSTANCE.setCallback(new TraceRouteCallback() {
+            String traceResult = "";
+
+            @Override
+            public void onSuccess(@NotNull TraceRouteResult traceRouteResult) {
+                Timber.e(e, "P2#Load image error traceroute success: url= %s message= %s traceroute= %s",
+                        url,
+                        e != null ? e.getMessage() : "",
+                        traceResult);
+            }
+
+            @Override
+            public void onUpdate(@NotNull String text) {
+                traceResult += text;
+            }
+
+            @Override
+            public void onFailed(int code, @NotNull String reason) {
+                traceResult += String.format("code: %d reason: %s", code, reason);
+                Timber.e(e, "P2#Load image error traceroute failed: url= %s message= %s traceroute= %s",
+                        url,
+                        e != null ? e.getMessage() : "",
+                        traceResult);
+            }
+        });
+
+        String host = Uri.parse(url).getHost();
+        if (!TextUtils.isEmpty(host)) {
+            TraceRoute.INSTANCE.traceRoute(host, true);
+        }
+    }
+
+    private static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        } else {
+            return true;
+        }
     }
 }

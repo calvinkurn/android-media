@@ -45,7 +45,7 @@ class HomeBannerFeedViewHolder(itemView: View, private val homeFeedview: HomeFee
                 .listener(object : RequestListener<Bitmap> {
                     override fun onLoadFailed(e: GlideException?, model: Any?,
                                               target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                        ImageHandler.logError(e, element.imageUrl);
+                        ImageHandler.logError(context, e, element.imageUrl);
                         return false;
                     }
 
