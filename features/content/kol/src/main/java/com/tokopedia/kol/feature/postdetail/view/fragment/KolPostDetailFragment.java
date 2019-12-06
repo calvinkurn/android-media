@@ -655,7 +655,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl) {
+    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl, @NotNull int activityId,
+                              @NotNull String activityName, @NonNull FollowCta followCta) {
         onGoToLink(redirectUrl);
     }
 
