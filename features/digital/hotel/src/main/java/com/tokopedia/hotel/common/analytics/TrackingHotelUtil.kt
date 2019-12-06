@@ -276,7 +276,7 @@ class TrackingHotelUtil {
 
     fun hotelChooseRoom(room: HotelRoom, hotelAddCartParam: HotelAddCartParam) {
         val hotelId = room.additionalPropertyInfo.propertyId
-        val roomCount = hotelAddCartParam.rooms.count()
+        val roomCount = hotelAddCartParam.rooms.size
         val guestCount = hotelAddCartParam.adult
         val duration = HotelUtils.countDayDifference(hotelAddCartParam.checkIn, hotelAddCartParam.checkOut)
         val destinationType = hotelAddCartParam.destinationType
@@ -350,7 +350,7 @@ class TrackingHotelUtil {
 
     fun hotelChooseRoomDetails(room: HotelRoom, position: Int, hotelAddCartParam: HotelAddCartParam) {
         val hotelId = room.additionalPropertyInfo.propertyId
-        val roomCount = hotelAddCartParam.rooms.count()
+        val roomCount = hotelAddCartParam.rooms.size
         val guestCount = hotelAddCartParam.adult
         val duration = HotelUtils.countDayDifference(hotelAddCartParam.checkIn, hotelAddCartParam.checkOut)
         val destinationType = hotelAddCartParam.destinationType
@@ -382,7 +382,7 @@ class TrackingHotelUtil {
 
     fun hotelClickNext(hotelCart: HotelCart, destType: String, destination: String, personal: Boolean) {
         val hotelId = hotelCart.property.propertyID
-        val roomCount = hotelCart.property.rooms.count()
+        val roomCount = hotelCart.property.rooms.size
         val guestCount = hotelCart.cart.adult
         val duration = HotelUtils.countDayDifference(hotelCart.cart.checkIn, hotelCart.cart.checkOut)
 
