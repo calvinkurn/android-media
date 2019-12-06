@@ -6,9 +6,9 @@ import com.tokopedia.product.manage.list.data.model.featuredproductresponse.Feat
 import rx.functions.Func1
 import javax.inject.Inject
 
-class FeaturedProductResponseMapper @Inject constructor() : Func1<GraphqlResponse, Nothing> {
+class FeaturedProductResponseMapper @Inject constructor() : Func1<GraphqlResponse, Unit> {
 
-    override fun call(graphqlResponse: GraphqlResponse?): Nothing? {
+    override fun call(graphqlResponse: GraphqlResponse?) : Unit {
         val dataModel = graphqlResponse?.getData<FeaturedProductResponseModel>(FeaturedProductResponseModel::class.java)
         return mapResponseDataToDomainData(dataModel)
     }
@@ -16,14 +16,13 @@ class FeaturedProductResponseMapper @Inject constructor() : Func1<GraphqlRespons
     /**
      * Return Nothing? as we actually don't need to pass model data values back to presenter
      */
-    private fun mapResponseDataToDomainData(dataModel: FeaturedProductResponseModel?): Nothing? {
+    private fun mapResponseDataToDomainData(dataModel: FeaturedProductResponseModel?) : Unit {
         val featuredProductHeader = dataModel?.goldManageFeaturedProductV2?.header
         if (featuredProductHeader != null) {
             if (featuredProductHeader.errorCode.isNotEmpty()) {
                 val message = featuredProductHeader.message[0]
                 throw MessageErrorException(message)
-            }
+            } else return Unit
         } else throw MessageErrorException(null)
-        return null
     }
 }

@@ -257,8 +257,8 @@ class ProductManagePresenterImpl @Inject constructor(
         view.showLoadingProgress()
 
         editFeaturedProductUseCase.execute(EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status),
-                object : Subscriber<Nothing>() {
-                    override fun onNext(nothing: Nothing) {
+                object : Subscriber<Unit>() {
+                    override fun onNext(unit: Unit) {
                         view.onSuccessChangeFeaturedProduct(productId, status)
                     }
 

@@ -15,7 +15,7 @@ class EditFeaturedProductUseCase @Inject constructor(
       private val graphqlUseCase: GraphqlUseCase,
       @Named(GQL_FEATURED_PRODUCT) private val gqlMutation: String,
       private val featuredProductResponseMapper: FeaturedProductResponseMapper
-) : UseCase<Nothing>() {
+) : UseCase<Unit>() {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "productId"
@@ -31,7 +31,7 @@ class EditFeaturedProductUseCase @Inject constructor(
         }
     }
 
-    override fun createObservable(requestParams: RequestParams?): Observable<Nothing> {
+    override fun createObservable(requestParams: RequestParams?): Observable<Unit> {
         val graphqlRequest = GraphqlRequest(gqlMutation, FeaturedProductResponseModel::class.java, requestParams?.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
