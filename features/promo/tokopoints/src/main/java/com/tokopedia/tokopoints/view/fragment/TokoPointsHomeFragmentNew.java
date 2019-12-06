@@ -1021,7 +1021,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     @Override
     public void showTokopoint2020(PopupNotification data) {
 
-        if (data.getTitle().isEmpty() || data.isEmpty()) {
+        if (data.getTitle().isEmpty() || data.getTitle() == null || data.getAppLink().isEmpty() || data.getAppLink() == null) {
             return;
         }
 
