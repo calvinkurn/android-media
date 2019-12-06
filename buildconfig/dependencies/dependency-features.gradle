@@ -28,7 +28,7 @@ ext {
             profile                         : ":features:content:profile",
             createpost                      : ":features:content:createpost",
             play                            : ":features:content:play",
-            playCommon                      : ":features:content:play-common",
+            playCommon                      : ":features:content:play_common",
 
             digitalEmoney                  : ":features:digital:digital_emoney",
             digitalBrowse                   : ":features:digital:digital_browse",
