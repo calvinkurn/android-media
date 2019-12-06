@@ -380,7 +380,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openFlight(Bundle bundle) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.FLIGHT);
+        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalTravel.DASHBOARD_FLIGHT);
         intent.putExtras(bundle);
         viewListener.goToPage(intent);
     }

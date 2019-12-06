@@ -142,7 +142,7 @@
 /libraries/bottom_sheet_builder/						@tokopedia/core-team
 /libraries/cache_api/									@tokopedia/core-team
 /libraries/cameraview/									@tokopedia/core-team
-/libraries/cm_push_notifications/						@tokopedia/core-team
+/libraries/cm_push_notifications/						@tokopedia/minion-yoda
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
 /libraries/common_network/								@tokopedia/core-team
 /libraries/composite_lib/								@tokopedia/core-team

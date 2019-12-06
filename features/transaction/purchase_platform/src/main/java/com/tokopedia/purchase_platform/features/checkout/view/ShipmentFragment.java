@@ -114,6 +114,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionLi
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
+import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsMacroInsurance;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalytics;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -224,6 +225,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CodAnalytics mTrackerCod;
     @Inject
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
+    @Inject
+    CheckoutAnalyticsMacroInsurance mTrackerMacroInsurance;
     @Inject
     CornerAnalytics mTrackerCorner;
     @Inject
@@ -2092,6 +2095,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void doCheckout(int requestCode) {
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
+
+        if(hasInsurance) {
+            mTrackerMacroInsurance.eventClickPaymentMethodWithInsurance(shipmentAdapter.getInsuranceProductId(),
+                    shipmentAdapter.getInsuranceTitle());
+        }
+
         switch (requestCode) {
             case REQUEST_CODE_NORMAL_CHECKOUT:
                 shipmentPresenter.processSaveShipmentState();
@@ -2217,6 +2226,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.updateDonation(checked);
         }
         if (checked) sendAnalyticsOnClickTopDonation();
+        checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked);
     }
 
     @Override
@@ -3039,6 +3049,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void sendEventChangeInsuranceState(boolean isChecked, String title) {
+
+    }
+
+    @Override
+    public void sendEventDeleteInsurance(String title) {
+
+    }
+
+    @Override
     public void updateInsuranceProductData(@NotNull InsuranceCartShops insuranceCartShops, @NotNull ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
 
     }
@@ -3046,6 +3066,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onInsuranceSelectStateChanges() {
 
+    }
+
+    @Override
+    public void sendEventInsuranceImpression(String title) {
+
+    }
+
+    @Override
+    public void sendEventInsuranceImpressionForShipment(String title) {
+        mTrackerMacroInsurance.eventImpressionOfInsuranceProductOnCheckout(title);
     }
 
     @Override

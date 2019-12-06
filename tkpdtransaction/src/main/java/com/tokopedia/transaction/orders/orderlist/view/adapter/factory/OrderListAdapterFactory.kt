@@ -10,6 +10,7 @@ import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.*
 
 class OrderListAdapterFactory(var orderListAnalytics: OrderListAnalytics, var listener: OrderListViewHolder.OnMenuItemListener?,
                               var cartListener: OrderListRecomListViewHolder.ActionListener,
+                              var filterListener: EmptyStateMarketPlaceFilterViewHolder.ActionListener,
                               var buttonListener: OrderListViewHolder.OnActionButtonListener?) : BaseAdapterTypeFactory(), OrderListTypeFactory {
     override fun type(viewModel: OrderListViewModel): Int {
         return OrderListViewHolder.LAYOUT
@@ -21,6 +22,10 @@ class OrderListAdapterFactory(var orderListAnalytics: OrderListAnalytics, var li
 
     override fun type(viewModel: EmptyStateOrderListViewModel): Int {
         return EmptyStateOrderListViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: EmptyStateMarketPlaceFilterViewModel): Int {
+        return EmptyStateMarketPlaceFilterViewHolder.LAYOUT
     }
 
     override fun type(viewModel: EmptyStateMarketplaceViewModel): Int {
@@ -38,6 +43,7 @@ class OrderListAdapterFactory(var orderListAnalytics: OrderListAnalytics, var li
             OrderListRecomTitleViewHolder.LAYOUT -> OrderListRecomTitleViewHolder(parent)
             EmptyStateMarketplaceViewHolder.LAYOUT -> EmptyStateMarketplaceViewHolder(parent)
             EmptyStateOrderListViewHolder.LAYOUT -> EmptyStateOrderListViewHolder(parent)
+            EmptyStateMarketPlaceFilterViewHolder.LAYOUT -> EmptyStateMarketPlaceFilterViewHolder(parent,filterListener)
             else -> super.createViewHolder(parent, type)
         }
     }

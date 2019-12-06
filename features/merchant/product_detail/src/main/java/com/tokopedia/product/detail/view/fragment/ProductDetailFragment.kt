@@ -160,7 +160,6 @@ import kotlinx.android.synthetic.main.partial_product_recom_4.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
@@ -1277,7 +1276,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
         }
 
-
     }
 
     private fun showAddToCartDoneBottomSheet(successMessage: String) {
@@ -1523,12 +1521,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     wholesale_divider.gone()
                 }
                 base_view_wholesale.visible()
-
             } else {
                 label_installment.hide()
                 label_desc_installment.hide()
                 iv_ovo_installment_icon.hide()
                 iv_arrow_next.hide()
+                wholesale_divider.gone()
             }
         }
 
@@ -1541,6 +1539,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         mostHelpfulReviewView.renderData(productInfoP2.helpfulReviews)
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
                 productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
+
 
         partialVariantAndRateEstView.renderPurchaseProtectionData(productInfoP2.productPurchaseProtectionInfo)
         productInfo?.run {
