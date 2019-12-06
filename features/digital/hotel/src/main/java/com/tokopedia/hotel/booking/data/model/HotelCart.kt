@@ -18,12 +18,43 @@ data class HotelCart (
 
         @SerializedName("property")
         @Expose
-        val property: HotelPropertyData = HotelPropertyData()
+        val property: HotelPropertyData = HotelPropertyData(),
+
+        @SerializedName("appliedVoucher")
+        @Expose
+        var appliedVoucher: AppliedVoucher = AppliedVoucher()
 ) {
         data class Response (
                 @SerializedName("propertyGetCart")
                 @Expose
                 val response: HotelCart = HotelCart()
+        )
+
+        data class AppliedVoucher (
+                @SerializedName("code")
+                @Expose
+                val code: String = "",
+                @SerializedName("discount")
+                @Expose
+                val discount: String = "",
+                @SerializedName("discountAmount")
+                @Expose
+                val discountAmount: Int = 0,
+                @SerializedName("cashback")
+                @Expose
+                val cashback: String = "",
+                @SerializedName("cashbackAmount")
+                @Expose
+                val cashbackAmount: Int = 0,
+                @SerializedName("message")
+                @Expose
+                val message: String = "",
+                @SerializedName("titleDescription")
+                @Expose
+                val titleDescription: String = "",
+                @SerializedName("isCoupon")
+                @Expose
+                val isCoupon: Int = 0
         )
 }
 

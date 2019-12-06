@@ -55,11 +55,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.flexBoxLayout
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
@@ -92,9 +89,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.track)
     //-------------------------------------------------------------------//
 
 
@@ -129,8 +124,6 @@ dependencies {
     // productCard & topAdsSdk is used for recommendation section on cart
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.tradeIn)
-    implementation project(rootProject.ext.features.basemvvm)
     // seamlesslogin is used for tobacco redirect to lite
     implementation project(rootProject.ext.features.seamlesslogin)
     //-------------------------------------------------------------------//
