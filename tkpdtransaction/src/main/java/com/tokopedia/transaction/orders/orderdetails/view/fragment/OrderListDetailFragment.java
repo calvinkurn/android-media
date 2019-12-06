@@ -53,6 +53,8 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
+import com.tokopedia.transaction.util.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -69,6 +71,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     public static final String KEY_FROM_PAYMENT = "from_payment";
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
+    public static final String VOUCHER_CODE = "Kode Voucher";
 
     @Inject
     OrderListDetailPresenter presenter;
@@ -145,6 +148,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
+
     }
 
     @Override
@@ -218,6 +222,14 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(detail.label());
         doubleTextView.setBottomText(detail.value());
+        if(detail.label().equalsIgnoreCase(VOUCHER_CODE)){
+            doubleTextView.setOnClickListener(view-> {
+                    Utils.INSTANCE.copyTextToClipBoard("voucher code",detail.value(),getContext());
+                    Utils.INSTANCE.vibrate(getContext());
+                    Toaster.INSTANCE.showNormal(view, getString(R.string.title_voucher_code_copied),Toaster.INSTANCE.getToasterLength());
+
+            });
+        }
         detailContent.addView(doubleTextView);
     }
 
