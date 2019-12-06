@@ -16,17 +16,6 @@ class GetChannelInfoUseCase @Inject constructor(private val playApi: PlayApi) : 
     var channelId = ""
 
     override suspend fun executeOnBackground(): Channel {
-        return withContext(Dispatchers.Default) {
-            var result = Channel()
-            try {
-                val response = playApi.getChannelInfoV3(channelId).await()
-                response.data?.channel?.let {
-                    result = it
-                }
-            } catch (e: Throwable) {
-                throw e
-            }
-            result
-        }
+        return playApi.getChannelInfoV3(channelId).data.channel
     }
 }

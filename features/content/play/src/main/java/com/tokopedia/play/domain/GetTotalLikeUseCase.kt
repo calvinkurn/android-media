@@ -3,8 +3,6 @@ package com.tokopedia.play.domain
 import com.tokopedia.play.data.Like
 import com.tokopedia.play.data.network.PlayApi
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -17,17 +15,6 @@ class GetTotalLikeUseCase @Inject constructor(private val playApi: PlayApi) : Us
     var channelId = ""
 
     override suspend fun executeOnBackground(): Like {
-        return withContext(Dispatchers.Default) {
-            var result: Like
-            try {
-                val response = playApi.getTotalLike(channelId).await()
-                response.data.let {
-                    result = it
-                }
-            } catch (e: Throwable) {
-                throw e
-            }
-            result
-        }
+        return playApi.getTotalLike(channelId).data
     }
 }

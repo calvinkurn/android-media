@@ -17,17 +17,9 @@ class GetStickyComponentUseCase @Inject constructor(private val playApi: PlayApi
     var channelId = ""
 
     override suspend fun executeOnBackground(): StickyComponent {
-        return withContext(Dispatchers.Default) {
-            var result = StickyComponent()
-            try {
-                val response = playApi.getStickyComponents(channelId).await()
-                response.data?.stickyComponent?.let {
-                    result = it
-                }
-            } catch (e: Throwable) {
-                throw e
-            }
-            result
-        }
+        return playApi
+                .getStickyComponents(channelId)
+                .data
+                .stickyComponent
     }
 }

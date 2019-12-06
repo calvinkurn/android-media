@@ -21,27 +21,27 @@ interface PlayApi {
     @GET(PLAY_GET_CHANNEL_INFO_V3)
     fun getChannelInfoV3(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
-    ): Deferred<DataResponse<Channel.Response>>
+    ): DataResponse<Channel.Response>
 
     @GET(PLAY_GET_VIDEO_STREAM)
     fun getVideoStream(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
-    ): Deferred<DataResponse<VideoStream.Response>>
+    ): DataResponse<VideoStream.Response>
 
     @GET(PLAY_GET_STICKY_COMPONENTS)
     fun getStickyComponents(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
-    ): Deferred<DataResponse<StickyComponent.Response>>
+    ): DataResponse<StickyComponent.Response>
 
     @GET(PLAY_GET_TOTAL_LIKES)
     fun getTotalLike(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
-    ): Deferred<DataResponse<Like>>
+    ): DataResponse<Like>
 
     @POST(PLAY_POST_LIKE)
     fun postLike(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String,
             @Field("click") click: String
-            ): Deferred<DataResponse<Any>>
+    ): DataResponse<Any>
 
 }

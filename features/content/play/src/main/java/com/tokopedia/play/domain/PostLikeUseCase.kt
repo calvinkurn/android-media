@@ -2,8 +2,6 @@ package com.tokopedia.play.domain
 
 import com.tokopedia.play.data.network.PlayApi
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -17,18 +15,10 @@ class PostLikeUseCase @Inject constructor(private val playApi: PlayApi) : UseCas
     var channelId = ""
 
     override suspend fun executeOnBackground(): Boolean {
-        return withContext(Dispatchers.Default) {
-            var result = false
-            try {
-                val response = playApi.postLike(channelId, "1").await()
-                if (response.header.messages.size > 0) {
-                    result = response.header.messages[0].contains("Success", true)
-                }
-            } catch (e: Throwable) {
-                throw e
-            }
-            result
-        }
+        val response = playApi.postLike(channelId, "1")
+        return response.header.messages.size > 0
+                && response.header.messages[0].contains("success", true)
+
     }
 
 }

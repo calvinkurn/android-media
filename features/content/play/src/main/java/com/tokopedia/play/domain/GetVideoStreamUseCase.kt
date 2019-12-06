@@ -17,17 +17,6 @@ class GetVideoStreamUseCase @Inject constructor(private val playApi: PlayApi) : 
     var channelId = ""
 
     override suspend fun executeOnBackground(): VideoStream {
-        return withContext(Dispatchers.Default) {
-            var result = VideoStream()
-            try {
-                val response = playApi.getVideoStream(channelId).await()
-                response.data?.videoStream?.let {
-                    result = it
-                }
-            } catch (e: Throwable) {
-                throw e
-            }
-            result
-        }
+        return playApi.getVideoStream(channelId).data.videoStream
     }
 }
