@@ -2226,6 +2226,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.updateDonation(checked);
         }
         if (checked) sendAnalyticsOnClickTopDonation();
+        checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked);
     }
 
     @Override

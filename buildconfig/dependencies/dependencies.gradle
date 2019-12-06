@@ -29,7 +29,7 @@ ext {
     reactNativeVersion = '0.60.4'
     alibabaCoreLibVersion = '3.2.8'
     powerMockVersion = '1.6.2'
-    roomVersion = '2.0.0-rc01'
+    roomVersion = '2.1.0'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
     guavaVersion = '20.0'
@@ -105,12 +105,13 @@ ext {
     ]
 
     dbDependencies = [
-            dbFlow         : "com.github.agrosner.DBFlow:dbflow:${dbFlowVersion}",
-            dbFlowCore     : "com.github.agrosner.DBFlow:dbflow-core:${dbFlowVersion}",
-            dbFlowProcessor: "com.github.agrosner.DBFlow:dbflow-processor:${dbFlowVersion}",
-            dbRoomRuntime  : "androidx.room:room-runtime:${roomVersion}",
-            dbRoomCompiler : "androidx.room:room-compiler:${roomVersion}",
-            dbRoomTesting  : "androidx.room:room-testing:${roomVersion}"
+            dbFlow           : "com.github.agrosner.DBFlow:dbflow:${dbFlowVersion}",
+            dbFlowCore       : "com.github.agrosner.DBFlow:dbflow-core:${dbFlowVersion}",
+            dbFlowProcessor  : "com.github.agrosner.DBFlow:dbflow-processor:${dbFlowVersion}",
+            dbRoomRuntime    : "androidx.room:room-runtime:${roomVersion}",
+            dbRoomCompiler   : "androidx.room:room-compiler:${roomVersion}",
+            dbRoomCoroutine  : "androidx.room:room-ktx:${roomVersion}",
+            dbRoomTesting    : "androidx.room:room-testing:${roomVersion}"
     ]
 
     supportLibDependencies = [
@@ -223,6 +224,7 @@ ext {
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
+            coroutineTest         : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion",
             guava                 : "com.google.guava:guava:$guavaVersion",
             viewModel             : "androidx.lifecycle:lifecycle-viewmodel:$lifeCycleVersion",
             viewModelKtx          : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifeCycleVersion",
