@@ -1,6 +1,5 @@
 package com.tokopedia.abstraction.common.utils.image;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -17,9 +16,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -42,9 +38,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
-import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -55,9 +49,6 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.R;
-import com.wandroid.traceroute.TraceRoute;
-import com.wandroid.traceroute.TraceRouteCallback;
-import com.wandroid.traceroute.TraceRouteResult;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,8 +58,6 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-
-import timber.log.Timber;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -197,18 +186,6 @@ public class ImageHandler {
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .addListener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        logError(context, e, url);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        return false;
-                    }
-                })
                 .into(imageview);
     }
 
@@ -487,18 +464,6 @@ public class ImageHandler {
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
-                    .addListener(new RequestListener<Bitmap>() {
-                        @Override
-                        public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                            logError(context, e, url);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
                     .into(getRoundedImageViewTarget(imageview, radius));
         }
     }
@@ -1025,54 +990,5 @@ public class ImageHandler {
 
                     }
                 });
-    }
-
-    public static void logError(Context context, GlideException e, String url) {
-
-        if (!isNetworkAvailable(context)) {
-            Timber.w("P2#Load image error network not available");
-            return;
-        }
-
-        TraceRoute.INSTANCE.setCallback(new TraceRouteCallback() {
-            String traceResult = "";
-
-            @Override
-            public void onSuccess(@NotNull TraceRouteResult traceRouteResult) {
-                Timber.w("P2#Load image error traceroute success: url= %s message= %s traceroute= %s",
-                        url,
-                        e != null ? e.getMessage() : "",
-                        traceResult);
-            }
-
-            @Override
-            public void onUpdate(@NotNull String text) {
-                traceResult += text;
-            }
-
-            @Override
-            public void onFailed(int code, @NotNull String reason) {
-                traceResult += String.format("code: %d reason: %s", code, reason);
-                Timber.w("P2#Load image error traceroute failed: url= %s message= %s traceroute= %s",
-                        url,
-                        e != null ? e.getMessage() : "",
-                        traceResult);
-            }
-        });
-
-        String host = Uri.parse(url).getHost();
-        if (!TextUtils.isEmpty(host)) {
-            TraceRoute.INSTANCE.traceRoute(host, true);
-        }
-    }
-
-    private static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        } else {
-            return true;
-        }
     }
 }

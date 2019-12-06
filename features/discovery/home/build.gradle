@@ -67,6 +67,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.features.reputationCommon)
+    implementation project(rootProject.ext.libraries.traceroute)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles

@@ -42,19 +42,6 @@ class HomeBannerFeedViewHolder(itemView: View, private val homeFeedview: HomeFee
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .listener(object : RequestListener<Bitmap> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?,
-                                              target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                        ImageHandler.logError(context, e, element.imageUrl);
-                        return false;
-                    }
-
-                    override fun onResourceReady(resource: Bitmap?, model: Any?,
-                                                 target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-
-                        return false;
-                    }
-                })
                 .into(bannerImageView)
 
         bannerImageView.addOnImpressionListener(element,
