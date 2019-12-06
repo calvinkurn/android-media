@@ -16,8 +16,9 @@ import dagger.Component;
 /**
  * Created by alvarisi on 11/8/17.
  */
+
 @FlightBookingScope
-@Component(modules = {FlightBookingModule.class, CommonTravelModule.class}, dependencies = FlightComponent.class)
+@Component(modules = {FlightBookingModule.class, CommonTravelModule.class, FlightBookingViewModelModule.class}, dependencies = FlightComponent.class)
 public interface FlightBookingComponent {
 
     void inject(FlightBookingFragment flightBookingFragment);
@@ -35,5 +36,9 @@ public interface FlightBookingComponent {
     void inject(@NotNull com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity flightBookingActivity);
 
     void inject(@NotNull com.tokopedia.flight.bookingV2.presentation.fragment.FlightBookingFragment flightBookingFragment);
+
+    void inject(@NotNull com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity flightBookingActivity);
+
+    void inject(@NotNull com.tokopedia.flight.bookingV3.presentation.fragment.FlightBookingFragment flightBookingFragment);
 
 }
