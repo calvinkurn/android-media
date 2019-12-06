@@ -2,7 +2,6 @@ package com.tokopedia.purchase_platform.features.cart.view
 
 import android.app.Activity
 import com.tokopedia.abstraction.R
-import com.tokopedia.abstraction.common.utils.TKPDMapParam
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.ResponseErrorException
@@ -27,6 +26,7 @@ import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -89,11 +89,15 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should render success") {
-                verifyOrder {
+                verify {
+                    view.renderInitialGetCartListDataSuccess(emptyCartListData)
+                }
+            }
+
+            Then("should render then finish loading") {
+                verify {
                     view.renderLoadGetCartData()
                     view.renderLoadGetCartDataFinish()
-                    view.renderInitialGetCartListDataSuccess(emptyCartListData)
-                    view.stopCartPerformanceTrace()
                 }
             }
         }
@@ -113,12 +117,15 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should render success") {
+                verify {
+                    view.renderInitialGetCartListDataSuccess(emptyCartListData)
+                }
+            }
+
+            Then("should show then hide progress loading") {
                 verifyOrder {
                     view.showProgressLoading()
                     view.hideProgressLoading()
-                    view.renderLoadGetCartDataFinish()
-                    view.renderInitialGetCartListDataSuccess(emptyCartListData)
-                    view.stopCartPerformanceTrace()
                 }
             }
         }
@@ -148,12 +155,8 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should render error") {
-                verifyOrder {
-                    view.renderLoadGetCartData()
-                    view.renderLoadGetCartDataFinish()
-                    view.activity
+                verify {
                     view.renderErrorInitialGetCartListData(errorMessage)
-                    view.stopCartPerformanceTrace()
                 }
             }
         }
@@ -192,11 +195,7 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should hide loading") {
-                verifyOrder {
-                    view.allAvailableCartDataList
-                    val tkpdMapParam = TKPDMapParam<String, String>()
-                    tkpdMapParam["carts"] = "[]"
-                    view.getGeneratedAuthParamNetwork(tkpdMapParam)
+                verify {
                     view.hideProgressLoading()
                 }
             }
@@ -228,13 +227,7 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should render success") {
-                verifyOrder {
-                    view.allAvailableCartDataList
-                    val tkpdMapParam = TKPDMapParam<String, String>()
-                    tkpdMapParam["carts"] = "[{\"cart_id\":0,\"quantity\":0,\"notes\":\"\"}]"
-                    view.getGeneratedAuthParamNetwork(tkpdMapParam)
-                    view.hideProgressLoading()
-                    view.renderLoadGetCartDataFinish()
+                verify {
                     view.renderInitialGetCartListDataSuccess(cartListData.cartListData)
                 }
             }
@@ -280,20 +273,9 @@ class CartListPresenterTest : Spek({
                 cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), arrayListOf(), false, false)
             }
 
-            Then("should success delete and render success") {
-                verifyOrder {
-                    view.showProgressLoading()
-                    val tkpdMapParam = TKPDMapParam<String, String>()
-                    tkpdMapParam["params"] = "{\"cart_ids\":[0],\"add_wishlist\":0}"
-                    view.getGeneratedAuthParamNetwork(tkpdMapParam)
-                    view.hideProgressLoading()
-                    view.renderLoadGetCartDataFinish()
-                    view.cartId
-                    view.showProgressLoading()
-                    view.hideProgressLoading()
-                    view.renderLoadGetCartDataFinish()
+            Then("should render success") {
+                verify {
                     view.renderInitialGetCartListDataSuccess(emptyCartListData)
-                    view.stopCartPerformanceTrace()
                 }
             }
         }
@@ -323,13 +305,7 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should success delete") {
-                verifyOrder {
-                    view.showProgressLoading()
-                    val tkpdMapParam = TKPDMapParam<String, String>()
-                    tkpdMapParam["params"] = "{\"cart_ids\":[0],\"add_wishlist\":0}"
-                    view.getGeneratedAuthParamNetwork(tkpdMapParam)
-                    view.hideProgressLoading()
-                    view.renderLoadGetCartDataFinish()
+                verify {
                     view.onDeleteCartDataSuccess(arrayListOf(0))
                 }
             }
@@ -357,13 +333,7 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should show error message") {
-                verifyOrder {
-                    view.showProgressLoading()
-                    val tkpdMapParam = TKPDMapParam<String, String>()
-                    tkpdMapParam["params"] = "{\"cart_ids\":[0],\"add_wishlist\":0}"
-                    view.getGeneratedAuthParamNetwork(tkpdMapParam)
-                    view.hideProgressLoading()
-                    view.renderLoadGetCartDataFinish()
+                verify {
                     view.showToastMessageRed(errorMessage)
                 }
             }
@@ -532,10 +502,14 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should have no subtotal") {
-                verifyOrder {
-                    view.updateCashback(0.0)
-                    view.allAvailableCartDataList
+                verify {
                     view.renderDetailInfoSubTotal("0", "-", false, true, false)
+                }
+            }
+
+            Then("should have no cashback") {
+                verify {
+                    view.updateCashback(0.0)
                 }
             }
         }
@@ -562,10 +536,14 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should have some subtotal") {
-                verifyOrder {
-                    view.updateCashback(100.0)
-                    view.allAvailableCartDataList
+                verify {
                     view.renderDetailInfoSubTotal("5", "Rp1.004", false, false, false)
+                }
+            }
+
+            Then("should have cashback") {
+                verify {
+                    view.updateCashback(100.0)
                 }
             }
         }
@@ -592,9 +570,8 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should have some subtotal and selected all item") {
-                verifyOrder {
+                verify {
                     view.updateCashback(100.0)
-                    view.allAvailableCartDataList
                     view.renderDetailInfoSubTotal("1", "Rp1.000", true, false, false)
                 }
             }
@@ -624,9 +601,8 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should have all subtotal") {
-                verifyOrder {
+                verify {
                     view.updateCashback(100.0)
-                    view.allAvailableCartDataList
                     view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
                 }
             }
@@ -665,9 +641,8 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should have all subtotal") {
-                verifyOrder {
+                verify {
                     view.updateCashback(100.0)
-                    view.allAvailableCartDataList
                     view.renderDetailInfoSubTotal("19", "Rp1.684", true, false, false)
                 }
             }
@@ -705,9 +680,8 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should have all subtotal") {
-                verifyOrder {
+                verify {
                     view.updateCashback(100.0)
-                    view.allAvailableCartDataList
                     view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
                 }
             }
@@ -744,9 +718,8 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should have all subtotal") {
-                verifyOrder {
+                verify {
                     view.updateCashback(160.0)
-                    view.allAvailableCartDataList
                     view.renderDetailInfoSubTotal("10", "Rp1.684", true, false, false)
                 }
             }
@@ -784,9 +757,8 @@ class CartListPresenterTest : Spek({
             }
 
             Then("should have all subtotal") {
-                verifyOrder {
+                verify {
                     view.updateCashback(400.0)
-                    view.allAvailableCartDataList
                     view.renderDetailInfoSubTotal("10", "Rp4.084", true, false, false)
                 }
             }
