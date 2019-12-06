@@ -222,8 +222,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(detail.label());
         doubleTextView.setBottomText(detail.value());
-        if(detail.label().equalsIgnoreCase(VOUCHER_CODE)){
-            doubleTextView.setOnClickListener(view-> {
+        if(VOUCHER_CODE.equalsIgnoreCase(detail.label())){
+            doubleTextView.setOnClickListener(view -> {
                     Utils.INSTANCE.copyTextToClipBoard("voucher code",detail.value(),getContext());
                     Utils.INSTANCE.vibrate(getContext());
                     Toaster.INSTANCE.showNormal(view, getString(R.string.title_voucher_code_copied),Toaster.INSTANCE.getToasterLength());
