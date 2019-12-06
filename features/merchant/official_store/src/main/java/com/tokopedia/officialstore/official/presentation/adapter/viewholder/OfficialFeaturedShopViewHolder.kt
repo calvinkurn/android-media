@@ -82,6 +82,7 @@ class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFea
 
                     RouteManager.route(context, shop.url)
                 }
+            
             }
         }
     }
