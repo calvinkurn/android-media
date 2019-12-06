@@ -216,8 +216,10 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/tv_buy"
-            android:layout_width="@dimen/dp_80"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="@dimen/dp_88"
+            android:minWidth="@dimen/dp_80"
             android:text="@string/action_buy"
             android:textAllCaps="false"
             android:visibility="gone"

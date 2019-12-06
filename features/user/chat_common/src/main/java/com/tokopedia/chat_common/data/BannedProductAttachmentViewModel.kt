@@ -34,12 +34,13 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             productImage: String, isSender: Boolean, message: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
             variant: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData, minOrder: Int
+            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData, minOrder: Int,
+            remainingStock: Int
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, isRead,
             productId, productName, productPrice, productUrl, productImage, isSender, message,
             canShowFooter, blastId, productPriceInt, category, variant, dropPercentage, priceBefore,
-            shopId, freeShipping, categoryId, playStoreData, minOrder
+            shopId, freeShipping, categoryId, playStoreData, minOrder, remainingStock
     )
 
 
@@ -71,12 +72,12 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             isSender: Boolean, message: String, startTime: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
             variant: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData
+            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, productId,
             productName, productPrice, productUrl, productImage, isSender, message, startTime,
             canShowFooter, blastId, productPriceInt, category, variant, dropPercentage, priceBefore,
-            shopId, freeShipping, categoryId, playStoreData
+            shopId, freeShipping, categoryId, playStoreData, remainingStock
     )
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {

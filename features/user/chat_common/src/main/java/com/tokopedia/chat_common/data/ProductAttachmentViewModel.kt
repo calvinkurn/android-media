@@ -53,6 +53,8 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
     var sizeVariantId: String = ""
     var sizeVariant: String = ""
 
+    var remainingStock: Int = 1
+
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,
                 replyTime: String, startTime: String, isRead: Boolean, isDummy: Boolean,
@@ -90,7 +92,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
             variants: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
             freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData,
-            minOrder: Int
+            minOrder: Int, remainingStock: Int
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             "", isRead, false, isSender, message
@@ -112,6 +114,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         this.categoryId = categoryId
         this.playStoreData = playStoreData
         this.minOrder = minOrder
+        this.remainingStock = remainingStock
         if (variants.isNotEmpty()) {
             this.variants = variants
             setupVariantsField()
@@ -146,7 +149,8 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
             isSender: Boolean, message: String, startTime: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
             variants: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData
+            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData,
+            remainingStock: Int
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             startTime, false, false, isSender, message
@@ -167,6 +171,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         this.freeShipping = freeShipping
         this.categoryId = categoryId
         this.playStoreData = playStoreData
+        this.remainingStock = remainingStock
         if (variants.isNotEmpty()) {
             this.variants = variants
             setupVariantsField()
@@ -252,6 +257,10 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
 
     fun hasSizeVariant(): Boolean {
         return sizeVariant.isNotEmpty()
+    }
+
+    fun hasEmptyStock(): Boolean {
+        return remainingStock <= 0
     }
 
 }

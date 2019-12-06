@@ -96,7 +96,18 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         setupFreeShipping(element);
         setupChatBubbleAlignment(chatBalloon, element);
         setupVariantLayout(element);
+        setupIfEmptyStock(element);
         viewListener.trackSeenProduct(element);
+    }
+
+    private void setupIfEmptyStock(ProductAttachmentViewModel element) {
+        if (element.hasEmptyStock()) {
+            tvBuy.setEnabled(false);
+            tvBuy.setText(R.string.action_empty_stock);
+        } else {
+            tvBuy.setEnabled(true);
+            tvBuy.setText(R.string.action_buy);
+        }
     }
 
     private void setupVariantLayout(ProductAttachmentViewModel element) {
