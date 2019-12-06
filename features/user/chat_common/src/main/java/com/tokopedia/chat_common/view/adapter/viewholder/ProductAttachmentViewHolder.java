@@ -132,7 +132,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     private Drawable getBackgroundDrawable(String hexColor) {
-        Drawable backgroundDrawable = ContextCompat.getDrawable(itemView.getContext(), R.drawable.circle_color_variant_indicator);
+        Drawable backgroundDrawable = MethodChecker.getDrawable(itemView.getContext(), R.drawable.circle_color_variant_indicator);
 
         if (backgroundDrawable == null) return null;
 
