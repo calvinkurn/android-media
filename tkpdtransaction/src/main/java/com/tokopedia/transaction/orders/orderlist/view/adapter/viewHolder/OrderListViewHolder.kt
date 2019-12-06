@@ -175,10 +175,9 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     private fun setConditionalInfo(successConditionalText: String?, successCondInfoVisibility: Int, color: Color?) {
         if (successConditionalText != null) {
             conditionalInfoLayout?.visibility = successCondInfoVisibility
-            val shape = GradientDrawable()
-            shape.apply {
-                this.shape = GradientDrawable.RECTANGLE
-                shape.cornerRadius = cornerRadiusValue
+            val shape = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = cornerRadiusValue
                 setColor(android.graphics.Color.parseColor(color?.background()))
                 setStroke(1, android.graphics.Color.parseColor(color?.border()))
             }
@@ -193,10 +192,9 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     private fun setConditionalInfoBottom(successConditionalText: String?, successCondInfoVisibility: Int, color: Color?) {
         if (successConditionalText != null) {
             conditionalInfoLayoutBottom?.visibility = successCondInfoVisibility
-            val shape = GradientDrawable()
-            shape.apply {
+            val shape = GradientDrawable().apply {
                 this.shape = GradientDrawable.RECTANGLE
-                shape.cornerRadius = cornerRadiusValue
+                cornerRadius = cornerRadiusValue
                 setColor(android.graphics.Color.parseColor(color?.background()))
                 setStroke(1, android.graphics.Color.parseColor(color?.border()))
             }
