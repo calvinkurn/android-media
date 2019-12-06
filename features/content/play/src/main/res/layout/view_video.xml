@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         app:use_controller="false"
         tools:parentTag="android.widget.LinearLayout"
+        android:background="@color/Neutral_N700_96"
         />
 
 </merge>
