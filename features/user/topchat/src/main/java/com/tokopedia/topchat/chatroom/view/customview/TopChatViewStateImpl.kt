@@ -19,9 +19,7 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -90,7 +88,7 @@ class TopChatViewStateImpl(
         templateRecyclerView.setHasFixedSize(true)
         templateRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         templateRecyclerView.adapter = templateAdapter
-        templateRecyclerView.visibility = View.GONE
+        templateRecyclerView.hide()
 
         initProductPreviewLayout()
     }
@@ -115,6 +113,7 @@ class TopChatViewStateImpl(
     }
 
     private fun setChatTemplatesBottomPadding(bottomPadding: Int) {
+        if (!templateRecyclerView.isVisible) return
         templateRecyclerView.post {
             with(templateRecyclerView) {
                 setPadding(
@@ -155,7 +154,6 @@ class TopChatViewStateImpl(
         showLastTimeOnline(viewModel)
         setHeaderMenuButton(headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
-        checkShowQuickReply(viewModel)
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel
                 .blockedStatus, onUnblockChatClicked)
 
@@ -353,9 +351,8 @@ class TopChatViewStateImpl(
         updateChatroomBlockedStatus(it)
 
         showReplyBox(chatRoomViewModel.replyable)
-        templateRecyclerView.visibility = View.VISIBLE
+        templateRecyclerView.showWithCondition(templateAdapter.hasTemplateChat())
         chatBlockLayout.visibility = View.GONE
-
     }
 
     private fun transform(item: BaseChatViewModel): Parcelable? {
@@ -388,14 +385,11 @@ class TopChatViewStateImpl(
         }
     }
 
-    private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
-    }
-
     fun setTemplate(listTemplate: List<Visitable<Any>>?) {
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
             templateAdapter.list = listTemplate
-            templateRecyclerView.visibility = View.VISIBLE
+            templateRecyclerView.showWithCondition(templateAdapter.hasTemplateChat())
         }
     }
 
