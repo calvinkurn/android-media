@@ -463,11 +463,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             showRoomAvailableContainerBottom()
             roomPrice = data.first().roomPrice.roomPrice
             roomPriceAmount = round(data.first().roomPrice.priceAmount).toLong().toString()
-            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
-
             tv_hotel_price.text = roomPrice
 
             if (data[0].additionalPropertyInfo.isEnabled) {
+                trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
+
                 btn_see_room.text = getString(R.string.hotel_detail_show_room_text)
                 btn_see_room.buttonCompatType = ButtonCompat.TRANSACTION
                 btn_see_room.setOnClickListener {
@@ -479,6 +479,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     }
                 }
             } else {
+                trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, false, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
                 btn_see_room.text = getString(R.string.hotel_detail_coming_soon_text)
                 btn_see_room.isEnabled = false
                 btn_see_room.buttonCompatType = ButtonCompat.DISABLE

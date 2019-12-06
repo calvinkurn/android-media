@@ -272,7 +272,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         return HotelAddCartParam("", hotelRoomListPageModel.checkIn,
                 hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
                 listOf(HotelAddCartParam.Room(roomId = room.roomId, numOfRooms = room.roomQtyReqiured)),
-                hotelRoomListPageModel.adult, hotelRoomListPageModel.destinationType,
+                hotelRoomListPageModel.room, hotelRoomListPageModel.adult, hotelRoomListPageModel.destinationType,
                 hotelRoomListPageModel.destinationName)
     }
 

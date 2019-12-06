@@ -72,7 +72,7 @@ class TrackingHotelUtil {
 
     fun hotelSelectStayDate(checkInDate: String, dateRange: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, SELECT_STAY_DATE,
-                "$HOTEL_LABEL - $checkInDate - $dateRange")
+                "$HOTEL_LABEL - ${convertDate(checkInDate)} - $dateRange")
     }
 
     fun hotelSelectRoomGuest(roomCount: Int, adultCount: Int) {
@@ -87,7 +87,7 @@ class TrackingHotelUtil {
                     checkInDate: String,
                     duration: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, SEARCH_HOTEL,
-                "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - $checkInDate - $duration")
+                "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - ${convertDate(checkInDate)} - $duration")
     }
 
     fun hotelViewHotelListImpression(destination: String,
@@ -235,7 +235,7 @@ class TrackingHotelUtil {
         val destination = if (hotelHomepageModel.locName.isEmpty()) hotelName else hotelHomepageModel.locName
 
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CHOOSE_VIEW_ROOM,
-                "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${hotelHomepageModel.checkInDate} - $duration - $hotelId")
+                "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelHomepageModel.checkInDate)} - $duration - $hotelId")
     }
 
     fun hotelViewRoomList(hotelId: Int, hotelRoomListPageModel: HotelRoomListPageModel, roomList: List<HotelRoom>) {
@@ -277,7 +277,6 @@ class TrackingHotelUtil {
 
     fun hotelChooseRoom(room: HotelRoom, hotelAddCartParam: HotelAddCartParam) {
         val hotelId = room.additionalPropertyInfo.propertyId
-        val roomCount = hotelAddCartParam.rooms.size
         val guestCount = hotelAddCartParam.adult
         val duration = HotelUtils.countDayDifference(hotelAddCartParam.checkIn, hotelAddCartParam.checkOut)
         val destinationType = hotelAddCartParam.destinationType
@@ -287,7 +286,7 @@ class TrackingHotelUtil {
         map[EVENT] = ADD_TO_CART
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CHOOSE_ROOM
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelAddCartParam.checkIn)} - $duration - $hotelId"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - ${hotelAddCartParam.roomCount} - $guestCount - ${convertDate(hotelAddCartParam.checkIn)} - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 ADD_LABEL, DataLayer.mapOf(
@@ -351,7 +350,7 @@ class TrackingHotelUtil {
 
     fun hotelChooseRoomDetails(room: HotelRoom, position: Int, hotelAddCartParam: HotelAddCartParam) {
         val hotelId = room.additionalPropertyInfo.propertyId
-        val roomCount = hotelAddCartParam.rooms.size
+        val roomCount = hotelAddCartParam.roomCount
         val guestCount = hotelAddCartParam.adult
         val duration = HotelUtils.countDayDifference(hotelAddCartParam.checkIn, hotelAddCartParam.checkOut)
         val destinationType = hotelAddCartParam.destinationType
@@ -381,9 +380,8 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickNext(hotelCart: HotelCart, destType: String, destination: String, personal: Boolean) {
+    fun hotelClickNext(hotelCart: HotelCart, destType: String, destination: String, roomCount: Int, personal: Boolean) {
         val hotelId = hotelCart.property.propertyID
-        val roomCount = hotelCart.property.rooms.size
         val guestCount = hotelCart.cart.adult
         val duration = HotelUtils.countDayDifference(hotelCart.cart.checkIn, hotelCart.cart.checkOut)
 
