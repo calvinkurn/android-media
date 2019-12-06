@@ -11,6 +11,7 @@ internal class CreateProductCardOptionsViewModelTest: Spek({
     InstantTaskExecutorRuleSpek(this)
 
     Feature("Create Product Card Options View Model") {
+        createTestInstance()
 
         Scenario("Null Options") {
             lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel

@@ -12,6 +12,7 @@ internal class SeeSimilarProductsTest: Spek({
     val productCardOptionsModel = ProductCardOptionsModel(hasSimilarSearch = true)
 
     Feature("Click option see similar products") {
+        createTestInstance()
 
         Scenario("Click see similar products") {
             lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
@@ -21,7 +22,7 @@ internal class SeeSimilarProductsTest: Spek({
             }
 
             When("Click see similar products") {
-                productCardOptionsViewModel.getOption(SEE_SIMILAR_PRODUCTS)!!.onClick()
+                productCardOptionsViewModel.getOption(SEE_SIMILAR_PRODUCTS).onClick()
             }
 
             Then("Route to Similar Search Event Live Data is true") {
