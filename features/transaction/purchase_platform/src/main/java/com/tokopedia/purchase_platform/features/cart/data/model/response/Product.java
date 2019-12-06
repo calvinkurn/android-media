@@ -86,6 +86,9 @@ public class Product {
     @SerializedName("product_min_order")
     @Expose
     private int productMinOrder;
+    @SerializedName("product_max_order")
+    @Expose
+    private int productMaxOrder;
     @SerializedName("product_rating")
     @Expose
     private double productRating;
@@ -229,6 +232,10 @@ public class Product {
 
     public int getProductMinOrder() {
         return productMinOrder;
+    }
+
+    public int getProductMaxOrder() {
+        return productMaxOrder;
     }
 
     public double getProductRating() {

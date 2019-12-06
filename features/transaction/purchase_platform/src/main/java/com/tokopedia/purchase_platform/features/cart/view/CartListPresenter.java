@@ -34,9 +34,9 @@ import com.tokopedia.purchase_platform.common.data.model.response.insurance.enti
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProduct;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductItems;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase;
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase;
