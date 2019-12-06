@@ -36,7 +36,9 @@ public class UpdateCartUseCase {
         final TKPDMapParam<String, String> paramUpdate = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART);
 
-        return cartRepository.updateCartData(paramUpdate).map(cartMapper::convertToUpdateCartData)
-                .subscribeOn(schedulers.getIo()).observeOn(schedulers.getMain());
+        return cartRepository.updateCartData(paramUpdate)
+                .map(cartMapper::convertToUpdateCartData)
+                .subscribeOn(schedulers.getIo())
+                .observeOn(schedulers.getMain());
     }
 }

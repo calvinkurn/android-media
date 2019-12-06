@@ -21,22 +21,25 @@ class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifi
                                                        private val cartMapperV3: CartMapperV3,
                                                        private val schedulers: ExecutorSchedulers) {
 
-     fun createObservable(): Observable<CartListData> {
+    fun createObservable(): Observable<CartListData> {
         val graphqlRequest = GraphqlRequest(queryString, ShopGroupSimplifiedGqlResponse::class.java)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
-        return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
-            val shopGroupSimplifiedGqlResponse = it.getData<ShopGroupSimplifiedGqlResponse>(ShopGroupSimplifiedGqlResponse::class.java)
-            if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.status == "OK") {
-                cartMapperV3.convertToCartItemDataList(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.data)
-            } else {
-                if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.isNotEmpty()) {
-                    throw ResponseErrorException(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.joinToString())
-                } else {
-                    throw ResponseErrorException()
+        return graphqlUseCase.createObservable(RequestParams.EMPTY)
+                .map {
+                    val shopGroupSimplifiedGqlResponse = it.getData<ShopGroupSimplifiedGqlResponse>(ShopGroupSimplifiedGqlResponse::class.java)
+                    if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.status == "OK") {
+                        cartMapperV3.convertToCartItemDataList(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.data)
+                    } else {
+                        if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.isNotEmpty()) {
+                            throw ResponseErrorException(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.joinToString())
+                        } else {
+                            throw ResponseErrorException()
+                        }
+                    }
                 }
-            }
-        }.subscribeOn(schedulers.io).observeOn(schedulers.main)
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
 
     }
 }

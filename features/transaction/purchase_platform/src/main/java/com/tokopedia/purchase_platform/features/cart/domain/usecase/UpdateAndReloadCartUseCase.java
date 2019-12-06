@@ -30,7 +30,7 @@ public class UpdateAndReloadCartUseCase {
     public UpdateAndReloadCartUseCase(ICartRepository cartRepository,
                                       ICartMapper cartMapper,
                                       @Named("UpdateReloadUseCase")
-                                      GetCartListSimplifiedUseCase getCartListSimplifiedUseCase,
+                                              GetCartListSimplifiedUseCase getCartListSimplifiedUseCase,
                                       ExecutorSchedulers schedulers) {
         this.cartRepository = cartRepository;
         this.cartMapper = cartMapper;
@@ -56,7 +56,9 @@ public class UpdateAndReloadCartUseCase {
                                     updateAndRefreshCartListData.setCartListData(cartListData);
                                     return updateAndRefreshCartListData;
                                 })
-                ).subscribeOn(schedulers.getIo()).observeOn(schedulers.getMain());
+                )
+                .subscribeOn(schedulers.getIo())
+                .observeOn(schedulers.getMain());
 
     }
 }

@@ -68,7 +68,10 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
                                     Boolean.parseBoolean(paramCheckPromo.get(PARAM_ONE_CLICK_SHIPMENT))))
                             .map(
                                     voucherCouponMapper::convertPromoCodeCartListData
-                            )).subscribeOn(schedulers.getIo()).observeOn(schedulers.getMain());
+                            )
+                    )
+                    .subscribeOn(schedulers.getIo())
+                    .observeOn(schedulers.getMain());
         else
             return checkPromoCodeUseCase.createObservable(checkPromoCodeUseCase.createRequestParams(
                     paramCheckPromo.get(PARAM_PROMO_CODE), false,
@@ -78,6 +81,8 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
                             Boolean.parseBoolean(paramCheckPromo.get(PARAM_ONE_CLICK_SHIPMENT))))
                     .map(
                             voucherCouponMapper::convertPromoCodeCartListData
-                    ).subscribeOn(schedulers.getIo()).observeOn(schedulers.getMain());
+                    )
+                    .subscribeOn(schedulers.getIo())
+                    .observeOn(schedulers.getMain());
     }
 }

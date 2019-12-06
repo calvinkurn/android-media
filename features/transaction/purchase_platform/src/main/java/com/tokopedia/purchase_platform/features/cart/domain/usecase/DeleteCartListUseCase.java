@@ -64,6 +64,8 @@ public class DeleteCartListUseCase {
                     clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), toBeDeletedPromoCode);
                     return clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
                             .map(graphqlResponse -> deleteAndRefreshCartListData);
-                }).subscribeOn(schedulers.getIo()).observeOn(schedulers.getMain());
+                })
+                .subscribeOn(schedulers.getIo())
+                .observeOn(schedulers.getMain());
     }
 }
