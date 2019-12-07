@@ -99,6 +99,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkIn))
             hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
                     TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut))
+            hotelRoomListPageModel.destinationName = it.getString(ARG_DESTINATION_NAME, "")
+            hotelRoomListPageModel.destinationType =  it.getString(ARG_DESTINATION_TYPE, "")
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -135,7 +137,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 is Success -> {
                     context?.run {
                         startActivity(HotelBookingActivity.getCallingIntent(this,it.data.response.cartId,
-                                hotelRoomListPageModel.destinationType, hotelRoomListPageModel.destinationName))
+                                hotelRoomListPageModel.destinationType, hotelRoomListPageModel.destinationName,
+                                hotelRoomListPageModel.room, hotelRoomListPageModel.adult))
                     }
                 }
                 is Fail -> {
@@ -270,7 +273,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         return HotelAddCartParam("", hotelRoomListPageModel.checkIn,
                 hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
                 listOf(HotelAddCartParam.Room(roomId = room.roomId, numOfRooms = room.roomQtyReqiured)),
-                hotelRoomListPageModel.adult, hotelRoomListPageModel.destinationType,
+                hotelRoomListPageModel.room, hotelRoomListPageModel.adult, hotelRoomListPageModel.destinationType,
                 hotelRoomListPageModel.destinationName)
     }
 
