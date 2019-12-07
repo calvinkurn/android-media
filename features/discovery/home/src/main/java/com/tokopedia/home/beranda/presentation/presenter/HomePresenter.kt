@@ -94,6 +94,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     private var isCache = true
 
     val homeLiveData: LiveData<HomeViewModel> = homeUseCase.getHomeData().map {
+        if(fetchFirstData) fetchFirstData = false
         homeDataMapper.mapToHomeViewModel(it, isCache)
     }
 
