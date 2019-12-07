@@ -380,9 +380,8 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickNext(hotelCart: HotelCart, destType: String, destination: String, roomCount: Int, personal: Boolean) {
+    fun hotelClickNext(hotelCart: HotelCart, destType: String, destination: String, roomCount: Int, guestCount: Int, personal: Boolean) {
         val hotelId = hotelCart.property.propertyID
-        val guestCount = hotelCart.cart.adult
         val duration = HotelUtils.countDayDifference(hotelCart.cart.checkIn, hotelCart.cart.checkOut)
 
         val map = mutableMapOf<String, Any?>()

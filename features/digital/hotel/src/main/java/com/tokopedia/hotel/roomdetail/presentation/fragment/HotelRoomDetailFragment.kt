@@ -100,7 +100,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     context?.run {
                         startActivity(HotelBookingActivity.getCallingIntent(this, cartId,
                                 addToCartParam.destinationType, addToCartParam.destinationName,
-                                addToCartParam.roomCount))
+                                addToCartParam.roomCount, addToCartParam.adult))
                     }
                 }
                 is Fail -> {
