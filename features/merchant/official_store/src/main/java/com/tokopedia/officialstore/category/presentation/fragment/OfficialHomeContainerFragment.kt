@@ -51,6 +51,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var viewPager: ViewPager? = null
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
+    private val KEY_CATEGORY = "key_category"
+    private var categoryIdSelected = "0"
 
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
@@ -62,6 +64,10 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         categoryPerformanceMonitoring = PerformanceMonitoring.start(FirebasePerformanceMonitoringConstant.CATEGORY)
+        arguments?.let {
+            categoryIdSelected = it.getString(KEY_CATEGORY)
+            println(categoryIdSelected)
+        }
         context?.let {
             tracking = OfficialStoreTracking(it)
         }

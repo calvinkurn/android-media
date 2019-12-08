@@ -12,7 +12,8 @@ import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
 
 class OfficialHomeContainerAdapter(
         val context: Context?,
-        fragmentManager: FragmentManager
+        fragmentManager: FragmentManager,
+        val categoryIdSelected: String
 ) : FragmentStatePagerAdapter(fragmentManager) {
 
     private val registeredFragment = SparseArrayCompat<Fragment>()
@@ -23,6 +24,8 @@ class OfficialHomeContainerAdapter(
         val bundle = Bundle()
         bundle.putParcelable(OfficialHomeFragment.BUNDLE_CATEGORY,
                 categoryList[position])
+        bundle.putString(OfficialHomeFragment.KEY_CATEGORY, categoryIdSelected)
+        println(categoryIdSelected)
         return bundle
     }
 

@@ -56,6 +56,7 @@ class OfficialHomeFragment :
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
         const val BUNDLE_CATEGORY = "category_os"
+        const val KEY_CATEGORY = "key_category"
         var PRODUCT_RECOMMENDATION_TITLE_SECTION = ""
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 898
@@ -81,6 +82,7 @@ class OfficialHomeFragment :
     private var counterTitleShouldBeRendered = 0
     private var isLoadedOnce: Boolean = false
     private var isScrolling = false
+    private var categoryIdSelected = "0"
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -107,7 +109,10 @@ class OfficialHomeFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let { category = it.getParcelable(BUNDLE_CATEGORY) }
+        arguments?.let { 
+            category = it.getParcelable(BUNDLE_CATEGORY) 
+            categoryIdSelected = it.getString(KEY_CATEGORY)
+        }
         context?.let { tracking = OfficialStoreTracking(it) }
     }
 
