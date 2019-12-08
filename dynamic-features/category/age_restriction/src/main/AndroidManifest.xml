@@ -3,7 +3,6 @@
     package="com.tokopedia.age_restriction.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_module_age_restriction">
         <dist:fusing dist:include="true" />
