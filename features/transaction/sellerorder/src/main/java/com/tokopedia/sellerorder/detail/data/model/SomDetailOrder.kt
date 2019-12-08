@@ -81,6 +81,10 @@ data class SomDetailOrder (
             @Expose
             val listLabelInfo: List<LabelInfo> = listOf(),
 
+            @SerializedName("buyer_request_cancel")
+            @Expose
+            val buyerRequestCancel: BuyerRequestCancel = BuyerRequestCancel(),
+
             @SerializedName("flag_order_meta")
             @Expose
             val flagOrderMeta: FlagOrderMeta = FlagOrderMeta(),
@@ -317,6 +321,19 @@ data class SomDetailOrder (
                     @SerializedName("flag_background")
                     @Expose
                     val flagBg: String = "")
+
+            data class BuyerRequestCancel(
+                    @SerializedName("is_request_cancel")
+                    @Expose
+                    val isRequestCancel: Boolean = false,
+
+                    @SerializedName("request_cancel_time")
+                    @Expose
+                    val requestCancelTime: String = "",
+
+                    @SerializedName("reason")
+                    @Expose
+                    val reason: String = "")
 
             data class FlagOrderMeta(
                     @SerializedName("is_free_shipping_campaign")

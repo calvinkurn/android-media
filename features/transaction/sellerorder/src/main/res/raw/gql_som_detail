@@ -108,6 +108,11 @@ query GetSOMDetail($orderID: String!, $lang: String!){
       amount
       note
     }
+    buyer_request_cancel {
+      is_request_cancel
+      request_cancel_time
+      reason
+    }
     flag_order_type{
       is_order_cod
       is_order_now

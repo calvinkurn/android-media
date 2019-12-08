@@ -19,6 +19,10 @@ query OrderList($input: OrderListArgs!) {
         picture
         product_name
       }
+      cancel_request
+      cancel_request_note
+      cancel_request_time
+      cancel_request_origin_note
     }
   }
 }

@@ -23,7 +23,6 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangInEmptyState
@@ -36,7 +35,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_600
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_699
@@ -62,6 +60,7 @@ import kotlinx.android.synthetic.main.empty_list.*
 import kotlinx.android.synthetic.main.fragment_som_list.*
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.function.Predicate
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
@@ -154,6 +153,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         search_input_view?.searchTextView?.setOnClickListener { search_input_view?.searchTextView?.isCursorVisible = true }
 
         filter_action_button.setOnClickListener {
+            SomAnalytics.eventClickFilterButtonOnOrderList()
             val intentFilter = context?.let { ctx -> SomFilterActivity.createIntent(ctx, paramOrder) }
             startActivityForResult(intentFilter, REQUEST_FILTER)
         }
@@ -210,7 +210,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 var indexTicker = 0
                 tickerList.forEach {
                     if (it.isActive) {
-                        listTickerData.add(TickerData("", it.shortDesc, Ticker.TYPE_ANNOUNCEMENT, true))
+                        listTickerData.add(TickerData("", it.shortDesc + " ${getString(R.string.ticker_info_selengkapnya)}", Ticker.TYPE_ANNOUNCEMENT, true))
                         indexTicker++
                     }
                 }
@@ -220,6 +220,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     adapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
                         override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                            SomAnalytics.eventClickSeeMoreOnTicker()
                         }
 
                     })
@@ -227,11 +228,12 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             } else {
                 tickerList.first().let {
-                    ticker_info?.setHtmlDescription(it.shortDesc)
+                    ticker_info?.setHtmlDescription(it.shortDesc + " ${getString(R.string.ticker_info_selengkapnya)}")
                     ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
                     ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                            SomAnalytics.eventClickSeeMoreOnTicker()
                         }
 
                         override fun onDismiss() {}
@@ -239,6 +241,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     })
                 }
             }
+            SomAnalytics.eventViewTicker()
         } else {
             ticker_info?.visibility = View.GONE
         }
@@ -255,7 +258,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             filterItem.type = it.key
 
-            if (it.isChecked || tabActive.equals(it.key, true) || paramOrder.statusList == it.orderStatusIdList) {
+            if (it.isChecked || tabActive.equals(it.key, true) || paramOrder.statusList == it.orderStatusIdList
+                    || it.orderStatusIdList.containsAll(paramOrder.statusList)) {
                 currentIndex = index
                 filterItem.setColorBorder(R.color.tkpd_main_green)
                 filterItem.isSelected = true
@@ -269,10 +273,10 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         paramOrder.statusList = it.orderStatusIdList
                     }
                 }
-            }  else {
+            }  /*else {
                 filterItem.setColorBorder(R.color.gray_background)
                 filterItem.isSelected = false
-            }
+            }*/
             refreshHandler?.startRefresh()
 
             listQuickFilter.add(filterItem)
@@ -343,6 +347,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         title_empty?.text = title
         desc_empty?.text = desc
         btn_cek_peluang?.visibility = View.GONE
+        SomAnalytics.eventViewEmptyState(tabActive)
     }
 
     private fun renderErrorOrderList(title: String, desc: String) {
@@ -394,6 +399,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onRefresh(view: View?) {
         isLoading = true
         loadOrderList()
+        if (isFilterApplied) filter_action_button?.rightIconDrawable = resources.getDrawable(R.drawable.ic_som_check)
+        else filter_action_button?.rightIconDrawable = null
     }
 
     private fun checkFilterApplied(paramOrder: SomListOrderParam): Boolean {

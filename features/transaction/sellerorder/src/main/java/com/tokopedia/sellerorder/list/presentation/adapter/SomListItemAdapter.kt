@@ -44,6 +44,16 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.label_status_order.text = somItemList[position].status
 
+        if (somItemList[position].cancelRequest == 1) {
+            holder.itemView.ticker_buyer_request_cancel?.apply {
+                visibility = View.VISIBLE
+                setTextDescription(holder.itemView.context.getString(R.string.buyer_request_cancel))
+                closeButtonVisibility = View.GONE
+            }
+        } else {
+            holder.itemView.ticker_buyer_request_cancel?.visibility = View.GONE
+        }
+
         if (somItemList[position].statusColor.isNotEmpty() && !somItemList[position].statusColor.equals(LABEL_EMPTY, true)) {
             holder.itemView.label_status_order.setBackgroundColor(Color.parseColor(somItemList[position].statusColor))
         }

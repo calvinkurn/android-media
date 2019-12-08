@@ -64,7 +64,23 @@ data class SomListOrder (
 
                     @SerializedName("order_product")
                     @Expose
-                    val listOrderProduct: List<OrderProduct> = listOf()
+                    val listOrderProduct: List<OrderProduct> = listOf(),
+
+                    @SerializedName("cancel_request")
+                    @Expose
+                    val cancelRequest: Int = -1,
+
+                    @SerializedName("cancel_request_note")
+                    @Expose
+                    val cancelRequestNote: String = "",
+
+                    @SerializedName("cancel_request_time")
+                    @Expose
+                    val cancelRequestTime: String = "",
+
+                    @SerializedName("cancel_request_origin_note")
+                    @Expose
+                    val cancelRequestOriginNote: String = ""
             ) {
                 data class OrderLabel (
                         @SerializedName("flag_name")

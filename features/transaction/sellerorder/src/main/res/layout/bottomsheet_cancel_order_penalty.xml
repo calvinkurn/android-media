@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginStart="@dimen/dp_16"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginEnd="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16">
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/subtitle_penalty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/som_penalty_subtitle"/>
+
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_cancel_notes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"/>
+        android:layout_below="@id/subtitle_penalty"/>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_penalty_explanation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tickerType="announcement"
+        app:tickerShapeType="loose"
+        android:layout_below="@id/tf_cancel_notes"
+        android:layout_marginTop="@dimen/dp_16"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/tf_cancel_notes">
+        android:layout_alignParentBottom="true">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_cancel_order_canceled"
