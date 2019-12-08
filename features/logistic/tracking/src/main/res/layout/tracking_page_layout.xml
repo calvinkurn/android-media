@@ -310,7 +310,6 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/label_live_tracking"
-                android:visibility="visible"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="filled"
                 android:visibility="gone"/>
