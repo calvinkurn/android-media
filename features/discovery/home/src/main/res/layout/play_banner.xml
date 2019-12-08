@@ -31,8 +31,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
-        android:visibility="gone"
         tools:visibility="visible"
+        app:use_controller="false"
         app:layout_constraintDimensionRatio="2:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -121,6 +121,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
     <FrameLayout
+        android:id="@+id/volume"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/home_background_rounded"
@@ -128,6 +129,8 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:alpha="0"
+        android:animateLayoutChanges="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description">
         <ImageView
@@ -135,4 +138,15 @@
             android:layout_height="20dp"
             app:srcCompat="@drawable/ic_volume_down"/>
     </FrameLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/video_player"
+        app:layout_constraintBottom_toBottomOf="@+id/video_player"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

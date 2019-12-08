@@ -12,6 +12,7 @@ class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
     private var trackingDataForCombination: List<Any> = emptyList()
     private var playCardHome: PlayCardHome? = null
     private var channel: DynamicHomeChannel.Channels? = null
+    val url = "https://www.w3schools.com/html/mov_bbb.mp4"
 
     override fun isCache(): Boolean {
         return isCache
