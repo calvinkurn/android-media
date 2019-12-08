@@ -35,8 +35,8 @@ class ReactNativeOfficialStoreCategoryActivity : ReactFragmentActivity<ReactNati
 
     object DeeplinkIntent {
 
-        @DeepLink(ApplinkConst.OFFICIAL_STORES_CATEGORY)
-        @JvmStatic
+        // @DeepLink(ApplinkConst.OFFICIAL_STORES_CATEGORY)
+        // @JvmStatic
         fun getOfficialStoreCategoryApplinkCallingIntent(context: Context, bundle: Bundle): Intent {
             return createApplinkCallingIntent(context, bundle)
         }
