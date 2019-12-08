@@ -341,7 +341,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             payment_info_recycler_view.visibility = View.GONE
             payment_seperator_1.visibility = View.GONE
         } else {
-            var paymentAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
+            var paymentAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LEFT_LAYOUT)
             payment_info_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             payment_info_recycler_view.adapter = paymentAdapter
             for (item in payMethod) {

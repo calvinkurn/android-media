@@ -2,42 +2,44 @@ package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
 import com.tokopedia.websocket.RxWebSocket
 import okhttp3.Interceptor
 
-class ProductPreviewViewModel(
-        val id: String,
-        val imageUrl: String,
-        val name: String,
-        val price: String,
-        val colorVariant: String,
-        val colorHexVariant: String,
-        val sizeVariant: String,
-        val url: String,
-        val productFsIsActive: Boolean = false,
-        val productFsImageUrl: String = ""
-) : PreviewViewModel {
+class SendableProductPreview(
+        val productPreview: ProductPreview
+) : SendablePreview {
 
     override fun type(attachmentPreviewFactory: AttachmentPreviewFactory): Int {
         return attachmentPreviewFactory.type(this)
     }
 
     override fun notEnoughRequiredData(): Boolean {
-        return name.isEmpty() || imageUrl.isEmpty() || price.isEmpty() || id.isEmpty()
+        return productPreview.notEnoughRequiredData()
+    }
+
+    fun hasVariant(): Boolean {
+        return !doesNotHaveVariant()
     }
 
     fun doesNotHaveVariant(): Boolean {
-        return colorVariant.isEmpty() && sizeVariant.isEmpty()
+        return productPreview.doesNotHaveVariant()
     }
 
-    fun hasColorVariant(): Boolean = colorVariant.isNotEmpty() && colorHexVariant.isNotEmpty()
+    fun hasColorVariant(): Boolean = productPreview.hasColorVariant()
 
-    fun hasSizeVariant(): Boolean = sizeVariant.isNotEmpty()
+    fun hasSizeVariant(): Boolean = productPreview.hasSizeVariant()
 
     private fun generateResultProduct(): ResultProduct {
-        return ResultProduct(id.toInt(), url, imageUrl, price, name)
+        return ResultProduct(
+                productPreview.id.toInt(),
+                productPreview.url,
+                productPreview.imageUrl,
+                productPreview.price,
+                productPreview.name
+        )
     }
 
     override fun sendTo(messageId: String, opponentId: String, interceptors: List<Interceptor>) {
@@ -47,8 +49,7 @@ class ProductPreviewViewModel(
                 generateResultProduct(),
                 startTime,
                 opponentId,
-                productFsIsActive,
-                productFsImageUrl
+                productPreview
         )
         RxWebSocket.send(productPreviewParam, interceptors)
     }
