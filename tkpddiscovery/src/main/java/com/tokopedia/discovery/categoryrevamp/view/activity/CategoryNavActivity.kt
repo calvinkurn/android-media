@@ -43,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -78,9 +79,14 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
     private val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+    private val EXTRA_PARENT_ID = " PARENT_ID"
+    private val EXTRA_PARENT_NAME = " PARENT_NAME"
 
     private var departmentId: String = ""
     private var departmentName: String = ""
+    private var parentId: String? = null
+    private var parentName: String? = null
+
     private var categoryUrl: String? = null
 
 
@@ -338,6 +344,11 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
                 departmentId = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
                 departmentName = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
+
+                if (bundle.containsKey(EXTRA_PARENT_ID)) {
+                    parentId = bundle.getString(EXTRA_PARENT_ID, "")
+                    parentName = bundle.getString(EXTRA_PARENT_NAME, "")
+                }
             }
         }
     }
