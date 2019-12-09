@@ -396,8 +396,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             actionShare(shareData, Constants.PackageName.Companion.PINTEREST, Constants.Label.Companion.PINTEREST);
         } else {
             shareApp(fragmentManager);
-            referralAnalytics.eventReferralAndShare(
-                    Constants.Values.Companion.SELECT_CHANNEL, Constants.Label.Companion.OTHER);
+            referralAnalytics.sendAnalyticsShareEventToGtm(Constants.Label.Companion.OTHER);
 
         }
     }
