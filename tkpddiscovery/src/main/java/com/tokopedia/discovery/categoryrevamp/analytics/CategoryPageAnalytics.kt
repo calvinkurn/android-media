@@ -418,4 +418,22 @@ class CategoryPageAnalytics {
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
+
+    fun createOpenScreenEventMap(parentId: String?,
+                              parentName: String?,
+                              categoryId: String,
+                              categoryName: String): Map<String, String>? {
+        val map = HashMap<String, String>()
+        map["category"] = "category"
+        map["categoryId"] = categoryId
+        map["parentGroupName"] = ""
+        map["parentGroupId"] = ""
+        map["subcategory"] = parentName ?: categoryName
+        map["subcategoryId"] = parentId ?: categoryId
+        if (parentId != null) {
+            map["parentGroupName"] = categoryName
+            map["parentGroupId"] = categoryId
+        }
+        return map
+    }
 }

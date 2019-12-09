@@ -56,30 +56,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         BaseCategorySectionFragment.SortAppliedListener,
         BottomSheetListener {
 
-    override fun onSortApplied(showTick: Boolean) {
-        searchNavContainer?.onSortSelected(showTick)
-    }
-
-    override fun hideBottomNavigation() {
-        searchNavContainer?.visibility = View.GONE
-    }
-
-    fun showBottomNavigation() {
-        searchNavContainer?.visibility = View.VISIBLE
-    }
-
-    override fun loadFilterItems(filters: java.util.ArrayList<Filter>?, searchParameter: MutableMap<String, String>?) {
-        bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
-    }
-
-    override fun setFilterResultCount(formattedResultCount: String?) {
-        bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
-    }
-
-    override fun launchFilterBottomSheet() {
-        bottomSheetFilterView?.launchFilterBottomSheet()
-    }
-
     private var categorySectionPagerAdapter: CategoryNavigationPagerAdapter? = null
     private var isForceSwipeToShop: Boolean = false
     private var activeTabPosition: Int = 0
@@ -116,20 +92,11 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     @Inject
     lateinit var categoryNavViewModel: CategoryNavViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_category_nav)
-        bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
-        searchNavContainer = findViewById(R.id.search_nav_container)
-        initInjector()
-        prepareView()
-        handleIntent(intent)
-    }
-
     companion object {
         private const val ORDER_BY = "ob"
         private const val IS_BANNED = 1
         private const val IS_ADULT = 1
+        private const val SCREEN_NAME = "/p"
         fun isBannedNavigationEnabled(context: Context): Boolean {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BANNED_NAVIGATION, true)
@@ -143,6 +110,28 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_category_nav)
+        bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
+        searchNavContainer = findViewById(R.id.search_nav_container)
+        initInjector()
+        prepareView()
+        handleIntent(intent)
+    }
+
+    override fun sendScreenAnalytics() {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, getDimensionMap())
+    }
+
+    override fun getScreenName(): String {
+        return SCREEN_NAME
+    }
+
+    private fun getDimensionMap(): Map<String, String>? {
+        return catAnalyticsInstance.createOpenScreenEventMap(parentId,parentName,departmentId,departmentName)
+    }
+
 
     private fun handleIntent(intent: Intent) {
         getExtrasFromIntent(intent)
@@ -150,7 +139,30 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private fun getExtrasFromIntent(intent: Intent) {
         searchParameter = getSearchParameterFromIntentUri(intent)
-        // isForceSwipeToShop = intent.getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false)
+    }
+
+    override fun onSortApplied(showTick: Boolean) {
+        searchNavContainer?.onSortSelected(showTick)
+    }
+
+    override fun hideBottomNavigation() {
+        searchNavContainer?.visibility = View.GONE
+    }
+
+    fun showBottomNavigation() {
+        searchNavContainer?.visibility = View.VISIBLE
+    }
+
+    override fun loadFilterItems(filters: java.util.ArrayList<Filter>?, searchParameter: MutableMap<String, String>?) {
+        bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
+    }
+
+    override fun setFilterResultCount(formattedResultCount: String?) {
+        bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
+    }
+
+    override fun launchFilterBottomSheet() {
+        bottomSheetFilterView?.launchFilterBottomSheet()
     }
 
     private fun getSearchParameterFromIntentUri(intent: Intent): SearchParameter {
