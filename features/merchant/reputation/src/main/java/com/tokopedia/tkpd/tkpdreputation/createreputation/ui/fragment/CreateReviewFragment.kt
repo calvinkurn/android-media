@@ -179,7 +179,8 @@ class CreateReviewFragment : BaseDaggerFragment() {
                         orderId,
                         productId.toString(10),
                         (position).toString(10),
-                        true
+                        true,
+                        false
                 )
                 reviewClickAt = position
                 shouldPlayAnimation = true
@@ -209,15 +210,20 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
         anonymous_cb.setOnClickListener {
             if (anonymous_cb.isChecked) {
-                reviewTracker.reviewOnAnonymousClickTracker(orderId, productId.toString(10))
+                reviewTracker.reviewOnAnonymousClickTracker(orderId, productId.toString(10), false)
             }
         }
 
         edit_text_review.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {
-                reviewTracker.reviewOnMessageChangedTracker(orderId, productId.toString(10), s.toString().isEmpty())
+            override fun afterTextChanged(text: Editable) {
+                reviewTracker.reviewOnMessageChangedTracker(
+                        orderId,
+                        productId.toString(10),
+                        text.toString().isEmpty(),
+                        false
+                )
 
-                if (s.toString().isEmpty() && !shouldIncreaseProgressBar) {
+                if (text.toString().isEmpty() && !shouldIncreaseProgressBar) {
                     shouldIncreaseProgressBar = true
                     stepper_review.progress = stepper_review.progress - 1
                 } else if (shouldIncreaseProgressBar) {
@@ -262,7 +268,8 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 reviewClickAt.toString(10),
                 reviewMessage.isEmpty(),
                 selectedImage.size.toString(10),
-                anonymous_cb.isChecked
+                anonymous_cb.isChecked,
+                false
         )
 
         createReviewViewModel.submitReview(DEFAULT_REVIEW_ID, reviewId.toString(), productId.toString(),
@@ -335,7 +342,8 @@ class CreateReviewFragment : BaseDaggerFragment() {
                             orderId,
                             productId.toString(10),
                             true,
-                            selectedImage.size.toString(10)
+                            selectedImage.size.toString(10),
+                            false
                     )
 
                     val imageListData = createReviewViewModel.getImageList(selectedImage)

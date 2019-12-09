@@ -312,9 +312,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 );
             }
         }
-
-        rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn(), categoryDataState.getName(),
-                categoryDataState.getCategoryId());
     }
 
     @Override
@@ -479,6 +476,12 @@ public class DigitalProductFragment extends BaseDaggerFragment
             performanceMonitoring.stopTrace();
             traceStop = true;
         }
+    }
+
+    @Override
+    public void sendOpenScreenEventTracking(CategoryData categoryData) {
+        rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn(), categoryData.getName(),
+                categoryData.getCategoryId());
     }
 
     @Override

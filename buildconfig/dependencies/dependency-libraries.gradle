@@ -66,6 +66,7 @@ ext {
             promotionsTarget        : ":libraries:promotions_target",
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
-            translator              : ":libraries:translator"
+            translator              : ":libraries:translator",
+            traceroute              : ":libraries:traceroute"
     ]
 }

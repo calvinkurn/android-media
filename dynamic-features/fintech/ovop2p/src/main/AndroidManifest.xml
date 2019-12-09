@@ -3,7 +3,6 @@
     package="com.tokopedia.ovop2p.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/ovop2p_app_name">
         <dist:fusing dist:include="true" />
