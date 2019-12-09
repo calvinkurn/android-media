@@ -127,7 +127,7 @@ import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping.view.*
  * Created by fwidjaja on 2019-09-30.
  */
 class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener,
-        SomBottomSheetCourierProblemsAdapter.ActionListener, SomDetailProductsCardAdapter.ActionListener  {
+        SomBottomSheetCourierProblemsAdapter.ActionListener  {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
