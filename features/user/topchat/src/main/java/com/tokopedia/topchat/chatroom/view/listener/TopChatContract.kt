@@ -13,7 +13,6 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.common.TopChatRouter
-import kotlin.collections.ArrayList
 
 /**
  * @author : Steven 11/12/18
@@ -53,6 +52,8 @@ interface TopChatContract {
         fun getShopName(): String
 
         fun sendAnalyticAttachmentSent(attachment: SendablePreview)
+
+        fun redirectToBrowser(url: String)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -93,7 +94,7 @@ interface TopChatContract {
                        onError: (Throwable) -> Unit,
                        onSuccessDeleteConversation: () -> Unit)
 
-        fun unblockChat(messageId : String,
+        fun unblockChat(messageId: String,
                         opponentRole: String,
                         onError: (Throwable) -> Unit,
                         onSuccessUnblockChat: (BlockedStatus) -> Unit)
@@ -109,8 +110,8 @@ interface TopChatContract {
                                onSuccess: (Boolean) -> Unit)
 
         fun sendAttachmentsAndMessage(messageId: String, sendMessage: String,
-                        startTime: String, opponentId: String,
-                        onSendingMessage : () -> Unit)
+                                      startTime: String, opponentId: String,
+                                      onSendingMessage: () -> Unit)
 
         fun initProductPreview(savedInstanceState: Bundle?)
 
@@ -123,5 +124,7 @@ interface TopChatContract {
         fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
 
         fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
+
+        fun onClickBannedProduct(liteUrl: String)
     }
 }

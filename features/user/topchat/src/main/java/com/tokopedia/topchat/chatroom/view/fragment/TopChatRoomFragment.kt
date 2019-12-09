@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -865,4 +866,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         pickImageToUpload()
     }
 
+    override fun onClickBannedProduct(liteUrl: String) {
+        presenter.onClickBannedProduct(liteUrl)
+    }
+
+    override fun redirectToBrowser(url: String) {
+        if (url.isEmpty()) return
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(intent)
+    }
 }

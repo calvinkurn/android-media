@@ -1,25 +1,27 @@
 package com.tokopedia.chat_common.view.adapter.viewholder
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel
-import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.design.image.SquareImageView
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.toPx
 
-class BannedProductAttachmentViewHolder(itemView: View?)
+class BannedProductAttachmentViewHolder(itemView: View?, val listener: ProductAttachmentListener)
     : BaseChatViewHolder<BannedProductAttachmentViewModel>(itemView) {
 
     private var container: ConstraintLayout? = null
     private var warning: Ticker? = null
     private var name: TextView? = null
     private var price: TextView? = null
-    private var btnBuy: ButtonCompat? = null
-    private var image: SquareImageView? = null
+    private var btnBuy: UnifyButton? = null
+    private var image: ImageView? = null
 
     init {
         container = itemView?.findViewById(R.id.bubble_product)
@@ -37,6 +39,12 @@ class BannedProductAttachmentViewHolder(itemView: View?)
         bindImage(viewModel)
         bindName(viewModel)
         bindPrice(viewModel)
+        bindSeamlessRedirect(viewModel)
+    }
+
+    private fun bindSeamlessRedirect(viewModel: BannedProductAttachmentViewModel) {
+        val liteUrl = viewModel.playStoreData.redirectUrl
+        btnBuy?.setOnClickListener { listener.onClickBannedProduct(liteUrl) }
     }
 
     private fun setAlignment(viewModel: BannedProductAttachmentViewModel) {
@@ -84,7 +92,7 @@ class BannedProductAttachmentViewHolder(itemView: View?)
     private fun bindImage(viewModel: BannedProductAttachmentViewModel) {
         image?.let {
             val imageUrl = viewModel.productImage
-            ImageHandler.loadImageRounded2(itemView.context, it, imageUrl)
+            ImageHandler.loadImageRounded2(itemView.context, it, imageUrl, 8.toPx().toFloat())
         }
     }
 

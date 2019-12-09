@@ -10,4 +10,5 @@ interface ProductAttachmentListener {
     fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel)
     fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel)
     fun trackSeenProduct(element: ProductAttachmentViewModel)
+    fun onClickBannedProduct(liteUrl: String)
 }

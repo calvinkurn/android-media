@@ -25,7 +25,6 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.data.preview.ProductPreview
-import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
@@ -36,6 +35,8 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
@@ -85,7 +86,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var getShopFollowingUseCase: GetShopFollowingUseCase,
         private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
         private var addToCartUseCase: AddToCartUseCase,
-        private var compressImageUseCase: CompressImageUseCase)
+        private var compressImageUseCase: CompressImageUseCase,
+        private var seamlessLoginUsecase: SeamlessLoginUsecase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     override fun clearText() {
@@ -450,7 +452,11 @@ class TopChatRoomPresenter @Inject constructor(
             onSuccess: (addToCartResult: AddToCartDataModel) -> Unit,
             shopId: Int
     ) {
-        val minOrder = if (element.minOrder <= 0) { 1 } else { element.minOrder }
+        val minOrder = if (element.minOrder <= 0) {
+            1
+        } else {
+            element.minOrder
+        }
 
         addToCardSubscriber = addToCartSubscriber(onError, onSuccess)
 
@@ -674,4 +680,22 @@ class TopChatRoomPresenter @Inject constructor(
         }
         initAttachmentPreview()
     }
+
+    override fun onClickBannedProduct(liteUrl: String) {
+        val seamlessLoginSubscriber = createSeamlessLoginSubscriber(liteUrl)
+        seamlessLoginUsecase.generateSeamlessUrl(liteUrl, seamlessLoginSubscriber)
+    }
+
+    private fun createSeamlessLoginSubscriber(liteUrl: String): SeamlessLoginSubscriber {
+        return object : SeamlessLoginSubscriber {
+            override fun onUrlGenerated(url: String) {
+                view.redirectToBrowser(url)
+            }
+
+            override fun onError(msg: String) {
+                view.redirectToBrowser(liteUrl)
+            }
+        }
+    }
+
 }
