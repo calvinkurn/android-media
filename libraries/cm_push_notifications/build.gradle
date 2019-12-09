@@ -17,6 +17,7 @@ android {
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
     }
@@ -54,9 +55,7 @@ dependencies {
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
 
-    implementation (rootProject.ext.miscDependencies.workManager) {
-        exclude group :'android.arch.work:work-runtime-ktx'
-    }
+    implementation (rootProject.ext.miscDependencies.workManager)
 
 }
 
