@@ -2819,7 +2819,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             sendAnalyticsOnClickRemoveIconCartItem();
         }
         List<CartItemData> cartItemDatas = Collections.singletonList(cartItemData);
-        List<CartItemData> allCartItemDataList = cartAdapter.getAllDisabledCartItemData();
+        List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
 
         DialogUnify dialog = getDisabledItemDialogDeleteConfirmation();
 

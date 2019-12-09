@@ -375,7 +375,9 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processDeleteCartItem(List<CartItemData> allCartItemData,
                                       List<CartItemData> removedCartItems,
-                                      ArrayList<String> appliedPromoOnDeletedProductList, boolean addWishList, boolean removeInsurance) {
+                                      ArrayList<String> appliedPromoOnDeletedProductList,
+                                      boolean addWishList,
+                                      boolean removeInsurance) {
         view.showProgressLoading();
         boolean removeAllItem = allCartItemData.size() == removedCartItems.size();
 
