@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.insurance.utils
+package com.tokopedia.purchase_platform.common.insurance.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -6,10 +6,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import androidx.core.graphics.drawable.DrawableCompat
-import androidx.appcompat.widget.AppCompatDrawableManager
 import android.text.TextUtils
 import android.view.View
 import android.webkit.WebSettings
@@ -19,10 +15,12 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatDrawableManager
+import androidx.core.graphics.drawable.DrawableCompat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.transaction.common.R
+import com.tokopedia.purchase_platform.common.R
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -162,11 +160,11 @@ fun openBottomSheetWebView(context: Context, appLinkUrl: String, title: String) 
     webView.webViewClient = object : WebViewClient() {
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            progressBar.show()
+            progressBar.visibility = View.VISIBLE
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
-            progressBar.hide()
+            progressBar.visibility = View.GONE
         }
     }
 
