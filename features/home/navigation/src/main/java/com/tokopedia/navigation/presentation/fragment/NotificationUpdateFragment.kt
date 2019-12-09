@@ -237,7 +237,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             hideLoading()
             _adapter.removeEmptyState()
 
-            if (it.list.isNotEmpty()) {
+            if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
                 val emptyState = EmptyUpdateState(
                         R.drawable.bg_empty_state_common,
