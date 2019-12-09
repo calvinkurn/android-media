@@ -6,8 +6,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedplus.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
@@ -26,6 +30,8 @@ import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
+import com.tokopedia.feedplus.view.viewmodel.VoteViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.utils.ErrorHandler
@@ -35,6 +41,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.vote.domain.usecase.SendVoteUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -52,7 +59,10 @@ class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private va
                                                   private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
                                                   private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
                                                   private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
-                                                  private val likeKolPostUseCase: LikeKolPostUseCase )
+                                                  private val likeKolPostUseCase: LikeKolPostUseCase,
+                                                  private val sendVoteUseCase: SendVoteUseCase,
+                                                  private val atcUseCase: AddToCartUseCase,
+                                                  private val deletePostUseCase: DeletePostUseCase)
     : BaseViewModel(baseDispatcher) {
 
     companion object {
@@ -69,7 +79,11 @@ class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private va
     val getFeedNextPageResp = MutableLiveData<Result<DynamicFeedDomainModel>>()
     val doFavoriteShopResp = MutableLiveData<Result<FeedPromotedShopViewModel>>()
     val followKolResp = MutableLiveData<Result<FollowKolViewModel>>()
+    val followKolRecomResp = MutableLiveData<Result<FollowKolViewModel>>()
     val likeKolResp = MutableLiveData<Result<LikeKolViewModel>>()
+    val voteResp = MutableLiveData<Result<VoteViewModel>>()
+    val deletePostResp = MutableLiveData<Result<DeletePostViewModel>>()
+    val atcResp = MutableLiveData<Result<AtcViewModel>>()
 
     private var currentCursor = ""
     private val pagingHandler: PagingHandler
@@ -192,6 +206,61 @@ class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private va
             likeKolResp.value = Success(results)
         }) {
             likeKolResp.value = Fail(it)
+        }
+    }
+
+    fun doFollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                followKolFromRecom(id, rowNumber, position)
+            }
+            followKolRecomResp.value = Success(results)
+        }) {
+            followKolRecomResp.value = Fail(it)
+        }
+    }
+
+    fun doUnfollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                unfollowKolFromRecom(id, rowNumber, position)
+            }
+            followKolRecomResp.value = Success(results)
+        }) {
+            followKolRecomResp.value = Fail(it)
+        }
+    }
+
+    fun doDeletePost(id: Int, rowNumber: Int) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                deletePost(id, rowNumber)
+            }
+            deletePostResp.value = Success(results)
+        }) {
+            deletePostResp.value = Fail(it)
+        }
+    }
+
+    fun doVote(rowNumber: Int, pollId: String, optionId: String) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                vote(optionId, pollId, rowNumber)
+            }
+            voteResp.value = Success(results)
+        }) {
+            voteResp.value = Fail(it)
+        }
+    }
+
+    fun doAtc(postTagItem: PostTagItem) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                atc(postTagItem)
+            }
+            atcResp.value = Success(results)
+        }) {
+            atcResp.value = Fail(it)
         }
     }
 
@@ -376,4 +445,109 @@ class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private va
         }
     }
 
+    private fun followKolFromRecom(id: Int, rowNumber: Int, position: Int): FollowKolViewModel{
+        try {
+            val data = FollowKolViewModel()
+            data.status = FollowKolPostGqlUseCase.PARAM_FOLLOW
+            data.position = position
+            data.rowNumber = rowNumber
+            val params = FollowKolPostGqlUseCase.getParam(id, data.status)
+            followKolPostGqlUseCase.clearRequest()
+            val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
+
+            val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
+            if (query.getData() != null) {
+                val followKolDomain = FollowKolDomain(query.getData().getData().getStatus())
+                if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
+                    data.isSuccess = true
+                    data.isFollow = true
+                }
+                else {
+                    data.errorMessage = context.getString(R.string
+                            .default_request_error_unknown)
+                }
+            } else {
+                data.errorMessage = ErrorHandler.getErrorMessage(context, Throwable())
+            }
+            return data
+        } catch (e: Throwable) {
+            throw e
+        }
+    }
+
+    private fun unfollowKolFromRecom(id: Int, rowNumber: Int, position: Int): FollowKolViewModel{
+        try {
+            val data = FollowKolViewModel()
+            data.status = FollowKolPostGqlUseCase.PARAM_UNFOLLOW
+            data.position = position
+            data.rowNumber = rowNumber
+            val params = FollowKolPostGqlUseCase.getParam(id, data.status)
+            followKolPostGqlUseCase.clearRequest()
+            val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
+
+            val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
+            if (query.getData() != null) {
+                val followKolDomain = FollowKolDomain(query.getData().getData().getStatus())
+                if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
+                    data.isSuccess = true
+                    data.isFollow = false
+                }
+                else {
+                    data.errorMessage = context.getString(R.string
+                            .default_request_error_unknown)
+                }
+            } else {
+                data.errorMessage = ErrorHandler.getErrorMessage(context, Throwable())
+            }
+            return data
+        } catch (e: Throwable) {
+            throw e
+        }
+    }
+
+    private fun vote(optionId: String, pollId: String, rowNumber: Int): VoteViewModel {
+        try {
+            val data = VoteViewModel()
+            data.optionId = optionId
+            data.rowNumber = rowNumber
+            val params = SendVoteUseCase.createParamsV1(pollId, optionId)
+            val response = sendVoteUseCase.createObservable(params).toBlocking().single()
+            data.voteModel = response
+            return data
+        } catch (e: Throwable) {
+            throw e
+        }
+    }
+
+    private fun deletePost(id: Int, rowNumber: Int): DeletePostViewModel {
+        try {
+            val data = DeletePostViewModel()
+            data.id = id
+            data.rowNumber = rowNumber
+            val params = DeletePostUseCase.createRequestParams(id.toString())
+            val isSuccess = deletePostUseCase.createObservable(params).toBlocking().single()
+            data.isSuccess = isSuccess
+            if (!isSuccess) {
+                data.errorMessage = context.getString(R.string.default_request_error_unknown)
+            }
+            return data
+        } catch (e: Throwable) {
+            throw e
+        }
+    }
+
+    private fun atc(postTagItem: PostTagItem): AtcViewModel {
+        try {
+            val data = AtcViewModel()
+            data.applink = postTagItem.applink
+            if (!postTagItem.shop.isEmpty()) {
+                val params = AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId)
+                val result = atcUseCase.createObservable(params).toBlocking().single()
+                data.isSuccess = result.data.success == 0
+            }
+            return data
+        } catch (e: Throwable) {
+            throw e
+        }
+    }
 }

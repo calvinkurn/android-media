@@ -106,6 +106,7 @@ import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
@@ -352,6 +353,71 @@ class FeedPlusFragment : BaseDaggerFragment(),
                             onSuccessLikeDislikeKolPost(data.rowNumber)
                         } else {
                             onErrorLikeDislikeKolPost(data.errorMessage)
+                        }
+                    }
+                    is Fail -> {
+                        val message = it.throwable.localizedMessage
+                        view?.let {
+                            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            })
+
+            followKolRecomResp.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Success -> {
+                        val data = it.data
+                        if (data.isSuccess) {
+                            onSuccessFollowKolFromRecommendation(data)
+                        } else {
+                            onErrorFollowUnfollowKol(data)
+                        }
+                    }
+                    is Fail -> {
+                        val message = it.throwable.localizedMessage
+                        view?.let {
+                            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            })
+
+            deletePostResp.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Success -> {
+                        val data = it.data
+                        if (data.isSuccess) {
+                            onSuccessDeletePost(data.rowNumber)
+                        } else {
+                            onErrorDeletePost(data)
+                        }
+                    }
+                    is Fail -> {
+                        val message = it.throwable.localizedMessage
+                        view?.let {
+                            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            })
+
+            voteResp.observe(lifecycleOwner, Observer {
+                when(it) {
+                    is Success -> onSuccessSendVote(it.data.rowNumber, it.data.optionId, it.data.voteModel)
+                    is Fail -> onErrorSendVote(it.throwable.localizedMessage)
+                }
+
+            })
+
+            atcResp.observe(lifecycleOwner, Observer {
+                when(it) {
+                    is Success -> {
+                        val data = it.data
+                        if (data.isSuccess) {
+                            onAddToCartSuccess()
+                        } else {
+                            onAddToCartFailed(data.applink)
                         }
                     }
                     is Fail -> {
@@ -889,7 +955,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         dialog.setBtnOk(getString(R.string.button_delete))
         dialog.setBtnCancel(getString(R.string.cancel))
         dialog.setOnOkClickListener {
-            presenter.deletePost(id, rowNumber)
+            feedOnboardingPresenter.doDeletePost(id, rowNumber)
             dialog.dismiss()
         }
         dialog.setOnCancelClickListener { dialog.dismiss() }
@@ -912,15 +978,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
-        presenter.sendVote(rowNumber, pollId, optionId)
-    }
-
-    override fun onSuccessFollowKolFromRecommendation(rowNumber: Int, position: Int, isFollow: Boolean) {
-        if (adapter.getlist()[rowNumber] is FeedRecommendationViewModel) {
-            val (_, cards) = adapter.getlist()[rowNumber] as FeedRecommendationViewModel
-            cards[position].cta.isFollow = isFollow
-            adapter.notifyItemChanged(rowNumber, position)
-        }
+        feedOnboardingPresenter.doVote(rowNumber, pollId, optionId)
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
@@ -961,55 +1019,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
             activity!!.startActivityForResult(intent, REQUEST_LOGIN)
         }
-    }
-
-    override fun onSuccessSendVote(rowNumber: Int, optionId: String,
-                                   voteStatisticDomainModel: VoteStatisticDomainModel) {
-        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, _, _, _, _, contentList) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            for (basePostViewModel in contentList) {
-                if (basePostViewModel is PollContentViewModel) {
-                    basePostViewModel.voted = true
-
-                    var totalVoter: Int
-                    try {
-                        totalVoter = Integer.valueOf(voteStatisticDomainModel.totalParticipants)
-                    } catch (ignored: NumberFormatException) {
-                        totalVoter = 0
-                    }
-
-                    basePostViewModel.totalVoterNumber = totalVoter
-
-                    for (i in 0 until basePostViewModel.optionList.size) {
-                        val optionViewModel = basePostViewModel.optionList[i]
-
-                        optionViewModel.selected = if (optionId == optionViewModel.optionId)
-                            PollContentOptionViewModel.SELECTED
-                        else
-                            PollContentOptionViewModel.UNSELECTED
-
-                        var newPercentage = 0
-                        try {
-                            newPercentage = Integer.valueOf(
-                                    voteStatisticDomainModel.listOptions[i].percentage
-                            )
-                        } catch (ignored: NumberFormatException) {
-                        } catch (ignored: IndexOutOfBoundsException) {
-                        }
-
-                        optionViewModel.percentage = newPercentage
-                    }
-                }
-            }
-
-            adapter.notifyItemChanged(rowNumber)
-        }
-
-
-    }
-
-    override fun onErrorSendVote(message: String) {
-        NetworkErrorHelper.showSnackbar(activity, message)
     }
 
     override fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int) {
@@ -1108,9 +1117,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val userIdInt = id.toIntOrZero()
 
             if (isFollow) {
-                presenter.unfollowKolFromRecommendation(userIdInt, positionInFeed, adapterPosition)
+                feedOnboardingPresenter.doUnfollowKolFromRecommendation(userIdInt, positionInFeed, adapterPosition)
             } else {
-                presenter.followKolFromRecommendation(userIdInt, positionInFeed, adapterPosition)
+                feedOnboardingPresenter.doFollowKolFromRecommendation(userIdInt, positionInFeed, adapterPosition)
             }
 
         } else if (type == FollowCta.AUTHOR_SHOP) {
@@ -1347,7 +1356,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 "",
                 authorType
         )
-        presenter.addPostTagItemToCart(postTagItem)
+        feedOnboardingPresenter.doAtc(postTagItem)
     }
 
     override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int,
@@ -1448,36 +1457,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
             trackCardPostClick(positionInFeed, trackingPostModel)
         }
-    }
-
-    override fun onAddToCartSuccess() {
-        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-    }
-
-    override fun onAddToCartFailed(pdpAppLink: String) {
-        onGoToLink(pdpAppLink)
-    }
-
-    override fun onSuccessDeletePost(rowNumber: Int) {
-        adapter.getlist().removeAt(rowNumber)
-        adapter.notifyItemRemoved(rowNumber)
-        val snackbar = ToasterNormal.make(view,
-                getString(R.string.feed_post_deleted),
-                BaseToaster.LENGTH_LONG
-        )
-        snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
-        if (adapter.getlist().isEmpty()) {
-            showRefresh()
-            onRefresh()
-        }
-    }
-
-    override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
-        ToasterError.make(view, errorMessage, ToasterError.LENGTH_LONG)
-                .setAction(R.string.title_try_again) {
-                    presenter.deletePost(id, rowNumber)
-                }
-                .show()
     }
 
     override fun onInterestPickItemClicked(item: InterestPickDataViewModel) {
@@ -1639,7 +1618,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(context, e))
     }
 
-    fun onSuccessFollowUnfollowKol(rowNumber: Int) {
+    private fun onSuccessFollowUnfollowKol(rowNumber: Int) {
         if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
             val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
             header.followCta.isFollow = !header.followCta.isFollow
@@ -1647,7 +1626,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    fun onErrorFollowUnfollowKol(data: FollowKolViewModel) {
+    private fun onErrorFollowUnfollowKol(data: FollowKolViewModel) {
         view?.let {
             Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
                 if (data.status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
@@ -1658,7 +1637,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
+    private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
             val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
             val like = footer.like
@@ -1684,10 +1663,97 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    fun onErrorLikeDislikeKolPost(errorMessage: String) {
+    private fun onErrorLikeDislikeKolPost(errorMessage: String) {
         view?.let {
             Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
+    }
+
+    private fun onSuccessFollowKolFromRecommendation(data: FollowKolViewModel) {
+        if (adapter.getlist()[data.rowNumber] is FeedRecommendationViewModel) {
+            val (_, cards) = adapter.getlist()[data.rowNumber] as FeedRecommendationViewModel
+            cards[data.position].cta.isFollow = data.isFollow
+            adapter.notifyItemChanged(data.rowNumber, data.position)
+        }
+    }
+
+    private fun onSuccessDeletePost(rowNumber: Int) {
+        adapter.getlist().removeAt(rowNumber)
+        adapter.notifyItemRemoved(rowNumber)
+        val snackbar = ToasterNormal.make(view,
+                getString(R.string.feed_post_deleted),
+                BaseToaster.LENGTH_LONG
+        )
+        snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
+        if (adapter.getlist().isEmpty()) {
+            showRefresh()
+            onRefresh()
+        }
+    }
+
+    private fun onErrorDeletePost(data : DeletePostViewModel) {
+        view?.let {
+            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+                    feedOnboardingPresenter.doDeletePost(data.id, data.rowNumber)
+            })
+        }
+    }
+
+    private fun onSuccessSendVote(rowNumber: Int, optionId: String,
+                                   voteStatisticDomainModel: VoteStatisticDomainModel) {
+        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
+            val (_, _, _, _, _, _, contentList) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+            for (basePostViewModel in contentList) {
+                if (basePostViewModel is PollContentViewModel) {
+                    basePostViewModel.voted = true
+
+                    var totalVoter: Int
+                    try {
+                        totalVoter = Integer.valueOf(voteStatisticDomainModel.totalParticipants)
+                    } catch (ignored: NumberFormatException) {
+                        totalVoter = 0
+                    }
+
+                    basePostViewModel.totalVoterNumber = totalVoter
+
+                    for (i in 0 until basePostViewModel.optionList.size) {
+                        val optionViewModel = basePostViewModel.optionList[i]
+
+                        optionViewModel.selected = if (optionId == optionViewModel.optionId)
+                            PollContentOptionViewModel.SELECTED
+                        else
+                            PollContentOptionViewModel.UNSELECTED
+
+                        var newPercentage = 0
+                        try {
+                            newPercentage = Integer.valueOf(
+                                    voteStatisticDomainModel.listOptions[i].percentage
+                            )
+                        } catch (ignored: NumberFormatException) {
+                        } catch (ignored: IndexOutOfBoundsException) {
+                        }
+
+                        optionViewModel.percentage = newPercentage
+                    }
+                }
+            }
+
+            adapter.notifyItemChanged(rowNumber)
+        }
+    }
+
+    private fun onErrorSendVote(message: String) {
+        view?.let {
+            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun onAddToCartSuccess() {
+        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+    }
+
+    private fun onAddToCartFailed(pdpAppLink: String) {
+        onGoToLink(pdpAppLink)
     }
 
     private fun goToContentReport(contentId: Int) {

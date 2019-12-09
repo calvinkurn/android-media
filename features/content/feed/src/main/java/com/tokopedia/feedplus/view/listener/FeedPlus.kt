@@ -7,8 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.topads.sdk.domain.model.Data
-import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 
 import java.util.ArrayList
 
@@ -23,11 +21,6 @@ interface FeedPlus {
         fun sendMoEngageOpenFeedEvent()
 
         fun stopTracePerformanceMon()
-
-        fun onAddToCartSuccess()
-
-        fun onAddToCartFailed(pdpAppLink: String)
-
 
         interface Polling {
 
@@ -45,8 +38,6 @@ interface FeedPlus {
         fun onErrorGetFeedFirstPage(errorMessage: String)
 
         fun sendFeedPlusScreenTracking()
-
-        fun onSuccessFollowKolFromRecommendation(rowNumber: Int, position: Int, isFollow: Boolean)
 
         fun onSearchShopButtonClicked()
 
@@ -68,8 +59,6 @@ interface FeedPlus {
 
         fun hideAdapterLoading()
 
-        fun getString(msg_network_error: Int): String
-
         fun getColor(color: Int): Int
 
         fun onShowEmpty()
@@ -90,19 +79,10 @@ interface FeedPlus {
 
         fun onGoToLogin()
 
-        fun onSuccessSendVote(rowNumber: Int, optionId: String,
-                              voteStatisticDomainModel: VoteStatisticDomainModel)
-
-        fun onErrorSendVote(message: String)
-
         fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int)
 
         fun onErrorToggleFavoriteShop(message: String, rowNumber: Int, adapterPosition: Int,
                                       shopId: String)
-
-        fun onSuccessDeletePost(rowNumber: Int)
-
-        fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int)
 
     }
 
@@ -110,20 +90,11 @@ interface FeedPlus {
 
         fun setCursor(cursor: String)
 
-        fun sendVote(rowNumber: Int, pollId: String, optionId: String)
-
-        fun followKolFromRecommendation(id: Int, rowNumber: Int, position: Int)
-
-        fun unfollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int)
-
         fun toggleFavoriteShop(rowNumber: Int, shopId: String)
 
         fun toggleFavoriteShop(rowNumber: Int, adapterPosition: Int, shopId: String)
 
         fun trackAffiliate(url: String)
 
-        fun addPostTagItemToCart(postTagItem: PostTagItem)
-
-        fun deletePost(id: Int, rowNumber: Int)
     }
 }

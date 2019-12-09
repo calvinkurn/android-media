@@ -47,8 +47,7 @@ internal constructor(@ApplicationContext private val context: Context,
                      private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
                      private val sendVoteUseCase: SendVoteUseCase,
                      private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
-                     private val atcUseCase: AddToCartUseCase,
-                     private val deletePostUseCase: DeletePostUseCase) : BaseDaggerPresenter<FeedPlus.View>(), FeedPlus.Presenter {
+                     private val atcUseCase: AddToCartUseCase) : BaseDaggerPresenter<FeedPlus.View>(), FeedPlus.Presenter {
     private var currentCursor = ""
     private lateinit var viewListener: FeedPlus.View
 
@@ -67,96 +66,6 @@ internal constructor(@ApplicationContext private val context: Context,
 
     override fun setCursor(cursor: String) {
         this.currentCursor = cursor
-    }
-
-    override fun followKolFromRecommendation(id: Int, rowNumber: Int, position: Int) {
-        val status = FollowKolPostGqlUseCase.PARAM_FOLLOW
-        followKolPostGqlUseCase.clearRequest()
-        followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, status))
-        followKolPostGqlUseCase.execute(object: Subscriber<GraphqlResponse>() {
-            override fun onNext(response: GraphqlResponse) {
-                val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
-                if (query.getData() != null) {
-                    val followKolDomain = FollowKolDomain(query.getData().getData().getStatus())
-                    if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
-                        view.onSuccessFollowKolFromRecommendation(
-                                rowNumber,
-                                position,
-                                status == FollowKolPostGqlUseCase.PARAM_FOLLOW
-                        )
-                    } else {
-//                        view.onErrorFollowKol(context.getString(R.string
-//                                .failed_to_follow), id, status, rowNumber)
-                    }
-                } else {
-//                    view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, Throwable()), id,
-//                            status, rowNumber)
-                }
-            }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable?) {
-//                view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, e), id,
-//                        FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber)
-            }
-        })
-
-    }
-
-    override fun unfollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int) {
-        val status = FollowKolPostGqlUseCase.PARAM_UNFOLLOW
-        followKolPostGqlUseCase.clearRequest()
-        followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, status))
-        followKolPostGqlUseCase.execute(object: Subscriber<GraphqlResponse>() {
-            override fun onNext(response: GraphqlResponse) {
-                val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
-                if (query.getData() != null) {
-                    val followKolDomain = FollowKolDomain(query.getData().getData().getStatus())
-                    if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
-                        view.onSuccessFollowKolFromRecommendation(
-                                rowNumber,
-                                position,
-                                status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW
-                        )
-                    } else {
-//                        view.onErrorFollowKol(context.getString(R.string
-//                                .failed_to_unfollow), id, status, rowNumber)
-                    }
-                } else {
-//                    view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, Throwable()), id,
-//                            status, rowNumber)
-                }
-            }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable?) {
-//                view.onErrorFollowKol(ErrorHandler.getErrorMessage(context, e), id,
-//                        FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber)
-            }
-        })
-
-    }
-
-    override fun sendVote(rowNumber: Int, pollId: String, optionId: String) {
-        sendVoteUseCase.execute(
-                SendVoteUseCase.createParamsV1(pollId, optionId),
-                object: Subscriber<VoteStatisticDomainModel>() {
-                    override fun onNext(t: VoteStatisticDomainModel) {
-                        view.onSuccessSendVote(rowNumber, optionId, t)
-                    }
-
-                    override fun onCompleted() {
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        view.onErrorSendVote(ErrorHandler.getErrorMessage(context, e))
-                    }
-                }
-        )
     }
 
     override fun toggleFavoriteShop(rowNumber: Int, shopId: String) {
@@ -208,52 +117,4 @@ internal constructor(@ApplicationContext private val context: Context,
                 TrackPostClickSubscriber())
     }
 
-    override fun addPostTagItemToCart(postTagItem: PostTagItem) {
-        if (!postTagItem.shop.isEmpty()) {
-            atcUseCase.execute(
-                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId),
-                    object : Subscriber<AddToCartDataModel>() {
-                        override fun onCompleted() {
-
-                        }
-
-                        override fun onError(e: Throwable) {
-                            if (GlobalConfig.isAllowDebuggingTools()) e.printStackTrace()
-                            view.onAddToCartFailed(postTagItem.applink)
-                        }
-
-                        override fun onNext(addToCartDataModel: AddToCartDataModel) {
-                            if (addToCartDataModel.data.success == 0) {
-                                view.onAddToCartFailed(postTagItem.applink)
-                            } else {
-                                view.onAddToCartSuccess()
-                            }
-                        }
-                    }
-            )
-        } else {
-            view.onAddToCartFailed(postTagItem.applink)
-        }
-    }
-
-    override fun deletePost(id: Int, rowNumber: Int) {
-        deletePostUseCase.execute(
-                DeletePostUseCase.createRequestParams(id.toString()),
-                object: Subscriber<Boolean>() {
-                    override fun onNext(isSuccess: Boolean) {
-                        if (isSuccess.not()) {
-                            onError(RuntimeException())
-                            return
-                        }
-                        view.onSuccessDeletePost(rowNumber)
-                    }
-
-                    override fun onCompleted() {
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        view.onErrorDeletePost(ErrorHandler.getErrorMessage(context, e), id, rowNumber)
-                    }
-                })
-    }
 }
