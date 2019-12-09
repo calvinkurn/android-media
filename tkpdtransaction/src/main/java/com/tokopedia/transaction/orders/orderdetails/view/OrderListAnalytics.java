@@ -424,7 +424,7 @@ public class OrderListAnalytics {
                 ECOMMERCE, DataLayer.mapOf(
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
-                                        LIST, item.getName(),
+                                        LIST, item.getName()
                                 ),
                                 PRODUCTS, DataLayer.listOf(
                                         DataLayer.mapOf(
