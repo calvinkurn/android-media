@@ -385,10 +385,9 @@ public class CartListPresenter implements ICartListPresenter {
         for (CartItemData cartItemData : removedCartItems) {
             toBeDeletedCartIds.add(cartItemData.getOriginData().getCartId());
         }
-        RemoveCartRequest removeCartRequest = new RemoveCartRequest.Builder()
-                .cartIds(toBeDeletedCartIds)
-                .addWishlist(addWishList ? 1 : 0)
-                .build();
+        RemoveCartRequest removeCartRequest = new RemoveCartRequest();
+        removeCartRequest.setAddWishlist(addWishList ? 1 : 0);
+        removeCartRequest.setCartIds(toBeDeletedCartIds);
         TKPDMapParam<String, String> paramDelete = new TKPDMapParam<>();
         paramDelete.put(PARAM_PARAMS, new Gson().toJson(removeCartRequest));
 
@@ -410,11 +409,11 @@ public class CartListPresenter implements ICartListPresenter {
         view.showProgressLoading();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
-            updateCartRequestList.add(new UpdateCartRequest.Builder()
-                    .cartId(data.getOriginData().getCartId())
-                    .notes(data.getUpdatedData().getRemark())
-                    .quantity(data.getUpdatedData().getQuantity())
-                    .build());
+            UpdateCartRequest updateCartRequest = new UpdateCartRequest();
+            updateCartRequest.setCartId(data.getOriginData().getCartId());
+            updateCartRequest.setNotes(data.getUpdatedData().getRemark());
+            updateCartRequest.setQuantity(data.getUpdatedData().getQuantity());
+            updateCartRequestList.add(updateCartRequest);
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
         paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
@@ -438,11 +437,11 @@ public class CartListPresenter implements ICartListPresenter {
         view.showProgressLoading();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
-            updateCartRequestList.add(new UpdateCartRequest.Builder()
-                    .cartId(data.getOriginData().getCartId())
-                    .notes(data.getUpdatedData().getRemark())
-                    .quantity(data.getUpdatedData().getQuantity())
-                    .build());
+            UpdateCartRequest updateCartRequest = new UpdateCartRequest();
+            updateCartRequest.setCartId(data.getOriginData().getCartId());
+            updateCartRequest.setNotes(data.getUpdatedData().getRemark());
+            updateCartRequest.setQuantity(data.getUpdatedData().getQuantity());
+            updateCartRequestList.add(updateCartRequest);
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
         paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
@@ -467,11 +466,11 @@ public class CartListPresenter implements ICartListPresenter {
         view.showProgressLoading();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
-            updateCartRequestList.add(new UpdateCartRequest.Builder()
-                    .cartId(data.getOriginData().getCartId())
-                    .notes(data.getUpdatedData().getRemark())
-                    .quantity(data.getUpdatedData().getQuantity())
-                    .build());
+            UpdateCartRequest updateCartRequest = new UpdateCartRequest();
+            updateCartRequest.setCartId(data.getOriginData().getCartId());
+            updateCartRequest.setNotes(data.getUpdatedData().getRemark());
+            updateCartRequest.setQuantity(data.getUpdatedData().getQuantity());
+            updateCartRequestList.add(updateCartRequest);
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
         paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
@@ -574,11 +573,11 @@ public class CartListPresenter implements ICartListPresenter {
         }
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
-            updateCartRequestList.add(new UpdateCartRequest.Builder()
-                    .cartId(data.getOriginData().getCartId())
-                    .notes(data.getUpdatedData().getRemark())
-                    .quantity(data.getUpdatedData().getQuantity())
-                    .build());
+            UpdateCartRequest updateCartRequest = new UpdateCartRequest();
+            updateCartRequest.setCartId(data.getOriginData().getCartId());
+            updateCartRequest.setNotes(data.getUpdatedData().getRemark());
+            updateCartRequest.setQuantity(data.getUpdatedData().getQuantity());
+            updateCartRequestList.add(updateCartRequest);
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
         paramUpdate.put(UpdateAndReloadCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
@@ -805,11 +804,11 @@ public class CartListPresenter implements ICartListPresenter {
 
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : view.getSelectedCartDataList()) {
-            updateCartRequestList.add(new UpdateCartRequest.Builder()
-                    .cartId(data.getOriginData().getCartId())
-                    .notes(data.getUpdatedData().getRemark())
-                    .quantity(data.getUpdatedData().getQuantity())
-                    .build());
+            UpdateCartRequest updateCartRequest = new UpdateCartRequest();
+            updateCartRequest.setCartId(data.getOriginData().getCartId());
+            updateCartRequest.setNotes(data.getUpdatedData().getRemark());
+            updateCartRequest.setQuantity(data.getUpdatedData().getQuantity());
+            updateCartRequestList.add(updateCartRequest);
         }
 
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();

@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view;
 
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
 
@@ -52,11 +53,11 @@ public class UpdateCartIntentService extends JobIntentService {
             List<CartItemData> cartItemDataList = intent.getParcelableArrayListExtra(EXTRA_CART_ITEM_DATA_LIST);
             List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
             for (CartItemData data : cartItemDataList) {
-                updateCartRequestList.add(new UpdateCartRequest.Builder()
-                        .cartId(data.getOriginData().getCartId())
-                        .notes(data.getUpdatedData().getRemark())
-                        .quantity(data.getUpdatedData().getQuantity())
-                        .build());
+                UpdateCartRequest updateCartRequest = new UpdateCartRequest();
+                updateCartRequest.setCartId(data.getOriginData().getCartId());
+                updateCartRequest.setNotes(data.getUpdatedData().getRemark());
+                updateCartRequest.setQuantity(data.getUpdatedData().getQuantity());
+                updateCartRequestList.add(updateCartRequest);
             }
             TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
             paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));

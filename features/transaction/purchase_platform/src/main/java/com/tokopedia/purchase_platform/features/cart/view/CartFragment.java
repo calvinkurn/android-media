@@ -1832,16 +1832,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void goToCouponList() {
-        List<CartItemData> cartItemDataList = getSelectedCartDataList();
-        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
-        for (CartItemData data : cartItemDataList) {
-            updateCartRequestList.add(new UpdateCartRequest.Builder()
-                    .cartId(data.getOriginData().getCartId())
-                    .notes(data.getUpdatedData().getRemark())
-                    .quantity(data.getUpdatedData().getQuantity())
-                    .build());
-        }
-
         Promo promo = generateCheckPromoFirstStepParam();
 
         Intent intent = getIntentToPromoList(promo);
