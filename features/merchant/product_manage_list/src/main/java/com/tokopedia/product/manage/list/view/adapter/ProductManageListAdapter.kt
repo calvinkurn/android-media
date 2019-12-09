@@ -30,4 +30,14 @@ class ProductManageListAdapter(baseListAdapterTypeFactory: ProductManageFragment
         }
     }
 
+    fun updateFeaturedProduct(productId: String, isFeaturedProduct: Boolean) {
+        data.forEachIndexed { index, productManageViewModel ->
+            if (productManageViewModel.id.equals(productId, ignoreCase = true)) {
+                productManageViewModel.isFeatureProduct = isFeaturedProduct
+                notifyItemChanged(index)
+                return
+            }
+        }
+    }
+
 }
