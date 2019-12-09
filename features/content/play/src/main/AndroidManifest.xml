@@ -11,7 +11,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:host="@string/host_play"
-                    android:path="@string/path_play_detail"
+                    android:pathPattern="@string/path_play_detail"
                     android:scheme="@string/internal_scheme"/>
             </intent-filter>
         </activity>
