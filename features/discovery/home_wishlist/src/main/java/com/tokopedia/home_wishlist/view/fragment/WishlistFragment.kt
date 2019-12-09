@@ -573,8 +573,8 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun enableScrollFlagsSearch(){
-        val layoutParam = collapse?.layoutParams as AppBarLayout.LayoutParams
-        layoutParam.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+        val layoutParam = collapse?.layoutParams as? AppBarLayout.LayoutParams
+        layoutParam?.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
         collapse?.layoutParams = layoutParam
     }
 
