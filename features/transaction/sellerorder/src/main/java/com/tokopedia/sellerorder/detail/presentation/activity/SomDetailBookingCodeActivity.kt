@@ -16,7 +16,7 @@ class SomDetailBookingCodeActivity: BaseSimpleActivity() {
             bundle = intent.extras
         } else {
             bundle.putString(SomConsts.PARAM_BOOKING_CODE, "")
-            bundle.putString(SomConsts.PARAM_BOOKING_TYPE, "")
+            bundle.putString(SomConsts.PARAM_BARCODE_TYPE, "")
         }
         return SomDetailBookingCodeFragment.newInstance(bundle)
     }

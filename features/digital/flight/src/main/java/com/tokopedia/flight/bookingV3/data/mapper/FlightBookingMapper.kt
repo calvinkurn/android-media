@@ -2,11 +2,11 @@ package com.tokopedia.flight.bookingV3.data.mapper
 
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.flight.booking.constant.FlightBookingPassenger
-import com.tokopedia.flight.booking.data.cloud.entity.Amenity
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
+import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger
+import com.tokopedia.flight.bookingV2.data.cloud.entity.Amenity
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityViewModel
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity

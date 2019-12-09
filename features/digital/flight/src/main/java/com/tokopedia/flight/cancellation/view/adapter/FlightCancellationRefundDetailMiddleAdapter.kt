@@ -1,12 +1,12 @@
 package com.tokopedia.flight.cancellation.view.adapter
 
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel
 import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationTitleContentEntity
 import com.tokopedia.flight.orderlist.data.cloud.entity.KeyValueEntity
 

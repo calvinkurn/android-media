@@ -256,7 +256,10 @@ public class CartListPresenter implements ICartListPresenter {
             view.showProgressLoading();
         }
 
-        compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(RequestParams.EMPTY)
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetCartListSimplifiedUseCase.PARAM_SELECTED_CART_ID, cartId);
+
+        compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -372,7 +375,9 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processDeleteCartItem(List<CartItemData> allCartItemData,
                                       List<CartItemData> removedCartItems,
-                                      ArrayList<String> appliedPromoOnDeletedProductList, boolean addWishList, boolean removeInsurance) {
+                                      ArrayList<String> appliedPromoOnDeletedProductList,
+                                      boolean addWishList,
+                                      boolean removeInsurance) {
         view.showProgressLoading();
         boolean removeAllItem = allCartItemData.size() == removedCartItems.size();
 

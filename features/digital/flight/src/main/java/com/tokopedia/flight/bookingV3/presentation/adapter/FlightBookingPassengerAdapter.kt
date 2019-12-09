@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
-import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_flight_booking_v3_passenger.view.*

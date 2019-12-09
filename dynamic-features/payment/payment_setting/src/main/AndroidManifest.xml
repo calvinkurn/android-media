@@ -3,7 +3,6 @@
     package="com.tokopedia.payment.setting.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/payment_settings_title">
         <dist:fusing dist:include="true" />

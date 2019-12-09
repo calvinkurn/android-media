@@ -108,8 +108,6 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                             actionListener.onShowBookingCode(
                                     item.dataObject.onlineBookingCode,
                                     item.dataObject.onlineBookingType)
-                            // intent ke BookingCodeActivity?
-                            // startActivity(BookingCodeActivity.createInstance(this, codeData))
                         }
                     }
 
