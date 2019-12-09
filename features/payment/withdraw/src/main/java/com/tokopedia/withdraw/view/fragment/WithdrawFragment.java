@@ -734,7 +734,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 if (data.getStatusInt() == -1 || data.getStatusInt() == 1
                         || data.getStatusInt() == 3 || data.getStatusInt() == 5
                         || data.getStatusInt() == 6) {
-                    setProgramStatus(getString(R.string.swd_earn_pint_on_withdraw),
+                    setProgramStatus(getString(R.string.swd_earn_point_on_withdraw),
                             getString(R.string.bri_cek));
                 }
                 if (data.getStatusInt() == 2 || data.getStatusInt() == 0) {
