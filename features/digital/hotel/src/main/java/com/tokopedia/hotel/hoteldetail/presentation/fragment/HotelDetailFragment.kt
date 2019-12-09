@@ -459,15 +459,16 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private fun setupPriceButton(data: List<HotelRoom>) {
         hideLoadingContainerBottom()
 
+        var isAvailable = false
         if (data.isNotEmpty()) {
             showRoomAvailableContainerBottom()
             roomPrice = data.first().roomPrice.roomPrice
             roomPriceAmount = round(data.first().roomPrice.priceAmount).toLong().toString()
-            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
-
             tv_hotel_price.text = roomPrice
 
             if (data[0].additionalPropertyInfo.isEnabled) {
+                isAvailable = true
+
                 btn_see_room.text = getString(R.string.hotel_detail_show_room_text)
                 btn_see_room.buttonCompatType = ButtonCompat.TRANSACTION
                 btn_see_room.setOnClickListener {
@@ -484,9 +485,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 btn_see_room.buttonCompatType = ButtonCompat.DISABLE
             }
         } else {
-            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, false, "0", false)
             showRoomNotAvailableContainerBottom()
         }
+
+        trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, isAvailable, "0", data.first().additionalPropertyInfo.isDirectPayment)
 
         if (!isButtonEnabled) {
             btn_see_room.isEnabled = false

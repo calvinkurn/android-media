@@ -120,7 +120,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     flightBookingParam.departureDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.cartData.flight.journeys[0].departureTime))
                     flightBookingParam.isDomestic = data.cartData.flight.isDomestic
                     flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
-                    flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
+                    flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included, flightBookingParam.flightPriceViewModel)
                     if (flightPassengersData.value?.isEmpty() != false && !isRefreshCart) {
                         _flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
                         _flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
@@ -714,8 +714,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun getDepartureId(): String = flightBookingParam.departureId
     fun getReturnId(): String = flightBookingParam.returnId
     fun getDepartureDate(): String = flightBookingParam.departureDate
-    fun getDepartureJourney(): FlightDetailViewModel? = getRouteForFlightDetail(getDepartureId())
-    fun getReturnJourney(): FlightDetailViewModel? = getRouteForFlightDetail(getReturnId())
+    fun getDepartureJourney(): FlightDetailViewModel = flightDetailViewModels[0]
+    fun getReturnJourney(): FlightDetailViewModel? = if (flightDetailViewModels.size > 1) flightDetailViewModels[1] else null
     fun flightIsDomestic(): Boolean = flightBookingParam.isDomestic
     fun getCartId(): String = flightBookingParam.cartId
 
@@ -737,15 +737,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun getUserId(): String {
         return if (profileResult.value is Success<ProfileInfo>) (profileResult.value as Success<ProfileInfo>).data.userId
         else ""
-    }
-
-    fun getRouteForFlightDetail(id: String): FlightDetailViewModel? {
-        for (item in flightDetailViewModels) {
-            if (item.id.equals(id, false)) {
-                return item
-            }
-        }
-        return null
     }
 
     companion object {

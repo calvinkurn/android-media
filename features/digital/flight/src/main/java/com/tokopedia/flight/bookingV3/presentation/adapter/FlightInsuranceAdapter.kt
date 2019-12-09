@@ -1,5 +1,6 @@
 package com.tokopedia.flight.bookingV3.presentation.adapter
 
+import android.content.Context
 import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -63,7 +64,7 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
                 insurance_highlight_benefit_container.show()
                 val highlightedBenefit = list[0]
                 tv_insurance_highlight.text = highlightedBenefit.title
-                tv_insurance_highlight_detail.text = setUpTncText(highlightedBenefit.description, tncUrl, name, listener)
+                tv_insurance_highlight_detail.text = setUpTncText(highlightedBenefit.description, tncUrl, name, listener, context)
                 tv_insurance_highlight_detail.movementMethod = LinkMovementMethod.getInstance()
                 iv_insurance.loadImage(highlightedBenefit.icon)
                 if (list.size > 1) renderMoreBenefit(list.subList(1, list.size))
@@ -76,11 +77,11 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
             }
         }
 
-        private fun setUpTncText(description: String, tncUrl: String, title: String, listener: ActionListener?): SpannableStringBuilder{
+        private fun setUpTncText(description: String, tncUrl: String, title: String, listener: ActionListener?, context: Context): SpannableStringBuilder{
             val color = itemView.resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500)
             var fullText = String.format("%s. ", description)
-            if (tncUrl != null && tncUrl.length > 0) {
-                fullText += "Selengkapnya"
+            if (tncUrl != null && tncUrl.isNotEmpty()) {
+                fullText += context.getString(R.string.flight_booking_insurance_see_detail)
             }
             val stopIndex = fullText.length
             val descriptionStr = SpannableStringBuilder(fullText)
@@ -104,7 +105,7 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
 
         private fun renderMoreBenefit(list: List<FlightCart.Benefit>) {
             with(view) {
-                tv_insurance_highlight_see_more.text = String.format("Termasuk %d Proteksi Lain", list.size)
+                tv_insurance_highlight_see_more.text = String.format(context.getString(R.string.flight_booking_insurance_other_benefit), list.size)
                 rv_more_benefits.layoutManager = LinearLayoutManager(context)
                 rv_more_benefits.adapter = FlightInsuranceBenefitAdapter(list)
 

@@ -133,6 +133,7 @@
     <string name="flight_booking_multiple_airline_trip_card">Multi Maskapai</string>
     <string name="flight_booking_transit_trip_card">Transit</string>
     <string name="flight_booking_directly_trip_card">Langsung</string>
+    <string name="flight_booking_transit_with_value_trip_cart">%d Transit</string>
     <string name="flight_title_menu_reset">Reset</string>
     <string name="flight_booking_phone_code_label">(+%1$s)</string>
     <string name="activity_label_flight_booking_phone_code">Kode Telepon Negara</string>
@@ -315,6 +316,7 @@
     <string name="flight_booking_passenger_saved_secondary_hint">Penumpang Baru</string>
     <string name="flight_booking_passenger_saved_hint">Pilih Nama dari Daftar Penumpang</string>
     <string name="flight_booking_list_passenger_title">Daftar Penumpang</string>
+    <string name="flight_booking_insurance_see_detail">Selengkapnya</string>
     <string name="flight_passenger_update_title">Ubah Data Penumpang</string>
     <string name="flight_list_passenger_add_passenger_label">+ Tambah Penumpang</string>
     <string name="flight_booking_list_passenger_selected_error" formatted="false">Harap pilih penumpang %s</string>
@@ -400,6 +402,7 @@
     <string name="flight_cancellation_review_journey_number">Penerbangan %d</string>
     <string name="flight_insurance_prefix_label">Asuransi Perjalanan</string>
     <string name="flight_insurance_additional_benefits_prefix" formatted="false">Termasuk %d Perlindungan Lain</string>
+    <string name="flight_booking_insurance_other_benefit">Termasuk %d Proteksi Lain</string>
     <string name="flight_insurance_learn_more_label"> Info Selengkapnya</string>
     <string name="flight_passenger_choose_salutation">Pilih Titel</string>
     <string name="flight_passenger_choose_salutation_title">Titel</string>

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
-import com.tokopedia.applink.constant.DeeplinkConstant.SCHEME_HTTP
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail
 
@@ -57,16 +56,11 @@ object RouteManagerKt{
                 return true
             }
             DeepLinkChecker.HOT -> {
-                //TODO still use className
                 return DeepLinkChecker.openHot(url, activity)
             }
             DeepLinkChecker.CATALOG -> {
                 //TODO still use className
                 return DeepLinkChecker.openCatalog(url, activity)
-            }
-            DeepLinkChecker.PRODUCT -> {
-                RouteManager.route(activity, url)
-                return true
             }
             DeepLinkChecker.TOKOPOINT -> {
                 // it still point to webview. no need to override

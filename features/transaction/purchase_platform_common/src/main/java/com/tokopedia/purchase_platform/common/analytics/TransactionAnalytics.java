@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.common.analytics;
 
 import android.app.Activity;
-import android.os.Bundle;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -19,6 +18,16 @@ public abstract class TransactionAnalytics {
 
     Analytics getTracker() {
         return TrackApp.getInstance().getGTM();
+    }
+
+    public Map<String, Object> getGTMDataFromTrackAppUtils(String title) {
+
+        return TrackAppUtils.gtmData(
+                "",
+                ConstantTransactionAnalytics.EventCategory.FIN_INSURANCE_CHECKOUT,
+                ConstantTransactionAnalytics.EventAction.FIN_INSURANCE_CHECKOUT,
+                String.format("checkout - %s", title)
+        );
     }
 
     public void sendScreenName(Activity activity, String screenName) {
@@ -41,5 +50,9 @@ public abstract class TransactionAnalytics {
 
     protected void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
+    }
+
+    protected void sendGeneralEvent(Map<String, Object> eventData) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventData);
     }
 }

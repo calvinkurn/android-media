@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,13 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -34,6 +26,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -321,14 +321,19 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             spannableString.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = null;
-                    try {
-                        intent = OrderListwebViewActivity.getWebViewIntent(getContext(), URLDecoder.decode(
-                                getContext().getResources().getString(R.string.contact_us_applink), "UTF-8"), "Help Centre");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                    if (!TextUtils.isEmpty(helpLink)) {
+                        RouteManager.route(getContext(), helpLink);
+                    } else {
+
+                        Intent intent = null;
+                        try {
+                            intent = OrderListwebViewActivity.getWebViewIntent(getContext(), URLDecoder.decode(
+                                    getContext().getResources().getString(R.string.contact_us_applink), "UTF-8"), "Help Centre");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        startActivity(intent);
                     }
-                    startActivity(intent);
                 }
 
                 @Override

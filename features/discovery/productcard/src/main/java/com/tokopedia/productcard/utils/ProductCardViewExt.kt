@@ -1,10 +1,10 @@
 package com.tokopedia.productcard.utils
 
+import android.view.View
+import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import android.view.View
-import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 internal val View.isVisible: Boolean
@@ -71,8 +71,4 @@ internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) 
     } else {
         this.visibility = View.GONE
     }
-}
-
-internal operator fun Boolean.divAssign(toCompare: Boolean) {
-    this || toCompare
 }

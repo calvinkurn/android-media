@@ -6,10 +6,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -25,6 +21,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
@@ -53,6 +54,8 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
+import com.tokopedia.transaction.util.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -69,6 +72,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     public static final String KEY_FROM_PAYMENT = "from_payment";
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
+    public static final String VOUCHER_CODE = "Kode Voucher";
 
     @Inject
     OrderListDetailPresenter presenter;
@@ -145,6 +149,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
+
     }
 
     @Override
@@ -218,6 +223,14 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(detail.label());
         doubleTextView.setBottomText(detail.value());
+        if(VOUCHER_CODE.equalsIgnoreCase(detail.label())){
+            doubleTextView.setOnClickListener(view -> {
+                    Utils.copyTextToClipBoard("voucher code",detail.value(),getContext());
+                    Utils.vibrate(getContext());
+                    Toaster.INSTANCE.showNormal(view, getString(R.string.title_voucher_code_copied),Toaster.INSTANCE.getToasterLength());
+
+            });
+        }
         detailContent.addView(doubleTextView);
     }
 

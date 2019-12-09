@@ -61,6 +61,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.calendar
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation project(rootProject.ext.libraries.webview)
+
 
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

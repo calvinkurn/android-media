@@ -9,10 +9,16 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class ProfileRoleData(
-    @SerializedName("isAllowedChangeDob") @Expose
+    @SerializedName("isAllowedChangeDob")
+    @Expose
     var isAllowedChangeDob: Boolean = false,
-    @SerializedName("isAllowedChangeName") @Expose
+    @SerializedName("isAllowedChangeName")
+    @Expose
     var isAllowedChangeName: Boolean = false,
-    @SerializedName("isAllowedChangeGender") @Expose
-    var isAllowedChangeGender: Boolean = false
+    @SerializedName("isAllowedChangeGender")
+    @Expose
+    var isAllowedChangeGender: Boolean = false,
+    @SerializedName("chancesChangeName")
+    @Expose
+    var chancesChangeName: Boolean = false
 )

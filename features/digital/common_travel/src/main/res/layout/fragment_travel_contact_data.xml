@@ -55,7 +55,7 @@
             android:text="@string/travel_contact_data_phone_number_title"
             app:fontSize="micro"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_contact_email"
+            app:layout_constraintTop_toBottomOf="@+id/til_contact_email"
             app:textViewTheme="lightDisabled" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_4"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/sp_contact_phone_code"
+                app:layout_constraintStart_toEndOf="@+id/sp_contact_phone_code"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatAutoCompleteTextView

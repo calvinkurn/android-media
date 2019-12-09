@@ -277,15 +277,15 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun sendAddToCartTracking() {
         flightAnalytics.eventAddToCart(bookingViewModel.getSearchParam().flightClass,
                 FlightBookingCartData(), 0,
-                bookingViewModel.getRouteForFlightDetail(bookingViewModel.getDepartureId()),
-                bookingViewModel.getRouteForFlightDetail(bookingViewModel.getReturnId()),
+                bookingViewModel.getDepartureJourney(),
+                bookingViewModel.getReturnJourney(),
                 bookingViewModel.getFlightPriceModel().comboKey)
     }
 
     private fun sendCheckOutTracking(pid: String) {
         flightAnalytics.eventCheckoutClick(
-                bookingViewModel.getRouteForFlightDetail(bookingViewModel.getDepartureId()),
-                bookingViewModel.getRouteForFlightDetail(bookingViewModel.getReturnId()),
+                bookingViewModel.getDepartureJourney(),
+                bookingViewModel.getReturnJourney(),
                 bookingViewModel.getSearchParam(),
                 bookingViewModel.getFlightPriceModel().comboKey ?: "")
 
@@ -396,10 +396,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
         rv_flight_booking_route_summary.setHasFixedSize(true)
         rv_flight_booking_route_summary.adapter = flightRouteAdapter
         flightRouteAdapter.listener = object : FlightJourneyAdapter.ViewHolder.ActionListener {
-            override fun onClickRouteDetail(id: String) {
-                bookingViewModel.getRouteForFlightDetail(id)?.let {
-                    navigateToDetailTrip(it)
-                }
+            override fun onClickRouteDetail(id: String, position: Int) {
+                val route = if (position == 0) bookingViewModel.getDepartureJourney() else bookingViewModel.getReturnJourney()
+                route?.let { navigateToDetailTrip(it) }
             }
         }
         flightRouteAdapter.updateRoutes(cart.journeySummaries)

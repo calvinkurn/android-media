@@ -1,12 +1,9 @@
 package com.tokopedia.hotel.roomdetail.presentation.fragment
 
 import android.app.ProgressDialog
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -15,6 +12,9 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -99,7 +99,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     val cartId = it.data.response.cartId
                     context?.run {
                         startActivity(HotelBookingActivity.getCallingIntent(this, cartId,
-                                addToCartParam.destinationType, addToCartParam.destinationName))
+                                addToCartParam.destinationType, addToCartParam.destinationName,
+                                addToCartParam.roomCount, addToCartParam.adult))
                     }
                 }
                 is Fail -> {

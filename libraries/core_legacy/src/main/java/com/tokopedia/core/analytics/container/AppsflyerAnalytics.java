@@ -26,12 +26,10 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.appsflyer.AFInAppEventParameterName.CUSTOMER_USER_ID;
@@ -299,11 +297,13 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         CommonUtils.dumper(TAG + " appsflyer initiated with UID " + userID);
     }
 
-    public static String getDefferedDeeplinkPathIfExists() {
+    @Override
+    public String getDefferedDeeplinkPathIfExists() {
         return deferredDeeplinkPath;
     }
 
-    public static void setDefferedDeeplinkPathIfExists(String deeplinkPath) {
+    public void setDefferedDeeplinkPathIfExists(String deeplinkPath) {
         deferredDeeplinkPath = deeplinkPath;
+
     }
 }

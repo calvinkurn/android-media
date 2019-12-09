@@ -11,7 +11,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_1"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_24"
         app:corners="20"
@@ -20,7 +20,6 @@
         app:layout_constraintRight_toLeftOf="@+id/shimmering_iv_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:use_gradient="true"
         app:width_weight="0.7" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
@@ -30,8 +29,7 @@
         app:corners="20"
         app:layout_constraintBottom_toBottomOf="@+id/shimmering_tv_1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/shimmering_tv_1"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toTopOf="@+id/shimmering_tv_1" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_2"
@@ -40,7 +38,6 @@
         android:layout_marginTop="@dimen/dp_12"
         app:corners="20"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_tv_1"
-        app:use_gradient="true"
         app:width_weight="0.4" />
 
     <View
@@ -59,12 +56,11 @@
         app:corners="20"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shimmering_seperator_1"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_seperator_1" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_3"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
@@ -73,12 +69,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/shimmering_iv_2"
         app:layout_constraintStart_toEndOf="@+id/shimmering_iv_2"
-        app:layout_constraintTop_toTopOf="@+id/shimmering_iv_2"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toTopOf="@+id/shimmering_iv_2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_4"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_12"
         app:corners="20"
@@ -86,12 +81,11 @@
         app:layout_constraintLeft_toLeftOf="@+id/shimmering_tv_3"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="@+id/shimmering_tv_3"
-        app:layout_constraintTop_toBottomOf="@+id/shimmering_tv_3"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_tv_3" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_5"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_12"
         app:corners="20"
@@ -100,7 +94,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="@+id/shimmering_tv_3"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_tv_4"
-        app:use_gradient="true"
         app:width_weight="0.5" />
 
     <View
@@ -118,8 +111,7 @@
         android:layout_marginTop="@dimen/dp_12"
         app:corners="20"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shimmering_seperator_2"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_seperator_2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/dp_160"
@@ -129,7 +121,6 @@
         app:corners="20"
         app:layout_constraintBottom_toBottomOf="@+id/shimmering_iv_3"
         app:layout_constraintEnd_toStartOf="@+id/shimmering_iv_3"
-        app:layout_constraintTop_toTopOf="@+id/shimmering_iv_3"
-        app:use_gradient="true" />
+        app:layout_constraintTop_toTopOf="@+id/shimmering_iv_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

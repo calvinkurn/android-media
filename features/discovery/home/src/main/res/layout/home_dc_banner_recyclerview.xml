@@ -42,8 +42,6 @@
                 android:id="@+id/banner_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clickable="true"
-                android:background="?attr/selectableItemBackground"
                 app:layout_constraintBottom_toBottomOf="@+id/dc_banner_card"
                 app:layout_constraintEnd_toEndOf="@+id/dc_banner_card"
                 app:layout_constraintStart_toStartOf="@+id/dc_banner_card"

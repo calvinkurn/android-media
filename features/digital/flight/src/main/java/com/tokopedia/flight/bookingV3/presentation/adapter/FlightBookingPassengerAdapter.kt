@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -43,13 +44,13 @@ class FlightBookingPassengerAdapter: RecyclerView.Adapter<FlightBookingPassenger
                 tv_passenger_name.text = passenger.headerTitle
                 if (passenger.passengerFirstName != null) {
                     renderPassengerInfo(passenger)
-                    tv_edit_passenger_info.text = "Ubah"
+                    tv_edit_passenger_info.text = context.getString(R.string.flight_booking_passenger_meal_change_label)
                 } else {
                     rv_passenger_info.hide()
-                    tv_edit_passenger_info.text = "Isi Data"
+                    tv_edit_passenger_info.text = context.getString(R.string.flight_booking_passenger_fill_data_label)
                 }
 
-                layout_edit_passenger.setOnClickListener { listener?.onClickEditPassengerListener(passenger) }
+                itemView.setOnClickListener { listener.onClickEditPassengerListener(passenger) }
             }
         }
 
@@ -60,22 +61,22 @@ class FlightBookingPassengerAdapter: RecyclerView.Adapter<FlightBookingPassenger
 
                 //initiate passenger detail like passport num, birthdate, luggage and amenities
                 var simpleViewModels = listOf<SimpleViewModel>().toMutableList()
-                if (!passenger.passengerBirthdate.isNullOrEmpty()) simpleViewModels.add(SimpleViewModel("Tanggal Lahir" + " | ",
+                if (!passenger.passengerBirthdate.isNullOrEmpty()) simpleViewModels.add(SimpleViewModel(context.getString(R.string.flight_booking_list_passenger_birthdate_label) + " | ",
                         TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, passenger.passengerBirthdate))))
-                if (!passenger.passportNumber.isNullOrEmpty()) simpleViewModels.add(SimpleViewModel("Nomor Paspor" + " | ", passenger.passportNumber))
+                if (!passenger.passportNumber.isNullOrEmpty()) simpleViewModels.add(SimpleViewModel(context.getString(R.string.flight_passenger_passport_number_hint) + " | ", passenger.passportNumber))
                 if (passenger.flightBookingLuggageMetaViewModels != null) {
                     for (flightBookingLuggageRouteViewModel in passenger.flightBookingLuggageMetaViewModels) {
                         val selectedLuggages = arrayListOf<String>()
                         for (flightBookingLuggageViewModel in flightBookingLuggageRouteViewModel.amenities) {
                             selectedLuggages.add(flightBookingLuggageViewModel.title)
                         }
-                        simpleViewModels.add(SimpleViewModel("Bagasi" + " " + flightBookingLuggageRouteViewModel.description + " | ",
+                        simpleViewModels.add(SimpleViewModel(context.getString(R.string.flight_booking_list_passenger_luggage_label) + flightBookingLuggageRouteViewModel.description + " | ",
                                 TextUtils.join(" + ", selectedLuggages)))
                     }
                 }
                 if (passenger.flightBookingMealMetaViewModels != null) {
                     for (flightBookingMealRouteViewModel in passenger.flightBookingMealMetaViewModels) {
-                        simpleViewModels.add(SimpleViewModel("Makanan" + " " + flightBookingMealRouteViewModel.description + " | ",
+                        simpleViewModels.add(SimpleViewModel(context.getString(R.string.flight_booking_list_passenger_meals_label) + flightBookingMealRouteViewModel.description + " | ",
                                 TextUtils.join(" + ", flightBookingMealRouteViewModel.amenities)))
                     }
                 }
@@ -89,7 +90,7 @@ class FlightBookingPassengerAdapter: RecyclerView.Adapter<FlightBookingPassenger
         }
 
         companion object {
-            val LAYOUT = com.tokopedia.flight.R.layout.item_flight_booking_v3_passenger
+            val LAYOUT = R.layout.item_flight_booking_v3_passenger
         }
     }
 

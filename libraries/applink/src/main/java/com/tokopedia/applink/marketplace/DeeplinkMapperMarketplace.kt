@@ -1,6 +1,5 @@
 package com.tokopedia.applink.marketplace
 
-import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
@@ -11,7 +10,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 object DeeplinkMapperMarketplace {
 
     fun getRegisteredNavigationMarketplace(deeplink: String): String {
-        val uri = Uri.parse(deeplink)
         if (deeplink.startsWith(ApplinkConst.CART)) {
             return ApplinkConstInternalMarketplace.CART
         } else if (deeplink.startsWith(ApplinkConst.CHECKOUT)) {
