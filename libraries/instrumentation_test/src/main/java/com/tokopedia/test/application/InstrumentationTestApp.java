@@ -1,4 +1,4 @@
-package com.tokopedia.home.application;
+package  com.tokopedia.test.application;
 
 import android.app.Activity;
 import android.content.Context;
@@ -27,7 +27,7 @@ import java.util.Map;
 
 import okhttp3.Response;
 
-public class CustomApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter {
+public class InstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter {
 
     @Override
     public void onCreate() {

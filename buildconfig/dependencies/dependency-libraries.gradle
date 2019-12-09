@@ -16,6 +16,7 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     libraries = [
+            instrumentation_test    : ":libraries:instrumentation_test",
             analytics               : ":libraries:analytics",
             applink                 : ":libraries:applink",
             baseAdapter             : ":libraries:base_adapter",

@@ -23,7 +23,7 @@ buildscript {
 android {
     defaultConfig {
         multiDexEnabled(project.hasProperty('coverage') ? true : false)
-        testInstrumentationRunner 'com.tokopedia.home.application.MyRunner'
+        testInstrumentationRunner 'com.tokopedia.test.application.InstrumentationTestRunner'
     }
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"
@@ -125,7 +125,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    androidTestApi (project(":libraries:testing")) {
+    androidTestApi (project(rootProject.ext.libraries.instrumentation_test)) {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
