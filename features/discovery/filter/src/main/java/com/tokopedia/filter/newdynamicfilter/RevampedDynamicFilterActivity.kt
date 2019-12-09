@@ -275,7 +275,7 @@ class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
     }
 
     private fun enrichWithInputState(filter: Filter) {
-        for (option in filter.getOptions()) {
+        for (option in filter.options) {
             option.inputState = filterController.getFilterViewState(option.uniqueId).toString()
         }
     }

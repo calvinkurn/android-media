@@ -44,7 +44,7 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
         var lastMaxValue = 0
         val priceRangeList = ArrayList<Option>()
 
-        for (option in filter.getOptions()) {
+        for (option in filter.options) {
             val optionValue = dynamicFilterView.getFilterValue(option.key)
 
             if (Option.KEY_PRICE_MIN_MAX_RANGE == option.key) {

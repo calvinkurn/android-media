@@ -16,7 +16,7 @@ class DynamicFilterItemToggleViewHolder(itemView: View, private val dynamicFilte
     private val toggle: SwitchCompat? = itemView.findViewById(R.id.toggle)
 
     override fun bind(filter: Filter) {
-        val option = filter.getOptions()[0]
+        val option = filter.options[0]
         title?.text = option.name
 
         itemView.setOnClickListener { toggle?.isChecked = toggle?.isChecked != true }
