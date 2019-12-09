@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.data.model.response.Messages
 import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData
@@ -55,12 +55,12 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
             cartListData.cartTickerErrorData = mapCartTickerErrorData(errorCount)
         }
 
-        cartListData.autoApplyStackData = mapAutoApplyStackData(cartDataListResponse.autoapplyStack)
+        cartListData.autoApplyStackData = mapAutoApplyStackData(cartDataListResponse.autoApplyStack)
         cartListData.globalCouponAttrData = mapGlobalCouponAttr(cartDataListResponse.globalCouponAttr)
         cartListData.isAllSelected = cartDataListResponse.isGlobalCheckboxState
         cartListData.isShowOnboarding = false
 
-        mapPromoAnalytics(cartDataListResponse.autoapplyStack, cartListData.shopGroupAvailableDataList)
+        mapPromoAnalytics(cartDataListResponse.autoApplyStack, cartListData.shopGroupAvailableDataList)
 
         return cartListData
     }
@@ -103,8 +103,8 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
             it.isHasPromoList = shopGroupAvailable.hasPromoList
             it.cartString = shopGroupAvailable.cartString
 
-            if (cartDataListResponse.autoapplyStack.voucherOrders.isNotEmpty()) {
-                for (voucherOrdersItem in cartDataListResponse.autoapplyStack.voucherOrders) {
+            if (cartDataListResponse.autoApplyStack.voucherOrders.isNotEmpty()) {
+                for (voucherOrdersItem in cartDataListResponse.autoApplyStack.voucherOrders) {
                     if (voucherOrdersItem.uniqueId == it.cartString && voucherOrdersItem.type.isNotEmpty()
                             && voucherOrdersItem.type.equals(MERCHANT_VOUCHER_TYPE, ignoreCase = true)) {
                         it.voucherOrdersItemData = mapVoucherOrdersItemData(voucherOrdersItem)
@@ -381,7 +381,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
         }
     }
 
-    private fun mapPromoAnalytics(autoApplyStack: AutoapplyStack,
+    private fun mapPromoAnalytics(autoApplyStack: AutoApplyStack,
                                   shopGroupAvailableDataList: List<ShopGroupAvailableData>) {
         if (autoApplyStack.trackingDetails != null && autoApplyStack.trackingDetails.size > 0) {
             for (trackingDetail in autoApplyStack.trackingDetails) {
@@ -473,7 +473,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
                 .build()
     }
 
-    private fun mapAutoApplyStackData(autoApplyStack: AutoapplyStack): AutoApplyStackData {
+    private fun mapAutoApplyStackData(autoApplyStack: AutoApplyStack): AutoApplyStackData {
         return AutoApplyStackData().let {
             it.promoCodeId = autoApplyStack.promoCodeId
             it.voucherOrdersItemDataList = mapVoucherOrdersItemDataList(autoApplyStack.voucherOrders)

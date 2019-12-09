@@ -7,7 +7,7 @@ import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.common.data.model.response.TrackingDetail;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
@@ -351,7 +351,7 @@ public class ShipmentMapper implements IShipmentMapper {
                             shopResult.setOfficial(groupShop.getShop().getIsOfficial() == 1);
                             if (groupShop.getShop().getIsOfficial() == 1) {
                                 shopResult.setShopBadge(groupShop.getShop().getOfficialStore().getOsLogoUrl());
-                            } else if (groupShop.getShop().getGoldMerchant().getIsGold() == 1) {
+                            } else if (groupShop.getShop().getGoldMerchant().isGold() == 1) {
                                 shopResult.setShopBadge(groupShop.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
                             }
                             shopResult.setFreeReturns(groupShop.getShop().getIsFreeReturns() == 1);
@@ -571,7 +571,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     productResult.setProductShipment(productShipmentListResult);
                                 }
 
-                                AutoapplyStack autoapplyStack = shipmentAddressFormDataResponse.getAutoapplyStack();
+                                AutoApplyStack autoapplyStack = shipmentAddressFormDataResponse.getAutoapplyStack();
                                 if (autoapplyStack != null) {
                                     if (autoapplyStack.getTrackingDetails() != null && autoapplyStack.getTrackingDetails().size() > 0) {
                                         for (TrackingDetail trackingDetail : autoapplyStack.getTrackingDetails()) {

@@ -4,7 +4,7 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.purchase_platform.common.data.model.response.TrackingDetail;
 
-public class AutoapplyStack {
+public class AutoApplyStack {
 
 	@SerializedName("codes")
 	private List<String> codes;
