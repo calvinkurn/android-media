@@ -23,7 +23,6 @@ import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -50,7 +49,6 @@ import com.tokopedia.abstraction.common.utils.view.PropertiesEventsWatcher;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
@@ -83,7 +81,6 @@ import com.tokopedia.withdraw.view.presenter.WithdrawPresenter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -711,10 +708,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         Data data = checkEligible.getData();
         this.checkEligible = checkEligible;
         this.isRegisterForProgram = data.isIsPowerWD();
-        boolean isShown = PersistentCacheManager.instance
-                .get(WithdrawConstant.KEY_PREMIUM_ACCOUNT_NEW_TAG, boolean.class, false);
+        boolean isClicked = WithdrawConstant.isRekeningPremiumWidgetClicked(getContext());
         if (data != null && data.isIsPowerMerchant()) {
-            if (!isShown) {
+            if (!isClicked) {
                 premiumAccountView.findViewById(R.id.tv_baru_tag).setVisibility(View.VISIBLE);
             } else
                 premiumAccountView.findViewById(R.id.tv_baru_tag).setVisibility(View.GONE);
@@ -772,25 +768,25 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         View view = getLayoutInflater().inflate(R.layout.swd_program_tarik_saldo, null, true);
         if (isRegisterForProgram) {
             ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
-                    .setText(getString(R.string.swd_program_tarik_saldo));
-            ((TextView) view.findViewById(R.id.tv_wdProgramDescription))
-                    .setText(getString(R.string.swd_program_tarik_saldo_description));
-            ((TextView) view.findViewById(R.id.wdProgramContinue))
-                    .setText(getString(R.string.swd_program_tarik_btn));
-            analytics.eventClickInfo();
-        } else {
-            ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
                     .setText(getString(R.string.swd_rekening_premium));
             ((TextView) view.findViewById(R.id.tv_wdProgramDescription))
                     .setText(getString(R.string.swd_rekening_premium_description));
             ((TextView) view.findViewById(R.id.wdProgramContinue))
                     .setText(getString(R.string.swd_rekening_premium_btn));
+
+            analytics.eventClickInfo();
+        } else {
+
+            ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
+                    .setText(getString(R.string.swd_program_tarik_saldo));
+            ((TextView) view.findViewById(R.id.tv_wdProgramDescription))
+                    .setText(getString(R.string.swd_program_tarik_saldo_description));
+            ((TextView) view.findViewById(R.id.wdProgramContinue))
+                    .setText(getString(R.string.swd_program_tarik_btn));
             analytics.eventClickJoinNow();
         }
-
         view.findViewById(R.id.wdProgramContinue).setOnClickListener(v -> {
-            PersistentCacheManager.instance
-                    .put(WithdrawConstant.KEY_PREMIUM_ACCOUNT_NEW_TAG, true);
+            WithdrawConstant.saveRekeningPremiumWidgetClicked(getContext());
             briProgramBottomSheet.dismiss();
             RouteManager.route(getContext(), String.format("%s?url=%s",
                     ApplinkConst.WEBVIEW, WEB_REKENING_PREMIUM_URL));
@@ -800,7 +796,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         briProgramBottomSheet.show();
     }
 
-    public AlertDialog.Builder getConfirmationDialog(String heading, String description, View.OnClickListener onClickListener) {
+    private AlertDialog.Builder getConfirmationDialog(String heading, String description, View.OnClickListener onClickListener) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.confirmation_dialog, null);
@@ -930,5 +926,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bottomSheet.setCustomContentView(view, getString(R.string.saldo_withdraw_tnc_title), false);
         bottomSheet.show();
     }
+
+
 
 }
