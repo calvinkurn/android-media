@@ -28,10 +28,8 @@ class GetRecentViewSubscriber(private val view: ICartListView?,
         if (view != null) {
             if (graphqlResponse?.getData<Any>(GqlRecentViewResponse::class.java) != null) {
                 val gqlRecentViewResponse = graphqlResponse.getData<GqlRecentViewResponse>(GqlRecentViewResponse::class.java)
-                if (gqlRecentViewResponse != null && gqlRecentViewResponse.gqlRecentView != null &&
-                        gqlRecentViewResponse.gqlRecentView.recentViewList != null &&
-                        gqlRecentViewResponse.gqlRecentView.recentViewList.size > 0) {
-                    view.renderRecentView(gqlRecentViewResponse.gqlRecentView.recentViewList)
+                if (gqlRecentViewResponse.gqlRecentView?.recentViewList?.size ?: 0 > 0) {
+                    view.renderRecentView(gqlRecentViewResponse.gqlRecentView?.recentViewList)
                 }
             }
             view.setHasTriedToLoadRecentView()

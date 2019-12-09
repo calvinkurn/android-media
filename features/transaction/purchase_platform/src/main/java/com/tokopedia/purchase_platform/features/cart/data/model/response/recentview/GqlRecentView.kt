@@ -1,0 +1,15 @@
+package com.tokopedia.purchase_platform.features.cart.data.model.response.recentview
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+/**
+ * Created by Irfan Khoirul on 21/09/18.
+ */
+
+class GqlRecentView {
+
+    @SerializedName("items")
+    @Expose
+    var recentViewList: List<RecentView>? = null
+}

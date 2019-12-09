@@ -119,12 +119,6 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideGetRecentViewUseCase(@ApplicationContext context: Context): GetRecentViewUseCase {
-        return GetRecentViewUseCase(context)
-    }
-
-    @Provides
-    @CartScope
     fun providesGraphqlUseCase(): GraphqlUseCase {
         return GraphqlUseCase()
     }
