@@ -569,9 +569,9 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun eventClickWishlist(categoryName: String, isAddWishlist: Boolean, isLogin: Boolean, productId: Int, isTopAds: Boolean) {
-        val action = if (isAddWishlist) "remove" else  "add"
+        val action = if (isAddWishlist) "add" else "remove"
         val statusTopads = if (isTopAds) "topads" else  "general"
-        var eventAction = "$action wishlist - product recommendation ${if (isLogin) "login" else "non login"}"
+        var eventAction = "$action wishlist - product recommendation - ${if (isLogin) "login" else "non login"}"
         val eventLabel = "$productId - $statusTopads"
 
         tracker.sendGeneralEvent(
