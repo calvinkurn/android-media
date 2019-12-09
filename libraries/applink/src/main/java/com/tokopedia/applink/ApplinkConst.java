@@ -230,6 +230,8 @@ public interface ApplinkConst {
     String AFFILIATE_EXPLORE = "tokopedia://affiliate/explore";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
 
+    String PLAY_DETAIL = "tokopedia://play/{channel_id}";
+
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
     String ADD_NAME_PROFILE = "tokopedia://addname";

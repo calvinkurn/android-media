@@ -4,7 +4,16 @@
     <application>
         <activity
             android:name=".view.activity.PlayActivity"
-            android:theme="@style/Play.FullScreen"
-            />
+            android:theme="@style/Play.FullScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_play"
+                    android:path="@string/path_play_detail"
+                    android:scheme="@string/internal_scheme"/>
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
