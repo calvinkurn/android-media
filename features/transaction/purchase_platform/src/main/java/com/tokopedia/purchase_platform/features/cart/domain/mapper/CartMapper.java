@@ -14,8 +14,8 @@ import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromo
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartList;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Shop;
-import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartTickerErrorData;
@@ -255,11 +255,12 @@ public class CartMapper implements ICartMapper {
 
     @Override
     public UpdateCartData convertToUpdateCartData(UpdateCartDataResponse updateCartDataResponse) {
-        return new UpdateCartData.Builder()
-                .goTo(updateCartDataResponse.getGoto())
-                .message(updateCartDataResponse.getError())
-                .success(updateCartDataResponse.isStatus())
-                .build();
+        UpdateCartData updateCartData = new UpdateCartData();
+        updateCartData.setGoTo(updateCartDataResponse.getGoto());
+        updateCartData.setMessage(updateCartDataResponse.getError());
+        updateCartData.setSuccess(updateCartDataResponse.isStatus());
+
+        return updateCartData;
     }
 
     @Override
