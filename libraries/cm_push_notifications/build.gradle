@@ -55,7 +55,7 @@ dependencies {
 
 
     implementation (rootProject.ext.miscDependencies.workManager) {
-        exclude group: 'com.google.guava', module: 'listenablefuture'
+        exclude group :'android.arch.work:work-runtime-ktx'
     }
 
 }
