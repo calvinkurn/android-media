@@ -376,10 +376,10 @@ internal class ShopListFragment:
     private fun trackShopItemClick(shopItem: ShopViewModel.ShopItem) {
         val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
 
-        SearchTracking.eventSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), keyword)
+        SearchTracking.eventSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), shopItem.id, keyword)
 
         if (isShopNotActive(shopItem)) {
-            SearchTracking.eventSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), keyword)
+            SearchTracking.eventSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), shopItem.id, keyword)
         }
     }
 

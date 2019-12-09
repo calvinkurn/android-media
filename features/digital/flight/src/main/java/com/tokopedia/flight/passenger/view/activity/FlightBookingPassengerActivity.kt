@@ -12,13 +12,13 @@ import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.passenger.di.DaggerFlightPassengerComponent
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent
 import com.tokopedia.flight.passenger.view.fragment.FlightBookingPassengerFragment
-import java.util.ArrayList
+import java.util.*
 
 /**
  * @author by jessica on 2019-09-04
  */
 
-class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightPassengerComponent> {
+class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<FlightPassengerComponent> {
 
     var passengerModel: FlightBookingPassengerViewModel? = null
     var selectedPassengerId: String? = null
@@ -43,15 +43,16 @@ class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightP
 
     override fun getNewFragment(): Fragment {
         return FlightBookingPassengerFragment.newInstance(
-                    depatureId = intent.getStringExtra(EXTRA_DEPATURE),
-                    passengerModel = passengerModel ?: FlightBookingPassengerViewModel(),
-                    luggageModels = intent.getParcelableArrayListExtra(EXTRA_LUGGAGES),
-                    mealModels = intent.getParcelableArrayListExtra(EXTRA_MEALS),
-                    isAirAsiaAirlines = intent.getBooleanExtra(EXTRA_IS_AIRASIA, false),
-                    depatureDate = intent.getStringExtra(EXTRA_DEPARTURE_DATE),
-                    requestId = intent.getStringExtra(EXTRA_REQUEST_ID),
-                    isDomestic = intent.getBooleanExtra(EXTRA_IS_DOMESTIC, false),
-                    returnId = intent.getStringExtra(EXTRA_RETURN))
+                depatureId = intent.getStringExtra(EXTRA_DEPATURE),
+                passengerModel = passengerModel ?: FlightBookingPassengerViewModel(),
+                luggageModels = intent.getParcelableArrayListExtra(EXTRA_LUGGAGES),
+                mealModels = intent.getParcelableArrayListExtra(EXTRA_MEALS),
+                isAirAsiaAirlines = intent.getBooleanExtra(EXTRA_IS_AIRASIA, false),
+                depatureDate = intent.getStringExtra(EXTRA_DEPARTURE_DATE),
+                requestId = intent.getStringExtra(EXTRA_REQUEST_ID),
+                isDomestic = intent.getBooleanExtra(EXTRA_IS_DOMESTIC, false),
+                returnId = intent.getStringExtra(EXTRA_RETURN),
+                autofillName = intent.getStringExtra(EXTRA_AUTOFILL_NAME))
     }
 
     override fun getComponent(): FlightPassengerComponent {
@@ -71,6 +72,7 @@ class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightP
         const val EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID"
         const val EXTRA_SELECTED_PASSENGER_ID = "EXTRA_SELECTED_PASSENGER_ID"
         const val EXTRA_IS_DOMESTIC = "EXTRA_IS_DOMESTIC"
+        const val EXTRA_AUTOFILL_NAME = "EXTRA_AUTOFILL_NAME"
 
         fun getCallingIntent(activity: Activity,
                              depatureId: String,
@@ -81,7 +83,8 @@ class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightP
                              isAirAsiaAirlines: Boolean,
                              depatureDate: String,
                              requestId: String,
-                             isDomestic: Boolean): Intent {
+                             isDomestic: Boolean,
+                             autofillName: String = ""): Intent {
             val intent = Intent(activity, FlightBookingPassengerActivity::class.java)
             intent.putExtra(EXTRA_DEPATURE, depatureId)
             intent.putExtra(EXTRA_RETURN, returnId)
@@ -93,6 +96,7 @@ class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightP
             intent.putExtra(EXTRA_REQUEST_ID, requestId)
             intent.putExtra(EXTRA_SELECTED_PASSENGER_ID, bookingPassengerModel.passengerId)
             intent.putExtra(EXTRA_IS_DOMESTIC, isDomestic)
+            intent.putExtra(EXTRA_AUTOFILL_NAME, autofillName)
             return intent
         }
 
@@ -102,7 +106,8 @@ class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightP
                              luggageModels: List<FlightBookingAmenityMetaViewModel>,
                              mealModels: List<FlightBookingAmenityMetaViewModel>,
                              requestId: String,
-                             isDomestic: Boolean): Intent {
+                             isDomestic: Boolean,
+                             autofillName: String = ""): Intent {
             val intent = Intent(activity, FlightBookingPassengerActivity::class.java)
             intent.putExtra(EXTRA_DEPATURE, depatureId)
             intent.putExtra(EXTRA_PASSENGER, bookingPassengerModel)
@@ -111,6 +116,7 @@ class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightP
             intent.putExtra(EXTRA_REQUEST_ID, requestId)
             intent.putExtra(EXTRA_SELECTED_PASSENGER_ID, bookingPassengerModel.passengerId)
             intent.putExtra(EXTRA_IS_DOMESTIC, isDomestic)
+            intent.putExtra(EXTRA_AUTOFILL_NAME, autofillName)
             return intent
         }
     }

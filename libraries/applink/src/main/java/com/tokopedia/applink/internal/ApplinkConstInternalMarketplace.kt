@@ -72,7 +72,7 @@ object ApplinkConstInternalMarketplace {
 
     // CreateReviewActivity
     @JvmField
-    val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
+    val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/?rating={rating}"
 
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"

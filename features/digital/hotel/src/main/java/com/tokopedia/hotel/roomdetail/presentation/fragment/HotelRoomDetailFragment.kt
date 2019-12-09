@@ -99,7 +99,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     val cartId = it.data.response.cartId
                     context?.run {
                         startActivity(HotelBookingActivity.getCallingIntent(this, cartId,
-                                addToCartParam.destinationType, addToCartParam.destinationName))
+                                addToCartParam.destinationType, addToCartParam.destinationName,
+                                addToCartParam.roomCount, addToCartParam.adult))
                     }
                 }
                 is Fail -> {
