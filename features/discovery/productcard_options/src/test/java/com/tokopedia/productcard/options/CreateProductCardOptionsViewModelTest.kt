@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.options
 
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
 import com.tokopedia.productcard.options.testutils.InstantTaskExecutorRuleSpek
 import com.tokopedia.productcard.options.testutils.shouldHaveSize
 import org.spekframework.spek2.Spek

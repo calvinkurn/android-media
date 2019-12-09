@@ -1,9 +1,8 @@
-package com.tokopedia.productcard.options
+package com.tokopedia.productcard.options.tracking
 
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
-import java.util.*
 
 internal object ProductCardOptionsTracking {
 

@@ -18,6 +18,9 @@ import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_IS_ADD_
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_IS_SUCCESS
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.manager.startSimilarSearch
+import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
+import com.tokopedia.productcard.options.item.ProductCardOptionsItemView
+import com.tokopedia.productcard.options.tracking.ProductCardOptionsTracking
 import kotlinx.android.synthetic.main.product_card_options_fragment_layout.*
 
 

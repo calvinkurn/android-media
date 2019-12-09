@@ -7,6 +7,7 @@ import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
+import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase

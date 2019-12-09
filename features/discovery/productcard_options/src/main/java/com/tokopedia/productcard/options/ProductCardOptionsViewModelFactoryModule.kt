@@ -3,6 +3,8 @@ package com.tokopedia.productcard.options
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.productcard.options.di.UserSessionModule
+import com.tokopedia.productcard.options.di.WishlistUseCaseModule
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase

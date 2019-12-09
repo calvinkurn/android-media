@@ -1,7 +1,8 @@
-package com.tokopedia.productcard.options
+package com.tokopedia.productcard.options.item
 
 import android.content.Context
 import android.view.View
+import com.tokopedia.productcard.options.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.product_card_options_item_layout.view.*
 
