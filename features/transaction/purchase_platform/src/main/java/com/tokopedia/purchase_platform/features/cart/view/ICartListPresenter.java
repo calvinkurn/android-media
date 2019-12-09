@@ -44,8 +44,6 @@ public interface ICartListPresenter {
 
     void reCalculateSubTotal(List<CartShopHolderData> dataList, ArrayList<InsuranceCartShops> insuranceCartShops);
 
-    void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isAutoApply);
-
     void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 
     void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);

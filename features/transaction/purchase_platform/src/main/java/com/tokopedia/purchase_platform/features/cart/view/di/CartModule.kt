@@ -189,7 +189,6 @@ class CartModule {
                                   updateCartUseCase: UpdateCartUseCase,
                                   checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
                                   checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
-                                  checkPromoCodeCartListUseCase: CheckPromoCodeCartListUseCase,
                                   compositeSubscription: CompositeSubscription,
                                   cartApiRequestParamGenerator: CartApiRequestParamGenerator,
                                   addWishListUseCase: AddWishListUseCase,
@@ -206,13 +205,13 @@ class CartModule {
                                   updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase,
                                   seamlessLoginUsecase: SeamlessLoginUsecase): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartListUseCase,
-                updateCartUseCase, checkPromoStackingCodeUseCase,
-                checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
-                cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
-                updateAndReloadCartUseCase, userSessionInterface,
+                updateCartUseCase, checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper,
+                compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
+                removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
                 clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
                 getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase)
+                removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+        )
     }
 
 }

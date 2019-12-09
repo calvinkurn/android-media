@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.data.repository
 
 import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartDataResponse
-import com.tokopedia.purchase_platform.features.cart.data.model.response.UpdateCartDataResponse
+import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.UpdateCartDataResponse
 import rx.Observable
 
 /**

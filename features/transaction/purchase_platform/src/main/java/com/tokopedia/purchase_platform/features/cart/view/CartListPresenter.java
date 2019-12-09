@@ -52,7 +52,6 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.Updat
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.WholesalePriceData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListSimplifiedUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetRecentViewUseCase;
@@ -128,7 +127,6 @@ public class CartListPresenter implements ICartListPresenter {
     private final CompositeSubscription compositeSubscription;
     private final DeleteCartListUseCase deleteCartListUseCase;
     private final UpdateCartUseCase updateCartUseCase;
-    private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
@@ -155,7 +153,6 @@ public class CartListPresenter implements ICartListPresenter {
                              UpdateCartUseCase updateCartUseCase,
                              CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
                              CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
-                             CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
                              AddWishListUseCase addWishListUseCase,
@@ -177,7 +174,6 @@ public class CartListPresenter implements ICartListPresenter {
         this.updateCartUseCase = updateCartUseCase;
         this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
         this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
-        this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
@@ -795,45 +791,6 @@ public class CartListPresenter implements ICartListPresenter {
                 allCartItemDataList.size() > 0 && insuranceChecked;
         boolean unselectAllItem = allCartItemDataList.size() == 0;
         view.renderDetailInfoSubTotal(String.valueOf(totalItemQty), totalPriceString, selectAllItem, unselectAllItem, dataList.isEmpty());
-
-    }
-
-    @Override
-    public void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isAutoApply) {
-        view.showProgressLoading();
-
-        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
-        for (CartItemData data : view.getSelectedCartDataList()) {
-            UpdateCartRequest updateCartRequest = new UpdateCartRequest();
-            updateCartRequest.setCartId(data.getOriginData().getCartId());
-            updateCartRequest.setNotes(data.getUpdatedData().getRemark());
-            updateCartRequest.setQuantity(data.getUpdatedData().getQuantity());
-            updateCartRequestList.add(updateCartRequest);
-        }
-
-        TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put(CheckPromoCodeCartListUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
-
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
-        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG,
-                CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG);
-        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_SUGGESTED,
-                CheckPromoCodeCartListUseCase.PARAM_VALUE_SUGGESTED);
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
-                view.getGeneratedAuthParamNetwork(paramUpdate));
-        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
-                view.getGeneratedAuthParamNetwork(param));
-
-        compositeSubscription.add(
-                checkPromoCodeCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberCheckPromoCodeFromSuggestion(isAutoApply))
-        );
 
     }
 

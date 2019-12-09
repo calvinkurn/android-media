@@ -14,7 +14,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromo
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartList;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Shop;
-import com.tokopedia.purchase_platform.features.cart.data.model.response.UpdateCartDataResponse;
+import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
