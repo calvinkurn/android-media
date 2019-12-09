@@ -43,6 +43,7 @@ import com.tokopedia.flight.common.util.FlightPassengerTitle
 import com.tokopedia.flight.common.util.FlightPassengerTitleType
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_AUTOFILL_NAME
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_DEPARTURE_DATE
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_DEPATURE
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_IS_AIRASIA
@@ -53,6 +54,8 @@ import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivi
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_REQUEST_ID
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_RETURN
 import com.tokopedia.flight.passenger.viewmodel.FlightPassengerViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
 import java.util.*
@@ -73,6 +76,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     lateinit var requestId: String
     var isDomestic: Boolean = false
     var returnId: String? = null
+    var autofillName: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -99,7 +103,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             depatureDate = it.getString(EXTRA_DEPARTURE_DATE)
             requestId = it.getString(EXTRA_REQUEST_ID)
             isDomestic = it.getBoolean(EXTRA_IS_DOMESTIC)
-
+            autofillName = it.getString(EXTRA_AUTOFILL_NAME)
         }
 
         activity?.run {
@@ -115,18 +119,28 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initView()
-
+        if (autofillName.isNotEmpty()) loading_screen.show() else loading_screen.hide()
         passengerViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list),
-                getPassengerTypeString(passengerModel.type)
-        )
+                getPassengerTypeString(passengerModel.type))
+        initView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         passengerViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
-            contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
+            contactList?.let {
+                travelContactArrayAdapter.updateItem(it.toMutableList())
+                if (autofillName.isNotEmpty()) {
+                    for ((index, item) in it.withIndex()) {
+                        if (item.fullName.equals(autofillName, false)) {
+                            autofillPassengerContact(item)
+                            break
+                        }
+                    }
+                    loading_screen.hide()
+                }
+            }
         })
 
         passengerViewModel.nationalityData.observe(this, androidx.lifecycle.Observer { value ->
@@ -169,6 +183,13 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             til_nationality.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
             til_passport_issuer_country.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
+            fragment_layout.setOnTouchListener { view, motionEvent ->
+                clearAllKeyboardFocus()
+                true
+            }
+
+            rv_passenger_title.selectOnlyOneChip(true)
+            rv_passenger_title.canDiselectAfterSelect(false)
         }
     }
 
@@ -268,8 +289,6 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)),
                     initialSelectedItemPos = if (passengerModel.passengerTitle != null) getPassengerTitleId(passengerModel.passengerTitle) - 1 else null)
         }
-        rv_passenger_title.selectOnlyOneChip(true)
-        rv_passenger_title.canDiselectAfterSelect(false)
     }
 
     private fun renderPassengerTitle(passengerTitle: String) {
@@ -327,7 +346,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     if (selected.key.equals(meal.key, true)) {
                         val selectedMeals = arrayListOf<String>()
                         for (amenity in selected.amenities) {
-                            selectedMeals.add(amenity.title)
+                            selectedMeals.add("${amenity.title} - ${amenity.price}")
                         }
                         simpleModel.description = TextUtils.join(",", selectedMeals)
                         break
@@ -459,10 +478,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         if (isAdultPassenger()) {
             (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_adult_title))
             if (isMandatoryDoB() || !isDomestic) {
-                birthdate_helper_text.visibility =  View.VISIBLE
+                birthdate_helper_text.visibility = View.VISIBLE
                 til_birth_date.visibility = View.VISIBLE
             } else {
-                birthdate_helper_text.visibility =  View.GONE
+                birthdate_helper_text.visibility = View.GONE
                 til_birth_date.visibility = View.GONE
             }
 
@@ -471,8 +490,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             if (isChildPassenger()) {
                 (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_child_title))
                 birthdate_helper_text.text = getString(R.string.flight_booking_passenger_birthdate_child_helper_text)
-            }
-            else {
+            } else {
                 (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_infant_title))
                 birthdate_helper_text.text = getString(R.string.flight_booking_passenger_birthdate_infant_helper_text)
             }
@@ -844,7 +862,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                         depatureDate: String,
                         requestId: String,
                         isDomestic: Boolean,
-                        returnId: String? = null): FlightBookingPassengerFragment {
+                        returnId: String? = null,
+                        autofillName: String = ""): FlightBookingPassengerFragment {
             val fragment = FlightBookingPassengerFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_DEPATURE, depatureId)
@@ -856,6 +875,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             bundle.putParcelableArrayList(EXTRA_MEALS, mealModels as ArrayList<out Parcelable>)
             bundle.putString(EXTRA_REQUEST_ID, requestId)
             bundle.putBoolean(EXTRA_IS_DOMESTIC, isDomestic)
+            bundle.putString(EXTRA_AUTOFILL_NAME, autofillName)
             fragment.arguments = bundle
             return fragment
         }

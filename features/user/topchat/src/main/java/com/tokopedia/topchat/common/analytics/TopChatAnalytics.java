@@ -20,7 +20,6 @@ import javax.inject.Inject;
 public class TopChatAnalytics {
 
 
-
     @Inject
     public TopChatAnalytics() {
     }
@@ -80,8 +79,8 @@ public class TopChatAnalytics {
         public static final String CLICK_THUMBNAIL = "click on thumbnail";
         public static final String CLICK_COPY_VOUCHER_THUMBNAIL = "click copy on shop voucher thumbnail";
         public static final String CLICK_VOUCHER_THUMBNAIL = "click shop voucher thumbnail";
-        public static final String CLICK_ATC_PRODUCT_THUMBNAIL ="click atc on product thumbnail";
-        public static final String CLICK_BUY_PRODUCT_THUMBNAIL ="click buy on product thumbnail";
+        public static final String CLICK_ATC_PRODUCT_THUMBNAIL = "click atc on product thumbnail";
+        public static final String CLICK_BUY_PRODUCT_THUMBNAIL = "click buy on product thumbnail";
         public static final String SENT_INVOICE_ATTACHMENT = "click kirim after attach invoice";
         public static final String CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";
         public static final String CLICK_ADD_ATTACHMENT = "click add attachment";
@@ -227,7 +226,7 @@ public class TopChatAnalytics {
 
     public void eventFollowUnfollowShop(boolean actionFollow, String shopId) {
         String label = Label.FOLLOW_SHOP;
-        if(!actionFollow){
+        if (!actionFollow) {
             label = Label.UNFOLLOW_SHOP;
         }
 
@@ -280,7 +279,7 @@ public class TopChatAnalytics {
                                 "price", product.getProductPrice(),
                                 "brand", "none",
                                 "category", product.getCategory(),
-                                "variant", product.getVariant(),
+                                "variant", product.getVariants().toString(),
                                 "list", getField(String.valueOf(product.getBlastId())),
                                 "position", 0
                         )
@@ -365,19 +364,19 @@ public class TopChatAnalytics {
                         EVENT_CATEGORY, Category.CHAT_DETAIL,
                         EVENT_ACTION, Action.SENT_INVOICE_ATTACHMENT,
                         EVENT_LABEL, invoice.getId()
-                        )
+                )
         );
     }
 
     public String getField(String blastId) {
         Long blastIdNum = Long.valueOf(blastId);
-        if(blastIdNum == 0) {
+        if (blastIdNum == 0) {
             return "chat";
         } else if (blastIdNum == -1) {
             return "drop price alert";
         } else if (blastIdNum == -2) {
             return "limited stock";
-        } else if(blastIdNum > 0) {
+        } else if (blastIdNum > 0) {
             return "broadcast";
         } else {
             return "chat";

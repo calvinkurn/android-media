@@ -206,6 +206,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
 
+        <activity
+            android:name=".bookingV3.presentation.activity.FlightBookingActivity"
+            android:label="@string/flight_booking_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+
     </application>
 
 </manifest>

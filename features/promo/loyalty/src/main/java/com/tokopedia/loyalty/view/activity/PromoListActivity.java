@@ -89,7 +89,7 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
     }
 
     @SuppressWarnings("unused")
-    @DeepLink(ApplinkConst.PROMO_LIST)
+    @DeepLink({ApplinkConst.PROMO_LIST, ApplinkConst.PROMO})
     public static Intent getAppLinkIntent(Context context, Bundle extras) {
         String autoSelectedMenuId = extras.getString(
                 LoyaltyAppLink.PROMO_NATIVE_QUERY_MENU_ID, DEFAULT_AUTO_SELECTED_MENU_ID
