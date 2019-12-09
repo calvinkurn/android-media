@@ -17,13 +17,8 @@ public class PerformanceMonitoring {
     }
 
     public void startTrace(String traceName) {
-        FirebasePerformance fp = FirebasePerformance.getInstance();
-        if (fp != null) {
-            trace = fp.newTrace(traceName);
-            if (trace != null) {
-                trace.start();
-            }
-        }
+        trace = FirebasePerformance.getInstance().newTrace(traceName);
+        trace.start();
     }
 
     public void stopTrace() {
