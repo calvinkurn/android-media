@@ -36,26 +36,30 @@
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 /features/merchant/official_store/                      @tokopedia/minion-stuart
+/features/merchant/atc_variant/                         @tokopedia/minion-stuart
 /features/top_ads/top_ads_free_claim/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
 /features/top_ads/top_ads_autoads/                      @tokopedia/minion-dave
 
-/features/digital/flight/               				@tokopedia/minion-mark
-/features/digital/train/                				@tokopedia/minion-mark
-/features/digital/hotel/                				@tokopedia/minion-mark
-/features/digital/flight_no_op/         				@tokopedia/minion-mark
-/features/digital/digitalproduct        				@tokopedia/minion-mark
-/features/digital/common_travel         				@tokopedia/minion-mark
-/features/digital/common_digital        				@tokopedia/minion-mark
-/features/digital/common_topup_bills    				@tokopedia/minion-mark
-/features/digital/digital_homepage      				@tokopedia/minion-mark
-/features/digital/travel_homepage       				@tokopedia/minion-mark
-/features/digital/voucher_game          				@tokopedia/minion-mark
-/features/digital/digital_emoney        				@tokopedia/minion-mark
-/features/digital/imagepreviewslider    				@tokopedia/minion-mark
-/features/salam/umrah                                   @tokopedia/minion-mark
+/libraries/kotlin_extensions/                           @tokopedia/minion-stuart
+
+/features/digital/flight/               @tokopedia/minion-mark
+/features/digital/train/                @tokopedia/minion-mark
+/features/digital/hotel/                @tokopedia/minion-mark
+/features/digital/flight_no_op/         @tokopedia/minion-mark
+/features/digital/digitalproduct        @tokopedia/minion-mark
+/features/digital/common_travel         @tokopedia/minion-mark
+/features/digital/common_digital        @tokopedia/minion-mark
+/features/digital/common_topup_bills    @tokopedia/minion-mark
+/features/digital/digital_homepage      @tokopedia/minion-mark
+/libraries/travel_calendar              @tokopedia/minion-mark
+/features/digital/travel_homepage       @tokopedia/minion-mark
+/features/digital/voucher_game          @tokopedia/minion-mark
+/features/digital/digital_emoney        @tokopedia/minion-mark
+/features/digital/imagepreviewslider    @tokopedia/minion-mark
+/features/salam/umrah                   @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
@@ -77,7 +81,7 @@
 /features/user/topchat/                         		@tokopedia/minion-kevin
 /features/user/topchat_no_op/                   		@tokopedia/minion-kevin
 /features/user/groupchat/                       		@tokopedia/minion-kevin
-/features/user/profile/                         		@tokopedia/minion-kevin
+/features/user/profilecompletion/                         		@tokopedia/minion-kevin
 /features/user/vote/                            		@tokopedia/minion-kevin
 /features/user/otp/                             		@tokopedia/minion-kevin
 /features/user/settingbank/                     		@tokopedia/minion-kevin
@@ -129,6 +133,7 @@
 /features/im/challenges                 				@tokopedia/minion-yoda
 /features/im/referral                   				@tokopedia/minion-yoda
 
+/libraries/adapter_delegate/							@tokopedia/minion-stuart
 /libraries/analytics/							        @tokopedia/core-team
 /libraries/applink/										@tokopedia/core-team
 /libraries/banner_dynamic/								@tokopedia/core-team
@@ -137,7 +142,7 @@
 /libraries/bottom_sheet_builder/						@tokopedia/core-team
 /libraries/cache_api/									@tokopedia/core-team
 /libraries/cameraview/									@tokopedia/core-team
-/libraries/cm_push_notifications/						@tokopedia/core-team
+/libraries/cm_push_notifications/						@tokopedia/minion-yoda
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
 /libraries/common_network/								@tokopedia/core-team
 /libraries/composite_lib/								@tokopedia/core-team

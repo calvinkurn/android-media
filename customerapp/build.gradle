@@ -302,6 +302,7 @@ dependencies {
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.features.tkpddiscovery)
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.payment)
@@ -343,6 +344,7 @@ dependencies {
     implementation project(rootProject.ext.features.digitalBrowse)
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.commonTravel)
+    implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)
@@ -423,6 +425,7 @@ dependencies {
     implementation project(rootProject.ext.features.scanner)
     implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.adapterDelegate)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles

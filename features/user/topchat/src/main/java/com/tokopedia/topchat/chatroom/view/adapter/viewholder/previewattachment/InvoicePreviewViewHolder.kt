@@ -23,9 +23,9 @@ class InvoicePreviewViewHolder(
         return itemView.findViewById(R.id.iv_close)
     }
 
-    override fun bind(model: InvoicePreviewViewModel, position: Int) {
-        super.bind(model, position)
+    override fun bind(model: InvoicePreviewViewModel) {
         bindViewWithModel(model)
+        super.bind(model)
     }
 
     private fun bindViewWithModel(model: InvoicePreviewViewModel) {

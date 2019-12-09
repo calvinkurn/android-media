@@ -4,6 +4,7 @@ query OrderList($input: OrderListArgs!) {
       order_id
       status
       status_color
+      order_status_id
       order_resi
       order_date
       order_label {
@@ -18,6 +19,10 @@ query OrderList($input: OrderListArgs!) {
         picture
         product_name
       }
+      cancel_request
+      cancel_request_note
+      cancel_request_time
+      cancel_request_origin_note
     }
   }
 }
