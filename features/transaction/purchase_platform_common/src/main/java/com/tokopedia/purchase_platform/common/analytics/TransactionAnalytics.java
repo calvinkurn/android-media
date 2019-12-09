@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.common.analytics;
 
 import android.app.Activity;
+import android.os.Bundle;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;

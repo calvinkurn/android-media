@@ -1,8 +1,12 @@
 package com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder
 
+import androidx.lifecycle.Observer
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
+import androidx.annotation.LayoutRes
+import androidx.fragment.app.FragmentActivity
 import android.text.Html
 import android.text.TextUtils
 import android.view.Menu
@@ -13,9 +17,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
-import androidx.annotation.LayoutRes
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Observer
 import com.tkpd.library.utils.ImageHandler
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -23,12 +24,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.transaction.R
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter
 import com.tokopedia.transaction.orders.common.view.DoubleTextView
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants
 import com.tokopedia.transaction.orders.orderlist.data.*
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListViewModel
 import com.tokopedia.transaction.orders.orderlist.view.viewState.*
+import java.io.UnsupportedEncodingException
+import java.net.URLEncoder
 
 class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics,
                           var menuListener: OnMenuItemListener?, var buttonListener: OnActionButtonListener?) : AbstractViewHolder<OrderListViewModel>(itemView) {

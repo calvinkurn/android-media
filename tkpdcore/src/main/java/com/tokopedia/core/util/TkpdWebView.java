@@ -9,13 +9,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.crashlytics.android.Crashlytics;
+import com.tokopedia.webview.WebViewHelper;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core2.R;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.webview.WebViewHelper;
+import com.tokopedia.core2.R;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

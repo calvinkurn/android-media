@@ -1,10 +1,10 @@
 package com.tokopedia.productcard.utils
 
-import android.view.View
-import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import android.view.View
+import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 internal val View.isVisible: Boolean

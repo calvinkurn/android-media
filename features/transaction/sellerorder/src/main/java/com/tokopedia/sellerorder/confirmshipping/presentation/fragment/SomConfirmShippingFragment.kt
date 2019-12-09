@@ -23,9 +23,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIP
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.Utils
-import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
+import com.tokopedia.sellerorder.confirmshipping.data.model.*
 import com.tokopedia.sellerorder.confirmshipping.di.SomConfirmShippingComponent
-import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomScanResiActivity
 import com.tokopedia.sellerorder.confirmshipping.presentation.adapter.SomBottomSheetCourierListAdapter
 import com.tokopedia.sellerorder.confirmshipping.presentation.viewmodel.SomConfirmShippingViewModel
@@ -35,6 +34,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.fragment_som_confirm_shipping.*
 import javax.inject.Inject
+import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 
 /**
  * Created by fwidjaja on 2019-11-15.

@@ -1,5 +1,6 @@
 package com.tokopedia.applink.marketplace
 
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 

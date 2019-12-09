@@ -1,9 +1,9 @@
 package com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder
 
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.transaction.R
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.EmptyStateMarketPlaceFilterViewModel

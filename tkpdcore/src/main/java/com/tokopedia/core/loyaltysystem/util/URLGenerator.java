@@ -5,12 +5,18 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core2.BuildConfig;
-import com.tokopedia.url.TokopediaUrl;
+
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 /**
  * Created by ricoharisin on 9/29/15.
