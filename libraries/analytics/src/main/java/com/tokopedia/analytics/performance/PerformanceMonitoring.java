@@ -17,31 +17,31 @@ public class PerformanceMonitoring {
     }
 
     public void startTrace(String traceName) {
-        /*trace = FirebasePerformance.getInstance().newTrace(traceName);
-        trace.start();*/
+        trace = FirebasePerformance.getInstance().newTrace(traceName);
+        trace.start();
     }
 
     public void stopTrace() {
-        /*if(trace != null){
+        if(trace != null){
             trace.stop();
-        }*/
+        }
     }
 
     public void incrementCounter(String counterName) {
-        /*if(trace != null){
+        if(trace != null){
             incrementCounter(counterName,1L);
-        }*/
+        }
     }
 
     public void incrementCounter(String counterName, Long l) {
-        /*if(trace != null){
+        if(trace != null){
             trace.incrementCounter(counterName, l);
-        }*/
+        }
     }
 
     public void putMetric(String parameter, long value) {
-        /*if (trace != null) {
+        if (trace != null) {
             trace.putMetric(parameter, value);
-        }*/
+        }
     }
 }
