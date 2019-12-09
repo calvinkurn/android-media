@@ -42,7 +42,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
 
         private const val INVISIBLE_ALPHA = 0f
         private const val VISIBLE_ALPHA = 1f
-        private const val VISIBILITY_ANIMATION_DURATION = 350L
+        private const val VISIBILITY_ANIMATION_DURATION = 200L
 
         fun newInstance(): PlayInteractionFragment {
             return PlayInteractionFragment()
