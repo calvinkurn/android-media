@@ -3,7 +3,6 @@
     package="com.tokopedia.emoney.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="true"
         dist:title="@string/title_digital_emoney">
         <dist:fusing dist:include="true" />

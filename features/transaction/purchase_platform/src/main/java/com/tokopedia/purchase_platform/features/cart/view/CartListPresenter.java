@@ -34,9 +34,9 @@ import com.tokopedia.purchase_platform.common.data.model.response.insurance.enti
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProduct;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductItems;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase;
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase;
@@ -256,7 +256,10 @@ public class CartListPresenter implements ICartListPresenter {
             view.showProgressLoading();
         }
 
-        compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(RequestParams.EMPTY)
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetCartListSimplifiedUseCase.PARAM_SELECTED_CART_ID, cartId);
+
+        compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -372,7 +375,9 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processDeleteCartItem(List<CartItemData> allCartItemData,
                                       List<CartItemData> removedCartItems,
-                                      ArrayList<String> appliedPromoOnDeletedProductList, boolean addWishList, boolean removeInsurance) {
+                                      ArrayList<String> appliedPromoOnDeletedProductList,
+                                      boolean addWishList,
+                                      boolean removeInsurance) {
         view.showProgressLoading();
         boolean removeAllItem = allCartItemData.size() == removedCartItems.size();
 

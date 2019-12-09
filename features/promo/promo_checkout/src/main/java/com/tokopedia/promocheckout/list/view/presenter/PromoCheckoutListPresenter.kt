@@ -89,6 +89,7 @@ class PromoCheckoutListPresenter(val graphqlUseCase: GraphqlUseCase, val lastSee
 
     override fun detachView() {
         graphqlUseCase.unsubscribe()
+        lastSeenPromoUsecase.unsubscribe()
         super.detachView()
     }
 

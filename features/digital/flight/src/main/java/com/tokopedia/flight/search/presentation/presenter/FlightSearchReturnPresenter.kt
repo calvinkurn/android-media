@@ -79,7 +79,7 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
         )
     }
 
-    override fun onFlightSearchSelected(selectedFlightDeparture: String, selectedFlightReturn: String) {
+    override fun onFlightSearchSelected(selectedFlightDeparture: String, selectedFlightReturn: String, selectedTerm: String) {
         val priceViewModel = view.getFlightPriceViewModel()
 
         compositeSubscription.add(Observable.zip(
@@ -117,7 +117,7 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                     override fun onNext(t: Boolean?) {
                         if (t != null && t) {
                             view.navigateToCart(selectedFlightReturn = selectedFlightReturn,
-                                    flightPriceViewModel = priceViewModel)
+                                    flightPriceViewModel = priceViewModel, selectedFlightTerm = selectedTerm)
                         } else {
                             view.showReturnTimeShouldGreaterThanArrivalDeparture()
                         }

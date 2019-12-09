@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_2"
-    app:cardElevation="@dimen/dp_4"
-    app:cardCornerRadius="@dimen/dp_4">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/user_contact_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_12">
+        android:padding="@dimen/dp_16">
 
         <ProgressBar
             android:id="@+id/loading_bar"
@@ -29,42 +23,40 @@
             tools:visibility="visible"
             />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_contact_name"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:ellipsize="end"
             android:lines="1"
-            android:textStyle="bold"
-            app:fontSize="small"
             app:layout_constraintEnd_toStartOf="@+id/ic_edit_contact"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/ic_edit_contact"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:textViewTheme="lightPrimary"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:textColor="@color/Neutral_N700_96"
             tools:text="Stevanus Kurniawan Suharyanto dasdnjnj" />
 
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_contact_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:fontSize="micro"
             app:layout_constraintTop_toBottomOf="@+id/tv_contact_name"
             android:layout_marginTop="@dimen/dp_8"
-            app:textViewTheme="lightSecondary"
+            app:typographyType="body_3"
             tools:text="stevanus.suharyanto@tokopedia.com " />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_contact_phone_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:fontSize="micro"
             app:layout_constraintTop_toBottomOf="@+id/tv_contact_email"
-            app:textViewTheme="lightSecondary"
+            app:typographyType="body_3"
             tools:text="+62 131 014 7481"
             android:layout_marginTop="@dimen/dp_2"/>
 
@@ -77,4 +69,4 @@
             app:srcCompat="@drawable/ic_traveller_contact_edit" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>

@@ -17,7 +17,7 @@
         tools:node="remove"/>
     <uses-permission
         android:name="android.permission.READ_CALL_LOG"
-        tools:node="merge"/>
+        tools:node="remove"/>
     <uses-permission
         android:name="android.permission.WRITE_CONTACTS"
         tools:node="remove"/>

@@ -29,6 +29,8 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onInvalidResiUpload(awbUploadUrl: String)
         fun onDialPhone(strPhoneNo: String)
         fun onShowBookingCode(bookingCode: String, bookingType: String)
+        fun onShowBuyerRequestCancelReasonBottomSheet()
+        fun onSeeInvoice(invoiceUrl: String)
     }
 
     companion object {

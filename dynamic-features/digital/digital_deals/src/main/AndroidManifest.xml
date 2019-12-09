@@ -2,7 +2,6 @@
     package="com.tokopedia.digital_deals.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_digital_deals">
         <dist:fusing dist:include="true" />

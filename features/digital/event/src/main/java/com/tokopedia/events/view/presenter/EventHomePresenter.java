@@ -259,7 +259,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
 
     @Override
     public void shareEvent(CategoryItemsViewModel model) {
-        Utils.getSingletonInstance().shareEvent(mView.getActivity(), model.getTitle(), model.getSeoUrl(), model.getImageWeb());
+        Utils.getSingletonInstance().shareEvent(mView.getActivity(), model.getTitle(), model.getSeoUrl(), model.getImageWeb(),model.getWebUrl());
     }
 
     @Override

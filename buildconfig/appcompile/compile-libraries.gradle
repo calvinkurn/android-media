@@ -1,4 +1,5 @@
 // Sort alphabetically by name
+include "libraries:adapter_delegate"
 include "libraries:analytics"
 include "libraries:applink"
 include "libraries:banner_dynamic"
@@ -47,5 +48,6 @@ include "libraries:promotions_target"
 
 include "libraries:videouploader"
 include "libraries:translator"
+include "libraries:traceroute"
 
 

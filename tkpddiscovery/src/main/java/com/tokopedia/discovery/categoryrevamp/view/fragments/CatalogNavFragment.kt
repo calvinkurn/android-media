@@ -27,6 +27,8 @@ import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CatalogCardListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CatalogNavViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -192,10 +194,12 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
             layout_no_data.visibility = View.VISIBLE
+            txt_catalog_count.hide()
             txt_no_data_header.text = resources.getText(R.string.category_nav_catalog_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_catalog_no_data_description)
         } else {
             layout_no_data.visibility = View.GONE
+            txt_catalog_count.show()
         }
 
     }
