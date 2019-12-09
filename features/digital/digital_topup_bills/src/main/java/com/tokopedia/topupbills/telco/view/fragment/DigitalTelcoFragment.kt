@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
 import com.tokopedia.common_digital.common.RechargeAnalytics
@@ -15,17 +16,11 @@ import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
-import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalProductSubMenu
-import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
-import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity
-import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topupbills.telco.view.widget.DigitalSubMenuWidget
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_digital_telco.*
-import rx.Subscriber
 import javax.inject.Inject
 
 /**
