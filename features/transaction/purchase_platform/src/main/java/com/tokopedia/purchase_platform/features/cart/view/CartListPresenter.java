@@ -412,10 +412,10 @@ public class CartListPresenter implements ICartListPresenter {
             updateCartRequestList.add(updateCartRequest);
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(UpdateCartUseCase.Companion.getPARAM_CARTS(), new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+        requestParams.putObject(UpdateCartUseCase.Companion.getPARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART(),
                 view.getGeneratedAuthParamNetwork(paramUpdate));
 
         compositeSubscription.add(
@@ -428,8 +428,8 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processUpdateCartDataPromoMerchant
-            (List<CartItemData> cartItemDataList, ShopGroupAvailableData shopGroupAvailableData) {
+    public void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList,
+                                                   ShopGroupAvailableData shopGroupAvailableData) {
         view.showProgressLoading();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
@@ -440,10 +440,10 @@ public class CartListPresenter implements ICartListPresenter {
             updateCartRequestList.add(updateCartRequest);
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(UpdateCartUseCase.Companion.getPARAM_CARTS(), new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+        requestParams.putObject(UpdateCartUseCase.Companion.getPARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART(),
                 view.getGeneratedAuthParamNetwork(paramUpdate));
 
         compositeSubscription.add(
@@ -469,10 +469,10 @@ public class CartListPresenter implements ICartListPresenter {
             updateCartRequestList.add(updateCartRequest);
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(UpdateCartUseCase.Companion.getPARAM_CARTS(), new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+        requestParams.putObject(UpdateCartUseCase.Companion.getPARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART(),
                 view.getGeneratedAuthParamNetwork(paramUpdate));
 
         compositeSubscription.add(

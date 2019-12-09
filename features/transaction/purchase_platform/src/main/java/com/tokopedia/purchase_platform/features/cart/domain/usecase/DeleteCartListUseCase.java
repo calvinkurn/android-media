@@ -15,8 +15,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
-import static com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART;
-
 /**
  * @author anggaprasetiyo on 30/04/18.
  */

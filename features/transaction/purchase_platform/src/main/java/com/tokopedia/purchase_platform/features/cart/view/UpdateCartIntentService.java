@@ -60,10 +60,10 @@ public class UpdateCartIntentService extends JobIntentService {
                 updateCartRequestList.add(updateCartRequest);
             }
             TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-            paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+            paramUpdate.put(UpdateCartUseCase.Companion.getPARAM_CARTS(), new Gson().toJson(updateCartRequestList));
 
             RequestParams requestParams = RequestParams.create();
-            requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+            requestParams.putObject(UpdateCartUseCase.Companion.getPARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART(),
                     getGeneratedAuthParamNetwork(paramUpdate));
 
             updateCartUseCase.execute(requestParams, new Subscriber<UpdateCartData>() {
