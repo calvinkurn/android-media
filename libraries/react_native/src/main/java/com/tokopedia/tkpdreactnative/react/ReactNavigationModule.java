@@ -46,7 +46,7 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
  * @author ricoharisin .
  */
 
-public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback, ReputationRouter {
+public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback {
 
     private final Context appContext;
 
@@ -283,44 +283,4 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
             }
         }
     };
-
-    @Override
-    public Intent getInboxReputationIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Fragment getReputationHistoryFragment() {
-        return null;
-    }
-
-    @Override
-    public Intent getLoginIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getShopPageIntent(Context context, String shopId) {
-        return null;
-    }
-
-    @Override
-    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return null;
-    }
-
-    @Override
-    public Intent getTopProfileIntent(Context context, String reviewUserId) {
-        return null;
-    }
-
-    @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
-
-    }
-
-    @Override
-    public void showSimpleAppRatingDialog(Activity activity) {
-
-    }
 }
