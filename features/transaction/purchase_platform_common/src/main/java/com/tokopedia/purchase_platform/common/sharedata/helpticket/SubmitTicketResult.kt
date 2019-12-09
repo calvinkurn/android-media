@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.sharedata.ticket
+package com.tokopedia.purchase_platform.common.sharedata.helpticket
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -11,8 +11,8 @@ data class SubmitTicketResult(
 
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),
-            parcel.readString(),
-            parcel.readParcelable(SubmitTicketText::class.java.classLoader))
+            parcel.readString() ?: "",
+            parcel.readParcelable(SubmitTicketText::class.java.classLoader) ?: SubmitTicketText())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeByte(if (status) 1 else 0)
