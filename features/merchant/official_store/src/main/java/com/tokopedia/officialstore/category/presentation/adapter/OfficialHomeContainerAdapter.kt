@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.officialstore.category.data.model.Category
+import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment.Companion.KEY_CATEGORY
 import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
+import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment.Companion.BUNDLE_CATEGORY
 
 class OfficialHomeContainerAdapter(
         val context: Context?,
@@ -22,10 +24,9 @@ class OfficialHomeContainerAdapter(
 
     private fun getBundle(position: Int): Bundle {
         val bundle = Bundle()
-        bundle.putParcelable(OfficialHomeFragment.BUNDLE_CATEGORY,
+        bundle.putParcelable(BUNDLE_CATEGORY,
                 categoryList[position])
-        bundle.putString(OfficialHomeFragment.KEY_CATEGORY, categoryIdSelected)
-        println(categoryIdSelected)
+        bundle.putString(KEY_CATEGORY, categoryIdSelected)
         return bundle
     }
 

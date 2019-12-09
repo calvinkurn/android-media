@@ -40,6 +40,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
+        const val KEY_CATEGORY = "key_category"
     }
 
     @Inject
@@ -51,7 +52,6 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var viewPager: ViewPager? = null
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
-    private val KEY_CATEGORY = "key_category"
     private var keyCategory = "0"
 
     private lateinit var tracking: OfficialStoreTracking

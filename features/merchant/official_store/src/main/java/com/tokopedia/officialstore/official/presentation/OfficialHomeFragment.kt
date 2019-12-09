@@ -26,6 +26,7 @@ import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
+import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment.Companion.KEY_CATEGORY
 import com.tokopedia.officialstore.common.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
@@ -56,7 +57,6 @@ class OfficialHomeFragment :
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
         const val BUNDLE_CATEGORY = "category_os"
-        const val KEY_CATEGORY = "key_category"
         var PRODUCT_RECOMMENDATION_TITLE_SECTION = ""
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 898
@@ -109,8 +109,8 @@ class OfficialHomeFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let { 
-            category = it.getParcelable(BUNDLE_CATEGORY) 
+        arguments?.let {
+            category = it.getParcelable(BUNDLE_CATEGORY)
             categoryIdSelected = it.getString(KEY_CATEGORY)
         }
         context?.let { tracking = OfficialStoreTracking(it) }
