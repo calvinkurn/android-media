@@ -117,7 +117,8 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                     setConditionalInfo(it.successConditionalText, it.successCondInfoVisibility, it.color)
                 }
                 is SetFailStatusBgColor -> {
-                    status?.setBackgroundColor(android.graphics.Color.parseColor(it.statusColor))
+                    if(it.statusColor.isNotEmpty())
+                        status?.setBackgroundColor(android.graphics.Color.parseColor(it.statusColor))
                 }
                 is SetStatus -> {
                     status?.text = it.statusText
@@ -174,8 +175,10 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             shape.apply {
                 this.shape = GradientDrawable.RECTANGLE
                 shape.cornerRadius = cornerRadiusValue
-                setColor(android.graphics.Color.parseColor(color?.background()))
-                setStroke(1, android.graphics.Color.parseColor(color?.border()))
+                if(color?.background()?.isNotEmpty() == true)
+                    setColor(android.graphics.Color.parseColor(color.background()))
+                if(color?.border()?.isNotEmpty() == true)
+                    setStroke(1, android.graphics.Color.parseColor(color.border()))
             }
             conditionalInfoText?.background = shape
             conditionalInfoText?.setPadding(padding16, padding16, padding16, padding16)
@@ -220,6 +223,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             if (!TextUtils.isEmpty(appLink)) {
                 orderListAnalytics.sendProductClickEvent(status?.text.toString())
                 orderListAnalytics.sendPageClickEvent("order - detail")
+                orderListAnalytics.sendProductViewEvent(order, categoryName?.text.toString(), this.position, total?.text.toString())
 
                 RouteManager.route(itemView.context, "${appLink}?upstream=${order.upstream}")
             }

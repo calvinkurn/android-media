@@ -3,7 +3,11 @@ package com.tokopedia.navigation.presentation.adapter.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.*
+import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.BigBannerNotificationViewHolder
+import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.ProductRecomNotificationViewHolder
+import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.SmallBannerNotificationViewHolder
+import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.TextNotificationViewHolder
+import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.WishListNotificationViewHolder
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 

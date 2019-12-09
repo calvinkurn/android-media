@@ -25,17 +25,21 @@ class SeamlessLoginUsecase @Inject constructor(
         private val userSession: UserSessionInterface,
         private val gson: Gson) {
 
-    fun generateSeamlessUrl(callbackUrl: String, listener: SeamlessLoginSubscriber){
-        getKeygenUsecase.execute(
-            onSuccess = {
-                listener.onUrlGenerated(
-                    createData(callbackUrl, it.data.key)
-                )
-            },
-            onError = {
-                listener.onError(it.message ?: "")
-            }
-        )
+    fun generateSeamlessUrl(callbackUrl: String, listener: SeamlessLoginSubscriber?){
+        if(!userSession.isLoggedIn){
+            listener?.onUrlGenerated(callbackUrl)
+        }else {
+            getKeygenUsecase.execute(
+                    onSuccess = {
+                        listener?.onUrlGenerated(
+                                createData(callbackUrl, it.data.key)
+                        )
+                    },
+                    onError = {
+                        listener?.onError(it.message ?: "")
+                    }
+            )
+        }
     }
 
     private fun buildUrl(callbackUrl: String): Uri.Builder {
@@ -45,10 +49,19 @@ class SeamlessLoginUsecase @Inject constructor(
                 .appendQueryParameter(SeamlessLoginConstant.PARAM.TOKEN.value, userSession.deviceId)
                 .appendQueryParameter(SeamlessLoginConstant.PARAM.OS_TYPE.value, SeamlessLoginConstant.OS_TYPE_VALUE)
                 .appendQueryParameter(SeamlessLoginConstant.PARAM.UID.value, userSession.userId)
-                .appendQueryParameter(SeamlessLoginConstant.PARAM.URL.value, callbackUrl)
+                .appendQueryParameter(SeamlessLoginConstant.PARAM.URL.value, callbackUrl.safeEncodeUtf8())
                 .appendQueryParameter(SeamlessLoginConstant.PARAM.VERSION.value, GlobalConfig.VERSION_CODE.toString())
                 .appendQueryParameter(SeamlessLoginConstant.PARAM.TIMESTAMP.value, System.currentTimeMillis().toString())
                 .appendQueryParameter(SeamlessLoginConstant.PARAM.BROWSER.value, SeamlessLoginConstant.BROWSER_VALUE)
+    }
+
+    private fun String.safeEncodeUtf8(): String {
+        return try {
+            this.encodeToUtf8()
+        }
+        catch(throwable: Throwable) {
+            this
+        }
     }
 
     private fun generateSignature(contentMD5: String, date: String): String {

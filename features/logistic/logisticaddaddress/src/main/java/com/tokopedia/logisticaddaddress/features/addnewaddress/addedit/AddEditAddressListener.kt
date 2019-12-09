@@ -8,5 +8,7 @@ import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
  */
 interface AddEditAddressListener : CustomerView {
     fun onSuccessAddAddress(saveAddressDataModel: SaveAddressDataModel)
+    fun showZipCodes(zipcodes: List<String>)
+    fun showManualZipCodes()
     fun showError(t: Throwable)
 }

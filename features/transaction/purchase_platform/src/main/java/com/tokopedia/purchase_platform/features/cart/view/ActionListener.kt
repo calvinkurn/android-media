@@ -66,5 +66,7 @@ interface ActionListener {
 
     fun onSeeErrorProductsClicked()
 
-    fun onTickerDescriptionUrlClicked(url: String)
+    fun onTobaccoLiteUrlClicked(url: String)
+
+    fun onShowTickerTobacco()
 }
