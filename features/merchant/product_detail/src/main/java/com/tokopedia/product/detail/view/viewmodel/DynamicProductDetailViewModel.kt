@@ -85,7 +85,6 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     val moveToEtalaseResult = MutableLiveData<Result<Boolean>>()
 
     var multiOrigin: WarehouseInfo = WarehouseInfo()
-
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var shopInfo: ShopInfo? = null
     var installmentData: FinancingDataResponse? = null
@@ -94,13 +93,10 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
     fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
-
     val userId: String
         get() = userSessionInterface.userId
-
     val isUserHasShop: Boolean
         get() = userSessionInterface.hasShop()
-
     val deviceId: String
         get() = userSessionInterface.deviceId
 

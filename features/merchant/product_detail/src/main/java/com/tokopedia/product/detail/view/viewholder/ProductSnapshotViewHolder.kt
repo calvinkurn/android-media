@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataMode
 import com.tokopedia.product.detail.view.fragment.partialview.PartialSnapshotView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_pdp_snapshot.view.*
+import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
 
 class ProductSnapshotViewHolder(private val view: View,
                                 private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductSnapshotDataModel>(view) {
@@ -50,9 +51,21 @@ class ProductSnapshotViewHolder(private val view: View,
 
         header.renderCod(element.shouldShowCod)
         header.renderTradein(element.shouldShowTradein)
+
+        view.tv_trade_in_promo.setOnClickListener {
+            listener.txtTradeinClicked(adapterPosition)
+        }
+
+        view.fab_detail.setOnClickListener { listener.onFabWishlistClicked(it.isActivated) }
+        element.media?.let {
+            view.view_picture_search_bar.renderData(it, listener::onImageClicked, listener.getProductFragmentManager(), element.shouldReinitVideoPicture)
+            element.shouldReinitVideoPicture = false
+        }
+
         view.view_picture_search_bar.isVisibleOnTheScreen(object : ViewVisibilityListener {
             override fun onViewNotVisible() {
                 view.fab_detail.hide()
+                view.view_picture_search_bar.stopVideo()
             }
 
             override fun onViewVisible() {
@@ -61,11 +74,6 @@ class ProductSnapshotViewHolder(private val view: View,
 
         })
 
-        view.fab_detail.setOnClickListener { listener.onFabWishlistClicked(it.isActivated) }
-        element.media?.let {
-            view.view_picture_search_bar.renderData(it, listener::onImageClicked, listener.getProductFragmentManager(), element.shouldReinitVideoPicture)
-            element.shouldReinitVideoPicture = false
-        }
 
     }
 

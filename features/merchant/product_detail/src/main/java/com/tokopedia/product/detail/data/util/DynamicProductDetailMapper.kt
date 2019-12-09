@@ -51,16 +51,6 @@ object DynamicProductDetailMapper {
         return listOfComponent
     }
 
-    private fun mapToProductInfoContent(listOfData: List<ComponentData>): List<ProductInfoContent>? {
-        return if (listOfData.isEmpty()) {
-            null
-        } else {
-            listOfData.map {
-                ProductInfoContent(it.row, it.content)
-            }
-        }
-    }
-
     fun mapToDynamicProductDetailP1(data: PdpGetLayout): DynamicProductInfoP1 {
         val componentData = data.components.find {
             it.type == "product_snapshot"
@@ -137,6 +127,17 @@ object DynamicProductDetailMapper {
         } else {
             data.map {
                 com.tokopedia.product.detail.common.data.model.product.Wholesale(it.minQty, it.price.value.toFloat())
+            }
+        }
+    }
+
+
+    private fun mapToProductInfoContent(listOfData: List<ComponentData>): List<ProductInfoContent>? {
+        return if (listOfData.isEmpty()) {
+            null
+        } else {
+            listOfData.map {
+                ProductInfoContent(it.row, it.content)
             }
         }
     }

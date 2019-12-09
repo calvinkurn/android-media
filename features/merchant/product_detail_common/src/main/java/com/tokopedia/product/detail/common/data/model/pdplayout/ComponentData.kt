@@ -88,4 +88,14 @@ data class ComponentData(
     fun getFsProductImageUrl(): String {
         return isFreeOngkir.imageURL
     }
+
+    fun getImagePath(): ArrayList<String> {
+        return ArrayList(media.map {
+            if (it.type == "image") {
+                it.uRLOriginal
+            } else {
+                it.uRLThumbnail
+            }
+        })
+    }
 }

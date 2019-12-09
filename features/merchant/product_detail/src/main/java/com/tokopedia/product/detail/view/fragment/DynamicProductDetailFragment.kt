@@ -218,7 +218,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         initializeSearchToolbar()
         initializeStickyLogin(view)
         initActionButton()
-        getRecyclerView(view).itemAnimator = null
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
@@ -742,7 +741,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 onShipmentClicked()
             }
             "cicilan_info" -> {
-                openFtInstallmentBottomSheet(viewModel.installmentData ?: FinancingDataResponse() )
+                openFtInstallmentBottomSheet(viewModel.installmentData ?: FinancingDataResponse())
             }
             "variant" -> {
                 productDetailTracking.eventClickVariant(generateVariantString(), productId ?: "")
@@ -907,9 +906,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
      */
     override fun onImageClicked(position: Int) {
         startActivity(ImagePreviewActivity.getCallingIntent(context!!,
-                viewModel.getImageUriPaths(),
+                viewModel.getDynamicProductInfoP1?.data?.getImagePath()!!,
                 null,
                 position))
+    }
+
+    override fun txtTradeinClicked(adapterPosition: Int) {
+        scrollToPosition(adapterPosition)
     }
 
     override fun getProductFragmentManager(): FragmentManager {
@@ -1360,7 +1363,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private fun initRecyclerView(view: View) {
         context?.let {
             rv_pdp.addItemDecoration(DynamicPdpDividerItemDecoration(it))
+            getRecyclerView(view).layoutManager = CenterLayoutManager(it, LinearLayoutManager.VERTICAL, false)
+
         }
+        getRecyclerView(view).itemAnimator = null
+
 
     }
 
@@ -1951,6 +1958,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     private fun hideProgressDialog() {
         loadingProgressDialog?.dismiss()
+    }
+
+    private fun scrollToPosition(position: Int) {
+        getRecyclerView(view).smoothScrollToPosition(position)
     }
 
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {

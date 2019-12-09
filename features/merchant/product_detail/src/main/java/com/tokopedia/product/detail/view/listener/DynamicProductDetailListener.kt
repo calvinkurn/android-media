@@ -22,6 +22,7 @@ interface DynamicProductDetailListener {
     fun onFabWishlistClicked(isActive: Boolean)
     fun getProductFragmentManager(): FragmentManager
     fun showAlertCampaignEnded()
+    fun txtTradeinClicked(adapterPosition:Int)
 
     /**
      * ProductInfoViewHolder
