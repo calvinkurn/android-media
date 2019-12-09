@@ -30,7 +30,7 @@ class PlayActivity : BaseActivity() {
     }
 
     private fun getFragment(): Fragment {
-        return PlayFragment.newInstance(intent?.getStringExtra(PLAY_KEY_CHANNEL_ID)?:"")
+        return PlayFragment.newInstance(intent?.getStringExtra(PLAY_KEY_CHANNEL_ID).orEmpty())
     }
 
     private fun initView() {}
