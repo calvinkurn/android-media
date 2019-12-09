@@ -3,7 +3,6 @@
     package="com.tokopedia.referral.im.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_module_referral">
         <dist:fusing dist:include="true" />

@@ -3,7 +3,6 @@
     package="com.tokopedia.merchant.subscribe.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/pm_title_activity">
         <dist:fusing dist:include="true" />

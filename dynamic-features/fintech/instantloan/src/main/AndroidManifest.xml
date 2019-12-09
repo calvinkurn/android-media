@@ -3,7 +3,6 @@
     package="com.tokopedia.instantloan.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_instantloan">
         <dist:fusing dist:include="true" />

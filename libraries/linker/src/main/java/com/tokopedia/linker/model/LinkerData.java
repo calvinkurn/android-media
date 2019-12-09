@@ -52,6 +52,11 @@ public class LinkerData implements Parcelable {
     private String userId;
     private String quantity;
     private String custmMsg;
+    private String productCategory;
+    private String productName;
+    private String journeyId;
+    private String invoiceId;
+    private String paymentId;
 
     public String getCustmMsg() {
         return custmMsg;
@@ -88,6 +93,11 @@ public class LinkerData implements Parcelable {
         catLvl1 = in.readString();
         userId = in.readString();
         quantity = in.readString();
+        productCategory = in.readString();
+        productName = in.readString();
+        journeyId = in.readString();
+        invoiceId = in.readString();
+        paymentId = in.readString();
     }
 
     @Override
@@ -115,6 +125,11 @@ public class LinkerData implements Parcelable {
         dest.writeString(catLvl1);
         dest.writeString(userId);
         dest.writeString(quantity);
+        dest.writeString(productCategory);
+        dest.writeString(productName);
+        dest.writeString(journeyId);
+        dest.writeString(invoiceId);
+        dest.writeString(paymentId);
     }
 
     @Override
@@ -374,6 +389,45 @@ public class LinkerData implements Parcelable {
         this.quantity = quantity;
     }
 
+    public String getProductCategory() {
+        return productCategory;
+    }
+
+    public void setProductCategory(String productCategory) {
+        this.productCategory = productCategory;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getJourneyId() {
+        return journeyId;
+    }
+
+    public void setJourneyId(String journeyId) {
+        this.journeyId = journeyId;
+    }
+
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(String invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+
+    public String getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
+    }
 
     public static class Builder {
         private String name;
@@ -400,6 +454,11 @@ public class LinkerData implements Parcelable {
         private String userId;
         private String quantity;
         private String custmMsg;
+        private String productCategory;
+        private String productName;
+        private String journeyId;
+        private String invoiceId;
+        private String paymentId;
 
         private Builder() {
         }
@@ -527,6 +586,31 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setProductCategory(String productCategory){
+            this.productCategory = productCategory;
+            return this;
+        }
+
+        public Builder setProductName(String productName){
+            this.productName = productName;
+            return this;
+        }
+
+        public Builder setJourneyId(String journeyId){
+            this.journeyId = journeyId;
+            return this;
+        }
+
+        public Builder setInvoiceId(String invoiceId){
+            this.invoiceId = invoiceId;
+            return this;
+        }
+
+        public Builder setPaymentId(String paymentId){
+            this.paymentId = paymentId;
+            return this;
+        }
+
         public Builder but() {
             return getLinkerBuilder().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -556,6 +640,11 @@ public class LinkerData implements Parcelable {
             linkerData.setCatLvl1(catLvl1);
             linkerData.setUserId(userId);
             linkerData.setQuantity(quantity);
+            linkerData.setQuantity(productCategory);
+            linkerData.setQuantity(productName);
+            linkerData.setQuantity(journeyId);
+            linkerData.setQuantity(invoiceId);
+            linkerData.setQuantity(paymentId);
             return linkerData;
         }
 
