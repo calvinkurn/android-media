@@ -563,7 +563,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
-            showRatingDialog(data.getExtras());
             NetworkErrorHelper.showSnackbar(getActivity(),
                     getString(R.string.review_for) + " " + data.getExtras().getString
                             (InboxReputationFormActivity.ARGS_REVIEWEE_NAME, "")
@@ -599,15 +598,5 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (presenter != null)
             presenter.detachView();
         callbackManager = null;
-    }
-
-    public void showRatingDialog(Bundle bundle) {
-        if (bundle != null && bundle.getFloat(InboxReputationFormActivity.ARGS_RATING) >= 3.0) {
-            if (getActivity() != null &&
-                    getActivity().getApplicationContext() instanceof ReputationRouter) {
-                ((ReputationRouter)getActivity().getApplicationContext())
-                        .showSimpleAppRatingDialog(getActivity());
-            }
-        }
     }
 }
