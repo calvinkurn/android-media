@@ -82,7 +82,6 @@ class OfficialHomeFragment :
     private var counterTitleShouldBeRendered = 0
     private var isLoadedOnce: Boolean = false
     private var isScrolling = false
-    private var categoryIdSelected = "0"
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -111,7 +110,6 @@ class OfficialHomeFragment :
         super.onCreate(savedInstanceState)
         arguments?.let {
             category = it.getParcelable(BUNDLE_CATEGORY)
-            categoryIdSelected = it.getString(KEY_CATEGORY)
         }
         context?.let { tracking = OfficialStoreTracking(it) }
     }
