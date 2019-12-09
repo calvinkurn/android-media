@@ -118,7 +118,8 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                 reviewDomain.getShopData().getShopName(),
                 reviewDomain.getUserData().getUserId(),
                 itemDomain.getProductData().getProductStatus() == PRODUCT_IS_BANNED,
-                itemDomain.getProductData().getProductStatus()
+                itemDomain.getProductData().getProductStatus(),
+                reviewDomain.getOrderId()
                 );
     }
 
