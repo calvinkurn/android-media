@@ -40,6 +40,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
 
+        private const val INVISIBLE_ALPHA = 0f
+        private const val VISIBLE_ALPHA = 1f
+        private const val VISIBILITY_ANIMATION_DURATION = 350L
+
         fun newInstance(): PlayInteractionFragment {
             return PlayInteractionFragment()
         }
@@ -77,6 +81,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
         super.onViewCreated(view, savedInstanceState)
 
         initComponents(view as ViewGroup)
+        setupView(view)
         setPinnedMessage("Yoenik Apparel", "Visit my collections here!")
         viewModel.startObservingChatList()
     }
@@ -106,6 +111,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
+    }
+
+    private fun setupView(view: View) {
+        view.setOnClickListener { hideInteraction(view) }
+    }
+
+    private fun hideInteraction(view: View) {
+        view.animate().apply {
+
+            if (view.alpha == INVISIBLE_ALPHA) alpha(VISIBLE_ALPHA)
+            else alpha(INVISIBLE_ALPHA)
+            duration = VISIBILITY_ANIMATION_DURATION
+        }
+                .withStartAction { view.isClickable = false }
+                .withEndAction { view.isClickable = true }
     }
 
     //region Component Initialization
