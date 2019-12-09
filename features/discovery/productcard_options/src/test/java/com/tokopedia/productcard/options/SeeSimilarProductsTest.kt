@@ -25,6 +25,12 @@ internal class SeeSimilarProductsTest: Spek({
                 productCardOptionsViewModel.getOption(SEE_SIMILAR_PRODUCTS).onClick()
             }
 
+            Then("assert tracking click see similar product event is true") {
+                val trackingSeeSimilarProductEventLiveData = productCardOptionsViewModel.getTrackingSeeSimilarProductEventLiveData().value
+
+                trackingSeeSimilarProductEventLiveData?.getContentIfNotHandled() shouldBe true
+            }
+
             Then("Route to Similar Search Event Live Data is true") {
                 val routeToSimilarSearchEvent = productCardOptionsViewModel.getRouteToSimilarSearchEventLiveData().value
 

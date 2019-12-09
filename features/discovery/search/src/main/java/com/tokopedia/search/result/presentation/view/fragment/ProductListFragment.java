@@ -28,7 +28,8 @@ import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
-import com.tokopedia.discovery.common.manager.SimilarSearchManager;
+import com.tokopedia.discovery.common.manager.ProductCardOptionsManager;
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.Filter;
@@ -50,6 +51,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
+import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
@@ -59,7 +61,6 @@ import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListe
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
-import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -475,12 +476,40 @@ public class ProductListFragment
         }
         if (getActivity() != null) {
             AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
+            ProductCardOptionsManager.handleActivityResult(requestCode, resultCode, data, this::handleWishlistAction);
         }
     }
 
     private void updateWishlistFromPDP(int position, boolean isWishlist) {
         if (adapter != null && (adapter.isProductItem(position) || adapter.isRecommendationItem(position))) {
             adapter.updateWishlistStatus(position, isWishlist);
+        }
+    }
+
+    private void handleWishlistAction(boolean isAddWishlist, boolean isSuccess, ProductCardOptionsModel productCardOptionsModel) {
+        if (isSuccess) {
+            handleSuccessWishlistAction(isAddWishlist, productCardOptionsModel);
+        }
+        else {
+            handleFailedWishlistAction(isAddWishlist);
+        }
+    }
+
+    private void handleSuccessWishlistAction(boolean isAddWishlist, ProductCardOptionsModel productCardOptionsModel) {
+        adapter.updateWishlistStatus(productCardOptionsModel.getProductId(), isAddWishlist);
+
+        if (isAddWishlist) {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+        }
+    }
+
+    private void handleFailedWishlistAction(boolean isAddWishlist) {
+        if (isAddWishlist) {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist_failed));
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist_failed));
         }
     }
 
@@ -542,6 +571,53 @@ public class ProductListFragment
         }
     }
 
+    private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {
+        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
+        if (item.isTopAds()) {
+            sendItemClickTrackingEventForTopAdsItem(item, pos);
+        } else {
+            String filterSortParams
+                    = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
+            SearchTracking.trackEventClickSearchResultProduct(
+                    item,
+                    item.getProductAsObjectDataLayer(userId, filterSortParams),
+                    item.getPageNumber(),
+                    getQueryKey(),
+                    filterSortParams
+            );
+        }
+    }
+
+    private void sendItemClickTrackingEventForTopAdsItem(ProductItemViewModel item, int pos) {
+        new ImpresionTask().execute(item.getTopadsClickUrl());
+
+        Product product = createTopAdsProductForTracking(item);
+
+        TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, pos, SCREEN_SEARCH_PAGE_PRODUCT_TAB);
+    }
+
+    private Product createTopAdsProductForTracking(ProductItemViewModel item) {
+        Product product  = new Product();
+        product.setId(item.getProductID());
+        product.setName(item.getProductName());
+        product.setPriceFormat(item.getPrice());
+        product.setCategory(new Category(item.getCategoryID()));
+        product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
+
+        return product;
+    }
+
+    private FreeOngkir createTopAdsProductFreeOngkirForTracking(ProductItemViewModel item) {
+        if (item != null && item.getFreeOngkirViewModel() != null) {
+            return new FreeOngkir(
+                    item.getFreeOngkirViewModel().isActive(),
+                    item.getFreeOngkirViewModel().getImageUrl()
+            );
+        }
+
+        return null;
+    }
+
     @Override
     public void onProductClick(@NotNull RecommendationItem item, @org.jetbrains.annotations.Nullable String layoutType, @NotNull int... position) {
         Intent intent = getProductIntent(String.valueOf(item.getProductId()), "0");
@@ -593,55 +669,20 @@ public class ProductListFragment
         if(getSearchParameter() == null || getActivity() == null) return;
 
         SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
-
-        SimilarSearchManager.startSimilarSearch(getActivity(), item.getProductID(), getQueryKey());
+        ProductCardOptionsManager.showProductCardOptions(this, createProductCardOptionsModel(item));
     }
 
-    private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {
-        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
-        if (item.isTopAds()) {
-            sendItemClickTrackingEventForTopAdsItem(item, pos);
-        } else {
-            String filterSortParams
-                    = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
-            SearchTracking.trackEventClickSearchResultProduct(
-                    item,
-                    item.getProductAsObjectDataLayer(userId, filterSortParams),
-                    item.getPageNumber(),
-                    getQueryKey(),
-                    filterSortParams
-            );
-        }
-    }
+    private ProductCardOptionsModel createProductCardOptionsModel(ProductItemViewModel item) {
+        ProductCardOptionsModel productCardOptionsModel = new ProductCardOptionsModel();
 
-    private void sendItemClickTrackingEventForTopAdsItem(ProductItemViewModel item, int pos) {
-        new ImpresionTask().execute(item.getTopadsClickUrl());
+        productCardOptionsModel.setHasWishlist(item.isWishlistButtonEnabled());
+        productCardOptionsModel.setHasSimilarSearch(true);
+        productCardOptionsModel.setWishlisted(item.isWishlisted());
+        productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
+        productCardOptionsModel.setProductId(item.getProductID());
+        productCardOptionsModel.setTopAds(item.isTopAds());
 
-        Product product = createTopAdsProductForTracking(item);
-
-        TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, pos, SCREEN_SEARCH_PAGE_PRODUCT_TAB);
-    }
-
-    private Product createTopAdsProductForTracking(ProductItemViewModel item) {
-        Product product  = new Product();
-        product.setId(item.getProductID());
-        product.setName(item.getProductName());
-        product.setPriceFormat(item.getPrice());
-        product.setCategory(new Category(item.getCategoryID()));
-        product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
-
-        return product;
-    }
-
-    private FreeOngkir createTopAdsProductFreeOngkirForTracking(ProductItemViewModel item) {
-        if (item != null && item.getFreeOngkirViewModel() != null) {
-            return new FreeOngkir(
-                    item.getFreeOngkirViewModel().isActive(),
-                    item.getFreeOngkirViewModel().getImageUrl()
-            );
-        }
-
-        return null;
+        return productCardOptionsModel;
     }
 
     @Override
@@ -760,19 +801,20 @@ public class ProductListFragment
     }
 
     private void trackSuccessAddWishlist(ProductItemViewModel productItemViewModel) {
-        WishlistTrackingModel wishlistTrackingModel = createWishlistTrackingModel(productItemViewModel);
-        wishlistTrackingModel.setAddWishlist(true);
+        WishlistTrackingModel wishlistTrackingModel =
+                createWishlistTrackingModel(productItemViewModel.getProductID(), productItemViewModel.isTopAds(), true);
 
         SearchTracking.eventSuccessWishlistSearchResultProduct(wishlistTrackingModel);
     }
 
-    private WishlistTrackingModel createWishlistTrackingModel(ProductItemViewModel productItemViewModel) {
+    private WishlistTrackingModel createWishlistTrackingModel(String productId, boolean isTopAds, boolean isAddWishlist) {
         WishlistTrackingModel wishlistTrackingModel = new WishlistTrackingModel();
 
-        wishlistTrackingModel.setProductId(productItemViewModel.getProductID());
-        wishlistTrackingModel.setTopAds(productItemViewModel.isTopAds());
+        wishlistTrackingModel.setProductId(productId);
+        wishlistTrackingModel.setTopAds(isTopAds);
         wishlistTrackingModel.setKeyword(getQueryKey());
         wishlistTrackingModel.setUserLoggedIn(userSession.isLoggedIn());
+        wishlistTrackingModel.setAddWishlist(isAddWishlist);
 
         return wishlistTrackingModel;
     }
@@ -793,8 +835,8 @@ public class ProductListFragment
     }
 
     private void trackSuccessRemoveWishlist(ProductItemViewModel productItemViewModel) {
-        WishlistTrackingModel wishlistTrackingModel = createWishlistTrackingModel(productItemViewModel);
-        wishlistTrackingModel.setAddWishlist(false);
+        WishlistTrackingModel wishlistTrackingModel =
+                createWishlistTrackingModel(productItemViewModel.getProductID(), productItemViewModel.isTopAds(), false);
 
         SearchTracking.eventSuccessWishlistSearchResultProduct(wishlistTrackingModel);
     }
@@ -1162,8 +1204,12 @@ public class ProductListFragment
 
     @Override
     public void sendTrackingWishlistNonLogin(ProductItemViewModel productItemViewModel) {
-        WishlistTrackingModel wishlistTrackingModel = createWishlistTrackingModel(productItemViewModel);
-        wishlistTrackingModel.setAddWishlist(!productItemViewModel.isWishlisted());
+        WishlistTrackingModel wishlistTrackingModel =
+                createWishlistTrackingModel(
+                        productItemViewModel.getProductID(),
+                        productItemViewModel.isTopAds(),
+                        !productItemViewModel.isWishlisted()
+                );
 
         SearchTracking.eventSuccessWishlistSearchResultProduct(wishlistTrackingModel);
     }

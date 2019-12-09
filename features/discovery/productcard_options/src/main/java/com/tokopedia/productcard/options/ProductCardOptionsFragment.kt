@@ -1,6 +1,8 @@
 package com.tokopedia.productcard.options
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,9 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.EventObserver
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_IS_ADD_WISHLIST
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_IS_SUCCESS
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.manager.startSimilarSearch
 import kotlinx.android.synthetic.main.product_card_options_fragment_layout.*
 
@@ -44,6 +49,10 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         observeRouteToSimilarSearchEventLiveData()
         observeCloseProductCardOptionsEventLiveData()
         observeRouteToLoginPageEventLiveData()
+        observeAddWishlistEventLiveData()
+        observeRemoveWishlistEventLiveData()
+        observeTrackingWishlistEventLiveData()
+        observeTrackingSeeSimilarProductsEventLiveData()
     }
 
     private fun observeOptionListLiveData() {
@@ -60,6 +69,12 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         }
     }
 
+    /**
+     * Currently, it only has 2 types of view, the Option Item View, and the Divider View.
+     * To prevent overkill design, we only use a simple linear layout, and add view inside it.
+     *
+     * If the number of view types increases, consider using RecyclerView with Visitable / Type Factory pattern.
+    * */
     private fun renderViewToBottomSheet(context: Context, itemView: Any) {
         if (itemView is ProductCardOptionsItemModel) {
             productCardOptionsBottomSheet?.addOptionView(context, itemView)
@@ -89,6 +104,7 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
                     ?: return
 
             startSimilarSearch(it, productCardOptionsModel.productId, productCardOptionsModel.keyword)
+            finish()
         }
     }
 
@@ -112,5 +128,50 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         activity?.let { activity ->
             RouteManager.route(activity, ApplinkConst.LOGIN)
         }
+    }
+
+    private fun observeAddWishlistEventLiveData() {
+        productCardOptionsViewModel?.getAddWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccess ->
+            setResultWishlistEvent(true, isSuccess)
+        })
+    }
+
+    private fun setResultWishlistEvent(isAddWishlist: Boolean, isSuccess: Boolean) {
+        activity?.setResult(Activity.RESULT_OK, createWishlistResultIntent(isAddWishlist, isSuccess))
+        activity?.finish()
+    }
+
+    private fun createWishlistResultIntent(isAddWishlist: Boolean, isSuccess: Boolean): Intent {
+        return Intent().also {
+            it.putExtra(PRODUCT_CARD_OPTION_RESULT_IS_ADD_WISHLIST, isAddWishlist)
+            it.putExtra(PRODUCT_CARD_OPTION_RESULT_IS_SUCCESS, isSuccess)
+            it.putExtra(PRODUCT_CARD_OPTION_RESULT_PRODUCT, productCardOptionsViewModel?.productCardOptionsModel)
+        }
+    }
+
+    private fun observeRemoveWishlistEventLiveData() {
+        productCardOptionsViewModel?.getRemoveWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccess ->
+            setResultWishlistEvent(false, isSuccess)
+        })
+    }
+
+    private fun observeTrackingWishlistEventLiveData() {
+        productCardOptionsViewModel?.getTrackingWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver { wishlistTrackingModel ->
+            ProductCardOptionsTracking.eventSuccessWishlistSearchResultProduct(
+                    productCardOptionsViewModel?.productCardOptionsModel?.screenName ?: "",
+                    wishlistTrackingModel
+            )
+        })
+    }
+
+    private fun observeTrackingSeeSimilarProductsEventLiveData() {
+        productCardOptionsViewModel?.getTrackingSeeSimilarProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            ProductCardOptionsTracking.eventClickSeeSimilarProduct(
+                    productCardOptionsViewModel?.productCardOptionsModel?.screenName ?: "",
+                    productCardOptionsViewModel?.productCardOptionsModel?.screenName ?: "",
+                    productCardOptionsViewModel?.productCardOptionsModel?.keyword ?: "",
+                    productCardOptionsViewModel?.productCardOptionsModel?.productId ?: ""
+            )
+        })
     }
 }

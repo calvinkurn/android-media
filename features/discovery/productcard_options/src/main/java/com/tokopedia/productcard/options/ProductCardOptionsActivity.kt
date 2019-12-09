@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_MODEL
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import kotlinx.android.synthetic.main.product_card_options_activity_layout.*
@@ -17,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 
-class ProductCardOptionsActivity : BaseSimpleActivity() {
+internal class ProductCardOptionsActivity : BaseSimpleActivity() {
 
     @field:[Inject Named(PRODUCT_CARD_OPTIONS_VIEW_MODEL_FACTORY)]
     lateinit var productCardOptionsViewModelFactory: ViewModelProvider.Factory
@@ -26,6 +25,11 @@ class ProductCardOptionsActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
 
         animateTransparentBackground()
+        setTransparentBackgroundOnClick()
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.product_card_options_activity_layout
     }
 
     private fun animateTransparentBackground() {
@@ -35,6 +39,12 @@ class ProductCardOptionsActivity : BaseSimpleActivity() {
 
     private fun loadAnimation(@AnimRes animationResource: Int): Animation {
         return AnimationUtils.loadAnimation(this, animationResource)
+    }
+
+    private fun setTransparentBackgroundOnClick() {
+        imageBackgroundTransparent?.setOnClickListener {
+            finish()
+        }
     }
 
     // setupStatusBar overriden as empty to disable status bar
@@ -79,11 +89,7 @@ class ProductCardOptionsActivity : BaseSimpleActivity() {
                 .commit()
     }
 
-    override fun getLayoutRes(): Int {
-        return R.layout.product_card_options_activity_layout
-    }
-
-    override fun onBackPressed() {
+    override fun finish() {
         fragment?.let { animateCloseBottomSheet(it) }
     }
 
@@ -106,7 +112,10 @@ class ProductCardOptionsActivity : BaseSimpleActivity() {
 
     private fun onBottomSheetAnimationEnd(fragment: Fragment) {
         removeFragment(fragment)
-        finish()
+        cancelBottomSheetAnimation(fragment)
+        overridePendingTransition(0, 0)
+
+        super.finish()
     }
 
     private fun removeFragment(fragment: Fragment) {
@@ -114,14 +123,6 @@ class ProductCardOptionsActivity : BaseSimpleActivity() {
                 .beginTransaction()
                 .remove(fragment)
                 .commitAllowingStateLoss()
-    }
-
-    override fun finish() {
-        fragment?.let { cancelBottomSheetAnimation(it) }
-
-        overridePendingTransition(0, 0)
-
-        super.finish()
     }
 
     private fun cancelBottomSheetAnimation(fragment: Fragment) {

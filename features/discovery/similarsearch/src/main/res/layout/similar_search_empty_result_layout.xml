@@ -12,7 +12,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/img_empty" />
+        app:srcCompat="@drawable/ss_img_empty" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="@dimen/dp_0"

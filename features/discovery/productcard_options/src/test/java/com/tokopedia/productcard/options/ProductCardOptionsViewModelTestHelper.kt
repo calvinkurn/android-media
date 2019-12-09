@@ -9,6 +9,7 @@ import io.mockk.mockk
 import org.spekframework.spek2.dsl.TestBody
 import org.spekframework.spek2.style.gherkin.FeatureBody
 
+@Suppress("UNUSED_VARIABLE")
 internal fun FeatureBody.createTestInstance() {
     val addWishListUseCase by memoized {
         mockk<AddWishListUseCase>(relaxed = true)

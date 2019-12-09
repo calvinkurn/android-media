@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.options
 
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.productcard.options.testutils.InstantTaskExecutorRuleSpek
 import com.tokopedia.productcard.options.testutils.TestException
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,10 +19,10 @@ internal class ToggleWishlistOptionsTest: Spek({
     val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
     val productCardOptionsModelWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = true, productId = "12345")
 
-    Feature("Click toggle wishlist options (save or delete wishlist)") {
+    Feature("Click save to wishlist") {
         createTestInstance()
 
-        Scenario("Save to Wishlist, Non login scenario") {
+        Scenario("Save to Wishlist for non login user") {
             val userSession by memoized<UserSessionInterface>()
 
             lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
@@ -38,29 +39,17 @@ internal class ToggleWishlistOptionsTest: Spek({
                 productCardOptionsViewModel.getOption(SAVE_TO_WISHLIST).onClick()
             }
 
-            Then("should post event go to login page") {
-                val routeToLoginEvent = productCardOptionsViewModel.getRouteToLoginPageEventLiveData().value
+            Then("assert tracking toggle wishlist event has correct WishlistTrackingModel") {
+                val trackingWishlistEventLiveData = productCardOptionsViewModel.getTrackingWishlistEventLiveData().value
+                val expectedWishlistTrackingModel = WishlistTrackingModel(
+                        isAddWishlist = true,
+                        productId = productCardOptionsViewModel.productCardOptionsModel?.productId!!,
+                        isTopAds = productCardOptionsViewModel.productCardOptionsModel?.isTopAds!!,
+                        keyword = productCardOptionsViewModel.productCardOptionsModel?.keyword!!,
+                        isUserLoggedIn = false
+                )
 
-                routeToLoginEvent?.getContentIfNotHandled().shouldBe(true,
-                        "Route to login page should be true")
-            }
-        }
-
-        Scenario("Delete from Wishlist, Non login scenario") {
-            val userSession by memoized<UserSessionInterface>()
-
-            lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
-
-            Given("Product Card Options View Model") {
-                productCardOptionsViewModel = createProductCardOptionsViewModel(productCardOptionsModelWishlisted)
-            }
-
-            Given("User is not logged in") {
-                every { userSession.isLoggedIn }.returns(false)
-            }
-
-            When("Click delete from wishlist") {
-                productCardOptionsViewModel.getOption(DELETE_FROM_WISHLIST).onClick()
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe expectedWishlistTrackingModel
             }
 
             Then("should post event go to login page") {
@@ -70,10 +59,6 @@ internal class ToggleWishlistOptionsTest: Spek({
                         "Route to login page should be true")
             }
         }
-    }
-
-    Feature("Click save to wishlist") {
-        createTestInstance()
 
         Scenario("Add Wishlist Product Success") {
             val userId = "123456"
@@ -110,6 +95,19 @@ internal class ToggleWishlistOptionsTest: Spek({
 
                 routeToLoginEvent?.getContentIfNotHandled().shouldBe(null,
                         "Route to login page should be null")
+            }
+
+            Then("assert tracking toggle wishlist event has correct WishlistTrackingModel") {
+                val trackingWishlistEventLiveData = productCardOptionsViewModel.getTrackingWishlistEventLiveData().value
+                val expectedWishlistTrackingModel = WishlistTrackingModel(
+                        isAddWishlist = true,
+                        productId = productCardOptionsViewModel.productCardOptionsModel?.productId!!,
+                        isTopAds = productCardOptionsViewModel.productCardOptionsModel?.isTopAds!!,
+                        keyword = productCardOptionsViewModel.productCardOptionsModel?.keyword!!,
+                        isUserLoggedIn = true
+                )
+
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe expectedWishlistTrackingModel
             }
 
             Then("assert add wishlist event is true") {
@@ -157,6 +155,12 @@ internal class ToggleWishlistOptionsTest: Spek({
 
                 routeToLoginEvent?.getContentIfNotHandled().shouldBe(null,
                         "Route to login page should be null")
+            }
+
+            Then("assert tracking toggle wishlist event is null") {
+                val trackingWishlistEventLiveData = productCardOptionsViewModel.getTrackingWishlistEventLiveData().value
+
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe null
             }
 
             Then("assert add wishlist event is false") {
@@ -210,6 +214,12 @@ internal class ToggleWishlistOptionsTest: Spek({
                         "Route to login page should be null")
             }
 
+            Then("assert tracking toggle wishlist event is null") {
+                val trackingWishlistEventLiveData = productCardOptionsViewModel.getTrackingWishlistEventLiveData().value
+
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe null
+            }
+
             Then("assert add wishlist event is false") {
                 val addWishlistEventLiveData = productCardOptionsViewModel.getAddWishlistEventLiveData().value
 
@@ -223,6 +233,44 @@ internal class ToggleWishlistOptionsTest: Spek({
 
     Feature("Click delete from wishlist") {
         createTestInstance()
+
+        Scenario("Delete from Wishlist for non login user") {
+            val userSession by memoized<UserSessionInterface>()
+
+            lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel
+
+            Given("Product Card Options View Model") {
+                productCardOptionsViewModel = createProductCardOptionsViewModel(productCardOptionsModelWishlisted)
+            }
+
+            Given("User is not logged in") {
+                every { userSession.isLoggedIn }.returns(false)
+            }
+
+            When("Click delete from wishlist") {
+                productCardOptionsViewModel.getOption(DELETE_FROM_WISHLIST).onClick()
+            }
+
+            Then("assert tracking toggle wishlist event has correct WishlistTrackingModel") {
+                val trackingWishlistEventLiveData = productCardOptionsViewModel.getTrackingWishlistEventLiveData().value
+                val expectedWishlistTrackingModel = WishlistTrackingModel(
+                        isAddWishlist = false,
+                        productId = productCardOptionsViewModel.productCardOptionsModel?.productId!!,
+                        isTopAds = productCardOptionsViewModel.productCardOptionsModel?.isTopAds!!,
+                        keyword = productCardOptionsViewModel.productCardOptionsModel?.keyword!!,
+                        isUserLoggedIn = false
+                )
+
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe expectedWishlistTrackingModel
+            }
+
+            Then("should post event go to login page") {
+                val routeToLoginEvent = productCardOptionsViewModel.getRouteToLoginPageEventLiveData().value
+
+                routeToLoginEvent?.getContentIfNotHandled().shouldBe(true,
+                        "Route to login page should be true")
+            }
+        }
 
         Scenario("Delete Wishlist Product Success") {
             val userId = "123456"
@@ -252,6 +300,19 @@ internal class ToggleWishlistOptionsTest: Spek({
 
             When("Click delete from wishlist") {
                 productCardOptionsViewModel.getOption(DELETE_FROM_WISHLIST).onClick()
+            }
+
+            Then("assert tracking toggle wishlist event has correct WishlistTrackingModel") {
+                val trackingWishlistEventLiveData = productCardOptionsViewModel.getTrackingWishlistEventLiveData().value
+                val expectedWishlistTrackingModel = WishlistTrackingModel(
+                        isAddWishlist = false,
+                        productId = productCardOptionsViewModel.productCardOptionsModel?.productId!!,
+                        isTopAds = productCardOptionsViewModel.productCardOptionsModel?.isTopAds!!,
+                        keyword = productCardOptionsViewModel.productCardOptionsModel?.keyword!!,
+                        isUserLoggedIn = true
+                )
+
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe expectedWishlistTrackingModel
             }
 
             Then("assert route to login event is null") {
@@ -301,6 +362,12 @@ internal class ToggleWishlistOptionsTest: Spek({
                 productCardOptionsViewModel.getOption(DELETE_FROM_WISHLIST).onClick()
             }
 
+            Then("assert tracking toggle wishlist event has correct WishlistTrackingModel") {
+                val trackingWishlistEventLiveData = productCardOptionsViewModel.getTrackingWishlistEventLiveData().value
+
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe null
+            }
+
             Then("assert route to login event is null") {
                 val routeToLoginEvent = productCardOptionsViewModel.getRouteToLoginPageEventLiveData().value
 
@@ -345,6 +412,12 @@ internal class ToggleWishlistOptionsTest: Spek({
 
             When("Click delete from wishlist") {
                 productCardOptionsViewModel.getOption(DELETE_FROM_WISHLIST).onClick()
+            }
+
+            Then("assert tracking toggle wishlist event has correct WishlistTrackingModel") {
+                val trackingWishlistEventLiveData = productCardOptionsViewModel.getTrackingWishlistEventLiveData().value
+
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe null
             }
 
             Then("assert error stack trace is printed") {

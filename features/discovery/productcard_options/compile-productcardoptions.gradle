@@ -5,7 +5,7 @@ include ":features:discovery:productcard_options"
 
 include "features:common:resources_common"
 include "features:discovery:discovery_common"
-include "features:discovery:wishlist_coomon"
+include "features:discovery:wishlist_common"
 
 include "libraries:applink"
 include "libraries:promotions_target"

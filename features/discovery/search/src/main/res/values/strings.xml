@@ -26,6 +26,8 @@
     <string name="megerti">Mengerti</string>
     <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_add_wishlist">Sukses menambah wishlist</string>
+    <string name="msg_remove_wishlist_failed">Gagal menghapus wishlist</string>
+    <string name="msg_add_wishlist_failed">Gagal menambah wishlist</string>
 
     <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
