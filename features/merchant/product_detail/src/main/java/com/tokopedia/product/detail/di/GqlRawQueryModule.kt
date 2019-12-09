@@ -224,7 +224,7 @@ class GqlRawQueryModule {
     @Provides
     @Named(SubmitHelpTicketUseCase.QUERY_NAME)
     fun provideSubmitHelpTicket(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.transaction.common.R.raw.submit_help_ticket)
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
 
     @ProductDetailScope
     @Provides

@@ -112,6 +112,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
@@ -137,7 +138,6 @@ import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.Shipment
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 
 import org.jetbrains.annotations.NotNull;
 

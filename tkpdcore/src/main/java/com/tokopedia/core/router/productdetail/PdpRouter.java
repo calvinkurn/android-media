@@ -6,7 +6,6 @@ import android.content.Intent;
 
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 
 import java.util.ArrayList;
 

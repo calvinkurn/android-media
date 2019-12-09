@@ -83,7 +83,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @CheckoutScope
     @Named(SubmitHelpTicketUseCase.QUERY_NAME)
     fun provideSubmitHelpTicketUseCaseQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.transaction.common.R.raw.submit_help_ticket)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
     }
 
 
