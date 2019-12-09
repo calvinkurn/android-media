@@ -160,6 +160,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent
                 (getActivity())));
         menuNotification.setOnClickListener(v -> {
+            accountAnalytics.eventTrackingNotifCenter();
             accountAnalytics.eventTrackingNotification();
             RouteManager.route(getActivity(), ApplinkConst.NOTIFICATION);
         });

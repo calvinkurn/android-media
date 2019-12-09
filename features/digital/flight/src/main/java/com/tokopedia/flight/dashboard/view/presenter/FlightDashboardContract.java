@@ -99,6 +99,8 @@ public interface FlightDashboardContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
+        void sendAnalyticsOpenScreen(String screenName);
+
         void onSingleTripChecked();
 
         void onRoundTripChecked();

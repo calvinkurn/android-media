@@ -39,6 +39,10 @@ public class FlightError {
         return title;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof FlightError && ((FlightError) obj).getId().equalsIgnoreCase(id);

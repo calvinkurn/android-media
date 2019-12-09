@@ -233,7 +233,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         if (id == com.tokopedia.digital_deals.R.id.action_menu_share) {
             Utils.getSingletonInstance().shareDeal(dealsDetailsResponse.getSeoUrl(),
                     getView().getActivity(), dealsDetailsResponse.getDisplayName(),
-                    dealsDetailsResponse.getImageWeb(), dealsDetailsResponse.getDesktopUrl());
+                    dealsDetailsResponse.getImageWeb(), dealsDetailsResponse.getWebUrl());
         } else {
             getView().getActivity().onBackPressed();
         }

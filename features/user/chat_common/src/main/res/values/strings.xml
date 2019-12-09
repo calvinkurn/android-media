@@ -55,5 +55,6 @@
     <string name="enable_chat_settings">Kembali Menerima Chat</string>
     <string name="chat_unblocked_text">Anda menerima chat dari %s</string>
 
+    <string name="action_empty_stock">Stok Kosong</string>
 
 </resources>

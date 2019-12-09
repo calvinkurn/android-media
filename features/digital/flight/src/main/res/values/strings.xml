@@ -101,7 +101,8 @@
     <string name="flight_label_normal_price">Harga Normal</string>
     <string name="flight_label_saving_price">Hemat</string>
     <string name="flight_booking_finish_transaction_label">Selesaikan Pesanan Anda Dalam</string>
-    <string name="flight_booking_contact_information">Data Pemesan</string>
+    <string name="flight_booking_contact_information">Data pemesan</string>
+    <string name="flight_booking_contact_sublabel">(untuk e-tiket)</string>
     <string name="flight_booking_contact_information_subtitle">E-tiket dan informasi mengenai pemesanan akan dikitim ke kontak ini</string>
     <string name="flight_booking_contact_name_hint">Nama Lengkap (sesuai KTP/Paspor/Lainnya)</string>
     <string name="flight_booking_contact_email_hint">Email</string>
@@ -110,7 +111,8 @@
     <string name="flight_booking_contact_phone_number_label">Nomor Telepon</string>
     <string name="flight_booking_contact_information_card">Pastikan email dan nomor telepon kontak kamu benar. e-tiket akan dikirim ke email dan nomor telepon yang tertera pada informasi kontak.</string>
     <string name="flight_booking_price_detail">Rincian Harga</string>
-    <string name="flight_booking_passenger_data_label">Data Penumpang</string>
+    <string name="flight_booking_passenger_data_label">Data penumpang</string>
+    <string name="flight_booking_passenger_data_same_as_contact">Sama dengan pemesan</string>
     <string name="flight_booking_passenger_data_subtitle">E-tiket dan informasi mengenai pemesanan akan dikirim ke kontak ini.</string>
     <string name="flight_booking_submit_button_label">Lanjut</string>
     <string name="flight_booking_total_price_label">Pembayaran Anda</string>
@@ -119,7 +121,7 @@
     <string name="flight_booking_contact_name_max_length_error">Nama kontak maksimal 20 karakter</string>
     <string name="flight_booking_contact_name_alpha_space_error">Nama harus terdiri alfabet dan space</string>
     <string name="flight_booking_contact_email_empty_error">Email kontak tidak boleh kosong</string>
-    <string name="flight_booking_contact_email_invalid_error">Email kontak tidak valid</string>
+    <string name="flight_booking_contact_email_invalid_error">Pastikan format e-mail sudah benar</string>
     <string name="flight_booking_contact_phone_empty_error">Telepon Kontak tidak boleh kosong</string>
     <string name="flight_booking_contact_phone_invalid_error">Telepon Kontak tidak valid</string>
     <string name="flight_booking_contact_phone_max_length_error">Telepon Kontak maksimal 13 digit</string>
@@ -131,6 +133,7 @@
     <string name="flight_booking_multiple_airline_trip_card">Multi Maskapai</string>
     <string name="flight_booking_transit_trip_card">Transit</string>
     <string name="flight_booking_directly_trip_card">Langsung</string>
+    <string name="flight_booking_transit_with_value_trip_cart">%d Transit</string>
     <string name="flight_title_menu_reset">Reset</string>
     <string name="flight_booking_phone_code_label">(+%1$s)</string>
     <string name="activity_label_flight_booking_phone_code">Kode Telepon Negara</string>
@@ -177,7 +180,7 @@
     <string name="flight_booking_passenger_child_subtitle">Usia 2 - 12 tahun</string>
     <string name="flight_booking_passenger_infant_subtitle">Usia dibawah 2 tahun</string>
     <string name="flight_booking_passenger_first_name_empty_error">Nama depan harus diisi</string>
-    <string name="flight_bookingpassenger_title_error">Titel Penumpang harus dipilih</string>
+    <string name="flight_bookingpassenger_title_error">Sapaan belum diisi</string>
     <string name="flight_booking_passenger_birthdate_empty_error">Tanggal lahir harus diisi</string>
     <string name="flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years">Umur penumpang dewasa harus lebih besar dari 12 tahun</string>
     <string name="flight_booking_passenger_birthdate_child_shoud_more_than_two_years">Umur penumpang anak harus lebih besar dari 2 tahun</string>
@@ -237,8 +240,9 @@
     <string name="flight_label_child_review">(Anak)</string>
     <string name="flight_label_infant_review">(Bayi)</string>
     <string name="activity_label_flight_review">Rincian Pesanan</string>
+    <string name="flight_booking_dialog_loading_title">Tunggu sebentar, ya</string>
     <string name="flight_booking_passenger_toolbar_title">Data Penumpang</string>
-    <string name="flight_booking_passenger_not_fullfilled_error">Silakan melengkapi Data Penumpang untuk melanjutkan</string>
+    <string name="flight_booking_passenger_not_fullfilled_error">Lengkapi data penumpang untuk lanjut bayar</string>
     <string name="flight_booking_dialog_price_change_title">Harga Tiket Telah Berubah</string>
     <string name="flight_booking_dialog_price_change_description">Telah terjadi perubahan harga dari pihak maskapai, ini adalah harga terbaru.</string>
     <string name="flight_booking_dialog_price_change_prev_price_label">Harga Sebelumnya</string>
@@ -252,6 +256,7 @@
     <string name="flight_booking_passenger_first_name_alpha_space_error">Nama depan harus terdiri alfabet dan space</string>
     <string name="flight_booking_passenger_last_name_alpha_space_error">Nama belakang hanya alfabet dan spasi</string>
     <string name="flight_booking_passenger_choose_label">Pilih</string>
+    <string name="flight_booking_reprice_ticker_warning_title">Promo tidak bisa dipakai</string>
     <string name="flight_booking_new_price_strike_label"><![CDATA[<strike>%1$s</strike>]]></string>
     <string name="flight_label_detail_order">Detail Penerbangan</string>
     <string name="flight_label_invoice">INVOICE</string>
@@ -311,6 +316,7 @@
     <string name="flight_booking_passenger_saved_secondary_hint">Penumpang Baru</string>
     <string name="flight_booking_passenger_saved_hint">Pilih Nama dari Daftar Penumpang</string>
     <string name="flight_booking_list_passenger_title">Daftar Penumpang</string>
+    <string name="flight_booking_insurance_see_detail">Selengkapnya</string>
     <string name="flight_passenger_update_title">Ubah Data Penumpang</string>
     <string name="flight_list_passenger_add_passenger_label">+ Tambah Penumpang</string>
     <string name="flight_booking_list_passenger_selected_error" formatted="false">Harap pilih penumpang %s</string>
@@ -395,7 +401,8 @@
     <string name="flight_cancellation_review_dialog_description">Apakah anda yakin ingin membatalkan pesanan?</string>
     <string name="flight_cancellation_review_journey_number">Penerbangan %d</string>
     <string name="flight_insurance_prefix_label">Asuransi Perjalanan</string>
-    <string name="flight_insurance_additional_benefits_prefix" formatted="false">Termasuk %d Proteksi Lain</string>
+    <string name="flight_insurance_additional_benefits_prefix" formatted="false">Termasuk %d Perlindungan Lain</string>
+    <string name="flight_booking_insurance_other_benefit">Termasuk %d Proteksi Lain</string>
     <string name="flight_insurance_learn_more_label"> Info Selengkapnya</string>
     <string name="flight_passenger_choose_salutation">Pilih Titel</string>
     <string name="flight_passenger_choose_salutation_title">Titel</string>
@@ -411,6 +418,30 @@
     <string name="flight_booking_passport_nationality_empty_error">Kewarganegaraan harus diisi</string>
     <string name="flight_booking_passport_issuer_country_empty_error">Negara Penerbit Paspor harus diisi</string>
     <string name="flight_booking_passport_expired_date_empty_error">Tanggal Berakhir Paspor harus diisi</string>
+    <string name="flight_booking_loading_text_1">Makan roti pakai meses\nPesananmu lagi diproses</string>
+    <string name="flight_booking_loading_text_2">Nginap di hutan ketemu tupai\nNaik pesawat lebih cepat sampai</string>
+    <string name="flight_booking_loading_text_3">Siang-siang main basket\nJangan lupa kencangkan seat belt!</string>
+    <string name="flight_booking_loading_text_4">Pergi ke pasar di hari Jumat\nSudah siap naik pesawat?</string>
+    <string name="flight_booking_loading_please_wait">Mohon Tunggu</string>
+    <string name="flight_booking_reprice_bottom_sheet_title">Harga tiket berubah</string>
+    <string name="flight_booking_reprice_bottom_sheet_description">Pihak maskapai memperbarui harga tiket</string>
+    <string name="flight_booking_price_before">Harga sebelumnya</string>
+    <string name="flight_booking_price_after">Harga sekarang</string>
+    <string name="flight_booking_popup_checkout_confirmation_title">Sudah cek detail pesananmu?</string>
+    <string name="flight_booking_popup_checkout_confirmation_description">Pastikan detail pesananmu benar, karena tidak bisa diubah setelah lanjut bayar</string>
+    <string name="flight_booking_action_proceed_checkout">Lanjut Bayar</string>
+    <string name="flight_booking_action_recheck_data">Cek Ulang</string>
+    <string name="flight_booking_action_refind_ticket">Cari Tiket Ulang</string>
+    <string name="flight_booking_action_find_another_ticket">Cari Tiket Lain</string>
+    <string name="flight_booking_action_retry">Coba Lagi</string>
+    <string name="flight_booking_action_change_name">Ubah Nama</string>
+    <string name="flight_booking_action_cancel">Batalkan</string>
+    <string name="flight_booking_action_check_promo_code">Cek Kode Promo</string>
+    <string name="flight_booking_action_book_other_ticket">Pesan Tiket Lain</string>
+    <string name="flight_booking_action_okay">Oke</string>
+    <string name="flight_booking_action_check_again">Cek Pesanan</string>
+    <string name="flight_booking_total_payment_title">Total Pembayaran</string>
+    <string name="flight_duplicate_user_error_toaster_text">Ada nama penumpang yang sama, ubah dulu agar bisa bayar. </string>
     <string name="flight_passport_search_hint">Cari Negara Penerbit Paspor</string>
     <string name="flight_nationality_search_hint">Cari Negara Kewarganegaraan</string>
     <string name="flight_detail_order_protection_label">Terproteksi</string>

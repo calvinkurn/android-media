@@ -168,6 +168,20 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
         });
     }
 
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    private int getScreenHeightWithoutStatusBar(){
+        int statusBarHeight = getStatusBarHeight();
+        return getActivity().getResources().getDisplayMetrics().heightPixels - statusBarHeight;
+    }
+
     private void setPercentageTokenImage() {
 
 
@@ -175,8 +189,9 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
         int rootHeight = rootView.getHeight();
         int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
         int imageHeight = imageWidth;
-        int imageMarginBottom = TokenMarginUtil.getEggMarginBottom(rootHeight);
-        int imageMarginTop = imageMarginBottom - imageHeight;
+        int screenHeight = getScreenHeightWithoutStatusBar();
+        int imageMarginTop = (int) (screenHeight - (screenHeight * TokenMarginUtil.RATIO_IMAGE_MARGIN_TOP));
+
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) tokenEmptyImage.getLayoutParams();
         ivFullLp.width = imageWidth;

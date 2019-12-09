@@ -3,7 +3,6 @@
     package="com.tokopedia.product.manage.list.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_product_manage">
         <dist:fusing dist:include="true" />

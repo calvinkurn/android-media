@@ -3,7 +3,6 @@
     package="com.tokopedia.df.digital.topup">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_digital_topup">
         <dist:fusing dist:include="true" />
