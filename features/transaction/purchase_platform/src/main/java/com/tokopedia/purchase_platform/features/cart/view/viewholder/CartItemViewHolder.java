@@ -648,13 +648,13 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 data.getCartItemData().getUpdatedData().getRemark().length(),
                 data.getCartItemData().getUpdatedData().getMaxCharRemark());
         tvNoteCharCounter.setText(noteCounter);
-        if (data.getErrorFormItemValidationType() == CartItemHolderData.ERROR_EMPTY) {
+        if (data.getErrorFormItemValidationTypeValue() == CartItemHolderData.CREATOR.getERROR_EMPTY()) {
             this.tvErrorFormValidation.setText("");
             this.tvErrorFormValidation.setVisibility(View.GONE);
             this.tvErrorFormRemarkValidation.setVisibility(View.GONE);
             this.tvErrorFormRemarkValidation.setText("");
         } else {
-            if (data.getErrorFormItemValidationType() == CartItemHolderData.ERROR_FIELD_MAX_CHAR) {
+            if (data.getErrorFormItemValidationTypeValue() == CartItemHolderData.CREATOR.getERROR_FIELD_MAX_CHAR()) {
                 if (TextUtils.isEmpty(data.getErrorFormItemValidationMessage())) {
                     this.tvErrorFormValidation.setText("");
                     this.tvErrorFormValidation.setVisibility(View.GONE);

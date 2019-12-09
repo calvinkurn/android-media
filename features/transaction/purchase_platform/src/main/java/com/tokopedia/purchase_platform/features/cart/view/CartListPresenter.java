@@ -44,7 +44,6 @@ import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest;
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest;
 import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.ResetAndRefreshCartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
@@ -979,46 +978,6 @@ public class CartListPresenter implements ICartListPresenter {
             checklistCondition = ITEM_CHECKED_ALL_WITH_CHANGES;
         }
         return checklistCondition;
-    }
-
-    @NonNull
-    private Subscriber<ResetAndRefreshCartListData> getSubscriberResetRefreshCart() {
-        return new Subscriber<ResetAndRefreshCartListData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (view != null) {
-                    view.hideProgressLoading();
-                    e.printStackTrace();
-                    view.renderLoadGetCartDataFinish();
-                    String errorMessage = e.getMessage();
-                    if (!(e instanceof CartResponseErrorException)) {
-                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
-                    }
-                    view.renderErrorInitialGetCartListData(errorMessage);
-                    view.stopCartPerformanceTrace();
-                }
-            }
-
-            @Override
-            public void onNext(ResetAndRefreshCartListData resetAndRefreshCartListData) {
-                if (view != null) {
-                    view.hideProgressLoading();
-                    view.renderLoadGetCartDataFinish();
-                    if (resetAndRefreshCartListData.getCartListData() == null) {
-                        view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
-                        view.stopCartPerformanceTrace();
-                    } else {
-                        view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
-                        view.stopCartPerformanceTrace();
-                    }
-                }
-            }
-        };
     }
 
     @NonNull

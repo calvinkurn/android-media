@@ -62,12 +62,10 @@ public class CartMapper implements ICartMapper {
         cartListData.setError(!TextUtils.isEmpty(errorMessage) || hasError);
         cartListData.setErrorMessage(errorMessage);
         if (cartListData.isError()) {
-            cartListData.setCartTickerErrorData(
-                    new CartTickerErrorData.Builder()
-                            .errorInfo(context.getString(R.string.cart_error_message))
-                            .actionInfo(context.getString(R.string.cart_error_action))
-                            .build()
-            );
+            CartTickerErrorData cartTickerErrorData = new CartTickerErrorData();
+            cartTickerErrorData.setErrorInfo(context.getString(R.string.cart_error_message));
+            cartTickerErrorData.setActionInfo(context.getString(R.string.cart_error_action));
+            cartListData.setCartTickerErrorData(cartTickerErrorData);
         }
         cartListData.setDefaultPromoDialogTab(cartDataListResponse.getDefaultPromoDialogTab());
 
@@ -247,10 +245,11 @@ public class CartMapper implements ICartMapper {
 
     @Override
     public DeleteCartData convertToDeleteCartData(DeleteCartDataResponse deleteCartDataResponse) {
-        return new DeleteCartData.Builder()
-                .message(deleteCartDataResponse.getMessage())
-                .success(deleteCartDataResponse.getSuccess() == 1)
-                .build();
+        DeleteCartData deleteCartData = new DeleteCartData();
+        deleteCartData.setMessage(deleteCartDataResponse.getMessage());
+        deleteCartData.setSuccess(deleteCartDataResponse.getSuccess() == 1);
+
+        return deleteCartData;
     }
 
     @Override

@@ -27,7 +27,6 @@ public class CartListData implements Parcelable {
     private CartPromoSuggestionHolderData cartPromoSuggestionHolderData;
     private boolean promoCouponActive;
     private CartTickerErrorData cartTickerErrorData;
-    private AutoApplyData autoApplyData;
     private AutoApplyStackData autoApplyStackData;
     private GlobalCouponAttrData globalCouponAttrData;
     private String defaultPromoDialogTab;
@@ -88,14 +87,6 @@ public class CartListData implements Parcelable {
 
     public void setTickerData(TickerData tickerData) {
         this.tickerData = tickerData;
-    }
-
-    public AutoApplyData getAutoApplyData() {
-        return autoApplyData;
-    }
-
-    public void setAutoApplyData(AutoApplyData autoApplyData) {
-        this.autoApplyData = autoApplyData;
     }
 
     public AutoApplyStackData getAutoApplyStackData() {
@@ -179,7 +170,6 @@ public class CartListData implements Parcelable {
         dest.writeByte(this.promoCouponActive ? (byte) 1 : (byte) 0);
         dest.writeByte(this.allSelected ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.cartTickerErrorData, flags);
-        dest.writeParcelable(this.autoApplyData, flags);
         dest.writeByte(this.isShowOnboarding ? (byte) 1 : (byte) 0);
     }
 
@@ -193,7 +183,6 @@ public class CartListData implements Parcelable {
         this.promoCouponActive = in.readByte() != 0;
         this.allSelected = in.readByte() != 0;
         this.cartTickerErrorData = in.readParcelable(CartTickerErrorData.class.getClassLoader());
-        this.autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
         this.isShowOnboarding = in.readByte() != 0;
     }
 

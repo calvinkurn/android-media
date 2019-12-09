@@ -31,13 +31,13 @@ class ViewHolderDataMapper @Inject constructor() {
         return cartItemHolderData.cartItemData.let {
             val originData = it.originData
             DisabledCartItemHolderData(
-                    originData.cartId,
-                    originData.productId,
-                    originData.productImage,
-                    originData.productName,
-                    originData.pricePlan,
+                    originData?.cartId ?: 0,
+                    originData?.productId ?: "",
+                    originData?.productImage ?: "",
+                    originData?.productName ?: "",
+                    originData?.pricePlan ?: 0.toDouble(),
                     it.errorMessageTitle,
-                    originData.isWishlisted,
+                    originData?.isWishlisted ?: false,
                     it.warningMessageTitle,
                     it.similarProductData,
                     it.nicotineLiteMessageData,

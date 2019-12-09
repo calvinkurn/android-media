@@ -72,7 +72,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
 
     private fun mapShopGroupAvailableDataList(cartDataListResponse: CartDataListResponse): List<ShopGroupAvailableData> {
         val shopGroupAvailableDataList = arrayListOf<ShopGroupAvailableData>()
-        cartDataListResponse.shopGroupAvailables?.forEach {
+        cartDataListResponse.shopGroupAvailables.forEach {
             val shopGroupAvailableData = mapShopGroupAvailableData(it, cartDataListResponse)
             shopGroupAvailableDataList.add(shopGroupAvailableData)
         }
@@ -175,22 +175,23 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
                                           shopGroup: Any,
                                           shopGroupData: Any,
                                           cartDataListResponse: CartDataListResponse,
-                                          isDisabledAllProduct: Boolean): List<CartItemHolderData> {
+                                          isDisabledAllProduct: Boolean): MutableList<CartItemHolderData> {
         val cartItemHolderDataList = arrayListOf<CartItemHolderData>()
         cartDetails?.forEach {
-            cartItemHolderDataList.add(
-                    CartItemHolderData().apply {
-                        cartItemData = mapCartItemData(it, shopGroup, shopGroupData, cartDataListResponse, isDisabledAllProduct)
-                        isEditableRemark = false
-                        errorFormItemValidationMessage = ""
-                        isEditableRemark = false
-                        isSelected = if (cartItemData.isError) {
-                            false
-                        } else {
-                            cartItemData.originData.isCheckboxState
-                        }
+            val cartItemData = mapCartItemData(it, shopGroup, shopGroupData, cartDataListResponse, isDisabledAllProduct)
+            val cartItemHolderData = CartItemHolderData(
+                    cartItemData = cartItemData,
+                    errorFormItemValidationType = 0,
+                    errorFormItemValidationMessage = "",
+                    isEditableRemark = false,
+                    isStateRemarkExpanded = false,
+                    isSelected = if (cartItemData.isError) {
+                        false
+                    } else {
+                        cartItemData.originData.isCheckboxState ?: true
                     }
             )
+            cartItemHolderDataList.add(cartItemHolderData)
         }
 
         return cartItemHolderDataList
@@ -386,11 +387,14 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
         if (autoApplyStack.trackingDetails != null && autoApplyStack.trackingDetails.size > 0) {
             for (trackingDetail in autoApplyStack.trackingDetails) {
                 for (shopGroupAvailableData in shopGroupAvailableDataList) {
-                    for (cartItemHolderData in shopGroupAvailableData.cartItemDataList) {
-                        val originData = cartItemHolderData.cartItemData.originData
-                        if (originData.productId.equals(trackingDetail.productId.toString(), ignoreCase = true)) {
-                            originData.promoCodes = trackingDetail.promoCodesTracking
-                            originData.promoDetails = trackingDetail.promoDetailsTracking
+                    val cartItemDataList = shopGroupAvailableData.cartItemDataList
+                    cartItemDataList?.let {
+                        for (cartItemHolderData in cartItemDataList) {
+                            val originData = cartItemHolderData.cartItemData.originData
+                            if (originData?.productId.equals(trackingDetail.productId.toString(), ignoreCase = true)) {
+                                originData?.promoCodes = trackingDetail.promoCodesTracking
+                                originData?.promoDetails = trackingDetail.promoDetailsTracking
+                            }
                         }
                     }
                 }
@@ -423,7 +427,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
 
     private fun mapShopGroupWithErrorDataList(cartDataListResponse: CartDataListResponse): List<ShopGroupWithErrorData> {
         val shopGroupWithErrorDataList = arrayListOf<ShopGroupWithErrorData>()
-        cartDataListResponse.shopGroupWithErrors?.forEach {
+        cartDataListResponse.shopGroupWithErrors.forEach {
             val shopGroupWithErrorData = mapShopGroupWithErrorData(it, cartDataListResponse)
             shopGroupWithErrorDataList.add(shopGroupWithErrorData)
         }
@@ -466,11 +470,12 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
     }
 
     private fun mapCartTickerErrorData(errorItemCount: Int): CartTickerErrorData {
-        return CartTickerErrorData.Builder()
-                .errorCount(errorItemCount)
-                .errorInfo(String.format(context.getString(R.string.cart_error_message), errorItemCount))
-                .actionInfo(context.getString(R.string.cart_error_action))
-                .build()
+        return CartTickerErrorData().let {
+            it.errorCount = errorItemCount
+            it.errorInfo = String.format(context.getString(R.string.cart_error_message), errorItemCount)
+            it.actionInfo = context.getString(R.string.cart_error_action)
+            it
+        }
     }
 
     private fun mapAutoApplyStackData(autoApplyStack: AutoApplyStack): AutoApplyStackData {

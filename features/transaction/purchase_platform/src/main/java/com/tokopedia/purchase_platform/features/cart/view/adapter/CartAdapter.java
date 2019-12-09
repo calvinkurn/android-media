@@ -899,7 +899,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupAvailableData().getCartItemDataList()) {
                                 if (cartItemHolderData.isSelected()) {
                                     checkedCount++;
-                                    if (cartItemHolderData.getErrorFormItemValidationType() != CartItemHolderData.ERROR_EMPTY ||
+                                    if (cartItemHolderData.getErrorFormItemValidationTypeValue() != CartItemHolderData.CREATOR.getERROR_EMPTY() ||
                                             cartItemHolderData.getCartItemData().isError()) {
                                         canProcess = false;
                                         break;

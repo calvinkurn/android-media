@@ -4,11 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.logisticcart.shipping.model.CodModel;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.AutoApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
 
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ public class CartShipmentAddressFormData implements Parcelable {
     private boolean isHidingCourier;
     private boolean isBlackbox;
     private CartPromoSuggestionHolderData cartPromoSuggestionHolderData;
-    private AutoApplyData autoApplyData;
     private EgoldAttributeModel egoldAttributes;
     private AutoApplyStackData autoApplyStackData;
     private GlobalCouponAttrData globalCouponAttrData;
@@ -174,14 +172,6 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.cartPromoSuggestionHolderData = cartPromoSuggestionHolderData;
     }
 
-    public AutoApplyData getAutoApplyData() {
-        return autoApplyData;
-    }
-
-    public void setAutoApplyData(AutoApplyData autoApplyData) {
-        this.autoApplyData = autoApplyData;
-    }
-
     public AutoApplyStackData getAutoApplyStackData() {
         return autoApplyStackData;
     }
@@ -275,7 +265,6 @@ public class CartShipmentAddressFormData implements Parcelable {
         useCourierRecommendation = in.readByte() != 0;
         isHidingCourier = in.readByte() != 0;
         cartPromoSuggestionHolderData = in.readParcelable(CartPromoSuggestionHolderData.class.getClassLoader());
-        autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
         egoldAttributes = in.readParcelable(EgoldAttributeModel.class.getClassLoader());
         autoApplyStackData = in.readParcelable(AutoApplyStackData.class.getClassLoader());
         isIneligbilePromoDialogEnabled = in.readByte() != 0;
@@ -302,7 +291,6 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
         dest.writeByte((byte) (isHidingCourier ? 1 : 0));
         dest.writeParcelable(cartPromoSuggestionHolderData, flags);
-        dest.writeParcelable(autoApplyData, flags);
         dest.writeParcelable(egoldAttributes, flags);
         dest.writeParcelable(autoApplyStackData, flags);
         dest.writeByte((byte) (isIneligbilePromoDialogEnabled ? 1 : 0));
