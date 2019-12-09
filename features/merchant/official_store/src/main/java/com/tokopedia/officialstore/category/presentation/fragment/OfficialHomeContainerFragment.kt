@@ -52,21 +52,20 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
     private val KEY_CATEGORY = "key_category"
-    private var categoryIdSelected = "0"
+    private var keyCategory = "0"
 
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
 
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
-        OfficialHomeContainerAdapter(context, childFragmentManager)
+        OfficialHomeContainerAdapter(context, childFragmentManager, keyCategory)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         categoryPerformanceMonitoring = PerformanceMonitoring.start(FirebasePerformanceMonitoringConstant.CATEGORY)
         arguments?.let {
-            categoryIdSelected = it.getString(KEY_CATEGORY)
-            println(categoryIdSelected)
+            keyCategory = it.getString(KEY_CATEGORY, "0")
         }
         context?.let {
             tracking = OfficialStoreTracking(it)
@@ -142,13 +141,23 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         })
     }
 
+    private fun getSelectedCategory(officialStoreCategories: OfficialStoreCategories): Int {
+        officialStoreCategories.categories.forEachIndexed { index, category ->
+            if (keyCategory !== "0" && category.categoryId == keyCategory) {
+                return index
+            }
+        }
+        return 0
+    }
+
     private fun populateCategoriesData(officialStoreCategories: OfficialStoreCategories) {
         officialStoreCategories.categories.forEachIndexed { _, category ->
             tabAdapter.categoryList.add(category)
         }
         tabAdapter.notifyDataSetChanged()
         tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
-        tabLayout?.getTabAt(0)?.select()
+        val categorySelected = getSelectedCategory(officialStoreCategories)
+        tabLayout?.getTabAt(categorySelected)?.select()
 
         val category = tabAdapter.categoryList[0]
         tracking.eventImpressionCategory(
