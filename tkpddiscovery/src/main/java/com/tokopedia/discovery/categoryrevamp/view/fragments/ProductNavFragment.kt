@@ -170,6 +170,8 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     companion object {
         private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
         private val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+        private val EXTRA_PARENT_ID = " PARENT_ID"
+        private val EXTRA_PARENT_NAME = " PARENT_NAME"
         private val EXTRA_BANNED_DATA = "BANNED_DATA"
         private val EXTRA_CATEGORY_URL = "CATEGORY_URL"
 
@@ -636,6 +638,10 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
             val intent = Intent(it, CategoryNavActivity::class.java)
             intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, id)
             intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, categoryName)
+
+            intent.putExtra(EXTRA_PARENT_ID,mDepartmentId)
+            intent.putExtra(EXTRA_PARENT_NAME,mDepartmentName)
+
             it.startActivity(intent)
         }
     }
