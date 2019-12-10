@@ -23,6 +23,14 @@ internal class SimilarSearchActivity: BaseSimpleActivity() {
         return SimilarSearchFragment.getInstance()
     }
 
+    override fun getLayoutRes(): Int {
+        return R.layout.similar_search_activity_layout
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parentView
+    }
+
     override fun setupFragment(savedInstance: Bundle?) {
         injectDependencies()
 

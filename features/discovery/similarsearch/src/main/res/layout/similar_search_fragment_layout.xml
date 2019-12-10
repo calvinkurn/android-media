@@ -4,31 +4,33 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--    <com.google.android.material.appbar.AppBarLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content">-->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.tokopedia.similarsearch.originalproduct.OriginalProductAppBarLayoutBehavior"
+        app:layout_anchor="@+id/recyclerViewSimilarSearch"
+        app:layout_anchorGravity="top">
 
-<!--        -->
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-<!--    </com.google.android.material.appbar.AppBarLayout>-->
 
-    <include
-        android:id="@+id/cardViewOriginalProductSimilarSearch"
-        layout="@layout/similar_search_original_product_layout" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <include
+            android:id="@+id/cardViewOriginalProductSimilarSearch"
+            android:visibility="gone"
+            layout="@layout/similar_search_original_product_layout" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSimilarSearch"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:descendantFocusability="blocksDescendants"/>
-
-<!--    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh-->
-<!--        android:id="@+id/swipeToRefreshSimilarSearch"-->
-<!--        android:visibility="gone"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
-
-<!--    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>-->
+        android:descendantFocusability="blocksDescendants" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -5,6 +5,7 @@
     <string name="similar_search_original_product_review_count">(%s)</string>
     <string name="similar_search_original_product_buy">Beli</string>
     <string name="similar_search_original_product_add_to_cart">Tambah ke Keranjang</string>
+    <string name="similar_search_original_product_add_to_cart_collapsed">+ Keranjang</string>
     <string name="similar_search_title">Mungkin kamu suka</string>
     <string name="similar_search_remove_wishlist_success">Sukses menghapus wishlist</string>
     <string name="similar_search_add_wishlist_success">Sukses menambah wishlist</string>

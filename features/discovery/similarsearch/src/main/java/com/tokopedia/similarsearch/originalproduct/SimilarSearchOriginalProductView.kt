@@ -117,13 +117,9 @@ internal class SimilarSearchOriginalProductView(
         fragmentView.buttonAddToCart?.setOnClickListener {
             similarSearchOriginalProductViewListener.onButtonAddToCartClicked()
         }
-    }
 
-    fun expand() {
-        fragmentView.cardViewOriginalProductSimilarSearch?.visible()
-    }
-
-    fun collapse() {
-        fragmentView.cardViewOriginalProductSimilarSearch?.gone()
+        fragmentView.buttonAddToCartCollapsed?.setOnClickListener {
+            similarSearchOriginalProductViewListener.onButtonAddToCartClicked()
+        }
     }
 }

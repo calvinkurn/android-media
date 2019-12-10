@@ -20,10 +20,7 @@
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
     app:cardUseCompatPadding="true"
-    app:cardPreventCornerOverlap="false"
-    app:layout_behavior="com.tokopedia.similarsearch.originalproduct.OriginalProductLayoutBehavior"
-    app:layout_anchor="@+id/recyclerViewSimilarSearch"
-    app:layout_anchorGravity="top">
+    app:cardPreventCornerOverlap="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -206,8 +203,21 @@
             app:layout_constraintStart_toEndOf="@id/buttonBuy"
             app:layout_constraintEnd_toEndOf="parent"
             app:unifyButtonSize="small"
-            app:unifyButtonType="transaction"
-            tools:text="Add to Cart" />
+            app:unifyButtonType="transaction" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonAddToCartCollapsed"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/similar_search_original_product_add_to_cart_collapsed"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="transaction" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -82,7 +82,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun initViews() {
         initRecyclerView()
-        disableSwipeRefreshLayout()
     }
 
     private fun initRecyclerView() {
@@ -131,10 +130,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun createSimilarSearchItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
         return SimilarSearchItemDecoration(activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16))
-    }
-
-    private fun disableSwipeRefreshLayout() {
-//        swipeToRefreshSimilarSearch?.isEnabled = false
     }
 
     private fun observeViewModelData() {
@@ -226,12 +221,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun updateViewContent(similarSearchLiveData: State<List<Any>>) {
         when (similarSearchLiveData) {
             is State.Loading -> {
-//                swipeToRefreshSimilarSearch?.isRefreshing = true
                 updateAdapterList(similarSearchLiveData)
                 updateScrollListener()
             }
             is State.Success -> {
-//                swipeToRefreshSimilarSearch?.isRefreshing = false
                 updateAdapterList(similarSearchLiveData)
                 updateScrollListener()
             }
