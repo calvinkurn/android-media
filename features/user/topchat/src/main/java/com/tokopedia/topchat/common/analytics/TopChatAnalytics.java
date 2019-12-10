@@ -55,6 +55,7 @@ public class TopChatAnalytics {
         public static final String SHOP_PAGE = "ClickShopPage";
         public static final String INBOX_CHAT = "clickInboxChat";
         public static final String CHAT_DETAIL = "clickChatDetail";
+        public static final String VIEW_CHAT_DETAIL = "viewChatDetailIris";
 
         String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
         String EVENT_NAME_PRODUCT_CLICK = "productClick";
@@ -89,6 +90,7 @@ public class TopChatAnalytics {
         public static final String CLICK_INVOICE_ATTACHMENT = "click invoice on chat detail";
         public static final String CLICK_REPORT_USER = "click report user on chat";
         public static final String CLICK_BANNED_PRODUCT = "click on lanjut browser";
+        public static final String VIEW_BANNED_PRODUCT = "view banned product bubble";
 
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
 
@@ -441,6 +443,18 @@ public class TopChatAnalytics {
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
                 Action.CLICK_BANNED_PRODUCT,
+                eventLabel
+        );
+    }
+
+    // #BP2
+    public void eventSeenBannedProductAttachment(@NotNull BannedProductAttachmentViewModel viewModel) {
+        String clientId = TrackApp.getInstance().getGTM().getCachedClientIDString();
+        String eventLabel = viewModel.getProductId() + " - " + clientId;
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.VIEW_CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.VIEW_BANNED_PRODUCT,
                 eventLabel
         );
     }

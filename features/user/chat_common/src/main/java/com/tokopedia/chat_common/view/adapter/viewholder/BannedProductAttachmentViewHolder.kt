@@ -40,6 +40,7 @@ class BannedProductAttachmentViewHolder(itemView: View?, val listener: ProductAt
         bindName(viewModel)
         bindPrice(viewModel)
         bindSeamlessRedirect(viewModel)
+        listener.trackSeenBannedProduct(viewModel)
     }
 
     private fun bindSeamlessRedirect(viewModel: BannedProductAttachmentViewModel) {

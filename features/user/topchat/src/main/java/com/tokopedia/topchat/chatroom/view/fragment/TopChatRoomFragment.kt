@@ -114,7 +114,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     val REQUEST_GO_TO_SETTING_CHAT = 114
     val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
 
-    var seenAttachedProduct = HashSet<Int>()
+    private var seenAttachedProduct = HashSet<Int>()
+    private var seenAttachedBannedProduct = HashSet<Int>()
 
     protected var remoteConfig: RemoteConfig? = null
 
@@ -800,6 +801,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(element)
+        }
+    }
+
+    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {
+        if (seenAttachedBannedProduct.add(viewModel.productId)) {
+            analytics.eventSeenBannedProductAttachment(viewModel)
         }
     }
 

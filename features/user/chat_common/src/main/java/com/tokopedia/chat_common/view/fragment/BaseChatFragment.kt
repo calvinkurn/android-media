@@ -275,5 +275,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     }
 
-    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
+    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) { }
+
+    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) { }
 }
