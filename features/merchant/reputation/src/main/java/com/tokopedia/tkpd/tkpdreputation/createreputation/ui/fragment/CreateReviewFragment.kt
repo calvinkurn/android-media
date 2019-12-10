@@ -13,7 +13,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +28,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DeviceChecker
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -73,6 +73,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
         private const val IMAGE_REVIEW_GREEN_BG = "https://ecs7.tokopedia.net/android/others/3reviewbg.png"
         private const val IMAGE_REVIEW_YELLOW_BG = "https://ecs7.tokopedia.net/android/others/4_5reviewbg.png"
         private const val IMAGE_BG_TRANSITION = 250
+
+        private const val IMAGE_PEDIE_1 = "https://ecs7.tokopedia.net/android/pedie/1star.png"
+        private const val IMAGE_PEDIE_2 = "https://ecs7.tokopedia.net/android/pedie/2star.png"
+        private const val IMAGE_PEDIE_3 = "https://ecs7.tokopedia.net/android/pedie/3star.png"
+        private const val IMAGE_PEDIE_4 = "https://ecs7.tokopedia.net/android/pedie/4star.png"
+        private const val IMAGE_PEDIE_5 = "https://ecs7.tokopedia.net/android/pedie/5star.png"
 
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
@@ -188,12 +194,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 shouldPlayAnimation = true
                 context?.let {
                     if (DeviceChecker.isLowPerformingDevice(it)) {
-                        Log.e("deviceChecker","true")
-                    }else {
-                        Log.e("deviceChecker","false")
+                        generatePeddieImageByIndex()
+                    } else {
+                        playAnimation()
                     }
                 }
-                playAnimation()
                 generateReviewBackground(position)
             }
         })
@@ -381,6 +386,22 @@ class CreateReviewFragment : BaseDaggerFragment() {
             transitionDrawable.startTransition(IMAGE_BG_TRANSITION)
             currentBackground = drawable
         }
+    }
+
+    private fun generatePeddieImageByIndex() {
+        val url = when (animatedReviewPicker.getReviewClickAt()) {
+            1 -> IMAGE_PEDIE_1
+            2 -> IMAGE_PEDIE_2
+            3 -> IMAGE_PEDIE_3
+            4 -> IMAGE_PEDIE_4
+            5 -> IMAGE_PEDIE_5
+            else -> IMAGE_PEDIE_5
+        }
+        showImage(url)
+    }
+
+    private fun showImage(url: String) {
+        ImageHandler.loadImage(context, img_animation_review, url, 0)
     }
 
     private fun generateAnimationByIndex(index: Int) {
