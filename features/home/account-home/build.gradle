@@ -44,7 +44,6 @@ android {
 }
 
 
-
 buildscript {
     repositories {
         jcenter()
@@ -60,7 +59,6 @@ buildscript {
 
 
 dependencies {
-    androidTestImplementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -119,13 +117,13 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.networkDependencies.glide
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    androidTestApi (project(rootProject.ext.libraries.instrumentation_test)) {
+    androidTestApi(project(rootProject.ext.libraries.instrumentation_test)) {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
@@ -140,6 +138,7 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.1.0'
     androidTestImplementation rootProject.ext.playServicesDependencies.core
     androidTestImplementation rootProject.ext.firebase.core
+    androidTestImplementation project(rootProject.ext.libraries.core_legacy)
 }
 
 project.ext {

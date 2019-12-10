@@ -16,7 +16,6 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     libraries = [
-            instrumentation_test    : ":libraries:instrumentation_test",
             analytics               : ":libraries:analytics",
             applink                 : ":libraries:applink",
             baseAdapter             : ":libraries:base_adapter",
@@ -39,6 +38,7 @@ ext {
             imagePreview            : ":libraries:image_preview",
             imageuploader           : ":libraries:imageuploader",
             inappupdate             : ":libraries:inappupdate",
+            instrumentation_test    : ":libraries:instrumentation_test",
             iris                    : ":libraries:iris",
 //            iris                    : ":libraries:iris_no_op",
             kotlinExtensions        : ":libraries:kotlin_extensions",
