@@ -17,4 +17,6 @@
     <color name="flight_chips_info_text">#16c1cd</color>
 
     <color name="flightPriceColor">#ff5722</color>
+
+    <color name="flight_booking_route_gradiend_end">#e5f5ff</color>
 </resources>

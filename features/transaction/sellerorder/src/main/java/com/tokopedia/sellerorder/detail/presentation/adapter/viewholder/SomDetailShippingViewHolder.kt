@@ -93,25 +93,25 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                                 R.string.wajib_tulis_kode_booking_desc)
                     }
 
-                    if (item.dataObject.onlineBookingCode.isEmpty()) {
-                        itemView.booking_code_see_btn.visibility = View.GONE
-                        itemView.booking_code_value.apply {
-                            text = itemView.context.getString(R.string.placeholder_kode_booking)
-                            setTypeface(this.typeface, Typeface.ITALIC)
+                if (item.dataObject.onlineBookingCode.isEmpty()) {
+                    itemView.booking_code_see_btn.visibility = View.GONE
+                    itemView.booking_code_value.apply {
+                        text = itemView.context.getString(R.string.placeholder_kode_booking)
+                        setTypeface(this.typeface, Typeface.ITALIC)
+                    }
+                } else {
+                    itemView.booking_code_value.apply {
+                        text = item.dataObject.onlineBookingCode
+                        setTypeface(this.typeface, Typeface.BOLD)
+                    }
+                    itemView.booking_code_see_btn.apply {
+                        visibility = View.VISIBLE
+                        setOnClickListener {
+                            actionListener.onShowBookingCode(
+                                    item.dataObject.onlineBookingCode,
+                                    item.dataObject.onlineBookingType)
                         }
-                    } else {
-                        itemView.booking_code_value.apply {
-                            text = item.dataObject.onlineBookingCode
-                            setTypeface(this.typeface, Typeface.BOLD)
-                        }
-                        itemView.booking_code_see_btn.apply {
-                            visibility = View.VISIBLE
-                            setOnClickListener {
-                                actionListener.onShowBookingCode(
-                                        item.dataObject.onlineBookingCode,
-                                        item.dataObject.onlineBookingType)
-                            }
-                        }
+                    }
 
                     }
                 }

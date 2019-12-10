@@ -1,17 +1,16 @@
 package com.tokopedia.flight.bookingV2.presentation.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
-import com.tokopedia.flight.R
-import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice
-import com.tokopedia.flight.booking.view.viewmodel.*
+import com.tokopedia.flight.bookingV2.data.cloud.entity.NewFarePrice
 import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity
 import com.tokopedia.flight.bookingV2.domain.FlightGetCartDataUseCase
 import com.tokopedia.flight.bookingV2.presentation.contract.FlightBaseBookingContract
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.*
 import com.tokopedia.flight.bookingV2.presentation.viewmodel.mapper.FlightBookingCartDataMapper
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.data.model.FlightException
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.search.data.api.single.response.Fare

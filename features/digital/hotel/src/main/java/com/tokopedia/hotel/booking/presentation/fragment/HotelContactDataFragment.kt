@@ -1,8 +1,6 @@
 package com.tokopedia.hotel.booking.presentation.fragment
 
 import android.app.Activity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
@@ -12,8 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.travel.data.entity.TravelContactListModel
+import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
 import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
@@ -24,8 +26,6 @@ import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivit
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import kotlinx.android.synthetic.main.fragment_hotel_contact_data.*
 import javax.inject.Inject
-import com.tokopedia.common.travel.data.entity.TravelContactListModel
-import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
 
 class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
 

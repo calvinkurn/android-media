@@ -73,7 +73,7 @@ interface FlightSearchContract {
 
         fun finishFragment()
 
-        fun navigateToTheNextPage(selectedId: String, fareViewModel: FlightPriceViewModel, isBestPairing: Boolean)
+        fun navigateToTheNextPage(selectedId: String, searchTerm: String, fareViewModel: FlightPriceViewModel, isBestPairing: Boolean)
 
         fun onGetSearchMeta(flightSearchMetaViewModel: FlightSearchMetaViewModel)
 

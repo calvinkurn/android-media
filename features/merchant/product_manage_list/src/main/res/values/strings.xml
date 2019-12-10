@@ -9,6 +9,27 @@
     <string name="pml_sticker_shop_link">https://tokopedia.com/%s</string>
     <string name="pml_label_subscribe">Berlangganan</string>
 
+
+    <string name="sort_position">Posisi</string>
+    <string name="sort_last">Pembaruan Terakhir</string>
+    <string name="sort_new_product">Produk Baru</string>
+    <string name="sort_product_name">Nama Produk</string>
+    <string name="sort_most_viewed">Dilihat Terbanyak</string>
+    <string name="sort_most_discussed">Diskusi Terbanyak</string>
+    <string name="sort_most_reviewed">Ulasan Terbanyak</string>
+    <string name="sort_most_buy">Pembelian Terbanyak</string>
+    <string name="sort_lowest_price">Harga Terendah</string>
+    <string name="sort_highest_price">Harga Tertinggi</string>
+    <string name="product_manage_filter_menu_both_catalog">Dengan &amp; Tanpa Katalog</string>
+    <string name="product_manage_filter_menu_with_catalog">Dengan Katalog</string>
+    <string name="product_manage_filter_menu_without_catalog">Tanpa Katalog</string>
+    <string name="product_manage_filter_menu_picture_both">Dengan &amp; Tanpa Gambar</string>
+    <string name="product_manage_filter_menu_with_picture">Dengan Gambar</string>
+    <string name="product_manage_filter_menu_without_picture">Tanpa Gambar</string>
+    <string name="product_manage_filter_menu_condition_old">Bekas</string>
+    <string name="product_manage_filter_menu_condition_new">Baru</string>
+    <string name="product_manage_filter_menu_both_condition">Semua Kondisi</string>
+    <string name="product_manage_error_product_price_not_valid">Harga harus diisi antara %1$s &#8212; %2$s</string>
     <string name="product_manage_you_have_x_unfinished_product">Anda memiliki %1$d draft produk yang belum terselesaikan.<![CDATA[<br /><font color=\"#42b549\">Cek Sekarang</font>]]></string>
     <string name="product_manage_cashback_limited_title">Pemakaian Cashback Terbatas</string>
     <string name="product_manage_cashback_limited_desc">Anda telah memakai cashback sebanyak 5 kali. Dapatkan cashback tanpa minimum pemakaian dengan berlangganan %1$s.</string>

@@ -5,12 +5,6 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.core.widget.NestedScrollView;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +14,13 @@ import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.widget.NestedScrollView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -75,6 +76,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
     public static final String EXTRA_CLASS = "EXTRA_CLASS";
     public static final String EXTRA_AUTO_SEARCH = "EXTRA_AUTO_SEARCH";
+    public static final String EXTRA_FROM_DEEPLINK_URL = "EXTRA_FROM_DEEPLINK_URL";
     private static final String EXTRA_ADULT = "EXTRA_ADULT";
     private static final String EXTRA_CHILD = "EXTRA_CHILD";
     private static final String EXTRA_INFANT = "EXTRA_INFANT";
@@ -116,13 +118,17 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStop = false;
 
-    public static FlightDashboardFragment getInstance() {
-        return new FlightDashboardFragment();
+    public static FlightDashboardFragment getInstance(String linkUrl) {
+        FlightDashboardFragment flightDashboardFragment = new FlightDashboardFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_FROM_DEEPLINK_URL, linkUrl);
+        flightDashboardFragment.setArguments(bundle);
+        return flightDashboardFragment;
     }
 
     public static FlightDashboardFragment getInstance(String extrasTrip, String extrasAdultPassenger,
                                                       String extrasChildPassenger, String extrasInfantPassenger,
-                                                      String extrasClass, String extrasAutoSearch) {
+                                                      String extrasClass, String extrasAutoSearch, String linkUrl) {
         FlightDashboardFragment flightDashboardFragment = new FlightDashboardFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_TRIP, extrasTrip);
@@ -131,6 +137,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bundle.putString(EXTRA_INFANT, extrasInfantPassenger);
         bundle.putString(EXTRA_CLASS, extrasClass);
         bundle.putString(EXTRA_AUTO_SEARCH, extrasAutoSearch);
+        bundle.putString(EXTRA_FROM_DEEPLINK_URL, linkUrl);
         flightDashboardFragment.setArguments(bundle);
         return flightDashboardFragment;
     }
@@ -296,6 +303,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
         passData = new FlightDashboardPassDataViewModel();
         presenter.attachView(this);
+        presenter.sendAnalyticsOpenScreen(FlightAnalytics.Screen.HOMEPAGE);
         presenter.initialize();
         KeyboardHandler.hideSoftKeyboard(getActivity());
 
@@ -304,7 +312,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public String getScreenName() {
-        return FlightAnalytics.Screen.HOMEPAGE;
+        return null;
     }
 
     @Override
@@ -621,6 +629,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setFlightClass(currentDashboardViewModel.getFlightClass())
                 .setIsOneWay(currentDashboardViewModel.isOneWay())
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
+                .setLinkUrl(getArguments().getString(EXTRA_FROM_DEEPLINK_URL))
                 .build();
 
         startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(

@@ -91,6 +91,8 @@ object SomConsts {
     const val TITLE_COURIER_PROBLEM = "Kendala Kurir"
     const val TITLE_ATUR_TOKO_TUTUP = "Atur tanggal toko tutup"
     const val TITLE_BATALKAN_PESANAN = "Tuliskan Keterangan Anda"
+    const val TITLE_BATALKAN_PESANAN_PENALTY = "Batalkan Pesanan"
+    const val TITLE_TOLAK_PESANAN_INI = "Tolak Pesanan Ini?"
     const val TITLE_UBAH_RESI = "Ubah Nomor Resi"
     const val TITLE_KURIR_PENGIRIMAN = "Kurir Pengiriman"
     const val TITLE_JENIS_LAYANAN = "Jenis Layanan"
@@ -126,4 +128,7 @@ object SomConsts {
 
     const val STATUS_ORDER_600 = 600
     const val STATUS_ORDER_699 = 699
+
+    const val REPLACE_CUST_NAME = "#custName"
+    const val REPLACE_INVOICE_NO = "#invoiceNo"
 }

@@ -14,9 +14,6 @@ data class NotificationUpdateUnread(
 
 data class NotificationUpdateUnreadPojo(
         @Expose
-        @SerializedName("notif_unread")
-        var notifUnreadString: String = "",
-        @Expose
         @SerializedName("notif_unread_int")
         var notifUnreadInt: Long = 0
 )

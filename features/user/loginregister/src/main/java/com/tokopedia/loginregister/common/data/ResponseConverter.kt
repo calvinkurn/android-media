@@ -29,16 +29,19 @@ object ResponseConverter{
     }
 
     fun resultUsecaseCoroutineToFacebookCredentialListener(
-            onSuccessResult: (FacebookCredentialData) -> kotlin.Unit,
+            onSuccessEmailResult: (FacebookCredentialData) -> kotlin.Unit,
+            onSuccessPhoneResult: (FacebookCredentialData) -> kotlin.Unit,
             onErrorResult: (kotlin.Throwable) -> kotlin.Unit
     ): GetFacebookCredentialSubscriber.GetFacebookCredentialListener{
 
         return object : GetFacebookCredentialSubscriber.GetFacebookCredentialListener{
             override fun onErrorGetFacebookCredential(errorMessage: Exception) = onErrorResult(errorMessage)
 
-            override fun onSuccessGetFacebookCredential(accessToken: AccessToken, email: String)
-                    = onSuccessResult(FacebookCredentialData(accessToken, email))
+            override fun onSuccessGetFacebookEmailCredential(accessToken: AccessToken, email: String)
+                    = onSuccessEmailResult(FacebookCredentialData(accessToken, email, ""))
 
+            override fun onSuccessGetFacebookPhoneCredential(accessToken: AccessToken, phone: String)
+                    = onSuccessPhoneResult(FacebookCredentialData(accessToken, "", phone))
         }
     }
 }
