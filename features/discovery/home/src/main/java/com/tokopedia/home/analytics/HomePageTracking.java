@@ -40,7 +40,7 @@ public class HomePageTracking {
     private static final String CATEGORY_HOMEPAGE_TOKOPOINTS = "homepage-tokopoints";
     private static final String ACTION_CLICK_POINT = "click point & tier status";
 
-    private static final String EVENT_CLICK_HOME_PAGE = "clickHomePage";
+    private static final String EVENT_CLICK_HOME_PAGE = "clickHomepage";
     private static final String EVENT_CLICK_HOME_PAGE_WISHLIST = "clickHomepage";
     private static final String EVENT_GIMMICK = "clickGimmick";
     private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
@@ -1394,14 +1394,14 @@ public class HomePageTracking {
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_ACTION_LEGO_BANNER_3_IMAGE_IMPRESSION,
                 EVENT_LABEL, LABEL_EMPTY,
+                CHANNEL_ID, channelId,
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_VIEW, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         list.toArray(new Object[list.size()])
                                 )
                         )
-                ),
-                CHANNEL_ID, channelId
+                )
         );
     }
 
