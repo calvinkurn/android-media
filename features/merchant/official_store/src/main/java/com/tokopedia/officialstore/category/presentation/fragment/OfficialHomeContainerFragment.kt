@@ -58,7 +58,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
 
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
-        OfficialHomeContainerAdapter(context, childFragmentManager, keyCategory)
+        OfficialHomeContainerAdapter(context, childFragmentManager)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
