@@ -8,6 +8,7 @@ import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGro
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartMapperV3
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named

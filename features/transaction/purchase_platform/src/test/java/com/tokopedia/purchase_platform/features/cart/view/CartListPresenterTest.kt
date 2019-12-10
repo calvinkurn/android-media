@@ -20,6 +20,7 @@ import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHold
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -77,7 +78,7 @@ class CartListPresenterTest : Spek({
         Scenario("initial load") {
 
             Given("empty response") {
-                every { getCartListSimplifiedUseCase.createObservable() } returns Observable.just(emptyCartListData)
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
             }
 
             Given("attach view") {
@@ -105,7 +106,7 @@ class CartListPresenterTest : Spek({
         Scenario("refresh load") {
 
             Given("empty response") {
-                every { getCartListSimplifiedUseCase.createObservable() } returns Observable.just(emptyCartListData)
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
             }
 
             Given("attach view") {
@@ -136,7 +137,7 @@ class CartListPresenterTest : Spek({
             val errorMessage = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
 
             Given("throw error") {
-                every { getCartListSimplifiedUseCase.createObservable() } returns Observable.error(ResponseErrorException("testing"))
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(ResponseErrorException("testing"))
                 every { getRecentViewUseCase.createObservable(any(), any()) } answers {
                     Observable.just(GraphqlResponse(
                             mapOf(GqlRecentViewResponse::class.java to GqlRecentViewResponse()), emptyMap(), false))
@@ -259,7 +260,7 @@ class CartListPresenterTest : Spek({
             }
 
             Given("empty cart list data") {
-                every { getCartListSimplifiedUseCase.createObservable() } returns Observable.just(emptyCartListData)
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
             }
 
             Given("attach view") {

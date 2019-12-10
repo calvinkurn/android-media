@@ -51,7 +51,7 @@ public class UpdateAndReloadCartUseCase {
                             return updateAndRefreshCartListData;
                         }))
                 .flatMap(updateAndRefreshCartListData ->
-                        getCartListSimplifiedUseCase.createObservable()
+                        getCartListSimplifiedUseCase.createObservable(RequestParams.EMPTY)
                                 .map(cartListData -> {
                                     updateAndRefreshCartListData.setCartListData(cartListData);
                                     return updateAndRefreshCartListData;

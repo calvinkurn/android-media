@@ -39,7 +39,7 @@ class GetCartListSimplifiedUseCaseTest : Spek({
             }
 
             When("create observable") {
-                subscriber = usecase.createObservable().test()
+                subscriber = usecase.createObservable(null).test()
             }
 
             Then("should has 1 value") {
@@ -65,7 +65,7 @@ class GetCartListSimplifiedUseCaseTest : Spek({
             }
 
             When("create observable") {
-                subscriber = usecase.createObservable().test()
+                subscriber = usecase.createObservable(null).test()
             }
 
             Then("should has 1 error") {
@@ -86,7 +86,7 @@ class GetCartListSimplifiedUseCaseTest : Spek({
             }
 
             When("create observable") {
-                subscriber = usecase.createObservable().test()
+                subscriber = usecase.createObservable(null).test()
             }
 
             Then("should has 1 error") {
