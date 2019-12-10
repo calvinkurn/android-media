@@ -627,15 +627,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
-        activity?.let {
-            val router = (it.application as TopChatRouter)
-            (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
-            var shopId = this.shopId
-            if (shopId == 0) {
-                shopId = element.shopId
-            }
-            presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(), shopId)
-        }
+        (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
+        val buyPageIntent = presenter.getBuyPageIntent(context, element)
+        startActivity(buyPageIntent)
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
@@ -649,16 +643,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             ToasterNormal.make(view, it.data.message[0], ToasterNormal.LENGTH_LONG).show()
         } else {
             ToasterError.make(view, it.errorMessage[0], ToasterNormal.LENGTH_LONG).show()
-        }
-    }
-
-    private fun onSuccessBuyFromProdAttachment(): (addToCartResult: AddToCartDataModel) -> Unit {
-        return {
-            showSnackbarAddToCart(it)
-            if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
-                activity?.startActivity((activity!!.application as TopChatRouter)
-                        .getCartIntent(activity))
-            }
         }
     }
 

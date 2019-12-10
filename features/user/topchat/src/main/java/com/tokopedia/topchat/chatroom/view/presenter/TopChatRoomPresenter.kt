@@ -445,55 +445,6 @@ class TopChatRoomPresenter @Inject constructor(
         RxWebSocket.send(messageText, listInterceptor)
     }
 
-    override fun addProductToCart(
-            router: TopChatRouter,
-            element: ProductAttachmentViewModel,
-            onError: (Throwable) -> Unit,
-            onSuccess: (addToCartResult: AddToCartDataModel) -> Unit,
-            shopId: Int
-    ) {
-        val minOrder = if (element.minOrder <= 0) {
-            1
-        } else {
-            element.minOrder
-        }
-
-        addToCardSubscriber = addToCartSubscriber(onError, onSuccess)
-
-        val addToCartRequestParams = AddToCartRequestParams()
-        addToCartRequestParams.productId = Integer.parseInt(element.productId.toString()).toLong()
-        addToCartRequestParams.shopId = shopId
-        addToCartRequestParams.quantity = minOrder
-        addToCartRequestParams.notes = ""
-
-        val requestParams = RequestParams.create()
-        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
-        addToCartUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(addToCardSubscriber)
-    }
-
-    private fun addToCartSubscriber(
-            onError: (Throwable) -> Unit,
-            onSuccess: (addToCartResult: AddToCartDataModel) -> Unit
-    ): Subscriber<AddToCartDataModel> {
-        return object : Subscriber<AddToCartDataModel>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                onError(e)
-            }
-
-            override fun onNext(addToCartResult: AddToCartDataModel) {
-                onSuccess(addToCartResult)
-            }
-        }
-    }
-
     override fun sendAttachmentsAndMessage(
             messageId: String,
             sendMessage: String,
@@ -645,8 +596,29 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent {
-        val quantity = "1"
-        val atcAndBuyAction = "1"
+        val quantity = element.minOrder
+        val atcOnly = 0
+        val needRefresh = true
+        val shopName = view?.getShopName()
+        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.shopId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
+            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcOnly)
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName)
+            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
+            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
+            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
+        }
+    }
+
+    override fun getBuyPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent {
+        val quantity = element.minOrder
+        val atcAndBuyAction = 1
         val needRefresh = true
         val shopName = view?.getShopName()
         return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
@@ -659,7 +631,10 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
             putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
             putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
-            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, element.category)
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, element.productName)
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.priceInt.toFloat())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
         }

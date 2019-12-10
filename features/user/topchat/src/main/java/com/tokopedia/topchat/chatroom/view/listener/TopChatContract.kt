@@ -82,12 +82,6 @@ interface TopChatContract {
 
         fun loadPreviousChat(messageId: String, page: Int, onError: (Throwable) -> Unit, onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit)
 
-        fun addProductToCart(router: TopChatRouter,
-                             element: ProductAttachmentViewModel,
-                             onError: (Throwable) -> Unit,
-                             onSuccess: (addToCartResult: AddToCartDataModel) -> Unit,
-                             shopId: Int)
-
         fun isUploading(): Boolean
 
         fun deleteChat(messageId: String,
@@ -126,5 +120,7 @@ interface TopChatContract {
         fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
 
         fun onClickBannedProduct(liteUrl: String)
+
+        fun getBuyPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
     }
 }
