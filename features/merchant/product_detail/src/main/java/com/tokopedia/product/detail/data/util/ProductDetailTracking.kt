@@ -55,6 +55,17 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
+    fun eventProductImageClicked(productId: String?) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_PRODUCT_PICTURE,
+                ""
+        )
+        mapEvent[KEY_PRODUCT_ID] = productId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
     fun eventShippingRateEstimationClicked() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,

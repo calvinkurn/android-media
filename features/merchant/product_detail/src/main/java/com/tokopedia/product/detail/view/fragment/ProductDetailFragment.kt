@@ -1902,6 +1902,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
      * go to preview image activity to show larger image of Product
      */
     private fun onPictureProductClicked(position: Int) {
+        productDetailTracking.eventProductImageClicked(productId)
         activity?.let {
             val intent = ImagePreviewPdpActivity.createIntent(it, productId
                     ?: "", isWishlisted, getImageURIPaths(), null, position)
