@@ -38,11 +38,6 @@ class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncLis
 
     override fun onError(exception: Exception?) { }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        fcmManager.clear()
-    }
-
     companion object {
         const val JOB_ID = 91219
         fun startService(context: Context) {
