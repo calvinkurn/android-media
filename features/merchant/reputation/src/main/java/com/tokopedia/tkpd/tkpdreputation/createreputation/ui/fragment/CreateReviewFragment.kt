@@ -401,7 +401,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun showImage(url: String) {
-        ImageHandler.loadImage(context, img_animation_review, url, 0)
+        ImageHandler.loadImageWithoutPlaceholder(img_animation_review, url)
     }
 
     private fun generateAnimationByIndex(index: Int) {
