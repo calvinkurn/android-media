@@ -240,7 +240,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun getSearchInputViewResourceId(): Int {
-        return R.id.search_input_view
+        return R.id.search_input_view_list
     }
 
     private fun initView(view: View) {
