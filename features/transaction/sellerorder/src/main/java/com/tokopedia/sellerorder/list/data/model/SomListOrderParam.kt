@@ -76,6 +76,7 @@ data class SomListOrderParam(
                 parcel.writeIntList(orderTypeList)
                 parcel.writeInt(sortBy)
                 parcel.writeByte(if (isMobile) 1 else 0)
+                parcel.writeInt(nextOrderId)
         }
 
         override fun describeContents(): Int {
