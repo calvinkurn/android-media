@@ -21,11 +21,14 @@ class ChangeNameActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionS
             bundle.putAll(intent.extras)
         }
         var oldName = ""
+        var chances = ""
 
         try {
             oldName = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_FULL_NAME).toString()
+            chances = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME).toString()
         } finally {
             bundle.putString(ApplinkConstInternalGlobal.PARAM_FULL_NAME, oldName)
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME, chances)
         }
 
         return ChangeNameFragment.createInstance(bundle)

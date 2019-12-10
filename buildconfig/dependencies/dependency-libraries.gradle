@@ -5,12 +5,12 @@ ext {
             authentication          : "com.tokopedia.authentication:authentication:1.0.6",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
-            graphql                 : "com.tokopedia.graphql:graphql:1.0.18",
-            network                 : "com.tokopedia.network:network:1.0.10-test",
+            graphql                 : "com.tokopedia.graphql:graphql:1.0.19",
+            network                 : "com.tokopedia.network:network:1.0.11-test",
             url                     : "com.tokopedia.url:url:1.0.2",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.2",
             usersession             : "com.tokopedia.user.session:user_session:1.0.7",
-            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.5-test",
+            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.7-test",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.2"
     ]
 
@@ -39,6 +39,7 @@ ext {
             imagePreview            : ":libraries:image_preview",
             imageuploader           : ":libraries:imageuploader",
             inappupdate             : ":libraries:inappupdate",
+            instrumentation_test    : ":libraries:instrumentation_test",
             iris                    : ":libraries:iris",
 //            iris                    : ":libraries:iris_no_op",
             kotlinExtensions        : ":libraries:kotlin_extensions",
@@ -66,6 +67,7 @@ ext {
             promotionsTarget        : ":libraries:promotions_target",
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
-            translator              : ":libraries:translator"
+            translator              : ":libraries:translator",
+            traceroute              : ":libraries:traceroute"
     ]
 }

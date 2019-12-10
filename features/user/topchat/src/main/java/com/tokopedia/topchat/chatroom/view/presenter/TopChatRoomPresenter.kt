@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -23,12 +24,14 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_M
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
+import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -41,10 +44,9 @@ import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -100,7 +102,7 @@ class TopChatRoomPresenter @Inject constructor(
     var thisMessageId: String = ""
     private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
 
-    private var attachmentsPreview: ArrayList<PreviewViewModel> = arrayListOf()
+    private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
 
     init {
         mSubscription = CompositeSubscription()
@@ -271,7 +273,6 @@ class TopChatRoomPresenter @Inject constructor(
     private fun readMessage() {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
     }
-
 
 
     override fun startCompressImages(it: ImageUploadViewModel) {
@@ -449,12 +450,14 @@ class TopChatRoomPresenter @Inject constructor(
             onSuccess: (addToCartResult: AddToCartDataModel) -> Unit,
             shopId: Int
     ) {
+        val minOrder = if (element.minOrder <= 0) { 1 } else { element.minOrder }
+
         addToCardSubscriber = addToCartSubscriber(onError, onSuccess)
 
         val addToCartRequestParams = AddToCartRequestParams()
         addToCartRequestParams.productId = Integer.parseInt(element.productId.toString()).toLong()
         addToCartRequestParams.shopId = shopId
-        addToCartRequestParams.quantity = 1
+        addToCartRequestParams.quantity = minOrder
         addToCartRequestParams.notes = ""
 
         val requestParams = RequestParams.create()
@@ -505,14 +508,6 @@ class TopChatRoomPresenter @Inject constructor(
             view.sendAnalyticAttachmentSent(attachment)
         }
         view.notifyAttachmentsSent()
-    }
-
-    override fun sendProductAttachment(messageId: String, item: ResultProduct,
-                                       startTime: String, opponentId: String) {
-
-        RxWebSocket.send(SendWebsocketParam.generateParamSendProductAttachment(messageId, item, startTime,
-                opponentId), listInterceptor
-        )
     }
 
     override fun deleteChat(messageId: String, onError: (Throwable) -> Unit, onSuccessDeleteConversation: () -> Unit) {
@@ -586,34 +581,20 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun initProductPreview(savedInstanceState: Bundle?) {
-        val productId = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, savedInstanceState)
-        val productImageUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, savedInstanceState)
-        val productName = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, savedInstanceState)
-        val productPrice = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, savedInstanceState)
-        val productUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, savedInstanceState)
-        val productColorVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, savedInstanceState)
-        val productColorHexVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, savedInstanceState)
-        val productSizeVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, savedInstanceState)
-        val productFsIsActive = view.getBooleanArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IS_ACTIVE, savedInstanceState)
-        val productFsImageUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IMAGE_URL, savedInstanceState)
+        val stringProductPreviews = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEWS, savedInstanceState)
 
-        val productPreviewViewModel = ProductPreviewViewModel(
-                productId,
-                productImageUrl,
-                productName,
-                productPrice,
-                productColorVariant,
-                productColorHexVariant,
-                productSizeVariant,
-                productUrl,
-                productFsIsActive,
-                productFsImageUrl
+        if (stringProductPreviews.isEmpty()) return
+
+        val listType = object : TypeToken<List<ProductPreview>>() {}.type
+        val productPreviews = CommonUtil.fromJson<List<ProductPreview>>(
+                stringProductPreviews,
+                listType
         )
 
-        attachmentsPreview.add(productPreviewViewModel)
-
-        if (productPreviewViewModel.notEnoughRequiredData()) {
-            attachmentsPreview.remove(productPreviewViewModel)
+        for (productPreview in productPreviews) {
+            if (productPreview.notEnoughRequiredData()) continue
+            val sendAbleProductPreview = SendableProductPreview(productPreview)
+            attachmentsPreview.add(sendAbleProductPreview)
         }
     }
 
@@ -676,5 +657,21 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
         }
+    }
+
+    override fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>) {
+        if (resultProducts.isNotEmpty()) clearAttachmentPreview()
+        for (resultProduct in resultProducts) {
+            val productPreview = ProductPreview(
+                    resultProduct.productId.toString(),
+                    resultProduct.productImageThumbnail,
+                    resultProduct.name,
+                    resultProduct.price
+            )
+            if (productPreview.notEnoughRequiredData()) continue
+            val sendAbleProductPreview = SendableProductPreview(productPreview)
+            attachmentsPreview.add(sendAbleProductPreview)
+        }
+        initAttachmentPreview()
     }
 }

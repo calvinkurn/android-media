@@ -260,6 +260,20 @@ class ChatbotPresenter @Inject constructor(
                 listInterceptor)
     }
 
+    private fun sendReadEventWebSocket(messageId: String) {
+        RxWebSocket.send(getReadMessageWebSocket(messageId),
+                listInterceptor)
+    }
+
+    private fun getReadMessageWebSocket(messageId: String): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", EVENT_TOPCHAT_READ_MESSAGE)
+        val data = JsonObject()
+        data.addProperty("msg_id", Integer.valueOf(messageId))
+        json.add("data", data)
+        return json
+    }
+
     override fun sendRating(messageId: String, rating: Int, timestamp: String,
                             onError: (Throwable) -> Unit,
                             onSuccess: (SendRatingPojo) -> Unit) {
@@ -314,8 +328,10 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                if (!pojo.attachment?.fallbackAttachment?.message.equals(""))
+                if (!pojo.attachment?.fallbackAttachment?.message.equals("")){
                     view.onReceiveMessageEvent(mapToVisitable(pojo))
+                    sendReadEventWebSocket(messageId)
+                }
             }
         }
     }

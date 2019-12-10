@@ -172,6 +172,8 @@ public class Utils {
                 CategoryItemsViewModel.setUrl(categoryEntity.getUrl());
                 CategoryItemsViewModel.setSeoUrl(categoryEntity.getSeoUrl());
                 CategoryItemsViewModel.setMinLikes(categoryEntity.getLikes());
+                CategoryItemsViewModel.setWebUrl(categoryEntity.getWebUrl());
+                CategoryItemsViewModel.setAppUrl(categoryEntity.getAppUrl());
                 if (categoryEntity.isLiked())
                     Utils.getSingletonInstance().addLikedEvent(categoryEntity.getId());
                 CategoryItemsViewModel.setWasLiked(categoryEntity.isLiked());
@@ -391,9 +393,9 @@ public class Utils {
 
     }
 
-    public void shareEvent(Context context, String title, String URL, String imageUrl) {
+    public void shareEvent(Context context, String title, String URL, String imageUrl,String desktopUrl) {
         String url = EventsUrl.AppLink.EVENTS + "/" + URL;
-        ((EventModuleRouter) ((Activity) context).getApplication()).shareEvent(context, url, title, imageUrl);
+        ((EventModuleRouter) ((Activity) context).getApplication()).shareEvent(context, url, title, imageUrl,desktopUrl);
     }
 
     public static class Constants {

@@ -799,7 +799,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             if (isMismatch) {
                 address1 += "${saveAddressDataModel?.selectedDistrict}"
                 saveAddressDataModel?.address1 = address1
-                saveAddressDataModel?.address2 = ""
+                if (isNullZipcode) {
+                    saveAddressDataModel?.address2 = "$currentLat,$currentLong"
+                } else {
+                    saveAddressDataModel?.address2 = ""
+                }
             } else {
                 address1 += "${saveAddressDataModel?.formattedAddress}"
                 saveAddressDataModel?.address1 = address1

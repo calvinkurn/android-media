@@ -27,7 +27,6 @@ import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
-import com.tokopedia.useridentification.subscriber.GetApprovalStatusSubscriber;
 import com.tokopedia.useridentification.subscriber.GetUserProjectInfoSubcriber;
 import com.tokopedia.useridentification.view.activity.UserIdentificationInfoActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
@@ -40,7 +39,6 @@ import javax.inject.Inject;
 
 public class UserIdentificationInfoFragment extends BaseDaggerFragment
         implements UserIdentificationInfo.View,
-        GetApprovalStatusSubscriber.GetApprovalStatusListener,
         GetUserProjectInfoSubcriber.GetUserProjectInfoListener,
         UserIdentificationInfoActivity.Listener {
 
@@ -130,35 +128,13 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void isUserBlacklist(boolean isBlacklist) {
-        if (isBlacklist) {
-            hideLoading();
-            showStatusBlacklist();
-        } else {
-            presenter.getStatus(projectId);
-        }
+    public void onUserBlacklist() {
+        hideLoading();
+        showStatusBlacklist();
     }
 
     @Override
-    public void onErrorGetUserProjectInfo(Throwable throwable) {
-        if (getContext() != null) {
-            hideLoading();
-            String error = ErrorHandler.getErrorMessage(getContext(), throwable);
-            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
-        }
-    }
-
-    @Override
-    public void onErrorGetUserProjectInfoWithErrorCode(String errorCode) {
-        if (getContext() != null) {
-            hideLoading();
-            String error = String.format("%s (%s)", getContext().getString(R.string.default_request_error_unknown), errorCode);
-            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
-        }
-    }
-
-    @Override
-    public void onSuccessGetShopVerificationStatus(int status) {
+    public void onSuccessGetUserProjectInfo(int status) {
         hideLoading();
         statusCode = status;
         switch (status) {
@@ -178,9 +154,27 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
                 showStatusNotVerified();
                 break;
             default:
-                onErrorGetShopVerificationStatus(new MessageErrorException(String.format("%s (%s)", getString(R.string
+                onErrorGetUserProjectInfo(new MessageErrorException(String.format("%s (%s)", getString(R.string
                         .default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN)));
                 break;
+        }
+    }
+
+    @Override
+    public void onErrorGetUserProjectInfo(Throwable throwable) {
+        if (getContext() != null) {
+            hideLoading();
+            String error = ErrorHandler.getErrorMessage(getContext(), throwable);
+            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
+        }
+    }
+
+    @Override
+    public void onErrorGetUserProjectInfoWithErrorCode(String errorCode) {
+        if (getContext() != null) {
+            hideLoading();
+            String error = String.format("%s (%s)", getContext().getString(R.string.default_request_error_unknown), errorCode);
+            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
         }
     }
 
@@ -239,24 +233,6 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         button.setOnClickListener(v -> getActivity().onBackPressed());
     }
 
-    @Override
-    public void onErrorGetShopVerificationStatus(Throwable errorMessage) {
-        if (getContext() != null) {
-            hideLoading();
-            String error = ErrorHandler.getErrorMessage(getContext(), errorMessage);
-            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
-        }
-    }
-
-    @Override
-    public void onErrorGetShopVerificationStatusWithErrorCode(String errorCode) {
-        if (getContext() != null) {
-            hideLoading();
-            String error = String.format("%s (%s)", getContext().getString(R.string
-                    .default_request_error_unknown), errorCode);
-            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
-        }
-    }
 
     @Override
     public void showLoading() {
@@ -275,10 +251,6 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return this;
     }
 
-    @Override
-    public GetApprovalStatusSubscriber.GetApprovalStatusListener getApprovalStatusListener() {
-        return this;
-    }
 
     @Override
     public void onTrackBackPressed() {
@@ -304,21 +276,18 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     private View.OnClickListener onGoToFormActivityButton(int status) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (status) {
-                    case KYCConstant.STATUS_NOT_VERIFIED:
-                        analytics.eventClickOnNextOnBoarding();
-                        break;
-                    case KYCConstant.STATUS_REJECTED:
-                        analytics.eventClickNextRejectedPage();
-                        break;
-                    default:
-                        break;
-                }
-                goToFormActivity();
+        return v -> {
+            switch (status) {
+                case KYCConstant.STATUS_NOT_VERIFIED:
+                    analytics.eventClickOnNextOnBoarding();
+                    break;
+                case KYCConstant.STATUS_REJECTED:
+                    analytics.eventClickNextRejectedPage();
+                    break;
+                default:
+                    break;
             }
+            goToFormActivity();
         };
     }
 
@@ -340,12 +309,9 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     private View.OnClickListener onGoToTermsButton() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                analytics.eventClickTermsSuccessPage();
-                RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
-            }
+        return v -> {
+            analytics.eventClickTermsSuccessPage();
+            RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
         };
     }
 
