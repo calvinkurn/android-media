@@ -108,7 +108,9 @@ class NotificationTransactionViewModel @Inject constructor(
 
     override fun markReadNotification(notificationId: String) {
         markNotificationUseCase.execute(
-                MarkReadNotificationUpdateItemUseCase.getRequestParams(notificationId),
+                MarkReadNotificationUpdateItemUseCase.getRequestParams(
+                        notificationId,
+                        TYPE_OF_NOTIF_TRANSACTION),
                 NotificationUpdateActionSubscriber())
     }
 
@@ -153,6 +155,7 @@ class NotificationTransactionViewModel @Inject constructor(
 
     companion object {
         private const val FIRST_INITIAL_PAGE = 1
+        private const val TYPE_OF_NOTIF_TRANSACTION = 2
     }
 
 }
