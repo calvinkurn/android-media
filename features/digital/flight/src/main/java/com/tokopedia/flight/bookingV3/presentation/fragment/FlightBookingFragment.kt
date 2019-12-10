@@ -808,8 +808,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                     dialog.setCancelable(false)
                     dialog.setOverlayClose(false)
-                    dialog.setTitle(e.head)
-                    dialog.setDescription(e.message)
+                    if (e.head.isNotEmpty()) dialog.setTitle(e.head) else dialog.setTitle(getString(R.string.flight_booking_general_error_title))
+                    if (e.message.isNotEmpty()) dialog.setDescription(e.message) else dialog.setTitle(getString(R.string.flight_booking_general_error_subtitle))
                     dialog.setImageDrawable(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
                     dialog.show()
                 }

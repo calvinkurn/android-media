@@ -200,6 +200,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 }
             }
         }) {
+            isStillLoading = false
             _flightVerifyResult.value = Fail(it)
         }
     }
