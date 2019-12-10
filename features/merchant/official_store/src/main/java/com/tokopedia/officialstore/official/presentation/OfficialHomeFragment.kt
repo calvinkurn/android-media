@@ -91,7 +91,7 @@ class OfficialHomeFragment :
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
-                    val CATEGORY_CONST: String = category?.title?:""
+                    val CATEGORY_CONST: String = category?.slug.orEmpty()
                     val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
                     counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
@@ -568,7 +568,7 @@ class OfficialHomeFragment :
     }
 
     private fun initFirebasePerformanceMonitoring() {
-        val CATEGORY_CONST: String = category?.title?:""
+        val CATEGORY_CONST: String = category?.slug.orEmpty()
 
         val bannerConstant = (FirebasePerformanceMonitoringConstant.BANNER).replace(SLUG_CONST, CATEGORY_CONST)
         bannerPerformanceMonitoring = PerformanceMonitoring.start(bannerConstant)
