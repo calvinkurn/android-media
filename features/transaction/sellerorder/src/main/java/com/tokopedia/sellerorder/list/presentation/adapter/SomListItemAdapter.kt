@@ -41,6 +41,14 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         return somItemList.size
     }
 
+    fun addItems(list: List<SomListOrder.Data.OrderList.Order>) {
+        somItemList.addAll(list)
+    }
+
+    fun removeAll() {
+        somItemList.clear()
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.label_status_order.text = somItemList[position].status
 
