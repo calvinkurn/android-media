@@ -5,5 +5,7 @@ package com.tokopedia.common.travel.constant;
  */
 public enum TravelType {
     TRAIN,
-    FLIGHT
+    FLIGHT,
+    HOTEL,
+    SUB_HOMEPAGE
 }
