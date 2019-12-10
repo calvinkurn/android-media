@@ -109,12 +109,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         return fragment;
     }
 
-    public static OpportunityListFragment createInstance(Bundle extras) {
-        OpportunityListFragment fragment = new OpportunityListFragment();
-        fragment.setArguments(extras);
-        return fragment;
-    }
-
     @Override
     protected boolean isRetainInstance() {
         return true;

@@ -333,10 +333,14 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         if (receiverStreet.contains(RECEIVER_NOTES_START)) {
             val indexStart = receiverStreet.indexOf(RECEIVER_NOTES_START)
             val indexEnd = receiverStreet.indexOf(RECEIVER_NOTES_END)
-            val getAllNotes = receiverStreet.substring(indexStart, indexEnd+1)
-            val indexValueStart = getAllNotes.indexOf(RECEIVER_NOTES_COLON)
-            val indexValueEnd = getAllNotes.indexOf(RECEIVER_NOTES_END)
-            notesValue = getAllNotes.substring(indexValueStart+1, indexValueEnd-1)
+            if (receiverStreet.length > indexStart && receiverStreet.length >= indexEnd + 1) {
+                val getAllNotes = receiverStreet.substring(indexStart, indexEnd+1)
+                val indexValueStart = getAllNotes.indexOf(RECEIVER_NOTES_COLON)
+                val indexValueEnd = getAllNotes.indexOf(RECEIVER_NOTES_END)
+                if (getAllNotes.length > indexValueStart+1 && getAllNotes.length >= indexValueEnd-1) {
+                    notesValue = getAllNotes.substring(indexValueStart+1, indexValueEnd-1)
+                }
+            }
         }
 
         val dataShipping = SomDetailShipping(

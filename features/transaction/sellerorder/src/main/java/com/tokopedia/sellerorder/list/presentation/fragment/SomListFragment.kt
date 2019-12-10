@@ -362,6 +362,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             somListItemAdapter.somItemList = orderList.orders.toMutableList()
         } else {
             somListItemAdapter.addItems(orderList.orders)
+            scrollListener.updateStateAfterGetData()
         }
         somListItemAdapter.notifyDataSetChanged()
     }
