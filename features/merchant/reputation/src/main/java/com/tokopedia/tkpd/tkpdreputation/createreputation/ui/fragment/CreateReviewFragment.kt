@@ -13,6 +13,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.DeviceChecker
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -184,6 +186,13 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 )
                 reviewClickAt = position
                 shouldPlayAnimation = true
+                context?.let {
+                    if (DeviceChecker.isLowPerformingDevice(it)) {
+                        Log.e("deviceChecker","true")
+                    }else {
+                        Log.e("deviceChecker","false")
+                    }
+                }
                 playAnimation()
                 generateReviewBackground(position)
             }
