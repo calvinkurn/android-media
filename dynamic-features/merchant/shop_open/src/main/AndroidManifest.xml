@@ -3,7 +3,6 @@
     package="com.tokopedia.shop.open.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_open_shop">
         <dist:fusing dist:include="true" />

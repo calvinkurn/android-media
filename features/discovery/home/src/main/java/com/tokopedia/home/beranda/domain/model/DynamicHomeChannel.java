@@ -714,10 +714,10 @@ public class DynamicHomeChannel {
             return DataLayer.mapOf(
                     "event", "promoClick",
                     "eventCategory", "homepage-cmp",
-                    "eventAction", id + " - click on play dynamic banner",
-                    "eventLabel", "Play-CMP_OTHERS_indonesian-idol",
+                    "eventAction", "click on play dynamic banner",
+                    "eventLabel", id + " - Play-CMP_OTHERS_indonesian-idol",
                     "ecommerce", DataLayer.mapOf(
-                            "promoView", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             list.toArray(new Object[list.size()])
                                     )

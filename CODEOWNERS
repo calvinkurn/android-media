@@ -36,6 +36,7 @@
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 /features/merchant/official_store/                      @tokopedia/minion-stuart
+/features/merchant/atc_variant/                         @tokopedia/minion-stuart
 /features/top_ads/top_ads_free_claim/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
@@ -80,7 +81,7 @@
 /features/user/topchat/                         		@tokopedia/minion-kevin
 /features/user/topchat_no_op/                   		@tokopedia/minion-kevin
 /features/user/groupchat/                       		@tokopedia/minion-kevin
-/features/user/profile/                         		@tokopedia/minion-kevin
+/features/user/profilecompletion/                         		@tokopedia/minion-kevin
 /features/user/vote/                            		@tokopedia/minion-kevin
 /features/user/otp/                             		@tokopedia/minion-kevin
 /features/user/settingbank/                     		@tokopedia/minion-kevin
@@ -132,6 +133,7 @@
 /features/im/challenges                 				@tokopedia/minion-yoda
 /features/im/referral                   				@tokopedia/minion-yoda
 
+/libraries/adapter_delegate/							@tokopedia/minion-stuart
 /libraries/analytics/							        @tokopedia/core-team
 /libraries/applink/										@tokopedia/core-team
 /libraries/banner_dynamic/								@tokopedia/core-team
@@ -140,7 +142,7 @@
 /libraries/bottom_sheet_builder/						@tokopedia/core-team
 /libraries/cache_api/									@tokopedia/core-team
 /libraries/cameraview/									@tokopedia/core-team
-/libraries/cm_push_notifications/						@tokopedia/core-team
+/libraries/cm_push_notifications/						@tokopedia/minion-yoda
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
 /libraries/common_network/								@tokopedia/core-team
 /libraries/composite_lib/								@tokopedia/core-team

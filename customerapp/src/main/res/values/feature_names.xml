@@ -172,4 +172,7 @@
     <string name="title_affiliate">Affiliate</string>
     <string name="title_af_dashboard">Pencapaian Saya</string>
     <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
+
+    <!-- Dynamic feature for manage product list-->
+    <string name="title_product_manage">Daftar Produk</string>
 </resources>

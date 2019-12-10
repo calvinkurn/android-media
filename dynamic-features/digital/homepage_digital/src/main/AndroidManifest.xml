@@ -3,7 +3,6 @@
     package="com.tokopedia.homepage.digital.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/digital_subhomepage_app_name">
         <dist:fusing dist:include="true" />
