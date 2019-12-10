@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
@@ -23,7 +24,6 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangInEmptyState
@@ -62,6 +62,7 @@ import kotlinx.android.synthetic.main.empty_list.*
 import kotlinx.android.synthetic.main.fragment_som_list.*
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.function.Predicate
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
@@ -75,8 +76,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var somListItemAdapter: SomListItemAdapter
+    private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private var filterList: List<SomListFilter.Data.OrderFilterSom.StatusList> = listOf()
-    private var orderList: List<SomListOrder.Data.OrderList.Order> = listOf()
+    private var orderList: SomListOrder.Data.OrderList = SomListOrder.Data.OrderList()
     private var mapOrderStatus = HashMap<String, List<Int>>()
     private var paramOrder =  SomListOrderParam()
     private var refreshHandler: RefreshHandler? = null
@@ -88,6 +90,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var isFilterApplied = false
     private var defaultStartDate = ""
     private var defaultEndDate = ""
+    private var nextOrderId = 0
+    private var onLoadMore = false
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -142,9 +146,23 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         refreshHandler?.setPullEnabled(true)
         somListItemAdapter = SomListItemAdapter()
         somListItemAdapter.setActionListener(this)
+        addEndlessScrollListener()
+    }
+
+    private fun addEndlessScrollListener() {
         order_list_rv?.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = somListItemAdapter
+            scrollListener = object: EndlessRecyclerViewScrollListener(layoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    onLoadMore = true
+                    println("++ onLoadMore - nextOrderId = $nextOrderId")
+                    if (nextOrderId != 0) {
+                        loadOrderList(nextOrderId)
+                    }
+                }
+            }
+            addOnScrollListener(scrollListener)
         }
     }
 
@@ -154,6 +172,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         search_input_view?.searchTextView?.setOnClickListener { search_input_view?.searchTextView?.isCursorVisible = true }
 
         filter_action_button.setOnClickListener {
+            SomAnalytics.eventClickFilterButtonOnOrderList()
             val intentFilter = context?.let { ctx -> SomFilterActivity.createIntent(ctx, paramOrder) }
             startActivityForResult(intentFilter, REQUEST_FILTER)
         }
@@ -198,7 +217,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         })
     }
 
-    private fun loadOrderList() {
+    private fun loadOrderList(nextOrderId: Int) {
+        paramOrder.nextOrderId = nextOrderId
         somListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_order), paramOrder)
     }
 
@@ -210,7 +230,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 var indexTicker = 0
                 tickerList.forEach {
                     if (it.isActive) {
-                        listTickerData.add(TickerData("", it.shortDesc, Ticker.TYPE_ANNOUNCEMENT, true))
+                        listTickerData.add(TickerData("", it.shortDesc + " ${getString(R.string.ticker_info_selengkapnya)}", Ticker.TYPE_ANNOUNCEMENT, true))
                         indexTicker++
                     }
                 }
@@ -220,6 +240,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     adapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
                         override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                            SomAnalytics.eventClickSeeMoreOnTicker()
                         }
 
                     })
@@ -227,11 +248,12 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             } else {
                 tickerList.first().let {
-                    ticker_info?.setHtmlDescription(it.shortDesc)
+                    ticker_info?.setHtmlDescription(it.shortDesc + " ${getString(R.string.ticker_info_selengkapnya)}")
                     ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
                     ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                            SomAnalytics.eventClickSeeMoreOnTicker()
                         }
 
                         override fun onDismiss() {}
@@ -239,6 +261,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     })
                 }
             }
+            SomAnalytics.eventViewTicker()
         } else {
             ticker_info?.visibility = View.GONE
         }
@@ -269,10 +292,10 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         paramOrder.statusList = it.orderStatusIdList
                     }
                 }
-            }  else {
+            }  /*else {
                 filterItem.setColorBorder(R.color.gray_background)
                 filterItem.isSelected = false
-            }
+            }*/
             refreshHandler?.startRefresh()
 
             listQuickFilter.add(filterItem)
@@ -288,7 +311,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     SomAnalytics.eventClickQuickFilter(tabActive)
                     println("++ selected tabActive = $tabActive")
                     if (listOrderStatusId.isNotEmpty()) {
-                        paramOrder.statusList = listOrderStatusId
+                        this.paramOrder.statusList = listOrderStatusId
                         refreshHandler?.startRefresh()
                     }
                 }
@@ -302,7 +325,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when (it) {
                 is Success -> {
                     orderList = it.data
-                    if (orderList.isNotEmpty()) renderOrderList()
+                    nextOrderId = orderList.cursorOrderId
+                    println("++ nextOrderId = $nextOrderId")
+                    if (orderList.orders.isNotEmpty()) renderOrderList()
                     else {
                         if (isFilterApplied) {
                             if (!paramOrder.startDate.equals(defaultStartDate, true) || !paramOrder.endDate.equals(defaultEndDate, true)) {
@@ -332,7 +357,12 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         refreshHandler?.finishRefresh()
         empty_state_order_list.visibility = View.GONE
         order_list_rv.visibility = View.VISIBLE
-        somListItemAdapter.somItemList = orderList.toMutableList()
+
+        if (!onLoadMore) {
+            somListItemAdapter.somItemList = orderList.orders.toMutableList()
+        } else {
+            somListItemAdapter.addItems(orderList.orders)
+        }
         somListItemAdapter.notifyDataSetChanged()
     }
 
@@ -343,6 +373,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         title_empty?.text = title
         desc_empty?.text = desc
         btn_cek_peluang?.visibility = View.GONE
+        SomAnalytics.eventViewEmptyState(tabActive)
     }
 
     private fun renderErrorOrderList(title: String, desc: String) {
@@ -392,8 +423,14 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onRefresh(view: View?) {
+        addEndlessScrollListener()
+        onLoadMore = false
         isLoading = true
-        loadOrderList()
+        somListItemAdapter.removeAll()
+        nextOrderId = 0
+        loadOrderList(nextOrderId)
+        if (isFilterApplied) filter_action_button?.rightIconDrawable = resources.getDrawable(R.drawable.ic_som_check)
+        else filter_action_button?.rightIconDrawable = null
     }
 
     private fun checkFilterApplied(paramOrder: SomListOrderParam): Boolean {

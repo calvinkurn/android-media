@@ -1,17 +1,17 @@
 package com.tokopedia.hotel.homepage.presentation.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -276,9 +276,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun trackRoomDates() {
-        val dayDiff = HotelUtils.countCurrentDayDifference(hotelHomepageModel.checkInDate)
         val dateRange = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
-        trackingHotelUtil.hotelSelectStayDate(dayDiff.toInt(), dateRange.toInt())
+        trackingHotelUtil.hotelSelectStayDate(hotelHomepageModel.checkInDate, dateRange.toInt())
     }
 
     private fun onDestinationNearBy(longitude: Double, latitude: Double) {
@@ -307,14 +306,15 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 hotelHomepageModel.locName,
                 hotelHomepageModel.roomCount,
                 hotelHomepageModel.adultCount,
-                HotelUtils.countCurrentDayDifference(hotelHomepageModel.checkInDate).toInt(),
+                hotelHomepageModel.checkInDate,
                 hotelHomepageModel.nightCounter.toInt()
         )
 
         context?.run {
             if (hotelHomepageModel.locType.equals(TYPE_PROPERTY, false)) {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this, hotelHomepageModel.checkInDate,
-                        hotelHomepageModel.checkOutDate, hotelHomepageModel.locId, hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
+                        hotelHomepageModel.checkOutDate, hotelHomepageModel.locId, hotelHomepageModel.roomCount, hotelHomepageModel.adultCount,
+                        hotelHomepageModel.locType, hotelHomepageModel.locName),
                         REQUEST_CODE_DETAIL)
             } else {
                 startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelHomepageModel.locName,

@@ -16,9 +16,10 @@ data class HotelRoomListPageModel(
         var checkOutDateFmt: String = "",
         var adult: Int = 0,
         var child: Int = 0,
-        var room: Int = 0
+        var room: Int = 0,
+        var destinationType: String = "",
+        var destinationName: String = ""
 ) : Parcelable {
-
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readString(),
@@ -28,7 +29,9 @@ data class HotelRoomListPageModel(
             parcel.readString(),
             parcel.readInt(),
             parcel.readInt(),
-            parcel.readInt())
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(propertyId)
@@ -40,6 +43,8 @@ data class HotelRoomListPageModel(
         parcel.writeInt(adult)
         parcel.writeInt(child)
         parcel.writeInt(room)
+        parcel.writeString(destinationType)
+        parcel.writeString(destinationName)
     }
 
     override fun describeContents(): Int {
@@ -55,5 +60,6 @@ data class HotelRoomListPageModel(
             return arrayOfNulls(size)
         }
     }
+
 
 }
