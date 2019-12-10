@@ -6,9 +6,13 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
+import android.text.Html
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.dialog.DialogUnify
@@ -62,15 +67,19 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_COLON
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_END
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_START
+import com.tokopedia.sellerorder.common.util.SomConsts.REPLACE_CUST_NAME
+import com.tokopedia.sellerorder.common.util.SomConsts.REPLACE_INVOICE_NO
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_ATUR_TOKO_TUTUP
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN_PENALTY
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PRODUK_KOSONG
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_TOLAK_PESANAN_INI
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_UBAH_RESI
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OTHERS
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
@@ -91,68 +100,25 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
+import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.view.*
+import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_canceled
+import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_confirmed
+import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.tf_cancel_notes
+import kotlinx.android.synthetic.main.bottomsheet_cancel_order_penalty.view.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
+import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
-import android.net.Uri
-import android.text.Html
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.StyleSpan
-import android.widget.RelativeLayout
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.sellerorder.analytics.SomAnalytics
-import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
-import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
-import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.common.util.SomConsts.ATTRIBUTE_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_URL_UPLOAD
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UPLOAD_AWB
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
-import com.tokopedia.sellerorder.common.util.SomConsts.REPLACE_CUST_NAME
-import com.tokopedia.sellerorder.common.util.SomConsts.REPLACE_INVOICE_NO
-import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
-import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN_PENALTY
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_TOLAK_PESANAN_INI
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_UBAH_RESI
-import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
-import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailProductsCardAdapter
-import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
-import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
-import com.tokopedia.unifycomponents.ticker.TickerCallback
-import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.view.*
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_canceled
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_confirmed
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.tf_cancel_notes
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order_penalty.view.*
-import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping.view.*
 
 
 /**x
@@ -494,7 +460,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                         somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
                                 mapParam[PARAM_ORDER_ID].toString(), mapParam[PARAM_SHOP_ID].toString())
                         dialogUnify.dismiss()
-                    } }
+                    }
+                }
                 setChild(dialogView)
             }
             dialogUnify.show()
@@ -680,6 +647,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                 }
+
                 override fun onDismiss() {}
             })
         }

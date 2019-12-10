@@ -38,11 +38,12 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     actionListener.onShowBottomSheetInfo(
                             itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
                             R.string.desc_bottomsheet_immutable_courier)
-                    }
+                }
                 itemView.ic_harus_sesuai.setOnClickListener {
                     actionListener.onShowBottomSheetInfo(
                             itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
-                            R.string.desc_bottomsheet_immutable_courier) }
+                            R.string.desc_bottomsheet_immutable_courier)
+                }
             } else {
                 itemView.label_harus_sesuai.visibility = View.GONE
                 itemView.ic_harus_sesuai.visibility = View.GONE
@@ -93,25 +94,25 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                                 R.string.wajib_tulis_kode_booking_desc)
                     }
 
-                if (item.dataObject.onlineBookingCode.isEmpty()) {
-                    itemView.booking_code_see_btn.visibility = View.GONE
-                    itemView.booking_code_value.apply {
-                        text = itemView.context.getString(R.string.placeholder_kode_booking)
-                        setTypeface(this.typeface, Typeface.ITALIC)
-                    }
-                } else {
-                    itemView.booking_code_value.apply {
-                        text = item.dataObject.onlineBookingCode
-                        setTypeface(this.typeface, Typeface.BOLD)
-                    }
-                    itemView.booking_code_see_btn.apply {
-                        visibility = View.VISIBLE
-                        setOnClickListener {
-                            actionListener.onShowBookingCode(
-                                    item.dataObject.onlineBookingCode,
-                                    item.dataObject.onlineBookingType)
+                    if (item.dataObject.onlineBookingCode.isEmpty()) {
+                        itemView.booking_code_see_btn.visibility = View.GONE
+                        itemView.booking_code_value.apply {
+                            text = itemView.context.getString(R.string.placeholder_kode_booking)
+                            setTypeface(this.typeface, Typeface.ITALIC)
                         }
-                    }
+                    } else {
+                        itemView.booking_code_value.apply {
+                            text = item.dataObject.onlineBookingCode
+                            setTypeface(this.typeface, Typeface.BOLD)
+                        }
+                        itemView.booking_code_see_btn.apply {
+                            visibility = View.VISIBLE
+                            setOnClickListener {
+                                actionListener.onShowBookingCode(
+                                        item.dataObject.onlineBookingCode,
+                                        item.dataObject.onlineBookingType)
+                            }
+                        }
 
                     }
                 }
