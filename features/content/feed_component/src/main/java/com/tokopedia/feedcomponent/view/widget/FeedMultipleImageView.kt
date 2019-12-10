@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
@@ -32,7 +31,10 @@ class FeedMultipleImageView @JvmOverloads constructor(
         ImageAdapter(mutableListOf())
     }
 
+    private val itemDecoration: RecyclerView.ItemDecoration
+
     init {
+        itemDecoration = ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4))
         init()
     }
 
@@ -51,9 +53,12 @@ class FeedMultipleImageView @JvmOverloads constructor(
                 }
             }
         }
-        rv_media.layoutManager = gridLayoutManager
-        rv_media.adapter = adapter
-        rv_media.isNestedScrollingEnabled = false
+        rv_media.apply {
+            layoutManager = gridLayoutManager
+            adapter = this@FeedMultipleImageView.adapter
+            isNestedScrollingEnabled = false
+            setItemDecoration(itemDecoration)
+        }
     }
 
     fun bind(itemList: List<MediaItem>) {
@@ -62,7 +67,6 @@ class FeedMultipleImageView @JvmOverloads constructor(
 
     fun bind(itemList: List<MediaItem>, feedType: String) {
         adapter.updateItem(itemList, feedType)
-        rv_media.addItemDecoration(ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4), adapter.itemCount))
     }
 
     fun setOnFileClickListener(listener: OnFileClickListener) {
@@ -119,6 +123,9 @@ class FeedMultipleImageView @JvmOverloads constructor(
                     if (media.tracking.isNotEmpty()) {
                         feedMultipleImageViewListener?.onAffiliateTrackClicked(mapTrackingData(media.tracking), true)
                     }
+                    if (media.type == TYPE_VIDEO) {
+                        itemView.ic_play_vid.gone()
+                    }
                 }
             }
 
@@ -145,18 +152,15 @@ class FeedMultipleImageView @JvmOverloads constructor(
             }
 
 
-            private fun mapTrackingData(trackList: List<Tracking>): MutableList<TrackingViewModel> {
-                val trackingList: MutableList<TrackingViewModel> = ArrayList()
-
-                for (track in trackList) {
-                    trackingList.add(TrackingViewModel(
-                            track.clickURL,
-                            track.viewURL,
-                            track.type,
-                            track.source
-                    ))
+            private fun mapTrackingData(trackList: List<Tracking>): List<TrackingViewModel> {
+                return trackList.map {
+                    TrackingViewModel(
+                            it.clickURL,
+                            it.viewURL,
+                            it.type,
+                            it.source
+                    )
                 }
-                return trackingList
             }
 
             fun isSingleItemFromFeed(feedType: String): Boolean {
@@ -186,6 +190,13 @@ class FeedMultipleImageView @JvmOverloads constructor(
         fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
                              redirectLink: String, isSingleItem: Boolean)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+    }
+
+    private fun RecyclerView.setItemDecoration(itemDecoration: RecyclerView.ItemDecoration) {
+        for (itemDecorIndex in 0 until itemDecorationCount) {
+            removeItemDecorationAt(itemDecorIndex)
+        }
+        addItemDecoration(itemDecoration)
     }
 }

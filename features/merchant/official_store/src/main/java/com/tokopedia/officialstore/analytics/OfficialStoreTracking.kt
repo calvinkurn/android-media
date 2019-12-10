@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.analytics
 
 import android.content.Context
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
@@ -11,6 +12,12 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
+
+/*
+OS HOME REVAMP
+Data layer docs
+https://docs.google.com/spreadsheets/d/19l7m_uveuFB6YLVLqSTaclLFf13qmtCB9jQKVwzE38o/edit?usp=sharing
+*/
 
 class OfficialStoreTracking(context: Context) {
 
@@ -74,21 +81,21 @@ class OfficialStoreTracking(context: Context) {
         tracker.sendScreenAuthenticated(screenName, customDimension)
     }
 
-    fun eventClickCategory(categoryName: String, categoryId: String, categoryPosition: Int, imageUrl: String) {
+    fun eventClickCategory(categoryPosition: Int, categorySelected: Category) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_CATEGORY, "$OS_MICROSITE${categorySelected.title}",
                 EVENT_ACTION, "$CATEGORY - $CLICK",
                 EVENT_LABEL, "$CLICK $CATEGORY",
                 ECOMMERCE, DataLayer.mapOf(
                 PROMO_CLICK, DataLayer.mapOf(
                         "promotions",DataLayer.listOf(
                             DataLayer.mapOf(
-                                    "id", categoryId,
-                                    "name", "/official-store/$categoryName - category navigation",
+                                    "id", categorySelected.categoryId,
+                                    "name", "/official-store/${categorySelected.title} - category navigation",
                                     "position", "$categoryPosition",
-                                    "creative", categoryName,
-                                    "creative_url", imageUrl,
+                                    "creative", categorySelected.title,
+                                    "creative_url", categorySelected.icon,
                                     "promo_id", null,
                                     "promo_code", null
                             )
@@ -124,7 +131,8 @@ class OfficialStoreTracking(context: Context) {
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
-    fun eventClickBanner(categoryName: String, bannerId: String, bannerPosition: Int, bannerName: String, imageUrl: String) {
+    fun eventClickBanner(categoryName: String, bannerPosition: Int,
+                         bannerItem: com.tokopedia.officialstore.official.data.model.Banner) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
@@ -134,11 +142,11 @@ class OfficialStoreTracking(context: Context) {
                 PROMO_CLICK, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
                 DataLayer.mapOf(
-                        "id", bannerId,
+                        "id", bannerItem.bannerId,
                         "name", "/official-store/$categoryName - slider banner",
                         "position", "$bannerPosition",
-                        "creative", bannerName,
-                        "creative_url", imageUrl,
+                        "creative", bannerItem.title,
+                        "creative_url", bannerItem.applink,
                         "promo_id", null,
                         "promo_code", null
                         )
@@ -149,7 +157,8 @@ class OfficialStoreTracking(context: Context) {
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
-    fun eventImpressionBanner(categoryName: String, bannerId: String, bannerPosition: Int, bannerName: String, imageUrl: String) {
+    fun eventImpressionBanner(categoryName: String, bannerPosition: Int,
+                              bannerItem: com.tokopedia.officialstore.official.data.model.Banner) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
@@ -159,11 +168,11 @@ class OfficialStoreTracking(context: Context) {
                 PROMO_VIEW, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
                 DataLayer.mapOf(
-                        "id", bannerId,
+                        "id", bannerItem.bannerId,
                         "name", "/official-store/$categoryName - slider banner",
                         "position", "$bannerPosition",
-                        "creative", bannerName,
-                        "creative_url", imageUrl,
+                        "creative", bannerItem.title,
+                        "creative_url", bannerItem.applink,
                         "promo_id", null,
                         "promo_code", null
                         )
@@ -192,7 +201,14 @@ class OfficialStoreTracking(context: Context) {
                                 "$CLICK view all"))
     }
 
-    fun eventClickFeaturedBrand(categoryName: String, shopId: String, shopPosition: Int, shopName: String, imageUrl: String, additionalInformation: String) {
+    fun eventClickFeaturedBrand(
+            categoryName: String,
+            shopPosition: Int,
+            shopName: String,
+            url: String,
+            additionalInformation: String,
+            featuredBrandId: String
+    ) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
@@ -202,11 +218,11 @@ class OfficialStoreTracking(context: Context) {
                 PROMO_CLICK, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
                 DataLayer.mapOf(
-                        "id", shopId,
+                        "id", featuredBrandId,
                         "name", "/official-store/$categoryName - popular brands",
                         "position", "$shopPosition",
                         "creative", "$shopName - $additionalInformation",
-                        "creative_url", imageUrl,
+                        "creative_url", url,
                         "promo_id", null,
                         "promo_code", null
                         )
@@ -217,7 +233,14 @@ class OfficialStoreTracking(context: Context) {
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
-    fun eventImpressionFeatureBrand(categoryName: String, shopId: String, shopPosition: Int, shopName: String, imageUrl: String, additionalInformation: String) {
+    fun eventImpressionFeatureBrand(
+            categoryName: String,
+            shopPosition: Int,
+            shopName: String,
+            url: String,
+            additionalInformation: String,
+            featuredBrandId: String
+    ) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
@@ -227,11 +250,11 @@ class OfficialStoreTracking(context: Context) {
                 PROMO_VIEW, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
                 DataLayer.mapOf(
-                        "id", shopId.toString(),
+                        "id", featuredBrandId,
                         "name", "/official-store/$categoryName - popular brands",
                         "position", "$shopPosition",
                         "creative", "$shopName - $additionalInformation",
-                        "creative_url", imageUrl,
+                        "creative_url", url,
                         "promo_id", VALUE_NONE_OTHER,
                         "promo_code", VALUE_NONE_OTHER
                         )
@@ -252,10 +275,10 @@ class OfficialStoreTracking(context: Context) {
         ))
     }
 
-    fun flashSalePDPClick(categoryName: String, headerName: String, position: String, gridData: Grid) {
+    fun flashSalePDPClick(categoryName: String, headerName: String, position: String, gridData: Grid, campaignId: Int) {
         val ecommerceBody = DataLayer.mapOf(
                 "click", DataLayer.mapOf(
-                    "actionField", DataLayer.mapOf("list", "/official-store/$categoryName - flash sale - $headerName"),
+                "actionField", DataLayer.mapOf("list", "/official-store/$categoryName - flash sale - $campaignId - $headerName"),
                     "products", DataLayer.listOf(DataLayer.mapOf(
                         "name", gridData.name,
                         "id", gridData.id.toString(10),
@@ -263,7 +286,7 @@ class OfficialStoreTracking(context: Context) {
                         "brand", "none",
                         "category", "",
                         "variant", "none",
-                        "list", "/official-store/$categoryName - flash sale - $headerName",
+                        "list", "/official-store/$categoryName - flash sale - $campaignId - $headerName",
                         "position", position,
                         "attribution", gridData.attribution
                 ))
@@ -279,7 +302,7 @@ class OfficialStoreTracking(context: Context) {
         ))
     }
 
-    fun flashSaleImpression(categoryName: String, channelData: Channel) {
+    fun flashSaleImpression(categoryName: String, channelData: Channel, campaignId: Int) {
         val headerName = channelData.header?.name ?: ""
         val impressionBody = DataLayer.listOf()
 
@@ -292,7 +315,7 @@ class OfficialStoreTracking(context: Context) {
                         "brand", "none",
                         "category", "",
                         "variant", "none",
-                        "list", "/official-store/$categoryName - flash sale - $headerName",
+                        "list", "/official-store/$categoryName - flash sale - $campaignId - $headerName",
                         "position", (index + 1).toString(10),
                         "attribution", attribution
                 ))
@@ -318,8 +341,8 @@ class OfficialStoreTracking(context: Context) {
                         "id", gridData.id.toString(10),
                         "name", "/official-store/$categoryName - dynamic channel - $headerName",
                         "position", position,
-                        "creative", gridData.name,
-                        "creative_url", gridData.imageUrl,
+                        "creative", gridData.attribution,
+                        "creative_url", gridData.applink,
                         "promo_id", null,
                         "promo_code", null
                 ))
@@ -337,21 +360,7 @@ class OfficialStoreTracking(context: Context) {
 
     fun dynamicChannelImpression(categoryName: String, channelData: Channel) {
         val headerName = channelData.header?.name ?: ""
-        val promotionBody = DataLayer.listOf()
-
-        channelData.grids?.forEachIndexed { index, grid ->
-            grid?.run {
-                promotionBody.add(DataLayer.mapOf(
-                        "id", id.toString(10),
-                        "name", "/official-store/$categoryName - dynamic channel - $headerName",
-                        "position", (index + 1).toString(10),
-                        "creative", name,
-                        "creative_url", imageUrl,
-                        "promo_id", null,
-                        "promo_code", null
-                ))
-            }
-        }
+        val promotionBody = getDynamicChannelImpressionPromotion(categoryName, channelData, "dynamic channel", headerName)
 
         trackingQueue.putEETracking(DataLayer.mapOf(
                 EVENT, "promoView",
@@ -432,8 +441,8 @@ class OfficialStoreTracking(context: Context) {
                         "id", bannerData.id.toString(10),
                         "name", "/official-store/$categoryName - dynamic channel mix - $headerName",
                         "position", "0",
-                        "creative", bannerData.title,
-                        "creative_url", bannerData.imageUrl,
+                        "creative", bannerData.attribution,
+                        "creative_url", bannerData.applink,
                         "promo_id", null,
                         "promo_code", null
                 ))
@@ -451,21 +460,7 @@ class OfficialStoreTracking(context: Context) {
 
     fun dynamicChannelMixBannerImpression(categoryName: String, channelData: Channel) {
         val headerName = channelData.header?.name ?: ""
-        val promotionBody = DataLayer.listOf()
-
-        channelData.grids?.forEachIndexed { index, grid ->
-            grid?.run {
-                promotionBody.add(DataLayer.mapOf(
-                        "id", id.toString(10),
-                        "name", "/official-store/$categoryName - dynamic channel mix - $headerName",
-                        "position", (index + 1).toString(10),
-                        "creative", name,
-                        "creative_url", imageUrl,
-                        "promo_id", null,
-                        "promo_code", null
-                ))
-            }
-        }
+        val promotionBody = getDynamicChannelImpressionPromotion(categoryName, channelData, "dynamic channel mix", headerName)
 
         trackingQueue.putEETracking(DataLayer.mapOf(
                 EVENT, "promoView",
@@ -522,6 +517,25 @@ class OfficialStoreTracking(context: Context) {
                 convertRecommendationItemToDataImpressionObject(item, isLogin, position)
         )))
         trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
+    private fun getDynamicChannelImpressionPromotion(categoryName: String, channelData: Channel,
+                                                     channelType: String, headerName: String): List<Any> {
+        val promotionBody: MutableList<Any> = DataLayer.listOf()
+        channelData.grids?.forEachIndexed { index, grid ->
+            grid?.run {
+                promotionBody.add(DataLayer.mapOf(
+                        "id", id.toString(10),
+                        "name", "/official-store/$categoryName - $channelType - $headerName",
+                        "position", (index + 1).toString(10),
+                        "creative", attribution,
+                        "creative_url", applink,
+                        "promo_id", null,
+                        "promo_code", null
+                ))
+            }
+        }
+        return promotionBody
     }
 
     private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem, isLogin: Boolean, position: String): Any {

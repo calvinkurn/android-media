@@ -4,12 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -280,7 +280,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isLoading = false
         if (element.isNotEmpty()) {
             if (shopId.equals(userSession.shopId) && !whitelistDomain.authors.isEmpty()) {
-                showFAB(whitelistDomain)
+                showFAB()
             } else {
                 hideFAB()
             }
@@ -425,8 +425,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String, activityType: String) {
     }
 
-    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
-
+    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta) {
     }
 
     override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
@@ -495,6 +494,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    override fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+        //Not Used
+    }
+
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
     }
@@ -503,7 +506,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
+    override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
         for (tracking in trackList) {
             if (isClick) {
                 presenter.trackPostClickUrl(tracking.clickURL)
@@ -559,7 +562,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
     }
 
-    override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String) {
+    override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String, postType: String, authorId: String) {
         onGoToLink(redirectLink)
     }
 
@@ -623,11 +626,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         fab_feed.hide()
     }
 
-    fun showFAB(whitelistDomain: WhitelistDomain) {
+    fun showFAB() {
         fab_feed.show()
-        val author = whitelistDomain.authors[0]
         fab_feed.setOnClickListener {
-            onGoToLink(author.link)
+            goToCreatePost()
             shopAnalytics.eventClickCreatePost()
         }
 

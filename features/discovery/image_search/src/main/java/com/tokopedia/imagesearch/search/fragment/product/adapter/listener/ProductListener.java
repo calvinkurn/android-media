@@ -10,8 +10,6 @@ import java.util.List;
 public interface ProductListener {
     void onItemClicked(ProductItem item, int adapterPosition);
 
-    void onLongClick(ProductItem item, int adapterPosition);
-
     void onWishlistButtonClicked(final ProductItem productItem);
 
     void onProductImpressed(ProductItem item, int adapterPosition);

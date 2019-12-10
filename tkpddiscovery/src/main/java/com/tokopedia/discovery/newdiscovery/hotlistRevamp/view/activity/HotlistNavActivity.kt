@@ -154,7 +154,7 @@ class HotlistNavActivity : BaseActivity(),
 
     private fun initBottomSheetListener() {
         bottomSheetFilterView?.setCallback(object : BottomSheetFilterView.Callback {
-            override fun onApplyFilter(filterParameter: Map<String, String>) {
+            override fun onApplyFilter(filterParameter: Map<String, String>?) {
                 applyFilter(filterParameter)
             }
 
@@ -245,7 +245,9 @@ class HotlistNavActivity : BaseActivity(),
     }
 
 
-    private fun applyFilter(filterParameter: Map<String, String>) {
+    private fun applyFilter(filterParameter: Map<String, String>?) {
+
+        if (filterParameter == null) return;
 
         val presentFilterList = hotlistFragment.getSelectedFilter()
         if (presentFilterList.size < filterParameter.size) {
@@ -282,7 +284,7 @@ class HotlistNavActivity : BaseActivity(),
     }
 
 
-    override fun loadFilterItems(filters: ArrayList<Filter>?, searchParameter: MutableMap<String, String>?) {
+    override fun loadFilterItems(filters: ArrayList<Filter>?, searchParameter: Map<String, String>?) {
         bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
     }
 
