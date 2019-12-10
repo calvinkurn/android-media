@@ -1,10 +1,9 @@
 package com.tokopedia.flight.bookingV2.presentation.contract
 
 import androidx.annotation.StringRes
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
-import com.tokopedia.flight.booking.view.viewmodel.*
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.*
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel

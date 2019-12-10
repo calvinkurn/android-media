@@ -132,7 +132,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private SwipeToRefresh swipeToRefresh;
     private RecyclerView recyclerView;
     private CreatePostFabView createPostFab;
-    private View footer;
     private PerformanceMonitoring performanceMonitoring;
 
     private PostStatisticBottomSheet postStatisticBottomSheet;
@@ -194,7 +193,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_view);
         createPostFab = view.findViewById(R.id.create_post_fab);
-        footer = view.findViewById(R.id.footer);
         return view;
     }
 
@@ -327,7 +325,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetKolPostDetail(String message) {
-        footer.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(
                 getContext(),
                 getView(),
@@ -655,7 +652,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl) {
+    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl, @NotNull int activityId,
+                              @NotNull String activityName, @NonNull FollowCta followCta) {
         onGoToLink(redirectUrl);
     }
 

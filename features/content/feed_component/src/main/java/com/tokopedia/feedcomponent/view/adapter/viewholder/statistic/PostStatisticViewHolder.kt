@@ -5,8 +5,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.adapter_delegate.BaseViewHolder
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.helper.BaseViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailUiModel
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
