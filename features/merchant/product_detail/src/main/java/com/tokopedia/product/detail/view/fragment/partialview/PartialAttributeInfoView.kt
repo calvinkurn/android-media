@@ -14,11 +14,11 @@ class PartialAttributeInfoView private constructor(private val view: View) {
         fun build(_view: View) = PartialAttributeInfoView(_view)
     }
 
-    fun renderData(countView: Int, txStats: TxStats) {
+    fun renderData(countView: Int, txStats: TxStats? = null) {
         with(view) {
             txt_seen.text = countView.thousandFormatted()
             txt_tx_success.text = context.getString(R.string.template_success_rate,
-                    txStats.successRate.numberFormatted(), txStats.sold.thousandFormatted())
+                    txStats?.successRate?.numberFormatted(), txStats?.sold?.thousandFormatted())
             visible()
         }
     }

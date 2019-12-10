@@ -59,8 +59,9 @@ object ProductDetailConstant {
     const val PDP_P3_TRACE = "mp_pdp_p3"
 
     //PAYLOADS
-    const val PAYLOADS_WISHLIST = 1
-    const val PAYLOADS_COD = 2
+    const val PAYLOAD_WISHLIST = 1
+    const val PAYLOAD_COD = 2
+    const val PAYLOAD_TRADEIN = 3
 
     //Request Code
     const val REQUEST_CODE_TALK_PRODUCT = 1
@@ -75,5 +76,25 @@ object ProductDetailConstant {
     const val REQUEST_CODE_REPORT = 570
     const val REQUEST_CODE_SHOP_INFO = 998
 
+    //Mapper
+    const val SOCIAL_PROOF = "social_proof"
+    const val PRODUCT_SNAPSHOT = "product_snapshot"
+    const val SHOP_INFO = "shop_info"
+    const val PRODUCT_INFO = "product_info"
+    const val DISCUSSION = "discussion"
+    const val IMAGE_REVIEW = "image_review"
+    const val MOST_HELPFUL_REVIEW = "most_helpful_review"
+    const val TRADE_IN = "trade_in"
+    const val SHOP_VOUCHER = "shop_voucher"
+    const val PRODUCT_LIST = "product_list"
+    const val PDP_1 = "pdp_1"
+    const val PDP_2 = "pdp_2"
+    const val PDP_3 = "pdp_3"
+    const val PDP_4 = "pdp_4"
+    const val PRODUCT_LAST_SEEN = "product_last_seen"
+    const val PRODUCT_VARIANT_INFO = "variant"
+    const val PRODUCT_WHOLESALE_INFO = "wholesale"
+    const val PRODUCT_INSTALLMENT_INFO = "installment_info"
+    const val PRODUCT_SHIPPING_INFO = "shipping_info"
 
 }

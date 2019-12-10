@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.fragment.partialview.PartialSnapshotView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_pdp_snapshot.view.*
@@ -39,7 +40,6 @@ class ProductSnapshotViewHolder(private val view: View,
                     header.updateStockAndPriceWarehouse(nearestWarehouse, it.data.campaign)
             }
             renderValueProposition(it.data.isOS)
-
         }
 
         renderWishlist(element.isAllowManage, element.isWishlisted)
@@ -49,8 +49,8 @@ class ProductSnapshotViewHolder(private val view: View,
             element.shouldReinitVideoPicture = false
         }
 
-        header.renderCod(element.shouldShowCod)
-        header.renderTradein(element.shouldShowTradein)
+        renderCod(element.shouldShowCod)
+        renderTradein(element.shouldShowTradein)
 
         view.tv_trade_in_promo.setOnClickListener {
             listener.txtTradeinClicked(adapterPosition)
@@ -73,28 +73,6 @@ class ProductSnapshotViewHolder(private val view: View,
             }
 
         })
-
-
-    }
-
-    private fun renderValueProposition(isOfficialStore: Boolean) {
-        if (isOfficialStore) {
-            view.layout_value_proposition.show()
-            view.container_ori.setOnClickListener {
-                listener.onValuePropositionClicked(R.id.container_ori)
-            }
-
-            view.container_guarantee_7_days.setOnClickListener {
-                listener.onValuePropositionClicked(R.id.container_guarantee_7_days)
-            }
-
-            view.container_ready.setOnClickListener {
-                listener.onValuePropositionClicked(R.id.container_ready)
-            }
-
-        } else {
-            view.layout_value_proposition.hide()
-        }
     }
 
     override fun bind(element: ProductSnapshotDataModel?, payloads: MutableList<Any>) {
@@ -102,15 +80,23 @@ class ProductSnapshotViewHolder(private val view: View,
         if (element == null || payloads.isEmpty()) {
             return
         }
+
         when (payloads[0] as Int) {
-            1 -> renderWishlist(element.isAllowManage, element.isWishlisted)
-            2 -> renderCod(element.shouldShowCod)
+            ProductDetailConstant.PAYLOAD_WISHLIST -> renderWishlist(element.isAllowManage, element.isWishlisted)
+            ProductDetailConstant.PAYLOAD_COD -> renderCod(element.shouldShowCod)
+            ProductDetailConstant.PAYLOAD_TRADEIN -> renderTradein(element.shouldShowTradein)
         }
     }
 
     private fun renderCod(shouldShowCod: Boolean) {
         if (::header.isInitialized) {
             header.renderCod(shouldShowCod)
+        }
+    }
+
+    private fun renderTradein(shouldShowTradein: Boolean) {
+        if (::header.isInitialized) {
+            header.renderTradein(shouldShowTradein)
         }
     }
 
@@ -141,4 +127,24 @@ class ProductSnapshotViewHolder(private val view: View,
         }
     }
 
+
+    private fun renderValueProposition(isOfficialStore: Boolean) {
+        if (isOfficialStore) {
+            view.layout_value_proposition.show()
+            view.container_ori.setOnClickListener {
+                listener.onValuePropositionClicked(R.id.container_ori)
+            }
+
+            view.container_guarantee_7_days.setOnClickListener {
+                listener.onValuePropositionClicked(R.id.container_guarantee_7_days)
+            }
+
+            view.container_ready.setOnClickListener {
+                listener.onValuePropositionClicked(R.id.container_ready)
+            }
+
+        } else {
+            view.layout_value_proposition.hide()
+        }
+    }
 }

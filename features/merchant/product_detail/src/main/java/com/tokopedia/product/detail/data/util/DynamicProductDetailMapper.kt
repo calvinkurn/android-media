@@ -46,6 +46,9 @@ object DynamicProductDetailMapper {
                 "shop_voucher" -> {
                     listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
                 }
+                "separator" -> {
+                    listOfComponent.add(SeparatorDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
@@ -107,8 +110,6 @@ object DynamicProductDetailMapper {
                     wholesale = wholesaleCopy,
                     preOrder = newData.preorder,
                     name = newData.basic.name
-
-
             )
         }
     }

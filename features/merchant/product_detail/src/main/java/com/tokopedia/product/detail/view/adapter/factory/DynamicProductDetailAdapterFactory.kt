@@ -18,5 +18,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductRecommendationDataModel): Int
     fun type(data: ProductOpenShopDataModel): Int
     fun type(data: ProductLastSeenDataModel): Int
+    fun type(data: SeparatorDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

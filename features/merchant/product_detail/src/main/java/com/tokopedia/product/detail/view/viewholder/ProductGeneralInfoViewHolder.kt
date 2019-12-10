@@ -3,7 +3,9 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -27,6 +29,11 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
                 }
             }
 
+            if (element.isApplink) {
+                view.pdp_arrow_right.visible()
+            } else {
+                view.pdp_arrow_right.gone()
+            }
         }
     }
 }

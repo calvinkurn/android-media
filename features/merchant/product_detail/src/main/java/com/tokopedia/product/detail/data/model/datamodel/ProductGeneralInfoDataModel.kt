@@ -9,7 +9,8 @@ data class ProductGeneralInfoDataModel(
         val name: String = "",
         var title: String = "",
         var applink: String = "",
-        var description: String = ""
+        var description: String = "",
+        var isApplink:Boolean = true
 ) : DynamicPDPDataModel {
 
     override fun name(): String = name

@@ -17,13 +17,13 @@ import com.tokopedia.product.detail.view.adapter.MostHelpfulReviewAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.PaddingItemDecoration
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
-import kotlinx.android.synthetic.main.partial_most_helpful_review_view.view.*
+import kotlinx.android.synthetic.main.item_dynamic_mosthelpful_review.view.*
 
 class ProductMostHelpfulReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
         AbstractViewHolder<ProductMostHelpfulReviewDataModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.partial_most_helpful_review_view
+        val LAYOUT = R.layout.item_dynamic_mosthelpful_review
         private const val FULL_SPAN = 1
         private const val TWO_SPAN = 2
     }
@@ -42,37 +42,35 @@ class ProductMostHelpfulReviewViewHolder(val view: View, val listener: DynamicPr
                 val reviewData = reviews.first()
                 val imageData = if (reviewData.imageAttachments.size > 3) reviewData.imageAttachments.take(3) else reviewData.imageAttachments
                 if (!reviewData.likeDislike.isShowable) {
-                    txt_thumb_like.hide()
-                    txt_like_static.hide()
+                    txt_thumb_like_pdp.hide()
+                    txt_like_static_pdp.hide()
                 } else {
-                    txt_thumb_like.text = view.context.getString(R.string.review_like_pattern, reviewData.likeDislike.totalLike)
-                    txt_thumb_like.show()
-                    txt_like_static.show()
+                    txt_thumb_like_pdp.text = view.context.getString(R.string.review_like_pattern, reviewData.likeDislike.totalLike)
+                    txt_thumb_like_pdp.show()
+                    txt_like_static_pdp.show()
                 }
 
                 if (reviews.first().productVariantReview.variantTitle.isNotEmpty()) {
-                    txt_variant_review.show()
-                    txt_variant_review.text = reviews.first().productVariantReview.variantTitle
+                    txt_variant_review_pdp.show()
+                    txt_variant_review_pdp.text = reviews.first().productVariantReview.variantTitle
                 } else {
-                    txt_variant_review.hide()
+                    txt_variant_review_pdp.hide()
                 }
 
-                rating_review.setImageDrawable(ContextCompat.getDrawable(view.context,
+                rating_review_pdp.setImageDrawable(ContextCompat.getDrawable(view.context,
                         RatingView.getRatingDrawable(reviewData.productRating)))
-                txt_date_user.text = MethodChecker.fromHtml(
+                txt_date_user_pdp.text = MethodChecker.fromHtml(
                         view.context.getString(R.string.date_review_pattern, reviewData.reviewCreateTime, "<b>" + reviewData.user.fullName + "</b>"))
-                txt_desc_review.maxLines = 4
-                txt_desc_review.text = ProductDetailUtil.reviewDescFormatter(reviewData.message)
+                txt_desc_review_pdp.maxLines = 4
+                txt_desc_review_pdp.text = ProductDetailUtil.reviewDescFormatter(reviewData.message)
 
-                txt_desc_review.setOnClickListener {
-                    txt_desc_review.maxLines = Integer.MAX_VALUE
-                    txt_desc_review.text = reviews.first().message
+                txt_desc_review_pdp.setOnClickListener {
+                    txt_desc_review_pdp.maxLines = Integer.MAX_VALUE
+                    txt_desc_review_pdp.text = reviews.first().message
                 }
 
                 val moreItemCount = if (reviewData.imageAttachments.size > 3) reviewData.imageAttachments.size - 3 else 0
-
-
-                rv_review.run {
+                rv_review_pdp.run {
                     setHasFixedSize(true)
                     layoutManager = StaggeredGridLayoutManager(if (reviewData.imageAttachments.size == 1) FULL_SPAN else TWO_SPAN, GridLayoutManager.VERTICAL)
                     addItemDecoration(PaddingItemDecoration())

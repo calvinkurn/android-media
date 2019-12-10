@@ -37,7 +37,7 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
         //TO-DO RENDER FROM STATS MODEL
         productStatsView.renderData(0, 0, listener::onReviewClick, listener::onDiscussionClicked)
         //TO-DO RENDER FROM STATS MODEL
-//        attributeInfoView.renderData(this)
+        attributeInfoView.renderData(0)
 
 
         productStatsView.renderClickShipping {

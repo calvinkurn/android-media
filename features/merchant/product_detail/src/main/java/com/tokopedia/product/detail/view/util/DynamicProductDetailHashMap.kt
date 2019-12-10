@@ -9,77 +9,57 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 class DynamicProductDetailHashMap(private val context: Context, private val mapOfData: Map<String, DynamicPDPDataModel>) {
 
-    companion object {
-        private const val SOCIAL_PROOF = "social_proof"
-        private const val PRODUCT_SNAPSHOT = "product_snapshot"
-        private const val SHOP_INFO = "shop_info"
-        private const val PRODUCT_INFO = "product_info"
-        private const val DISCUSSION = "discussion"
-        private const val IMAGE_REVIEW = "image_review"
-        private const val MOST_HELPFUL_REVIEW = "most_helpful_review"
-        private const val TRADE_IN = "trade_in"
-        private const val SHOP_VOUCHER = "shop_voucher"
-        private const val PRODUCT_LIST = "product_list"
-        private const val TOP_ADS_LAIN = "top_ads_lain"
-        private const val TOP_ADS_SUKA = "top_ads_suka"
-        private const val TOP_ADS_BERSAMA = "top_ads_bersama"
-        private const val TOP_ADS_PENCARIAN = "top_ads_pencarian"
-        private const val PRODUCT_LAST_SEEN = "product_last_seen"
-        private const val PRODUCT_VARIANT_INFO = "variant"
-        private const val PRODUCT_WHOLESALE_INFO = "wholesale"
-        private const val PRODUCT_INSTALLMENT_INFO = "cicilan_info"
-        private const val PRODUCT_SHIPPING_INFO = "shipping_info"
-    }
-
     val socialProofMap: ProductSocialProofDataModel?
-        get() = mapOfData[SOCIAL_PROOF] as? ProductSocialProofDataModel
+        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF] as? ProductSocialProofDataModel
 
     val snapShotMap: ProductSnapshotDataModel
-        get() = mapOfData[PRODUCT_SNAPSHOT] as ProductSnapshotDataModel
+        get() = mapOfData[ProductDetailConstant.PRODUCT_SNAPSHOT] as ProductSnapshotDataModel
 
     val shopInfoMap: ProductShopInfoDataModel?
-        get() = mapOfData[SHOP_INFO] as? ProductShopInfoDataModel
+        get() = mapOfData[ProductDetailConstant.SHOP_INFO] as? ProductShopInfoDataModel
 
     val productInfoMap: ProductInfoDataModel?
-        get() = mapOfData[PRODUCT_INFO] as? ProductInfoDataModel
+        get() = mapOfData[ProductDetailConstant.PRODUCT_INFO] as? ProductInfoDataModel
 
     val productDiscussionMap: ProductDiscussionDataModel?
-        get() = mapOfData[DISCUSSION] as? ProductDiscussionDataModel
+        get() = mapOfData[ProductDetailConstant.DISCUSSION] as? ProductDiscussionDataModel
 
     val productImageReviewMap: ProductImageReviewDataModel?
-        get() = mapOfData[IMAGE_REVIEW] as? ProductImageReviewDataModel
+        get() = mapOfData[ProductDetailConstant.IMAGE_REVIEW] as? ProductImageReviewDataModel
 
     val productMostHelpfulMap: ProductMostHelpfulReviewDataModel?
-        get() = mapOfData[MOST_HELPFUL_REVIEW] as? ProductMostHelpfulReviewDataModel
+        get() = mapOfData[ProductDetailConstant.MOST_HELPFUL_REVIEW] as? ProductMostHelpfulReviewDataModel
 
     val productTradeinMap: ProductTradeinDataModel?
-        get() = mapOfData[TRADE_IN] as? ProductTradeinDataModel
+        get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductTradeinDataModel
 
     val productMerchantVoucherMap: ProductMerchantVoucherDataModel?
-        get() = mapOfData[SHOP_VOUCHER] as? ProductMerchantVoucherDataModel
+        get() = mapOfData[ProductDetailConstant.SHOP_VOUCHER] as? ProductMerchantVoucherDataModel
 
     val productLastSeenMap: ProductLastSeenDataModel?
-        get() = mapOfData[PRODUCT_LAST_SEEN] as? ProductLastSeenDataModel
+        get() = mapOfData[ProductDetailConstant.PRODUCT_LAST_SEEN] as? ProductLastSeenDataModel
 
     val productVariantInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[PRODUCT_VARIANT_INFO] as? ProductGeneralInfoDataModel
+        get() = mapOfData[ProductDetailConstant.PRODUCT_VARIANT_INFO] as? ProductGeneralInfoDataModel
 
     val productWholesaleInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[PRODUCT_WHOLESALE_INFO] as? ProductGeneralInfoDataModel
+        get() = mapOfData[ProductDetailConstant.PRODUCT_WHOLESALE_INFO] as? ProductGeneralInfoDataModel
 
     val productInstallmentInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[PRODUCT_INSTALLMENT_INFO] as? ProductGeneralInfoDataModel
+        get() = mapOfData[ProductDetailConstant.PRODUCT_INSTALLMENT_INFO] as? ProductGeneralInfoDataModel
 
     val productShipingInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[PRODUCT_SHIPPING_INFO] as? ProductGeneralInfoDataModel
+        get() = mapOfData[ProductDetailConstant.PRODUCT_SHIPPING_INFO] as? ProductGeneralInfoDataModel
 
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
-        it == TOP_ADS_LAIN || it == TOP_ADS_BERSAMA || it == TOP_ADS_PENCARIAN || it == TOP_ADS_SUKA
+        it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
+                || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
     }.map {
         it.value as ProductRecommendationDataModel
     }
@@ -174,22 +154,22 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         listProductRecomMap?.run {
             forEach {
                 when (it.name) {
-                    TOP_ADS_SUKA -> {
+                    ProductDetailConstant.PDP_1 -> {
                         data.getOrNull(0)?.let { recom ->
                             it.recomWidgetData = recom
                         }
                     }
-                    TOP_ADS_PENCARIAN -> {
+                    ProductDetailConstant.PDP_2 -> {
                         data.getOrNull(1)?.let { recom ->
                             it.recomWidgetData = recom
                         }
                     }
-                    TOP_ADS_BERSAMA -> {
+                    ProductDetailConstant.PDP_3 -> {
                         data.getOrNull(2)?.let { recom ->
                             it.recomWidgetData = recom
                         }
                     }
-                    TOP_ADS_LAIN -> {
+                    ProductDetailConstant.PDP_4 -> {
                         data.getOrNull(3)?.let { recom ->
                             it.recomWidgetData = recom
                         }

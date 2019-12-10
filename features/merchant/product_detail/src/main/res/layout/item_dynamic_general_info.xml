@@ -43,21 +43,25 @@
         app:typographyWeight="bold"
         tools:text="Varian Produk"
         android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:textColor="@color/charcoal_grey_88"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_info_desc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/pdp_icon"
-        app:layout_constraintTop_toBottomOf="@+id/pdp_info_title"
-        app:layout_constraintStart_toStartOf="@+id/pdp_info_title"
-        app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:typographyType="body_2"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:layout_marginTop="@dimen/dp_4"
-        tools:text="Pilih warna dan ukuran" />
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
+        app:layout_constraintStart_toEndOf="@+id/pdp_icon"
+        app:layout_constraintStart_toStartOf="@+id/pdp_info_title"
+        app:layout_constraintTop_toBottomOf="@+id/pdp_info_title"
+        app:typographyType="body_2"
+        tools:text="Pilih warna dan ukuran"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

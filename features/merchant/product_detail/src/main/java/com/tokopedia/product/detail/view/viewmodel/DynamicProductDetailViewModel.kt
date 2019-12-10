@@ -426,8 +426,9 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                 return@forEachIndexed
             }
         }
-        val wholesaleData = initialLayoutData.toMutableList().removeAt(wholesalePosition)
-        initialLayoutData.remove(wholesaleData)
+        if (wholesalePosition != -1)
+            initialLayoutData.remove(initialLayoutData.toMutableList().removeAt(wholesalePosition))
+
     }
 
     private fun removeTradein(initialLayoutData: MutableList<DynamicPDPDataModel>) {
@@ -438,8 +439,8 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                 return@forEachIndexed
             }
         }
-        val tradeinData = initialLayoutData.toMutableList().removeAt(tradeInPosition)
-        initialLayoutData.remove(tradeinData)
+        if (tradeInPosition != -1)
+            initialLayoutData.remove(initialLayoutData.toMutableList().removeAt(tradeInPosition))
     }
 
     private fun mapSelectedProductVariants(userInputVariant: String?): ArrayMap<String, ArrayMap<String, String>>? {

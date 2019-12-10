@@ -45,7 +45,8 @@ class ProductInfoViewHolder(private val view: View,
             }
 
             val bottomData = data.find { it.row == "bottom" } ?: return
-            renderDescriptionData(bottomData.listOfContent, element.shopName, element.dynamicProductInfoP1 ?: DynamicProductInfoP1(),
+            renderDescriptionData(bottomData.listOfContent, element.shopName, element.dynamicProductInfoP1
+                    ?: DynamicProductInfoP1(),
                     element.productSpecification ?: ProductSpecificationResponse())
         }
     }
@@ -56,9 +57,11 @@ class ProductInfoViewHolder(private val view: View,
             if (productInfo.data.videos.isNotEmpty()) {
                 view.youtube_scroll.layoutManager = LinearLayoutManager(context,
                         LinearLayoutManager.HORIZONTAL, false)
-                view.youtube_scroll.addItemDecoration(SpaceItemDecoration(context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
-                        ?: 0,
-                        LinearLayoutManager.HORIZONTAL))
+
+                if (view.youtube_scroll.itemDecorationCount == 0)
+                    view.youtube_scroll.addItemDecoration(SpaceItemDecoration(context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
+                            ?: 0, LinearLayoutManager.HORIZONTAL))
+
                 view.youtube_scroll.visible()
                 view.youtube_scroll.adapter = YoutubeThumbnailAdapter(productInfo.data.videos.toMutableList()) { _, index ->
                     productInfo.data.videos.run { listener.gotoVideoPlayer(this, index) }

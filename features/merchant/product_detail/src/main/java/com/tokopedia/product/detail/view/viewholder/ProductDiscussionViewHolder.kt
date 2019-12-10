@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.partial_product_latest_talk.view.*
 class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductDiscussionDataModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.partial_product_latest_talk
+        val LAYOUT = R.layout.item_dynamic_discussion
     }
 
     override fun bind(element: ProductDiscussionDataModel) {
