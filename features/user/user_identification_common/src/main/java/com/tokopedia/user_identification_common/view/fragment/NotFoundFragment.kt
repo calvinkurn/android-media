@@ -15,6 +15,15 @@ class NotFoundFragment : Fragment() {
 
     private lateinit var globalError: GlobalError
 
+    companion object {
+        fun createInstance(): Fragment {
+            val fragment = NotFoundFragment()
+            val args = Bundle()
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.layout_not_found, container, false)
