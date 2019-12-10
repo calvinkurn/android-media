@@ -124,6 +124,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -497,7 +498,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onPause() {
         super.onPause();
         getPlayer().setPlayWhenReady(false);
-        getPlayer().getPlaybackState();
 
         trackingQueue.sendAll();
         if (activityStateListener != null) {
@@ -508,7 +508,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDestroy() {
         super.onDestroy();
-        TokopediaPlayManager.Companion.getInstance(getContext()).releasePlayer();
         presenter.onDestroy();
         presenter.detachView();
         homeRecyclerView.setAdapter(null);
@@ -1729,70 +1728,84 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void playVideo(boolean isEndOfList){
-        int targetPosition;
+        int targetPosition = -1;
 
+        int startPosition = ((LinearLayoutManager) Objects.requireNonNull(
+                homeRecyclerView.getLayoutManager())).findFirstCompletelyVisibleItemPosition();
+        int endPosition = ((LinearLayoutManager) homeRecyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
         if(!isEndOfList){
-            LinearLayoutManagerWithSmoothScroller layoutManager = ((LinearLayoutManagerWithSmoothScroller) homeRecyclerView.getLayoutManager());
-            int startVisible = layoutManager.findFirstVisibleItemPosition();
-            int endVisible = layoutManager.findLastVisibleItemPosition();
-            int startPosition = startVisible;
-            int endPosition = endVisible;
-
-            // if there is more than 2 list-items on the screen, set the difference to be 1
-            if (endPosition - startPosition > 1) {
-                endPosition = startPosition + 1;
+            List<Integer> playPosition = new ArrayList<>();
+            for(int i = startPosition; i <= endPosition; i++){
+                if(adapter.getItemCount() >= endPosition && adapter.getItem(i) instanceof PlayCardViewModel){
+                    playPosition.add(i);
+                }
             }
+            // doesn't item visible
+            if(!playPosition.isEmpty()) {
 
-            // something is wrong. return.
-            if (startPosition < 0 || endPosition < 0 || !(adapter.getItem(startPosition) instanceof PlayCardViewModel) || !(adapter.getItem(endPosition) instanceof PlayCardViewModel) ) {
-                return;
+                // if there is more than 2 list-items on the screen, set the difference to be 1
+                if (endPosition - startPosition > 1 && playPosition.size() > 1) {
+                    endPosition = startPosition + 1;
+                }
+
+                // something is wrong. return.
+                if (startPosition < 0 || endPosition < 0) {
+                    return;
+                }
+
+                // if there is more than 1 list-item on the screen
+                if (startPosition != endPosition && playPosition.size() > 1) {
+                    int startPositionVideoHeight = getVisibleVideoSurfaceHeight(playPosition.get(0));
+                    int endPositionVideoHeight = getVisibleVideoSurfaceHeight(playPosition.get(playPosition.size() - 1));
+
+                    targetPosition = startPositionVideoHeight > endPositionVideoHeight ? playPosition.get(0) : playPosition.get(playPosition.size() - 1);
+                } else {
+                    targetPosition = playPosition.get(0);
+                }
             }
-
-            // if there is more than 1 list-item on the screen
-            if (startPosition != endPosition) {
-                int startPositionVideoHeight = getVisibleVideoSurfaceHeight(startPosition);
-                int endPositionVideoHeight = getVisibleVideoSurfaceHeight(endPosition);
-
-                targetPosition = startPositionVideoHeight > endPositionVideoHeight ? startPosition : endPosition;
-            }
-            else {
-                targetPosition = startPosition;
-            }
-        }
-        else{
-            targetPosition = adapter.getItemCount() - 1;
-        }
-
-        Timber.tag(HomeFragment.class.getName()).d(TAG, "playVideo: target position: " + targetPosition);
-
-        // video is already playing so return
-        if (targetPosition == playPosition) {
-            return;
+        } else {
+            if(adapter.getItem(adapter.getItemCount() - 1) instanceof PlayCardViewModel) targetPosition = adapter.getItemCount() - 1;
+            else targetPosition = -1;
         }
 
-        // set the position of the list-item that is to be played
-        playPosition = targetPosition;
-        if (playerView == null) {
-            return;
-        }
+        Timber.tag(HomeFragment.class.getName()).d("playVideo: target position: " + targetPosition);
 
         // remove any old surface views from previously playing videos
-        playerView.setVisibility(INVISIBLE);
-
-        int currentPosition = targetPosition - ((LinearLayoutManagerWithSmoothScroller) homeRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
-
-        View child = homeRecyclerView.getChildAt(currentPosition);
-        if (child == null) {
-            return;
-        }
-        PlayCardViewHolder holder = (PlayCardViewHolder) child.getTag();
-        if (holder == null) {
+        if(playPosition != -1 && playPosition < startPosition || playPosition > endPosition){
             playPosition = -1;
+            View child = homeRecyclerView.getChildAt(playPosition);
+            if (child == null) {
+                return;
+            }
+            PlayCardViewHolder holder = (PlayCardViewHolder) child.getTag();
+            holder.reset();
+            TokopediaPlayManager.Companion.getInstance(getContext()).stop();
+        }
+
+        // video is already playing so return
+        if (targetPosition == playPosition || targetPosition == -1) {
             return;
         }
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("play", true);
-        adapter.notifyItemChanged(currentPosition, bundle);
+
+        if(adapter.getItem(targetPosition) instanceof PlayCardViewModel){
+            PlayCardViewModel model = (PlayCardViewModel) adapter.getItem(targetPosition);
+            // set the position of the list-item that is to be played
+            playPosition = targetPosition;
+
+            int currentPosition = targetPosition - ((LinearLayoutManagerWithSmoothScroller) homeRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+
+            View child = homeRecyclerView.getChildAt(currentPosition);
+            if (child == null) {
+                return;
+            }
+            PlayCardViewHolder holder = (PlayCardViewHolder) child.getTag();
+            if (holder == null) {
+                playPosition = -1;
+                return;
+            }
+            TokopediaPlayManager.Companion.getInstance(getContext()).playVideoWithString(model.getUrl());
+            TokopediaPlayManager.Companion.getInstance(getContext()).start();
+        }
     }
 
 
@@ -1806,9 +1819,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         Point point = new Point();
         display.getSize(point);
-        StaggeredGridLayoutManager layoutManager = ((StaggeredGridLayoutManager) homeRecyclerView.getLayoutManager());
-        int[] startPos = layoutManager.findFirstVisibleItemPositions(null);
-        int at = playPosition - startPos.length > 0 ? startPos[0] : -1;
+        LinearLayoutManager layoutManager = ((LinearLayoutManager) homeRecyclerView.getLayoutManager());
+        int startPos = Objects.requireNonNull(layoutManager).findFirstCompletelyVisibleItemPosition();
+        int at = playPosition - startPos;
         Log.d(HomeFragment.class.getName(), "getVisibleVideoSurfaceHeight: at: " + at);
 
         View child = homeRecyclerView.getChildAt(at);
@@ -1825,8 +1838,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             return point.y - location[1];
         }
     }
-
-
 
     @NotNull
     @Override
@@ -1850,7 +1861,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         listener.onBuffering();
                         break;
                     case Player.STATE_ENDED:
-                        listener.stopVideo();
+                        listener.resetVideo();
                         break;
                     case Player.STATE_READY:
                         listener.playVideo();

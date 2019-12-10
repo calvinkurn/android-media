@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -61,6 +62,12 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
         if (visitables.get(position) instanceof HomeRecommendationFeedViewModel) {
             ((HomeRecommendationFeedViewModel) visitables.get(position)).setNewData(false);
         }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if(!payloads.isEmpty()) holder.bind(visitables.get(position), payloads);
+        else super.onBindViewHolder(holder, position, payloads);
     }
 
     @Override

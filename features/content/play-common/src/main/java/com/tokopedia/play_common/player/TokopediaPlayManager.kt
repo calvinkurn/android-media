@@ -49,6 +49,25 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
         videoPlayer.prepare(mediaSource, true, true)
     }
 
+    fun stop(){
+        videoPlayer.stop(true)
+        videoPlayer.playbackState
+    }
+
+    fun pause(){
+        videoPlayer.playWhenReady = false
+        videoPlayer.playbackState
+    }
+
+    fun start(){
+        videoPlayer.playWhenReady = true
+        videoPlayer.playbackState
+    }
+
+    fun reset(){
+        videoPlayer.seekTo(0)
+    }
+
     fun playVideoWithString(uriString: String) = playVideoWithUri(Uri.parse(uriString))
     //endregion
 
@@ -65,7 +84,6 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
             is Rtmp -> RtmpDataSourceFactory()
         }
     }
-    //endregion
 
     fun releasePlayer() {
         videoPlayer.release()
