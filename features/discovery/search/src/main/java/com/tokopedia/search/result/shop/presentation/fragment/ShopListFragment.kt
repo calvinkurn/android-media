@@ -360,7 +360,7 @@ internal class ShopListFragment:
                 searchShopViewModel?.onViewApplyFilter(queryParams)
             }
 
-            override fun onSortResult(selectedSort: Map<String, String>, selectedSortName: String, autoApplyFilter: String) { }
+            override fun onSortResult(selectedSort: Map<String, String>?, selectedSortName: String?, autoApplyFilter: String?) { }
         })
     }
 
@@ -443,7 +443,7 @@ internal class ShopListFragment:
         return searchShopViewModel?.getUserId() ?: ""
     }
 
-    override fun getSelectedFilterAsOptionList(): MutableList<Option> {
+    override fun getSelectedFilterAsOptionList(): List<Option> {
         val activeFilterOptionList = searchShopViewModel?.getActiveFilterOptionListForEmptySearch() ?: return mutableListOf()
 
         return OptionHelper.combinePriceFilterIfExists(
