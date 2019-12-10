@@ -39,7 +39,7 @@ class UpdateAndReloadCartUseCase @Inject constructor(private val cartRepository:
     }
 
     companion object {
-        val PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART = "PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART"
-        val PARAM_CARTS = "carts"
+        const val PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART = "PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART"
+        const val PARAM_CARTS = "carts"
     }
 }

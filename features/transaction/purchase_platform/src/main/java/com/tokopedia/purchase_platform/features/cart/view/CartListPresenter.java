@@ -574,10 +574,10 @@ public class CartListPresenter implements ICartListPresenter {
             updateCartRequestList.add(updateCartRequest);
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put(UpdateAndReloadCartUseCase.Companion.getPARAM_CARTS(), new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(UpdateAndReloadCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(UpdateAndReloadCartUseCase.Companion.getPARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART(),
+        requestParams.putObject(UpdateAndReloadCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
                 view.getGeneratedAuthParamNetwork(paramUpdate));
 
         compositeSubscription.add(
