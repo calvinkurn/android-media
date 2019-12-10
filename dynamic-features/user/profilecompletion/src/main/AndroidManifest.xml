@@ -3,7 +3,6 @@
     package="com.tokopedia.profilecompletion.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_module_setting_profile">
         <dist:fusing dist:include="true" />

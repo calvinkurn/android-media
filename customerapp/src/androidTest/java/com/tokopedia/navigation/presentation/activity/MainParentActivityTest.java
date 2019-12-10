@@ -41,7 +41,6 @@ import com.tokopedia.home.account.di.component.TestAccountHomeComponent;
 import com.tokopedia.home.account.di.module.TestAccountHomeModule;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
-import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;

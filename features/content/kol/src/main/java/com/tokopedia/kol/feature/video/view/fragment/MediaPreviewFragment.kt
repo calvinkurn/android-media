@@ -333,6 +333,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     private fun onHeaderClicked(header: Header) {
         feedAnalyticTracker.eventMediaDetailClickAvatar(mediaPreviewViewModel.postId)
+        feedAnalyticTracker.eventClickMediaPreviewAvatar(mediaPreviewViewModel.postId, header.followCta.authorType)
         RouteManager.route(activity, header.avatarApplink)
     }
 

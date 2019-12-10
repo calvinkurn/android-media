@@ -50,6 +50,13 @@
 
     </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/grey_shadow"
+        app:layout_constraintBottom_toTopOf="@id/rl_btn_detail"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_detail"
         android:layout_width="match_parent"

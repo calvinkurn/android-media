@@ -3,7 +3,6 @@
     package="com.tokopedia.contactus.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_module_contact_us">
         <dist:fusing dist:include="true" />
