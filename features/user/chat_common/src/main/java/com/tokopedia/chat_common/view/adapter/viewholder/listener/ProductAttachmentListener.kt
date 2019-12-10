@@ -1,5 +1,6 @@
 package com.tokopedia.chat_common.view.adapter.viewholder.listener
 
+import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 
 /**
@@ -10,5 +11,5 @@ interface ProductAttachmentListener {
     fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel)
     fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel)
     fun trackSeenProduct(element: ProductAttachmentViewModel)
-    fun onClickBannedProduct(liteUrl: String)
+    fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel)
 }

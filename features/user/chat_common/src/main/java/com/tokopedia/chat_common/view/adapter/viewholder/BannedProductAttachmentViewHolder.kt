@@ -43,8 +43,7 @@ class BannedProductAttachmentViewHolder(itemView: View?, val listener: ProductAt
     }
 
     private fun bindSeamlessRedirect(viewModel: BannedProductAttachmentViewModel) {
-        val liteUrl = viewModel.playStoreData.redirectUrl
-        btnBuy?.setOnClickListener { listener.onClickBannedProduct(liteUrl) }
+        btnBuy?.setOnClickListener { listener.onClickBannedProduct(viewModel) }
     }
 
     private fun setAlignment(viewModel: BannedProductAttachmentViewModel) {

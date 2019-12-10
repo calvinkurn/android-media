@@ -4,6 +4,7 @@ package com.tokopedia.topchat.common.analytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
+import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel;
 import com.tokopedia.track.TrackApp;
@@ -87,6 +88,7 @@ public class TopChatAnalytics {
         public static final String CLICK_IMAGE_ATTACHMENT = "click on image on chat";
         public static final String CLICK_INVOICE_ATTACHMENT = "click invoice on chat detail";
         public static final String CLICK_REPORT_USER = "click report user on chat";
+        public static final String CLICK_BANNED_PRODUCT = "click on lanjut browser";
 
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
 
@@ -431,5 +433,15 @@ public class TopChatAnalytics {
         );
     }
 
-
+    // #BP1
+    public void eventClickBannedProduct(@NotNull BannedProductAttachmentViewModel viewModel) {
+        String clientId = TrackApp.getInstance().getGTM().getCachedClientIDString();
+        String eventLabel = viewModel.getProductId() + " - " + clientId;
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_BANNED_PRODUCT,
+                eventLabel
+        );
+    }
 }

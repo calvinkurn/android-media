@@ -866,8 +866,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         pickImageToUpload()
     }
 
-    override fun onClickBannedProduct(liteUrl: String) {
-        presenter.onClickBannedProduct(liteUrl)
+    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {
+        analytics.eventClickBannedProduct(viewModel)
+        presenter.onClickBannedProduct(viewModel.liteUrl)
     }
 
     override fun redirectToBrowser(url: String) {
