@@ -29,7 +29,6 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
     public static final String TAG = ProductManageActivity.class.getSimpleName();
     public UserSessionInterface userSession;
 
-    @DeepLink(ApplinkConst.PRODUCT_MANAGE)
     public static Intent getApplinkIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ProductManageActivity.class)

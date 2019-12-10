@@ -603,7 +603,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             val remoteConfig = FirebaseRemoteConfigImpl(this)
             val installAtLogin = remoteConfig.getBoolean(KEY_REMOTE_CONFIG_INSTALL_DF_AT_LOGIN, false)
             if (!GlobalConfig.isSellerApp() && installAtLogin) {
-                DFInstaller().installOnBackground(application, listOf(DeeplinkDFMapper.DFM_SHOP_SETTINGS_CUSTOMERAPP))
+                DFInstaller().installOnBackground(application, listOf())
             }
         }
     }
