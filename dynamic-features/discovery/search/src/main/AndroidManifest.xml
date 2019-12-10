@@ -3,7 +3,7 @@
     package="com.tokopedia.search.customerapp">
 
     <dist:module
-        dist:onDemand="true"
+        dist:onDemand="false"
         dist:title="@string/title_search_result_module_name">
         <dist:fusing dist:include="true" />
     </dist:module>
