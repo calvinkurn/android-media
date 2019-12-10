@@ -40,6 +40,10 @@ class CategoryPageAnalytics {
     val KEY_PROMOVIEW = "promoView"
     val KEY_EVENT_BANNED_CLICK = "clickCategoryBanned"
     val KEY_EVENT_BANNED_VIEW = "viewCategoryBannedIris"
+    val KEY_PARENT_GROUP_NAME = "parentGroupName"
+    val KEY_PARENT_GROUP_ID = "parentGroupId"
+    val KEY_SUBCATEGORY = "subcategory"
+    val KEY_SUBCATEGORY_ID = "subcategoryId"
 
     val EVENT_NAME_VALUE = "clickCategory"
     val EVENT_CATEGORY_VALUE = "category page"
@@ -420,19 +424,19 @@ class CategoryPageAnalytics {
     }
 
     fun createOpenScreenEventMap(parentId: String?,
-                              parentName: String?,
-                              categoryId: String,
-                              categoryName: String): Map<String, String>? {
+                                 parentName: String?,
+                                 categoryId: String,
+                                 categoryName: String): Map<String, String>? {
         val map = HashMap<String, String>()
-        map["category"] = "category"
-        map["categoryId"] = categoryId
-        map["parentGroupName"] = ""
-        map["parentGroupId"] = ""
-        map["subcategory"] = parentName ?: categoryName
-        map["subcategoryId"] = parentId ?: categoryId
+        map[KEY_CATEGORY] = KEY_CATEGORY
+        map[KEY_CATEGORY_ID] = categoryId
+        map[KEY_PARENT_GROUP_NAME] = ""
+        map[KEY_PARENT_GROUP_ID] = ""
+        map[KEY_SUBCATEGORY] = parentName ?: categoryName
+        map[KEY_SUBCATEGORY_ID] = parentId ?: categoryId
         if (parentId != null) {
-            map["parentGroupName"] = categoryName
-            map["parentGroupId"] = categoryId
+            map[KEY_PARENT_GROUP_NAME] = categoryName
+            map[KEY_PARENT_GROUP_ID] = categoryId
         }
         return map
     }
