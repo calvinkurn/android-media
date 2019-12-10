@@ -146,6 +146,10 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         refreshHandler?.setPullEnabled(true)
         somListItemAdapter = SomListItemAdapter()
         somListItemAdapter.setActionListener(this)
+        addEndlessScrollListener()
+    }
+
+    private fun addEndlessScrollListener() {
         order_list_rv?.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = somListItemAdapter
@@ -419,6 +423,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onRefresh(view: View?) {
+        addEndlessScrollListener()
         onLoadMore = false
         isLoading = true
         somListItemAdapter.removeAll()
