@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
+import com.tokopedia.gamification.cracktoken.util.AnimatorArray;
 import com.tokopedia.gamification.cracktoken.util.BounceBackExponentialInterpolator;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
@@ -71,7 +73,10 @@ public class WidgetCrackResult extends RelativeLayout {
     private ImageView imageViewCrackResult;
     private View backgroundViewCrackResult;
     private LinearLayout containerTextCrackResult;
+    //    private LinearLayout llButton;
     private TextView textCrackResultLabel;
+    private TextView tvRewardsTip;
+    private TextView tvRewardsText;
 
     private LinearLayout listCrackResultText;
     private Typography buttonReturn;
@@ -82,7 +87,7 @@ public class WidgetCrackResult extends RelativeLayout {
     private FrameLayout listCrackResultParent;
     private AnimatorSet counterAnimatorSet;
     private ArrayList<Animator> animationList;
-    private List<TextView> tvTierInfoList;
+//    private List<TextView> tvTierInfoList;
 
     public interface WidgetCrackResultListener {
         void onClickCtaButton(CrackResultEntity crackResult, String titleBtn);
@@ -126,6 +131,10 @@ public class WidgetCrackResult extends RelativeLayout {
         buttonCta = view.findViewById(R.id.button_cta);
         textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
         listCrackResultParent = view.findViewById(R.id.view_list_reward_parent);
+//        llButton = view.findViewById(R.id.ll_button);
+        tvRewardsTip = view.findViewById(R.id.tvRewardsTip);
+
+        animationList = new ArrayList<>();
     }
 
     public void showCrackResult(CrackResultEntity crackResult) {
@@ -147,7 +156,7 @@ public class WidgetCrackResult extends RelativeLayout {
 
         DisplayMetrics metrics = new DisplayMetrics();
         ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
-        float screenHeightQuarter = metrics.heightPixels * (12.0f/100);
+        float screenHeightQuarter = metrics.heightPixels * (12.0f / 100);
         screenHeightQuarter = screenHeightQuarter - actionBarHeight;
 
         final AnimationSet animationCrackResult = new AnimationSet(true);
@@ -221,6 +230,10 @@ public class WidgetCrackResult extends RelativeLayout {
     }
 
     public void showListCrackResultText(List<CrackBenefitEntity> rewardTexts, String labelCrackResult) {
+
+        StringBuilder tempRewardPlaceHolderStrBuilder = new StringBuilder();
+        StringBuilder tempRewardInitialStrBuilder = new StringBuilder();
+
         textCrackResultLabel.setText(labelCrackResult);
         AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
         alphaAnimation.setDuration(DURATION_ALPHA_ANIM_TEXT);
@@ -235,6 +248,52 @@ public class WidgetCrackResult extends RelativeLayout {
             @Override
             public void onAnimationEnd(Animation animation) {
                 int childPosition = 0;
+                if (listCrackResultText.getChildCount() == 1) {
+
+                    CrackBenefitEntity animatedRewardText = null;
+                    View v = listCrackResultText.getChildAt(0);
+                    if (v instanceof TextView) {
+                        TextView textView = (TextView) v;
+                        List<Pair<Integer, Integer>> rewardTextPair = new ArrayList<>();
+                        for (CrackBenefitEntity rewardText : rewardTexts) {
+                            if (!TextUtils.isEmpty(rewardText.getAnimationType())) {
+                                int before = rewardText.getValueBefore();
+                                int after = rewardText.getValueAfter();
+                                rewardTextPair.add(new Pair<>(before, after));
+
+                                animatedRewardText = rewardText;
+                            }
+                        }
+
+                        String placeHolderText = tempRewardPlaceHolderStrBuilder.toString();
+
+                        AnimatorArray animatorArray = new AnimatorArray();
+                        animatorArray.toInt(rewardTextPair, list -> {
+                            String text = String.format(placeHolderText, list.toArray());
+                            textView.setText(text);
+                            return 1;
+                        });
+                        for (ValueAnimator valueAnimator : animatorArray.getAnimatorList()) {
+                            valueAnimator.setDuration(COUNTER_ANIMATION_DURATION);
+                        }
+                        animationList.clear();
+                        animationList.addAll(animatorArray.getAnimatorList());
+
+                        if (animatedRewardText != null) {
+                            float frontWidth = measureFrontTextWidth(textView.getTextSize(),
+                                    String.format(getContext().getString(R.string.rewards_increased_points_front_text), String.valueOf(animatedRewardText.getValueBefore())));
+                            slideAnimationLeftToRight(textView, animatedRewardText, frontWidth);
+                        }
+
+                    }
+
+                    startCounterAnimation(rewardTexts != null ? rewardTexts.size() : 0);
+                }
+
+                if (true) {
+                    return;
+                }
+
                 for (CrackBenefitEntity rewardText : rewardTexts) {
 
                     if (!TextUtils.isEmpty(rewardText.getAnimationType())) {
@@ -276,12 +335,33 @@ public class WidgetCrackResult extends RelativeLayout {
 
             }
         });
+
+
+        TextView textView = new TextView(getContext());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER;
+        int margin = getContext().getResources().getDimensionPixelOffset(R.dimen.dp_20);
+        layoutParams.setMargins(margin, 0, margin, 0);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
+        textView.setMaxLines(2);
+        textView.setLayoutParams(layoutParams);
+
+        int dimenTextSize = convertSize(rewardTexts.get(0).getSize());
+        float textSizeInPx = getContext().getResources().getDimension(R.dimen.gami_text_size_reward);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx);
+
+
         for (CrackBenefitEntity rewardText : rewardTexts) {
-            TextView textView = new TextView(getContext());
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.gravity = Gravity.CENTER;
-            textView.setGravity(Gravity.CENTER);
-            textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
+
+            if (!TextUtils.isEmpty(tempRewardPlaceHolderStrBuilder)) {
+                tempRewardPlaceHolderStrBuilder.append(", ");
+            }
+
+            if (!TextUtils.isEmpty(tempRewardInitialStrBuilder)) {
+                tempRewardInitialStrBuilder.append(", ");
+            }
+
             if (!TextUtils.isEmpty(rewardText.getAnimationType())) {
                 String rewardStr = "";
                 if (!TextUtils.isEmpty(rewardText.getTemplateText())) {
@@ -290,21 +370,25 @@ public class WidgetCrackResult extends RelativeLayout {
                         rewardStr = rewardText.getTemplateText().substring(index + 1);
                     }
                 }
-                textView.setText(String.format(getContext().getString(R.string.rewards_increased_points), String.valueOf(rewardText.getValueBefore()), rewardStr));
+                tempRewardInitialStrBuilder.append(String.format(getContext().getString(R.string.rewards_increased_points), String.valueOf(rewardText.getValueBefore()), rewardStr));
+
+                tempRewardPlaceHolderStrBuilder.append(getContext().getString(R.string.gf_placeholder_text));
+                tempRewardPlaceHolderStrBuilder.append(" ");
+                tempRewardPlaceHolderStrBuilder.append(rewardStr);
             } else {
-                textView.setText(rewardText.getText());
+                tempRewardPlaceHolderStrBuilder.append(rewardText.getText());
+                tempRewardInitialStrBuilder.append(rewardText.getText());
             }
-            textView.setLayoutParams(layoutParams);
+
             if (HexValidator.validate(rewardText.getColor())) {
                 textView.setTextColor(Color.parseColor(rewardText.getColor()));
             } else {
                 textView.setTextColor(getContext().getResources().getColor(R.color.default_text_reward_color));
             }
-            int dimenTextSize = convertSize(rewardText.getSize());
-            float textSizeInPx = getContext().getResources().getDimension(dimenTextSize);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx);
-            listCrackResultText.addView(textView);
         }
+        textView.setText(tempRewardInitialStrBuilder);
+        listCrackResultText.addView(textView);
+        tvRewardsText = textView;
 
     }
 
@@ -352,28 +436,28 @@ public class WidgetCrackResult extends RelativeLayout {
 
         wordtoSpan.setSpan(new ForegroundColorSpan(multiplierColor), infoString.indexOf(rewardText.getMultiplier()), infoString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        TextView textViewTierInfo = new TextView(getContext());
+        TextView textViewTierInfo = tvRewardsTip;
         textViewTierInfo.setTypeface(textViewTierInfo.getTypeface(), Typeface.BOLD);
         textViewTierInfo.setText(wordtoSpan);
         textViewTierInfo.setBackgroundResource(R.drawable.ic_multiplier);
         int topBottomPadding = getResources().getDimensionPixelOffset(R.dimen.dp_8);
         int rightPadding = getResources().getDimensionPixelOffset(R.dimen.dp_12);
         int leftPadding = getResources().getDimensionPixelOffset(R.dimen.dp_16);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, textView.getHeight() - topBottomPadding);
-        layoutParams.topMargin = topBottomPadding / 2;
-        layoutParams.bottomMargin = topBottomPadding / 2;
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) tvRewardsTip.getLayoutParams();
+//        layoutParams.topMargin = topBottomPadding / 2;
+//        layoutParams.bottomMargin = topBottomPadding / 2;
         textViewTierInfo.setGravity(Gravity.CENTER);
         textViewTierInfo.setLayoutParams(layoutParams);
-        textViewTierInfo.setX(textView.getX());
-        textViewTierInfo.setY(textView.getY());
+//        textViewTierInfo.setX(textView.getX());
+//        textViewTierInfo.setY(textView.getY());
         textViewTierInfo.setPadding(leftPadding, topBottomPadding, rightPadding, topBottomPadding);
 
-        if (tvTierInfoList == null) {
-            tvTierInfoList = new ArrayList<TextView>();
-        }
-        tvTierInfoList.add(textViewTierInfo);
-        listCrackResultParent.addView(textViewTierInfo);
-        slideLeftToRightInfoText(textViewTierInfo, textShift);
+//        if (tvTierInfoList == null) {
+//            tvTierInfoList = new ArrayList<TextView>();
+//        }
+//        tvTierInfoList.add(textViewTierInfo);
+//        fmWidgetCrackResult.addView(textViewTierInfo);
+        slideLeftToRightInfoText(textViewTierInfo, textView.getHeight());
 
     }
 
@@ -385,7 +469,22 @@ public class WidgetCrackResult extends RelativeLayout {
      * @param textShift        amount of shift
      */
     private void slideLeftToRightInfoText(TextView textViewTierInfo, float textShift) {
-        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, textShift - getResources().getDimension(R.dimen.dp_2), 0f, 0f);
+//        int locationOfHorizontalButtons[] = new int[2];
+//        llButton.getLocationOnScreen(locationOfHorizontalButtons);
+
+//        textViewTierInfo.setX(locationOfHorizontalButtons[0]);
+//        textViewTierInfo.setY(locationOfHorizontalButtons[1]);
+
+        int locationOfTvRewards[] = new int[2];
+        tvRewardsText.getLocationOnScreen(locationOfTvRewards);
+        int startX = locationOfTvRewards[0] + tvRewardsText.getWidth();
+        int startY = locationOfTvRewards[1] - (tvRewardsText.getHeight()/2);
+        textViewTierInfo.setX(startX);
+        textViewTierInfo.setY(startY);
+//        textViewTierInfo.animate().trans(startX).start();
+        if (true) return;
+
+        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, 0, 0f, -getResources().getDimension(R.dimen.dp_2));
         translateAnimationCrackResult.setDuration(SLIDE_INFO_LEFT_TO_RIGHT_DURATION);
         translateAnimationCrackResult.setStartTime(SLIDE_INFO_LEFT_TO_RIGHT_START_DELAY);
         translateAnimationCrackResult.setFillAfter(true);
@@ -427,10 +526,10 @@ public class WidgetCrackResult extends RelativeLayout {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                if (listCrackResultParent != null && textViewTierInfo != null) {
-                    listCrackResultParent.removeView(textViewTierInfo);
-                    tvTierInfoList.remove(textViewTierInfo);
-                }
+//                if (listCrackResultParent != null && textViewTierInfo != null) {
+//                    listCrackResultParent.removeView(textViewTierInfo);
+//                    tvTierInfoList.remove(textViewTierInfo);
+//                }
                 alphaAnimation.setAnimationListener(null);
             }
 
@@ -453,12 +552,8 @@ public class WidgetCrackResult extends RelativeLayout {
                 textView.setText(String.format(getContext().getString(R.string.rewards_increased_points), animation.getAnimatedValue().toString(), text));
             }
         });
-        if (animationList == null) {
-            animationList = new ArrayList<>();
-        } else {
-            animationList.clear();
-            animationList.add(animator);
-        }
+        animationList.clear();
+        animationList.add(animator);
     }
 
 
@@ -527,12 +622,12 @@ public class WidgetCrackResult extends RelativeLayout {
         listCrackResultText.removeAllViews();
         containerTextCrackResult.setVisibility(GONE);
         listener.onCrackResultCleared();
-        if (tvTierInfoList != null) {
-            for (TextView tvTierInfoList : tvTierInfoList) {
-                listCrackResultParent.removeView(tvTierInfoList);
-            }
-            tvTierInfoList.clear();
-        }
+//        if (tvTierInfoList != null) {
+//            for (TextView tvTierInfoList : tvTierInfoList) {
+//                listCrackResultParent.removeView(tvTierInfoList);
+//            }
+//            tvTierInfoList.clear();
+//        }
         if (counterAnimatorSet != null) {
             counterAnimatorSet.cancel();
         }
