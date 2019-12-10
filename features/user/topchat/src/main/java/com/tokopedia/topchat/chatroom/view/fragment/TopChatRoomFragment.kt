@@ -638,14 +638,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
 
-    private fun showSnackbarAddToCart(it: AddToCartDataModel) {
-        if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
-            ToasterNormal.make(view, it.data.message[0], ToasterNormal.LENGTH_LONG).show()
-        } else {
-            ToasterError.make(view, it.errorMessage[0], ToasterNormal.LENGTH_LONG).show()
-        }
-    }
-
     override fun onGoToShop() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.SHOP.replace("{shop_id}", shopId
                 .toString()))
