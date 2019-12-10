@@ -8,8 +8,6 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2019-12-03.
  */
-
-// Please use this usecase to get total likes
 class GetTotalLikeUseCase @Inject constructor(private val playApi: PlayApi) : UseCase<Like>() {
 
     var channelId = ""
