@@ -22,7 +22,7 @@ import com.tokopedia.core.product.model.productdetail.ReturnInfo;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.snapshot.listener.SnapShotFragmentView;
 
 /**

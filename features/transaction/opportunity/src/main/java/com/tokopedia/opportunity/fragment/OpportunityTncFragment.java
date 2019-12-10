@@ -18,7 +18,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.opportunity.di.component.DaggerOpportunityComponent;

@@ -15,7 +15,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.adapter.OpportunitySortAdapter;
 import com.tokopedia.opportunity.adapter.viewmodel.SimpleCheckListItemModel;
 import com.tokopedia.opportunity.analytics.OpportunityTrackingEventLabel;

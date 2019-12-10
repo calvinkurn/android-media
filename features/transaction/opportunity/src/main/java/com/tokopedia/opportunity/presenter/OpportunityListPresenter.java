@@ -2,7 +2,7 @@ package com.tokopedia.opportunity.presenter;
 
 import androidx.annotation.Nullable;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.opportunity.listener.OpportunityListView;
 import com.tokopedia.opportunity.viewmodel.opportunitylist.FilterPass;
 

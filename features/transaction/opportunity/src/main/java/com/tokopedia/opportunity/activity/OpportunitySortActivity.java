@@ -8,7 +8,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.fragment.OpportunitySortFragment;
 import com.tokopedia.opportunity.viewmodel.SortingTypeViewModel;
 

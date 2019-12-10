@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.listener.OpportunityView;
 import com.tokopedia.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 import com.tokopedia.opportunity.viewmodel.opportunitylist.OrderProductViewModel;

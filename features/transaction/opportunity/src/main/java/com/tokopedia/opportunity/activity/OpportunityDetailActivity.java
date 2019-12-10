@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.fragment.OpportunityDetailFragment;
 import com.tokopedia.opportunity.listener.OpportunityDetailView;
 import com.tokopedia.opportunity.presenter.OpportunityDetailImpl;

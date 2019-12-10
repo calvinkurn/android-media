@@ -1,7 +1,5 @@
 package com.tokopedia.opportunity.snapshot.presenter;
 
-import android.content.Context;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.opportunity.snapshot.listener.SnapShotFragmentView;

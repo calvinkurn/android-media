@@ -16,7 +16,7 @@ import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderShipme
 import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderShop;
 import com.tokopedia.core.network.entity.replacement.opportunitydata.Paging;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.data.OpportunityModel;
 import com.tokopedia.opportunity.listener.OpportunityListView;
 import com.tokopedia.opportunity.viewmodel.opportunitylist.DetailCancelRequestViewModel;

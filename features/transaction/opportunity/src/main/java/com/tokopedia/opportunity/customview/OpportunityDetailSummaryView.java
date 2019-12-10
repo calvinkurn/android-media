@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.listener.OpportunityView;
 import com.tokopedia.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 

@@ -8,14 +8,9 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.viewmodel.FilterViewModel;
 import com.tokopedia.opportunity.viewmodel.OptionViewModel;
-
-import java.util.ArrayList;
-
-import static android.media.CamcorderProfile.get;
 
 /**
  * Created by nisie on 4/10/17.

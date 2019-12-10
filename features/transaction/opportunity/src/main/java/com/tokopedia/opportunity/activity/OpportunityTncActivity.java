@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.opportunity.fragment.OpportunityTncFragment;
 import com.tokopedia.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;

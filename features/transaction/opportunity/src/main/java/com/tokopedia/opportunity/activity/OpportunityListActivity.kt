@@ -3,7 +3,7 @@ package com.tokopedia.opportunity.activity
 import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.core.app.BasePresenterActivity
-import com.tokopedia.seller.R
+import com.tokopedia.opportunity.R
 import com.tokopedia.opportunity.fragment.OpportunityListFragment
 import com.tokopedia.opportunity.presenter.OpportunityListPresenter
 

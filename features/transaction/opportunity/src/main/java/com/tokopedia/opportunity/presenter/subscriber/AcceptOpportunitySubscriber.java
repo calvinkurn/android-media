@@ -1,16 +1,9 @@
 package com.tokopedia.opportunity.presenter.subscriber;
 
-import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.seller.R;
 import com.tokopedia.opportunity.data.AcceptReplacementModel;
 import com.tokopedia.opportunity.listener.OpportunityView;
 import com.tokopedia.opportunity.presentation.ActionViewData;
-
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 import rx.Subscriber;
 

@@ -7,8 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.widgets.FilterView;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.activity.OpportunityFilterActivity;
 import com.tokopedia.opportunity.adapter.OpportunityFilterTitleAdapter;
 import com.tokopedia.opportunity.viewmodel.FilterViewModel;

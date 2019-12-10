@@ -11,17 +11,21 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.di.component.DaggerOpportunityComponent;
 import com.tokopedia.opportunity.di.component.OpportunityComponent;
 import com.tokopedia.opportunity.di.module.OpportunityModule;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.opportunity.snapshot.customview.DescriptionView;
 import com.tokopedia.opportunity.snapshot.customview.DetailInfoView;
 import com.tokopedia.opportunity.snapshot.customview.FreeReturnView;
@@ -29,7 +33,6 @@ import com.tokopedia.opportunity.snapshot.customview.HeaderInfoView;
 import com.tokopedia.opportunity.snapshot.customview.PictureView;
 import com.tokopedia.opportunity.snapshot.customview.ShopInfoView;
 import com.tokopedia.opportunity.snapshot.listener.SnapShotFragmentView;
-import com.tokopedia.opportunity.snapshot.presenter.SnapShotFragmentImpl;
 import com.tokopedia.opportunity.snapshot.presenter.SnapShotFragmentPresenter;
 
 import javax.inject.Inject;
@@ -266,7 +269,7 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
     }
 
     private void navigateShopActivity(String shopId) {
-        Intent intent = ((SellerModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, shopId);
         context.startActivity(intent);
     }
 

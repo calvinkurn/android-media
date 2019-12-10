@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 
 /**
  * Created by normansyahputa on 1/15/18.

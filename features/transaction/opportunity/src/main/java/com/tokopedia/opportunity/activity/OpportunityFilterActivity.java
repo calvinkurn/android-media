@@ -18,7 +18,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.seller.R;
+import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.adapter.OpportunityFilterAdapter;
 import com.tokopedia.opportunity.adapter.OpportunityFilterTitleAdapter;
 import com.tokopedia.opportunity.analytics.OpportunityTrackingEventLabel;
