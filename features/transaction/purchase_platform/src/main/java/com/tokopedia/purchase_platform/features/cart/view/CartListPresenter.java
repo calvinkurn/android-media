@@ -50,7 +50,6 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopG
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.WholesalePriceData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListSimplifiedUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetRecentViewUseCase;
@@ -978,41 +977,6 @@ public class CartListPresenter implements ICartListPresenter {
             checklistCondition = ITEM_CHECKED_ALL_WITH_CHANGES;
         }
         return checklistCondition;
-    }
-
-    @NonNull
-    private Subscriber<PromoCodeCartListData> getSubscriberCheckPromoCodeFromSuggestion(boolean isAutoApply) {
-        return new Subscriber<PromoCodeCartListData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (view != null) {
-                    view.hideProgressLoading();
-                    String errorMessage = e.getMessage();
-                    if (!(e instanceof CartResponseErrorException)) {
-                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
-                    }
-                    view.showToastMessageRed(errorMessage);
-                }
-            }
-
-            @Override
-            public void onNext(PromoCodeCartListData promoCodeCartListData) {
-                if (view != null) {
-                    view.hideProgressLoading();
-                    view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
-                    if (!promoCodeCartListData.isError())
-                        view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
-                    else if (!isAutoApply)
-                        view.showToastMessageRed(promoCodeCartListData.getErrorMessage());
-                }
-            }
-        };
     }
 
     @Override

@@ -3,20 +3,19 @@ package com.tokopedia.purchase_platform.features.cart.view;
 import android.app.Activity;
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView;
-import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
-import com.tokopedia.purchase_platform.common.base.IBaseView;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
+import com.tokopedia.purchase_platform.common.base.IBaseView;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse;
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 
 import java.util.ArrayList;
@@ -41,8 +40,6 @@ public interface ICartListView extends IBaseView {
     void renderToAddressChoice();
 
     void renderErrorToShipmentForm(String message);
-
-    void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
     void disableSwipeRefresh();
 

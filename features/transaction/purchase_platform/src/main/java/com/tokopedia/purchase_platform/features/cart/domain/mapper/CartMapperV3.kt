@@ -124,7 +124,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
         if (!it.isError) {
             var errorItemCountPerShop = 0
             for (cartDetail in shopGroupWithError.cartDetails) {
-                if (cartDetail.errors != null && cartDetail.errors.size > 0) {
+                if (cartDetail.errors.isNotEmpty()) {
                     errorItemCountPerShop++
                 }
             }
@@ -188,7 +188,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
                     isSelected = if (cartItemData.isError) {
                         false
                     } else {
-                        cartItemData.originData.isCheckboxState ?: true
+                        cartItemData.originData?.isCheckboxState ?: true
                     }
             )
             cartItemHolderDataList.add(cartItemHolderData)
@@ -235,7 +235,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
     }
 
     private fun mapCartItemDataError(cartDetail: CartDetail, it: CartItemData) {
-        if (cartDetail.errors != null && cartDetail.errors.size > 0) {
+        if (cartDetail.errors.isNotEmpty()) {
             it.isError = true
             it.errorMessageTitle = cartDetail.errors[0]
             val similarProduct = cartDetail.similarProduct
@@ -254,7 +254,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
     }
 
     private fun mapCartItemDataWarning(cartDetail: CartDetail, it: CartItemData) {
-        if (cartDetail.messages != null && cartDetail.messages.size > 0) {
+        if (cartDetail.messages.isNotEmpty()) {
             it.isWarning = true
             it.warningMessageTitle = cartDetail.messages[0]
 
@@ -298,7 +298,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
             it.productCashBack = cartDetail.product.productCashback
             it.cashBackInfo = "Cashback ${cartDetail.product.productCashback}"
             it.freeReturnLogo =
-                    if (cartDetail.product.freeReturns != null) cartDetail.product.freeReturns.freeReturnsLogo
+                    if (cartDetail.product.freeReturns.freeReturnsLogo.isNotBlank()) cartDetail.product.freeReturns.freeReturnsLogo
                     else ""
             it.category = cartDetail.product.category
             it.categoryId = cartDetail.product.categoryId.toString()
@@ -309,13 +309,12 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
             it.isWishlisted = cartDetail.product.isWishlisted
             it.originalQty = cartDetail.product.productQuantity
             it.preOrderInfo =
-                    if (cartDetail.product.productPreorder != null && cartDetail.product.productPreorder.durationText != null)
+                    if (cartDetail.product.productPreorder.durationText.isNotBlank())
                         "PO ${cartDetail.product.productPreorder.durationText}"
                     else ""
             it.isCheckboxState = cartDetail.isCheckboxState
             it.priceOriginal = cartDetail.product.productOriginalPrice
-            if (cartDetail.product.freeShipping != null && cartDetail.product.freeShipping.eligible &&
-                    !TextUtils.isEmpty(cartDetail.product.freeShipping.badgeUrl)) {
+            if (cartDetail.product.freeShipping.eligible && cartDetail.product.freeShipping.badgeUrl.isNotBlank()) {
                 it.isFreeShipping = true
                 it.freeShippingBadgeUrl = cartDetail.product.freeShipping.badgeUrl
             }

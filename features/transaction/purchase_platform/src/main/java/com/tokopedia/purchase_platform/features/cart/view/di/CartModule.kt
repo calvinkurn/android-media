@@ -28,8 +28,6 @@ import com.tokopedia.purchase_platform.features.cart.data.repository.CartReposit
 import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartMapper
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.IVoucherCouponMapper
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.VoucherCouponMapper
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartItemDecoration
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
@@ -79,12 +77,6 @@ class CartModule {
     @CartScope
     fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
         return CheckPromoStackingCodeUseCase(context.resources)
-    }
-
-    @Provides
-    @CartScope
-    fun provideIVoucherCouponMapper(): IVoucherCouponMapper {
-        return VoucherCouponMapper()
     }
 
     @Provides
