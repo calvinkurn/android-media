@@ -6,12 +6,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.readystatesoftware.chuck.Chuck
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.sellerorder.list.presentation.activity.SomListActivity
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.network.LogoutPojo
 import com.tokopedia.user.session.UserSession
@@ -181,7 +181,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         val button = findViewById<Button>(R.id.button)
+        val chuckButton = findViewById<Button>(R.id.chuckButton)
 
+        chuckButton.setOnClickListener { startActivity(Chuck.getLaunchIntent(this)) }
         button.setOnClickListener {
             goTo()
         }
