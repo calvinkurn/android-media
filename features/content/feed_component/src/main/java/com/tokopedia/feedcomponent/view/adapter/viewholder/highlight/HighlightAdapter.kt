@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -61,10 +62,10 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                 highlightListener.onCommentClick(item.positionInFeed, positionInAdapter, item.postId)
             }
             itemView.userImage.setOnClickListener {
-                highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink)
+                highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink, 0 , "", FollowCta())
             }
             itemView.userName.setOnClickListener {
-                highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink)
+                highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink ,0, "", FollowCta())
             }
             itemView.productImage.setOnClickListener {
                 highlightListener.onHighlightItemClicked(item.positionInFeed, item)
@@ -132,7 +133,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
     }
 
     interface HighlightListener {
-        fun onAvatarClick(positionInFeed: Int, redirectUrl: String)
+        fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta)
 
         fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean)
 

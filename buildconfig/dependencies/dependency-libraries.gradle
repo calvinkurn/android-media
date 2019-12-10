@@ -16,6 +16,7 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     libraries = [
+            adapterDelegate         : ":libraries:adapter_delegate",
             analytics               : ":libraries:analytics",
             applink                 : ":libraries:applink",
             baseAdapter             : ":libraries:base_adapter",
@@ -66,6 +67,7 @@ ext {
             promotionsTarget        : ":libraries:promotions_target",
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
-            translator              : ":libraries:translator"
+            translator              : ":libraries:translator",
+            traceroute              : ":libraries:traceroute"
     ]
 }

@@ -63,7 +63,8 @@ import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -316,7 +317,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 element.productId.toString(),
                 element.productName,
                 element.priceInt,
-                element.category, element.variant)
+                element.category, element.variants.toString())
 
         analytics.trackProductAttachmentClicked()
     }
@@ -585,31 +586,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             return
 
         val resultProducts: ArrayList<ResultProduct> = data.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
-        attachProductRetrieved(resultProducts)
-    }
-
-    private fun attachProductRetrieved(resultProducts: java.util.ArrayList<ResultProduct>) {
-
-        analytics.trackSendProductAttachment()
-
-        for (result in resultProducts) {
-            val item = generateProductChatViewModel(result)
-            getViewState().onSendProductAttachment(item)
-            presenter.sendProductAttachment(messageId, result, item.startTime, opponentId)
-        }
-    }
-
-    private fun generateProductChatViewModel(product: ResultProduct): ProductAttachmentViewModel {
-        return ProductAttachmentViewModel(
-                getUserSession().userId,
-                product.productId,
-                product.name,
-                product.price,
-                product.productUrl,
-                product.productImageThumbnail,
-                SendableViewModel.generateStartTime(),
-                false,
-                shopId)
+        presenter.initProductPreviewFromAttachProduct(resultProducts)
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
@@ -845,7 +822,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().focusOnReply()
     }
 
-    override fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>) {
+    override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {
         getViewState().showAttachmentPreview(attachmentPreview)
     }
 
@@ -861,9 +838,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return opponentName
     }
 
-    override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {
+    override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
         if (attachment is InvoicePreviewViewModel) {
             analytics.invoiceAttachmentSent(attachment)
+        } else if (attachment is SendableProductPreview) {
+            analytics.trackSendProductAttachment()
         }
     }
 

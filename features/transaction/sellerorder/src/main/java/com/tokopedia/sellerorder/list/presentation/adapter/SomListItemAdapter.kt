@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.list.presentation.adapter
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +13,8 @@ import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_600
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_699
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment
 import com.tokopedia.unifyprinciples.Typography
@@ -40,9 +41,26 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         return somItemList.size
     }
 
-    @SuppressLint("Range", "SetTextI18n")
+    fun addItems(list: List<SomListOrder.Data.OrderList.Order>) {
+        somItemList.addAll(list)
+    }
+
+    fun removeAll() {
+        somItemList.clear()
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.label_status_order.text = somItemList[position].status
+
+        if (somItemList[position].cancelRequest == 1) {
+            holder.itemView.ticker_buyer_request_cancel?.apply {
+                visibility = View.VISIBLE
+                setTextDescription(holder.itemView.context.getString(R.string.buyer_request_cancel))
+                closeButtonVisibility = View.GONE
+            }
+        } else {
+            holder.itemView.ticker_buyer_request_cancel?.visibility = View.GONE
+        }
 
         if (somItemList[position].statusColor.isNotEmpty() && !somItemList[position].statusColor.equals(LABEL_EMPTY, true)) {
             holder.itemView.label_status_order.setBackgroundColor(Color.parseColor(somItemList[position].statusColor))
@@ -56,6 +74,11 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             holder.itemView.label_due_response.visibility = View.GONE
             holder.itemView.ic_label_due_card.visibility = View.GONE
         } else {
+            if (somItemList[position].orderStatusId == STATUS_ORDER_600 || somItemList[position].orderStatusId == STATUS_ORDER_699) {
+                holder.itemView.label_due_response.text = holder.itemView.context.getString(R.string.som_deadline_done)
+            } else {
+                holder.itemView.label_due_response.text = holder.itemView.context.getString(R.string.som_deadline)
+            }
             holder.itemView.label_due_response.visibility = View.VISIBLE
             holder.itemView.ic_label_due_card.visibility = View.VISIBLE
             holder.itemView.label_due_response_day_count.text = somItemList[position].deadlineText
@@ -75,6 +98,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         }
 
         if (somItemList[position].listOrderLabel.isNotEmpty()) {
+            holder.itemView.ll_label_order?.visibility = View.VISIBLE
             createOrderLabelList(holder, position)
         } else {
             holder.itemView.ll_label_order?.visibility = View.GONE
@@ -85,7 +109,6 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         }
     }
 
-    @SuppressLint("Range", "InflateParams")
     private fun createOrderLabelList(holder: ViewHolder, position: Int) {
         holder.itemView.ll_label_order?.removeAllViews()
 
@@ -113,7 +136,6 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             }
             text.setMargin(marginRightLeft, marginTopBottom, marginRightLeft, marginTopBottom)
             cardView.addView(text)
-
             holder.itemView.ll_label_order.addView(cardView)
         }
     }

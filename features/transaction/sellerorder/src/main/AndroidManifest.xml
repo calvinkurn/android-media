@@ -64,7 +64,22 @@
             android:name=".detail.presentation.activity.SomDetailActivity"
             android:label="@string/title_som_detail"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_order"/>
+
+            </intent-filter>
+
+        </activity>
 
         <activity
             android:name=".requestpickup.presentation.activity.SomConfirmReqPickupActivity"

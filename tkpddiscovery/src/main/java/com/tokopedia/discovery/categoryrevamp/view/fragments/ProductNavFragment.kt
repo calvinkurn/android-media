@@ -2,9 +2,6 @@ package com.tokopedia.discovery.categoryrevamp.view.fragments
 
 
 import android.content.Context
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,8 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
+import com.tkpd.library.utils.URLParser
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -26,10 +29,7 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
-import com.tokopedia.discovery.categoryrevamp.adapters.ProductNavListAdapter
-import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
-import com.tokopedia.discovery.categoryrevamp.adapters.SubCategoryAdapter
+import com.tokopedia.discovery.categoryrevamp.adapters.*
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
@@ -44,11 +44,14 @@ import com.tokopedia.discovery.categoryrevamp.utils.ParamMapToUrl
 import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
+import com.tokopedia.discovery.categoryrevamp.view.interfaces.SelectedFilterListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.SubCategoryListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -68,12 +71,13 @@ import rx.Subscriber
 import javax.inject.Inject
 
 
-class ProductNavFragment : BaseCategorySectionFragment(),
+open class ProductNavFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
         QuickFilterListener,
         ProductCardListener,
         SubCategoryListener,
-        WishListActionListener {
+        WishListActionListener,
+        SelectedFilterListener {
 
     var isSubCategoryAvailable = false
 
@@ -151,6 +155,11 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     var isPagingAllowed: Boolean = true
     private var bannedData: Data? = null
 
+    private var selectedFilterAdapter: SelectedFilterAdapter? = null
+
+    var mSelectedFilter = HashMap<String, String>()
+    var categoryUrl: String? = null
+
     private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
     private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
@@ -158,13 +167,17 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
         private val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
         private val EXTRA_BANNED_DATA = "BANNED_DATA"
+        private val EXTRA_CATEGORY_URL = "CATEGORY_URL"
 
         @JvmStatic
-        fun newInstance(departmentid: String, departmentName: String, data: Data): Fragment {
+        fun newInstance(data: Data, categoryUrl: String?): Fragment {
             val fragment = ProductNavFragment()
             val bundle = Bundle()
-            bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, departmentid)
-            bundle.putString(EXTRA_CATEGORY_DEPARTMENT_NAME, departmentName)
+            if (categoryUrl != null) {
+                bundle.putString(EXTRA_CATEGORY_URL, categoryUrl)
+            } else {
+                bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, data.id.toString())
+            }
             bundle.putParcelable(EXTRA_BANNED_DATA, data)
             fragment.arguments = bundle
             return fragment
@@ -186,10 +199,12 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
-                mDepartmentId = it.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
-                mDepartmentName = it.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
-                bannedData = it.getParcelable(EXTRA_BANNED_DATA) as Data?
+            bannedData = it.getParcelable(EXTRA_BANNED_DATA) as Data?
+            mDepartmentId = bannedData?.id.toString()
+            mDepartmentName = bannedData?.name ?: ""
+            if (it.containsKey(EXTRA_CATEGORY_URL)) {
+                categoryUrl = it.getString(EXTRA_CATEGORY_URL, "")
+                mSelectedFilter = URLParser(it.getString(EXTRA_CATEGORY_URL, "")).paramKeyValueMap
             }
         }
     }
@@ -216,9 +231,32 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         } else {
             showBannedDataScreen()
         }
+        initSelectedFilterRecyclerView()
+    }
+
+    protected fun initSelectedFilterRecyclerView() {
+        selectedFilterAdapter = SelectedFilterAdapter(this)
+        selectedFilterRecyclerView.adapter = selectedFilterAdapter
+        val layoutManager = ChipsLayoutManager.newBuilder(context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
+        selectedFilterRecyclerView.layoutManager = layoutManager
+        selectedFilterRecyclerView.addItemDecoration(SpacingItemDecoration(
+                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10)
+        ))
     }
 
     private fun setUpData() {
+        if (mSelectedFilter.isNotEmpty()) {
+            val filter = getSelectedFilter()
+            for (element in mSelectedFilter.entries) {
+                filter[element.key] = element.value
+            }
+            applyFilterToSearchParameter(filter)
+            setSelectedFilter(filter)
+        }
         fetchProductData(getProductListParamMap(getPage()))
         productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
         productNavViewModel.fetchQuickFilters(getQuickFilterParams())
@@ -278,10 +316,16 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 if ((scrollY >= (v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight)) &&
                         scrollY > oldScrollY) {
                     if (isPagingAllowed) {
-                        incrementpage()
-                        fetchProductData(getProductListParamMap(getPage()))
-                        productNavListAdapter?.addLoading()
-                        isPagingAllowed = false
+                        val numOfPages: Int = (totalCountInt - 1) / 10
+                        if (getPage() < numOfPages) {
+                            incrementpage()
+                            fetchProductData(getProductListParamMap(getPage()))
+                            productNavListAdapter?.addLoading()
+                            isPagingAllowed = false
+                        } else {
+                            productNavListAdapter?.removeLoading()
+                        }
+
                     }
 
                 }
@@ -333,9 +377,11 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
         productNavViewModel.mProductCount.observe(this, Observer {
             it?.let {
-                setTotalSearchResultCount(it)
-                if (!TextUtils.isEmpty(it)) {
-                    setQuickFilterAdapter(getString(R.string.result_count_template_text, it))
+                if(it.countText!=null)
+                    setTotalSearchResultCount(it.countText)
+                setTotalSearchResultCountInteger(it.totalData)
+                if (!TextUtils.isEmpty(it.countText)) {
+                    setQuickFilterAdapter(getString(R.string.result_count_template_text, it.countText))
                 } else {
                     setQuickFilterAdapter("")
                 }
@@ -364,13 +410,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         })
 
         productNavViewModel.getDynamicFilterData().observe(this, Observer {
-
             when (it) {
                 is Success -> {
                     renderDynamicFilter(it.data.data)
-                }
-
-                is Fail -> {
                 }
             }
         })
@@ -397,14 +439,25 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
             quickfilter_parent.hide()
-            subcategory_recyclerview.hide()
+            val selectedFilterFromEmptyStateListener = getSelectedFilterAsOptionList()
+            if (selectedFilterFromEmptyStateListener != null && selectedFilterFromEmptyStateListener.isNotEmpty()) {
+                selectedFilterRecyclerView.show()
+                populateSelectedFilterToRecylerView(selectedFilterFromEmptyStateListener)
+            } else {
+                selectedFilterRecyclerView.hide()
+            }
         } else {
             layout_no_data.hide()
             quickfilter_parent.show()
-            if (isSubCategoryAvailable) {
-                subcategory_recyclerview.show()
-            }
+            selectedFilterRecyclerView.hide()
         }
+        if (isSubCategoryAvailable) {
+            subcategory_recyclerview.show()
+        }
+    }
+
+    protected fun populateSelectedFilterToRecylerView(selectedFilterOptionList: List<Option>) {
+        selectedFilterAdapter?.setOptionList(selectedFilterOptionList)
     }
 
     private fun showBannedDataScreen() {
@@ -466,10 +519,8 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         swipe_refresh_layout.visibility = View.VISIBLE
         userSession = UserSession(activity)
         gcmHandler = GCMHandler(activity)
-        activity?.let { observer ->
-            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
-            productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
-        }
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
     }
 
     private fun getQuickFilterParams(): RequestParams {
@@ -502,8 +553,13 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         searchProductRequestParams.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
         searchProductRequestParams.putString(CategoryNavConstants.ROWS, "10")
         searchProductRequestParams.putString(CategoryNavConstants.SOURCE, "search_product")
+        if (mSelectedFilter.isNotEmpty()) {
+            searchProductRequestParams.putAllString(mSelectedFilter)
+            mSelectedFilter.clear()
+        } else {
+            searchProductRequestParams.putAllString(getSelectedFilter())
+        }
         searchProductRequestParams.putAllString(getSelectedSort())
-        searchProductRequestParams.putAllString(getSelectedFilter())
         param.putString("product_params", createParametersForQuery(searchProductRequestParams.parameters))
 
 
@@ -518,6 +574,12 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         topAdsRequestParam.putString(CategoryNavConstants.KEY_DEPT_ID, mDepartmentId)
 
         topAdsRequestParam.putAllString(getSelectedSort())
+        if (mSelectedFilter.isNotEmpty()) {
+            topAdsRequestParam.putAllString(mSelectedFilter)
+            mSelectedFilter.clear()
+        } else {
+            topAdsRequestParam.putAllString(getSelectedFilter())
+        }
 
         param.putString("top_params", createParametersForQuery(topAdsRequestParam.parameters))
         return param
@@ -734,6 +796,19 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         subCategoryAdapter = null
         quickFilterAdapter = null
         super.onDestroyView()
+    }
+
+    override fun onSelectedFilterRemoved(uniqueId: String) {
+        removeSelectedFilter(uniqueId)
+    }
+
+    override fun getSelectedFilterAsOptionList(): List<Option>? {
+        return getOptionListFromFilterController()
+    }
+
+    private fun getOptionListFromFilterController(): List<Option> {
+        return if (filterController == null) java.util.ArrayList() else OptionHelper.combinePriceFilterIfExists(filterController.getActiveFilterOptionList(),
+                resources.getString(R.string.empty_state_selected_filter_price_name))
     }
 
     private fun openUrlSeamlessly(url: String) {

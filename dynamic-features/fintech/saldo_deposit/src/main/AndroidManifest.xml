@@ -3,7 +3,6 @@
     package="com.tokopedia.saldodeposit">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_saldo_deposit">
         <dist:fusing dist:include="true" />

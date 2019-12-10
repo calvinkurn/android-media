@@ -8,9 +8,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_PRODUCT_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.confirmshipping.di.DaggerSomConfirmShippingComponent
 import com.tokopedia.sellerorder.confirmshipping.di.SomConfirmShippingComponent
@@ -27,9 +24,6 @@ class SomConfirmShippingActivity: BaseSimpleActivity(), HasComponent<SomConfirmS
             bundle = intent.extras
         } else {
             bundle.putString(PARAM_ORDER_ID, "")
-            bundle.putInt(PARAM_CURR_SHIPMENT_ID, 0)
-            bundle.putString(PARAM_CURR_SHIPMENT_NAME, "")
-            bundle.putString(PARAM_CURR_SHIPMENT_PRODUCT_NAME, "")
             bundle.putBoolean(PARAM_CURR_IS_CHANGE_SHIPPING, false)
         }
         return SomConfirmShippingFragment.newInstance(bundle)

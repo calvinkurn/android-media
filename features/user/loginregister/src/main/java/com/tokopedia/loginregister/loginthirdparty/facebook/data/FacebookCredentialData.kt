@@ -9,5 +9,6 @@ import com.facebook.AccessToken
 
 data class FacebookCredentialData(
         var accessToken: AccessToken,
-        var email: String
+        var email: String,
+        var phone: String
 )

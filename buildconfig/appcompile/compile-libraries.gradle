@@ -48,5 +48,6 @@ include "libraries:promotions_target"
 include "libraries:videouploader"
 include "libraries:translator"
 include "libraries:instrumentation_test"
+include "libraries:traceroute"
 
 
