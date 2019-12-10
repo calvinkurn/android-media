@@ -39,6 +39,7 @@ ext {
             imagePreview            : ":libraries:image_preview",
             imageuploader           : ":libraries:imageuploader",
             inappupdate             : ":libraries:inappupdate",
+            instrumentation_test    : ":libraries:instrumentation_test",
             iris                    : ":libraries:iris",
 //            iris                    : ":libraries:iris_no_op",
             kotlinExtensions        : ":libraries:kotlin_extensions",

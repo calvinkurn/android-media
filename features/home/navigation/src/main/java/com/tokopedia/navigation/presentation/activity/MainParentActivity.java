@@ -143,9 +143,9 @@ public class MainParentActivity extends BaseActivity implements
     ApplicationUpdate appUpdate;
     private BottomNavigation bottomNavigation;
     private ShowCaseDialog showCaseDialog;
-    private List<Fragment> fragmentList;
+    List<Fragment> fragmentList;
     private Notification notification;
-    private Fragment currentFragment;
+    Fragment currentFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver newFeedClickedReceiver;
