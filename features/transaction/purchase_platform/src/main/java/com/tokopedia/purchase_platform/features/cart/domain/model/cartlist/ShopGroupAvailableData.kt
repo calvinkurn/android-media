@@ -52,7 +52,7 @@ data class ShopGroupAvailableData(
                     isSelected = if (cartItemData.isError) {
                         false
                     } else {
-                        cartItemData.originData.isCheckboxState
+                        cartItemData.originData?.isCheckboxState ?: false
                     }
             )
             cartItemHolderDataList?.add(cartItemHolderData)
