@@ -264,9 +264,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun mapThrowableToFlightError(message: String): FlightError {
         return try {
-            val gson = Gson()
-            val itemType = object : TypeToken<List<FlightError>>() {}.type
-            gson.fromJson<List<FlightError>>(message, itemType)[0]
+            if (message == FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL ||
+                    message == FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY ||
+                    message == FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY) {
+                val error = FlightError(message)
+                error.head = getString(R.string.flight_booking_general_error_title)
+                error.message = getString(R.string.flight_booking_general_error_subtitle)
+                error
+            } else {
+                val gson = Gson()
+                val itemType = object : TypeToken<List<FlightError>>() {}.type
+                gson.fromJson<List<FlightError>>(message, itemType)[0]
+            }
         } catch (e: Exception) {
             val flightError = FlightError()
             flightError.status = message
@@ -699,8 +708,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
         layout_full_page_error.visibility = View.VISIBLE
         layout_full_page_error.iv_error_page.setImageResource(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
-        layout_full_page_error.tv_error_title.text = FlightBookingErrorCodeMapper.getErrorTitle(errorCode)
-        layout_full_page_error.tv_error_subtitle.text = FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode)
+        layout_full_page_error.tv_error_title.text = e.head
+        layout_full_page_error.tv_error_subtitle.text = e.message
         layout_full_page_error.button_error_action.text = getString(R.string.flight_booking_action_refind_ticket)
         layout_full_page_error.button_error_action.setOnClickListener { finishActivityToSearchPage() }
     }
@@ -799,8 +808,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                     dialog.setCancelable(false)
                     dialog.setOverlayClose(false)
-                    dialog.setTitle(FlightBookingErrorCodeMapper.getErrorTitle(errorCode))
-                    dialog.setDescription(FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode))
+                    dialog.setTitle(e.head)
+                    dialog.setDescription(e.message)
                     dialog.setImageDrawable(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
                     dialog.show()
                 }
