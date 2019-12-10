@@ -1515,11 +1515,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         if (cartListData.isError()) {
-            cartAdapter.addCartTickerError(
-                    new CartItemTickerErrorHolderData.Builder()
-                            .cartTickerErrorData(cartListData.getCartTickerErrorData())
-                            .build()
-            );
+            CartItemTickerErrorHolderData cartItemTickerErrorHolderData = new CartItemTickerErrorHolderData();
+            cartItemTickerErrorHolderData.setCartTickerErrorData(cartListData.getCartTickerErrorData());
+            cartAdapter.addCartTickerError(cartItemTickerErrorHolderData);
         }
 
         cartAdapter.addAvailableDataList(cartListData.getShopGroupAvailableDataList());

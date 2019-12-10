@@ -49,7 +49,7 @@ data class CartListData(
     override fun equals(obj: Any?): Boolean {
         if (obj is CartListData) {
             val `object` = obj as CartListData?
-            return `object`!!.isError == isError &&
+            return `object`?.isError == isError &&
                     `object`.isAllSelected == isAllSelected &&
                     `object`.shopGroupWithErrorDataList == shopGroupWithErrorDataList &&
                     `object`.shopGroupAvailableDataList == shopGroupAvailableDataList &&

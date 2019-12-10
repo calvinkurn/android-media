@@ -119,7 +119,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (object instanceof PromoStackingData) {
             return PromoGlobalViewHolder.TYPE_VIEW_PROMO;
         } else if (object instanceof CartItemTickerErrorHolderData) {
-            return CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR;
+            return CartTickerErrorViewHolder.Companion.getTYPE_VIEW_TICKER_CART_ERROR();
         } else if (object instanceof ShipmentSellerCashbackModel) {
             return ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK;
         } else if (object instanceof CartEmptyHolderData) {
@@ -166,9 +166,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(PromoGlobalViewHolder.TYPE_VIEW_PROMO, parent, false);
             return new PromoGlobalViewHolder(view, promoActionListener);
-        } else if (viewType == CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR) {
+        } else if (viewType == CartTickerErrorViewHolder.Companion.getTYPE_VIEW_TICKER_CART_ERROR()) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR, parent, false);
+                    .inflate(CartTickerErrorViewHolder.Companion.getTYPE_VIEW_TICKER_CART_ERROR(), parent, false);
             return new CartTickerErrorViewHolder(view, actionListener);
         } else if (viewType == ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK) {
             View view = LayoutInflater.from(parent.getContext())
@@ -242,7 +242,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final PromoGlobalViewHolder holderView = (PromoGlobalViewHolder) holder;
             final PromoStackingData data = (PromoStackingData) cartDataList.get(position);
             holderView.bindData(data, position);
-        } else if (viewType == CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR) {
+        } else if (viewType == CartTickerErrorViewHolder.Companion.getTYPE_VIEW_TICKER_CART_ERROR()) {
             final CartTickerErrorViewHolder holderView = (CartTickerErrorViewHolder) holder;
             final CartItemTickerErrorHolderData data = (CartItemTickerErrorHolderData) cartDataList.get(position);
             holderView.bindData(data, position);
