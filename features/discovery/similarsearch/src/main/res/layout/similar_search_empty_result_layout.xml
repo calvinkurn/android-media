@@ -5,23 +5,62 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
-        android:id="@+id/emptySearchSimilarSearchImage"
+        android:id="@+id/similarSearchEmptyImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ss_img_empty" />
+        app:srcCompat="@drawable/similar_search_no_similar_product" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/similarSearchEmptyTitle"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:text="Temporary Empty search UI"
+        android:text="@string/similar_search_empty_title"
         android:gravity="center"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:textColor="@color/similar_search_title_color"
+        app:typographyType="heading_2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emptySearchSimilarSearchImage"
+        app:layout_constraintTop_toBottomOf="@+id/similarSearchEmptyImage"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/similarSearchEmptyMessage"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:text="@string/similar_search_empty_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:textColor="@color/similar_search_content_color"
+        app:typographyType="body_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/similarSearchEmptyTitle"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/similarSearchEmptyButton"
+        android:layout_width="@dimen/dp_220"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_44"
+        android:text="@string/similar_search_empty_button"
+        android:foreground="?android:selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="large"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/similarSearchEmptyMessage"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

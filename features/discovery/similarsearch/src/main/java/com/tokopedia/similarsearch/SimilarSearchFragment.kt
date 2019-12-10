@@ -6,13 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -26,9 +24,10 @@ import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.purchase_platform.common.constant.ProductAction
+import com.tokopedia.similarsearch.emptyresult.EmptyResultListener
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
-import com.tokopedia.similarsearch.originalproduct.SimilarSearchOriginalProductView
-import com.tokopedia.similarsearch.originalproduct.SimilarSearchOriginalProductViewListener
+import com.tokopedia.similarsearch.originalproduct.OriginalProductView
+import com.tokopedia.similarsearch.originalproduct.OriginalProductViewListener
 import com.tokopedia.similarsearch.productitem.SimilarProductItemListener
 import com.tokopedia.similarsearch.recyclerview.SimilarSearchAdapter
 import com.tokopedia.similarsearch.recyclerview.SimilarSearchItemDecoration
@@ -37,9 +36,8 @@ import com.tokopedia.similarsearch.utils.asObjectDataLayer
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
-import kotlin.math.abs
 
-internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemListener {
+internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemListener, EmptyResultListener {
 
     companion object {
         fun getInstance(): SimilarSearchFragment {
@@ -51,7 +49,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private var similarSearchViewModel: SimilarSearchViewModel? = null
-    private var similarSearchOriginalProductView: SimilarSearchOriginalProductView? = null
+    private var originalProductView: OriginalProductView? = null
     private var similarSearchAdapter: SimilarSearchAdapter? = null
     private var recyclerViewLayoutManager: RecyclerView.LayoutManager? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -92,7 +90,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun initRecyclerViewAdapter() {
-        similarSearchAdapter = SimilarSearchAdapter(this)
+        similarSearchAdapter = SimilarSearchAdapter(this, this)
         recyclerViewSimilarSearch?.adapter = similarSearchAdapter
     }
 
@@ -155,13 +153,13 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         view?.let { view ->
             val selectedProductViewListener = createSelectedProductViewListener(view, originalProduct)
 
-            similarSearchOriginalProductView = SimilarSearchOriginalProductView(selectedProductViewListener)
-            similarSearchOriginalProductView?.bindOriginalProductView(originalProduct)
+            originalProductView = OriginalProductView(selectedProductViewListener)
+            originalProductView?.bindOriginalProductView(originalProduct)
         }
     }
 
-    private fun createSelectedProductViewListener(view: View, originalProduct: Product): SimilarSearchOriginalProductViewListener {
-        return object : SimilarSearchOriginalProductViewListener {
+    private fun createSelectedProductViewListener(view: View, originalProduct: Product): OriginalProductViewListener {
+        return object : OriginalProductViewListener {
             override fun getFragmentView(): View {
                 return view
             }
@@ -221,17 +219,25 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun updateViewContent(similarSearchLiveData: State<List<Any>>) {
         when (similarSearchLiveData) {
             is State.Loading -> {
+                updateProgressBarVisiblity(View.VISIBLE)
                 updateAdapterList(similarSearchLiveData)
                 updateScrollListener()
             }
             is State.Success -> {
+                updateProgressBarVisiblity(View.GONE)
                 updateAdapterList(similarSearchLiveData)
                 updateScrollListener()
             }
             is State.Error -> {
-
+                updateProgressBarVisiblity(View.GONE)
+                updateAdapterList(similarSearchLiveData)
+                updateScrollListener()
             }
         }
+    }
+
+    private fun updateProgressBarVisiblity(visibility: Int) {
+        progressBarSimilarSearch?.visibility = visibility
     }
 
     private fun updateAdapterList(similarSearchLiveData: State<List<Any>>) {
@@ -251,7 +257,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun observeUpdateWishlistOriginalProductEventLiveData() {
         similarSearchViewModel?.getUpdateWishlistOriginalProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            similarSearchOriginalProductView?.updateWishlistStatus(it)
+            originalProductView?.updateWishlistStatus(it)
         })
     }
 
@@ -364,5 +370,9 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
             RESULT_CODE_ERROR_TICKET -> showSnackbar(R.string.similar_search_add_to_cart_failed, Toaster.TYPE_ERROR)
             Activity.RESULT_OK -> showSnackbar(R.string.similar_search_add_to_cart_success)
         }
+    }
+
+    override fun onEmptyButtonClicked() {
+        activity?.finish()
     }
 }

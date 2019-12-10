@@ -17,7 +17,7 @@ import com.tokopedia.similarsearch.R
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-internal class OriginalProductAppBarLayoutBehavior: CoordinatorLayout.Behavior<AppBarLayout> {
+internal class OriginalProductLayoutBehavior: CoordinatorLayout.Behavior<ConstraintLayout> {
 
     companion object {
         private const val VERTICAL_SCROLL_OFFSET_THRESHOLD = 800
@@ -29,11 +29,11 @@ internal class OriginalProductAppBarLayoutBehavior: CoordinatorLayout.Behavior<A
         this.context = context
     }
 
-    override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout, child: AppBarLayout, directTargetChild: View, target: View, axes: Int, type: Int): Boolean =
+    override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout, child: ConstraintLayout, directTargetChild: View, target: View, axes: Int, type: Int): Boolean =
             axes == ViewCompat.SCROLL_AXIS_VERTICAL
                     && target is ScrollingView
 
-    override fun onNestedScroll(coordinatorLayout: CoordinatorLayout, child: AppBarLayout, target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, type: Int) {
+    override fun onNestedScroll(coordinatorLayout: CoordinatorLayout, child: ConstraintLayout, target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, type: Int) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type)
 
         if (target !is ScrollingView) return
@@ -46,7 +46,7 @@ internal class OriginalProductAppBarLayoutBehavior: CoordinatorLayout.Behavior<A
         }
     }
 
-    private fun AppBarLayout.collapse() {
+    private fun ConstraintLayout.collapse() {
         findViewById<AppCompatImageView>(R.id.imageProduct)?.scaleWidthHeight(com.tokopedia.design.R.dimen.dp_80)
         findViewById<Typography>(R.id.textViewProductName)?.maxLines = 1
         findViewById<UnifyButton>(R.id.buttonAddToCart)?.gone()
@@ -66,7 +66,7 @@ internal class OriginalProductAppBarLayoutBehavior: CoordinatorLayout.Behavior<A
         return try { context?.resources?.getDimensionPixelSize(id) ?: defaultValue } catch (throwable: Throwable) { defaultValue }
     }
 
-    private fun AppBarLayout.expand() {
+    private fun ConstraintLayout.expand() {
         findViewById<AppCompatImageView>(R.id.imageProduct)?.scaleWidthHeight(com.tokopedia.design.R.dimen.dp_96)
         findViewById<Typography>(R.id.textViewProductName)?.maxLines = 2
         findViewById<UnifyButton>(R.id.buttonAddToCart)?.visible()

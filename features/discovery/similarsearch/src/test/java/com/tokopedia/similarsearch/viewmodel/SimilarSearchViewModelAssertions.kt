@@ -76,24 +76,13 @@ internal fun State<List<Any>>?.shouldHaveCorrectViewModelListWithoutLoadingMore(
     this.shouldHaveSimilarProductItemModel(2, similarProductItemList)
 }
 
-internal fun State<List<Any>>?.shouldHaveCorrectErrorResultView() {
+internal fun State<List<Any>>?.shouldHaveCorrectEmptyResultView() {
     this.shouldNotBeNull()
 
     // Empty Result
     this.shouldHaveCorrectDataSize(1)
 
-    // Error is shown as empty result
     this.shouldHaveEmptyResultViewModel(0)
-}
-
-internal fun State<List<Any>>?.shouldHaveCorrectEmptyResultView() {
-    this.shouldNotBeNull()
-
-    // Divider + Empty Result
-    this.shouldHaveCorrectDataSize(2)
-
-    this.shouldHaveDividerViewModel(0)
-    this.shouldHaveEmptyResultViewModel(1)
 }
 
 private fun State<List<Any>>?.shouldHaveEmptyResultViewModel(position: Int) {

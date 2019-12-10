@@ -80,25 +80,24 @@ internal class SimilarSearchViewModel(
         similarProductModelList.addAll(similarProductModel.getSimilarProductList())
         similarProductModelList.forEachIndexed { index, product -> product.position = index + 1 }
 
-        initFirstPageSimilarSearchViewModelList()
-
-        if (similarProductModelList.isEmpty()) {
-            addEmptyResultView()
-            postTrackingEmptyResult()
-        }
-        else {
-            addTitleView()
-            processSimilarProductListForOnePage()
-        }
-
-        postOriginalProductLiveData(similarProductModel.getOriginalProduct())
+        processSimilarSearchViewModelList(similarProductModel)
         postSimilarSearchLiveDataSuccess()
-        postTrackingImpressionSimilarProduct(similarProductModel)
     }
 
-    private fun initFirstPageSimilarSearchViewModelList() {
+    private fun processSimilarSearchViewModelList(similarProductModel: SimilarProductModel) {
         similarSearchViewModelList.clear()
-        similarSearchViewModelList.add(DividerViewModel())
+
+        if (similarProductModelList.isEmpty()) {
+            processSimilarSearchViewModelEmptyResult()
+        }
+        else {
+            processSimilarSearchViewModelData(similarProductModel)
+        }
+    }
+
+    private fun processSimilarSearchViewModelEmptyResult() {
+        addEmptyResultView()
+        postTrackingEmptyResult()
     }
 
     private fun addEmptyResultView() {
@@ -109,16 +108,29 @@ internal class SimilarSearchViewModel(
         trackingEmptyResultEventLiveData.postValue(Event(true))
     }
 
+    private fun processSimilarSearchViewModelData(similarProductModel: SimilarProductModel) {
+        addDividerModel()
+        addTitleView()
+        addSimilarProductListForOnePage()
+
+        postOriginalProductLiveData(similarProductModel.getOriginalProduct())
+        postTrackingImpressionSimilarProduct(similarProductModel)
+    }
+
+    private fun addDividerModel() {
+        similarSearchViewModelList.add(DividerViewModel())
+    }
+
     private fun addTitleView() {
         similarSearchViewModelList.add(TitleViewModel())
     }
 
-    private fun processSimilarProductListForOnePage() {
+    private fun addSimilarProductListForOnePage() {
         val productList = getProductListForOnePage()
 
         if (productList.isNotEmpty()) {
-            appendSimilarProductList(productList)
-            appendLoadingMoreView()
+            addSimilarProductList(productList)
+            addLoadingMoreView()
         }
     }
 
@@ -134,11 +146,11 @@ internal class SimilarSearchViewModel(
         return productListForOnePage
     }
 
-    private fun appendSimilarProductList(productList: List<Product>) {
+    private fun addSimilarProductList(productList: List<Product>) {
         similarSearchViewModelList.addAll(productList)
     }
 
-    private fun appendLoadingMoreView() {
+    private fun addLoadingMoreView() {
         if (getHasNextPage()) {
             similarSearchViewModelList.add(loadingMoreModel)
         }
@@ -153,13 +165,7 @@ internal class SimilarSearchViewModel(
         this.originalProductLiveData.postValue(originalProduct)
     }
 
-    private fun postSimilarSearchLiveDataSuccess() {
-        similarSearchLiveData.postValue(Success(similarSearchViewModelList))
-    }
-
     private fun postTrackingImpressionSimilarProduct(similarProductModel: SimilarProductModel) {
-        if (similarProductModel.getSimilarProductList().isEmpty()) return
-
         val trackingImpressionSimilarProductList = mutableListOf<Any>()
 
         similarProductModel.getSimilarProductList().forEach { productItem ->
@@ -167,6 +173,10 @@ internal class SimilarSearchViewModel(
         }
 
         trackingImpressionSimilarProductEventLiveData.postValue(Event(trackingImpressionSimilarProductList))
+    }
+
+    private fun postSimilarSearchLiveDataSuccess() {
+        similarSearchLiveData.postValue(Success(similarSearchViewModelList))
     }
 
     private fun catchGetSimilarProductsError(throwable: Throwable?) {
@@ -190,7 +200,7 @@ internal class SimilarSearchViewModel(
         if (!getHasNextPage()) return
 
         removeLoadingMoreModel()
-        processSimilarProductListForOnePage()
+        addSimilarProductListForOnePage()
 
         postSimilarSearchLiveDataSuccess()
     }
@@ -262,7 +272,6 @@ internal class SimilarSearchViewModel(
     fun onViewToggleWishlistSimilarProduct(productId: String, isWishlisted: Boolean) {
         if (!userSession.isLoggedIn) {
             trackingWishlistEventLiveData.postValue(Event(createWishlistTrackingModel(!isWishlisted, productId)))
-
             routeToLoginPageEventLiveData.postValue(Event(true))
             return
         }

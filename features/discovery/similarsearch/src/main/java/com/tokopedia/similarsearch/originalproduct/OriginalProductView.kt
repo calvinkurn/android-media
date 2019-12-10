@@ -3,7 +3,6 @@ package com.tokopedia.similarsearch.originalproduct
 import android.view.View
 import androidx.annotation.DrawableRes
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.similarsearch.R
@@ -11,11 +10,11 @@ import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.view.*
 import kotlinx.android.synthetic.main.similar_search_original_product_layout.view.*
 
-internal class SimilarSearchOriginalProductView(
-        private val similarSearchOriginalProductViewListener: SimilarSearchOriginalProductViewListener
+internal class OriginalProductView(
+        private val originalProductViewListener: OriginalProductViewListener
 ) {
 
-    private val fragmentView = similarSearchOriginalProductViewListener.getFragmentView()
+    private val fragmentView = originalProductViewListener.getFragmentView()
     private val context = fragmentView.context
 
     fun bindOriginalProductView(similarSearchOriginalProduct: Product) {
@@ -35,7 +34,7 @@ internal class SimilarSearchOriginalProductView(
         fragmentView.cardViewOriginalProductSimilarSearch.visible()
 
         fragmentView.cardViewOriginalProductSimilarSearch?.setOnClickListener {
-            similarSearchOriginalProductViewListener.onItemClicked()
+            originalProductViewListener.onItemClicked()
         }
     }
 
@@ -47,7 +46,7 @@ internal class SimilarSearchOriginalProductView(
         updateWishlistStatus(similarSearchOriginalProduct.isWishlisted)
 
         fragmentView.buttonWishlist?.setOnClickListener {
-            similarSearchOriginalProductViewListener.onButtonWishlistClicked()
+            originalProductViewListener.onButtonWishlistClicked()
         }
     }
 
@@ -109,17 +108,17 @@ internal class SimilarSearchOriginalProductView(
 
     private fun initOnButtonBuyClicked() {
         fragmentView.buttonBuy?.setOnClickListener {
-            similarSearchOriginalProductViewListener.onButtonBuyClicked()
+            originalProductViewListener.onButtonBuyClicked()
         }
     }
 
     private fun initOnButtonAddToCartClicked() {
         fragmentView.buttonAddToCart?.setOnClickListener {
-            similarSearchOriginalProductViewListener.onButtonAddToCartClicked()
+            originalProductViewListener.onButtonAddToCartClicked()
         }
 
         fragmentView.buttonAddToCartCollapsed?.setOnClickListener {
-            similarSearchOriginalProductViewListener.onButtonAddToCartClicked()
+            originalProductViewListener.onButtonAddToCartClicked()
         }
     }
 }
