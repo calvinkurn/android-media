@@ -79,17 +79,19 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
             }
 
             // booking online - booking code
-            if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()
-                    || item.dataObject.onlineBookingState == 0) {
+            if (item.dataObject.onlineBookingState == 0) {
                 itemView.rl_booking_code.visibility = View.GONE
             } else {
-                itemView.rl_booking_code.visibility = View.VISIBLE
+                if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()) {
+                    itemView.rl_booking_code.visibility = View.GONE
+                } else {
+                    itemView.rl_booking_code.visibility = View.VISIBLE
 
-                itemView.rl_wajib_dicantumkan.setOnClickListener {
-                    actionListener.onShowBottomSheetInfo(
-                            itemView.context.getString(R.string.wajib_tulis_kode_booking_title),
-                            R.string.wajib_tulis_kode_booking_desc)
-                }
+                    itemView.rl_wajib_dicantumkan.setOnClickListener {
+                        actionListener.onShowBottomSheetInfo(
+                                itemView.context.getString(R.string.wajib_tulis_kode_booking_title),
+                                R.string.wajib_tulis_kode_booking_desc)
+                    }
 
                 if (item.dataObject.onlineBookingCode.isEmpty()) {
                     itemView.booking_code_see_btn.visibility = View.GONE
@@ -111,6 +113,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                         }
                     }
 
+                    }
                 }
             }
         }

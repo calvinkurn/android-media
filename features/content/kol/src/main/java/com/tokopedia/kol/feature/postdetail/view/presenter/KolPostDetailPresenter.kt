@@ -2,7 +2,6 @@ package com.tokopedia.kol.feature.postdetail.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
@@ -337,7 +336,7 @@ class KolPostDetailPresenter @Inject constructor(
                     onSuccess = {
                         view.onSuccessGetPostStatistic(
                                 PostStatisticCommissionUiModel(
-                                        KMNumbers.formatRupiahString(it.second.totalProductCommission.toLongOrZero()),
+                                        it.second.totalProductCommission,
                                         PostStatisticMapper(likeCount, commentCount).call(it.first)
                                 )
 
