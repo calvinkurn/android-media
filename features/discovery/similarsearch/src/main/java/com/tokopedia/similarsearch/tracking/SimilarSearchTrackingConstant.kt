@@ -8,6 +8,7 @@ internal interface Event {
         const val PRODUCT_CLICK = "productClick"
         const val VIEW_SEARCH_RESULT = "viewSearchResult"
         const val CLICK_WISHLIST = "clickWishlist"
+        const val CLICK_SIMILAR_SEARCH = "clickSimilarSearch"
     }
 }
 
@@ -27,6 +28,7 @@ internal interface Action {
         const val MODULE = "module"
         const val LOGIN = "login"
         const val NON_LOGIN = "nonlogin"
+        const val CLICK_BUY_ON_SIMILAR_SEARCH = "click buy on similar search"
     }
 }
 

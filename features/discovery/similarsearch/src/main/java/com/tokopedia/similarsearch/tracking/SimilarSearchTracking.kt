@@ -82,4 +82,15 @@ internal object SimilarSearchTracking {
     private fun getTopAdsOrGeneralLabel(isTopAds: Boolean): String {
         return if (isTopAds) Label.TOPADS else Label.GENERAL
     }
+
+    fun trackEventClickBuy() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.CLICK_SIMILAR_SEARCH,
+                        TrackAppUtils.EVENT_CATEGORY, Category.SIMILAR_PRODUCT,
+                        TrackAppUtils.EVENT_ACTION, Action.CLICK_BUY_ON_SIMILAR_SEARCH,
+                        TrackAppUtils.EVENT_LABEL, ""
+                )
+        )
+    }
 }

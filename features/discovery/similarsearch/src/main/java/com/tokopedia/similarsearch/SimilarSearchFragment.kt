@@ -191,6 +191,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun selectedProductOnButtonBuyClicked(originalProduct: Product) {
+        SimilarSearchTracking.trackEventClickBuy()
         routeToCheckout(originalProduct, ATC_AND_BUY)
     }
 
@@ -217,23 +218,15 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun updateViewContent(similarSearchLiveData: State<List<Any>>) {
-        when (similarSearchLiveData) {
-            is State.Loading -> {
-                updateProgressBarVisiblity(View.VISIBLE)
-                updateAdapterList(similarSearchLiveData)
-                updateScrollListener()
-            }
-            is State.Success -> {
-                updateProgressBarVisiblity(View.GONE)
-                updateAdapterList(similarSearchLiveData)
-                updateScrollListener()
-            }
-            is State.Error -> {
-                updateProgressBarVisiblity(View.GONE)
-                updateAdapterList(similarSearchLiveData)
-                updateScrollListener()
-            }
+        if (similarSearchLiveData is State.Loading) {
+            updateProgressBarVisiblity(View.VISIBLE)
         }
+        else {
+            updateProgressBarVisiblity(View.GONE)
+        }
+
+        updateAdapterList(similarSearchLiveData)
+        updateScrollListener()
     }
 
     private fun updateProgressBarVisiblity(visibility: Int) {
