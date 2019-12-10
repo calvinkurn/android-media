@@ -8,6 +8,7 @@ import com.tokopedia.play.data.Channel
 import com.tokopedia.play.domain.GetChannelInfoUseCase
 import com.tokopedia.play.view.type.PlayVODType
 import com.tokopedia.play_common.player.TokopediaPlayManager
+import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.WebSocket
 import javax.inject.Inject
-import kotlin.random.Random
 
 /**
  * Created by jegul on 29/11/19
@@ -34,6 +34,9 @@ class PlayViewModel @Inject constructor(
 
     val observableVOD: LiveData<PlayVODType>
         get() = _observableVOD
+
+    val observableVideoState: LiveData<TokopediaPlayVideoState>
+        get() = playManager.getObservablePlayVideoState()
 
     val observeChannel: LiveData<Result<Channel>>
         get() = _channelInfoResult

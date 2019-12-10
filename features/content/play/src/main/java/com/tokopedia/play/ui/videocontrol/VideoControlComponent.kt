@@ -27,7 +27,7 @@ class VideoControlComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Play -> {
+                            is ScreenStateEvent.SetVideo -> {
                                 uiView.run {
                                     if (it.vodType is PlayVODType.Live) {
                                         setPlayer(null)

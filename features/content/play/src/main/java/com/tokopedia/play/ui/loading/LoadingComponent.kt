@@ -1,9 +1,10 @@
-package com.tokopedia.play.ui.video
+package com.tokopedia.play.ui.loading
 
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -11,22 +12,22 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
- * Created by jegul on 02/12/19
+ * Created by jegul on 09/12/19
  */
-class VideoComponent(
+class LoadingComponent(
         container: ViewGroup,
         bus: EventBusFactory,
         coroutineScope: CoroutineScope
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
-    private val uiView = initUiView(container)
+    private val uiView = initView(container)
 
     init {
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.vodType.exoPlayer)
+                            is ScreenStateEvent.VideoStateChanged -> handleVideoStateChanged(it.state)
                         }
                     }
         }
@@ -40,6 +41,13 @@ class VideoComponent(
         return emptyFlow()
     }
 
-    private fun initUiView(container: ViewGroup): VideoView =
-            VideoView(container)
+    fun initView(container: ViewGroup) =
+            LoadingView(container)
+
+    private fun handleVideoStateChanged(state: TokopediaPlayVideoState) {
+        when (state) {
+            TokopediaPlayVideoState.Buffering -> uiView.show()
+            TokopediaPlayVideoState.Ready, TokopediaPlayVideoState.Ended, TokopediaPlayVideoState.NoMedia -> uiView.hide()
+        }
+    }
 }
