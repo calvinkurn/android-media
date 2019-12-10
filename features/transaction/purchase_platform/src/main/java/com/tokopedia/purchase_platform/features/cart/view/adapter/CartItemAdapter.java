@@ -35,14 +35,14 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        return CartItemViewHolder.TYPE_VIEW_ITEM_CART;
+        return CartItemViewHolder.Companion.getTYPE_VIEW_ITEM_CART();
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(CartItemViewHolder.TYPE_VIEW_ITEM_CART, parent, false);
+                .inflate(CartItemViewHolder.Companion.getTYPE_VIEW_ITEM_CART(), parent, false);
         return new CartItemViewHolder(view, compositeSubscription, actionListener);
     }
 
