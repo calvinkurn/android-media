@@ -40,8 +40,8 @@ class CategoryPageAnalytics {
     val KEY_PROMOVIEW = "promoView"
     val KEY_EVENT_BANNED_CLICK = "clickCategoryBanned"
     val KEY_EVENT_BANNED_VIEW = "viewCategoryBannedIris"
-    val KEY_PARENT_GROUP_NAME = "parentGroupName"
-    val KEY_PARENT_GROUP_ID = "parentGroupId"
+    val KEY_PRODUCT_GROUP_NAME = "productGroupName"
+    val KEY_PRODUCT_GROUP_ID = "productGroupId"
     val KEY_SUBCATEGORY = "subcategory"
     val KEY_SUBCATEGORY_ID = "subcategoryId"
 
@@ -430,13 +430,13 @@ class CategoryPageAnalytics {
         val map = HashMap<String, String>()
         map[KEY_CATEGORY] = KEY_CATEGORY
         map[KEY_CATEGORY_ID] = categoryId
-        map[KEY_PARENT_GROUP_NAME] = ""
-        map[KEY_PARENT_GROUP_ID] = ""
+        map[KEY_PRODUCT_GROUP_NAME] = ""
+        map[KEY_PRODUCT_GROUP_ID] = ""
         map[KEY_SUBCATEGORY] = parentName ?: categoryName
         map[KEY_SUBCATEGORY_ID] = parentId ?: categoryId
         if (parentId != null) {
-            map[KEY_PARENT_GROUP_NAME] = categoryName
-            map[KEY_PARENT_GROUP_ID] = categoryId
+            map[KEY_PRODUCT_GROUP_NAME] = categoryName
+            map[KEY_PRODUCT_GROUP_ID] = categoryId
         }
         return map
     }
