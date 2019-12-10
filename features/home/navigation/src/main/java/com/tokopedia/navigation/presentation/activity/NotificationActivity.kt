@@ -96,7 +96,14 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     }
 
     private fun initView() {
-        var initialIndexPage = getParamInt(Intent.EXTRA_TITLE, intent.extras, null, INDEX_NOTIFICATION_ACTIVITY)
+        val initialIndexPage = if (cacheManager.isExist(KEY_TAB_POSITION)) {
+            cacheManager.read(KEY_TAB_POSITION)
+        } else {
+            getParamInt(Intent.EXTRA_TITLE,
+                    intent.extras,
+                    null,
+                    INDEX_NOTIFICATION_ACTIVITY)
+        }
         initTabLayout(initialIndexPage)
         presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
         presenter.getIsTabUpdate(this)

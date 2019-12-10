@@ -4,17 +4,14 @@ import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
-import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
-import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
+import com.tokopedia.flight.bookingV2.domain.FlightAddToCartUseCase;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.BaseCartData;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingVoucherViewModel;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
-import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.FlightBookingCheckoutUseCase;
 import com.tokopedia.flight.review.domain.FlightBookingVerifyUseCase;
@@ -22,6 +19,7 @@ import com.tokopedia.flight.review.domain.verifybooking.model.response.CartItem;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
+import com.tokopedia.flight.review.view.model.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -51,7 +49,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
     private final FlightBookingCheckoutUseCase flightBookingCheckoutUseCase;
     private final FlightBookingVerifyUseCase flightBookingVerifyUseCase;
-    private final FlightPassengerDeleteAllListUseCase flightPassengerDeleteAllListUseCase;
     private final FlightCancelVoucherUseCase flightCancelVoucherUseCase;
     private FlightAnalytics flightAnalytics;
     private TravelTickerUseCase travelTickerUseCase;
@@ -62,14 +59,12 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                                         FlightAddToCartUseCase flightAddToCartUseCase,
                                         FlightBookingCartDataMapper flightBookingCartDataMapper,
                                         FlightBookingVerifyUseCase flightBookingVerifyUseCase,
-                                        FlightPassengerDeleteAllListUseCase flightPassengerDeleteAllListUseCase,
                                         FlightCancelVoucherUseCase flightCancelVoucherUseCase,
                                         FlightAnalytics flightAnalytics,
                                         TravelTickerUseCase travelTickerUseCase) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightBookingCheckoutUseCase = flightBookingCheckoutUseCase;
         this.flightBookingVerifyUseCase = flightBookingVerifyUseCase;
-        this.flightPassengerDeleteAllListUseCase = flightPassengerDeleteAllListUseCase;
         this.flightCancelVoucherUseCase = flightCancelVoucherUseCase;
         this.flightAnalytics = flightAnalytics;
         this.travelTickerUseCase = travelTickerUseCase;
@@ -198,7 +193,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
     @Override
     public void onPaymentSuccess() {
-        deleteListPassenger();
     }
 
     @Override
@@ -337,31 +331,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         }
         flightBookingCheckoutUseCase.unsubscribe();
         flightBookingVerifyUseCase.unsubscribe();
-        flightPassengerDeleteAllListUseCase.unsubscribe();
         travelTickerUseCase.unsubscribe();
 
         super.detachView();
-    }
-
-    private void deleteListPassenger() {
-        flightPassengerDeleteAllListUseCase.execute(
-                flightPassengerDeleteAllListUseCase.createEmptyRequestParams(),
-                new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        getView().navigateToOrderList();
-                    }
-                }
-        );
     }
 }

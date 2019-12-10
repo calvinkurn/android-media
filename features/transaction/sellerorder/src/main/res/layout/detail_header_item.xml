@@ -53,6 +53,16 @@
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"/>
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_detail_buyer_request_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header_divider_1"
+            android:layout_marginTop="@dimen/dp_16"
+            app:tickerType="error"
+            app:tickerShapeType="loose"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/header_buyer_label"
             android:layout_width="wrap_content"
@@ -61,7 +71,7 @@
             android:text="@string/buyer"
             android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_divider_1"
+            app:layout_constraintTop_toBottomOf="@id/ticker_detail_buyer_request_cancel"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             android:textColor="@color/Neutral_N700_44"
@@ -74,12 +84,13 @@
             android:layout_height="wrap_content"
             tools:text="Mesut Ozil"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_divider_1"
+            app:layout_constraintTop_toBottomOf="@id/ticker_detail_buyer_request_cancel"
             android:layout_marginTop="@dimen/dp_16"
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"/>
+            android:layout_marginEnd="@dimen/dp_16"
+            android:textIsSelectable="true"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/header_date_label"
@@ -107,13 +118,13 @@
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"/>
+            android:layout_marginEnd="@dimen/dp_16"
+            android:textIsSelectable="true"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/header_deadline_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/deadline"
             android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/header_date_label"
@@ -206,7 +217,8 @@
             tools:text="INV/20161025/XVI/X/55069657"
             android:textColor="@color/Neutral_N700_96"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"/>
+            android:layout_marginStart="@dimen/dp_16"
+            android:textIsSelectable="true"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/header_see_invoice"
