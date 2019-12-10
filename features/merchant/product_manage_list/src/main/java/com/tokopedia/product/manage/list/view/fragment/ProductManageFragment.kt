@@ -239,6 +239,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         displayOnBoardingCheck()
     }
 
+    override fun getSearchInputViewResourceId(): Int {
+        return R.id.search_input_view
+    }
+
     private fun initView(view: View) {
         progressDialog = ProgressDialog(activity)
         progressDialog.setTitle(com.tokopedia.abstraction.R.string.title_loading)
