@@ -61,6 +61,10 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    fun startCurrentVideo() {
+        playManager.startCurrentVideo()
+    }
+
     fun startWebsocket(url: String) {
         val websocketSubscriber = object : WebSocketSubscriber() {
 
@@ -86,12 +90,12 @@ class PlayViewModel @Inject constructor(
     }
 
     fun initVideo() {
-//        startVideoWithUrlString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4", false)
-        startVideoWithUrlString("rtmp://fms.105.net/live/rmc1", true)
+        startVideoWithUrlString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4", false)
+//        startVideoWithUrlString("rtmp://fms.105.net/live/rmc1", true)
     }
 
     private fun startVideoWithUrlString(urlString: String, isLive: Boolean) {
-        playManager.safePlayVideoWithUriString(urlString)
+        playManager.safePlayVideoWithUriString(urlString, isLive)
         _observableVOD.value =
                 if (isLive) PlayVODType.Live(playManager.videoPlayer)
                 else PlayVODType.Replay(playManager.videoPlayer)

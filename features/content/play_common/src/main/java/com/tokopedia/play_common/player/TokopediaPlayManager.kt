@@ -51,9 +51,10 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
 
     private val playerEventListener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            when (playbackState) {
+            if (!playWhenReady) _observablePlayVideoState.value = TokopediaPlayVideoState.Pause
+            else when (playbackState) {
                 Player.STATE_BUFFERING -> _observablePlayVideoState.value = TokopediaPlayVideoState.Buffering
-                Player.STATE_READY -> _observablePlayVideoState.value = TokopediaPlayVideoState.Ready
+                Player.STATE_READY -> _observablePlayVideoState.value = TokopediaPlayVideoState.Playing
                 Player.STATE_IDLE -> _observablePlayVideoState.value = TokopediaPlayVideoState.NoMedia
                 Player.STATE_ENDED -> _observablePlayVideoState.value = TokopediaPlayVideoState.Ended
             }
@@ -66,26 +67,36 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
     }
 
     val videoPlayer: ExoPlayer = ExoPlayerFactory.newSimpleInstance(applicationContext).apply {
-        playWhenReady = true
         addListener(playerEventListener)
     }
 
-    //region public method
-    fun safePlayVideoWithUri(uri: Uri) {
-        if (!videoPlayer.isPlaying) playVideoWithUri(uri)
-    }
-
-    fun safePlayVideoWithUriString(uriString: String) = safePlayVideoWithUri(Uri.parse(uriString))
-
     fun getObservablePlayVideoState(): LiveData<TokopediaPlayVideoState> = _observablePlayVideoState
 
-    fun playVideoWithUri(uri: Uri) {
+    //region public method
+    fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
+        if (!videoPlayer.isPlaying) playVideoWithUri(uri, autoPlay)
+    }
+
+    fun safePlayVideoWithUriString(uriString: String, autoPlay: Boolean) = safePlayVideoWithUri(Uri.parse(uriString), autoPlay)
+
+    fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
         val videoType = TokopediaPlayVideoType.getVideoTypeByUri(uri)
         val mediaSource = getMediaSourceByVideoType(videoType)
+        videoPlayer.playWhenReady = autoPlay
         videoPlayer.prepare(mediaSource, true, true)
     }
 
-    fun playVideoWithString(uriString: String) = playVideoWithUri(Uri.parse(uriString))
+    fun playVideoWithString(uriString: String, autoPlay: Boolean = true) = playVideoWithUri(Uri.parse(uriString), autoPlay)
+    //endregion
+
+    //region player control
+    fun startCurrentVideo() {
+        videoPlayer.playWhenReady = true
+    }
+
+    fun pauseCurrentVideo() {
+        videoPlayer.playWhenReady = false
+    }
     //endregion
 
     //region private method
