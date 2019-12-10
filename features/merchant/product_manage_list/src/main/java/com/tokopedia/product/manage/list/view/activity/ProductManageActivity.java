@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
@@ -28,13 +27,6 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
 
     public static final String TAG = ProductManageActivity.class.getSimpleName();
     public UserSessionInterface userSession;
-
-    public static Intent getApplinkIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ProductManageActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
