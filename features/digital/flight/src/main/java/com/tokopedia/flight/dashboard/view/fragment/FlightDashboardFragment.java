@@ -23,12 +23,14 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.widget.NestedScrollView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.BannerView;
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.common.travel.utils.TravelDateUtil;
@@ -107,7 +109,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     View bannerLayout;
     BannerView bannerView;
     TickerView tickerView;
-    List<BannerDetail> bannerList;
+    List<TravelCollectiveBannerModel.Banner> bannerList;
 
     @Inject
     FlightDashboardPresenter presenter;
@@ -288,7 +290,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         return view;
     }
 
-    private BannerDetail getBannerData(int position) {
+    private TravelCollectiveBannerModel.Banner getBannerData(int position) {
         if (bannerList.size() > position) {
             return bannerList.get(position);
         } else {
@@ -305,6 +307,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         presenter.attachView(this);
         presenter.sendAnalyticsOpenScreen(FlightAnalytics.Screen.HOMEPAGE);
         presenter.initialize();
+        presenter.getBannerData(GraphqlHelper.loadRawString(getResources(), com.tokopedia.common.travel.R.raw.query_travel_collective_banner));
         KeyboardHandler.hideSoftKeyboard(getActivity());
 
         presenter.fetchTickerData();
@@ -593,13 +596,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void renderBannerView(List<BannerDetail> bannerList) {
+    public void renderBannerView(List<TravelCollectiveBannerModel.Banner> bannerList) {
         bannerLayout.setVisibility(View.VISIBLE);
         bannerView.setVisibility(View.VISIBLE);
         this.bannerList = bannerList;
         List<String> promoUrls = new ArrayList<>();
-        for (BannerDetail bannerModel : bannerList) {
-            promoUrls.add(bannerModel.getAttributes().getImageUrl());
+        for (TravelCollectiveBannerModel.Banner bannerModel : bannerList) {
+            promoUrls.add(bannerModel.getAttribute().getImageUrl());
         }
         bannerView.setPromoList(promoUrls);
         bannerView.buildView();
@@ -694,8 +697,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     private void bannerClickAction(int position) {
-        if (getBannerData(position) != null && getBannerData(position).getAttributes() != null) {
-            String url = getBannerData(position).getAttributes().getLinkUrl();
+        if (getBannerData(position) != null && getBannerData(position).getAttribute() != null) {
+            String url = getBannerData(position).getAttribute().getAppUrl();
             Uri uri = Uri.parse(url);
             if (uri != null && uri.getPathSegments() != null
                     && uri.getPathSegments().size() == 2

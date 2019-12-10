@@ -7,35 +7,55 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import rx.Subscriber
 import javax.inject.Inject
 
 /**
  * @author by jessica on 2019-08-26
  */
 
-class GetTravelCollectiveBannerUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
+class GetTravelCollectiveBannerUseCase @Inject constructor(private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase,
+                                                           private val graphqlUseCase: GraphqlUseCase) {
 
     suspend fun execute(query: String, product: TravelType, isFromCloud: Boolean)
             : Result<TravelCollectiveBannerModel> {
 
-        if (isFromCloud) useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        else useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
+        if (isFromCloud) multiRequestGraphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        else multiRequestGraphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
 
-        useCase.clearRequest()
+        multiRequestGraphqlUseCase.clearRequest()
 
         return try {
             val params = mapOf(PARAM_BANNER_PRODUCT_KEY to getProductString(product))
             val graphqlRequest = GraphqlRequest(query, TravelCollectiveBannerModel.Response::class.java, params)
-            useCase.addRequest(graphqlRequest)
-            val travelCollectiveBannerModel = useCase.executeOnBackground().getSuccessData<TravelCollectiveBannerModel.Response>().response
+            multiRequestGraphqlUseCase.addRequest(graphqlRequest)
+            val travelCollectiveBannerModel = multiRequestGraphqlUseCase.executeOnBackground().getSuccessData<TravelCollectiveBannerModel.Response>().response
 
             Success(travelCollectiveBannerModel)
         } catch (throwable: Throwable) {
             Fail(throwable)
         }
+    }
+
+    fun executeRx(query: String, requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
+        requestParams?.let {
+            val graphqlRequest = GraphqlRequest(query, TravelCollectiveBannerModel.Response::class.java, it.parameters)
+            graphqlUseCase.clearRequest()
+            graphqlUseCase.addRequest(graphqlRequest)
+            graphqlUseCase.execute(requestParams, subscriber)
+        }
+    }
+
+    fun createRequestParams(product: TravelType): RequestParams {
+        val requestParams = RequestParams.create()
+        requestParams.putString(PARAM_BANNER_PRODUCT_KEY, getProductString(product))
+        return requestParams
     }
 
     private fun getProductString(product: TravelType): String {
@@ -45,6 +65,10 @@ class GetTravelCollectiveBannerUseCase @Inject constructor(val useCase: MultiReq
             TravelType.SUB_HOMEPAGE -> PARAM_PRODUCT_SUB_HOMEPAGE
             else -> PARAM_PRODUCT_ALL
         }
+    }
+
+    fun unsubscribe() {
+        graphqlUseCase.unsubscribe()
     }
 
     companion object {
