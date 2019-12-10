@@ -28,7 +28,7 @@ class PinnedComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.SetPinned -> uiView.setPinnedMessage(it.author, it.message)
-                            is ScreenStateEvent.Play ->
+                            is ScreenStateEvent.SetVideo ->
                                 if (it.vodType is PlayVODType.Live) uiView.show() else uiView.hide()
                         }
                     }

@@ -29,8 +29,8 @@ class ChatListComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Chat -> uiView.showChat(it.chat)
-                            is ScreenStateEvent.Play ->
+                            is ScreenStateEvent.IncomingChat -> uiView.showChat(it.chat)
+                            is ScreenStateEvent.SetVideo ->
                                 if (it.vodType is PlayVODType.Live) uiView.show() else uiView.hide()
                         }
                     }
