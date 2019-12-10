@@ -99,6 +99,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this::addImageClick)
     }
+    private var isLowDevice = false
     private var selectedImage: ArrayList<String> = arrayListOf()
 
     private var isImageAdded: Boolean = false
@@ -176,6 +177,8 @@ class CreateReviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         reviewUserName = createReviewViewModel.userSessionInterface.name
+        isLowDevice = DeviceChecker.isLowPerformingDevice(context)
+
         getReviewData()
         anonymous_text.text = generateAnonymousText()
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
@@ -193,7 +196,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 reviewClickAt = position
                 shouldPlayAnimation = true
                 context?.let {
-                    if (DeviceChecker.isLowPerformingDevice(it)) {
+                    if (isLowDevice) {
                         generatePeddieImageByIndex()
                     } else {
                         playAnimation()
