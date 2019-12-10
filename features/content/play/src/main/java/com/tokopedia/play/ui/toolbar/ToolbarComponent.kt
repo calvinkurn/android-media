@@ -27,7 +27,7 @@ class ToolbarComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Play ->
+                            is ScreenStateEvent.SetVideo ->
                                 uiView.setLiveBadgeVisibility(
                                         (it.vodType is PlayVODType.Live)
                                 )

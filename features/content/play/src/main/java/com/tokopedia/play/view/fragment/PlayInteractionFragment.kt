@@ -93,7 +93,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.Play(it)
+                                ScreenStateEvent.SetVideo(it)
                         )
             }
         })
@@ -102,7 +102,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.Chat(it)
+                                ScreenStateEvent.IncomingChat(it)
                         )
             }
         })

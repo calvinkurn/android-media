@@ -11,10 +11,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.ui.loading.LoadingComponent
 import com.tokopedia.play.ui.video.VideoComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -73,13 +76,39 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.Play(it)
+                                ScreenStateEvent.SetVideo(it)
                         )
             }
+        })
+        playViewModel.observableVideoState.observe(this, Observer {
+            if (it is TokopediaPlayVideoState.Error)
+                view?.let { fragmentView ->
+                    Toaster.make(
+                            fragmentView,
+                            it.error.localizedMessage,
+                            type = Toaster.TYPE_ERROR,
+                            actionText = getString(R.string.play_try_again),
+                            clickListener = View.OnClickListener {
+                                //TODO("Maybe retry video")
+                            }
+                    )
+                }
+            else delegateVideoState(it)
         })
     }
 
     private fun initComponents(container: ViewGroup) {
         VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        LoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+    }
+
+    private fun delegateVideoState(state: TokopediaPlayVideoState) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.VideoStateChanged(state)
+                    )
+        }
     }
 }

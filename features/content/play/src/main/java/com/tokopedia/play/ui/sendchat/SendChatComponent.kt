@@ -28,7 +28,7 @@ class SendChatComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Play ->
+                            is ScreenStateEvent.SetVideo ->
                                 if (it.vodType is PlayVODType.Live) uiView.show() else uiView.hide()
                         }
                     }
