@@ -78,6 +78,22 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
 
         populatePricePills(priceRangeList)
 
+        if (lastMinValue != 0 && lastMinValue > maxBound) {
+            maxBound = lastMinValue
+        }
+
+        if (lastMaxValue != 0 && lastMaxValue > maxBound) {
+            maxBound = lastMaxValue
+        }
+
+        if (lastMinValue != 0 && lastMinValue < minBound) {
+            minBound = lastMinValue
+        }
+
+        if (lastMaxValue != 0 && lastMaxValue < minBound) {
+            minBound = lastMaxValue
+        }
+
         val defaultMinValue: Int
         defaultMinValue = if (lastMinValue == 0) {
             minBound

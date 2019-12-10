@@ -8,11 +8,13 @@
 
     <ImageView
         android:id="@+id/img_state"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/dp_280"
         app:layout_constraintBottom_toTopOf="@+id/txt_message"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
         app:layout_constraintVertical_chainStyle="packed"
         android:layout_height="@dimen/dp_210" />
 
@@ -23,6 +25,7 @@
         tools:text="kosong nih bos"
         android:textStyle="bold"
         android:textSize="@dimen/sp_16"
+        android:layout_marginTop="@dimen/dp_8"
         android:textColor="@color/chorcoal_black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/img_state"

@@ -4,15 +4,15 @@ import android.animation.LayoutTransition
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -28,6 +28,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
+import com.tokopedia.navigation.domain.model.EmptyUpdateState
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.listener.NotificationActivityListener
@@ -44,8 +45,8 @@ import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateIte
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateViewModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.navigation.widget.ChipFilterItemDivider
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
@@ -78,6 +79,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     lateinit var analytics: NotificationUpdateAnalytics
 
     private var notificationUpdateListener: NotificationUpdateListener? = null
+
+    private val _adapter by lazy { adapter as NotificationUpdateAdapter }
 
     interface NotificationUpdateListener {
         fun onSuccessLoadNotifUpdate()
@@ -231,14 +234,33 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     private fun onSuccessInitiateData(): (NotificationUpdateViewModel) -> Unit {
         return {
-            var canLoadMore = it.paging.hasNext
-            if (canLoadMore && !it.list.isEmpty()) {
-                cursor = (it.list.last().notificationId)
+            hideLoading()
+            _adapter.removeEmptyState()
+
+            if (it.list.isEmpty()) {
+                updateScrollListenerState(false)
+                val emptyState = EmptyUpdateState(
+                        R.drawable.bg_empty_state_common,
+                        getString(R.string.no_notification_update_yet)
+                )
+                _adapter.addElement(emptyState)
+            } else {
+                val canLoadMore = it.paging.hasNext
+                if (canLoadMore && !it.list.isEmpty()) {
+                    cursor = (it.list.last().notificationId)
+                }
+                if (swipeToRefresh.isRefreshing) {
+                    notificationUpdateListener?.onSuccessLoadNotifUpdate()
+                }
+
+                _adapter.addElement(it.list)
+                updateScrollListenerState(canLoadMore)
+
+                if (_adapter.dataSize < minimumScrollableNumOfItems
+                        && endlessRecyclerViewScrollListener != null && canLoadMore) {
+                    endlessRecyclerViewScrollListener.loadMoreNextPage()
+                }
             }
-            if (swipeToRefresh.isRefreshing) {
-                notificationUpdateListener?.onSuccessLoadNotifUpdate()
-            }
-            renderList(it.list, canLoadMore)
         }
     }
 
@@ -358,8 +380,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             longerTextDialog.arguments = bundle
         }
 
-        if (!longerTextDialog.isAdded)
+        if (!longerTextDialog.isAdded  && longerTextDialog.dialog?.isShowing == false) {
             longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
+        }
     }
 
     override fun trackNotificationImpression(element: NotificationUpdateItemViewModel) {

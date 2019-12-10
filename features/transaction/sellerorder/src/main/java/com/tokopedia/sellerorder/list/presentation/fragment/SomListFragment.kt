@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
@@ -35,6 +36,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_600
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_699
@@ -74,8 +76,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var somListItemAdapter: SomListItemAdapter
+    private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private var filterList: List<SomListFilter.Data.OrderFilterSom.StatusList> = listOf()
-    private var orderList: List<SomListOrder.Data.OrderList.Order> = listOf()
+    private var orderList: SomListOrder.Data.OrderList = SomListOrder.Data.OrderList()
     private var mapOrderStatus = HashMap<String, List<Int>>()
     private var paramOrder =  SomListOrderParam()
     private var refreshHandler: RefreshHandler? = null
@@ -87,6 +90,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var isFilterApplied = false
     private var defaultStartDate = ""
     private var defaultEndDate = ""
+    private var nextOrderId = 0
+    private var onLoadMore = false
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -141,9 +146,23 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         refreshHandler?.setPullEnabled(true)
         somListItemAdapter = SomListItemAdapter()
         somListItemAdapter.setActionListener(this)
+        addEndlessScrollListener()
+    }
+
+    private fun addEndlessScrollListener() {
         order_list_rv?.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = somListItemAdapter
+            scrollListener = object: EndlessRecyclerViewScrollListener(layoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    onLoadMore = true
+                    println("++ onLoadMore - nextOrderId = $nextOrderId")
+                    if (nextOrderId != 0) {
+                        loadOrderList(nextOrderId)
+                    }
+                }
+            }
+            addOnScrollListener(scrollListener)
         }
     }
 
@@ -198,7 +217,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         })
     }
 
-    private fun loadOrderList() {
+    private fun loadOrderList(nextOrderId: Int) {
+        paramOrder.nextOrderId = nextOrderId
         somListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_order), paramOrder)
     }
 
@@ -258,8 +278,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             filterItem.type = it.key
 
-            if (it.isChecked || tabActive.equals(it.key, true) || paramOrder.statusList == it.orderStatusIdList
-                    || it.orderStatusIdList.containsAll(paramOrder.statusList)) {
+            if (it.isChecked || tabActive.equals(it.key, true) || paramOrder.statusList == it.orderStatusIdList) {
                 currentIndex = index
                 filterItem.setColorBorder(R.color.tkpd_main_green)
                 filterItem.isSelected = true
@@ -292,7 +311,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     SomAnalytics.eventClickQuickFilter(tabActive)
                     println("++ selected tabActive = $tabActive")
                     if (listOrderStatusId.isNotEmpty()) {
-                        paramOrder.statusList = listOrderStatusId
+                        this.paramOrder.statusList = listOrderStatusId
                         refreshHandler?.startRefresh()
                     }
                 }
@@ -306,7 +325,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when (it) {
                 is Success -> {
                     orderList = it.data
-                    if (orderList.isNotEmpty()) renderOrderList()
+                    nextOrderId = orderList.cursorOrderId
+                    println("++ nextOrderId = $nextOrderId")
+                    if (orderList.orders.isNotEmpty()) renderOrderList()
                     else {
                         if (isFilterApplied) {
                             if (!paramOrder.startDate.equals(defaultStartDate, true) || !paramOrder.endDate.equals(defaultEndDate, true)) {
@@ -336,7 +357,12 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         refreshHandler?.finishRefresh()
         empty_state_order_list.visibility = View.GONE
         order_list_rv.visibility = View.VISIBLE
-        somListItemAdapter.somItemList = orderList.toMutableList()
+
+        if (!onLoadMore) {
+            somListItemAdapter.somItemList = orderList.orders.toMutableList()
+        } else {
+            somListItemAdapter.addItems(orderList.orders)
+        }
         somListItemAdapter.notifyDataSetChanged()
     }
 
@@ -397,8 +423,12 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onRefresh(view: View?) {
+        addEndlessScrollListener()
+        onLoadMore = false
         isLoading = true
-        loadOrderList()
+        somListItemAdapter.removeAll()
+        nextOrderId = 0
+        loadOrderList(nextOrderId)
         if (isFilterApplied) filter_action_button?.rightIconDrawable = resources.getDrawable(R.drawable.ic_som_check)
         else filter_action_button?.rightIconDrawable = null
     }

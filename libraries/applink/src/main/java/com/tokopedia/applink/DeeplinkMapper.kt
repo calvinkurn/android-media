@@ -70,7 +70,7 @@ object DeeplinkMapper {
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){
-                            getRegisteredCategoryNavigation(getSegments(deeplink))
+                            getRegisteredCategoryNavigation(getSegments(deeplink),deeplink)
                         } else if (query?.isNotEmpty() == true) {
                             val tempDL = if (deeplink.contains('?')) {
                                 deeplink.substring(0, deeplink.indexOf('?'))

@@ -74,9 +74,7 @@ import java.io.InputStreamReader
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
     private val DFM_GROUPCHAT = "groupchat"
-    private val DFM_SIMILAR_SEARCH = "similarsearch"
     private val DFM_IMAGE_SEARCH = "image_search"
-    private val DFM_AUTOCOMPLETE = "autocomplete"
     private val DFM_SEARCH_RESULT = "search"
     private val DFM_HOMEPAGE_DIGITAL = "homepage_digital"
     private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
@@ -127,7 +125,7 @@ object DeeplinkDFMapper {
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title))
-            add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) }, DFM_IMAGE_SEARCH, R.string.title_image_search))
+            add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) || it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_IMAGE_SEARCH, R.string.title_image_search))
             add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, DFM_HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
             add(DFP({ it.startsWith(HOTEL) }, DFM_HOTEL_TRAVEL, R.string.title_hotel))
             add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DFM_GROUPCHAT, R.string.title_groupchat))
@@ -149,9 +147,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_CUSTOMER_REPORT_PRODUCT, R.string.applink_report_title))
             add(DFP({ it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_CUSTOMER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(TOPADS_AUTOADS) }, DFM_CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
-            add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_SIMILAR_SEARCH, R.string.title_similar_search))
-            add(DFP({ it.startsWith(AUTOCOMPLETE) }, DFM_AUTOCOMPLETE, R.string.title_autocomplete))
-            add(DFP({ it.startsWith(SEARCH_RESULT) }, DFM_SEARCH_RESULT, R.string.title_search_result))
+            add(DFP({ it.startsWith(SEARCH_RESULT) || it.startsWith(AUTOCOMPLETE) }, DFM_SEARCH_RESULT, R.string.title_search_result))
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
             add(DFP({it.startsWith(INTERNAL_TOKOPOINTS)},DFM_TOKOPOINTS,R.string.title_tokopoints))
             add(DFP({it.startsWith(SALDO_DEPOSIT)}, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
