@@ -576,6 +576,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             launchLoadingPageJob.start()
             initialize()
         } else {
+            hideShimmering()
             renderUiFromBundle(savedInstanceState)
         }
     }
@@ -584,7 +585,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         val cartId = args.getString(EXTRA_CART_ID, "")
         bookingViewModel.setCartId(cartId)
         orderDueTimeStampString = args.getString(EXTRA_ORDER_DUE, "")
-        setUpTimer(FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, orderDueTimeStampString))
+        if (orderDueTimeStampString.isNotEmpty()) setUpTimer(FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, orderDueTimeStampString))
         val profileData = args.getParcelable(EXTRA_CONTACT_DATA) ?: FlightContactData()
         renderProfileData(profileData)
         val passengerModels = args.getParcelableArrayList(EXTRA_PASSENGER_MODELS) ?: listOf<FlightBookingPassengerViewModel>()
@@ -592,9 +593,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
         val priceData = args.getParcelableArrayList(EXTRA_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
         bookingViewModel.setPriceData(priceData)
         val otherPriceData = args.getParcelableArrayList(EXTRA_OTHER_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
-        bookingViewModel.setAmenityPriceData(priceData)
+        bookingViewModel.setOtherPriceData(otherPriceData)
         val amenityPriceData = args.getParcelableArrayList(EXTRA_AMENITY_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
-        bookingViewModel.setOtherPriceData(priceData)
+        bookingViewModel.setAmenityPriceData(amenityPriceData)
     }
 
     private fun initialize() {
