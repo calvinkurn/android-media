@@ -38,7 +38,7 @@ object ModelMapper {
                 dataList.addAll(variantViewModelList)
             }
         }
-        dataList.add(convertToQuantityViewModel(productInfo, quantity))
+        dataList.add(convertToQuantityViewModel(productInfo, quantity, multiorigin))
         dataList.add(convertToNoteViewModel(noteString))
 
         return dataList
@@ -278,24 +278,60 @@ object ModelMapper {
      * always use the stock outside the campaign, so the stock at the campaign is ignored.
      * If it has stock, the upper max will be that stock, otherwise, use the max order value
      */
-    fun convertToQuantityViewModel(productInfo: ProductInfo, quantity: Int = 0): QuantityViewModel {
+    fun convertToQuantityViewModel(productInfo: ProductInfo, quantity: Int = 0, multiorigin: MultiOriginWarehouse? = null): QuantityViewModel {
         val quantityViewModel = QuantityViewModel()
         quantityViewModel.errorProductMaxQuantity = ""
         quantityViewModel.errorProductMinQuantity = ""
         quantityViewModel.isStateError = false
+        quantityViewModel.stockFromWarehouse = multiorigin?.stock ?: 0
+        quantityViewModel.stockWordingFromWarehouse = multiorigin?.stockWording ?: ""
 
-        quantityViewModel.maxOrderQuantity =
-                when {
-                    productInfo.stock.useStock && productInfo.stock.value > 0 ->
-                        productInfo.stock.value
-                    productInfo.basic.maxOrder > 0 -> productInfo.basic.maxOrder
-                    else -> MAX_QUANTITY
-                }
+        val listOfStocks = getListOfStocks(quantityViewModel.stockFromWarehouse, productInfo)
+        quantityViewModel.maxOrderQuantity = getMaxOrderQuantity(listOfStocks)
         quantityViewModel.minOrderQuantity = if (productInfo.basic.minOrder > 0) productInfo.basic.minOrder else 1
         quantityViewModel.orderQuantity = if (quantity > 0) quantity else quantityViewModel.minOrderQuantity
         quantityViewModel.stockWording = productInfo.stock.stockWording
 
         return quantityViewModel
+    }
+
+    /**
+     * Function that return min int between stock campaign, stock product info and stock from warehouse
+     */
+    private fun getMaxOrderQuantity(listOfStocks: List<Int>): Int {
+        val DEFAULT_MAX_ORDER = 999999
+        if (listOfStocks.size == 0) {
+            return DEFAULT_MAX_ORDER
+        } else if (listOfStocks.size == 3) {
+            return minOf(listOfStocks[0], listOfStocks[1], listOfStocks[2])
+        } else if (listOfStocks.size == 2) {
+            return minOf(listOfStocks[0], listOfStocks[1])
+        } else if (listOfStocks.size == 1) {
+            return listOfStocks[0]
+        } else {
+            return DEFAULT_MAX_ORDER
+        }
+    }
+
+
+    private fun getListOfStocks(stockFromWarehouse: Int, productInfo: ProductInfo): List<Int> {
+        val stockProduct = productInfo.stock.value
+        val stockCampaign = productInfo.campaign.stock
+        val listOfStocks = mutableListOf<Int>()
+
+        if (stockProduct > 0) {
+            listOfStocks.add(stockProduct)
+        }
+
+        if (stockCampaign > 0) {
+            listOfStocks.add(stockCampaign)
+        }
+
+        if (stockFromWarehouse > 0) {
+            listOfStocks.add(stockFromWarehouse)
+        }
+
+        return listOfStocks
     }
 
     /**

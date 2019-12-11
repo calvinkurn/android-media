@@ -50,7 +50,7 @@ dependencies {
 project.ext {
     artifactId = 'sdk'
     groupId = 'com.tokopedia.topads'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="topadssdk-release"
 }
 

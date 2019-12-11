@@ -8,6 +8,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tokopedia.core.network.NetworkErrorHelper
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
+import com.tokopedia.product.manage.item.common.util.AddEditPageType
 import com.tokopedia.product.manage.item.common.util.ProductStatus
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment
@@ -21,6 +22,7 @@ open class ProductEditFragment : BaseProductAddEditFragment<ProductEditPresenter
 
     private var tkpdProgressDialog: TkpdProgressDialog? = null
     private var productId: String = ""
+    override var addEditPageType: AddEditPageType = AddEditPageType.EDIT
     override var statusUpload: Int = ProductStatus.EDIT
 
     override fun initInjector() {

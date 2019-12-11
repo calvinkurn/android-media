@@ -27,9 +27,9 @@ dependencies {
 
 project.ext {
     artifactId = 'purchase-platform-common'
-    groupId = 'com.tokopedia.purchase_platform'
-    versionName = "1.0.0"
-    artifactName = "purchaseplatformcommon-release"
+    groupId = 'com.tokopedia.transaction'
+    versionName = "0.0.1"
+    artifactName = "purchase_platform_common-release"
 }
 
 apply from: '../../../publish_local.gradle'

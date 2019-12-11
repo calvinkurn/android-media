@@ -9,36 +9,29 @@ public class SimilarSearchAppEventTracking {
         String GenericProductView = "productView";
         String GenericProductClick = "productClick";
         String GenericViewSearchResult = "viewSearchResult";
-        String GenericClickSearchResult = "clickSearchResult";
-        String GenericClickWishlist = "clickWishlist";
-
+        String CLICK_WISHLIST = "clickWishlist";
     }
 
     interface Category {
-        String EventSearchResult =
-                "search result";
-        String EventSimilarProduct = "similar product";
-
+        String SIMILAR_PRODUCT = "similar product";
     }
 
     interface Action {
-        String EventLongPressProduct = "click - long press product";
         String EventImpressionProduct = "impression - product";
         String EventClickSimilarProduct = "click - similar product";
         String EventNoSimilarProduct = "no similar product";
-        String EventAddWishList = "add wishlist";
-        String EventRemoveWishList = "remove wishlist";
-
-
+        String ADD_WISHLIST = "add wishlist";
+        String REMOVE_WISHLIST = "remove wishlist";
+        String MODULE = "module";
+        String LOGIN = "login";
+        String NON_LOGIN = "nonlogin";
     }
 
     interface Label {
-        String LabelKeywordProduct = "Keyword: %s - product id: %s";
         String LabelProductIDTitle = "product id: %s";
         String LabelScreeName = "%s";
-        String LabelProductID = "%s";
         String LableOriginProductId = "origin product id: %s - " + LabelScreeName;
-
-
+        String TOPADS = "topads";
+        String GENERAL = "general";
     }
 }

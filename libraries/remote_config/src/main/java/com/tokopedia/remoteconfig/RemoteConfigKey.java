@@ -21,7 +21,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
 
     public static final String REFERRAL_SUBHEADER = "referral_subheader";
-    public static final String APP_ENABLE_INDI_CHALLENGES = "app_enable_indi_challenges";
     public static final String APP_REFERRAL_TITLE = "app_referral_title";
     public static final String APP_REFERRAL_SUBTITLE = "app_referral_subtitle";
     public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
@@ -84,8 +83,6 @@ public class RemoteConfigKey {
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
-
-    public static final String APP_ENTRY_CHALLENGE_BARU = "app_entry_challenges_baru";
 
     public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
 
@@ -156,6 +153,8 @@ public class RemoteConfigKey {
     public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
 
     public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
+
+    public static final String APP_HOTLIST_NAV_ENABLE = "app_hotlist_nav_enable";
 
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
 

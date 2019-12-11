@@ -4,13 +4,13 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
+import com.tokopedia.merchantvoucher.common.gql.data.request.CartItemDataVoucher
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
-import com.tokopedia.promocheckout.common.util.MERCHANT
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.usecase.RequestParams
@@ -29,8 +29,8 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
     private val paramMerchant = "merchant"
     private val statusOK = "OK"
 
-    override fun getVoucherList(shopId: String, numVoucher: Int) {
-        getMerchantVoucherListUseCase.execute(GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher),
+    override fun getVoucherList(shopId: String, numVoucher: Int, cartItemDataVoucherList: List<CartItemDataVoucher>) {
+        getMerchantVoucherListUseCase.execute(GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher, cartItemDataVoucherList),
                 object : Subscriber<ArrayList<MerchantVoucherModel>>() {
                     override fun onCompleted() {}
 

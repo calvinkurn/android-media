@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.official.presentation
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,8 +75,9 @@ class OfficialHomeFragment :
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
-    private var totalScroll = 0
+    private var isLoadedOnce: Boolean = false
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
+    private var isScrolling = false
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
@@ -101,7 +103,7 @@ class OfficialHomeFragment :
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+            loadData()
         }
     }
 
@@ -127,7 +129,7 @@ class OfficialHomeFragment :
         observeDynamicChannel()
         observeProductRecommendation()
         resetData()
-        refreshData()
+        loadData()
         setListener()
     }
 
@@ -142,8 +144,17 @@ class OfficialHomeFragment :
         endlessScrollListener?.resetState()
     }
 
-    private fun refreshData() {
-        viewModel.loadFirstData(category)
+    private fun loadData(isRefresh: Boolean = false) {
+        if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
+            if (!isLoadedOnce || isRefresh) {
+                viewModel.loadFirstData(category)
+                isLoadedOnce = true
+
+                if (!isRefresh) {
+                    tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+                }
+            }
+        }
     }
 
     private fun observeBannerData() {
@@ -267,7 +278,7 @@ class OfficialHomeFragment :
             counterTitleShouldBeRendered = 0
             adapter?.notifyDataSetChanged()
             recyclerView?.removeOnScrollListener(endlessScrollListener)
-            refreshData()
+            loadData(true)
         }
 
         if (parentFragment is RecyclerViewScrollListener) {
@@ -276,9 +287,16 @@ class OfficialHomeFragment :
                 recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
-                        totalScroll += dy
 
-                        scrollListener.onContentScrolled(dy, totalScroll)
+                        if (!isScrolling) {
+                            isScrolling = true
+                            scrollListener.onContentScrolled(dy)
+
+                            Handler().postDelayed({
+                                isScrolling = false
+                            }, 200)
+                        }
+
                     }
 
                 })
@@ -398,11 +416,13 @@ class OfficialHomeFragment :
     }
 
     override fun onCountDownFinished() {
-        adapter?.getVisitables()?.removeAll {
-            it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+        recyclerView?.post {
+            adapter?.getVisitables()?.removeAll {
+                it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+            }
+            adapter?.notifyDataSetChanged()
         }
-        adapter?.notifyDataSetChanged()
-        refreshData()
+        loadData(true)
     }
 
     override fun onClickLegoHeaderActionText(applink: String): View.OnClickListener {

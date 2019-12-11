@@ -37,7 +37,7 @@ dependencies {
 project.ext {
     artifactId = 'kol-common'
     groupId = 'com.tokopedia.content'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "kol_common-release"
 }
 

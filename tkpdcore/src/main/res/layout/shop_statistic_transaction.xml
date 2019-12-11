@@ -39,13 +39,13 @@
                 android:text="3 Bulan"/>
 
             <TextView
-                android:id="@+id/tab_12"
+                android:id="@+id/tab_6"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/padding_small"
-                android:text="12 Bulan"/>
+                android:text="6 Bulan"/>
         </LinearLayout>
 
         <View
