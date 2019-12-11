@@ -1,9 +1,9 @@
 package com.tokopedia.common.topupbills.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -11,8 +11,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
-import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -41,7 +42,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
             it.run {
                 when (it) {
                     is Success -> processEnquiry(it.data)
-                    is Fail -> showError(it.throwable)
+                    is Fail -> showEnquiryError(it.throwable)
                 }
             }
         })
@@ -49,7 +50,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
             it.run {
                 when (it) {
                     is Success -> processMenuDetail(it.data)
-                    is Fail -> showError(it.throwable)
+                    is Fail -> showMenuDetailError(it.throwable)
                 }
             }
         })
@@ -68,9 +69,9 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         }
     }
 
-    fun getEnquiry(clientNumber: String, productId: String) {
-        topupBillsViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_enquiry_digital),
-                topupBillsViewModel.createEnquiryParams(clientNumber, productId))
+    fun getEnquiry(operatorId: String, productId: String, inputData: Array<Map<String, String>>) {
+        topupBillsViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_inquiry),
+                topupBillsViewModel.createEnquiryParams(operatorId, productId, inputData))
     }
 
     fun getMenuDetail(menuId: Int) {
@@ -78,11 +79,13 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
                 topupBillsViewModel.createMenuDetailParams(menuId))
     }
 
-    abstract fun processEnquiry(data: TelcoEnquiryData)
+    abstract fun processEnquiry(data: TopupBillsEnquiryData)
 
     abstract fun processMenuDetail(data: TopupBillsMenuDetail)
 
-    abstract fun showError(t: Throwable)
+    abstract fun showEnquiryError(t: Throwable)
+
+    abstract fun showMenuDetailError(t: Throwable)
 
     fun processToCart() {
         if (userSession.isLoggedIn) {

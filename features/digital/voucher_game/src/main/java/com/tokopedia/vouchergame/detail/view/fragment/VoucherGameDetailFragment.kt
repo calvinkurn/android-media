@@ -25,9 +25,9 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
-import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
+import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
@@ -205,7 +205,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         checkout_view.setListener(this)
     }
 
-    override fun processEnquiry(data: TelcoEnquiryData) {
+    override fun processEnquiry(data: TopupBillsEnquiryData) {
         toggleEnquiryLoadingBar(false)
         isEnquired = true
         renderEnquiryResult(data.enquiry.attributes.mainInfoList)
@@ -218,11 +218,15 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
     }
 
-    override fun showError(t: Throwable) {
+    override fun showEnquiryError(t: Throwable) {
         toggleEnquiryLoadingBar(false)
         isEnquired = false
         NetworkErrorHelper.createSnackbarRedWithAction(
                 activity, ErrorHandler.getErrorMessage(context, t)) { enquireFields() }.showRetrySnackbar()
+    }
+
+    override fun showMenuDetailError(t: Throwable) {
+
     }
 
     private fun setupEnquiryFields(data: VoucherGameDetailData) {

@@ -43,7 +43,28 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/enquiry_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="Cek Data"
+                app:unifyButtonType="transaction" />
+
         </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/loading_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_240"
+            android:background="@color/white">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
 
     </androidx.cardview.widget.CardView>
 

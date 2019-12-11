@@ -2,9 +2,10 @@ package com.tokopedia.common.topupbills.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
-import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
+import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -14,6 +15,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -24,16 +26,22 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                                               val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    val enquiryData = MutableLiveData<Result<TelcoEnquiryData>>()
+    val enquiryData = MutableLiveData<Result<TopupBillsEnquiryData>>()
     val menuDetailData = MutableLiveData<Result<TopupBillsMenuDetail>>()
 
-    fun getEnquiry(rawQuery: String, mapParam: Map<String, Any>) {
+    fun getEnquiry(rawQuery: String, mapParam: List<TopupBillsEnquiryQuery>) {
+        val params = mapOf(PARAM_FIELDS to mapParam)
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TelcoEnquiryData::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<TelcoEnquiryData>()
+            val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsEnquiryData::class.java, params)
+            var data: TopupBillsEnquiryData
+            do {
+                data = withContext(Dispatchers.Default) {
+                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                }.getSuccessData()
 
+                // If data is pending delay query call
+                if (data.enquiry.status == STATUS_PENDING) delay((data.enquiry.retryDuration?.toLong() ?: 1) * 1000)
+            } while (data.enquiry.status != STATUS_DONE)
             enquiryData.value = Success(data)
         }) {
             enquiryData.value = Fail(it)
@@ -53,11 +61,19 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
-    fun createEnquiryParams(clientNumber: String, productId: String): Map<String, Any> {
-        val params: MutableMap<String, Any> = mutableMapOf()
-        params.put(PARAM_CLIENT_NUMBER, clientNumber)
-        params.put(PARAM_PRODUCT_ID, productId)
-        return params
+    fun createEnquiryParams(operatorId: String, productId: String, inputData: Array<Map<String, String>>): List<TopupBillsEnquiryQuery> {
+        val enquiryParams = mutableListOf<TopupBillsEnquiryQuery>()
+        // Hardcode source type field, temporary?
+        enquiryParams.add(TopupBillsEnquiryQuery(ENQUIRY_PARAM_SOURCE_TYPE, ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE))
+        enquiryParams.add(TopupBillsEnquiryQuery(ENQUIRY_PARAM_DEVICE_ID, ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE))
+//        enquiryParams.add(TopupBillsEnquiryQuery(ENQUIRY_PARAM_OPERATOR_ID, operatorId))
+        enquiryParams.add(TopupBillsEnquiryQuery(ENQUIRY_PARAM_PRODUCT_ID, productId))
+        inputData.forEach {
+            it.forEach { (key, value) ->
+                enquiryParams.add(TopupBillsEnquiryQuery(key, value))
+            }
+        }
+        return enquiryParams
     }
 
     fun createMenuDetailParams(menuId: Int): Map<String, Any> {
@@ -65,10 +81,19 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     }
 
     companion object {
-        const val PARAM_CLIENT_NUMBER = "clientNumber"
-        const val PARAM_PRODUCT_ID = "productId"
+        const val PARAM_FIELDS = "fields"
 
         const val PARAM_MENU_ID = "menuID"
+
+        const val STATUS_DONE = "DONE"
+        const val STATUS_PENDING = "PENDING"
+
+        const val ENQUIRY_PARAM_OPERATOR_ID = "operator_id"
+        const val ENQUIRY_PARAM_PRODUCT_ID = "product_id"
+        const val ENQUIRY_PARAM_DEVICE_ID = "device_id"
+        const val ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE = "4"
+        const val ENQUIRY_PARAM_SOURCE_TYPE = "source_type"
+        const val ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE = "c20ad4d76fe977"
     }
 
 }
