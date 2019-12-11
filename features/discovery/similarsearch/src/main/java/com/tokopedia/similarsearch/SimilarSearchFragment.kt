@@ -32,7 +32,7 @@ import com.tokopedia.similarsearch.productitem.SimilarProductItemListener
 import com.tokopedia.similarsearch.recyclerview.SimilarSearchAdapter
 import com.tokopedia.similarsearch.recyclerview.SimilarSearchItemDecoration
 import com.tokopedia.similarsearch.tracking.SimilarSearchTracking
-import com.tokopedia.similarsearch.utils.asObjectDataLayer
+import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
@@ -331,7 +331,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun trackEventClickSimilarProduct(similarProductItem: Product) {
         val screenName = "$screenName ${similarProductItem.id}"
-        val similarProductItemAsObjectDataLayer = similarProductItem.asObjectDataLayer()
+        val similarProductItemAsObjectDataLayer = similarProductItem.asObjectDataLayerImpressionAndClick()
 
         SimilarSearchTracking.trackEventClickSimilarProduct(getOriginalProductId(), screenName, similarProductItemAsObjectDataLayer)
     }

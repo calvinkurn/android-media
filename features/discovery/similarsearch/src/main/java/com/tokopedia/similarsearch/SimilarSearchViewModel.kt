@@ -15,7 +15,7 @@ import com.tokopedia.similarsearch.emptyresult.EmptyResultViewModel
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
 import com.tokopedia.similarsearch.title.TitleViewModel
-import com.tokopedia.similarsearch.utils.asObjectDataLayer
+import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -169,7 +169,7 @@ internal class SimilarSearchViewModel(
         val trackingImpressionSimilarProductList = mutableListOf<Any>()
 
         similarProductModel.getSimilarProductList().forEach { productItem ->
-            trackingImpressionSimilarProductList.add(productItem.asObjectDataLayer())
+            trackingImpressionSimilarProductList.add(productItem.asObjectDataLayerImpressionAndClick())
         }
 
         trackingImpressionSimilarProductEventLiveData.postValue(Event(trackingImpressionSimilarProductList))

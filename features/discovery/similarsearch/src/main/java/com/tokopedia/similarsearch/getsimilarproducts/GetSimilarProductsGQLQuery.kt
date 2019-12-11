@@ -18,6 +18,7 @@ private fun getProductInfoGQLQuery() = """
      reputation
      clover
      is_official
+     name
     }
     badges {
       image_url

@@ -8,7 +8,7 @@ import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.similarsearch.testutils.shouldBe
 import com.tokopedia.similarsearch.testutils.shouldBeInstanceOf
 import com.tokopedia.similarsearch.title.TitleViewModel
-import com.tokopedia.similarsearch.utils.asObjectDataLayer
+import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 
 internal fun State<List<Any>>?.shouldHaveCorrectViewModelListWithLoadingMore(similarProductItemList: List<Product>) {
     val lastIndex = this?.data?.lastIndex ?: 0
@@ -108,6 +108,6 @@ internal fun List<Any>?.shouldBeListOfMapOfProductItemAsObjectDataLayer(similarP
 
     this?.forEachIndexed { index, it ->
         it.shouldBeInstanceOf<Map<String, Any>>()
-        it shouldBe similarProductItemList[index].asObjectDataLayer()
+        it shouldBe similarProductItemList[index].asObjectDataLayerImpressionAndClick()
     }
 }

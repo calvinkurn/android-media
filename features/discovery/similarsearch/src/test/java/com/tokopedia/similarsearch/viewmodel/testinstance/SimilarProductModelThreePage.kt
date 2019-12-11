@@ -21,7 +21,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Jakarta",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/312816",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=312816",
-              "is_official": true
+              "is_official": true,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -52,7 +53,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Jakarta",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/1321037",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=1321037",
-              "is_official": true
+              "is_official": true,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -83,7 +85,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Surabaya",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/465533",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=465533",
-              "is_official": true
+              "is_official": true,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -114,7 +117,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Jakarta",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/1321037",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=1321037",
-              "is_official": true
+              "is_official": true,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -145,7 +149,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Jakarta",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/2400899",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=2400899",
-              "is_official": true
+              "is_official": true,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -176,7 +181,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Jakarta",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/2598472",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=2598472",
-              "is_official": false
+              "is_official": false,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -207,7 +213,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Surabaya",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/2254690",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=2254690",
-              "is_official": false
+              "is_official": false,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -238,7 +245,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Jakarta",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/2570214",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=2570214",
-              "is_official": false
+              "is_official": false,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -269,7 +277,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Surabaya",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/6055105",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=6055105",
-              "is_official": false
+              "is_official": false,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -300,7 +309,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Jakarta",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/3107338",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=3107338",
-              "is_official": false
+              "is_official": false,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -331,7 +341,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Jakarta",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/1852024",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=1852024",
-              "is_official": true
+              "is_official": true,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -362,7 +373,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Jakarta",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/1852024",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=1852024",
-              "is_official": true
+              "is_official": true,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -393,7 +405,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Jakarta",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/631036",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=631036",
-              "is_official": true
+              "is_official": true,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -424,7 +437,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Jakarta",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/3252295",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=3252295",
-              "is_official": false
+              "is_official": false,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -455,7 +469,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Makassar",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/2427698",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=2427698",
-              "is_official": false
+              "is_official": false,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -486,7 +501,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Surabaya",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/1810008",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=1810008",
-              "is_official": true
+              "is_official": true,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -517,7 +533,8 @@ private val similarProductModelThreePageJSONString = """
               "city": "Surabaya",
               "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/1810008",
               "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=1810008",
-              "is_official": true
+              "is_official": true,
+              "name": "enterphone2"
             },
             "badges": [
               {
@@ -550,7 +567,8 @@ private val similarProductModelThreePageJSONString = """
             "city": "Jakarta",
             "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/2779938",
             "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=2779938",
-            "is_official": false
+            "is_official": false,
+            "name": "enterphone2"
           },
           "badges": [
             {

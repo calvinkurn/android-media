@@ -22,7 +22,8 @@ private val similarProductModelEmptyResultJSONString = """
                     "city":"",
                     "reputation":"",
                     "clover":"",
-                    "is_official":false
+                    "is_official":false,
+                    "name": ""
                 },
                 "badges":[],
                 "category_id":0,

@@ -30,5 +30,9 @@ internal data class Shop(
 
         @SerializedName("is_official")
         @Expose
-        val isOfficial: Boolean = false
+        val isOfficial: Boolean = false,
+
+        @SerializedName("name")
+        @Expose
+        val name: String = ""
 )
