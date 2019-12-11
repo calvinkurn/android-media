@@ -786,7 +786,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     override fun onTextCopied(label: String, str: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.primaryClip = ClipData.newPlainText(label, str)
-        showCommonToaster(str)
+        showCommonToaster(getString(R.string.resi_tersalin))
     }
 
     override fun onInvalidResiUpload(awbUploadUrl: String) {
