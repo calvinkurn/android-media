@@ -24,4 +24,22 @@
 
     <string name="format_rupiah_with_prefix">Rp %s</string>
     <string name="label_back">Kembali</string>
+    <string name="action_sort">Urutkan</string>
+
+    <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain.</string>
+
+    <string name="title_quantity_colon">Jumlah:</string>
+    <string name="note_for_seller">Catatan untuk Penjual:</string>
+    <string name="see_product">Lihat Produk</string>
+
+    <string name="reputation_value">Nilai Reputasi:</string>
+    <string name="destination_city">Kota Tujuan:</string>
+    <string name="cashback_for_buyer">Cashback Untuk Pembeli:</string>
+    <string name="respond_deadline">Batas Respon:</string>
+    <string name="shipping">Pengiriman:</string>
+    <string name="transaction_value">Nilai Transaksi</string>
+
+    <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
+
+    <string name="test_strike"><strike>TextView</strike></string>
 </resources>

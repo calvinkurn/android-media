@@ -31,10 +31,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/btn_height"
                 android:layout_gravity="center"
-                app:drawableLeftCompat="@drawable/ic_sort"
                 android:drawablePadding="@dimen/dp_5"
                 android:gravity="center_vertical"
-                android:text="@string/action_sort" />
+                android:text="@string/action_sort"
+                app:drawableLeftCompat="@drawable/ic_sort" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -50,10 +50,10 @@
             <com.tokopedia.design.component.TextViewCompat
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/btn_height"
-                app:drawableLeftCompat="@drawable/ic_filter_black"
                 android:drawablePadding="@dimen/dp_5"
                 android:gravity="center_vertical"
-                android:text="@string/filter" />
+                android:text="@string/filter"
+                app:drawableLeftCompat="@drawable/ic_filter_black" />
 
         </RelativeLayout>
 

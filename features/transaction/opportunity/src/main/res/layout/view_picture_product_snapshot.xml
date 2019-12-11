@@ -3,8 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_5"
-    android:paddingTop="@dimen/dp_5">
+    android:paddingTop="@dimen/dp_5"
+    android:paddingBottom="@dimen/dp_5">
 
     <com.tkpd.library.ui.widget.TouchViewPager
         android:id="@id/view_pager"

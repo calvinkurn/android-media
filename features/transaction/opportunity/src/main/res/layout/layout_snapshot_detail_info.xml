@@ -7,10 +7,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingBottom="@dimen/dp_20"
         android:paddingLeft="@dimen/dp_10"
+        android:paddingTop="@null"
         android:paddingRight="@dimen/dp_10"
-        android:paddingTop="@null">
+        android:paddingBottom="@dimen/dp_20">
 
         <TableRow
             android:id="@id/tr_preorder"

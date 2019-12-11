@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.utils;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.imagepicker.picker.instagram.util.InstagramCacheApiWhiteList;
-import com.tokopedia.seller.opportunity.common.util.OpportunityCacheApiWhiteList;
+import com.tokopedia.opportunity.common.util.OpportunityCacheApiWhiteList;
 import com.tokopedia.seller.product.common.utils.ProductCacheApiWhiteList;
 import com.tokopedia.seller.shop.common.utils.ShopOpenCacheApiWhiteList;
 import com.tokopedia.shop.common.util.ShopCacheApiWhiteList;

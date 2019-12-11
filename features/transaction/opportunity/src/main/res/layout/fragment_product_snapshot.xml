@@ -18,13 +18,13 @@
             android:animateLayoutChanges="true"
             android:orientation="vertical">
 
-            <com.tokopedia.seller.opportunity.snapshot.customview.HeaderInfoView
+            <com.tokopedia.opportunity.snapshot.customview.HeaderInfoView
                 android:id="@id/view_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
 
-            <com.tokopedia.seller.opportunity.snapshot.customview.PictureView
+            <com.tokopedia.opportunity.snapshot.customview.PictureView
                 android:id="@id/view_picture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,22 +39,22 @@
                 android:layout_gravity="center_horizontal"
                 android:visibility="gone"/>
 
-            <com.tokopedia.seller.opportunity.snapshot.customview.FreeReturnView
+            <com.tokopedia.opportunity.snapshot.customview.FreeReturnView
                 android:id="@+id/view_free_return"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <com.tokopedia.seller.opportunity.snapshot.customview.DetailInfoView
+            <com.tokopedia.opportunity.snapshot.customview.DetailInfoView
                 android:id="@id/view_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <com.tokopedia.seller.opportunity.snapshot.customview.DescriptionView
+            <com.tokopedia.opportunity.snapshot.customview.DescriptionView
                 android:id="@id/view_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <com.tokopedia.seller.opportunity.snapshot.customview.ShopInfoView
+            <com.tokopedia.opportunity.snapshot.customview.ShopInfoView
                 android:id="@id/view_shop_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
