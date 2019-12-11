@@ -4,14 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.data.Channel
 import com.tokopedia.play.domain.GetChannelInfoUseCase
+import com.tokopedia.play.view.model.ChannelResult
+import com.tokopedia.play.view.model.Fail
+import com.tokopedia.play.view.model.Result
 import com.tokopedia.play.view.type.PlayVODType
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
@@ -32,21 +31,19 @@ class PlayViewModel @Inject constructor(
         dispatchers: CoroutineDispatcher
 ) : BaseViewModel(dispatchers) {
 
-    val observableVOD: LiveData<PlayVODType>
-        get() = _observableVOD
-
     val observableVideoState: LiveData<TokopediaPlayVideoState>
         get() = playManager.getObservablePlayVideoState()
 
-    val observeChannel: LiveData<Result<Channel>>
-        get() = _channelInfoResult
-
+    val observableVOD: LiveData<PlayVODType>
+        get() = _observableVOD
     private val _observableVOD by lazy {
         MutableLiveData<PlayVODType>()
     }
 
-    private val _channelInfoResult by lazy {
-        MutableLiveData<Result<Channel>>()
+    val observeGetChannelInfo: LiveData<Result<ChannelResult>>
+        get() = _observableGetChannelInfo
+    private val _observableGetChannelInfo by lazy {
+        MutableLiveData<Result<ChannelResult>>()
     }
 
     fun getChannelInfo(channelId: String) {
@@ -55,9 +52,9 @@ class PlayViewModel @Inject constructor(
                 getChannelInfoUseCase.channelId = channelId
                 getChannelInfoUseCase.executeOnBackground()
             }
-            _channelInfoResult.value = Success(response)
+            _observableGetChannelInfo.value = ChannelResult(response)
         }) {
-            _channelInfoResult.value = Fail(it)
+            _observableGetChannelInfo.value = Fail(it)
         }
     }
 

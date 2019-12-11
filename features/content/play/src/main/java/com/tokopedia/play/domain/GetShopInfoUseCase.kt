@@ -8,13 +8,14 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 2019-12-10.
  */
 
-class GetShopInfoUseCase(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopInfo>() {
+class GetShopInfoUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopInfo>() {
 
     var params: RequestParams = RequestParams.EMPTY
 

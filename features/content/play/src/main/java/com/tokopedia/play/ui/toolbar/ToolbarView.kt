@@ -11,6 +11,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
+import com.tokopedia.play.view.model.Title
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by jegul on 09/12/19
@@ -25,6 +27,7 @@ class ToolbarView(
                     .findViewById(R.id.cl_toolbar)
 
     private val flLiveBadge = view.findViewById<FrameLayout>(R.id.fl_live_badge)
+    private val tvChannelName = view.findViewById<Typography>(R.id.tv_stream_name)
 
     init {
         view.findViewById<ImageView>(R.id.iv_back)
@@ -55,6 +58,10 @@ class ToolbarView(
 
     fun setLiveBadgeVisibility(isLive: Boolean) {
         if (isLive) flLiveBadge.visible() else flLiveBadge.gone()
+    }
+
+    fun setTitle(title: Title) {
+        tvChannelName.text = title.channelName
     }
 
     interface Listener {

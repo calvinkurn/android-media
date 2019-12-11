@@ -31,6 +31,8 @@ class ToolbarComponent(
                                 uiView.setLiveBadgeVisibility(
                                         (it.vodType is PlayVODType.Live)
                                 )
+                            is ScreenStateEvent.SetTitle ->
+                                uiView.setTitle(it.title)
                         }
                     }
         }

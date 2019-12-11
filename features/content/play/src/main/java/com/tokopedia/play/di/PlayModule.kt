@@ -2,6 +2,8 @@ package com.tokopedia.play.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.play.data.network.PlayApi
@@ -66,4 +68,11 @@ class PlayModule {
     fun providePlayApi(retrofit: Retrofit): PlayApi {
         return retrofit.create(PlayApi::class.java)
     }
+
+    @PlayScope
+    @Provides
+    internal fun provideMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase {
+        return GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
+    }
+
 }

@@ -11,12 +11,13 @@ import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import java.util.*
+import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 2019-12-10.
  */
-class PostFollowShopUseCase(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<Boolean>() {
+class PostFollowShopUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<Boolean>() {
 
     var params: RequestParams = RequestParams.EMPTY
 

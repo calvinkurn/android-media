@@ -12,7 +12,6 @@ data class ShopInfo(
 
         @SerializedName("error")
         val error: Error = Error()
-
 ) {
 
     data class Data(

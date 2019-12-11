@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -13,8 +12,6 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -68,7 +65,7 @@ class PlayFragment : BaseDaggerFragment() {
                 .commit()
 
         childFragmentManager.beginTransaction()
-                .replace(R.id.fl_interaction, PlayInteractionFragment.newInstance())
+                .replace(R.id.fl_interaction, PlayInteractionFragment.newInstance(channelId))
                 .commit()
 
         playViewModel.initVideo()
@@ -78,15 +75,8 @@ class PlayFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         playViewModel.getChannelInfo(channelId)
 
-        playViewModel.observeChannel.observe(this, Observer {
-            when(it) {
-                is Success -> {
-                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
-                }
-                is Fail -> {
-                    Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
-                }
-            }
+        playViewModel.observeGetChannelInfo.observe(this, Observer {
+
         })
     }
 }
