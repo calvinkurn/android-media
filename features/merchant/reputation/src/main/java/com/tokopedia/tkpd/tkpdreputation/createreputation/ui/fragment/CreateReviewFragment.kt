@@ -27,7 +27,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.DeviceChecker
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -40,6 +39,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.DeviceChecker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.tkpd.tkpdreputation.R

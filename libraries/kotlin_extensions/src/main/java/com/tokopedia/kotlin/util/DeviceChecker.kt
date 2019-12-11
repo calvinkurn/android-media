@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.common.utils
+package com.tokopedia.kotlin.util
 
 import android.app.ActivityManager
 import android.content.Context
