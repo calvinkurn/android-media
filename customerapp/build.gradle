@@ -293,6 +293,7 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdinbox)
     implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.loyalty)
+    implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.flightOrderList)
     implementation project(rootProject.ext.features.umrah)
     implementation project(rootProject.ext.features.imagePreviewSlider)
@@ -424,6 +425,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.features.tradeIn)
+    implementation project(rootProject.ext.features.atc_variant)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
