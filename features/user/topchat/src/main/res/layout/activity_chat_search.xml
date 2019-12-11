@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".chatsearch.activity.ChatSearchActivity">
+    tools:context=".chatsearch.view.activity.ChatSearchActivity">
 
     <LinearLayout
         android:id="@+id/search_top_bar"

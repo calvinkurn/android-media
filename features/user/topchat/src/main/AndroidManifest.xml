@@ -7,7 +7,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".chatsearch.activity.ChatSearchActivity"
+            android:name="com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity"
             android:windowSoftInputMode="stateVisible">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

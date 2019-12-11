@@ -1,16 +1,21 @@
-package com.tokopedia.topchat.chatsearch.fragment
+package com.tokopedia.topchat.chatsearch.view.fragment
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity
 
 /**
  * @author : Steven 2019-08-06
  */
-class ChatSearchFragment : Fragment() {
+class ChatSearchFragment : Fragment(), ChatSearchActivity.Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onSearchQueryChanged(query: String) {
+
     }
 
     companion object {
