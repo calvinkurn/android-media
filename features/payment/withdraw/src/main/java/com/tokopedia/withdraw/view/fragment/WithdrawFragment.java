@@ -7,10 +7,6 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
-
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -39,6 +35,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -64,7 +62,6 @@ import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.TkpdWebView;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
@@ -108,6 +105,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
 
     private static final int REKENING_ACCOUNT_APPROVED_IN = 4;
+    private static final int REKENING_ACCOUNT_NOT_JOINED = -1;
+    private static final int REKENING_ACCOUNT_PendingOut = 1;
+    private static final int REKENING_ACCOUNT_InProgressOut = 3;
+    private static final int REKENING_ACCOUNT_ApprovedOut = 5;
+    private static final int REKENING_ACCOUNT_Rejected = 6;
+
+    private static final int REKENING_ACCOUNT_PENDINGIN = 0;
+    private static final int REKENING_ACCOUNT_INPROGRESSIN = 2;
 
 
     private int SELLER_STATE = 2;
@@ -740,12 +745,12 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 ((TextView) premiumAccountView.findViewById(R.id.tv_rekeningTitle))
                         .setText(getString(R.string.swd_program_tarik_saldo));
 
-                if (rekeningAccountStatus == -1 || rekeningAccountStatus == 1
-                        || rekeningAccountStatus == 3 || rekeningAccountStatus == 5
-                        || rekeningAccountStatus == 6) {
+                if (rekeningAccountStatus == REKENING_ACCOUNT_NOT_JOINED || rekeningAccountStatus == REKENING_ACCOUNT_PendingOut
+                        || rekeningAccountStatus == REKENING_ACCOUNT_InProgressOut || rekeningAccountStatus == REKENING_ACCOUNT_ApprovedOut
+                        || rekeningAccountStatus == REKENING_ACCOUNT_Rejected) {
                     setProgramStatus(getString(R.string.swd_earn_point_on_withdraw),
                             getString(R.string.bri_cek));
-                } else if (rekeningAccountStatus == 2 || rekeningAccountStatus == 0) {
+                } else if (rekeningAccountStatus == REKENING_ACCOUNT_INPROGRESSIN || rekeningAccountStatus == REKENING_ACCOUNT_PENDINGIN) {
                     setProgramStatus(getString(R.string.account_in_progress, data.getProgram()),
                             getString(R.string.bri_cek));
                 } else {
