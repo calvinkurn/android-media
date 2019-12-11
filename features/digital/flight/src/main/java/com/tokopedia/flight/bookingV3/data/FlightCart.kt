@@ -1,5 +1,7 @@
 package com.tokopedia.flight.bookingV3.data
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -219,8 +221,35 @@ data class FlightCart(
             val priceNumeric: Int = 0,
 
             val priceDetailId: String = ""
-    ) {
+    ): Parcelable {
+            constructor(parcel: Parcel) : this(
+                    parcel.readString(),
+                    parcel.readString(),
+                    parcel.readInt(),
+                    parcel.readString())
+
             fun idEqualsToInsuranceId(other: Insurance): Boolean = other.id == priceDetailId
+
+            override fun writeToParcel(parcel: Parcel, flags: Int) {
+                    parcel.writeString(label)
+                    parcel.writeString(price)
+                    parcel.writeInt(priceNumeric)
+                    parcel.writeString(priceDetailId)
+            }
+
+            override fun describeContents(): Int {
+                    return 0
+            }
+
+            companion object CREATOR : Parcelable.Creator<PriceDetail> {
+                    override fun createFromParcel(parcel: Parcel): PriceDetail {
+                            return PriceDetail(parcel)
+                    }
+
+                    override fun newArray(size: Int): Array<PriceDetail?> {
+                            return arrayOfNulls(size)
+                    }
+            }
     }
 
     data class Amenity(

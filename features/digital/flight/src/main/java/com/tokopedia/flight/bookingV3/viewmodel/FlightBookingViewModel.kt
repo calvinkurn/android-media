@@ -1,6 +1,7 @@
 package com.tokopedia.flight.bookingV3.viewmodel
 
 import android.util.Patterns
+import android.util.PrintStreamPrinter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -401,6 +402,22 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         return flightVerifyParam
     }
 
+    fun setPassengerModels(passengerViewModels: List<FlightBookingPassengerViewModel>) {
+        _flightPassengersData.value = passengerViewModels
+    }
+
+    fun setPriceData(priceData: List<FlightCart.PriceDetail>) {
+        _flightPriceData.value = priceData
+    }
+
+    fun setOtherPriceData(priceData: List<FlightCart.PriceDetail>) {
+        _flightOtherPriceData.value = priceData
+    }
+
+    fun setAmenityPriceData(priceData: List<FlightCart.PriceDetail>) {
+        _flightAmenityPriceData.value = priceData
+    }
+
     fun onPassengerResultReceived(passengerViewModel: FlightBookingPassengerViewModel) {
         val passengerViewModels = flightPassengersData.value?.toMutableList()
         val indexPassenger = passengerViewModels?.indexOf(passengerViewModel) ?: -1
@@ -727,6 +744,10 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         else arrayListOf()
     }
 
+    fun getPassengerModels(): List<FlightBookingPassengerViewModel> {
+        return flightPassengersData.value ?: listOf()
+    }
+
     fun getMealViewModels(): List<FlightBookingAmenityMetaViewModel> {
         return if (flightCartResult.value is Success) (flightCartResult.value as Success<FlightCartViewEntity>).data.mealModels
         else arrayListOf()
@@ -742,6 +763,17 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         else ""
     }
 
+    fun getPriceData(): List<FlightCart.PriceDetail> {
+        return flightPriceData.value ?: listOf()
+    }
+
+    fun getOtherPriceData(): List<FlightCart.PriceDetail> {
+        return flightOtherPriceData.value ?: listOf()
+    }
+
+    fun getAmenityPriceData(): List<FlightCart.PriceDetail> {
+        return flightAmenityPriceData.value ?: listOf()
+    }
     companion object {
         val PARAM_CART_ID = "cartID"
         val PARAM_VERIFY_CART = "data"

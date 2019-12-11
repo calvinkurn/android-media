@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,10 +47,7 @@ import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.data.model.FlightError
-import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
-import com.tokopedia.flight.common.util.FlightFlowUtil
-import com.tokopedia.flight.common.util.FlightRequestUtil
+import com.tokopedia.flight.common.util.*
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
@@ -117,6 +115,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private var needRefreshCart = false
     private var needToDoChangesOnFirstPassenger = true
     private var passengerAsTraveller = false
+    private var orderDueTimeStampString: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,6 +149,16 @@ class FlightBookingFragment : BaseDaggerFragment() {
         outState.putString(EXTRA_FLIGHT_DEPARTURE_TERM, bookingViewModel.getDepartureTerm())
         outState.putString(EXTRA_FLIGHT_ARRIVAL_TERM, bookingViewModel.getReturnTerm())
         outState.putParcelable(EXTRA_PRICE, bookingViewModel.getFlightPriceModel())
+        outState.putString(EXTRA_ORDER_DUE, orderDueTimeStampString)
+        outState.putParcelable(EXTRA_CONTACT_DATA, FlightContactData(widget_traveller_info.getContactName(),
+                widget_traveller_info.getContactEmail(),
+                widget_traveller_info.getContactPhoneNum(),
+                widget_traveller_info.getContactPhoneCountry(),
+                widget_traveller_info.getContactPhoneCode()))
+        outState.putParcelableArrayList(EXTRA_PASSENGER_MODELS, bookingViewModel.getPassengerModels() as ArrayList<out Parcelable>)
+        outState.putParcelableArrayList(EXTRA_PRICE_DATA, bookingViewModel.getPriceData() as ArrayList<out Parcelable>)
+        outState.putParcelableArrayList(EXTRA_OTHER_PRICE_DATA, bookingViewModel.getOtherPriceData() as ArrayList<out Parcelable>)
+        outState.putParcelableArrayList(EXTRA_AMENITY_PRICE_DATA, bookingViewModel.getAmenityPriceData() as ArrayList<out Parcelable>)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -394,6 +403,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun setUpTimer(timeStamp: Date) {
+        orderDueTimeStampString = FlightDateUtil.dateToString(timeStamp, FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
         countdown_timeout.setListener {
             if (context != null) {
                 refreshCart()
@@ -542,6 +552,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
         widget_traveller_info.setContactPhoneCountry("ID")
     }
 
+    private fun renderProfileData(profileInfo: FlightContactData) {
+        widget_traveller_info.setContactName(profileInfo.name)
+        widget_traveller_info.setContactPhoneNum(profileInfo.countryCode, profileInfo.phone)
+        widget_traveller_info.setContactEmail(profileInfo.email)
+        widget_traveller_info.setContactPhoneCountry(profileInfo.country)
+    }
+
     override fun initInjector() {
         getComponent(FlightBookingComponent::class.java).inject(this)
     }
@@ -554,7 +571,27 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         launchLoadingPageJob.start()
         setUpView()
-        initialize()
+
+        if (savedInstanceState == null) {
+            initialize()
+        } else {
+            renderUiFromBundle(savedInstanceState)
+        }
+    }
+
+    private fun renderUiFromBundle(args: Bundle) {
+        orderDueTimeStampString = args.getString(EXTRA_ORDER_DUE, "")
+        setUpTimer(FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, orderDueTimeStampString))
+        val profileData = args.getParcelable(EXTRA_CONTACT_DATA) ?: FlightContactData()
+        renderProfileData(profileData)
+        val passengerModels = args.getParcelableArrayList(EXTRA_PASSENGER_MODELS) ?: listOf<FlightBookingPassengerViewModel>()
+        bookingViewModel.setPassengerModels(passengerModels)
+        val priceData = args.getParcelableArrayList(EXTRA_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
+        bookingViewModel.setPriceData(priceData)
+        val otherPriceData = args.getParcelableArrayList(EXTRA_OTHER_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
+        bookingViewModel.setAmenityPriceData(priceData)
+        val amenityPriceData = args.getParcelableArrayList(EXTRA_AMENITY_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
+        bookingViewModel.setOtherPriceData(priceData)
     }
 
     private fun initialize() {
@@ -995,6 +1032,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val EXTRA_FLIGHT_ARRIVAL_TERM = "EXTRA_FLIGHT_ARRIVAL_TERM"
         const val EXTRA_PRICE = "EXTRA_PRICE"
         const val EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA"
+
+        const val EXTRA_ORDER_DUE = "EXTRA_ORDER_DUE"
+        const val EXTRA_CONTACT_DATA = "EXTRA_CONTACT_DATA"
+        const val EXTRA_PASSENGER_MODELS = "EXTRA_PASSENGER_MODELS"
+        const val EXTRA_PRICE_DATA = "EXTRA_PRICE_DATA"
+        const val EXTRA_OTHER_PRICE_DATA = "EXTRA_OTHER_PRICE_DATA"
+        const val EXTRA_AMENITY_PRICE_DATA = "EXTRA_AMENITY_PRICE_DATA"
 
         const val REQUEST_CODE_PASSENGER = 1
         const val REQUEST_CODE_CONTACT_FORM = 12
