@@ -159,7 +159,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private boolean FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
     private boolean FLAG_IS_CART_EMPTY = false;
 
-    private View toolbar;
     private AppBarLayout appBarLayout;
     private RecyclerView cartRecyclerView;
     private TextView btnToShipment;
@@ -347,6 +346,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     protected void initView(View view) {
         setupToolbar(view);
+        appBarLayout = view.findViewById(R.id.app_bar_layout);
         cartRecyclerView = view.findViewById(R.id.rv_cart);
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button);
         tvTotalPrice = view.findViewById(R.id.tv_total_prices);
@@ -360,15 +360,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         btnRemove = view.findViewById(R.id.btn_delete_all_cart);
         llCartContainer = view.findViewById(R.id.ll_cart_container);
 
-        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(""));
-        cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
-        llHeader.setOnClickListener(getOnClickCheckboxSelectAll());
-        btnRemove.setOnClickListener(v -> {
-            if (btnRemove.getVisibility() == View.VISIBLE) {
-                onToolbarRemoveAllCart();
-            }
-        });
-
+        refreshHandler = new RefreshHandler(getActivity(), view, this);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         progressDialog.setCancelable(false);
@@ -379,8 +371,19 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             ((ViewGroup.MarginLayoutParams) cardHeader.getLayoutParams()).setMargins(pixel, pixel, pixel, pixel);
         }
 
-        refreshHandler = new RefreshHandler(getActivity(), view, this);
+        initViewListener();
         setupRecyclerView();
+    }
+
+    private void initViewListener() {
+        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(""));
+        cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
+        llHeader.setOnClickListener(getOnClickCheckboxSelectAll());
+        btnRemove.setOnClickListener(v -> {
+            if (btnRemove.getVisibility() == View.VISIBLE) {
+                onToolbarRemoveAllCart();
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -442,7 +445,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         statusBarBackground.getLayoutParams().height =
                 DisplayMetricUtils.getStatusBarHeight(getActivity());
 
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
+        View toolbar;
         if (isToolbarWithBackButton) {
             toolbar = toolbarRemoveWithBackView();
             statusBarBackground.setVisibility(View.GONE);
