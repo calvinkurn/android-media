@@ -119,6 +119,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     public void initCameraProp() {
         cameraView.open();
+        cameraLayout.setVisibility(View.VISIBLE);
         imageCaptured.setVisibility(View.GONE);
         cameraActionsRL.setVisibility(View.VISIBLE);
         pictureActionLL.setVisibility(View.GONE);
@@ -253,6 +254,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     public void hideCameraProp() {
         cameraView.close();
+        cameraLayout.setVisibility(View.GONE);
         imageCaptured.setVisibility(View.VISIBLE);
         cameraActionsRL.setVisibility(View.GONE);
         pictureActionLL.setVisibility(View.VISIBLE);

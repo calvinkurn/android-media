@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
@@ -42,7 +43,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             super(itemView);
             itemView.setOnClickListener(v -> {
                 // Do whatever you want on clicking the item
-                RouteManager.route(v.getContext(), ApplinkConstant.COUPON_LISTING);
+                RouteManager.route(v.getContext(), ApplinkConstInternalPromo.TOKOPOINTS_COUPON);
             });
         }
     }
@@ -151,14 +152,18 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             item.getUsage().setExpiredCountDown(l / 1000);
                             int seconds = (int) (l / 1000) % 60;
                             int minutes = (int) ((l / (1000 * 60)) % 60);
-                            int hours = (int) ((l / (1000 * 60 * 60)) % 24);
+                            int hours = (int)  ((l / (1000 * 60 * 60)) % 24);
                             holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
-                            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
+                            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.medium_green));
                             holder.progressTimer.setProgress((int) l / 1000);
-                            holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
-                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
-                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
-                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
+                            try {
+                                holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
+                                        holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
+                                        holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
+                                        holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
+                            } catch (Exception e){
+
+                            }
                         }
 
                         @Override
@@ -169,12 +174,12 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 } else {
                     holder.progressTimer.setVisibility(View.GONE);
                     holder.value.setPadding(0, 0, 0, 0);
-                    holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+                    holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.black_70));
 
                 }
             } else {
                 holder.progressTimer.setVisibility(View.GONE);
-                holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+                holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.black_70));
             }
 
             enableOrDisableImages(holder, item);
@@ -202,8 +207,8 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private void enableImages(ViewHolder holder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(),  com.tokopedia.design.R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), com.tokopedia.design.R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     @Override

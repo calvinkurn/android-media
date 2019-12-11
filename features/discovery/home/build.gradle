@@ -45,7 +45,6 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.digitalproduct)
-    implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.tokopointsNotification)

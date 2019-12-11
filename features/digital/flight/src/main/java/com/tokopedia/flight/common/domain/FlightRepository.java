@@ -1,6 +1,5 @@
 package com.tokopedia.flight.common.domain;
 
-import com.tokopedia.flight.country.database.FlightAirportCountryTable;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
@@ -12,10 +11,10 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
+import com.tokopedia.flight.country.database.FlightAirportCountryTable;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
-import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
+import com.tokopedia.flight.orderlist.domain.FlightOrderRepository;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.passenger.data.db.FlightPassengerTable;
@@ -35,7 +34,7 @@ import rx.Observable;
  * Created by zulfikarrahman on 10/25/17.
  */
 
-public interface FlightRepository {
+public interface FlightRepository extends FlightOrderRepository {
 
     Observable<FlightAirportCountryTable> getAirportByCountryId(String id);
 
@@ -55,17 +54,11 @@ public interface FlightRepository {
 
     Observable<FlightCheckoutEntity> checkout(FlightCheckoutRequest request);
 
-    Observable<List<FlightOrder>> getOrders(Map<String, Object> maps);
-
-    Observable<FlightOrder> getOrder(String id);
-
     Observable<OrderEntity> getOrderEntity(String id);
 
     Observable<List<BannerDetail>> getBanners(Map<String, String> params);
 
     Observable<List<FlightAirportCountryTable>> getPhoneCodeList(String string);
-
-    Observable<SendEmailEntity> sendEmail(Map<String, Object> params);
 
     Observable<List<FlightPassengerTable>> getPassengerList(String passengerId);
 

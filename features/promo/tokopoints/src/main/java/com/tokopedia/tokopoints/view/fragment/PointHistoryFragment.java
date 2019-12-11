@@ -20,7 +20,6 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.adapter.PointHistoryListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
@@ -69,7 +68,7 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
         mContainerMain.setDisplayedChild(1);
 
         if (mRecyclerView.getItemDecorationCount() == 0) {
-            mRecyclerView.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_2), 0, 0));
+            mRecyclerView.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_2), 0, 0));
         }
 
         mAdapter = new PointHistoryListAdapter(getContext(), this);
@@ -134,7 +133,7 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getActivity();
     }
 
     @Override
@@ -210,7 +209,8 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
         TextView textLoyalty = view.findViewById(R.id.text_loyalty_exp_info);
         textPoint.setText(MethodChecker.fromHtml(pointInfo));
         textLoyalty.setText(MethodChecker.fromHtml(loyaltyInfo));
-        view.findViewById(R.id.btn_help_history).setOnClickListener(v -> ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.INFO_EXPIRED_POINTS, getString(R.string.tp_title_tokopoints)));
+        view.findViewById(R.id.btn_help_history).setOnClickListener(v ->
+                RouteManager.route(getContext(),CommonConstant.WebLink.INFO_EXPIRED_POINTS,getString(R.string.tp_title_tokopoints)));
         dialog.setCustomContentView(view, getString(R.string.tp_title_history_bottomshet), false);
         dialog.show();
         view.findViewById(R.id.close_button).setOnClickListener(v -> dialog.dismiss());

@@ -49,12 +49,15 @@
 /features/merchant/shop_common/                         @tokopedia/minion-stuart
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
+/features/merchant/official_store/                      @tokopedia/minion-stuart
 /features/top_ads/top_ads_free_claim/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
 /features/top_ads/top_ads_autoads/     @tokopedia/minion-dave
 /features/top_ads/top_ads_detail_sheet/     @tokopedia/minion-dave
+
+/libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
 /features/digital/flight/               @tokopedia/minion-mark
 /features/digital/train/                @tokopedia/minion-mark
@@ -159,6 +162,7 @@
 /features/promo/tokopoints_notification @tokopedia/minion-solo
 /features/promo/gamification            @tokopedia/minion-solo
 /features/payment/withdraw/             @tokopedia/minion-solo
+/libraries/promotions_target/           @tokopedia/minion-solo
 /features/kyc                           @tokopedia/minion-yoda
 
 /features/im/challenges                 @tokopedia/minion-yoda

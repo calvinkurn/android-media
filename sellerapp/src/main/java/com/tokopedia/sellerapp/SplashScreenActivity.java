@@ -50,8 +50,7 @@ public class SplashScreenActivity extends SplashScreen {
     }
 
     private void syncFcmToken() {
-        Intent intent = SyncFcmTokenService.Companion.getIntent(this);
-        startService(intent);
+        SyncFcmTokenService.Companion.startService(this);
     }
 
     @Override

@@ -441,7 +441,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 currentProductAddViewModel?.productStock?.stockCount = DEFAULT_PARENT_STOCK_IF_VARIANT
             } else {
                 currentProductAddViewModel?.productStock?.isActive = (stockType == StockTypeDef.TYPE_ACTIVE)
-                currentProductAddViewModel?.productStock?.stockCount = 0
             }
         }
         currentProductAddViewModel?.productVariantViewModel = productVariantViewModel

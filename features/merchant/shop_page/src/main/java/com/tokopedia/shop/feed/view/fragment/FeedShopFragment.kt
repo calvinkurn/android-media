@@ -275,8 +275,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             dataList.add(getEmptyResultViewModel())
             renderList(dataList)
         }
-        trackImpression(dataList)
-
     }
 
     override fun onSuccessGetFeedNotLoginFirstPage(element: List<Visitable<*>>, lastCursor: String) {
@@ -304,7 +302,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isLoading = false
         updateCursor(lastCursor)
         renderList(visitables, lastCursor.isNotEmpty())
-        trackImpression(visitables)
     }
 
     override fun updateCursor(cursor: String) {
@@ -725,17 +722,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         startActivity(
                 Intent.createChooser(sharingIntent, shareTitle)
         )
-    }
-
-    private fun trackImpression(visitableList: List<Visitable<*>>) {
-        visitableList.forEachIndexed { position, model ->
-            val adapterPosition = adapter.data.size + position
-            when (model) {
-                is DynamicPostViewModel -> {
-                    onAffiliateTrackClicked(model.tracking, false)
-                }
-            }
-        }
     }
 
     private fun showError(message: String) {
