@@ -7,17 +7,21 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase;
+import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
+import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeReviewSuggestedUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.SendGeolocationInfoUseCase;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
@@ -87,6 +91,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetWalletBalanceUseCase getWalletBalanceUseCase;
     @Inject
     GetPendingCasbackUseCase getPendingCasbackUseCase;
+    @Inject
+    GetHomeReviewSuggestedUseCase getHomeReviewSuggestedUseCase;
+    @Inject
+    DismissHomeReviewUseCase dismissHomeReviewUseCase;
 
     @Inject
     HomeMapper homeMapper;
@@ -99,6 +107,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Inject
     StickyLoginUseCase stickyLoginUseCase;
+
+    @Inject
+    PlayCardHomeUseCase playCardHomeUseCase;
 
     private String currentCursor = "";
     private GetShopInfoByDomainUseCase getShopInfoByDomainUseCase;
@@ -114,7 +125,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                          GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
         this.userSession = userSession;
         this.getShopInfoByDomainUseCase = getShopInfoByDomainUseCase;
-
         compositeSubscription = new CompositeSubscription();
         subscription = Subscriptions.empty();
     }
@@ -157,6 +167,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getSearchHint();
         getStickyContent();
     }
+
+
 
     public void sendGeolocationData() {
         sendGeolocationInfoUseCase.createObservable(RequestParams.EMPTY)
@@ -207,6 +219,46 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     }
                 });
         compositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void dismissReview() {
+        getView().onSuccessDismissReview();
+
+        dismissHomeReviewUseCase.execute(RequestParams.EMPTY, new Subscriber<String>() {
+            @Override
+            public void onCompleted() { }
+
+            @Override
+            public void onError(Throwable e) { }
+
+            @Override
+            public void onNext(String s) { }
+        });
+    }
+
+    @Override
+    public void getSuggestedReview() {
+        getHomeReviewSuggestedUseCase.execute(RequestParams.EMPTY, new Subscriber<SuggestedProductReview>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorGetReviewData();
+                }
+            }
+
+            @Override
+            public void onNext(SuggestedProductReview suggestedProductReview) {
+                if (isViewAttached()) {
+                    getView().onSuccessGetReviewData(suggestedProductReview);
+                }
+            }
+        });
     }
 
     @Override
@@ -626,4 +678,16 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             }
         );
     }
+
+    @Override
+    public void getPlayBanner(int adapterPosition) {
+        playCardHomeUseCase.execute(
+                playCardHome -> {
+                    getView().setPlayContentBanner(playCardHome, adapterPosition);
+                    return Unit.INSTANCE;
+                },
+                throwable -> Unit.INSTANCE
+        );
+    }
+
 }

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/register_icon"
+            android:layout_width="@dimen/verification_icon"
+            android:layout_height="@dimen/verification_icon"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_30"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/title_verify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:gravity="center"
+            android:text="@string/validation_title"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/register_icon" />
+
+        <TextView
+            android:id="@+id/activation_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_8"
+            android:gravity="center"
+            android:lineSpacingExtra="@dimen/dp_3"
+            android:textColor="@color/black_54"
+            tools:text="Kode aktivasi akun telah dikirimkan ke tjangjialie@gmail.com"
+            app:layout_constraintTop_toBottomOf="@id/title_verify"/>
+
+        <LinearLayout
+            android:id="@+id/llotp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="56dp"
+            android:layout_marginRight="33dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/activation_text">
+
+            <com.tokopedia.otp.common.design.PinInputEditText
+                android:id="@+id/input_verify_code"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:cursorVisible="false"
+                android:digits="1234567890"
+                android:fontFamily="sans-serif-medium"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLength="6"
+                android:paddingBottom="@dimen/dp_10"
+                android:textColor="@color/font_black_primary_70"
+                android:textIsSelectable="false"
+                android:textSize="32sp"
+                android:textStyle="normal"
+                android:visibility="visible"
+                app:PinInputLineColors="@color/pin_input_line_colors" />
+
+            <ImageView
+                android:id="@+id/error_image"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="bottom"
+                android:layout_marginRight="@dimen/dp_15"
+                android:layout_marginBottom="@dimen/dp_20"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/ic_cancel_red"
+                tools:visibility="invisible" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/error_otp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif"
+            android:text="@string/error_wrong_otp"
+            android:textColor="@color/red_500"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="normal"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llotp"/>
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/verify_button"
+            android:layout_width="@dimen/dp_250"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginTop="@dimen/dp_40"
+            android:layout_gravity="center_horizontal"
+            android:enabled="false"
+            android:gravity="center"
+            android:text="@string/title_validation_otp"
+            app:buttonCompatSize="big"
+            app:buttonCompatType="primary_disabled"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llotp" />
+
+        <TextView
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:gravity="center"
+            android:text="@string/validation_resend_email"
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/verify_button"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

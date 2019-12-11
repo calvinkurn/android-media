@@ -117,6 +117,7 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                           ShopFollowingViewModel viewModel) {
         viewHolder.itemView.setVisibility(viewModel.isLoadingItem() ? View.GONE : View.VISIBLE);
         viewHolder.progressBar.setVisibility(viewModel.isLoadingItem() ? View.VISIBLE : View.GONE);
+        viewHolder.btnUnfav.setVisibility(viewModel.isAllowedFollowAction() ? View.VISIBLE : View.GONE);
     }
 
     private void initData(ShopFollowingViewHolder viewHolder,

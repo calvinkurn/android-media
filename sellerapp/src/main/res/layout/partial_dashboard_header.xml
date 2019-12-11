@@ -149,7 +149,7 @@
                 android:id="@+id/pm_ticker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border_rectangle_yellow"
+                android:background="@drawable/border_rectangle_yellow_shop_settings"
                 app:cardBackgroundColor="@color/ticker_blue"
                 app:cardPreventCornerOverlap="true"
                 app:elevation="0dp"
@@ -209,11 +209,11 @@
                 style="@style/TextView.Small.Bold.BlackSecondary"
                 android:text="@string/shop_reputation" />
 
-            <com.tokopedia.design.reputation.ShopReputationView
-                android:id="@+id/shop_reputation_view"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_shop_reputation_badge"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"/>
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_height="@dimen/dp_20" />
 
             <TextView
                 android:id="@+id/text_view_reputation_point"

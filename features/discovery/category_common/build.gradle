@@ -43,7 +43,7 @@ dependencies {
 project.ext {
     artifactId = 'common'
     groupId = 'com.tokopedia.category'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "category_common-release"
 }
 

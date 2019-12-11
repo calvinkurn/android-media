@@ -19,6 +19,7 @@ import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepositor
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.domain.BulkUpdateProductUseCase;
+import com.tokopedia.product.manage.list.domain.EditFeaturedProductUseCase;
 import com.tokopedia.product.manage.list.domain.EditPriceUseCase;
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.list.view.mapper.ProductListMapperView;
@@ -44,6 +45,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.tokopedia.product.manage.list.constant.GqlRawConstantKt.GQL_FEATURED_PRODUCT;
 import static com.tokopedia.product.manage.list.constant.GqlRawConstantKt.GQL_UPDATE_PRODUCT;
 import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.GQL_POPUP_NAME;
 import static com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT_LIST;
@@ -65,9 +67,10 @@ public class ProductManageModule {
                                                                 PopupManagerAddProductUseCase popupManagerAddProductUseCase,
                                                                 GetProductListUseCase getProductListUseCase,
                                                                 ProductListMapperView productListMapperView,
-                                                                BulkUpdateProductUseCase bulkUpdateProductUseCase) {
+                                                                BulkUpdateProductUseCase bulkUpdateProductUseCase,
+                                                                EditFeaturedProductUseCase editFeaturedProductUseCase) {
         return new ProductManagePresenterImpl(editPriceUseCase, gqlGetShopInfoUseCase, userSession, topAdsGetShopDepositGraphQLUseCase,
-                setCashbackUseCase, popupManagerAddProductUseCase, getProductListUseCase, productListMapperView, bulkUpdateProductUseCase);
+                setCashbackUseCase, popupManagerAddProductUseCase, getProductListUseCase, productListMapperView, bulkUpdateProductUseCase, editFeaturedProductUseCase);
     }
 
     @Provides
@@ -183,5 +186,15 @@ public class ProductManageModule {
         return GraphqlHelper.loadRawString(
                 context.getResources(),
                 com.tokopedia.shop.common.R.raw.gql_get_shop_info);
+    }
+
+    @ProductManageScope
+    @Provides
+    @Named(GQL_FEATURED_PRODUCT)
+    public String provideGqlMutationFeaturedProduct(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.gql_mutation_gold_manage_featured_product_v2
+        );
     }
 }

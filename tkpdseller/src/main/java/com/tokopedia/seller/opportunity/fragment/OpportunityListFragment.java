@@ -23,7 +23,9 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.PagingHandler;
+import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.showcase.ShowCaseDialogFactory;
@@ -271,6 +273,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         return new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
+                if (GlobalConfig.isSellerApp()) {
+                    DrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
+                }
                 resetOpportunityList();
             }
         };
