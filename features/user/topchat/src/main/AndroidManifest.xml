@@ -6,7 +6,9 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <activity android:name=".chatlist.activity.ChatSearchActivity">
+        <activity
+            android:name=".chatlist.activity.ChatSearchActivity"
+            android:windowSoftInputMode="stateVisible">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 

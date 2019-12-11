@@ -4,32 +4,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".chatlist.activity.ChatSearchActivity"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context=".chatlist.activity.ChatSearchActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/chat_toolbar"
+    <LinearLayout
+        android:id="@+id/search_top_bar"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        app:contentInsetStart="0dp"
-        app:contentInsetEnd="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:contentInsetStartWithNavigation="0dp"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.tokopedia.design.text.SearchInputView
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_44"
+            android:background="?selectableItemBackgroundBorderless"
+            android:paddingStart="@dimen/dp_12"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_10"
+            app:srcCompat="@drawable/ic_system_action_back_grayscale_24" />
+
+        <RelativeLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:siv_search_hint="@string/search_chat_by_username"
-            />
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_weight="1"
+            android:background="@drawable/topchat_bg_search_action_background">
 
+            <EditText
+                android:id="@+id/searchTextView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_36"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="@string/search_chat_by_username"
+                android:imeOptions="actionSearch"
+                android:inputType="textNoSuggestions"
+                android:lines="1"
+                android:paddingStart="@dimen/dp_28"
+                android:paddingLeft="@dimen/dp_28"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingEnd="32dp"
+                android:paddingRight="32dp"
+                android:paddingBottom="@dimen/dp_8"
+                android:textColor="#ae31353b"
+                android:textColorHint="#7031353b"
+                android:textSize="14sp" />
 
-    </androidx.appcompat.widget.Toolbar>
+            <ImageView
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:padding="@dimen/dp_4"
+                app:srcCompat="@drawable/topchat_ic_search_grey_disabled" />
+
+            <ImageView
+                android:id="@+id/ivClear"
+                android:layout_width="@dimen/dp_44"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/dp_10"
+                android:visibility="gone"
+                app:srcCompat="@drawable/topchat_ic_close"
+                tools:visibility="visible" />
+        </RelativeLayout>
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/parent_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chat_toolbar"/>
+        app:layout_constraintTop_toBottomOf="@+id/search_top_bar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

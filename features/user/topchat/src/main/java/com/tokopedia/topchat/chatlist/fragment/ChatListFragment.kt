@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.*
@@ -126,6 +127,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             R.id.menu_chat_setting -> {
                 val intent = ChatSettingActivity.getIntent(context, isTabSeller())
                 startActivity(intent)
+                true
+            }
+            R.id.menu_chat_search -> {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SEARCH)
                 true
             }
             else -> super.onOptionsItemSelected(item)
