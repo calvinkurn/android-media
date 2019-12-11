@@ -738,6 +738,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun getReturnJourney(): FlightDetailViewModel? = if (flightDetailViewModels.size > 1) flightDetailViewModels[1] else null
     fun flightIsDomestic(): Boolean = flightBookingParam.isDomestic
     fun getCartId(): String = flightBookingParam.cartId
+    fun setCartId(cartId: String) { flightBookingParam.cartId = cartId }
 
     fun getLuggageViewModels(): List<FlightBookingAmenityMetaViewModel> {
         return if (flightCartResult.value is Success) (flightCartResult.value as Success<FlightCartViewEntity>).data.luggageModels

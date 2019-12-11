@@ -149,6 +149,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         outState.putString(EXTRA_FLIGHT_DEPARTURE_TERM, bookingViewModel.getDepartureTerm())
         outState.putString(EXTRA_FLIGHT_ARRIVAL_TERM, bookingViewModel.getReturnTerm())
         outState.putParcelable(EXTRA_PRICE, bookingViewModel.getFlightPriceModel())
+        outState.putString(EXTRA_CART_ID, bookingViewModel.getCartId()
         outState.putString(EXTRA_ORDER_DUE, orderDueTimeStampString)
         outState.putParcelable(EXTRA_CONTACT_DATA, FlightContactData(widget_traveller_info.getContactName(),
                 widget_traveller_info.getContactEmail(),
@@ -580,6 +581,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun renderUiFromBundle(args: Bundle) {
+        val cartId = args.getString(EXTRA_CART_ID, "")
+        bookingViewModel.setCartId(cartId)
         orderDueTimeStampString = args.getString(EXTRA_ORDER_DUE, "")
         setUpTimer(FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, orderDueTimeStampString))
         val profileData = args.getParcelable(EXTRA_CONTACT_DATA) ?: FlightContactData()
@@ -1039,6 +1042,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val EXTRA_PRICE_DATA = "EXTRA_PRICE_DATA"
         const val EXTRA_OTHER_PRICE_DATA = "EXTRA_OTHER_PRICE_DATA"
         const val EXTRA_AMENITY_PRICE_DATA = "EXTRA_AMENITY_PRICE_DATA"
+        const val EXTRA_CART_ID = "EXTRA_BOOKING_CART_ID"
 
         const val REQUEST_CODE_PASSENGER = 1
         const val REQUEST_CODE_CONTACT_FORM = 12
