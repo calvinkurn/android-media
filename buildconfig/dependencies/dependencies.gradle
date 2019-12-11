@@ -33,7 +33,7 @@ ext {
     roomVersion = '2.1.0'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
-    guavaVersion = '20.0'
+    guavaVersion = '28.1-android'
 
     exoPlayerVersion = '2.9.6'
 
