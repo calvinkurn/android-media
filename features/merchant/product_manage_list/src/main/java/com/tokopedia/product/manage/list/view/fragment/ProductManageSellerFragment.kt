@@ -66,7 +66,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     }
 
     override fun getSearchInputViewResourceId(): Int {
-        return R.id.search_input_view_list
+        return com.tokopedia.product.manage.list.R.id.search_input_view_list
     }
 
     override fun initInjector() {
