@@ -23,8 +23,9 @@
     app:cardPreventCornerOverlap="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutOriginalProduct"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:padding="@dimen/dp_8">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -213,7 +214,7 @@
             android:clickable="true"
             android:focusable="true"
             android:text="@string/similar_search_original_product_add_to_cart_collapsed"
-            android:visibility="gone"
+            android:alpha="0.0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:unifyButtonSize="small"

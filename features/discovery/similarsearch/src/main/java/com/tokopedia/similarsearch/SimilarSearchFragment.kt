@@ -3,6 +3,7 @@ package com.tokopedia.similarsearch
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -87,6 +89,20 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         initRecyclerViewLayoutManager()
         initRecyclerViewEndlessScrollListener()
         initRecyclerViewItemDecoration()
+
+
+
+        recyclerViewSimilarSearch?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                Log.v("RecyclerView Scroll", "OnScroll dx: $dx, dy: $dy, vertical scroll offset: ${recyclerView.computeVerticalScrollOffset()}")
+                if (dy > 0) {
+                    originalProductView?.collapse(recyclerViewSimilarSearch?.computeVerticalScrollOffset() ?: 0)
+                }
+                else if (dy <= 0) {
+                    originalProductView?.expand(recyclerViewSimilarSearch?.computeVerticalScrollOffset() ?: 0)
+                }
+            }
+        })
     }
 
     private fun initRecyclerViewAdapter() {
