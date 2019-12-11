@@ -7,9 +7,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
+import com.tokopedia.topchat.chatsearch.di.DaggerChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.fragment.ChatSearchFragment
 import kotlinx.android.synthetic.main.activity_chat_search.*
 
@@ -17,7 +21,8 @@ import kotlinx.android.synthetic.main.activity_chat_search.*
  * @author by steven on 14/08/19.
  * For navigate: use {@link ApplinkConstInternalMarketplace.CHAT_SEARCH}
  */
-class ChatSearchActivity : BaseSimpleActivity() {
+class ChatSearchActivity : BaseSimpleActivity(),
+        HasComponent<ChatSearchComponent> {
 
     interface Listener {
         fun onSearchQueryChanged(query: String)
@@ -36,6 +41,13 @@ class ChatSearchActivity : BaseSimpleActivity() {
         setContentView(R.layout.activity_chat_search)
         useLightNotificationBar()
         setupToolbar()
+    }
+
+    override fun getComponent(): ChatSearchComponent {
+        return DaggerChatSearchComponent
+                .builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
     }
 
     private fun useLightNotificationBar() {

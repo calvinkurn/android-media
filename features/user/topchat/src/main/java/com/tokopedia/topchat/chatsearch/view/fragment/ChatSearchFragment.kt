@@ -2,13 +2,28 @@ package com.tokopedia.topchat.chatsearch.view.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity
+import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
+import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
+import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
+import javax.inject.Inject
 
 /**
  * @author : Steven 2019-08-06
  */
-class ChatSearchFragment : Fragment(), ChatSearchActivity.Listener {
+class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>(),
+        ChatSearchActivity.Listener, LifecycleOwner {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelFragmentProvider.get(ChatSearchViewModel::class.java) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -16,6 +31,22 @@ class ChatSearchFragment : Fragment(), ChatSearchActivity.Listener {
 
     override fun onSearchQueryChanged(query: String) {
 
+    }
+
+    override fun loadData(page: Int) {
+
+    }
+
+    override fun getAdapterTypeFactory(): ChatSearchTypeFactory {
+        return ChatSearchTypeFactoryImpl()
+    }
+
+    override fun onItemClicked(t: Visitable<*>) {}
+
+    override fun getScreenName() = SCREEN_NAME
+
+    override fun initInjector() {
+        getComponent(ChatSearchComponent::class.java).inject(this)
     }
 
     companion object {
