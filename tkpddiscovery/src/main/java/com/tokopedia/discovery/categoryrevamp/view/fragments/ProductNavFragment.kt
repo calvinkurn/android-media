@@ -21,6 +21,7 @@ import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.tkpd.library.utils.URLParser
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -162,6 +163,9 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
 
     private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
     private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
+    private val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
+    private val ADVERTISINGID = "ADVERTISINGID"
+    private val QUERY_APP_CLIENT_ID = "?appClientId="
 
     companion object {
         private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
@@ -469,7 +473,13 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
             category_btn_banned_navigation.show()
             category_btn_banned_navigation.setOnClickListener() {
                 catAnalyticsInstance.eventBukaClick(bannedData?.appRedirection.toString(), mDepartmentId)
-                productNavViewModel.openBrowserSeamlessly(bannedData!!)
+                val localCacheHandler = LocalCacheHandler(activity, ADVERTISINGID)
+                val adsId = localCacheHandler.getString(KEY_ADVERTISINGID)
+                var url = Uri.parse(bannedData?.appRedirection).toString()
+                if (adsId != null && adsId.trim().isNotEmpty()) {
+                    url = url.plus(QUERY_APP_CLIENT_ID + adsId)
+                    productNavViewModel.openBrowserSeamlessly(url)
+                }
             }
         }
         txt_header.text = bannedData?.bannedMsgHeader

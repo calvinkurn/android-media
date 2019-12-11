@@ -68,7 +68,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         searchNavContainer?.visibility = View.VISIBLE
     }
 
-    override fun loadFilterItems(filters: java.util.ArrayList<Filter>?, searchParameter: MutableMap<String, String>?) {
+    override fun loadFilterItems(filters: java.util.ArrayList<Filter>?, searchParameter: Map<String, String>?) {
         bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
     }
 
@@ -265,7 +265,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private fun initBottomSheetListener() {
         bottomSheetFilterView?.setCallback(object : BottomSheetFilterView.Callback {
-            override fun onApplyFilter(filterParameter: Map<String, String>) {
+            override fun onApplyFilter(filterParameter: Map<String, String>?) {
                 applyFilter(filterParameter)
             }
 
@@ -289,7 +289,10 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         selectedFragment.onBottomSheetHide()
     }
 
-    private fun applyFilter(filterParameter: Map<String, String>) {
+    private fun applyFilter(filterParameter: Map<String, String>?) {
+
+        if (filterParameter == null) return;
+
         val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
 
         if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {
