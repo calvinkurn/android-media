@@ -30,6 +30,8 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
                 clearNotificationMediaForExpiredNotification()
             } catch (e: Throwable) {
             }
+            //todo remove println
+            println("$TAG inside doWork")
             Result.success()
         }
     }
