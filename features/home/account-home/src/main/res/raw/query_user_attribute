@@ -1,23 +1,11 @@
 query BuyerUserAttribute($userID: Int!) {
   status
-  shopInfoMoengage(userID: $userID) {
+  userShopInfo {
     info {
-      date_shop_created
       shop_id
-      shop_location
       shop_name
-      shop_score
-      total_active_product
-      shop_avatar
-      shop_cover
-      shop_domain
-    }
-    owner {
-      is_gold_merchant
-      is_seller
     }
     stats {
-      shop_total_transaction
       shop_item_sold
     }
   }

@@ -7,9 +7,9 @@ import com.tokopedia.navigation_common.model.SaldoModel;
 
 public class UserAttributeData {
 
-    @SerializedName("shopInfoMoengage")
+    @SerializedName("userShopInfo")
     @Expose
-    private ShopInfoMoengage shopInfoMoengage = new ShopInfoMoengage();
+    private UserShopInfo userShopInfo = new UserShopInfo();
     @SerializedName("profile")
     @Expose
     private Profile profile = new Profile();
@@ -28,13 +28,12 @@ public class UserAttributeData {
 
     private SaldoModel saldo = new SaldoModel();
 
-
-    public ShopInfoMoengage getShopInfoMoengage() {
-        return shopInfoMoengage;
+    public UserShopInfo getUserShopInfo() {
+        return userShopInfo;
     }
 
-    public void setShopInfoMoengage(ShopInfoMoengage shopInfoMoengage) {
-        this.shopInfoMoengage = shopInfoMoengage;
+    public void setUserShopInfo(UserShopInfo userShopInfo) {
+        this.userShopInfo = userShopInfo;
     }
 
     public Profile getProfile() {
