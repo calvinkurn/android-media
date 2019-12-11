@@ -42,7 +42,6 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase;
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase;
-import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
 import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest;
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest;
 import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData;
@@ -104,19 +103,13 @@ import rx.subscriptions.CompositeSubscription;
 public class CartListPresenter implements ICartListPresenter {
     private static final float PERCENTAGE = 100.0f;
 
-    private static final String PARAM_PARAMS = "params";
-    private static final String PARAM_LANG = "lang";
-    private static final String PARAM_STEP = "step";
     private static final String PARAM_GLOBAL = "global";
-    private static final String PARAM_MERCHANT = "merchant";
 
     public static final int ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0;
     public static final int ITEM_CHECKED_ALL_WITH_CHANGES = 1;
     public static final int ITEM_CHECKED_PARTIAL_SHOP = 3;
     public static final int ITEM_CHECKED_PARTIAL_ITEM = 4;
     public static final int ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5;
-    public static final String CART_SRC = "cart";
-    public static final String ITEM_REQUEST = "5";
 
     private static final String ADVERTISINGID = "ADVERTISINGID";
     private static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
@@ -127,7 +120,6 @@ public class CartListPresenter implements ICartListPresenter {
     private final CompositeSubscription compositeSubscription;
     private final DeleteCartListUseCase deleteCartListUseCase;
     private final UpdateCartUseCase updateCartUseCase;
-    private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
     private final UpdateAndReloadCartUseCase updateAndReloadCartUseCase;
@@ -154,7 +146,6 @@ public class CartListPresenter implements ICartListPresenter {
                              CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
                              CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                              CompositeSubscription compositeSubscription,
-                             CartApiRequestParamGenerator cartApiRequestParamGenerator,
                              AddWishListUseCase addWishListUseCase,
                              RemoveWishListUseCase removeWishListUseCase,
                              UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
@@ -174,7 +165,6 @@ public class CartListPresenter implements ICartListPresenter {
         this.updateCartUseCase = updateCartUseCase;
         this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
         this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
-        this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
         this.updateAndReloadCartUseCase = updateAndReloadCartUseCase;
@@ -385,7 +375,7 @@ public class CartListPresenter implements ICartListPresenter {
         removeCartRequest.setAddWishlist(addWishList ? 1 : 0);
         removeCartRequest.setCartIds(toBeDeletedCartIds);
         TKPDMapParam<String, String> paramDelete = new TKPDMapParam<>();
-        paramDelete.put(PARAM_PARAMS, new Gson().toJson(removeCartRequest));
+        paramDelete.put(DeleteCartListUseCase.PARAM_PARAMS, new Gson().toJson(removeCartRequest));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,

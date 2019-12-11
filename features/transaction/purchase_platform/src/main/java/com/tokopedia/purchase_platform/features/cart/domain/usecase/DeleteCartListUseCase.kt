@@ -43,6 +43,7 @@ class DeleteCartListUseCase @Inject constructor(private val cartRepository: ICar
     }
 
     companion object {
+        const val PARAM_PARAMS = "params"
         const val PARAM_IS_DELETE_ALL_DATA = "PARAM_IS_DELETE_ALL_DATA"
         const val PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART = "PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART"
         const val PARAM_TO_BE_REMOVED_PROMO_CODES = "PARAM_TO_BE_REMOVED_PROMO_CODES"

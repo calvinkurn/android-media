@@ -22,7 +22,6 @@ import com.tokopedia.purchase_platform.common.di.PurchasePlatformQualifier
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.data.api.CartApi
 import com.tokopedia.purchase_platform.features.cart.data.repository.CartRepository
 import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository
@@ -83,12 +82,6 @@ class CartModule {
     @CartScope
     fun provideCompositeSubscription(): CompositeSubscription {
         return CompositeSubscription()
-    }
-
-    @Provides
-    @CartScope
-    fun cartApiRequestParamGenerator(): CartApiRequestParamGenerator {
-        return CartApiRequestParamGenerator()
     }
 
     @Provides
@@ -182,7 +175,6 @@ class CartModule {
                                   checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
                                   checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                   compositeSubscription: CompositeSubscription,
-                                  cartApiRequestParamGenerator: CartApiRequestParamGenerator,
                                   addWishListUseCase: AddWishListUseCase,
                                   removeWishListUseCase: RemoveWishListUseCase,
                                   updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
@@ -198,11 +190,11 @@ class CartModule {
                                   seamlessLoginUsecase: SeamlessLoginUsecase): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartListUseCase,
                 updateCartUseCase, checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper,
-                compositeSubscription, cartApiRequestParamGenerator, addWishListUseCase,
-                removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase
+                compositeSubscription, addWishListUseCase, removeWishListUseCase,
+                updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
+                getRecentViewUseCase, getWishlistUseCase, getRecommendationUseCase,
+                addToCartUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
+                updateInsuranceProductDataUsecase, seamlessLoginUsecase
         )
     }
 
