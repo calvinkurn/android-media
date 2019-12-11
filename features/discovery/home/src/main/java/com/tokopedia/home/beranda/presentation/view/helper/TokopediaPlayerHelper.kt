@@ -147,11 +147,11 @@ class TokopediaPlayerHelper(
         // A MediaSource defines the media to be played, loads the media, and from which the loaded media can be read.
         // A MediaSource is injected via ExoPlayer.prepare at the start of playback.
         mVideosUris?.let {
-            val mediaSources: Array<MediaSource> = Array(10){value ->
-                buildMediaSource(it[value])
+            val mediaSources: MutableList<MediaSource> = mutableListOf()
+            it.forEach {uri ->
+                mediaSources.add(buildMediaSource(uri))
             }
-
-            mMediaSource = if(mediaSources.size == 1)  mediaSources[0] else ConcatenatingMediaSource(*mediaSources)
+            mMediaSource = if(mediaSources.size == 1)  mediaSources[0] else ConcatenatingMediaSource(*mediaSources.toTypedArray())
 
         }
     }

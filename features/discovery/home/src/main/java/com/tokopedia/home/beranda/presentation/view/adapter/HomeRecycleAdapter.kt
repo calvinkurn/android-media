@@ -82,14 +82,17 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
-                var firstVisible = layoutManager!!.findFirstVisibleItemPosition()
-                val lastVisible = layoutManager.findLastVisibleItemPosition()
+                var firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: -1
+                val lastVisible = layoutManager?.findLastVisibleItemPosition() ?: -1
                 val top: Int = mRecyclerView?.getChildAt(0)?.top ?: -1
                 val height: Int = mRecyclerView?.getChildAt(0)?.height ?: -1
+
+                if(visitables[firstVisible] !is PlayCardViewModel) return
 
                 if (top < height / 3 * -1) {
                     firstVisible++
                 }
+
                 if (lastVisible == itemCount - 1 && itemCount >= 0) {
                     val lastViewTop: Int = mRecyclerView?.getChildAt(mRecyclerView?.childCount ?: 0 - 1)?.bottom
                             ?: -1
@@ -395,7 +398,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
 
 
     private fun getViewHolder(position: Int): AbstractViewHolder<out Visitable<*>>? {
-        return mRecyclerView?.findViewHolderForAdapterPosition(position) as AbstractViewHolder<out Visitable<*>>
+        return mRecyclerView?.findViewHolderForAdapterPosition(position) as AbstractViewHolder<out Visitable<*>>?
     }
 
 

@@ -111,7 +111,7 @@ class PlayCardViewHolder(
     }
 
     override fun releaseExoPlayerCalled() {
-        helper?.releasePlayer()
+
     }
 
     override fun onVideoResumeDataLoaded(window: Int, position: Long, isResumeWhenReady: Boolean) {
