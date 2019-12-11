@@ -13,15 +13,16 @@
         android:id="@+id/pdp_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        tools:src="@drawable/ic_product_fintech_qr_normal_24"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/pdp_info_title"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/pdp_info_title"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        tools:src="@drawable/ic_product_fintech_qr_normal_24"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/pdp_arrow_right"
@@ -42,7 +43,6 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         tools:text="Varian Produk"
-        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:textColor="@color/charcoal_grey_88"/>

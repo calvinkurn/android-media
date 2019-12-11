@@ -11,7 +11,6 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -20,9 +19,11 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductTradeinDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.origin
@@ -146,24 +147,11 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         launchCatchError(block = {
             var needRequestCod = false
 
-            val pdpLayout = getPdpLayout(productParams.productId ?: "")
-            val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(pdpLayout.data.components)
-            if (isUserSessionActive() && !isUserHasShop) {
-                initialLayoutData.add(ProductOpenShopDataModel())
-            }
-            initialLayoutData.add(ProductLastSeenDataModel())
-            getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(pdpLayout.data)
+            val productData = getPdpLayout(productParams.productId ?: "")
+            val initialLayoutData = productData.listOfLayout
+            getDynamicProductInfoP1 = productData.layoutData
 
-            //Check trade-in
-            removeDynamicComponent(initialLayoutData, getDynamicProductInfoP1)
-//            if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
-//                removeTradein(initialLayoutData)
-//            }
-//            //Check Wholesale
-//            if (getDynamicProductInfoP1?.data?.hasWholesale == false) {
-//                removeWholesale(initialLayoutData)
-//            }
-
+            removeDynamicComponent(initialLayoutData)
             productLayout.value = Success(initialLayoutData)
 
             getDynamicProductInfoP1?.let {
@@ -209,16 +197,23 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         }
     }
 
-    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPDPDataModel>, dynamicProductInfoP1: DynamicProductInfoP1?) {
-        initialLayoutData.forEachIndexed { index, dynamicPDPDataModel ->
-            if (getDynamicProductInfoP1?.data?.isTradeIn == false &&
-                    dynamicPDPDataModel is ProductGeneralInfoDataModel && dynamicPDPDataModel.name == "trade_in") {
-                initialLayoutData.remove(dynamicPDPDataModel)
-            } else if (getDynamicProductInfoP1?.data?.hasWholesale == false &&
-                    dynamicPDPDataModel is ProductGeneralInfoDataModel && dynamicPDPDataModel.name == "wholesale") {
-                initialLayoutData.remove(dynamicPDPDataModel)
+    private suspend fun getProductV2(){
+
+    }
+
+    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPDPDataModel>) {
+        val removedData = initialLayoutData.map {
+            if (getDynamicProductInfoP1?.data?.isTradeIn == false && it is ProductTradeinDataModel && it.name == ProductDetailConstant.TRADE_IN) {
+                it
+            } else if (getDynamicProductInfoP1?.data?.hasWholesale == false && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
+                it
+            } else {
+                null
             }
         }
+
+        if (removedData.isNotEmpty())
+            initialLayoutData.removeAll(removedData)
     }
 
     fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
@@ -497,8 +492,8 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         return getProductInfoP3UseCase.executeOnBackground()
     }
 
-    private suspend fun getPdpLayout(productId: String): ProductDetailLayout {
-        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId)
+    private suspend fun getPdpLayout(productId: String): ProductDetailDataModel {
+        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, isUserSessionActive(), isUserHasShop)
         getPdpLayoutUseCase.isFromCacheFirst = false
         return getPdpLayoutUseCase.executeOnBackground()
     }
