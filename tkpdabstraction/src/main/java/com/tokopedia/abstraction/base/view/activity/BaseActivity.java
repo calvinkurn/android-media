@@ -81,7 +81,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
             pauseFlag = false;
         }
 
-        sendScreenAnalytics();
+        if (sendScreenByDefault()) sendScreenAnalytics();
         setLogCrash();
 
         registerForceLogoutReceiver();
@@ -238,5 +238,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
         if (gratificationSubscriber != null) {
             gratificationSubscriber.onActivityDestroyed(this);
         }
+    }
+
+    protected Boolean sendScreenByDefault() {
+        return true;
     }
 }
