@@ -114,7 +114,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 //        }
 
         initGTM();
-        if (sendScreenByDefault()) sendScreenAnalytics();
+        sendScreenAnalytics();
 
         registerShake();
         registerForceLogoutReceiver();
@@ -310,9 +310,5 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             ((AbstractionRouter) getApplication()).unregisterShake();
         }
-    }
-
-    protected Boolean sendScreenByDefault() {
-        return true;
     }
 }
