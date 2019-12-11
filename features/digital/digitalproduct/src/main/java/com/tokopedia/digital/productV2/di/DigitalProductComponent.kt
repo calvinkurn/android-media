@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.digital.productV2.presentation.fragment.DigitalProductFragment
+import com.tokopedia.digital.productV2.presentation.fragment.DigitalProductPromoListFragment
 import com.tokopedia.digital.productV2.presentation.fragment.DigitalProductRecentTransactionFragment
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,4 +27,6 @@ interface DigitalProductComponent {
     fun inject(digitalProductFragment: DigitalProductFragment)
 
     fun inject(digitalProductRecentTransactionFragment: DigitalProductRecentTransactionFragment)
+
+    fun inject(digitalProductPromoListFragment: DigitalProductPromoListFragment)
 }

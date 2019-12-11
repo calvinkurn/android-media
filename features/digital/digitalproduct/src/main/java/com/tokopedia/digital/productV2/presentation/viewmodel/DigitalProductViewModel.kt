@@ -61,10 +61,10 @@ class DigitalProductViewModel  @Inject constructor(
         }
     }
 
-    fun createParams(menuID: Int, operator: String = ""): Map<String, Any> {
+    fun createParams(menuID: Int, operator: Int? = null): Map<String, Any> {
         val params: MutableMap<String, Any> = mutableMapOf()
         params[PARAM_MENU_ID] = menuID
-        if (operator.isNotEmpty()) params[PARAM_OPERATOR] = operator
+        operator?.let { opr -> params[PARAM_OPERATOR] = opr.toString() }
         return params
     }
 

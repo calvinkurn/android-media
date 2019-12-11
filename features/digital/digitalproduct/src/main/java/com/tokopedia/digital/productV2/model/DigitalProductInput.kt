@@ -37,7 +37,8 @@ class DigitalProductInput (
         val dataCollections: List<CatalogProductInput.DataCollection> = listOf(),
         @SerializedName("validations")
         @Expose
-        val validations: List<CatalogProductInput.Validation> = listOf()
+        val validations: List<CatalogProductInput.Validation> = listOf(),
+        var value: String = ""
 
 ): Visitable<DigitalProductAdapterFactory> {
         override fun type(typeFactory: DigitalProductAdapterFactory) = typeFactory.type(this)

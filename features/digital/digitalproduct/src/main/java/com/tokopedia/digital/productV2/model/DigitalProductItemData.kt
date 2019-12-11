@@ -19,7 +19,8 @@ class DigitalProductItemData(
         val text: String = "",
         @SerializedName("dataCollections")
         @Expose
-        var dataCollections: List<CatalogProductData.DataCollection> = listOf()
+        var dataCollections: List<CatalogProductData.DataCollection> = listOf(),
+        var value: String = ""
 
 ): Visitable<DigitalProductAdapterFactory> {
         override fun type(typeFactory: DigitalProductAdapterFactory) = typeFactory.type(this)
