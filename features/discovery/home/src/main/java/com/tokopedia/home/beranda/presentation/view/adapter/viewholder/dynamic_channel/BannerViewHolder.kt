@@ -1,9 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
-import androidx.annotation.LayoutRes
 import android.view.View
-
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.banner.BannerView
 import com.tokopedia.home.R
@@ -16,8 +15,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.BannerViewDynamicBackground
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * @author by errysuprayogi on 11/28/17.

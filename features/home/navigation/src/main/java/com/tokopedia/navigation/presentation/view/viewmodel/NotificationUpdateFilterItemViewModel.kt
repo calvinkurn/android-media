@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterTypeFactory
 
-class NotificationUpdateFilterItemViewModel(
+open class NotificationUpdateFilterItemViewModel(
         var filterType: String = "",
         var title: String = "",
         var list: List<NotificationUpdateFilterSectionItemViewModel> = arrayListOf()

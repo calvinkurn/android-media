@@ -3,7 +3,6 @@
     package="com.tokopedia.onboarding.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/onboarding_app_name">
         <dist:fusing dist:include="true" />

@@ -2,23 +2,23 @@ package com.tokopedia.shop.open.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.seller.R;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
+import com.tokopedia.shop.open.util.ShopErrorHandler;
 import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.shop.open.view.listener.ShopOpenCheckDomainView;
-import com.tokopedia.shop.open.view.presenter.ShopCheckIsReservePresenterImpl;
-import com.tokopedia.shop.open.util.ShopErrorHandler;
-
-import javax.inject.Inject;
 
 /**
  * Created by Hendry on 3/17/2017.
@@ -35,14 +35,10 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
     private View loadingLayout;
     private View errorLayout;
 
-    @Inject
-    ShopCheckIsReservePresenterImpl shopCheckIsReservePresenter;
-
     @Override
     protected void initInjector() {
         ShopOpenDomainComponent component = getComponent(ShopOpenDomainComponent.class);
         component.inject(this);
-        shopCheckIsReservePresenter.attachView(this);
     }
 
     @Nullable
@@ -57,22 +53,17 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
             @Override
             public void onClick(View view) {
                 showLoading(true);
-                shopCheckIsReservePresenter.isReservingDomain();
+                goToShopOpenDomain();
             }
         });
         showLoading(true);
-        shopCheckIsReservePresenter.isReservingDomain();
+        goToShopOpenDomain();
         return view;
     }
 
     @Override
     public void onSuccessCheckReserveDomain(ResponseIsReserveDomain responseIsReserveDomain) {
-        boolean isReservingDomain = responseIsReserveDomain.isDomainAlreadyReserved();
-//        if (isReservingDomain) {
-//            goToShopOpenMandatory(responseIsReserveDomain);
-//        } else {
-            goToShopOpenDomain();
-//        }
+        goToShopOpenDomain();
     }
 
     @Override
@@ -90,27 +81,23 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
     }
 
     private void goToShopOpenDomain() {
-        Intent intent = ShopOpenDomainActivity.getIntent(getActivity());
+        if (getActivity() == null) {
+            return;
+        }
+
+        Intent intent;
+        if (SessionHandler.isV4Login(getActivity()) && !SessionHandler.isUserHasShop(getActivity())) {
+            intent = ShopOpenDomainActivity.getIntent(getActivity());
+        } else {
+            intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME);
+        }
+
         startActivity(intent);
         getActivity().finish();
     }
 
-//    private void goToShopOpenMandatory(ResponseIsReserveDomain responseIsReserveDomain) {
-//        Intent intent = ShopOpenMandatoryActivity.getIntent(getActivity(), responseIsReserveDomain);
-//        startActivity(intent);
-//        getActivity().finish();
-//    }
-
     @Override
     protected String getScreenName() {
         return null;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (shopCheckIsReservePresenter != null) {
-            shopCheckIsReservePresenter.detachView();
-        }
     }
 }

@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <!--<item-->
-        <!--android:id="@+id/menu_chat_search"-->
-        <!--android:icon="@drawable/ic_chat_search"-->
-        <!--app:showAsAction="ifRoom"-->
-        <!--android:title="@string/menu_chat_search"/>-->
     <item
         android:id="@+id/menu_chat_filter"
         android:icon="@drawable/ic_chat_filter"
-        app:showAsAction="ifRoom"
-        android:title="@string/menu_chat_filter"/>
-    <!--<item-->
-        <!--android:id="@+id/menu_chat_setting"-->
-        <!--android:icon="@drawable/ic_chat_gear"-->
-        <!--app:showAsAction="ifRoom"-->
-        <!--android:title="@string/menu_chat_setting" />-->
+        android:title="@string/menu_chat_filter"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_chat_setting"
+        android:icon="@drawable/ic_gear_grey"
+        android:title="@string/menu_chat_setting"
+        app:showAsAction="ifRoom" />
 </menu>

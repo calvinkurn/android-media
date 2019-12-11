@@ -20,8 +20,22 @@ class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifi
                                                        private val graphqlUseCase: GraphqlUseCase,
                                                        private val cartMapperV3: CartMapperV3) : UseCase<CartListData>() {
 
-    override fun createObservable(p0: RequestParams?): Observable<CartListData> {
-        val graphqlRequest = GraphqlRequest(queryString, ShopGroupSimplifiedGqlResponse::class.java)
+    companion object {
+        const val PARAM_SELECTED_CART_ID = "PARAM_SELECTED_CART_ID"
+
+        const val PARAM_KEY_LANG = "lang"
+        const val PARAM_VALUE_ID = "id"
+        const val PARAM_KEY_SELECTED_CART_ID = "selected_cart_id"
+    }
+
+    override fun createObservable(requestParam: RequestParams?): Observable<CartListData> {
+        val cartId = requestParam?.getString(PARAM_SELECTED_CART_ID, "") ?: ""
+        val variables = mapOf(
+                PARAM_KEY_LANG to PARAM_VALUE_ID,
+                PARAM_KEY_SELECTED_CART_ID to cartId
+        )
+
+        val graphqlRequest = GraphqlRequest(queryString, ShopGroupSimplifiedGqlResponse::class.java, variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {

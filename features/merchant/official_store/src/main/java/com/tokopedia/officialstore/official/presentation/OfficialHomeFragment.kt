@@ -70,7 +70,6 @@ class OfficialHomeFragment :
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-
     private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
@@ -80,6 +79,7 @@ class OfficialHomeFragment :
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
+    private var isLoadedOnce: Boolean = false
     private var isScrolling = false
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
@@ -114,7 +114,7 @@ class OfficialHomeFragment :
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+            loadData()
         }
     }
 
@@ -140,7 +140,7 @@ class OfficialHomeFragment :
         observeDynamicChannel()
         observeProductRecommendation()
         resetData()
-        refreshData()
+        loadData()
         setListener()
     }
 
@@ -155,9 +155,19 @@ class OfficialHomeFragment :
         endlessScrollListener?.resetState()
     }
 
-    private fun refreshData() {
+    private fun loadData(isRefresh: Boolean = false) {
         initFirebasePerformanceMonitoring()
-        viewModel.loadFirstData(category)
+
+        if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
+            if (!isLoadedOnce || isRefresh) {
+                viewModel.loadFirstData(category)
+                isLoadedOnce = true
+
+                if (!isRefresh) {
+                    tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+                }
+            }
+        }
     }
 
     private fun observeBannerData() {
@@ -285,7 +295,7 @@ class OfficialHomeFragment :
             counterTitleShouldBeRendered = 0
             adapter?.notifyDataSetChanged()
             recyclerView?.removeOnScrollListener(endlessScrollListener)
-            refreshData()
+            loadData(true)
         }
 
         if (parentFragment is RecyclerViewScrollListener) {
@@ -423,11 +433,13 @@ class OfficialHomeFragment :
     }
 
     override fun onCountDownFinished() {
-        adapter?.getVisitables()?.removeAll {
-            it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+        recyclerView?.post {
+            adapter?.getVisitables()?.removeAll {
+                it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+            }
+            adapter?.notifyDataSetChanged()
         }
-        adapter?.notifyDataSetChanged()
-        refreshData()
+        loadData(true)
     }
 
     override fun onClickLegoHeaderActionText(applink: String): View.OnClickListener {
@@ -472,13 +484,15 @@ class OfficialHomeFragment :
         return View.OnClickListener {
             val gridData = channelData.grids?.get(position)
             val applink = gridData?.applink ?: ""
+            val campaignId = channelData.campaignID
 
             gridData?.let {
                 tracking?.flashSalePDPClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it
+                        it,
+                        campaignId
                 )
             }
 
@@ -488,7 +502,8 @@ class OfficialHomeFragment :
 
     override fun flashSaleImpression(channelData: Channel) {
         if (!sentDynamicChannelTrackers.contains(channelData.id)) {
-            tracking?.flashSaleImpression(viewModel.currentSlug, channelData)
+            val campaignId = channelData.campaignID
+            tracking?.flashSaleImpression(viewModel.currentSlug, channelData, campaignId)
             sentDynamicChannelTrackers.add(channelData.id)
         }
     }

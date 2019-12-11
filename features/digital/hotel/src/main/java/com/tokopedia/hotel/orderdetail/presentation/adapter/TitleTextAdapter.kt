@@ -1,9 +1,9 @@
 package com.tokopedia.hotel.orderdetail.presentation.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.orderdetail.data.model.TitleContent
 import kotlinx.android.synthetic.main.item_hotel_detail_title_text.view.*
@@ -17,6 +17,7 @@ class TitleTextAdapter(val type: Int): RecyclerView.Adapter<TitleTextAdapter.Vie
         lateinit var itemView: View
         when (type) {
             HORIZONTAL_LAYOUT -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text, parent, false)
+            HORIZONTAL_LEFT_LAYOUT -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text_horizontal_left, parent, false)
             VERTICAL_LAYOUT -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text_vertical, parent, false)
             HORIZONTAL_LAYOUT_ORANGE -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text_horizontal_orange, parent, false)
             else -> itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel_detail_title_text, parent, false)
@@ -55,6 +56,7 @@ class TitleTextAdapter(val type: Int): RecyclerView.Adapter<TitleTextAdapter.Vie
 
     companion object {
         const val HORIZONTAL_LAYOUT = 1
+        const val HORIZONTAL_LEFT_LAYOUT = 3
         const val VERTICAL_LAYOUT = 2
         const val HORIZONTAL_LAYOUT_ORANGE = 11
     }
