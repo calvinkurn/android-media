@@ -14,7 +14,6 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
@@ -23,7 +22,6 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -35,7 +33,6 @@ import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Screen.SCREE
 import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
 import com.tokopedia.otp.common.design.PinInputEditText
 import com.tokopedia.otp.validator.data.ModeListData
-import com.tokopedia.otp.validator.data.OtpModeListData
 import com.tokopedia.otp.validator.data.OtpRequestData
 import com.tokopedia.otp.validator.data.OtpValidateData
 import com.tokopedia.otp.validator.di.ValidatorComponent
@@ -121,6 +118,7 @@ class ValidatorFragment: BaseDaggerFragment(){
             showChangeEmailDialog(email)
         }
 
+        inputVerifyCode.requestFocus()
         inputVerifyCode.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) { }
 
@@ -258,7 +256,6 @@ class ValidatorFragment: BaseDaggerFragment(){
         activity?.let {
             analytics.trackSuccessClickOkResendButton()
             analytics.trackSuccessClickResendButton()
-            KeyboardHandler.DropKeyboard(it, inputVerifyCode)
             removeErrorOtp()
             dismissLoading()
             ToasterNormal.show(it, getString(R.string.success_resend_activation))
@@ -299,7 +296,6 @@ class ValidatorFragment: BaseDaggerFragment(){
         activity?.let {
             throwable.message?.let { errorMessage ->
                 analytics.trackFailedClickActivationButton(errorMessage)
-                KeyboardHandler.DropKeyboard(it, inputVerifyCode)
                 dismissLoading()
                 if (errorMessage == "") {
                     NetworkErrorHelper.showSnackbar(it)
@@ -353,7 +349,6 @@ class ValidatorFragment: BaseDaggerFragment(){
             }
 
             inputVerifyCode.requestFocus()
-            KeyboardHandler.DropKeyboard(it, inputVerifyCode)
         }
     }
 
@@ -368,7 +363,6 @@ class ValidatorFragment: BaseDaggerFragment(){
             }
 
             inputVerifyCode.requestFocus()
-            KeyboardHandler.DropKeyboard(it, inputVerifyCode)
         }
     }
 
@@ -389,7 +383,8 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun showKeyboard() {
         val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.toggleSoftInputFromWindow(inputVerifyCode.windowToken, InputMethodManager.SHOW_FORCED, 0)
+        val token = inputVerifyCode.windowToken
+        inputMethodManager.toggleSoftInputFromWindow(token, InputMethodManager.SHOW_FORCED, 0)
     }
 
     companion object {
