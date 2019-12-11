@@ -49,7 +49,6 @@ import com.tokopedia.checkout.view.common.TickerAnnouncementActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.merchantvoucher.common.gql.data.request.CartItemDataVoucher;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
@@ -78,7 +77,6 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShopItems;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
@@ -95,6 +93,9 @@ import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapte
 import com.tokopedia.purchase_platform.features.cart.view.compoundview.ToolbarRemoveView;
 import com.tokopedia.purchase_platform.features.cart.view.compoundview.ToolbarRemoveWithBackView;
 import com.tokopedia.purchase_platform.features.cart.view.di.DaggerNewCartComponent;
+import com.tokopedia.purchase_platform.features.cart.view.mapper.PromoMapper;
+import com.tokopedia.purchase_platform.features.cart.view.mapper.RecentViewMapper;
+import com.tokopedia.purchase_platform.features.cart.view.mapper.WishlistMapper;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData;
@@ -182,6 +183,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     ViewHolderDataMapper viewHolderDataMapper;
     @Inject
     UserSessionInterface userSession;
+    @Inject
+    WishlistMapper wishlistMapper;
+    @Inject
+    RecentViewMapper recentViewMapper;
+    @Inject
+    PromoMapper promoMapper;
 
     private CartAdapter cartAdapter;
     private RefreshHandler refreshHandler;
@@ -2150,24 +2157,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onSuccessCheckPromoFirstStep(@NonNull ResponseGetPromoStackUiModel
-                                                     responseGetPromoStackUiModel) {
+    public void onSuccessCheckPromoFirstStep(@NonNull ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
         // Update global promo state
         if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {
             PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobalData();
-            int typePromo;
-            if (responseGetPromoStackUiModel.getData().isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()) {
-                typePromo = PromoStackingData.CREATOR.getTYPE_COUPON();
-            } else {
-                typePromo = PromoStackingData.CREATOR.getTYPE_VOUCHER();
-            }
-            promoStackingGlobalData.setTypePromo(typePromo);
-            promoStackingGlobalData.setPromoCode(responseGetPromoStackUiModel.getData().getCodes().get(0));
-            promoStackingGlobalData.setDescription(responseGetPromoStackUiModel.getData().getMessage().getText());
-            promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseGetPromoStackUiModel.getData().getMessage().getState()));
-            promoStackingGlobalData.setTitle(responseGetPromoStackUiModel.getData().getTitleDescription());
-            promoStackingGlobalData.setAmount(responseGetPromoStackUiModel.getData().getCashbackWalletAmount());
-            promoStackingGlobalData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
+            promoMapper.convertPromoGlobalModel(responseGetPromoStackUiModel, promoStackingGlobalData);
         }
 
         // Update merchant voucher state
@@ -2180,32 +2174,19 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                         if (voucherOrdersItemData == null) {
                             voucherOrdersItemData = new VoucherOrdersItemData();
                         }
-                        voucherOrdersItemData.setCode(voucherOrdersItemUiModel.getCode());
-                        voucherOrdersItemData.setSuccess(voucherOrdersItemUiModel.getSuccess());
-                        voucherOrdersItemData.setUniqueId(voucherOrdersItemUiModel.getUniqueId());
-                        voucherOrdersItemData.setCartId(voucherOrdersItemUiModel.getCartId());
-                        voucherOrdersItemData.setType(voucherOrdersItemUiModel.getType());
-                        voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItemUiModel.getCashbackWalletAmount());
-                        voucherOrdersItemData.setDiscountAmount(voucherOrdersItemUiModel.getDiscountAmount());
-                        voucherOrdersItemData.setInvoiceDescription(voucherOrdersItemUiModel.getInvoiceDescription());
-
-                        MessageData messageData = new MessageData();
-                        messageData.setColor(voucherOrdersItemUiModel.getMessage().getColor());
-                        messageData.setState(voucherOrdersItemUiModel.getMessage().getState());
-                        messageData.setText(voucherOrdersItemUiModel.getMessage().getText());
-
-                        voucherOrdersItemData.setMessageData(messageData);
-
+                        promoMapper.convertPromoMerchantModel(voucherOrdersItemUiModel, voucherOrdersItemData);
                         cartShopHolderData.getShopGroupAvailableData().setVoucherOrdersItemData(voucherOrdersItemData);
                         break;
                     }
                 }
                 if (responseGetPromoStackUiModel.getData().getTrackingDetailUiModel().size() > 0) {
                     for (TrackingDetailUiModel trackingDetailUiModel : responseGetPromoStackUiModel.getData().getTrackingDetailUiModel()) {
-                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupAvailableData().getCartItemDataList()) {
-                            if (String.valueOf(trackingDetailUiModel.getProductId()).equalsIgnoreCase(cartItemHolderData.getCartItemData().getOriginData().getProductId())) {
-                                cartItemHolderData.getCartItemData().getOriginData().setPromoCodes(trackingDetailUiModel.getPromoCodesTracking());
-                                cartItemHolderData.getCartItemData().getOriginData().setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
+                        if (cartShopHolderData.getShopGroupAvailableData().getCartItemDataList() != null) {
+                            for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupAvailableData().getCartItemDataList()) {
+                                if (String.valueOf(trackingDetailUiModel.getProductId()).equalsIgnoreCase(cartItemHolderData.getCartItemData().getOriginData().getProductId())) {
+                                    cartItemHolderData.getCartItemData().getOriginData().setPromoCodes(trackingDetailUiModel.getPromoCodesTracking());
+                                    cartItemHolderData.getCartItemData().getOriginData().setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
+                                }
                             }
                         }
                     }
@@ -2224,12 +2205,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 cartAdapter.removePromoStackingVoucherData();
             } else {
                 PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobalData();
-                promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
-                promoStackingData.setAmount(0);
-                promoStackingData.setPromoCode("");
-                promoStackingData.setDescription("");
-                promoStackingData.setTitle(promoStackingData.getTitleDefault());
-                promoStackingData.setCounterLabel(promoStackingData.getCounterLabelDefault());
+                resetPromoGlobal(promoStackingData);
                 cartAdapter.updateItemPromoStackVoucher(promoStackingData);
             }
         } else {
@@ -2245,12 +2221,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void onSuccessClearPromoStackAfterClash() {
         // Reset global promo
         PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobalData();
-        promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
-        promoStackingData.setAmount(0);
-        promoStackingData.setPromoCode("");
-        promoStackingData.setDescription("");
-        promoStackingData.setTitle(promoStackingData.getTitleDefault());
-        promoStackingData.setCounterLabel(promoStackingData.getCounterLabelDefault());
+        resetPromoGlobal(promoStackingData);
 
         // Reset merchant promo
         List<CartShopHolderData> cartShopHolderDataList = cartAdapter.getAllCartShopHolderData();
@@ -2263,10 +2234,19 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartAdapter.notifyDataSetChanged();
     }
 
+    private void resetPromoGlobal(PromoStackingData promoStackingData) {
+        promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+        promoStackingData.setAmount(0);
+        promoStackingData.setPromoCode("");
+        promoStackingData.setDescription("");
+        promoStackingData.setTitle(promoStackingData.getTitleDefault());
+        promoStackingData.setCounterLabel(promoStackingData.getCounterLabelDefault());
+    }
+
     @Override
     public void onFailedClearPromoStack(boolean ignoreAPIResponse) {
         if (!ignoreAPIResponse) {
-            ToasterError.make(getView(), "Terjadi kesalahan. Ulangi beberapa saat lagi", ToasterError.LENGTH_SHORT).show();
+            showToastMessageRed("");
         }
     }
 
@@ -2351,29 +2331,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (this.recentViewList != null) {
             cartRecentViewItemHolderDataList.addAll(this.recentViewList);
         } else if (recentViewList != null) {
-            for (RecentView recentView : recentViewList) {
-                CartRecentViewItemHolderData cartRecentViewItemHolderData = new CartRecentViewItemHolderData();
-                cartRecentViewItemHolderData.setId(recentView.getProductId());
-                cartRecentViewItemHolderData.setName(recentView.getProductName());
-                cartRecentViewItemHolderData.setPrice(recentView.getProductPrice());
-                cartRecentViewItemHolderData.setImageUrl(recentView.getProductImage());
-                cartRecentViewItemHolderData.setWishlist(recentView.isWishlist());
-                cartRecentViewItemHolderData.setRating(recentView.getProductRating());
-                cartRecentViewItemHolderData.setReviewCount(recentView.getProductReviewCount());
-                cartRecentViewItemHolderData.setShopLocation(recentView.getShopLocation());
-                cartRecentViewItemHolderData.setShopId(recentView.getShopId());
-                cartRecentViewItemHolderData.setShopName(recentView.getShopName());
-                cartRecentViewItemHolderData.setMinOrder(1);
-                if (recentView.getBadges().size() > 0) {
-                    cartRecentViewItemHolderData.setBadgeUrl(recentView.getBadges().get(0).getImageUrl());
-                    if (recentView.getBadges().get(0).getTitle().equalsIgnoreCase("Official Store")) {
-                        cartRecentViewItemHolderData.setShopType("official_store");
-                    } else if (recentView.getBadges().get(0).getTitle().equalsIgnoreCase("Power Badge")) {
-                        cartRecentViewItemHolderData.setShopType("power_badge");
-                    }
-                }
-                cartRecentViewItemHolderDataList.add(cartRecentViewItemHolderData);
-            }
+            cartRecentViewItemHolderDataList = recentViewMapper.convertToViewHolderModelList(recentViewList);
         }
         CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
         cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recent_view));
@@ -2389,41 +2347,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void renderWishlist(@Nullable List<Wishlist> wishlist) {
+    public void renderWishlist(@Nullable List<Wishlist> wishlists) {
         List<CartWishlistItemHolderData> cartWishlistItemHolderDataList = new ArrayList<>();
         if (this.wishLists != null) {
             cartWishlistItemHolderDataList.addAll(this.wishLists);
-        } else if (wishlist != null) {
-            for (Wishlist item : wishlist) {
-                CartWishlistItemHolderData cartWishlistItemHolderData = new CartWishlistItemHolderData();
-                cartWishlistItemHolderData.setId(item.getId());
-                cartWishlistItemHolderData.setName(item.getName());
-                cartWishlistItemHolderData.setRawPrice(String.valueOf(item.getPrice()));
-                cartWishlistItemHolderData.setPrice(item.getPriceFmt());
-                cartWishlistItemHolderData.setImageUrl(item.getImageUrl());
-                cartWishlistItemHolderData.setUrl(item.getUrl());
-                cartWishlistItemHolderData.setWishlist(true);
-                cartWishlistItemHolderData.setRating(item.rating);
-                cartWishlistItemHolderData.setReviewCount(item.reviewCount);
-                cartWishlistItemHolderData.setMinOrder(item.getMinimumOrder());
-                cartWishlistItemHolderData.setCategory(item.getCategoryBreadcrumb());
-                if (item.getShop() != null) {
-                    cartWishlistItemHolderData.setShopId(item.getShop().getId());
-                    cartWishlistItemHolderData.setShopName(item.getShop().getName());
-                    String shopType = "";
-                    if (item.getShop().isOfficial()) {
-                        shopType = "official_store";
-                    } else if (item.getShop().isGoldMerchant()) {
-                        shopType = "gold_merchant";
-                    }
-                    cartWishlistItemHolderData.setShopType(shopType);
-                    cartWishlistItemHolderData.setShopLocation(item.getShop().getLocation());
-                }
-                if (item.getBadges().size() > 0) {
-                    cartWishlistItemHolderData.setBadgeUrl(item.getBadges().get(0).getImageUrl());
-                }
-                cartWishlistItemHolderDataList.add(cartWishlistItemHolderData);
-            }
+        } else if (wishlists != null) {
+            cartWishlistItemHolderDataList = wishlistMapper.convertToViewHolderModelList(wishlists);
         }
         CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
         cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_wishlist));
