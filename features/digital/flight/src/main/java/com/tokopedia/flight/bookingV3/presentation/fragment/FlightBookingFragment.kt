@@ -141,6 +141,17 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putParcelable(EXTRA_SEARCH_PASS_DATA, bookingViewModel.getSearchParam())
+        outState.putString(EXTRA_FLIGHT_DEPARTURE_ID, bookingViewModel.getDepartureId())
+        outState.putString(EXTRA_FLIGHT_ARRIVAL_ID, bookingViewModel.getReturnId())
+        outState.putString(EXTRA_FLIGHT_DEPARTURE_TERM, bookingViewModel.getDepartureTerm())
+        outState.putString(EXTRA_FLIGHT_ARRIVAL_TERM, bookingViewModel.getReturnTerm())
+        outState.putParcelable(EXTRA_PRICE, bookingViewModel.getFlightPriceModel())
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
