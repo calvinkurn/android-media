@@ -493,7 +493,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onListItemClicked(orderId: String) {
-        eventClickOrder()
+        eventClickOrder(tabActive)
         Intent(activity, SomDetailActivity::class.java).apply {
             putExtra(PARAM_ORDER_ID, orderId)
             startActivityForResult(this, FLAG_DETAIL)

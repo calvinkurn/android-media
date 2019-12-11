@@ -395,6 +395,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                             buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> setActionRequestPickup()
                             buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping()
                             buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(buttonResp.url)
+                            buttonResp.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionCancelOrder()
                         }
                     }
                 }
@@ -577,46 +578,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private fun setActionCancelOrder() {
         bottomSheetUnify.dismiss()
         if (detailResponse.buyerRequestCancel.isRequestCancel) {
-            // showCancelOrderBottomSheet()
             showBuyerRequestCancelBottomSheet()
         } else {
             showCancelOrderPenaltyBottomSheet()
         }
-    }
-
-    private fun showCancelOrderBottomSheet() {
-        bottomSheetUnify = BottomSheetUnify()
-        if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
-
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_cancel_order, null)
-        viewBottomSheet.tf_cancel_notes?.apply {
-            setLabelStatic(true)
-            setMessage(getString(R.string.cancel_order_notes_max))
-            textFiedlLabelText.text = getString(R.string.cancel_order_notes_hint)
-            textFieldInput.hint = getString(R.string.cancel_order_notes_hint)
-        }
-        viewBottomSheet?.btn_cancel_order_canceled?.setOnClickListener { bottomSheetUnify.dismiss() }
-        viewBottomSheet?.btn_cancel_order_confirmed?.setOnClickListener {
-            bottomSheetUnify.dismiss()
-            val orderRejectRequest = SomRejectRequest(
-                    orderId = detailResponse.orderId.toString(),
-                    rCode = "0",
-                    reason = viewBottomSheet.tf_cancel_notes?.textFieldInput?.text.toString()
-            )
-            if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_cancel_notes?.textFieldInput?.text.toString())) {
-                doRejectOrder(orderRejectRequest)
-            } else {
-                showToasterError(getString(R.string.cancel_order_notes_empty_warning))
-            }
-        }
-
-        bottomSheetUnify.apply {
-            setTitle(TITLE_BATALKAN_PESANAN)
-            setFullPage(false)
-            setChild(viewBottomSheet)
-            setCloseClickListener { bottomSheetUnify.dismiss() }
-        }
-        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
     }
 
     private fun showCancelOrderPenaltyBottomSheet() {
@@ -767,16 +732,22 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         val reasonBuyer = detailResponse.buyerRequestCancel.reason
         viewBottomSheet.buyer_request_cancel_notes?.text = reasonBuyer
 
-        viewBottomSheet?.btn_chat_buyer?.setOnClickListener { goToAskBuyer() }
-        viewBottomSheet?.btn_tolak_pesanan?.setOnClickListener {
-            bottomSheetUnify.dismiss()
-            val orderRejectRequest = SomRejectRequest(
-                    orderId = detailResponse.orderId.toString(),
-                    rCode = "0",
-                    reason = reasonBuyer
-            )
-            doRejectOrder(orderRejectRequest)
+        if (detailResponse.statusId != 220 && detailResponse.statusId != 400) {
+            viewBottomSheet?.ll_buyer_req_cancel_buttons?.visibility = View.GONE
+        } else {
+            viewBottomSheet?.ll_buyer_req_cancel_buttons?.visibility = View.VISIBLE
+            viewBottomSheet?.btn_chat_buyer?.setOnClickListener { goToAskBuyer() }
+            viewBottomSheet?.btn_tolak_pesanan?.setOnClickListener {
+                bottomSheetUnify.dismiss()
+                val orderRejectRequest = SomRejectRequest(
+                        orderId = detailResponse.orderId.toString(),
+                        rCode = "0",
+                        reason = reasonBuyer
+                )
+                doRejectOrder(orderRejectRequest)
+            }
         }
+
         bottomSheetUnify.apply {
             setTitle(TITLE_TOLAK_PESANAN_INI)
             setFullPage(false)
