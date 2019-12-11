@@ -2,10 +2,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fm_widget_crack"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
-    android:id="@+id/fm_widget_crack"
     android:clipToPadding="false">
 
     <View
@@ -53,12 +53,12 @@
         </FrameLayout>
 
         <LinearLayout
-            android:clipChildren="false"
-            android:clipToPadding="false"
             android:id="@+id/container_text_reward"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:gravity="bottom|center"
             android:orientation="vertical"
             android:paddingTop="@dimen/dp_16"
@@ -76,11 +76,11 @@
 
 
             <FrameLayout
-                android:clipChildren="false"
-                android:clipToPadding="false"
                 android:id="@+id/view_list_reward_parent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false">
 
                 <LinearLayout
                     android:id="@+id/view_list_reward_text"
@@ -137,9 +137,18 @@
     </LinearLayout>
 
     <TextView
-        android:layout_gravity="center_horizontal"
         android:id="@+id/tvRewardsTip"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:alpha="0"
+        android:background="@drawable/gamification_tooltip"
+        android:gravity="center_horizontal"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_2"
+        android:paddingEnd="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        tools:text="Hello world asdsadasda" />
 
 </FrameLayout>

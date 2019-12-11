@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -73,7 +75,6 @@ public class WidgetCrackResult extends RelativeLayout {
     private ImageView imageViewCrackResult;
     private View backgroundViewCrackResult;
     private LinearLayout containerTextCrackResult;
-    //    private LinearLayout llButton;
     private TextView textCrackResultLabel;
     private TextView tvRewardsTip;
     private TextView tvRewardsText;
@@ -84,10 +85,8 @@ public class WidgetCrackResult extends RelativeLayout {
     private CrackResultEntity crackResult;
 
     private WidgetCrackResultListener listener;
-    private FrameLayout listCrackResultParent;
     private AnimatorSet counterAnimatorSet;
     private ArrayList<Animator> animationList;
-//    private List<TextView> tvTierInfoList;
 
     public interface WidgetCrackResultListener {
         void onClickCtaButton(CrackResultEntity crackResult, String titleBtn);
@@ -130,8 +129,6 @@ public class WidgetCrackResult extends RelativeLayout {
         buttonReturn = view.findViewById(R.id.button_return);
         buttonCta = view.findViewById(R.id.button_cta);
         textCrackResultLabel = view.findViewById(R.id.text_crack_result_label);
-        listCrackResultParent = view.findViewById(R.id.view_list_reward_parent);
-//        llButton = view.findViewById(R.id.ll_button);
         tvRewardsTip = view.findViewById(R.id.tvRewardsTip);
 
         animationList = new ArrayList<>();
@@ -247,7 +244,6 @@ public class WidgetCrackResult extends RelativeLayout {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                int childPosition = 0;
                 if (listCrackResultText.getChildCount() == 1) {
 
                     CrackBenefitEntity animatedRewardText = null;
@@ -280,56 +276,12 @@ public class WidgetCrackResult extends RelativeLayout {
                         animationList.addAll(animatorArray.getAnimatorList());
 
                         if (animatedRewardText != null) {
-                            float frontWidth = measureFrontTextWidth(textView.getTextSize(),
-                                    String.format(getContext().getString(R.string.rewards_increased_points_front_text), String.valueOf(animatedRewardText.getValueBefore())));
-                            slideAnimationLeftToRight(textView, animatedRewardText, frontWidth);
+                            setDataInTooltip(animatedRewardText);
                         }
-
                     }
-
                     startCounterAnimation(rewardTexts != null ? rewardTexts.size() : 0);
                 }
-
-                if (true) {
-                    return;
-                }
-
-                for (CrackBenefitEntity rewardText : rewardTexts) {
-
-                    if (!TextUtils.isEmpty(rewardText.getAnimationType())) {
-                        String rewardStr = "";
-                        if (!TextUtils.isEmpty(rewardText.getTemplateText())) {
-                            int index = rewardText.getTemplateText().indexOf(' ');
-                            if (index != -1 && index < rewardText.getTemplateText().length()) {
-                                rewardStr = rewardText.getTemplateText().substring(index + 1);
-                            }
-                        }
-                        View view = listCrackResultText.getChildAt(childPosition);
-                        if (view instanceof TextView) {
-                            TextView textView = (TextView) view;
-                            textView.setText(String.format(getContext().getString(R.string.rewards_increased_points), String.valueOf(rewardText.getValueBefore()), rewardStr));
-
-                            String finalRewardStr = rewardStr;
-                            post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (getContext() != null) {
-                                        float frontWidth = measureFrontTextWidth(textView.getTextSize(),
-                                                String.format(getContext().getString(R.string.rewards_increased_points_front_text), String.valueOf(rewardText.getValueBefore())));
-                                        slideAnimationLeftToRight(textView, rewardText, frontWidth);
-                                        initCountAnimation(textView, rewardText.getValueBefore(), rewardText.getValueAfter(), finalRewardStr);
-                                    }
-                                }
-                            });
-                        }
-                        childPosition++;
-
-                    }
-                }
-                startCounterAnimation(rewardTexts != null ? rewardTexts.size() : 0);
-
             }
-
             @Override
             public void onAnimationRepeat(Animation animation) {
 
@@ -347,7 +299,6 @@ public class WidgetCrackResult extends RelativeLayout {
         textView.setMaxLines(2);
         textView.setLayoutParams(layoutParams);
 
-        int dimenTextSize = convertSize(rewardTexts.get(0).getSize());
         float textSizeInPx = getContext().getResources().getDimension(R.dimen.gami_text_size_reward);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx);
 
@@ -407,24 +358,7 @@ public class WidgetCrackResult extends RelativeLayout {
         }, rewardsCount * 150);
     }
 
-    private float measureFrontTextWidth(float textSize, String textToMeasure) {
-        if (TextUtils.isEmpty(textToMeasure))
-            return 0.0f;
-        Paint textPaint = new Paint();
-        textPaint.setStyle(Paint.Style.FILL);
-        textPaint.setTextSize(textSize);
-        return textPaint.measureText(textToMeasure);
-    }
-
-
-    /**
-     * Slide the view from left to right
-     *
-     * @param textView   relative textview for original position of shift
-     * @param rewardText
-     * @param textShift
-     */
-    private void slideAnimationLeftToRight(TextView textView, CrackBenefitEntity rewardText, float textShift) {
+    private void setDataInTooltip(CrackBenefitEntity rewardText) {
         int multiplierColor;
         if (HexValidator.validate(rewardText.getColor())) {
             multiplierColor = Color.parseColor(rewardText.getColor());
@@ -439,97 +373,110 @@ public class WidgetCrackResult extends RelativeLayout {
         TextView textViewTierInfo = tvRewardsTip;
         textViewTierInfo.setTypeface(textViewTierInfo.getTypeface(), Typeface.BOLD);
         textViewTierInfo.setText(wordtoSpan);
-        textViewTierInfo.setBackgroundResource(R.drawable.ic_multiplier);
-        int topBottomPadding = getResources().getDimensionPixelOffset(R.dimen.dp_8);
-        int rightPadding = getResources().getDimensionPixelOffset(R.dimen.dp_12);
-        int leftPadding = getResources().getDimensionPixelOffset(R.dimen.dp_16);
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) tvRewardsTip.getLayoutParams();
-//        layoutParams.topMargin = topBottomPadding / 2;
-//        layoutParams.bottomMargin = topBottomPadding / 2;
-        textViewTierInfo.setGravity(Gravity.CENTER);
-        textViewTierInfo.setLayoutParams(layoutParams);
-//        textViewTierInfo.setX(textView.getX());
-//        textViewTierInfo.setY(textView.getY());
-        textViewTierInfo.setPadding(leftPadding, topBottomPadding, rightPadding, topBottomPadding);
+        textViewTierInfo.clearAnimation();
 
-//        if (tvTierInfoList == null) {
-//            tvTierInfoList = new ArrayList<TextView>();
-//        }
-//        tvTierInfoList.add(textViewTierInfo);
-//        fmWidgetCrackResult.addView(textViewTierInfo);
-        slideLeftToRightInfoText(textViewTierInfo, textView.getHeight());
-
+        tvRewardsTip.setAlpha(0f);
+        tvRewardsTip.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            tvRewardsTip.getViewTreeObserver()
+                                    .removeOnGlobalLayoutListener(this);
+                        } else {
+                            tvRewardsTip.getViewTreeObserver()
+                                    .removeGlobalOnLayoutListener(this);
+                        }
+                        int height = tvRewardsTip.getMeasuredHeight();
+                        animateTooltip(textViewTierInfo, height);
+                    }
+                });
     }
 
 
-    /**
-     * Translate the textview from left right
-     *
-     * @param textViewTierInfo textview to be shifted
-     * @param textShift        amount of shift
-     */
-    private void slideLeftToRightInfoText(TextView textViewTierInfo, float textShift) {
-//        int locationOfHorizontalButtons[] = new int[2];
-//        llButton.getLocationOnScreen(locationOfHorizontalButtons);
+    private void animateTooltip(TextView textViewTierInfo, float height) {
 
-//        textViewTierInfo.setX(locationOfHorizontalButtons[0]);
-//        textViewTierInfo.setY(locationOfHorizontalButtons[1]);
+        int[] locationOfTvRewards = new int[2];
+        tvRewardsText.getLocationInWindow(locationOfTvRewards);
 
-        int locationOfTvRewards[] = new int[2];
-        tvRewardsText.getLocationOnScreen(locationOfTvRewards);
-        int startX = locationOfTvRewards[0] + tvRewardsText.getWidth();
-        int startY = locationOfTvRewards[1] - (tvRewardsText.getHeight()/2);
-        textViewTierInfo.setX(startX);
+        int finalY = (int) (locationOfTvRewards[1] - getStatusBarHeight() - height);
+        int startY = (int) (finalY - dpToPx(getContext(), 10));
         textViewTierInfo.setY(startY);
-//        textViewTierInfo.animate().trans(startX).start();
-        if (true) return;
 
-        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, 0, 0f, -getResources().getDimension(R.dimen.dp_2));
-        translateAnimationCrackResult.setDuration(SLIDE_INFO_LEFT_TO_RIGHT_DURATION);
-        translateAnimationCrackResult.setStartTime(SLIDE_INFO_LEFT_TO_RIGHT_START_DELAY);
-        translateAnimationCrackResult.setFillAfter(true);
-        translateAnimationCrackResult.setAnimationListener(new Animation.AnimationListener() {
+        AnimatorSet animatorSet = new AnimatorSet();
+        long translationDuration = 700L;
+
+        ValueAnimator translateAnimator = ValueAnimator.ofFloat(startY, finalY);
+        translateAnimator.setDuration(translationDuration );
+        translateAnimator.setStartDelay(SLIDE_INFO_LEFT_TO_RIGHT_START_DELAY);
+        translateAnimator.addUpdateListener(animation -> {
+            textViewTierInfo.setY((Float) animation.getAnimatedValue());
+        });
+
+        long alphaDuration = 300L;
+        ValueAnimator alphaAnimation = ValueAnimator.ofFloat(0, 1);
+        alphaAnimation.setDuration(alphaDuration);
+        alphaAnimation.setStartDelay(SLIDE_INFO_LEFT_TO_RIGHT_START_DELAY);
+
+        alphaAnimation.addUpdateListener(animation -> {
+            textViewTierInfo.setAlpha((Float) animation.getAnimatedValue());
+        });
+
+        alphaAnimation.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-
+            public void onAnimationStart(Animator animation) {
+                textViewTierInfo.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onAnimationEnd(Animation animation) {
-                textViewTierInfo.setX(textViewTierInfo.getX() + textShift - getResources().getDimension(R.dimen.dp_2));
-                slideAndFadeOutText(textViewTierInfo, textShift);
-                translateAnimationCrackResult.setAnimationListener(null);
+            public void onAnimationEnd(Animator animation) {
+                slideAndFadeOutText(textViewTierInfo);
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
+            public void onAnimationCancel(Animator animation) {
+                //Do nothing
+            }
 
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                //Do nothing
             }
         });
-        textViewTierInfo.startAnimation(translateAnimationCrackResult);
+
+        animatorSet.playTogether(translateAnimator, alphaAnimation);
+        animatorSet.start();
     }
 
-    private void slideAndFadeOutText(TextView textViewTierInfo, float textShift) {
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    private Float dpToPx(Context context, float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
+    }
+
+    private void slideAndFadeOutText(TextView textViewTierInfo) {
+        long fadeOutDuration = 700L;
+        long startOffsetDuration = 1000L;
         AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
         alphaAnimation.setFillAfter(true);
-        alphaAnimation.setDuration(SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION);
-        alphaAnimation.setStartOffset(SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION_START_OFFSET);
-        TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, textShift + 300, 0f, 0f);
-        translateAnimationCrackResult.setDuration(SLIDE_INFO_LEFT_TO_RIGHT_DURATION);
-        translateAnimationCrackResult.setStartOffset(SLIDE_INFO_LEFT_TO_RIGHT_ALPHA_DURATION_START_OFFSET);
-        translateAnimationCrackResult.setFillAfter(true);
+        alphaAnimation.setDuration(fadeOutDuration);
+        alphaAnimation.setStartOffset(startOffsetDuration);
         alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
+                //Do nothing
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-//                if (listCrackResultParent != null && textViewTierInfo != null) {
-//                    listCrackResultParent.removeView(textViewTierInfo);
-//                    tvTierInfoList.remove(textViewTierInfo);
-//                }
+                tvRewardsTip.setVisibility(View.GONE);
                 alphaAnimation.setAnimationListener(null);
             }
 
@@ -538,24 +485,8 @@ public class WidgetCrackResult extends RelativeLayout {
 
             }
         });
-        textViewTierInfo.startAnimation(translateAnimationCrackResult);
         textViewTierInfo.startAnimation(alphaAnimation);
-
     }
-
-    private void initCountAnimation(TextView textView, int valueBefore, int valueAfter, String text) {
-        ValueAnimator animator = ValueAnimator.ofInt(valueBefore, valueAfter);
-        animator.setDuration(COUNTER_ANIMATION_DURATION);
-
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                textView.setText(String.format(getContext().getString(R.string.rewards_increased_points), animation.getAnimatedValue().toString(), text));
-            }
-        });
-        animationList.clear();
-        animationList.add(animator);
-    }
-
 
     private int convertSize(String size) {
         switch (size) {
@@ -622,12 +553,6 @@ public class WidgetCrackResult extends RelativeLayout {
         listCrackResultText.removeAllViews();
         containerTextCrackResult.setVisibility(GONE);
         listener.onCrackResultCleared();
-//        if (tvTierInfoList != null) {
-//            for (TextView tvTierInfoList : tvTierInfoList) {
-//                listCrackResultParent.removeView(tvTierInfoList);
-//            }
-//            tvTierInfoList.clear();
-//        }
         if (counterAnimatorSet != null) {
             counterAnimatorSet.cancel();
         }
