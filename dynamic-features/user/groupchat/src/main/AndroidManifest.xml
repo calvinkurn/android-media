@@ -3,7 +3,6 @@
     package="com.tokopedia.user.groupchat.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_groupchat">
         <dist:fusing dist:include="true" />

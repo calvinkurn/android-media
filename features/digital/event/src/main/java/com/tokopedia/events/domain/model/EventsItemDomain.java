@@ -219,6 +219,31 @@ public class EventsItemDomain {
     @SerializedName("custom_text_1")
     @Expose
     private int customText1;
+    @SerializedName("web_url")
+    @Expose
+    private String webUrl;
+
+    @SerializedName("app_url")
+    @Expose
+    private String appUrl;
+
+
+
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    public void setWebUrl(String webUrl) {
+        this.webUrl = webUrl;
+    }
+
+    public String getAppUrl() {
+        return appUrl;
+    }
+
+    public void setAppUrl(String appUrl) {
+        this.appUrl = appUrl;
+    }
 
     public int getId() {
         return id;

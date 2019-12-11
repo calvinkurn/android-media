@@ -159,6 +159,10 @@ public class AccountConstants {
         public static final String PROMOTION_CLICK = "promoClick";
 
         public static final String VALUE_ACCOUNT_PROMOTION_NAME = "/account_profile_buyer/promotion";
+
+        public static final String CLICK_NOTIF_CENTER = "clickNotifCenter";
+        public static final String NOTIF_CENTER = "notif center";
+        public static final String NOTIF_CENTER_ACTION = "click on bell on global nav";
     }
 
     public interface VccStatus {

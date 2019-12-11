@@ -213,4 +213,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     override fun getChatMenuId(): Int {
         return R.id.iv_chat_menu
     }
+
+    override fun getAttachmentMenuId() = R.id.rv_attachment_menu
+    override fun getRootViewId() = R.id.main
+    override fun getAttachmentMenuContainer(): Int = R.id.rv_attachment_menu_container
 }

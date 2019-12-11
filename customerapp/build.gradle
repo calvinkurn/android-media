@@ -222,7 +222,7 @@ android {
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         resConfigs "en", "id"
         ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
 
@@ -303,7 +303,6 @@ dependencies {
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.tkpddiscovery)
-    implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.homeRecom)
@@ -343,7 +342,6 @@ dependencies {
     implementation project(rootProject.ext.features.digitalBrowse)
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.commonTravel)
-    implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)
@@ -378,7 +376,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.fingerprint)
-    implementation project(rootProject.ext.features.autocomplete)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -424,7 +421,7 @@ dependencies {
     implementation project(rootProject.ext.features.scanner)
     implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.libraries.cameraview)
-    implementation project(rootProject.ext.libraries.adapterDelegate)
+    implementation project(rootProject.ext.features.tradeIn)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles

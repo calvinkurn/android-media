@@ -155,7 +155,7 @@
     <string name="title_menu_other_features">Fitur Lainnya</string>
     <string name="title_menu_opportunity">Peluang Pesanan</string>
     <string name="label_menu_opportunity">Pesanan yang dibatalkan penjual lain</string>
-    <string name="title_menu_seller_center">Seller Center</string>
+    <string name="title_menu_seller_center">Pusat Seller</string>
     <string name="title_menu_topads">TopAds</string>
     <string name="label_menu_topads">Lihat dan atur promo Anda</string>
     <string name="label_menu_seller_center">Edukasi dan inspirasi berjualan</string>
@@ -186,7 +186,7 @@
     <string name="top_features">Top Features</string>
     <string name="topads_desc">Media iklan Produk dan Toko</string>
     <string name="gold_merchant_desc">Fitur-fitur Berjualan Eksklusif</string>
-    <string name="seller_center">Seller Center</string>
+    <string name="seller_center">Pusat Seller</string>
     <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
     <string name="open_shop">Buka Toko</string>
     <string name="learn_more">Pelajari Selengkapnya</string>

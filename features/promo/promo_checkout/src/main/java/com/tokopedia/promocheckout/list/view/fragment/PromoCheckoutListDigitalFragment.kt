@@ -49,6 +49,7 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
     }
 
     override fun onPromoCodeUse(promoCode: String) {
+        if (promoCheckoutListDigitalPresenter.isViewNotAttached) promoCheckoutListDigitalPresenter.attachView(this)
         if (promoCode.isNotEmpty()) promoCheckoutListDigitalPresenter.checkPromoCode(promoCode, promoDigitalModel)
     }
 
