@@ -213,10 +213,10 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         initialLayoutData.forEachIndexed { index, dynamicPDPDataModel ->
             if (getDynamicProductInfoP1?.data?.isTradeIn == false &&
                     dynamicPDPDataModel is ProductGeneralInfoDataModel && dynamicPDPDataModel.name == "trade_in") {
-                initialLayoutData.removeAt(index)
+                initialLayoutData.remove(dynamicPDPDataModel)
             } else if (getDynamicProductInfoP1?.data?.hasWholesale == false &&
                     dynamicPDPDataModel is ProductGeneralInfoDataModel && dynamicPDPDataModel.name == "wholesale") {
-                initialLayoutData.removeAt(index)
+                initialLayoutData.remove(dynamicPDPDataModel)
             }
         }
     }
