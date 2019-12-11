@@ -59,8 +59,6 @@ import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
-import com.tokopedia.promocheckout.common.data.entity.request.Order;
-import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
@@ -243,7 +241,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         if (savedInstanceState != null && saveInstanceCacheManager != null) {
-            initCachedData();
+            loadCachedData();
         } else {
             cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
             cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE);
@@ -259,7 +257,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         isInsuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false);
     }
 
-    private void initCachedData() {
+    private void loadCachedData() {
         cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
         wishLists = saveInstanceCacheManager.get(CartWishlistItemHolderData.class.getSimpleName(),
                 (new TypeToken<ArrayList<CartWishlistItemHolderData>>() {
@@ -686,15 +684,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         sendAnalyticsOnClickProductNameCartItem(cartItemHolderData.getCartItemData().getOriginData().getProductName());
-        navigateToActivityRequest(getProductIntent(cartItemHolderData.getCartItemData().getOriginData().getProductId()), NAVIGATION_PDP);
-    }
-
-    private Intent getProductIntent(String productId) {
-        if (getContext() != null) {
-            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-        } else {
-            return null;
-        }
+        startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, cartItemHolderData.getCartItemData().getOriginData().getProductId()), NAVIGATION_PDP);
     }
 
     @Override
@@ -933,7 +923,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         dPresenter.processRemoveFromWishlist(productId, userSession.getUserId(), getRecommendationWishlistActionListener());
     }
 
-    public void onProductClicked(@NotNull String productId) {
+    private void onProductClicked(@NotNull String productId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
         startActivityForResult(intent, NAVIGATION_PDP);
     }
@@ -1220,16 +1210,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void onCartItemSimilarProductUrlClicked(String similarProductUrl) {
         RouteManager.route(getContext(), similarProductUrl);
         cartPageAnalytics.eventClickMoreLikeThis();
-    }
-
-    @Override
-    public void navigateToActivityRequest(Intent intent, int requestCode) {
-        startActivityForResult(intent, requestCode);
-    }
-
-    @Override
-    public void navigateToActivity(Intent intent) {
-        startActivity(intent);
     }
 
     @Override
@@ -2143,11 +2123,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public ArrayList<InsuranceCartDigitalProduct> getInsuranceCartShopData() {
         try {
-
             ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList = new ArrayList<>();
             for (InsuranceCartShops insuranceCartShops : cartAdapter.getInsuranceCartShops()) {
-                if (insuranceCartShops != null &&
-                        !insuranceCartShops.getShopItemsList().isEmpty()) {
+                if (insuranceCartShops != null && !insuranceCartShops.getShopItemsList().isEmpty()) {
                     for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
                         if (insuranceCartShopItems.getDigitalProductList() != null &&
                                 !insuranceCartShopItems.getDigitalProductList().isEmpty()) {
@@ -2160,7 +2138,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
             }
             return insuranceCartDigitalProductArrayList;
-
         } catch (Exception e) {
             return null;
         }

@@ -2,12 +2,12 @@ package com.tokopedia.purchase_platform.features.cart.view;
 
 import android.app.Activity;
 
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
-import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
-import com.tokopedia.purchase_platform.common.base.IBaseView;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView;
@@ -26,7 +26,17 @@ import java.util.Map;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public interface ICartListView extends IBaseView {
+public interface ICartListView extends CustomerView {
+
+    void showProgressLoading();
+
+    void hideProgressLoading();
+
+    void showToastMessage(String message);
+
+    TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    );
 
     void renderInitialGetCartListDataSuccess(CartListData cartListData);
 
