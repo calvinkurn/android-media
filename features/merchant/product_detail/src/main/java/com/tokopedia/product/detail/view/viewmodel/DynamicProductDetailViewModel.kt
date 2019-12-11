@@ -155,13 +155,14 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(pdpLayout.data)
 
             //Check trade-in
-            if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
-                removeTradein(initialLayoutData)
-            }
-            //Check Wholesale
-            if (getDynamicProductInfoP1?.data?.hasWholesale == false) {
-                removeWholesale(initialLayoutData)
-            }
+            removeDynamicComponent(initialLayoutData, getDynamicProductInfoP1)
+//            if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
+//                removeTradein(initialLayoutData)
+//            }
+//            //Check Wholesale
+//            if (getDynamicProductInfoP1?.data?.hasWholesale == false) {
+//                removeWholesale(initialLayoutData)
+//            }
 
             productLayout.value = Success(initialLayoutData)
 
@@ -205,6 +206,18 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
         }) {
             productLayout.value = Fail(it)
+        }
+    }
+
+    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPDPDataModel>, dynamicProductInfoP1: DynamicProductInfoP1?) {
+        initialLayoutData.forEachIndexed { index, dynamicPDPDataModel ->
+            if (getDynamicProductInfoP1?.data?.isTradeIn == false &&
+                    dynamicPDPDataModel is ProductGeneralInfoDataModel && dynamicPDPDataModel.name == "trade_in") {
+                initialLayoutData.removeAt(index)
+            } else if (getDynamicProductInfoP1?.data?.hasWholesale == false &&
+                    dynamicPDPDataModel is ProductGeneralInfoDataModel && dynamicPDPDataModel.name == "wholesale") {
+                initialLayoutData.removeAt(index)
+            }
         }
     }
 

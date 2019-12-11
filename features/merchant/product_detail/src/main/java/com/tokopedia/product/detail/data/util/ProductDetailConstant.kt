@@ -85,7 +85,10 @@ object ProductDetailConstant {
     const val IMAGE_REVIEW = "image_review"
     const val MOST_HELPFUL_REVIEW = "most_helpful_review"
     const val TRADE_IN = "trade_in"
+    const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"
+    const val SEPARATOR = "separator"
+    const val VALUE_PROPOSITION = "value_prop"
     const val PRODUCT_LIST = "product_list"
     const val PDP_1 = "pdp_1"
     const val PDP_2 = "pdp_2"
@@ -96,5 +99,8 @@ object ProductDetailConstant {
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_INSTALLMENT_INFO = "installment_info"
     const val PRODUCT_SHIPPING_INFO = "shipping_info"
+    const val ORDER_PRIORITY = "order_prio"
+    const val PRODUCT_FULLFILMENT = "fullfilment"
+    const val PRODUCT_PROTECTION = "protection"
 
 }

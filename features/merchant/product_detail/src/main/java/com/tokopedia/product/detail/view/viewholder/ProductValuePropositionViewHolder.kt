@@ -1,0 +1,16 @@
+package com.tokopedia.product.detail.view.viewholder
+
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ProductValuePropositionDataModel
+
+class ProductValuePropositionViewHolder(view: View):AbstractViewHolder<ProductValuePropositionDataModel>(view) {
+
+    companion object{
+        val LAYOUT = R.layout.item_dynamic_pdp_value_prop
+    }
+    override fun bind(element: ProductValuePropositionDataModel?) {
+    }
+
+}

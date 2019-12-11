@@ -10,44 +10,47 @@ object DynamicProductDetailMapper {
         val listOfComponent: MutableList<DynamicPDPDataModel> = mutableListOf()
         data.forEachIndexed { index, component ->
             when (component.type) {
-                "product_snapshot" -> {
+                ProductDetailConstant.PRODUCT_SNAPSHOT -> {
                     listOfComponent.add(ProductSnapshotDataModel(type = component.type, name = component.componentName))
                 }
-                "discussion" -> {
+                ProductDetailConstant.DISCUSSION -> {
                     listOfComponent.add(ProductDiscussionDataModel(type = component.type, name = component.componentName))
                 }
-                "product_info" -> {
+                ProductDetailConstant.PRODUCT_INFO -> {
                     listOfComponent.add(ProductInfoDataModel(mapToProductInfoContent(component.componentData), type = component.type, name = component.componentName))
                 }
-                "shop_info" -> {
+                ProductDetailConstant.SHOP_INFO -> {
                     listOfComponent.add(ProductShopInfoDataModel(type = component.type, name = component.componentName))
                 }
-                "social_proof" -> {
+                ProductDetailConstant.SOCIAL_PROOF -> {
                     listOfComponent.add(ProductSocialProofDataModel(type = component.type, name = component.componentName))
                 }
-                "image_review" -> {
+                ProductDetailConstant.IMAGE_REVIEW -> {
                     listOfComponent.add(ProductImageReviewDataModel(type = component.type, name = component.componentName))
                 }
-                "most_helpful_review" -> {
+                ProductDetailConstant.MOST_HELPFUL_REVIEW -> {
                     listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
                 }
-                "trade_in" -> {
+                ProductDetailConstant.TRADE_IN -> {
                     listOfComponent.add(ProductTradeinDataModel(type = component.type, name = component.componentName))
                 }
-                "info" -> {
-                    val data = component.componentData.firstOrNull()
-                    listOfComponent.add(ProductGeneralInfoDataModel(ProductGeneralInfoData(data?.applink
-                            ?: "", data?.title ?: "", data?.content
+                ProductDetailConstant.INFO -> {
+                    val contentData = component.componentData.firstOrNull()
+                    listOfComponent.add(ProductGeneralInfoDataModel(ProductGeneralInfoData(contentData?.applink
+                            ?: "", contentData?.title ?: "", contentData?.content
                             ?: listOf()), type = component.type, name = component.componentName))
                 }
-                "product_list" -> {
+                ProductDetailConstant.PRODUCT_LIST -> {
                     listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                 }
-                "shop_voucher" -> {
+                ProductDetailConstant.SHOP_VOUCHER -> {
                     listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
                 }
-                "separator" -> {
+                ProductDetailConstant.SEPARATOR -> {
                     listOfComponent.add(SeparatorDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.VALUE_PROPOSITION -> {
+                    listOfComponent.add(ProductValuePropositionDataModel(type = component.type, name = component.componentName))
                 }
             }
         }
@@ -56,7 +59,7 @@ object DynamicProductDetailMapper {
 
     fun mapToDynamicProductDetailP1(data: PdpGetLayout): DynamicProductInfoP1 {
         val componentData = data.components.find {
-            it.type == "product_snapshot"
+            it.type == ProductDetailConstant.PRODUCT_SNAPSHOT
         }?.componentData?.firstOrNull() ?: ComponentData()
 
         return DynamicProductInfoP1(basic = data.basicInfo, data = componentData)

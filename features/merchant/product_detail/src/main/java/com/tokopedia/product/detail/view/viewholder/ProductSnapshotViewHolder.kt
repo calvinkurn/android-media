@@ -5,9 +5,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ViewVisibilityListener
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -39,7 +37,7 @@ class ProductSnapshotViewHolder(private val view: View,
                 if (nearestWarehouse.warehouseInfo.id.isNotBlank())
                     header.updateStockAndPriceWarehouse(nearestWarehouse, it.data.campaign)
             }
-            renderValueProposition(it.data.isOS)
+//            renderValueProposition(it.data.isOS)
         }
 
         renderWishlist(element.isAllowManage, element.isWishlisted)
@@ -127,24 +125,24 @@ class ProductSnapshotViewHolder(private val view: View,
         }
     }
 
-
-    private fun renderValueProposition(isOfficialStore: Boolean) {
-        if (isOfficialStore) {
-            view.layout_value_proposition.show()
-            view.container_ori.setOnClickListener {
-                listener.onValuePropositionClicked(R.id.container_ori)
-            }
-
-            view.container_guarantee_7_days.setOnClickListener {
-                listener.onValuePropositionClicked(R.id.container_guarantee_7_days)
-            }
-
-            view.container_ready.setOnClickListener {
-                listener.onValuePropositionClicked(R.id.container_ready)
-            }
-
-        } else {
-            view.layout_value_proposition.hide()
-        }
-    }
+//
+//    private fun renderValueProposition(isOfficialStore: Boolean) {
+//        if (isOfficialStore) {
+//            view.layout_value_proposition.show()
+//            view.container_ori.setOnClickListener {
+//                listener.onValuePropositionClicked(R.id.container_ori)
+//            }
+//
+//            view.container_guarantee_7_days.setOnClickListener {
+//                listener.onValuePropositionClicked(R.id.container_guarantee_7_days)
+//            }
+//
+//            view.container_ready.setOnClickListener {
+//                listener.onValuePropositionClicked(R.id.container_ready)
+//            }
+//
+//        } else {
+//            view.layout_value_proposition.hide()
+//        }
+//    }
 }
