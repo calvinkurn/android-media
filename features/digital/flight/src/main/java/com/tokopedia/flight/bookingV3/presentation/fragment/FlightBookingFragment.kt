@@ -149,7 +149,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         outState.putString(EXTRA_FLIGHT_DEPARTURE_TERM, bookingViewModel.getDepartureTerm())
         outState.putString(EXTRA_FLIGHT_ARRIVAL_TERM, bookingViewModel.getReturnTerm())
         outState.putParcelable(EXTRA_PRICE, bookingViewModel.getFlightPriceModel())
-        outState.putString(EXTRA_CART_ID, bookingViewModel.getCartId()
+        outState.putString(EXTRA_CART_ID, bookingViewModel.getCartId())
         outState.putString(EXTRA_ORDER_DUE, orderDueTimeStampString)
         outState.putParcelable(EXTRA_CONTACT_DATA, FlightContactData(widget_traveller_info.getContactName(),
                 widget_traveller_info.getContactEmail(),
