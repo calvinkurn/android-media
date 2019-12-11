@@ -5,6 +5,7 @@ import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
@@ -12,6 +13,7 @@ import com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -30,7 +32,9 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     override fun onSearchQueryChanged(query: String) {
-
+        view?.let {
+            Toaster.make(it, query, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        }
     }
 
     override fun loadData(page: Int) {
