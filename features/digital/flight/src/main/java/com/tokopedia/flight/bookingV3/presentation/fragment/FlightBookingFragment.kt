@@ -719,17 +719,19 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private var launchLoadingPageJob = uiScope.launch {
-        val list = randomLoadingSubtitle()
         try {
-            layout_loading.visibility = View.VISIBLE
-            tv_loading_subtitle.text = list[0]
-            delay(2000L)
-            tv_loading_subtitle.text = list[1]
-            delay(2000L)
-            tv_loading_subtitle.text = list[2]
-            delay(2000L)
-            layout_loading.visibility = View.GONE
-            layout_shimmering.visibility = View.VISIBLE
+            if (bookingViewModel.getCartId().isEmpty()) {
+                val list = randomLoadingSubtitle()
+                layout_loading.visibility = View.VISIBLE
+                tv_loading_subtitle.text = list[0]
+                delay(2000L)
+                tv_loading_subtitle.text = list[1]
+                delay(2000L)
+                tv_loading_subtitle.text = list[2]
+                delay(2000L)
+                layout_loading.visibility = View.GONE
+                layout_shimmering.visibility = View.VISIBLE
+            }
         } catch (e: Throwable) {
         }
     }
