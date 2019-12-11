@@ -203,17 +203,15 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun showTextLonger(element: TransactionItemNotification) {
-        val bundle = Bundle().apply {
-            with(element) {
-                putString(PARAM_CONTENT_IMAGE, contentUrl)
-                putString(PARAM_CONTENT_IMAGE_TYPE, typeLink.toString())
-                putString(PARAM_CTA_APPLINK, appLink)
-                putString(PARAM_CONTENT_TEXT, body)
-                putString(PARAM_CONTENT_TITLE, title)
-                putString(PARAM_BUTTON_TEXT, btnText)
-                putString(PARAM_TEMPLATE_KEY, templateKey)
-            }
-        }
+        val bundle = Bundle()
+
+        bundle.putString(PARAM_CONTENT_TITLE, element.contentUrl)
+        bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
+        bundle.putString(PARAM_CTA_APPLINK, element.appLink)
+        bundle.putString(PARAM_CONTENT_TEXT, element.body)
+        bundle.putString(PARAM_CONTENT_TITLE, element.title)
+        bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
+        bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
 
         if (!::longerTextDialog.isInitialized) {
             longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
