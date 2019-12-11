@@ -79,30 +79,17 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
         mRecyclerView = recyclerView
         mLayoutManager = mRecyclerView?.layoutManager as LinearLayoutManager
         mRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
-                var firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: -1
-                val lastVisible = layoutManager?.findLastVisibleItemPosition() ?: -1
-                val top: Int = mRecyclerView?.getChildAt(0)?.top ?: -1
-                val height: Int = mRecyclerView?.getChildAt(0)?.height ?: -1
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                    val firstVisible = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: -1
 
-                if(visitables[firstVisible] !is PlayCardViewModel) return
+                    if(visitables[firstVisible] !is PlayCardViewModel) return
 
-                if (top < height / 3 * -1) {
-                    firstVisible++
-                }
-
-                if (lastVisible == itemCount - 1 && itemCount >= 0) {
-                    val lastViewTop: Int = mRecyclerView?.getChildAt(mRecyclerView?.childCount ?: 0 - 1)?.bottom
-                            ?: -1
-                    val listHeight: Int = mRecyclerView?.height ?: -1
-                    if (lastViewTop - listHeight < height / 4) {
-                        firstVisible++
+                    if (firstVisible != currentSelected && visitables[firstVisible] is PlayCardViewModel) {
+                        onSelectedItemChanged(firstVisible)
                     }
-                }
-                if (firstVisible != currentSelected && visitables[firstVisible] is PlayCardViewModel) {
-                    onSelectedItemChanged(firstVisible)
                 }
             }
         })
