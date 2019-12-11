@@ -345,7 +345,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     override fun showTextLonger(element: NotificationUpdateItemViewModel) {
         val bundle = Bundle()
 
-        bundle.putString(PARAM_CONTENT_TITLE, element.contentUrl)
+        bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
         bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
         bundle.putString(PARAM_CTA_APPLINK, element.appLink)
         bundle.putString(PARAM_CONTENT_TEXT, element.body)
