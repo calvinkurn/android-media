@@ -23,7 +23,7 @@ interface ActionListener {
 
     fun onCartDataEnableToCheckout()
 
-    fun onCartDataDisableToCheckout(message: String)
+    fun onCartDataDisableToCheckout()
 
     fun onShowAllItem(appLink: String)
 

@@ -918,18 +918,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (canProcess && checkedCount > 0) {
             actionListener.onCartDataEnableToCheckout();
         } else {
-            String errorMessage = actionListener.getDefaultCartErrorMessage();
-            for (Object object : cartDataList) {
-                if (object instanceof CartItemTickerErrorHolderData) {
-                    CartTickerErrorData cartTickerErrorData = ((CartItemTickerErrorHolderData) object).getCartTickerErrorData();
-                    if (!TextUtils.isEmpty(cartTickerErrorData.getErrorInfo())) {
-                        errorMessage = cartTickerErrorData.getErrorInfo();
-                    }
-                    break;
-                }
-            }
-
-            actionListener.onCartDataDisableToCheckout(errorMessage);
+            actionListener.onCartDataDisableToCheckout();
         }
     }
 
