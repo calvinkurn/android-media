@@ -342,15 +342,18 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    override fun showTextLonger(model: NotificationUpdateItemViewModel) {
-        val bundle = Bundle()
-        bundle.putString(PARAM_CONTENT_IMAGE, model.contentUrl)
-        bundle.putString(PARAM_CONTENT_IMAGE_TYPE, model.typeLink.toString())
-        bundle.putString(PARAM_CTA_APPLINK, model.appLink)
-        bundle.putString(PARAM_CONTENT_TEXT, model.body)
-        bundle.putString(PARAM_CONTENT_TITLE, model.title)
-        bundle.putString(PARAM_BUTTON_TEXT, model.btnText)
-        bundle.putString(PARAM_TEMPLATE_KEY, model.templateKey)
+    override fun showTextLonger(element: NotificationUpdateItemViewModel) {
+        val bundle = Bundle().apply {
+            with(element) {
+                putString(PARAM_CONTENT_TITLE, contentUrl)
+                putString(PARAM_CONTENT_IMAGE_TYPE, typeLink.toString())
+                putString(PARAM_CTA_APPLINK, appLink)
+                putString(PARAM_CONTENT_TEXT, body)
+                putString(PARAM_CONTENT_TITLE, title)
+                putString(PARAM_BUTTON_TEXT, btnText)
+                putString(PARAM_TEMPLATE_KEY, templateKey)
+            }
+        }
 
         if (!::longerTextDialog.isInitialized) {
             longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
@@ -358,7 +361,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             longerTextDialog.arguments = bundle
         }
 
-        if (!longerTextDialog.isAdded  && longerTextDialog.dialog?.isShowing == false) {
+        if (!longerTextDialog.isAdded) {
             longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
         }
     }
