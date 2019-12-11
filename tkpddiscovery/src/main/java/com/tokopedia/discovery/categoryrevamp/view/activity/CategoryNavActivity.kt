@@ -1,21 +1,23 @@
 package com.tokopedia.discovery.categoryrevamp.view.activity
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.viewpager.widget.ViewPager
-import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.ViewPager
+import com.tkpd.library.utils.URLParser
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.core.router.discovery.BrowseProductRouter
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
 import com.tokopedia.discovery.categoryrevamp.adapters.CategoryNavigationPagerAdapter
@@ -41,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -53,30 +56,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         SearchNavigationView.SearchNavClickListener,
         BaseCategorySectionFragment.SortAppliedListener,
         BottomSheetListener {
-
-    override fun onSortApplied(showTick: Boolean) {
-        searchNavContainer?.onSortSelected(showTick)
-    }
-
-    override fun hideBottomNavigation() {
-        searchNavContainer?.visibility = View.GONE
-    }
-
-    fun showBottomNavigation() {
-        searchNavContainer?.visibility = View.VISIBLE
-    }
-
-    override fun loadFilterItems(filters: java.util.ArrayList<Filter>?, searchParameter: MutableMap<String, String>?) {
-        bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
-    }
-
-    override fun setFilterResultCount(formattedResultCount: String?) {
-        bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
-    }
-
-    override fun launchFilterBottomSheet() {
-        bottomSheetFilterView?.launchFilterBottomSheet()
-    }
 
     private var categorySectionPagerAdapter: CategoryNavigationPagerAdapter? = null
     private var isForceSwipeToShop: Boolean = false
@@ -100,9 +79,15 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
     private val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+    private val EXTRA_PARENT_ID = " PARENT_ID"
+    private val EXTRA_PARENT_NAME = " PARENT_NAME"
 
     private var departmentId: String = ""
     private var departmentName: String = ""
+    private var parentId: String? = null
+    private var parentName: String? = null
+
+    private var categoryUrl: String? = null
 
 
     lateinit var categoryNavComponent: CategoryNavComponent
@@ -113,20 +98,11 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     @Inject
     lateinit var categoryNavViewModel: CategoryNavViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_category_nav)
-        bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
-        searchNavContainer = findViewById(R.id.search_nav_container)
-        initInjector()
-        prepareView()
-        handleIntent(intent)
-    }
-
     companion object {
         private const val ORDER_BY = "ob"
         private const val IS_BANNED = 1
         private const val IS_ADULT = 1
+        private const val SCREEN_NAME = "/p"
         fun isBannedNavigationEnabled(context: Context): Boolean {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BANNED_NAVIGATION, true)
@@ -140,6 +116,28 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_category_nav)
+        bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
+        searchNavContainer = findViewById(R.id.search_nav_container)
+        initInjector()
+        prepareView()
+        handleIntent(intent)
+    }
+
+    override fun sendScreenAnalytics() {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, getDimensionMap())
+    }
+
+    override fun getScreenName(): String {
+        return SCREEN_NAME
+    }
+
+    private fun getDimensionMap(): Map<String, String>? {
+        return catAnalyticsInstance.createOpenScreenEventMap(parentId,parentName,departmentId,departmentName)
+    }
+
 
     private fun handleIntent(intent: Intent) {
         getExtrasFromIntent(intent)
@@ -147,7 +145,30 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private fun getExtrasFromIntent(intent: Intent) {
         searchParameter = getSearchParameterFromIntentUri(intent)
-        // isForceSwipeToShop = intent.getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false)
+    }
+
+    override fun onSortApplied(showTick: Boolean) {
+        searchNavContainer?.onSortSelected(showTick)
+    }
+
+    override fun hideBottomNavigation() {
+        searchNavContainer?.visibility = View.GONE
+    }
+
+    fun showBottomNavigation() {
+        searchNavContainer?.visibility = View.VISIBLE
+    }
+
+    override fun loadFilterItems(filters: java.util.ArrayList<Filter>?, searchParameter: MutableMap<String, String>?) {
+        bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
+    }
+
+    override fun setFilterResultCount(formattedResultCount: String?) {
+        bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
+    }
+
+    override fun launchFilterBottomSheet() {
+        bottomSheetFilterView?.launchFilterBottomSheet()
     }
 
     private fun getSearchParameterFromIntentUri(intent: Intent): SearchParameter {
@@ -311,13 +332,30 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private fun fetchBundle() {
         val bundle = intent.extras
-        if (bundle?.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID) != null) run {
-            departmentId = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
-            departmentName = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
+        bundle?.let {
+            if (it.containsKey(BrowseProductRouter.EXTRA_CATEGORY_URL)) {
+                categoryUrl = it.getString(BrowseProductRouter.EXTRA_CATEGORY_URL, "")
+                val urlParser = URLParser(categoryUrl)
+                departmentId = urlParser.getDepIDfromURI(this)
+                departmentName = ""
+                searchNavContainer?.onFilterSelected(true)
+            }
+
+            if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
+                departmentId = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
+                departmentName = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
+
+                if (bundle.containsKey(EXTRA_PARENT_ID)) {
+                    parentId = bundle.getString(EXTRA_PARENT_ID, "")
+                    parentName = bundle.getString(EXTRA_PARENT_NAME, "")
+                }
+            }
         }
     }
 
     private fun loadSection(data: Data) {
+        departmentName = data.name ?: ""
+        updateToolBarHeading(data.name ?: "")
         populateTab(categorySectionItemList, data)
 
         categorySectionPagerAdapter = CategoryNavigationPagerAdapter(supportFragmentManager)
@@ -335,7 +373,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun addFragmentsToList(searchSectionItemList: ArrayList<CategorySectionItem>, data: Data) {
-        searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName, data)))
+        searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(data, categoryUrl)))
         searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
     }
 
@@ -392,13 +430,15 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             catAnalyticsInstance.eventBackButtonClicked(departmentId)
             onBackPressed()
         }
-        et_search.text = departmentName
-
+        updateToolBarHeading(departmentName)
         layout_search.setOnClickListener {
             catAnalyticsInstance.eventSearchBarClicked(departmentId)
             moveToAutoCompleteActivity(departmentName)
         }
+    }
 
+    private fun updateToolBarHeading(header: String) {
+        et_search.text = header
     }
 
     private fun moveToAutoCompleteActivity(departMentName: String) {

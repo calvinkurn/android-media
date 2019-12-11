@@ -97,6 +97,22 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
         populatePricePills(priceRangeList);
 
+        if ((lastMinValue != 0 && lastMinValue > maxBound)) {
+            maxBound = lastMinValue;
+        }
+
+        if(lastMaxValue!= 0 && lastMaxValue > maxBound){
+            maxBound = lastMaxValue;
+        }
+
+        if(lastMinValue != 0 && lastMinValue < minBound){
+            minBound = lastMinValue;
+        }
+
+        if (lastMaxValue != 0 && lastMaxValue < minBound) {
+            minBound = lastMaxValue;
+        }
+
         int defaultMinValue;
         if (lastMinValue == 0) {
             defaultMinValue = minBound;
