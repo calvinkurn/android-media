@@ -69,7 +69,8 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
     }
 
     override fun onBackPressed() {
-        ReviewTracking.reviewOnCloseTracker(createReviewFragment.getOrderId, productId)
+        if (::createReviewFragment.isInitialized)
+            ReviewTracking.reviewOnCloseTracker(createReviewFragment.getOrderId, productId)
 
         if (isTaskRoot) {
             val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
