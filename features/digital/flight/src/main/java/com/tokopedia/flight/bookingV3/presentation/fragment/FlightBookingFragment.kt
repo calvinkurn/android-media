@@ -157,8 +157,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 widget_traveller_info.getContactPhoneCode()))
         outState.putParcelableArrayList(EXTRA_PASSENGER_MODELS, bookingViewModel.getPassengerModels() as ArrayList<out Parcelable>)
         outState.putParcelableArrayList(EXTRA_PRICE_DATA, bookingViewModel.getPriceData() as ArrayList<out Parcelable>)
-        outState.putParcelableArrayList(EXTRA_OTHER_PRICE_DATA, bookingViewModel.getOtherPriceData() as ArrayList<out Parcelable>)
-        outState.putParcelableArrayList(EXTRA_AMENITY_PRICE_DATA, bookingViewModel.getAmenityPriceData() as ArrayList<out Parcelable>)
+        if (bookingViewModel.getOtherPriceData().isNotEmpty()) outState.putParcelableArrayList(EXTRA_OTHER_PRICE_DATA, bookingViewModel.getOtherPriceData() as ArrayList<out Parcelable>)
+        if (bookingViewModel.getAmenityPriceData().isNotEmpty()) outState.putParcelableArrayList(EXTRA_AMENITY_PRICE_DATA, bookingViewModel.getAmenityPriceData() as ArrayList<out Parcelable>)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
