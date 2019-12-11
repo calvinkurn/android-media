@@ -6,7 +6,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -29,7 +28,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -282,6 +280,7 @@ public class WidgetCrackResult extends RelativeLayout {
                     startCounterAnimation(rewardTexts != null ? rewardTexts.size() : 0);
                 }
             }
+
             @Override
             public void onAnimationRepeat(Animation animation) {
 
@@ -407,7 +406,7 @@ public class WidgetCrackResult extends RelativeLayout {
         long translationDuration = 700L;
 
         ValueAnimator translateAnimator = ValueAnimator.ofFloat(startY, finalY);
-        translateAnimator.setDuration(translationDuration );
+        translateAnimator.setDuration(translationDuration);
         translateAnimator.setStartDelay(SLIDE_INFO_LEFT_TO_RIGHT_START_DELAY);
         translateAnimator.addUpdateListener(animation -> {
             textViewTierInfo.setY((Float) animation.getAnimatedValue());
