@@ -221,7 +221,10 @@ dependencies {
     //implementation project(rootProject.ext.features.shopSettings)
     // for staging-only
     // implementation "com.tokopedia.url:url:1.0.2"
-    implementation project(rootProject.ext.features.sellerorder)
+
+    // TODO remove this
+    implementation project(rootProject.ext.features.play)
+    implementation project(rootProject.ext.features.playCommon)
 //
 //    implementation project(rootProject.ext.libraries.logger)
 //    implementation (rootProject.ext.debugToolsDependencies.timber){
