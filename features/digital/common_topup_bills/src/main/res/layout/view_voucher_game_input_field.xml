@@ -58,10 +58,12 @@
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/ac_input"
         app:layout_constraintEnd_toEndOf="@+id/ac_input"
         app:layout_constraintTop_toTopOf="@+id/ac_input"
-        app:srcCompat="@drawable/ic_dropdown_arrow" />
+        app:srcCompat="@drawable/ic_dropdown_arrow"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/error_label"

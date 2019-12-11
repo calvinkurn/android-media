@@ -1,17 +1,23 @@
 package com.tokopedia.vouchergame.detail.view.fragment
 
-import androidx.lifecycle.Observer
 import android.app.Activity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Handler
+import android.view.LayoutInflater
+import android.view.TouchDelegate
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.*
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -28,9 +34,13 @@ import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownBottomSheet
+import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownBottomSheet.Companion.SHOW_KEYBOARD_DELAY
+import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
@@ -48,9 +58,7 @@ import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewMode
 import com.tokopedia.vouchergame.detail.widget.OperatorInfoBottomSheets
 import com.tokopedia.vouchergame.detail.widget.ProductDetailBottomSheets
 import com.tokopedia.vouchergame.detail.widget.VoucherGameEnquiryResultWidget
-import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
-import kotlinx.android.synthetic.main.fragment_voucher_game_detail.btn_info_icon
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.view.*
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -244,19 +252,24 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         field.visibility = View.VISIBLE
         field.setLabel(data.text)
         field.setHint(data.placeholder)
+        field.setInputType(data.style)
+
+        var dropdownData: List<TopupBillsInputDropdownData> = listOf()
+        if (data.style == INPUT_DROPDOWN_PARAM) {
+            field.isCustomInput = true
+            dropdownData = data.dataCollections.map { item -> TopupBillsInputDropdownData(item.value) }
+        }
 
         // Enquire if all required fields are filled
         field.setActionListener(object : TopupBillsInputFieldWidget.ActionListener {
             override fun onFinishInput(input: String) {
-                voucherGameAnalytics.eventInputNumber()
-                enquireFields()
+                onReceiveInput(input)
+            }
+
+            override fun onCustomInputClick() {
+                if (field.isCustomInput && dropdownData.isNotEmpty()) { showInputDropdown(field, dropdownData) }
             }
         })
-
-        if (data.style == INPUT_DROPDOWN_PARAM) {
-            val dropdownData = data.dataCollections.map { item -> TopupBillsInputDropdownData(item.value) }
-            field.setupDropdownBottomSheet(dropdownData)
-        }
     }
 
     private fun checkAutoFillInput() {
@@ -264,6 +277,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             inputData[EXTRA_INPUT_FIELD_1]?.let { input -> input_field_1.setInputText(input) }
             inputData[EXTRA_INPUT_FIELD_2]?.let { input -> input_field_2.setInputText(input) }
             if (inputData.size == inputFieldCount) enquireFields()
+        }
+    }
+
+    private fun onReceiveInput(input: String) {
+        if (input.isNotEmpty()) {
+            voucherGameAnalytics.eventInputNumber()
+            enquireFields()
         }
     }
 
@@ -295,6 +315,33 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             } else {
                 isEnquired = false
             }
+        }
+    }
+
+    private fun showInputDropdown(field: TopupBillsInputFieldWidget, data: List<TopupBillsInputDropdownData>) {
+        context?.let { context ->
+            val dropdownBottomSheet = BottomSheetUnify()
+            dropdownBottomSheet.setFullPage(true)
+            dropdownBottomSheet.clearAction()
+            dropdownBottomSheet.setCloseClickListener {
+                dropdownBottomSheet.dismiss()
+            }
+
+            val dropdownView = TopupBillsInputDropdownBottomSheet(context, listener = object : TopupBillsInputDropdownBottomSheet.OnClickListener{
+                override fun onItemClicked(item: TopupBillsInputDropdownData) {
+                    field.setInputText(item.label)
+                    onReceiveInput(item.label)
+                }
+            }, selected = field.getInputText())
+            dropdownView.setData(data)
+            dropdownBottomSheet.setChild(dropdownView)
+
+            fragmentManager?.run { dropdownBottomSheet.show(this,"Enquiry input field dropdown bottom sheet") }
+            // Open keyboard with delay so it opens when bottom sheet is fully visible
+            Handler().postDelayed({
+                val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+            }, SHOW_KEYBOARD_DELAY)
         }
     }
 

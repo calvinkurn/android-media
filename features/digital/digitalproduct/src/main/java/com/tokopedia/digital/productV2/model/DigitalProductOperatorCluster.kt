@@ -9,15 +9,6 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperator
  */
 class DigitalProductOperatorCluster(
 
-        @SerializedName("componentID")
-        @Expose
-        val componentID: Int = 0,
-        @SerializedName("name")
-        @Expose
-        val name: String = "",
-        @SerializedName("paramName")
-        @Expose
-        val paramName: String = "",
         @SerializedName("text")
         @Expose
         val text: String = "",

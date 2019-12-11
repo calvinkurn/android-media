@@ -1,6 +1,7 @@
 package com.tokopedia.common.topupbills.view.model
 
 
-open class TopupBillsInputDropdownData (
-        val value: String = ""
+class TopupBillsInputDropdownData (
+        val label: String = "",
+        val icon: String? = null
 )

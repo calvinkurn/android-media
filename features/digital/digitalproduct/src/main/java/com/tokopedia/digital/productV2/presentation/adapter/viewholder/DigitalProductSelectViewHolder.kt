@@ -13,12 +13,16 @@ class DigitalProductSelectViewHolder(val view: View, val listener: OnInputListen
     override fun bind(data: DigitalProductItemData) {
         val inputView = itemView as TopupBillsInputFieldWidget
         inputView.resetState()
+        inputView.isCustomInput = true
         inputView.setLabel(data.text)
         inputView.setHint("")
-        inputView.setupDropdownBottomSheet(mapProducts(data.dataCollections))
         inputView.setActionListener(object : TopupBillsInputFieldWidget.ActionListener{
             override fun onFinishInput(input: String) {
-                listener.onFinishInput(input, adapterPosition)
+
+            }
+
+            override fun onCustomInputClick() {
+                listener.onCustomInputClick(inputView, mapProducts(data.dataCollections), adapterPosition)
             }
         })
     }

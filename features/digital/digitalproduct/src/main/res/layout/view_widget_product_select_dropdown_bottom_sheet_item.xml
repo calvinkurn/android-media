@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/product_select_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_12"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_12"
+    app:layout_constraintVertical_chainStyle="packed">
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/product_select_item_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone"
+        app:labelType="general_dark_red"
+        app:textAllCaps="true"
+        tools:text="test"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_select_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/product_select_item_label"
+        android:layout_alignParentLeft="true"
+        android:maxLines="2"
+        app:typographyType="heading_6"
+        tools:text="Insert Product Title Here, It can accomodate 2 Lines. But keep it short for simple and clean design" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_select_item_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/product_select_item_title"
+        android:layout_alignParentLeft="true"
+        android:maxLines="2"
+        app:typographyType="body_3"
+        tools:text="Lorem Ipsum Dolor Sit Amet. Put product description here." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_select_item_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/product_select_item_desc"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textColor="@color/red_800"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Rp190.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_select_item_original_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/product_select_item_price"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_toRightOf="@+id/product_select_item_price"
+        app:typographyType="small"
+        tools:text="Rp190.000" />
+
+</RelativeLayout>

@@ -7,9 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.view_vg_input_dropdown_bottom_sheet.view.*
 import kotlinx.android.synthetic.main.view_vg_input_dropdown_bottom_sheet_item.view.*
@@ -22,7 +25,8 @@ import org.jetbrains.annotations.NotNull
 class TopupBillsInputDropdownBottomSheet @JvmOverloads constructor(@NotNull context: Context,
                                                                    attrs: AttributeSet? = null,
                                                                    defStyleAttr: Int = 0,
-                                                                   var listener: OnClickListener? = null)
+                                                                   var listener: OnClickListener? = null,
+                                                                   val selected: String = "")
     : BaseCustomView(context, attrs, defStyleAttr), SearchInputView.Listener {
 
     private var initialData: List<TopupBillsInputDropdownData> = listOf()
@@ -62,7 +66,7 @@ class TopupBillsInputDropdownBottomSheet @JvmOverloads constructor(@NotNull cont
 
     override fun onSearchTextChanged(text: String?) {
         text?.let {
-            var filteredData = initialData.filter { item -> item.value.contains(it, true) }
+            var filteredData = initialData.filter { item -> item.label.contains(it, true) }
             if (filteredData.isEmpty()) filteredData = listOf(TopupBillsInputDropdownData(it))
             displayData = filteredData
         }
@@ -91,13 +95,30 @@ class TopupBillsInputDropdownBottomSheet @JvmOverloads constructor(@NotNull cont
     inner class TopupBillsInputDropdownViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         fun bind(element: TopupBillsInputDropdownData) {
             with(itemView) {
-                vg_input_dropdown_label.text = element.value
-                vg_input_dropdown_label.setOnClickListener { listener?.onItemClicked(element) }
+                vg_input_dropdown_label.text = element.label
+
+                if (element.icon != null) {
+                    ImageHandler.LoadImage(vg_input_dropdown_icon, element.icon)
+                    vg_input_dropdown_icon.show()
+                } else {
+                    vg_input_dropdown_icon.hide()
+                }
+
+                if (selected.isNotEmpty() && element.label == selected) {
+                    vg_input_dropdown_selected.show()
+                } else {
+                    vg_input_dropdown_selected.hide()
+                }
+                vg_input_dropdown_item.setOnClickListener { listener?.onItemClicked(element) }
             }
         }
     }
 
     interface OnClickListener {
         fun onItemClicked(item: TopupBillsInputDropdownData)
+    }
+
+    companion object {
+        const val SHOW_KEYBOARD_DELAY: Long = 200
     }
 }

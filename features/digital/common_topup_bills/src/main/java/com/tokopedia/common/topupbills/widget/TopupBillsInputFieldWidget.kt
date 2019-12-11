@@ -3,6 +3,7 @@ package com.tokopedia.common.topupbills.widget
 import android.content.Context
 import android.os.Handler
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
@@ -28,15 +29,25 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
                                                            attrs: AttributeSet? = null,
                                                            defStyleAttr: Int = 0,
                                                            var listener: ActionListener? = null)
-    : BaseCustomView(context, attrs, defStyleAttr), TopupBillsInputDropdownBottomSheet.OnClickListener {
+    : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private var isDropdown = false
-    private var dropdownBottomSheet = BottomSheetUnify()
-    private var dropdownView: TopupBillsInputDropdownBottomSheet
-    private var fragmentManager: FragmentManager? = null
+    var isCustomInput = false
+        set(value) {
+            field = value
+            if (value) iv_input_dropdown.show() else iv_input_dropdown.hide()
+        }
 
     init {
         View.inflate(context, getLayout(), this)
+
+        if (attrs != null) {
+            val ta = context.obtainStyledAttributes(attrs, R.styleable.TopupBillsInputFieldWidget, 0, 0)
+            try {
+                isCustomInput = ta.getBoolean(R.styleable.TopupBillsInputFieldWidget_isDropdown, false)
+            } finally {
+                ta.recycle()
+            }
+        }
 
         ac_input.clearFocus()
 
@@ -56,7 +67,7 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (count == 0 || isDropdown) {
+                if (count == 0 || isCustomInput) {
                     btn_clear_input.visibility = View.GONE
                 } else {
                     if (count > 1) {
@@ -71,27 +82,19 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
 
         ac_input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                listener?.onFinishInput("")
+                listener?.onFinishInput(getInputText())
                 clearFocus()
             }
             false
         }
         ac_input.setKeyImeChangeListener { _, event ->
             if (event.keyCode == KeyEvent.KEYCODE_BACK) {
-                listener?.onFinishInput("")
+                listener?.onFinishInput(getInputText())
                 clearFocus()
             }
         }
         ac_input.setOnFocusChangeListener { _, b ->
             onFocusChangeDropdown(b)
-        }
-
-        iv_input_dropdown.gone()
-        dropdownView = TopupBillsInputDropdownBottomSheet(context, listener = this)
-        dropdownBottomSheet.setFullPage(true)
-        dropdownBottomSheet.clearAction()
-        dropdownBottomSheet.setCloseClickListener {
-            dropdownBottomSheet.dismiss()
         }
     }
 
@@ -109,6 +112,7 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
 
     fun setInputText(input: String) {
         ac_input.setText(input)
+        listener?.onFinishInput(input)
     }
 
     fun setErrorMessage(message: String) {
@@ -129,51 +133,34 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
         this.listener = listener
     }
 
-    override fun onItemClicked(item: TopupBillsInputDropdownData) {
-        ac_input.setText(item.value)
-        listener?.onFinishInput(item.value)
-        dropdownBottomSheet.dismiss()
-    }
-
-    fun setupDropdownBottomSheet(data: List<TopupBillsInputDropdownData>) {
-        isDropdown = true
-        iv_input_dropdown.show()
-
-        dropdownView = TopupBillsInputDropdownBottomSheet(context, listener = this)
-        dropdownView.setData(data)
-
-        this.fragmentManager = (context as AppCompatActivity).supportFragmentManager
-        dropdownBottomSheet.setChild(dropdownView)
-    }
-
-    private fun showDropdownBottomSheet() {
-        if (isDropdown && fragmentManager != null) {
-            dropdownBottomSheet.show(fragmentManager,"Enquiry input field dropdown bottom sheet")
-            // Open keyboard with delay so it opens when bottom sheet is fully visible
-            Handler().postDelayed({
-                val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
-            }, SHOW_KEYBOARD_DELAY)
+    fun setInputType(type: String) {
+        ac_input.inputType = when (type) {
+            INPUT_NUMERIC ->  InputType.TYPE_CLASS_NUMBER
+            INPUT_ALPHANUMERIC ->  InputType.TYPE_CLASS_TEXT
+            else -> InputType.TYPE_CLASS_NUMBER
         }
     }
 
     fun resetState() {
-        isDropdown = false
-        iv_input_dropdown.hide()
+        isCustomInput = false
+        ac_input.setText("")
+        hideErrorMessage()
     }
 
     private fun onFocusChangeDropdown(hasFocus: Boolean) {
-        if (hasFocus && isDropdown) {
+        if (hasFocus && isCustomInput) {
             ac_input.clearFocus()
-            showDropdownBottomSheet()
+            listener?.onCustomInputClick()
         }
     }
 
     interface ActionListener {
         fun onFinishInput(input: String)
+        fun onCustomInputClick()
     }
 
     companion object {
-        const val SHOW_KEYBOARD_DELAY: Long = 200
+        const val INPUT_NUMERIC = "input_numeric"
+        const val INPUT_ALPHANUMERIC = "input_alphanumeric"
     }
 }
