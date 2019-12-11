@@ -108,7 +108,8 @@ object DeeplinkDFMapper {
     private val DFM_SETTING_NOTIF = "settingnotif"
     private val DFM_PAYMENT_SETTING = "payment_setting"
 
-    private val DFM_MERCHANT_SELLER_CUSTOMERAPP = "merchant_seller"
+    @JvmField
+    val DFM_MERCHANT_SELLER_CUSTOMERAPP = "merchant_seller"
     private val DFM_MERCHANT_BUYER = "merchant_buyer"
     private val DFM_SHOP_OPEN_CUSTOMERAPP = "merchant_seller_shop_open"
 
