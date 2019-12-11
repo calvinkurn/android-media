@@ -44,7 +44,6 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_cotp_miscall_verification.*
 import javax.inject.Inject
 
 /**
@@ -390,7 +389,7 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun showKeyboard() {
         val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.toggleSoftInputFromWindow(textInputOtp.windowToken, InputMethodManager.SHOW_FORCED, 0)
+        inputMethodManager.toggleSoftInputFromWindow(inputVerifyCode.windowToken, InputMethodManager.SHOW_FORCED, 0)
     }
 
     companion object {
