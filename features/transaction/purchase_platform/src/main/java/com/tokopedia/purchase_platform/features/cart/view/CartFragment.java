@@ -34,8 +34,6 @@ import com.readystatesoftware.chuck.Chuck;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
@@ -113,7 +111,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.unifyprinciples.Typography;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -182,8 +179,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
     @Inject
-    CartTrackingDataGenerator cartTrackingDataGenerator;
-    @Inject
     ViewHolderDataMapper viewHolderDataMapper;
     @Inject
     UserSessionInterface userSession;
@@ -233,10 +228,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         if (getActivity() != null) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        }
-        userSession = new UserSession(getActivity());
-
-        if (getActivity() != null) {
             saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         }
 
@@ -1233,22 +1224,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-            TKPDMapParam<String, String> originParams
-    ) {
-        return originParams == null
-                ? AuthUtil.generateParamsNetwork(
-                getActivity(), userSession.getUserId(),
-                userSession.getDeviceId()
-        )
-                : AuthUtil.generateParamsNetwork(
-                getActivity(), originParams,
-                userSession.getUserId(),
-                userSession.getDeviceId()
-        );
-    }
-
-    @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
         if (cartListData != null) {
             endlessRecyclerViewScrollListener.resetState();
@@ -1365,9 +1340,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
         }
 
-        if (cartListData.getShopGroupAvailableDataList() != null &&
-                !cartListData.getShopGroupAvailableDataList().isEmpty() &&
-                isInsuranceEnabled) {
+        if (!cartListData.getShopGroupAvailableDataList().isEmpty() && isInsuranceEnabled) {
             dPresenter.getInsuranceTechCart();
         }
 
@@ -1492,27 +1465,21 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                                             List<CartItemData> cartItemDataList,
                                             boolean checkoutProductEligibleForCashOnDelivery,
                                             int checklistCondition) {
-        Bundle eCommerceBundle = cartTrackingDataGenerator.generateBundleEnhancedEcommerce(cartItemDataList);
         switch (checklistCondition) {
             case CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES:
                 cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eeCheckoutData, checkoutProductEligibleForCashOnDelivery);
-                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eCommerceBundle, checkoutProductEligibleForCashOnDelivery);
                 break;
             case CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES:
                 cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(eeCheckoutData, checkoutProductEligibleForCashOnDelivery);
-                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(eCommerceBundle, checkoutProductEligibleForCashOnDelivery);
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP:
                 cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(eeCheckoutData, checkoutProductEligibleForCashOnDelivery);
-                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(eCommerceBundle, checkoutProductEligibleForCashOnDelivery);
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM:
                 cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery);
-                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(eCommerceBundle, checkoutProductEligibleForCashOnDelivery);
                 break;
             case CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM:
                 cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery);
-                cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eCommerceBundle, checkoutProductEligibleForCashOnDelivery);
                 break;
         }
         renderToAddressChoice();
@@ -2158,9 +2125,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
          * then insurance product is of type micro insurance and should be tagged at product level,
          * for micro insurance product add insurance data in shopGroup list*/
 
-
-        if (insuranceCartResponse != null &&
-                insuranceCartResponse.getCartShopsList() != null &&
+        if (insuranceCartResponse != null && insuranceCartResponse.getCartShopsList() != null &&
                 !insuranceCartResponse.getCartShopsList().isEmpty()) {
             for (InsuranceCartShops insuranceCartShops : insuranceCartResponse.getCartShopsList()) {
                 long shopId = insuranceCartShops.getShopId();

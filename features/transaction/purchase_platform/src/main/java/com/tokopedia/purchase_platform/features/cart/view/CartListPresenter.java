@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
@@ -388,7 +389,7 @@ public class CartListPresenter implements ICartListPresenter {
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
-                view.getGeneratedAuthParamNetwork(paramDelete));
+                AuthHelper.generateParamsNetwork(userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), paramDelete));
         requestParams.putBoolean(DeleteCartListUseCase.PARAM_IS_DELETE_ALL_DATA, removeAllItem);
         requestParams.putObject(DeleteCartListUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, appliedPromoOnDeletedProductList);
 
@@ -415,7 +416,7 @@ public class CartListPresenter implements ICartListPresenter {
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(UpdateCartUseCase.Companion.getPARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART(),
-                view.getGeneratedAuthParamNetwork(paramUpdate));
+                AuthHelper.generateParamsNetwork(userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), paramUpdate));
 
         compositeSubscription.add(
                 updateCartUseCase.createObservable(requestParams)
@@ -443,7 +444,7 @@ public class CartListPresenter implements ICartListPresenter {
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(UpdateCartUseCase.Companion.getPARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART(),
-                view.getGeneratedAuthParamNetwork(paramUpdate));
+                AuthHelper.generateParamsNetwork(userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), paramUpdate));
 
         compositeSubscription.add(
                 updateCartUseCase.createObservable(requestParams)
@@ -472,7 +473,7 @@ public class CartListPresenter implements ICartListPresenter {
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(UpdateCartUseCase.Companion.getPARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART(),
-                view.getGeneratedAuthParamNetwork(paramUpdate));
+                AuthHelper.generateParamsNetwork(userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), paramUpdate));
 
         compositeSubscription.add(
                 updateCartUseCase.createObservable(requestParams)
@@ -579,7 +580,7 @@ public class CartListPresenter implements ICartListPresenter {
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(UpdateAndReloadCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
-                view.getGeneratedAuthParamNetwork(paramUpdate));
+                AuthHelper.generateParamsNetwork(userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), paramUpdate));
 
         compositeSubscription.add(
                 updateAndReloadCartUseCase.createObservable(requestParams)
