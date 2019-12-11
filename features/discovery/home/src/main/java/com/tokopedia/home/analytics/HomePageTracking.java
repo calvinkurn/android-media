@@ -144,6 +144,7 @@ public class HomePageTracking {
     public static final String FIELD_BRAND = "brand";
     public static final String FIELD_CATEGORY = "category";
     public static final String FIELD_VARIANT = "variant";
+    public static final String FIELD_DIMENSION_84 = "dimension84";
     public static final String PRODUCT_VIEW_IRIS = "productViewIris";
     public static final String EVENT_ACTION_IMPRESSION_ON_LEGO_PRODUCT = "impression on lego product";
     public static final String NONE_OTHER = "none / other";
@@ -1283,7 +1284,7 @@ public class HomePageTracking {
         );
     }
 
-    private static List<Object> convertProductEnhanceProductMixDataLayer(DynamicHomeChannel.Grid[] grids, String headerName, String type) {
+    private static List<Object> convertProductEnhanceProductMixDataLayer(DynamicHomeChannel.Grid[] grids, String headerName, String type, String channelId) {
         List<Object> list = new ArrayList<>();
 
         if (grids != null) {
@@ -1300,7 +1301,8 @@ public class HomePageTracking {
                                 FIELD_CATEGORY, NONE_OTHER,
                                 FIELD_VARIANT, NONE_OTHER,
                                 LIST, "/ - p1 - dynamic channel mix - product - "+headerName+" - "+type,
-                                FIELD_POSITION, String.valueOf(i + 1)
+                                FIELD_POSITION, String.valueOf(i + 1),
+                                FIELD_DIMENSION_84, channelId
                         )
                 );
             }

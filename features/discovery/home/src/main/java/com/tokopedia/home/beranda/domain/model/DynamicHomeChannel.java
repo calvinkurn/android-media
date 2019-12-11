@@ -167,7 +167,7 @@ public class DynamicHomeChannel {
             this.showPromoBadge = showPromoBadge;
         }
 
-        private List<Object> convertProductEnhanceProductMixDataLayer(Grid[] grids, String headerName, String type) {
+        private List<Object> convertProductEnhanceProductMixDataLayer(String channelId, Grid[] grids, String headerName, String type) {
             List<Object> list = new ArrayList<>();
 
             if (grids != null) {
@@ -186,7 +186,7 @@ public class DynamicHomeChannel {
                                     "list", "/ - p1 - dynamic channel mix - product - "+headerName+" - "+type,
                                     "position", String.valueOf(i + 1),
                                     "dimension83", grid.getFreeOngkir().isActive() ? "bebas ongkir" : "none/other",
-                                    "dimension84", id
+                                    "dimension84", channelId
                             )
                     );
                 }
@@ -623,7 +623,7 @@ public class DynamicHomeChannel {
             } else if (layout.equals(LAYOUT_BANNER_CAROUSEL)) {
                 type = "carousel";
             }
-            List<Object> list = convertProductEnhanceProductMixDataLayer(getGrids(), getHeader().name, type);
+            List<Object> list = convertProductEnhanceProductMixDataLayer(id, getGrids(), getHeader().name, type);
             return DataLayer.mapOf(
                     "event", "productView",
                     "eventCategory", "homepage",
