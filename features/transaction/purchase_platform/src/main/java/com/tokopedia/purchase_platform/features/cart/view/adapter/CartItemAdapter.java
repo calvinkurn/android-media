@@ -100,8 +100,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
 
-        void onCartItemRemarkEditChange(CartItemData cartItemData, String remark, int position, int parentPosition);
-
         void onCartItemAfterErrorChecked();
 
         void onCartItemQuantityInputFormClicked(String qty);

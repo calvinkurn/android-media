@@ -8,7 +8,6 @@ import android.text.InputFilter
 import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
@@ -395,16 +394,6 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderRemark(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
-        this.etRemark.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, keyEvent ->
-            if (actionId == EditorInfo.IME_ACTION_DONE && adapterPosition != RecyclerView.NO_POSITION) {
-                actionListener?.onCartItemRemarkEditChange(
-                        data.cartItemData, textView.text.toString(), adapterPosition, parentPosition
-                )
-                return@OnEditorActionListener true
-            }
-            false
-        })
-
         this.tvLabelRemarkOption.setOnClickListener {
             if (!data.cartItemData.isError) {
                 actionListener?.onCartItemLabelInputRemarkClicked()

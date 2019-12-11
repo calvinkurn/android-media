@@ -164,8 +164,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private RecyclerView cartRecyclerView;
     private TextView btnToShipment;
     private TextView tvTotalPrice;
-    private TextView tvItemCount;
-    private RelativeLayout layoutUsedPromoEmptyCart;
     private RelativeLayout rlContent;
     private CheckBox cbSelectAll;
     private LinearLayout llHeader;
@@ -352,16 +350,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
     }
 
-    private void setVisibilityRemoveButton(boolean state) {
-        if (toolbar != null) {
-            if (toolbar instanceof ToolbarRemoveView) {
-                ((ToolbarRemoveView) toolbar).setVisibilityRemove(state);
-            } else if (toolbar instanceof ToolbarRemoveWithBackView) {
-                ((ToolbarRemoveWithBackView) toolbar).setVisibilityRemove(state);
-            }
-        }
-    }
-
     private void onContentAvailabilityChanged(boolean available) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             if (available) {
@@ -383,7 +371,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartRecyclerView = view.findViewById(R.id.rv_cart);
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button);
         tvTotalPrice = view.findViewById(R.id.tv_total_prices);
-        tvItemCount = view.findViewById(R.id.tv_item_count);
         rlContent = view.findViewById(R.id.rl_content);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
         cardHeader = view.findViewById(R.id.card_header);
@@ -405,6 +392,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         refreshHandler = new RefreshHandler(getActivity(), view, this);
+        setupRecyclerView();
+    }
+
+    private void setupRecyclerView() {
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         cartRecyclerView.setLayoutManager(layoutManager);
         cartRecyclerView.setAdapter(cartAdapter);
@@ -438,6 +429,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 return 0;
             }
         });
+
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -471,13 +463,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
         appbar.addView(toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(appbar);
-        setVisibilityRemoveButton(false);
     }
 
     private ToolbarRemoveWithBackView toolbarRemoveWithBackView() {
         ToolbarRemoveWithBackView toolbar = new ToolbarRemoveWithBackView(getActivity());
         toolbar.navigateUp(getActivity());
-        toolbar.setOnClickRemove(this);
         toolbar.setOnClickGoToChuck(this);
         toolbar.setTitle(getString(R.string.cart));
         return toolbar;
@@ -485,7 +475,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     private ToolbarRemoveView toolbarRemoveView() {
         ToolbarRemoveView toolbar = new ToolbarRemoveView(getActivity());
-        toolbar.setOnClickRemove(this);
         toolbar.setTitle(getString(R.string.cart));
         return toolbar;
     }
@@ -1114,13 +1103,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onCartItemRemarkEditChange(
-            CartItemData cartItemData, String remark, int position, int parentPosition
-    ) {
-
-    }
-
-    @Override
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestionHolderData data, int position) {
         data.setVisible(false);
         cartAdapter.notifyItemChanged(position);
@@ -1219,65 +1201,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
         sendAnalyticsOnClickCancelPromoCodeAndCouponBanner();
-    }
-
-    @Deprecated
-    @Override
-    public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
-        List<CartShopHolderData> cartShopHolderDataList = getAllShopDataList();
-        List<CartItemData> toBeDeletedCartItem = new ArrayList<>();
-        List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
-        ArrayList<String> appliedPromoCodes = new ArrayList<>();
-
-        for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
-            if (cartShopHolderData.getShopGroupAvailableData().isError()) {
-                for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupAvailableData().getCartItemDataList()) {
-                    toBeDeletedCartItem.add(cartItemHolderData.getCartItemData());
-                    if (cartShopHolderData.getShopGroupAvailableData().getVoucherOrdersItemData() != null &&
-                            !TextUtils.isEmpty(cartShopHolderData.getShopGroupAvailableData().getVoucherOrdersItemData().getCode())) {
-                        String promoCode = cartShopHolderData.getShopGroupAvailableData().getVoucherOrdersItemData().getCode();
-                        if (!appliedPromoCodes.contains(promoCode)) {
-                            appliedPromoCodes.add(promoCode);
-                        }
-                    }
-                }
-            } else {
-                for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupAvailableData().getCartItemDataList()) {
-                    if (cartItemHolderData.getCartItemData().isError()) {
-                        toBeDeletedCartItem.add(cartItemHolderData.getCartItemData());
-                        if (cartShopHolderData.getShopGroupAvailableData().getVoucherOrdersItemData() != null &&
-                                !TextUtils.isEmpty(cartShopHolderData.getShopGroupAvailableData().getVoucherOrdersItemData().getCode())) {
-                            String promoCode = cartShopHolderData.getShopGroupAvailableData().getVoucherOrdersItemData().getCode();
-                            if (!appliedPromoCodes.contains(promoCode)) {
-                                appliedPromoCodes.add(promoCode);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
-                toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
-        ));
-        final DialogUnify dialog = getMultipleDisabledItemsDialogDeleteConfirmation(toBeDeletedCartItem.size());
-        dialog.setPrimaryCTAClickListener(() -> {
-            if (toBeDeletedCartItem.size() > 0) {
-                dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, false, false);
-                sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
-                        dPresenter.generateCartDataAnalytics(
-                                toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
-                        )
-                );
-            }
-            dialog.dismiss();
-            return Unit.INSTANCE;
-        });
-        dialog.setSecondaryCTAClickListener(() -> {
-            dialog.dismiss();
-            return Unit.INSTANCE;
-        });
-        dialog.show();
     }
 
     @Override
