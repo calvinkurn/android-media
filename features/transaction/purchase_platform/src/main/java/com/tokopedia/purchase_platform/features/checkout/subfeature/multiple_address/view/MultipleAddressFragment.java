@@ -82,21 +82,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
     protected void initInjector() {
         if (getActivity() != null) {
             BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
@@ -111,11 +96,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter.attachView(this);
-    }
-
-    @Override
-    protected boolean isRetainInstance() {
-        return false;
     }
 
     private List<MultipleAddressAdapterData> initiateAdapterData(CartListData cartListData) {
@@ -372,16 +352,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.multiple_address_fragment;
     }
@@ -437,21 +407,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         if (itemPosition != 0) {
             rvOrderAddressList.scrollToPosition(itemPosition);
         }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     public void backPressed() {

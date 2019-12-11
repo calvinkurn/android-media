@@ -285,11 +285,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getContext() != null) {
@@ -335,28 +330,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-        // no op, already in onCreate()
-    }
-
-    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
     }
 
     @Override
@@ -433,16 +408,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (!shipmentSelectionStateDataHashSet.isEmpty()) {
             saveInstanceCacheManager.put(EXTRA_STATE_SHIPMENT_SELECTION, new ArrayList<>(shipmentSelectionStateDataHashSet));
         }
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-        // no op, already in onSaveInstanceState
-    }
-
-    @Override
-    protected void setViewListener() {
-
     }
 
     private boolean isOneClickShipment() {
@@ -630,16 +595,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Bundle eCommerceBundle = shipmentTrackingDataGenerator.generateBundleEnhancedEcommerce(checkoutRequest, shipmentPresenter.getShipmentCartItemModelList());
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckoutV5(eCommerceBundle, step, option,
                 transactionId, isTradeIn(), eventAction, eventLabel);
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

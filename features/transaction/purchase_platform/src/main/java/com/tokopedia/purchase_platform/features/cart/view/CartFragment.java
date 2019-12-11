@@ -188,10 +188,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     CartTrackingDataGenerator cartTrackingDataGenerator;
     @Inject
     ViewHolderDataMapper viewHolderDataMapper;
+    @Inject
+    UserSessionInterface userSession;
 
     private CartAdapter cartAdapter;
     private RefreshHandler refreshHandler;
-    private UserSessionInterface userSession;
 
     private boolean isToolbarWithBackButton = true;
 
@@ -232,6 +233,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getActivity() != null) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
@@ -242,34 +244,51 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         if (savedInstanceState != null && saveInstanceCacheManager != null) {
-            cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
-            wishLists = saveInstanceCacheManager.get(CartWishlistItemHolderData.class.getSimpleName(),
-                    (new TypeToken<ArrayList<CartWishlistItemHolderData>>() {
-                    }).getType(), null);
-            recentViewList = saveInstanceCacheManager.get(CartRecentViewItemHolderData.class.getSimpleName(),
-                    (new TypeToken<ArrayList<CartRecentViewItemHolderData>>() {
-                    }).getType(), null);
-            recommendationList = saveInstanceCacheManager.get(CartRecommendationItemHolderData.class.getSimpleName(),
-                    (new TypeToken<ArrayList<CartRecommendationItemHolderData>>() {
-                    }).getType(), null);
-            recommendationSectionHeader = saveInstanceCacheManager.get(CartSectionHeaderHolderData.class.getSimpleName(),
-                    (new TypeToken<CartSectionHeaderHolderData>() {
-                    }).getType(), null);
+            initCachedData();
         } else {
             cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
             cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE);
         }
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-        isInsuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false);
+        initRemoteConfig();
 
         dPresenter.attachView(this);
     }
 
+    private void initRemoteConfig() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        isInsuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false);
+    }
+
+    private void initCachedData() {
+        cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
+        wishLists = saveInstanceCacheManager.get(CartWishlistItemHolderData.class.getSimpleName(),
+                (new TypeToken<ArrayList<CartWishlistItemHolderData>>() {
+                }).getType(), null);
+        recentViewList = saveInstanceCacheManager.get(CartRecentViewItemHolderData.class.getSimpleName(),
+                (new TypeToken<ArrayList<CartRecentViewItemHolderData>>() {
+                }).getType(), null);
+        recommendationList = saveInstanceCacheManager.get(CartRecommendationItemHolderData.class.getSimpleName(),
+                (new TypeToken<ArrayList<CartRecommendationItemHolderData>>() {
+                }).getType(), null);
+        recommendationSectionHeader = saveInstanceCacheManager.get(CartSectionHeaderHolderData.class.getSimpleName(),
+                (new TypeToken<CartSectionHeaderHolderData>() {
+                }).getType(), null);
+    }
+
     @Override
     public void onStop() {
-        boolean hasChanges = dPresenter.dataHasChanged();
+        updateCartAfterDetached();
 
+        if (FLAG_SHOULD_CLEAR_RECYCLERVIEW) {
+            clearRecyclerView();
+        }
+
+        super.onStop();
+    }
+
+    private void updateCartAfterDetached() {
+        boolean hasChanges = dPresenter.dataHasChanged();
         try {
             Activity activity = getActivity();
             List<CartItemData> cartItemDataList = getSelectedCartDataList();
@@ -284,12 +303,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
-
-        if (FLAG_SHOULD_CLEAR_RECYCLERVIEW) {
-            clearRecyclerView();
-        }
-
-        super.onStop();
     }
 
     @Override
@@ -312,42 +325,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
     protected boolean getOptionsMenuEnable() {
         return true;
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-        if (arguments != null) {
-            String args = arguments.getString(CartFragment.class.getSimpleName());
-            if (args != null && !args.isEmpty()) {
-                isToolbarWithBackButton = false;
-            }
-        }
     }
 
     private void onContentAvailabilityChanged(boolean available) {
@@ -380,6 +359,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         llHeader = view.findViewById(R.id.ll_header);
         btnRemove = view.findViewById(R.id.btn_delete_all_cart);
         llCartContainer = view.findViewById(R.id.ll_cart_container);
+
+        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(""));
+        cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
+        llHeader.setOnClickListener(getOnClickCheckboxSelectAll());
+        btnRemove.setOnClickListener(v -> {
+            if (btnRemove.getVisibility() == View.VISIBLE) {
+                onToolbarRemoveAllCart();
+            }
+        });
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -442,6 +430,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     private void setupToolbar(View view) {
+        if (getArguments() != null) {
+            String args = getArguments().getString(CartFragment.class.getSimpleName());
+            if (args != null && !args.isEmpty()) {
+                isToolbarWithBackButton = false;
+            }
+        }
+
         Toolbar appbar = view.findViewById(R.id.toolbar);
         View statusBarBackground = view.findViewById(R.id.status_bar_bg);
         statusBarBackground.getLayoutParams().height =
@@ -532,18 +527,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         startActivity(Chuck.getLaunchIntent(getActivity()));
     }
 
-    @Override
-    protected void setViewListener() {
-        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(""));
-        cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
-        llHeader.setOnClickListener(getOnClickCheckboxSelectAll());
-        btnRemove.setOnClickListener(v -> {
-            if (btnRemove.getVisibility() == View.VISIBLE) {
-                onToolbarRemoveAllCart();
-            }
-        });
-    }
-
     private View.OnClickListener getOnClickCheckboxSelectAll() {
         return v -> onSelectAllClicked();
     }
@@ -568,16 +551,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 sendAnalyticsOnGoToShipmentFailed(message);
             }
         };
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
