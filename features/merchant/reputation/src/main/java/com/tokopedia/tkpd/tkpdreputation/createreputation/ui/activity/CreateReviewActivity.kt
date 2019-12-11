@@ -32,7 +32,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
         val reputationId: String
         val bundle = intent.extras
         val uri = intent.data
-        val rating = uri?.getQueryParameter(PARAM_RATING)?.toIntOrNull()?: DEFAULT_PRODUCT_RATING
+        val rating = uri?.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
 
         if (uri != null && uri.pathSegments.size > 0) {
             val uriSegment = uri.pathSegments
@@ -69,7 +69,8 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
     }
 
     override fun onBackPressed() {
-        ReviewTracking.reviewOnCloseTracker(createReviewFragment.getOrderId, productId)
+        if (::createReviewFragment.isInitialized)
+            ReviewTracking.reviewOnCloseTracker(createReviewFragment.getOrderId, productId)
 
         if (isTaskRoot) {
             val intent = RouteManager.getIntent(this, ApplinkConst.HOME)

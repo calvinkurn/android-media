@@ -1,10 +1,10 @@
 package com.tokopedia.discovery.categoryrevamp.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.*
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.discovery.categoryrevamp.data.productModel.SearchProduct
 import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -26,7 +26,7 @@ class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCateg
 
 
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
-    val mProductCount = MutableLiveData<String>()
+    val mProductCount = MutableLiveData<SearchProduct>()
     val mSubCategoryList = MutableLiveData<Result<List<SubCategoryItem>>>()
     var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
@@ -41,7 +41,7 @@ class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCateg
                             mProductList.value = Success((productList) as List<ProductsItem>)
                         }
 
-                        mProductCount.value = searchProduct.countText
+                        mProductCount.value = searchProduct
                     }
                 }
 
@@ -120,8 +120,8 @@ class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCateg
         return mDynamicFilterModel
     }
 
-    fun openBrowserSeamlessly(bannedData: Data) {
-        seamlessLoginUsecase?.generateSeamlessUrl(Uri.parse(bannedData.appRedirection).toString(), seamlessLoginSubscriber)
+    fun openBrowserSeamlessly(url: String) {
+        seamlessLoginUsecase?.generateSeamlessUrl(url, seamlessLoginSubscriber)
     }
 
     val seamlessLoginSubscriber: SeamlessLoginSubscriber? = object : SeamlessLoginSubscriber {

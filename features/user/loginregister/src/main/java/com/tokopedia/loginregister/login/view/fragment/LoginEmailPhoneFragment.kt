@@ -79,6 +79,7 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -499,14 +500,23 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         return object : GetFacebookCredentialSubscriber.GetFacebookCredentialListener {
 
             override fun onErrorGetFacebookCredential(e: Exception) {
+                dismissLoadingLogin()
                 if (isAdded && activity != null) {
                     onErrorLogin(ErrorHandler.getErrorMessage(context, e))
                 }
             }
 
-            override fun onSuccessGetFacebookCredential(accessToken: AccessToken, email: String) {
+            override fun onSuccessGetFacebookEmailCredential(accessToken: AccessToken, email: String) {
                 context?.run {
-                    presenter.loginFacebook(this, accessToken, email)
+                    if (email.isNotEmpty())
+                        presenter.loginFacebook(this, accessToken, email)
+                }
+            }
+
+            override fun onSuccessGetFacebookPhoneCredential(accessToken: AccessToken, phone: String) {
+                context?.run {
+                    if (phone.isNotEmpty())
+                        presenter.loginFacebookPhone(this, accessToken, phone)
                 }
             }
         }
@@ -853,6 +863,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
+            dismissLoadingLogin()
             onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
 
         }
@@ -913,6 +924,24 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onErrorLoginFacebook(email: String): (Throwable) -> Unit {
         return {
+            dismissLoadingLogin()
+            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+        }
+    }
+
+    override fun onSuccessLoginFacebookPhone(): (LoginTokenPojo) -> Unit {
+        return {
+            if (it.loginToken.action == 1) {
+                goToChooseAccountPageFacebook(it.loginToken.accessToken)
+            } else {
+                presenter.getUserInfo()
+            }
+        }
+    }
+
+    override fun onErrorLoginFacebookPhone(): (Throwable) -> Unit {
+        return {
+            dismissLoadingLogin()
             onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
         }
     }
@@ -943,6 +972,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
+    private fun goToChooseAccountPageFacebook(accessToken: String) {
+        activity?.let {
+            val intent = RouteManager.getIntent(it,
+                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, FACEBOOK_LOGIN_TYPE)
+
+            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (activity != null) {
             callbackManager.onActivityResult(requestCode, resultCode, data)
@@ -969,11 +1009,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 handleGoogleSignInResult(task)
             } else if (requestCode == REQUEST_SECURITY_QUESTION
                     && resultCode == Activity.RESULT_OK
-                    && data != null
-                    && data.extras != null
-                    && data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID) != null) {
-                val validateToken = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                presenter.reloginAfterSQ(validateToken)
+                    && data != null) {
+                data.extras?.let {
+                    val validateToken = it.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                    presenter.reloginAfterSQ(validateToken)
+                }
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
                 logoutGoogleAccountIfExist()
                 dismissLoadingLogin()
@@ -1014,8 +1054,20 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     val phoneNumber = getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                     goToChooseAccountPage(accessToken, phoneNumber)
                 }
-            } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-                checkStatusPin()
+            } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
+                    && resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    data.extras?.let {
+                        if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
+                            onGoToSecurityQuestion("")
+                        } else {
+                            checkStatusPin()
+                        }
+                    }
+                } else {
+                    checkStatusPin()
+                }
+
             } else if (requestCode == REQUEST_LOGIN_PHONE
                     || requestCode == REQUEST_CHOOSE_ACCOUNT) {
                 analytics.trackLoginPhoneNumberFailed(getString(R.string.error_login_user_cancel_login_phone))
@@ -1023,6 +1075,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             } else if (requestCode == REQUEST_ADD_PIN) {
                 onSuccessLogin()
             } else if (requestCode == REQUEST_ADD_PIN_AFTER_SQ) {
+                onSuccessLogin()
+            } else if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else {
                 dismissLoadingLogin()
@@ -1296,20 +1350,22 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         const val REQUEST_LOGIN_PHONE = 112
         const val REQUEST_REGISTER_PHONE = 113
         const val REQUEST_ADD_NAME_REGISTER_PHONE = 114
-        const val REQUEST_WELCOME_PAGE = 115
         const val REQUEST_LOGIN_GOOGLE = 116
         const val REQUEST_ADD_PIN = 117
-        const val REQUEST_ADD_PIN_AFTER_SQ = 120
-        private val REQUEST_OTP_VALIDATE = 118
-        private val REQUEST_PENDING_OTP_VALIDATE = 119
+        const val REQUEST_COTP_PHONE_VERIFICATION = 118
+        const val REQUEST_ADD_PIN_AFTER_SQ = 119
+        private val REQUEST_OTP_VALIDATE = 120
+        private val REQUEST_PENDING_OTP_VALIDATE = 121
 
-        const val PHONE_TYPE = "phone"
-        const val EMAIL_TYPE = "email"
+        private const val PHONE_TYPE = "phone"
+        private const val EMAIL_TYPE = "email"
 
-        const val LOGIN_LOAD_TRACE = "gb_login_trace"
-        const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
+        private const val LOGIN_LOAD_TRACE = "gb_login_trace"
+        private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
 
-        const val SOURCE_ACCOUNT = "account"
+        private const val SOURCE_ACCOUNT = "account"
+
+        private const val FACEBOOK_LOGIN_TYPE = "fb"
 
         const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 

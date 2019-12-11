@@ -10,14 +10,11 @@ object SomConsts {
     const val PARAM_LIST_ORDER = "param_list_order"
     const val PARAM_LANG_ID = "id"
     const val PARAM_ORDER_ID = "order_id"
-    const val PARAM_CURR_SHIPMENT_ID = "shipment_id"
-    const val PARAM_CURR_SHIPMENT_NAME = "shipment_name"
-    const val PARAM_CURR_SHIPMENT_PRODUCT_NAME = "shipment_product_name"
     const val PARAM_CURR_IS_CHANGE_SHIPPING = "is_change_shipping"
     const val PARAM_SHOP_ID = "shop_id"
     const val PARAM_IS_FROM_FINTECH = "is_from_fintech"
     const val PARAM_BOOKING_CODE = "bookingCode"
-    const val PARAM_BOOKING_TYPE = "bookingType"
+    const val PARAM_BARCODE_TYPE = "barcodeType"
     const val PARAM_BOOKING_MESSAGE_LIST = "message"
 
     const val VAR_PARAM_ORDERID = "orderID"
@@ -28,12 +25,14 @@ object SomConsts {
     const val CATEGORY_COURIER_TYPE = "courier"
 
     const val TAB_ACTIVE = "tab_active"
+    const val TAB_STATUS = "tab_status"
     const val FILTER_TYPE_CHECKBOX = "checkbox"
     const val FILTER_TYPE_RADIO = "radio"
     const val FILTER_TYPE_LABEL = "label"
     const val FILTER_TYPE_SEPARATOR = "separator"
 
     const val STATUS_ALL_ORDER = "all_order"
+    const val STATUS_DELIVERED = "delivered"
 
     const val DETAIL_HEADER_TYPE = "header"
     const val DETAIL_PRODUCTS_TYPE = "products"
@@ -92,6 +91,8 @@ object SomConsts {
     const val TITLE_COURIER_PROBLEM = "Kendala Kurir"
     const val TITLE_ATUR_TOKO_TUTUP = "Atur tanggal toko tutup"
     const val TITLE_BATALKAN_PESANAN = "Tuliskan Keterangan Anda"
+    const val TITLE_BATALKAN_PESANAN_PENALTY = "Batalkan Pesanan"
+    const val TITLE_TOLAK_PESANAN_INI = "Tolak Pesanan Ini?"
     const val TITLE_UBAH_RESI = "Ubah Nomor Resi"
     const val TITLE_KURIR_PENGIRIMAN = "Kurir Pengiriman"
     const val TITLE_JENIS_LAYANAN = "Jenis Layanan"
@@ -122,4 +123,12 @@ object SomConsts {
 
     const val LIST_ORDER_SCREEN_NAME = "/myorder"
     const val DETAIL_ORDER_SCREEN_NAME = "/myorder/detail/"
+    const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
+    const val ATTRIBUTE_ID = "id"
+
+    const val STATUS_ORDER_600 = 600
+    const val STATUS_ORDER_699 = 699
+
+    const val REPLACE_CUST_NAME = "#custName"
+    const val REPLACE_INVOICE_NO = "#invoiceNo"
 }

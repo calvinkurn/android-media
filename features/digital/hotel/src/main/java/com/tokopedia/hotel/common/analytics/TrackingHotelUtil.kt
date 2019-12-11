@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.common.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelPropertyRoom
 import com.tokopedia.hotel.common.util.HotelUtils
@@ -69,9 +70,9 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $destType - $destination")
     }
 
-    fun hotelSelectStayDate(dayDiff: Int, dateRange: Int) {
+    fun hotelSelectStayDate(checkInDate: String, dateRange: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, SELECT_STAY_DATE,
-                "$HOTEL_LABEL - $dayDiff - $dateRange")
+                "$HOTEL_LABEL - ${convertDate(checkInDate)} - $dateRange")
     }
 
     fun hotelSelectRoomGuest(roomCount: Int, adultCount: Int) {
@@ -83,10 +84,10 @@ class TrackingHotelUtil {
                     destination: String,
                     roomCount: Int,
                     guestCount: Int,
-                    dayDiff: Int,
+                    checkInDate: String,
                     duration: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, SEARCH_HOTEL,
-                "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - $dayDiff - $duration")
+                "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - ${convertDate(checkInDate)} - $duration")
     }
 
     fun hotelViewHotelListImpression(destination: String,
@@ -95,14 +96,13 @@ class TrackingHotelUtil {
                                      products: List<Property>) {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
-        val dayDiff = HotelUtils.countCurrentDayDifference(searchParam.checkIn)
         val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut)
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = PRODUCT_VIEW
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = VIEW_HOTEL_LIST_IMPRESSION
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 IMPRESSIONS_LABEL, getViewHotelListProducts(products)
@@ -116,12 +116,12 @@ class TrackingHotelUtil {
             val map = HashMap<String, Any>()
             map[NAME_LABEL] = product.name
             map[ID_LABEL] = product.id
-            map[POSITION_LABEL] = index
+            map[POSITION_LABEL] = positionTracker(index)
             map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
             map[VARIANT_LABEL] = "${product.isDirectPayment} - ${product.roomAvailability > 0}"
             map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
             map[PRICE_LABEL] = if (product.roomPrice.isNotEmpty())
-                product.roomPrice.first().priceAmount.roundToLong().toString() else "0"
+                product.roomPrice.first().priceAmount.roundToLong() else 0
 
             list.add(map)
         }
@@ -135,14 +135,13 @@ class TrackingHotelUtil {
                     position: Int) {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
-        val dayDiff = HotelUtils.countCurrentDayDifference(searchParam.checkIn)
         val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut)
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = PRODUCT_CLICK
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CHOOSE_HOTEL
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CLICK_LABEL, DataLayer.mapOf(
                 ACTION_FIELD_LABEL, DataLayer.mapOf(LIST_LABEL, SLASH_HOTEL_SLASH_LABEL),
@@ -157,8 +156,8 @@ class TrackingHotelUtil {
         map[NAME_LABEL] = property.name
         map[ID_LABEL] = property.id
         map[PRICE_LABEL] = if (property.roomPrice.isNotEmpty())
-            property.roomPrice.first().priceAmount.roundToLong().toString() else "0"
-        map[POSITION_LABEL] = position
+            property.roomPrice.first().priceAmount.roundToLong() else 0
+        map[POSITION_LABEL] = positionTracker(position)
         map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
         map[VARIANT_LABEL] = "${property.isDirectPayment} - ${property.roomAvailability > 0}"
         map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
@@ -190,7 +189,6 @@ class TrackingHotelUtil {
 
         val roomCount = hotelHomepageModel.roomCount
         val guestCount = hotelHomepageModel.adultCount
-        val dayDiff = HotelUtils.countCurrentDayDifference(hotelHomepageModel.checkInDate)
         val duration = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
         val destinationType = hotelHomepageModel.locType
         val destination = if (hotelHomepageModel.locName.isEmpty()) hotelName else hotelHomepageModel.locName
@@ -199,7 +197,7 @@ class TrackingHotelUtil {
         map[EVENT] = VIEW_PRODUCT
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = VIEW_HOTEL_PDP
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelHomepageModel.checkInDate)} - $duration"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 DETAIL_LABEL, DataLayer.mapOf(
@@ -232,19 +230,17 @@ class TrackingHotelUtil {
     fun hotelChooseViewRoom(hotelHomepageModel: HotelHomepageModel, hotelId: Int, hotelName: String) {
         val roomCount = hotelHomepageModel.roomCount
         val guestCount = hotelHomepageModel.adultCount
-        val dayDiff = HotelUtils.countCurrentDayDifference(hotelHomepageModel.checkInDate)
         val duration = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
         val destinationType = hotelHomepageModel.locType
         val destination = if (hotelHomepageModel.locName.isEmpty()) hotelName else hotelHomepageModel.locName
 
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CHOOSE_VIEW_ROOM,
-                "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId")
+                "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelHomepageModel.checkInDate)} - $duration - $hotelId")
     }
 
     fun hotelViewRoomList(hotelId: Int, hotelRoomListPageModel: HotelRoomListPageModel, roomList: List<HotelRoom>) {
         val roomCount = hotelRoomListPageModel.room
         val guestCount = hotelRoomListPageModel.adult
-        val dayDiff = HotelUtils.countCurrentDayDifference(hotelRoomListPageModel.checkIn)
         val duration = HotelUtils.countDayDifference(hotelRoomListPageModel.checkIn, hotelRoomListPageModel.checkOut)
         val destinationType = hotelRoomListPageModel.destinationType
         val destination = hotelRoomListPageModel.destinationName
@@ -254,7 +250,7 @@ class TrackingHotelUtil {
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = VIEW_ROOM_LIST
 
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelRoomListPageModel.checkIn)} - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 IMPRESSIONS_LABEL, getViewHotelListRoom(roomList)
@@ -268,11 +264,11 @@ class TrackingHotelUtil {
             val map = HashMap<String, Any>()
             map[NAME_LABEL] = hotelRoom.roomInfo.name
             map[ID_LABEL] = hotelRoom.roomId
-            map[POSITION_LABEL] = index
+            map[POSITION_LABEL] = positionTracker(index)
             map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
             map[VARIANT_LABEL] = "${hotelRoom.additionalPropertyInfo.isDirectPayment} - ${hotelRoom.available}"
             map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
-            map[PRICE_LABEL] = hotelRoom.roomPrice.roomPrice
+            map[PRICE_LABEL] = hotelRoom.roomPrice.priceAmount.roundToLong()
 
             list.add(map)
         }
@@ -281,9 +277,7 @@ class TrackingHotelUtil {
 
     fun hotelChooseRoom(room: HotelRoom, hotelAddCartParam: HotelAddCartParam) {
         val hotelId = room.additionalPropertyInfo.propertyId
-        val roomCount = hotelAddCartParam.rooms.count()
         val guestCount = hotelAddCartParam.adult
-        val dayDiff = HotelUtils.countCurrentDayDifference(hotelAddCartParam.checkIn)
         val duration = HotelUtils.countDayDifference(hotelAddCartParam.checkIn, hotelAddCartParam.checkOut)
         val destinationType = hotelAddCartParam.destinationType
         val destination = hotelAddCartParam.destinationName
@@ -292,7 +286,7 @@ class TrackingHotelUtil {
         map[EVENT] = ADD_TO_CART
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CHOOSE_ROOM
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - ${hotelAddCartParam.roomCount} - $guestCount - ${convertDate(hotelAddCartParam.checkIn)} - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 ADD_LABEL, DataLayer.mapOf(
@@ -302,7 +296,7 @@ class TrackingHotelUtil {
                         ID_LABEL, room.roomId,
                         PRICE_LABEL, room.roomPrice.priceAmount.roundToLong(),
                         QUANTITY_LABEL, ONE_LABEL,
-                        VARIANT_LABEL, "{${room.additionalPropertyInfo.isDirectPayment} - ${room.available}",
+                        VARIANT_LABEL, "${room.additionalPropertyInfo.isDirectPayment} - ${room.available}",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL
                     )
                 )
@@ -320,7 +314,6 @@ class TrackingHotelUtil {
         val hotelId = hotelRoom.additionalPropertyInfo.propertyId
         val roomCount = hotelRoomListPageModel.room
         val guestCount = hotelRoomListPageModel.adult
-        val dayDiff = HotelUtils.countCurrentDayDifference(hotelRoomListPageModel.checkIn)
         val duration = HotelUtils.countDayDifference(hotelRoomListPageModel.checkIn, hotelRoomListPageModel.checkOut)
         val destinationType = hotelRoomListPageModel.destinationType
         val destination = hotelRoomListPageModel.destinationName
@@ -329,7 +322,7 @@ class TrackingHotelUtil {
         map[EVENT] = PRODUCT_CLICK
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CLICK_ROOM_DETAILS
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelRoomListPageModel.checkIn)} - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CLICK_LABEL, DataLayer.mapOf(
                     ACTION_FIELD_LABEL, DataLayer.mapOf( LIST_LABEL, SLASH_HOTEL_SLASH_LABEL ),
@@ -341,7 +334,7 @@ class TrackingHotelUtil {
                                             LIST_LABEL, SLASH_HOTEL_SLASH_LABEL,
                                             VARIANT_LABEL, "${hotelRoom.additionalPropertyInfo.isDirectPayment} - ${hotelRoom.available}",
                                             CATEGORY_LABEL, HOTEL_CONTENT_LABEL,
-                                            POSITION_LABEL, position
+                                            POSITION_LABEL, positionTracker(position)
                                     )
                             )
                 )
@@ -357,9 +350,8 @@ class TrackingHotelUtil {
 
     fun hotelChooseRoomDetails(room: HotelRoom, position: Int, hotelAddCartParam: HotelAddCartParam) {
         val hotelId = room.additionalPropertyInfo.propertyId
-        val roomCount = hotelAddCartParam.rooms.count()
+        val roomCount = hotelAddCartParam.roomCount
         val guestCount = hotelAddCartParam.adult
-        val dayDiff = HotelUtils.countCurrentDayDifference(hotelAddCartParam.checkIn)
         val duration = HotelUtils.countDayDifference(hotelAddCartParam.checkIn, hotelAddCartParam.checkOut)
         val destinationType = hotelAddCartParam.destinationType
         val destination = hotelAddCartParam.destinationName
@@ -368,7 +360,7 @@ class TrackingHotelUtil {
         map[EVENT] = ADD_TO_CART
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CHOOSE_ROOM_DETAILS_PDP
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelAddCartParam.checkIn)} - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 ADD_LABEL, DataLayer.mapOf(
@@ -388,27 +380,22 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickNext(hotelCart: HotelCart, destType: String, destination: String, personal: Boolean) {
+    fun hotelClickNext(hotelCart: HotelCart, destType: String, destination: String, roomCount: Int, guestCount: Int, personal: Boolean) {
         val hotelId = hotelCart.property.propertyID
-        val roomCount = hotelCart.property.rooms.count()
-        val guestCount = hotelCart.cart.adult
-        val dayDiff = HotelUtils.countCurrentDayDifference(hotelCart.cart.checkIn)
         val duration = HotelUtils.countDayDifference(hotelCart.cart.checkIn, hotelCart.cart.checkOut)
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = CHECKOUT
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CLICK_NEXT
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId - $personal"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - ${convertDate(hotelCart.cart.checkIn)} - $duration - $hotelId - $personal"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CHECKOUT, DataLayer.mapOf(
                 ACTION_FIELD_LABEL, DataLayer.mapOf(
                     STEP_LABEL, ONE_LABEL,
                     OPTION_LABEL, CLICK_CHECKOUT),
-                PRODUCTS_LABEL, DataLayer.listOf(
-                    getHotelListRoomCart(hotelCart.property.rooms, hotelCart.property.isDirectPayment,
-                            hotelCart.cart.totalPriceAmount)
-                )
+                PRODUCTS_LABEL, getHotelListRoomCart(hotelCart.property.rooms, hotelCart.property.isDirectPayment,
+                hotelCart.cart.totalPriceAmount)
             )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
@@ -420,11 +407,11 @@ class TrackingHotelUtil {
             val map = HashMap<String, Any>()
             map[NAME_LABEL] = hotelRoom.roomName
             map[ID_LABEL] = hotelRoom.roomID
-            map[POSITION_LABEL] = index
+            map[POSITION_LABEL] = positionTracker(index)
             map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
             map[VARIANT_LABEL] = "$isDirectPayment - true"
             map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
-            map[PRICE_LABEL] = totalPrice
+            map[PRICE_LABEL] = totalPrice.roundToLong()
 
             list.add(map)
         }
@@ -435,4 +422,12 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, APPLY_PROMO,
                 "$HOTEL_LABEL - $promoCode")
     }
+
+    private fun convertDate(date: String): String =
+            TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.YYYYMMDD, date)
+
+    private fun positionTracker(index: Int): Int {
+        return index + 1
+    }
+
 }

@@ -26,7 +26,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -148,7 +147,7 @@ public class WidgetCrackResult extends RelativeLayout {
 
         DisplayMetrics metrics = new DisplayMetrics();
         ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
-        float screenHeightQuarter = metrics.heightPixels / 4;
+        float screenHeightQuarter = metrics.heightPixels * (12.0f/100);
         screenHeightQuarter = screenHeightQuarter - actionBarHeight;
 
         final AnimationSet animationCrackResult = new AnimationSet(true);
@@ -534,7 +533,7 @@ public class WidgetCrackResult extends RelativeLayout {
             }
             tvTierInfoList.clear();
         }
-        if(counterAnimatorSet!=null){
+        if (counterAnimatorSet != null) {
             counterAnimatorSet.cancel();
         }
         if (animationList != null) {

@@ -1,10 +1,10 @@
 package com.tokopedia.flight.bookingV2.domain
 
 import android.text.TextUtils
-import com.tokopedia.flight.booking.data.cloud.requestbody.CartAirportRequest
-import com.tokopedia.flight.booking.data.cloud.requestbody.CartAttributesRequest
-import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest
-import com.tokopedia.flight.booking.data.cloud.requestbody.FlightRequest
+import com.tokopedia.flight.bookingV2.data.cloud.requestbody.CartAirportRequest
+import com.tokopedia.flight.bookingV2.data.cloud.requestbody.CartAttributesRequest
+import com.tokopedia.flight.bookingV2.data.cloud.requestbody.FlightCartRequest
+import com.tokopedia.flight.bookingV2.data.cloud.requestbody.FlightRequest
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity
 import com.tokopedia.flight.common.domain.FlightRepository
 import com.tokopedia.flight.common.util.FlightRequestUtil

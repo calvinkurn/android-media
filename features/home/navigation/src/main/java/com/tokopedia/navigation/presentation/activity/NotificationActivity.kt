@@ -96,7 +96,14 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     }
 
     private fun initView() {
-        var initialIndexPage = getParamInt(Intent.EXTRA_TITLE, intent.extras, null, INDEX_NOTIFICATION_ACTIVITY)
+        val initialIndexPage = if (cacheManager.isExist(KEY_TAB_POSITION)) {
+            cacheManager.read(KEY_TAB_POSITION)
+        } else {
+            getParamInt(Intent.EXTRA_TITLE,
+                    intent.extras,
+                    null,
+                    INDEX_NOTIFICATION_ACTIVITY)
+        }
         initTabLayout(initialIndexPage)
         presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
         presenter.getIsTabUpdate(this)
@@ -155,7 +162,6 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 changeTabPager(tab.position)
-                sendAnalytics(tab.position)
                 clearNotifCounter(tab.position)
                 setTabSelectedView(tab.customView)
                 resetCircle(tab.customView)
@@ -170,6 +176,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     private fun changeTabPager(position: Int) {
         viewPager.setCurrentItem(position, true)
         cacheManager.entry(KEY_TAB_POSITION, position)
+        analytics.trackNotificationCenterTab(position)
     }
 
     private fun showOnBoarding(position: Int) {
@@ -224,12 +231,6 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     override fun resetCounterNotificationUpdate() {
         updateCounter = 0
         setCounterNotificationUpdate()
-    }
-
-    private fun sendAnalytics(position: Int) {
-        if (position == INDEX_NOTIFICATION_UPDATE) {
-            analytics.trackClickNewestInfo()
-        }
     }
 
     private fun resetCircle(customView: View?) {

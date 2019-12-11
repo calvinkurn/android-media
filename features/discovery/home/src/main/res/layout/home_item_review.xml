@@ -42,17 +42,17 @@
 
         </androidx.cardview.widget.CardView>
 
-
-        <ImageView
+        <com.tokopedia.design.image.SquareImageView
             android:id="@+id/img_review"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxHeight="@dimen/dp_72"
+            android:maxWidth="@dimen/dp_72"
             android:adjustViewBounds="true"
-            android:layout_marginRight="8dp"
-            android:src="@color/fab_background_tint"
-            app:layout_constraintBottom_toBottomOf="@+id/animated_review"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/review_title" />
+            android:layout_margin="@dimen/dp_12"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/review_title"
@@ -62,6 +62,7 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             android:minLines="2"
+            app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/animated_review"

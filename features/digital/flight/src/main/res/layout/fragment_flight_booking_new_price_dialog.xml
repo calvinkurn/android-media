@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_margin="@dimen/dp_20"
     android:padding="@dimen/dp_20"
-    tools:context="com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment">
+    tools:context="com.tokopedia.flight.bookingV2.presentation.fragment.FlightBookingNewPriceDialogFragment">
 
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextView.TitleBig.Bold"
