@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">product_manage_list</string>
     <string name="pml_price_format_text">%1$s %2$s</string>
-    <string name="pml_product_variant_stock_limited">Stok Terbatas</string>
+    <string name="pml_product_variant_stock_active">Stok Aktif</string>
     <string name="pml_product_manage_label_add_product_to_sell">Tambah produk Anda untuk dapat mulai berjualan.</string>
     <string name="pml_product_manage_label_add_product">+ Tambah Produk</string>
     <string name="pml_product_manage_label_supervision">Pengawasan</string>
@@ -56,7 +56,7 @@
     <string name="product_manage_refresh">Refresh</string>
 
     <string name="product_bs_etalase_title">Etalase produk</string>
-    <string name="product_bs_stock_title">Stok produk</string>
+    <string name="product_bs_stock_title">Status produk</string>
     <string name="product_bs_delete_title">Hapus produk</string>
     <string name="product_bs_title">Atur produk</string>
 
