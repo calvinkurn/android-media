@@ -41,13 +41,13 @@ class LoadingComponent(
         return emptyFlow()
     }
 
-    fun initView(container: ViewGroup) =
+    private fun initView(container: ViewGroup) =
             LoadingView(container)
 
     private fun handleVideoStateChanged(state: TokopediaPlayVideoState) {
         when (state) {
             TokopediaPlayVideoState.Buffering -> uiView.show()
-            TokopediaPlayVideoState.Ready, TokopediaPlayVideoState.Ended, TokopediaPlayVideoState.NoMedia -> uiView.hide()
+            TokopediaPlayVideoState.Playing, TokopediaPlayVideoState.Ended, TokopediaPlayVideoState.NoMedia, TokopediaPlayVideoState.Pause -> uiView.hide()
         }
     }
 }

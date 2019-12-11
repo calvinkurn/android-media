@@ -21,6 +21,8 @@ import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.like.LikeComponent
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import com.tokopedia.play.ui.pinned.PinnedComponent
+import com.tokopedia.play.ui.playbutton.PlayButtonComponent
+import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
 import com.tokopedia.play.ui.sendchat.SendChatComponent
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import com.tokopedia.play.ui.stats.StatsComponent
@@ -107,6 +109,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
                         )
             }
         })
+        playViewModel.observableVideoState.observe(this, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.VideoStateChanged(it)
+                        )
+            }
+        })
 
         playViewModel.observeGetChannelInfo.observe(viewLifecycleOwner, Observer {
             viewModel.observableShopInfo
@@ -160,6 +171,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
         val chatListComponent: UIComponent<*> = initChatListComponent(container)
         val videoControlComponent: UIComponent<*> = initVideoControlComponent(container)
         val toolbarComponent: UIComponent<*> = initToolbarComponent(container)
+        val playButtonComponent: UIComponent<*> = initPlayButtonComponent(container)
 
         layoutView(
                 container = container,
@@ -169,7 +181,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
                 pinnedComponentId = pinnedComponent.getContainerId(),
                 chatListComponentId = chatListComponent.getContainerId(),
                 videoControlComponentId = videoControlComponent.getContainerId(),
-                toolbarComponentId = toolbarComponent.getContainerId()
+                toolbarComponentId = toolbarComponent.getContainerId(),
+                playButtonComponentId = playButtonComponent.getContainerId()
         )
     }
 
@@ -238,6 +251,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
         return toolbarComponent
     }
 
+    private fun initPlayButtonComponent(container: ViewGroup): UIComponent<PlayButtonInteractionEvent> {
+        val playButtonComponent = PlayButtonComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+
+        launch {
+            playButtonComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            PlayButtonInteractionEvent.PlayClicked -> playViewModel.startCurrentVideo()
+                        }
+                    }
+        }
+
+        return playButtonComponent
+    }
+
     private fun layoutView(
             container: ViewGroup,
             @IdRes sendChatComponentId: Int,
@@ -246,7 +274,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
             @IdRes pinnedComponentId: Int,
             @IdRes chatListComponentId: Int,
             @IdRes videoControlComponentId: Int,
-            @IdRes toolbarComponentId: Int
+            @IdRes toolbarComponentId: Int,
+            @IdRes playButtonComponentId: Int
     ) {
 
         fun layoutChat(container: ViewGroup, @IdRes id: Int, @IdRes likeComponentId: Int) {
@@ -345,6 +374,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
             constraintSet.applyTo(container)
         }
 
+        fun layoutPlayButton(container: ViewGroup, @IdRes id: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+            }
+
+            constraintSet.applyTo(container)
+        }
+
         layoutToolbar(container, toolbarComponentId)
         layoutVideoControl(container, videoControlComponentId)
         layoutLike(container, likeComponentId, videoControlComponentId)
@@ -352,6 +396,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
         layoutChatList(container, chatListComponentId, sendChatComponentId, likeComponentId)
         layoutPinned(container, pinnedComponentId, chatListComponentId, likeComponentId)
         layoutStats(container, statsComponentId, pinnedComponentId)
+        layoutPlayButton(container, playButtonComponentId)
     }
     //endregion
 

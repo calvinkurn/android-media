@@ -12,4 +12,5 @@
     <string name="path_delivered" translatable="false">/delivered</string>
     <string name="path_history" translatable="false">/history</string>
     <string name="path_opportunity" translatable="false">/opportunity</string>
+    <string name="path_order" translatable="false">/order</string>
 </resources>
