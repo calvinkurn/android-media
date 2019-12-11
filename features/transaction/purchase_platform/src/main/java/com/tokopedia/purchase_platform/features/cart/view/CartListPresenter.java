@@ -15,6 +15,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
+import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
@@ -991,18 +992,20 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList,
+    public void processCancelAutoApplyPromoStackAfterClash(PromoStackingData promoStackingGlobalData,
+                                                           ArrayList<String> oldPromoList,
                                                            ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                                            String type) {
         view.showProgressLoading();
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
-        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplyAfterClashSubscriber(view, this, newPromoList, type));
+        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplyAfterClashSubscriber(view, this, promoStackingGlobalData, newPromoList, type));
     }
 
     @Override
-    public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList,
+    public void processApplyPromoStackAfterClash(PromoStackingData promoStackingGlobalData,
+                                                 ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                                  String type) {
-        Promo promo = view.generateCheckPromoFirstStepParam();
+        Promo promo = generateCheckPromoFirstStepParam(promoStackingGlobalData);
         promo.setCodes(new ArrayList<>());
         if (promo.getOrders() != null) {
             for (Order order : promo.getOrders()) {
@@ -1644,5 +1647,54 @@ public class CartListPresenter implements ICartListPresenter {
                 view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), null));
             }
         }
+    }
+
+    @Override
+    public Promo generateCheckPromoFirstStepParam(PromoStackingData promoStackingGlobalData) {
+        List<ShopGroupAvailableData> shopGroupAvailableDataList = cartListData.getShopGroupAvailableDataList();
+        ArrayList<Order> orders = new ArrayList<>();
+        for (ShopGroupAvailableData shopGroupAvailableData : shopGroupAvailableDataList) {
+            Order order = new Order();
+            ArrayList<ProductDetail> productDetails = new ArrayList<>();
+            for (CartItemHolderData cartItemHolderData : shopGroupAvailableData.getCartItemDataList()) {
+                ProductDetail productDetail = new ProductDetail();
+                try {
+                    productDetail.setProductId(Integer.parseInt(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    productDetail.setProductId(0);
+                }
+                productDetail.setQuantity(cartItemHolderData.getCartItemData().getUpdatedData().getQuantity());
+                productDetails.add(productDetail);
+            }
+            if (shopGroupAvailableData.getVoucherOrdersItemData() != null && !TextUtils.isEmpty(shopGroupAvailableData.getVoucherOrdersItemData().getCode())) {
+                ArrayList<String> merchantPromoCodes = new ArrayList<>();
+                merchantPromoCodes.add(shopGroupAvailableData.getVoucherOrdersItemData().getCode());
+                if (merchantPromoCodes.size() > 0) {
+                    order.setCodes(merchantPromoCodes);
+                }
+            }
+            order.setProductDetails(productDetails);
+            order.setUniqueId(shopGroupAvailableData.getCartString());
+            try {
+                order.setShopId(Integer.parseInt(shopGroupAvailableData.getShopId()));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                order.setShopId(0);
+            }
+            orders.add(order);
+        }
+        Promo promo = new Promo();
+        promo.setState(Promo.CREATOR.getSTATE_CART());
+        promo.setCartType(Promo.CREATOR.getCART_TYPE_DEFAULT());
+        if (promoStackingGlobalData != null) {
+            ArrayList<String> globalPromoCodes = new ArrayList<>();
+            globalPromoCodes.add(promoStackingGlobalData.getPromoCode());
+            promo.setCodes(globalPromoCodes);
+        }
+        promo.setOrders(orders);
+        promo.setSkipApply(0);
+        promo.setSuggested(0);
+        return promo;
     }
 }

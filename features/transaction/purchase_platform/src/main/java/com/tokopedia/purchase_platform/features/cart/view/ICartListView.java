@@ -83,8 +83,6 @@ public interface ICartListView extends IBaseView {
 
     void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
-    Promo generateCheckPromoFirstStepParam();
-
     void showMerchantVoucherListBottomsheet(ShopGroupAvailableData shopGroupAvailableData);
 
     void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);

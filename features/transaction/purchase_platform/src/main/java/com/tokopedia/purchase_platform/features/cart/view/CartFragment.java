@@ -1105,56 +1105,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public Promo generateCheckPromoFirstStepParam() {
-        List<ShopGroupAvailableData> shopGroupAvailableDataList = cartListData.getShopGroupAvailableDataList();
-        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobalData();
-        ArrayList<Order> orders = new ArrayList<>();
-        for (ShopGroupAvailableData shopGroupAvailableData : shopGroupAvailableDataList) {
-            Order order = new Order();
-            ArrayList<ProductDetail> productDetails = new ArrayList<>();
-            for (CartItemHolderData cartItemHolderData : shopGroupAvailableData.getCartItemDataList()) {
-                ProductDetail productDetail = new ProductDetail();
-                try {
-                    productDetail.setProductId(Integer.parseInt(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                    productDetail.setProductId(0);
-                }
-                productDetail.setQuantity(cartItemHolderData.getCartItemData().getUpdatedData().getQuantity());
-                productDetails.add(productDetail);
-            }
-            if (shopGroupAvailableData.getVoucherOrdersItemData() != null && !TextUtils.isEmpty(shopGroupAvailableData.getVoucherOrdersItemData().getCode())) {
-                ArrayList<String> merchantPromoCodes = new ArrayList<>();
-                merchantPromoCodes.add(shopGroupAvailableData.getVoucherOrdersItemData().getCode());
-                if (merchantPromoCodes.size() > 0) {
-                    order.setCodes(merchantPromoCodes);
-                }
-            }
-            order.setProductDetails(productDetails);
-            order.setUniqueId(shopGroupAvailableData.getCartString());
-            try {
-                order.setShopId(Integer.parseInt(shopGroupAvailableData.getShopId()));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                order.setShopId(0);
-            }
-            orders.add(order);
-        }
-        Promo promo = new Promo();
-        promo.setState(Promo.CREATOR.getSTATE_CART());
-        promo.setCartType(Promo.CREATOR.getCART_TYPE_DEFAULT());
-        if (promoStackingGlobalData != null) {
-            ArrayList<String> globalPromoCodes = new ArrayList<>();
-            globalPromoCodes.add(promoStackingGlobalData.getPromoCode());
-            promo.setCodes(globalPromoCodes);
-        }
-        promo.setOrders(orders);
-        promo.setSkipApply(0);
-        promo.setSuggested(0);
-        return promo;
-    }
-
-    @Override
     public void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position) {
         ArrayList<String> promoCodes = new ArrayList<>();
         promoCodes.add(cartPromoGlobal.getPromoCode());
@@ -1714,8 +1664,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void goToCouponList() {
-        Promo promo = generateCheckPromoFirstStepParam();
-
+        Promo promo = dPresenter.generateCheckPromoFirstStepParam(cartAdapter.getPromoStackingGlobalData());
         Intent intent = getIntentToPromoList(promo);
         startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
     }
@@ -1746,7 +1695,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void goToDetailPromoStacking(PromoStackingData promoStackingData) {
-        Promo promo = generateCheckPromoFirstStepParam();
+        Promo promo = dPresenter.generateCheckPromoFirstStepParam(cartAdapter.getPromoStackingGlobalData());
 
         if (promoStackingData.getTypePromo() == PromoStackingData.CREATOR.getTYPE_COUPON()) {
             Intent intent = getIntentToPromoDetail(promo, promoStackingData);
@@ -2147,7 +2096,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void showMerchantVoucherListBottomsheet(ShopGroupAvailableData shopGroupAvailableData) {
-        Promo promo = generateCheckPromoFirstStepParam();
+        Promo promo = dPresenter.generateCheckPromoFirstStepParam(cartAdapter.getPromoStackingGlobalData());
         if (getFragmentManager() != null) {
             int shopId = 0;
             try {
@@ -2383,7 +2332,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void onSubmitNewPromoAfterClash(@NotNull ArrayList<String> oldPromoList,
                                            @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                            @NotNull String type) {
-        dPresenter.processCancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList, type);
+        dPresenter.processCancelAutoApplyPromoStackAfterClash(cartAdapter.getPromoStackingGlobalData(), oldPromoList, newPromoList, type);
     }
 
     // get newly added cart id if open cart after ATC on PDP

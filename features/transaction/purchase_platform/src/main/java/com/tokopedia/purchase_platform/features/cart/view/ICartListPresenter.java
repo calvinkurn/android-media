@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view;
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
@@ -46,9 +47,9 @@ public interface ICartListPresenter {
 
     void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 
-    void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);
+    void processCancelAutoApplyPromoStackAfterClash(PromoStackingData promoStackingGlobalData, ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);
 
-    void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);
+    void processApplyPromoStackAfterClash(PromoStackingData promoStackingData, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);
 
     Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList, String enhancedECommerceAction);
 
@@ -105,4 +106,6 @@ public interface ICartListPresenter {
     Map<String, Object> generateCheckoutDataAnalytics(List<CartItemData> cartItemDataList, String step);
 
     void redirectToLite(String url);
+
+    Promo generateCheckPromoFirstStepParam(PromoStackingData promoStackingGlobalData);
 }
