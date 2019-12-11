@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatlist.activity
+package com.tokopedia.topchat.chatsearch.activity
 
 import android.graphics.Color
 import android.os.Build
@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.fragment.ChatSearchFragment
+import com.tokopedia.topchat.chatsearch.fragment.ChatSearchFragment
 import kotlinx.android.synthetic.main.activity_chat_search.*
 
 /**

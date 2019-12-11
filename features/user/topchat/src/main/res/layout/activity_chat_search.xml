@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".chatlist.activity.ChatSearchActivity">
+    tools:context=".chatsearch.activity.ChatSearchActivity">
 
     <LinearLayout
         android:id="@+id/search_top_bar"
@@ -52,12 +52,12 @@
                 android:paddingStart="@dimen/dp_28"
                 android:paddingLeft="@dimen/dp_28"
                 android:paddingTop="@dimen/dp_8"
-                android:paddingEnd="32dp"
-                android:paddingRight="32dp"
+                android:paddingEnd="@dimen/dp_44"
+                android:paddingRight="@dimen/dp_44"
                 android:paddingBottom="@dimen/dp_8"
-                android:textColor="#ae31353b"
-                android:textColorHint="#7031353b"
-                android:textSize="14sp" />
+                android:textColor="#fd31353b"
+                android:textColorHint="@color/Neutral_N700_44"
+                android:textSize="@dimen/sp_14" />
 
             <ImageView
                 android:layout_width="@dimen/dp_24"

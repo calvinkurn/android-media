@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatlist.fragment
+package com.tokopedia.topchat.chatsearch.fragment
 
 import android.os.Bundle
 import android.view.View

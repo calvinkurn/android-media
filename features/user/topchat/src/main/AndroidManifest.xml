@@ -7,7 +7,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".chatlist.activity.ChatSearchActivity"
+            android:name=".chatsearch.activity.ChatSearchActivity"
             android:windowSoftInputMode="stateVisible">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
