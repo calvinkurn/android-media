@@ -21,7 +21,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
 
-    implementation rootProject.ext.playServicesDependencies.core
+    implementation project(rootProject.ext.libraries.playCore)
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
