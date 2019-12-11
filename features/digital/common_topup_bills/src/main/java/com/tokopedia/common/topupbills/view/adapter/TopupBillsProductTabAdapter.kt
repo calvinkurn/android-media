@@ -1,17 +1,17 @@
-package com.tokopedia.topupbills.telco.view.adapter
+package com.tokopedia.common.topupbills.view.adapter
 
+import android.view.ViewGroup
+import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.collection.SparseArrayCompat
-import android.view.ViewGroup
+import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
 import com.tokopedia.design.viewpager.WrapContentViewPager
-import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
 
 /**
  * Created by nabillasabbaha on 09/05/19.
  */
-class DigitalTelcoProductTabAdapter(val tabList: List<DigitalTabTelcoItem>, fm: FragmentManager)
+class TopupBillsProductTabAdapter(val tabList: List<TopupBillsTabItem>, fm: FragmentManager)
     : FragmentStatePagerAdapter(fm) {
 
     private val registeredFragments = SparseArrayCompat<Fragment>()
@@ -33,7 +33,7 @@ class DigitalTelcoProductTabAdapter(val tabList: List<DigitalTabTelcoItem>, fm: 
         super.setPrimaryItem(container, position, `object`)
         if (position != currentPosition && container is WrapContentViewPager) {
             val fragment = `object` as Fragment
-            if (fragment != null) {
+            if (fragment.view != null) {
                 currentPosition = position
                 container.measureCurrentView(fragment.view)
             }

@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.view.adapter
+package com.tokopedia.common.topupbills.view.adapter
 
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -8,14 +8,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.topupbills.R
+import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 
 /**
  * Created by nabillasabbaha on 23/04/19.
  */
-class DigitalRecentNumbersAdapter(val digitalRecentNumbers: List<TopupBillsRecommendation>) :
-        RecyclerView.Adapter<DigitalRecentNumbersAdapter.RecentNumbersItemViewHolder>() {
+class TopupBillsRecentNumbersAdapter(val digitalRecentNumbers: List<TopupBillsRecommendation>) :
+        RecyclerView.Adapter<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>() {
 
     private lateinit var listener: ActionListener
 

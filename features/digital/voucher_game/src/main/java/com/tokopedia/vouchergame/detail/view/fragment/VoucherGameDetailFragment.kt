@@ -22,11 +22,13 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
+import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
+import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
+import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
-import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
@@ -35,7 +37,6 @@ import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
-import com.tokopedia.vouchergame.detail.data.VoucherGameEnquiryFields
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
 import com.tokopedia.vouchergame.detail.data.VoucherGameProductData
 import com.tokopedia.vouchergame.detail.di.VoucherGameDetailComponent
@@ -47,12 +48,10 @@ import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewMode
 import com.tokopedia.vouchergame.detail.widget.OperatorInfoBottomSheets
 import com.tokopedia.vouchergame.detail.widget.ProductDetailBottomSheets
 import com.tokopedia.vouchergame.detail.widget.VoucherGameEnquiryResultWidget
-import com.tokopedia.vouchergame.detail.widget.VoucherGameInputFieldWidget
-import com.tokopedia.vouchergame.list.view.model.VoucherGameOperatorAttributes
+import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.btn_info_icon
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.view.*
-import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -74,12 +73,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     lateinit var selectedProduct: VoucherGameProduct
 
     lateinit var voucherGameExtraParam: VoucherGameExtraParam
-    lateinit var voucherGameOperatorData: VoucherGameOperatorAttributes
+    lateinit var voucherGameOperatorData: CatalogOperatorAttributes
 
     @Inject
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
 
-    lateinit var enquiryData: List<VoucherGameEnquiryFields>
+    lateinit var enquiryData: List<CatalogProductInput>
     var inputData: MutableMap<String, String> = mutableMapOf()
     var isEnquired = false
         set(value) {
@@ -103,7 +102,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         arguments?.let {
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME) ?: VoucherGameExtraParam()
             voucherGameOperatorData =
-                    it.getParcelable(EXTRA_PARAM_OPERATOR_DATA) ?: VoucherGameOperatorAttributes()
+                    it.getParcelable(EXTRA_PARAM_OPERATOR_DATA) ?: CatalogOperatorAttributes()
             it.getString(EXTRA_INPUT_FIELD_1)?.let { input -> inputData[EXTRA_INPUT_FIELD_1] = input }
             it.getString(EXTRA_INPUT_FIELD_2)?.let { input -> inputData[EXTRA_INPUT_FIELD_2] = input }
         }
@@ -241,27 +240,22 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun setupEnquiryField(field: VoucherGameInputFieldWidget, data: VoucherGameEnquiryFields) {
+    private fun setupEnquiryField(field: TopupBillsInputFieldWidget, data: CatalogProductInput) {
         field.visibility = View.VISIBLE
         field.setLabel(data.text)
         field.setHint(data.placeholder)
 
-        field.ac_input.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_UP) {
-                voucherGameAnalytics.eventInputNumber()
-            }
-            false
-        }
-
         // Enquire if all required fields are filled
-        field.setListener(object : VoucherGameInputFieldWidget.ActionListener {
-            override fun onFinishInput() {
+        field.setActionListener(object : TopupBillsInputFieldWidget.ActionListener {
+            override fun onFinishInput(input: String) {
+                voucherGameAnalytics.eventInputNumber()
                 enquireFields()
             }
         })
 
         if (data.style == INPUT_DROPDOWN_PARAM) {
-            field.setupDropdownBottomSheet(data.dataCollections, fragmentManager)
+            val dropdownData = data.dataCollections.map { item -> TopupBillsInputDropdownData(item.value) }
+            field.setupDropdownBottomSheet(dropdownData)
         }
     }
 
@@ -308,7 +302,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         enquiry_loading_bar.visibility = if (state) View.VISIBLE else View.GONE
     }
 
-    private fun verifyField(fieldValidation: List<VoucherGameEnquiryFields.Validation>,
+    private fun verifyField(fieldValidation: List<CatalogProductInput.Validation>,
                             input: String): Boolean {
         if (input.isEmpty()) return false
         for (validation in fieldValidation) {
@@ -331,7 +325,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     private fun renderProducts(data: VoucherGameDetailData) {
-        val dataCollection = data.product.dataCollections
+        val dataCollection = data.product.dataCollections as List<VoucherGameProductData.DataCollection>
         if (dataCollection.isEmpty()) adapter.showEmpty()
         else {
             val listData = mutableListOf<Visitable<*>>()
@@ -431,7 +425,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
-                    R.raw.query_voucher_game_product_detail),
+                    com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
                     voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
         }
     }
@@ -556,7 +550,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         const val INPUT_DROPDOWN_PARAM = "select_dropdown"
 
         fun newInstance(voucherGameExtraParam: VoucherGameExtraParam,
-                        voucherGameOperatorAttributes: VoucherGameOperatorAttributes): Fragment {
+                        voucherGameOperatorAttributes: CatalogOperatorAttributes): Fragment {
             val fragment = VoucherGameDetailFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM_VOUCHER_GAME, voucherGameExtraParam)

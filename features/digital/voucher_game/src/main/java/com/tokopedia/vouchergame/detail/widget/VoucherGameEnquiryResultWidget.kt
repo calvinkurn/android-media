@@ -1,16 +1,11 @@
 package com.tokopedia.vouchergame.detail.widget
 
 import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.vouchergame.R
-import kotlinx.android.synthetic.main.fragment_voucher_game_detail.view.*
 import kotlinx.android.synthetic.main.view_enquiry_result.view.*
-import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
