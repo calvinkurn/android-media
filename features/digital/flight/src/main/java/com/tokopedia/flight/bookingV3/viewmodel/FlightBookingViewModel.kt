@@ -12,6 +12,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger
 import com.tokopedia.flight.bookingV2.data.cloud.entity.Amenity
 import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingParamViewModel
 import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
@@ -89,7 +90,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     //route for flightDetail
     var flightDetailViewModels: List<FlightDetailViewModel> = listOf()
 
-    private val flightBookingParam = FlightBookingModel()
+    private var flightBookingParam = FlightBookingModel()
 
     var retryCount = 0
     var verifyRetryCount = 0
@@ -542,19 +543,23 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun onInsuranceChanges(insurance: FlightCart.Insurance, checked: Boolean) {
         val otherPrices = flightOtherPriceData.value?.toMutableList() ?: mutableListOf()
+        val insuranceTemp = flightBookingParam.insurances.toMutableList()
         if (checked) {
             val index = flightBookingParam.insurances.indexOf(insurance)
             if (index == -1) {
-                flightBookingParam.insurances.add(insurance)
+                insuranceTemp.add(insurance)
+                flightBookingParam.insurances = insuranceTemp
                 otherPrices.add(FlightCart.PriceDetail(label = String.format("%s (x%d)", insurance.name, flightPassengersData.value?.size
                         ?: 1),
                         priceNumeric = insurance.totalPriceNumeric, price = FlightCurrencyFormatUtil.convertToIdrPrice(insurance.totalPriceNumeric),
                         priceDetailId = insurance.id))
             }
+
         } else {
             val index = flightBookingParam.insurances.indexOf(insurance)
             if (index != -1) {
-                flightBookingParam.insurances.removeAt(index)
+                insuranceTemp.removeAt(index)
+                flightBookingParam.insurances = insuranceTemp
                 for ((index, price) in otherPrices.withIndex()) {
                     if (price.priceDetailId.equals(insurance.id)) {
                         otherPrices.removeAt(index)
@@ -739,6 +744,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun flightIsDomestic(): Boolean = flightBookingParam.isDomestic
     fun getCartId(): String = flightBookingParam.cartId
     fun setCartId(cartId: String) { flightBookingParam.cartId = cartId }
+    fun getFlightBookingParam(): FlightBookingModel = flightBookingParam
+    fun setFlightBookingParam(flightBookingParam: FlightBookingModel) { this.flightBookingParam = flightBookingParam }
 
     fun getLuggageViewModels(): List<FlightBookingAmenityMetaViewModel> {
         return if (flightCartResult.value is Success) (flightCartResult.value as Success<FlightCartViewEntity>).data.luggageModels

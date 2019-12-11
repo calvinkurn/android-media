@@ -348,7 +348,43 @@ data class FlightCart(
             @SerializedName("benefits")
             @Expose
             val benefits: List<Benefit>
-    ) { override fun equals(other: Any?): Boolean = other is Insurance && (other as Insurance).id == id }
+    ): Parcelable {
+        constructor(parcel: Parcel) : this(
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readInt(),
+                parcel.readByte() != 0.toByte(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.createTypedArrayList(Benefit))
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeString(id)
+            parcel.writeString(name)
+            parcel.writeString(description)
+            parcel.writeInt(totalPriceNumeric)
+            parcel.writeByte(if (defaultChecked) 1 else 0)
+            parcel.writeString(tncAgreement)
+            parcel.writeString(tncUrl)
+            parcel.writeTypedList(benefits)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<Insurance> {
+            override fun createFromParcel(parcel: Parcel): Insurance {
+                return Insurance(parcel)
+            }
+
+            override fun newArray(size: Int): Array<Insurance?> {
+                return arrayOfNulls(size)
+            }
+        }
+
+    }
 
     data class Voucher(
             @SerializedName("enableVoucher")
@@ -422,7 +458,34 @@ data class FlightCart(
             @SerializedName("icon")
             @Expose
             val icon: String = ""
-    )
+    ): Parcelable {
+        constructor(parcel: Parcel) : this(
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString()) {
+        }
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeString(title)
+            parcel.writeString(description)
+            parcel.writeString(icon)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<Benefit> {
+            override fun createFromParcel(parcel: Parcel): Benefit {
+                return Benefit(parcel)
+            }
+
+            override fun newArray(size: Int): Array<Benefit?> {
+                return arrayOfNulls(size)
+            }
+        }
+
+    }
 
     data class Journey(
             @SerializedName("id")

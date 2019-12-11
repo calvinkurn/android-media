@@ -116,6 +116,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private var needToDoChangesOnFirstPassenger = true
     private var passengerAsTraveller = false
     private var orderDueTimeStampString: String = ""
+    private var isFirstTime: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,6 +151,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         outState.putString(EXTRA_FLIGHT_ARRIVAL_TERM, bookingViewModel.getReturnTerm())
         outState.putParcelable(EXTRA_PRICE, bookingViewModel.getFlightPriceModel())
         outState.putString(EXTRA_CART_ID, bookingViewModel.getCartId())
+        outState.putParcelable(EXTRA_FLIGHT_BOOKING_PARAM, bookingViewModel.getFlightBookingParam())
         outState.putString(EXTRA_ORDER_DUE, orderDueTimeStampString)
         outState.putParcelable(EXTRA_CONTACT_DATA, FlightContactData(widget_traveller_info.getContactName(),
                 widget_traveller_info.getContactEmail(),
@@ -169,7 +171,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     if (layout_loading.isVisible) launchLoadingPageJob.cancel()
-                    if (!it.data.isRefreshCart) {
+                    if (!it.data.isRefreshCart || savedInstanceState != null) {
                         renderData(it.data)
                         sendAddToCartTracking()
                     }
@@ -272,7 +274,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 if (on) {
                     val firstPassenger = bookingViewModel.onTravellerAsPassenger(widget_traveller_info.getContactName())
                     passengerAsTraveller = false
-                    navigateToPassengerInfoDetail(firstPassenger, bookingViewModel.getDepartureDate(), getRequestId(), firstPassenger.passengerFirstName)
+                    if (isFirstTime) navigateToPassengerInfoDetail(firstPassenger, bookingViewModel.getDepartureDate(), getRequestId(), firstPassenger.passengerFirstName)
+                    isFirstTime = true
                 } else {
                     bookingViewModel.resetFirstPassenger()
                 }
@@ -570,6 +573,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        isFirstTime = savedInstanceState == null
         setUpView()
 
         if (savedInstanceState == null) {
@@ -582,20 +586,29 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun renderUiFromBundle(args: Bundle) {
+        val flightBookingParam = args.getParcelable(EXTRA_FLIGHT_BOOKING_PARAM) ?: FlightBookingModel()
+        bookingViewModel.setFlightBookingParam(flightBookingParam)
+
         val cartId = args.getString(EXTRA_CART_ID, "")
         bookingViewModel.setCartId(cartId)
+
         orderDueTimeStampString = args.getString(EXTRA_ORDER_DUE, "")
         if (orderDueTimeStampString.isNotEmpty()) setUpTimer(FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, orderDueTimeStampString))
+
         val profileData = args.getParcelable(EXTRA_CONTACT_DATA) ?: FlightContactData()
         renderProfileData(profileData)
+
         val passengerModels = args.getParcelableArrayList(EXTRA_PASSENGER_MODELS) ?: listOf<FlightBookingPassengerViewModel>()
         bookingViewModel.setPassengerModels(passengerModels)
+
         val priceData = args.getParcelableArrayList(EXTRA_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
         bookingViewModel.setPriceData(priceData)
         val otherPriceData = args.getParcelableArrayList(EXTRA_OTHER_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
         bookingViewModel.setOtherPriceData(otherPriceData)
         val amenityPriceData = args.getParcelableArrayList(EXTRA_AMENITY_PRICE_DATA) ?: listOf<FlightCart.PriceDetail>()
         bookingViewModel.setAmenityPriceData(amenityPriceData)
+
+        refreshCart()
     }
 
     private fun initialize() {
@@ -1046,6 +1059,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val EXTRA_OTHER_PRICE_DATA = "EXTRA_OTHER_PRICE_DATA"
         const val EXTRA_AMENITY_PRICE_DATA = "EXTRA_AMENITY_PRICE_DATA"
         const val EXTRA_CART_ID = "EXTRA_BOOKING_CART_ID"
+        const val EXTRA_FLIGHT_BOOKING_PARAM = "EXTRA_FLIGHT_BOOKING_PARAM"
 
         const val REQUEST_CODE_PASSENGER = 1
         const val REQUEST_CODE_CONTACT_FORM = 12
