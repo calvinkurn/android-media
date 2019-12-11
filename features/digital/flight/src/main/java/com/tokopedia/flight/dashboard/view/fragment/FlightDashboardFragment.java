@@ -28,7 +28,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.banner.Banner;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
@@ -39,7 +41,6 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.banner.view.adapter.FlightBannerPagerAdapter;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -54,6 +55,7 @@ import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
+import com.tokopedia.flight.review.domain.verifybooking.model.response.Route;
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -107,7 +109,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     NestedScrollView formContainerLayout;
     View returnDateSeparatorView;
     View bannerLayout;
-    BannerView bannerView;
+    Banner bannerView;
     TickerView tickerView;
     List<TravelCollectiveBannerModel.Banner> bannerList;
 
@@ -502,8 +504,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                                        String tagFragment) {
         String minDateStr = null;
         String selectedDateStr = null;
-        if (minDate != null) minDateStr = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate);
-        if (selectedDate != null) selectedDateStr = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate);
+        if (minDate != null)
+            minDateStr = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate);
+        if (selectedDate != null)
+            selectedDateStr = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate);
 
         SelectionRangeCalendarWidget flightCalendarDialog = SelectionRangeCalendarWidget.Companion.getInstance(
                 minDateStr, selectedDateStr,
@@ -698,20 +702,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     private void bannerClickAction(int position) {
         if (getBannerData(position) != null && getBannerData(position).getAttribute() != null) {
-            String url = getBannerData(position).getAttribute().getAppUrl();
-            Uri uri = Uri.parse(url);
-            if (uri != null && uri.getPathSegments() != null
-                    && uri.getPathSegments().size() == 2
-                    && uri.getPathSegments().get(0).equalsIgnoreCase(PROMO_PATH)) {
-                String slug = uri.getPathSegments().get(1);
-                Intent intent = RouteManager.getIntentNoFallback(getActivity(), ApplinkConst.PROMO_DETAIL, slug);
-                if (intent!= null) {
-                    presenter.onBannerItemClick(position, getBannerData(position));
-                    startActivity(intent);
-                }
-            } else {
-                presenter.onBannerItemClick(position, getBannerData(position));
-                RouteManager.route(getContext(), url);
+            TravelCollectiveBannerModel.Banner banner = getBannerData(position);
+            if (getContext() != null) {
+                presenter.onBannerItemClick(position, banner);
+                if (RouteManager.isSupportApplink(getContext(), banner.getAttribute().getAppUrl())) RouteManager.route(getContext(), banner.getAttribute().getAppUrl());
+                else if (!DeeplinkMapper.getRegisteredNavigation(getContext(), banner.getAttribute().getAppUrl()).isEmpty())
+                    RouteManager.route(getContext(), DeeplinkMapper.getRegisteredNavigation(getContext(), banner.getAttribute().getAppUrl()));
+                else if (!banner.getAttribute().getWebUrl().isEmpty()) RouteManager.route(getContext(), banner.getAttribute().getWebUrl());
             }
         }
     }
