@@ -1,6 +1,7 @@
 package com.tokopedia.play.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayInteractionFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
@@ -22,4 +23,6 @@ interface PlayComponent {
     fun inject(playVideoFragment: PlayVideoFragment)
 
     fun inject(playInteractionFragment: PlayInteractionFragment)
+
+    fun inject(playActivity: PlayActivity)
 }

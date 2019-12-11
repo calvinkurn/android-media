@@ -4,10 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.view.fragment.PlayFragment
+import com.tokopedia.play_common.util.PlayLifecycleObserver
+import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
@@ -21,12 +25,27 @@ class PlayActivity : BaseActivity() {
         }
     }
 
+    @Inject
+    lateinit var playLifecycleObserver: PlayLifecycleObserver
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
 
+        inject()
+        lifecycle.addObserver(playLifecycleObserver)
+
         initView()
         setupView()
+    }
+
+    private fun inject() {
+        DaggerPlayComponent.builder()
+                .baseAppComponent(
+                        (applicationContext as BaseMainApplication).baseAppComponent
+                )
+                .build()
+                .inject(this)
     }
 
     private fun getFragment(): Fragment {
