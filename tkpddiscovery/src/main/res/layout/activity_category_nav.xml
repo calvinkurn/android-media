@@ -25,7 +25,7 @@
                 app:tabBackground="@color/white"
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@color/tkpd_green_header"
-                app:tabMode="scrollable"
+                app:tabMode="fixed"
                 app:tabSelectedTextColor="@color/tkpd_green_header"
                 app:tabTextAppearance="@style/SearchTabWidgetText" />
 
