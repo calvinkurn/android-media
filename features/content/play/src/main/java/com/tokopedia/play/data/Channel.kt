@@ -109,6 +109,9 @@ data class Channel(
         @SerializedName("partner_id")
         val partnerId: String = "",
 
+        @SerializedName("partner_type")
+        val partnerType: String = "",
+
         @SerializedName("settings")
         val settings: Settings = Settings(),
 

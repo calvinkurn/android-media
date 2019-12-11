@@ -10,4 +10,5 @@ sealed class PlayToolbarInteractionEvent : ComponentEvent {
     object BackButtonClicked : PlayToolbarInteractionEvent()
     object MoreButtonClicked : PlayToolbarInteractionEvent()
     object FollowButtonClicked : PlayToolbarInteractionEvent()
+    object UnFollowButtonClicked : PlayToolbarInteractionEvent()
 }

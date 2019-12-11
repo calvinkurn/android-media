@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.toolbar
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.domain.PostFollowShopUseCase
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayVODType
@@ -33,6 +34,8 @@ class ToolbarComponent(
                                 )
                             is ScreenStateEvent.SetTitle ->
                                 uiView.setTitle(it.title)
+                            is ScreenStateEvent.SetTitleToolbar ->
+                                uiView.setTitleToolbar(it.titleToolbar)
                         }
                     }
         }
@@ -61,6 +64,13 @@ class ToolbarComponent(
     override fun onFollowButtonClicked(view: ToolbarView) {
         launch {
             bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.FollowButtonClicked)
+        }
+    }
+
+    override fun onUnFollowButtonClicked(view: ToolbarView) {
+
+        launch {
+            bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.UnFollowButtonClicked)
         }
     }
 

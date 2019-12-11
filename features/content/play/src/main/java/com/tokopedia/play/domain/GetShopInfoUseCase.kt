@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.usecase.RequestParams
@@ -66,8 +67,8 @@ class GetShopInfoUseCase @Inject constructor(private val gqlUseCase: MultiReques
                 "last_active", "location", "terms", "allow_manage",
                 "is_owner", "other-goldos", "status", "is_open", "closed_info", "create_info")
 
-        fun createParam(shopId: Int, fields: List<String> = DEFAULT_SHOP_FIELDS): RequestParams = RequestParams.create().apply {
-            putObject(PARAM_SHOP_IDS, shopId)
+        fun createParam(shopId: String, fields: List<String>? = DEFAULT_SHOP_FIELDS): RequestParams = RequestParams.create().apply {
+            putObject(PARAM_SHOP_IDS, shopId.toIntOrZero())
             putObject(PARAM_SHOP_FIELDS, fields)
         }
     }

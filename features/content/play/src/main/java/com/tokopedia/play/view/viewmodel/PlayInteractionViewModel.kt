@@ -1,17 +1,22 @@
 package com.tokopedia.play.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.PARTNER_TYPE_ADMIN
+import com.tokopedia.play.PARTNER_TYPE_INFLUENCER
+import com.tokopedia.play.PARTNER_TYPE_SHOP
 import com.tokopedia.play.data.Like
-import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.play.domain.GetShopInfoUseCase
 import com.tokopedia.play.domain.GetTotalLikeUseCase
 import com.tokopedia.play.domain.PostFollowShopUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
-import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.play.ui.toolbar.model.TitleToolbar
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -32,18 +37,53 @@ class PlayInteractionViewModel @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
-    private val _observableShopInfo = MutableLiveData<ShopInfo>()
-    val observableShopInfo: LiveData<ShopInfo> = _observableShopInfo
+    private val _observableToolbarInfo = MutableLiveData<Result<TitleToolbar>>()
+    val observableToolbarInfo: LiveData<Result<TitleToolbar>> = _observableToolbarInfo
 
-    private val _observableTotalLikes = MutableLiveData<Like>()
-    val observableTotalLikes: LiveData<Like> = _observableTotalLikes
+    private val _observableTotalLikes = MutableLiveData<Result<Like>>()
+    val observableTotalLikes: LiveData<Result<Like>> = _observableTotalLikes
 
-    fun getShopInfo(shopId: String)  {
+    private fun getPeopleInfo(peopleId: String) {
+        Log.wtf("Meyta", "getPeopleInfo $peopleId")
+    }
 
+    private fun getShopInfo(shopId: String, partnerType: String)  {
+        launchCatchError(block = {
+            val response = withContext(Dispatchers.IO) {
+                getShopInfoUseCase.params = GetShopInfoUseCase.createParam(shopId)
+                getShopInfoUseCase.executeOnBackground()
+            }
+
+            val titleToolbar = TitleToolbar(
+                    shopId,
+                    response.result[0].shopCore.name,
+                    partnerType,
+                    response.result[0].favoriteData.alreadyFavorited == 1)
+            _observableToolbarInfo.value = Success(titleToolbar)
+        }) {
+            _observableToolbarInfo.value = Fail(it)
+        }
+    }
+
+    fun getToolbarInfo(partnerType: String, partnerId: String) {
+        if (partnerType == PARTNER_TYPE_ADMIN)
+            return
+        if (partnerType == PARTNER_TYPE_SHOP)
+            getShopInfo(partnerId, partnerType)
+        else if (partnerId == PARTNER_TYPE_INFLUENCER)
+            getPeopleInfo(partnerId)
     }
 
     fun getTotalLikes(channelId: String) {
-
+        launchCatchError(block = {
+            val response = withContext(Dispatchers.IO) {
+                getTotalLikeUseCase.channelId = channelId
+                getTotalLikeUseCase.executeOnBackground()
+            }
+            _observableTotalLikes.value = Success(response)
+        }) {
+            _observableTotalLikes.value = Fail(it)
+        }
     }
 
 //    private val _observableChatList = MutableLiveData<PlayChat>()

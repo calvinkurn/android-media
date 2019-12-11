@@ -5,7 +5,7 @@
     <string name="play_duration_divider">/</string>
     <string name="play_live">Live</string>
     <string name="play_follow">Follow</string>
-    <string name="play_unfollow">Unfollow</string>
+    <string name="play_following">Following</string>
     <string name="play_try_again">Coba Lagi</string>
 
     <!--mock-->

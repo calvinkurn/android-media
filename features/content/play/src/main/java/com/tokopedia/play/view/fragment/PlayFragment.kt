@@ -12,6 +12,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -76,7 +77,11 @@ class PlayFragment : BaseDaggerFragment() {
         playViewModel.getChannelInfo(channelId)
 
         playViewModel.observeGetChannelInfo.observe(this, Observer {
-
+            when(it)  {
+                is Success -> {
+                    playViewModel.startWebsocket(channelId, it.data.gcToken)
+                }
+            }
         })
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.model
+package com.tokopedia.play.ui.pinned.model
 
 
 /**
@@ -7,6 +7,6 @@ package com.tokopedia.play.view.model
 data class PinnedMessage(
         val shopName: String = "",
         val description: String = "",
-        val applink: String = "",
+        val appLink: String = "",
         val imageIcon: String = ""
 )

@@ -21,6 +21,7 @@ import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.like.LikeComponent
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import com.tokopedia.play.ui.pinned.PinnedComponent
+import com.tokopedia.play.ui.pinned.model.PinnedMessage
 import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
 import com.tokopedia.play.ui.sendchat.SendChatComponent
@@ -28,11 +29,13 @@ import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import com.tokopedia.play.ui.stats.StatsComponent
 import com.tokopedia.play.ui.toolbar.ToolbarComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
+import com.tokopedia.play.ui.toolbar.model.TitleToolbar
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.model.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -120,25 +123,50 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
         })
 
         playViewModel.observeGetChannelInfo.observe(viewLifecycleOwner, Observer {
-            viewModel.observableShopInfo
             when(it) {
-                 is ChannelResult -> {
+                 is Success -> {
                      launch {
-                         // TODO find out, why this can't works well
-                         setTitle(it.title)
-                         setTotalView(it.totalView)
-                         setPinnedMessage(it.pinnedMessage)
-//                         setQuickReply(it.quickReply)
+                         viewModel.getToolbarInfo(it.data.partnerType, it.data.partnerId)
+                         setTitle(it.data.title)
+                         setTotalView(it.data.totalViews)
+                         setPinnedMessage(PinnedMessage(
+                                 it.data.pinnedMessage.title,
+                                 it.data.pinnedMessage.message,
+                                 it.data.pinnedMessage.redirectUrl,
+                                 it.data.pinnedMessage.imageUrl))
+                         setQuickReply(it.data.quickReply)
                      }
                  }
                 is Fail -> {
-                    showToast("please provide proper error message")
+                    showToast("don't forget to handle when get channel info return error ")
+                }
+            }
+        })
+
+        viewModel.observableToolbarInfo.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> {
+                    launch {
+                        setToolbarTitle(it.data)
+                    }
+                }
+                is Fail -> {
+                    showToast("don't forget to handle when get total likes return error ")
                 }
             }
         })
 
         viewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer {
-
+            when (it) {
+                is  Success -> {
+                    launch {
+                        setTotalLikes(it.data.totalClick)
+                    }
+                }
+                is Fail -> {
+                    showToast("don't forget to handle when get total likes return error ")
+                }
+            }
         })
     }
 
@@ -243,6 +271,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
                         when (it) {
                             PlayToolbarInteractionEvent.BackButtonClicked -> activity?.onBackPressed()
                             PlayToolbarInteractionEvent.FollowButtonClicked -> showToast("Follow Button Clicked")
+                            PlayToolbarInteractionEvent.UnFollowButtonClicked -> showToast("UnFollow Button Clicked")
                             PlayToolbarInteractionEvent.MoreButtonClicked -> showToast("More Button Clicked")
                         }
                     }
@@ -405,7 +434,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
 
-    private suspend fun setTitle(title: Title) {
+    /**
+     * Emit data to ui component
+     */
+    private suspend fun setTitle(title: String) {
         EventBusFactory.get(viewLifecycleOwner)
                 .emit(
                         ScreenStateEvent::class.java,
@@ -413,7 +445,15 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
                 )
     }
 
-    private suspend fun setTotalView(totalView: TotalView) {
+    private suspend fun setToolbarTitle(titleToolbar: TitleToolbar) {
+        EventBusFactory.get(viewLifecycleOwner)
+                .emit(
+                        ScreenStateEvent::class.java,
+                        ScreenStateEvent.SetTitleToolbar(titleToolbar)
+                )
+    }
+
+    private suspend fun setTotalView(totalView: String) {
         EventBusFactory.get(viewLifecycleOwner)
                 .emit(
                         ScreenStateEvent::class.java,
@@ -422,7 +462,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
 
-    private suspend fun setTotalLikes(totalLikes: TotalLikes) {
+    private suspend fun setTotalLikes(totalLikes: String) {
         EventBusFactory.get(viewLifecycleOwner)
                 .emit(
                         ScreenStateEvent::class.java,
@@ -430,7 +470,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
                 )
     }
 
-    private suspend fun setQuickReply(quickReply: QuickReply) {
+    private suspend fun setQuickReply(quickReply: List<String>) {
         EventBusFactory.get(viewLifecycleOwner)
                 .emit(
                         ScreenStateEvent::class.java,
