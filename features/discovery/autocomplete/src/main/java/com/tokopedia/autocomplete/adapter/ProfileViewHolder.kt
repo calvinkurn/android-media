@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.autocomplete.adapter
+package com.tokopedia.autocomplete.adapter
 
 import android.os.Build
 import androidx.annotation.LayoutRes
@@ -8,7 +8,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.adapter.ItemClickListener
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.viewmodel.ProfileSearch
 import kotlinx.android.synthetic.main.layout_profile_item_autocomplete.view.*
