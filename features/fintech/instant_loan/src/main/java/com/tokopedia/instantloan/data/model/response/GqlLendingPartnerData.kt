@@ -5,12 +5,6 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class GqlLendingPartnerData(
-        @SerializedName("ID")
-        var partnerId: Int,
-
-        @SerializedName("Name")
-        var partnerName: String? = "",
-
         @SerializedName("NameSlug")
         var partnerNameSlug: String? = "",
 
@@ -18,15 +12,11 @@ data class GqlLendingPartnerData(
         var partnerIconUrl: String? = ""
 ) : Parcelable {
         constructor(parcel: Parcel) : this(
-                parcel.readInt(),
-                parcel.readString(),
                 parcel.readString(),
                 parcel.readString()) {
         }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeInt(partnerId)
-                parcel.writeString(partnerName)
                 parcel.writeString(partnerNameSlug)
                 parcel.writeString(partnerIconUrl)
         }

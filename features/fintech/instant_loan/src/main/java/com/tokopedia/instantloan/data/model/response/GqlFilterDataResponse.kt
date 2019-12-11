@@ -20,9 +20,6 @@ data class GqlFilterData(
 
 
 data class GqlLoanAmountResponse(
-        @SerializedName("Step")
-        var step: String,
-
         @SerializedName("Label")
         var label: String,
 
