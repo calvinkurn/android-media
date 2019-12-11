@@ -337,7 +337,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                onHandlingScrollVideoPlayer(newState);
+//                onHandlingScrollVideoPlayer(newState);
             }
 
             @Override
@@ -437,29 +437,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         });
 
-        stickyLoginView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                updateStickyState();
-            }
+        stickyLoginView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> updateStickyState());
+        stickyLoginView.setOnClickListener(v -> {
+            stickyLoginView.getTracker().clickOnLogin(StickyLoginConstant.Page.HOME);
+            onGoToLogin();
         });
-        stickyLoginView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stickyLoginView.getTracker().clickOnLogin(StickyLoginConstant.Page.HOME);
-                onGoToLogin();
-            }
-        });
-        stickyLoginView.setOnDismissListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stickyLoginView.dismiss(StickyLoginConstant.Page.HOME);
-                stickyLoginView.getTracker().clickOnDismiss(StickyLoginConstant.Page.HOME);
+        stickyLoginView.setOnDismissListener(v -> {
+            stickyLoginView.dismiss(StickyLoginConstant.Page.HOME);
+            stickyLoginView.getTracker().clickOnDismiss(StickyLoginConstant.Page.HOME);
 
-                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-                if (floatingEggButtonFragment != null) {
-                    updateEggBottomMargin(floatingEggButtonFragment);
-                }
+            FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+            if (floatingEggButtonFragment != null) {
+                updateEggBottomMargin(floatingEggButtonFragment);
             }
         });
     }
@@ -519,18 +508,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initRefreshLayout() {
-        refreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                if (presenter != null) {
-                    presenter.getSearchHint();
-                    presenter.getHomeData();
-                }
-                /**
-                 * set notification gimmick
-                 */
-                homeMainToolbar.setNotificationNumber(0);
+        refreshLayout.post(() -> {
+            if (presenter != null) {
+                presenter.getSearchHint();
+                presenter.getHomeData();
             }
+
+            homeMainToolbar.setNotificationNumber(0);
         });
         refreshLayout.setOnRefreshListener(this);
     }
@@ -628,7 +612,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 this,
                 this
         );
-        adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
+        adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList());
         homeRecyclerView.setAdapter(adapter);
     }
 
@@ -880,9 +864,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setItems(List<Visitable> items, int repositoryFlag) {
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
-            adapter.setItems(needToShowGeolocationComponent()
-              ? removeReviewComponent(items)
-              : removeGeolocationComponent(items));
+            adapter.setItems(new ArrayList(needToShowGeolocationComponent()
+                    ? removeReviewComponent(items)
+                    : removeGeolocationComponent(items)));
 
             presenter.getHeaderData(false);
             presenter.getFeedTabData();
@@ -894,7 +878,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
 
         } else {
-            adapter.setItems(needToShowGeolocationComponent() ? items : removeGeolocationComponent(items));
+            adapter.setItems(needToShowGeolocationComponent() ? new ArrayList(items) : new ArrayList(removeGeolocationComponent(items)));
         }
 
 
@@ -1029,7 +1013,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void updateFeedRecommendationVisitable(Visitable feedRecommendationVisitable) {
         this.feedTabVisitable = feedRecommendationVisitable;
-        List<Visitable> currentVisitables = adapter.getItems();
+        List currentVisitables = adapter.getItems();
 
         for (int i = 0; i < currentVisitables.size(); i++) {
             if (currentVisitables.get(i) instanceof HomeRecommendationFeedViewModel) {
@@ -1066,7 +1050,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             itemAfterGeoloc = removeGeolocationComponent(visitables);
         }
 
-        adapter.updateHomeQueryItems(itemAfterGeoloc);
+        adapter.updateHomeQueryItems(new ArrayList(itemAfterGeoloc));
 
         if (adapter.hasReview() != -1 && shouldDisplayReview && !needToShowGeolocationComponent()) {
             shouldDisplayReview = false;
@@ -1847,29 +1831,29 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void playVideo(@NotNull String uri) {
-        TokopediaPlayManager.Companion.getInstance(getContext()).playVideoWithString(uri);
-        getPlayer().setPlayWhenReady(true);
+//        TokopediaPlayManager.Companion.getInstance(getContext()).playVideoWithString(uri);
+//        getPlayer().setPlayWhenReady(true);
     }
 
     @Override
     public void addListener(@NotNull ExoListener listener) {
-        getPlayer().addListener(new Player.EventListener(){
-            @Override
-            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                switch (playbackState) {
-                    case Player.STATE_BUFFERING:
-                        listener.onBuffering();
-                        break;
-                    case Player.STATE_ENDED:
-                        listener.resetVideo();
-                        break;
-                    case Player.STATE_READY:
-                        listener.playVideo();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
+//        getPlayer().addListener(new Player.EventListener(){
+//            @Override
+//            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+//                switch (playbackState) {
+//                    case Player.STATE_BUFFERING:
+//                        listener.onBuffering();
+//                        break;
+//                    case Player.STATE_ENDED:
+//                        listener.resetVideo();
+//                        break;
+//                    case Player.STATE_READY:
+//                        listener.playVideo();
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//        });
     }
 }

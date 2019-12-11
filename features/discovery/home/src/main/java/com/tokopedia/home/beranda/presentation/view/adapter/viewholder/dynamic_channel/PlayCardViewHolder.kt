@@ -8,8 +8,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -24,7 +22,6 @@ import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
 import com.tokopedia.home.beranda.presentation.view.helper.ExoThumbListener
 import com.tokopedia.home.beranda.presentation.view.helper.TokopediaPlayerHelper
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import timber.log.Timber
 
 
 class PlayCardViewHolder(
@@ -38,7 +35,7 @@ class PlayCardViewHolder(
     private val chipPlayLive = view.findViewById<LinearLayout>(R.id.chipPlayLive)
     private val chipPlayViewers = view.findViewById<LinearLayout>(R.id.chipPlayViewers)
     private val txtTotalViewers = view.findViewById<TextView>(R.id.txtTotalViewers)
-    private var helper: TokopediaPlayerHelper? = null
+    var helper: TokopediaPlayerHelper? = null
 
     var mThumbUrl: String = ""
     var mVideoUrl: String = ""
@@ -48,10 +45,9 @@ class PlayCardViewHolder(
     private var playCardHome: PlayCardHome? = null
     private val progressBar: ProgressBar? = view.findViewById(R.id.progressBar)
 
-
-
     override fun bind(element: PlayCardViewModel) {
-
+        mVideoUrl = element.url
+        mThumbUrl = "https://i.ytimg.com/vi/JQ5xItF40yA/maxresdefault.jpg"
     }
 
     override fun reset() {
@@ -115,7 +111,7 @@ class PlayCardViewHolder(
     }
 
     override fun releaseExoPlayerCalled() {
-        
+        helper?.releasePlayer()
     }
 
     override fun onVideoResumeDataLoaded(window: Int, position: Long, isResumeWhenReady: Boolean) {
