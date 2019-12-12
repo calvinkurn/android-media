@@ -263,6 +263,12 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
+    public void showFailureMessage(String error) {
+        Utils.getSingletonInstance().showSnackBarDeals(error
+                , getContext(), mainContent, false);
+    }
+
+    @Override
     protected String getScreenName() {
         return SCREEN_NAME;
     }

@@ -215,8 +215,12 @@ public class CheckoutDealPresenter
             @Override
             public void onNext(JsonObject checkoutResponse) {
                 String paymentData = Utils.transform(checkoutResponse);
-                String paymentURL = checkoutResponse.get("url").getAsString();
-                ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, "Deal Payment");
+                if (checkoutResponse.get("url") == null && checkoutResponse.get("error") != null) {
+                    getView().showFailureMessage(checkoutResponse.get("error").getAsString());
+                } else {
+                    String paymentURL = checkoutResponse.get("url").getAsString();
+                    ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, "Deal Payment");
+                }
                 getView().hideProgressBar();
 
             }
