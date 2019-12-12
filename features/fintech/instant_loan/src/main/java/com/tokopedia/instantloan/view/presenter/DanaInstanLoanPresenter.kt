@@ -122,62 +122,68 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
     private fun getPhoneDataPayload(map: Map<String, Any?>?): JsonObject {
 
         val data = JsonObject()
-        data.addProperty(DeviceDataKeys.Common.BRAND, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.BRAND])
-        data.addProperty(DeviceDataKeys.Common.DEVICE_ID, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_ID])
-        data.addProperty(DeviceDataKeys.Common.DEVICE_SDK_VERSION, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SDK_VERSION])
-        data.addProperty(DeviceDataKeys.Common.DEVICE_SYSTEM_VERSION, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SYSTEM_VERSION])
-        data.addProperty(DeviceDataKeys.Common.GOOGLE_GAID, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.GOOGLE_GAID])
-        data.addProperty(DeviceDataKeys.Common.IMEI, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.IMEI])
-        data.addProperty(DeviceDataKeys.Common.LATITUDE, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.LATITUDE])
-        data.addProperty(DeviceDataKeys.Common.LONGITUDE, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.LONGITUDE])
-        data.addProperty(DeviceDataKeys.Common.MODEL, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.MODEL])
-        data.addProperty(DeviceDataKeys.Common.SYSTEM_LANGUAGE, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.SYSTEM_LANGUAGE])
 
-        val messages = JsonArray()
-        data.addProperty(DeviceDataKeys.Common.SMS, messages.toString())
+        map?.let {
+            data.addProperty(DeviceDataKeys.Common.BRAND, (it[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.BRAND])
+            data.addProperty(DeviceDataKeys.Common.DEVICE_ID, (it[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_ID])
+            data.addProperty(DeviceDataKeys.Common.DEVICE_SDK_VERSION, (it[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SDK_VERSION])
+            data.addProperty(DeviceDataKeys.Common.DEVICE_SYSTEM_VERSION, (it[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SYSTEM_VERSION])
+            data.addProperty(DeviceDataKeys.Common.GOOGLE_GAID, (it[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.GOOGLE_GAID])
+            data.addProperty(DeviceDataKeys.Common.IMEI, (it[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.IMEI])
+            data.addProperty(DeviceDataKeys.Common.LATITUDE, (it[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.LATITUDE])
+            data.addProperty(DeviceDataKeys.Common.LONGITUDE, (it[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.LONGITUDE])
+            data.addProperty(DeviceDataKeys.Common.MODEL, (it[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.MODEL])
+            data.addProperty(DeviceDataKeys.Common.SYSTEM_LANGUAGE, (it[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.SYSTEM_LANGUAGE])
 
-        val contacts = JsonArray()
-        data.addProperty(DeviceDataKeys.Common.CONTACT, contacts.toString())
+            val messages = JsonArray()
+            data.addProperty(DeviceDataKeys.Common.SMS, messages.toString())
 
-        val callLogs = JsonArray()
-        data.addProperty(DeviceDataKeys.Common.CALL, callLogs.toString())
+            val contacts = JsonArray()
+            data.addProperty(DeviceDataKeys.Common.CONTACT, contacts.toString())
 
-        val accounts = JsonArray()
-        var account: JsonObject
+            val callLogs = JsonArray()
+            data.addProperty(DeviceDataKeys.Common.CALL, callLogs.toString())
 
-        if (map[Account.DD_ACCOUNT] != null) {
-            for (entry in map[Account.DD_ACCOUNT] as List<HashMap<String, String>>) {
-                if (entry == null) {
-                    continue
+            val accounts = JsonArray()
+            var account: JsonObject
+
+            if (it[Account.DD_ACCOUNT] != null) {
+                for (entry in map[Account.DD_ACCOUNT] as List<HashMap<String, String>>) {
+                    if (entry == null) {
+                        continue
+                    }
+                    account = JsonObject()
+                    account.addProperty(DeviceDataKeys.Account.NAME, entry[Account.NAME])
+                    account.addProperty(DeviceDataKeys.Account.TYPE, entry[Account.TYPE])
+                    accounts.add(account)
                 }
-                account = JsonObject()
-                account.addProperty(DeviceDataKeys.Account.NAME, entry[Account.NAME])
-                account.addProperty(DeviceDataKeys.Account.TYPE, entry[Account.TYPE])
-                accounts.add(account)
             }
+
+            data.addProperty(DeviceDataKeys.Common.ACCOUNTS, accounts.toString())
+
+            val apps = JsonArray()
+            var app: JsonObject
+
+            if (it[Application.DD_APPLICATION] != null) {
+                for (entry in map[Application.DD_APPLICATION] as List<HashMap<String, String>>) {
+                    if (entry == null) {
+                        continue
+                    }
+                    app = JsonObject()
+                    app.addProperty(DeviceDataKeys.App.APP_NAME, entry[Application.NAME])
+                    app.addProperty(DeviceDataKeys.App.PACKAGE_NAME, entry[Application.PACKAGE_NAME])
+                    app.addProperty(DeviceDataKeys.App.INSTALL_TIME, entry[Application.FIRST_INSTALL_TIME])
+                    app.addProperty(DeviceDataKeys.App.UPDATE_TIME, entry[Application.LAST_UPDATE_TIME])
+                    app.addProperty(DeviceDataKeys.App.APP_TYPE, entry[Application.TYPE])
+                    apps.add(app)
+                }
+            }
+
+            data.addProperty(DeviceDataKeys.Common.APPS, apps.toString())
         }
 
-        data.addProperty(DeviceDataKeys.Common.ACCOUNTS, accounts.toString())
 
-        val apps = JsonArray()
-        var app: JsonObject
 
-        if (map[Application.DD_APPLICATION] != null) {
-            for (entry in map[Application.DD_APPLICATION] as List<HashMap<String, String>>) {
-                if (entry == null) {
-                    continue
-                }
-                app = JsonObject()
-                app.addProperty(DeviceDataKeys.App.APP_NAME, entry[Application.NAME])
-                app.addProperty(DeviceDataKeys.App.PACKAGE_NAME, entry[Application.PACKAGE_NAME])
-                app.addProperty(DeviceDataKeys.App.INSTALL_TIME, entry[Application.FIRST_INSTALL_TIME])
-                app.addProperty(DeviceDataKeys.App.UPDATE_TIME, entry[Application.LAST_UPDATE_TIME])
-                app.addProperty(DeviceDataKeys.App.APP_TYPE, entry[Application.TYPE])
-                apps.add(app)
-            }
-        }
-
-        data.addProperty(DeviceDataKeys.Common.APPS, apps.toString())
         return data
     }
 }
