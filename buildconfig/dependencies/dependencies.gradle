@@ -61,6 +61,7 @@ ext {
     playServiceFirebaseCore = '16.0.6'
     playServiceTagManager = '16.0.6'
     playServiceSafetyNet = '16.0.0'
+    playServiceMeasurementBase = '16.0.5'
     playServiceMeasurementApi = '16.0.4'
 
     JunitVersion = '4.12'
