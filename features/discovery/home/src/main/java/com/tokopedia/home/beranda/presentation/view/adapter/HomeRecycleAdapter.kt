@@ -90,7 +90,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
                             onSelectedItemChanged(index)
                         }
                         index
-                    }?.also {
+                    }.also {
                         if(it.isEmpty()) onSelectedItemChanged(-1)
                     }
                 }
@@ -310,14 +310,14 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
     private fun onSelectedItemChanged(newSelected: Int) {
         if(newSelected != -1) {
             if(currentSelected != -1) {
-                changeAlphaToVisible(currentSelected, false)
+//                changeAlphaToVisible(currentSelected, false)
                 pausePlayerByPosition(currentSelected)
-                blockPlayerByPosition(currentSelected)
+//                blockPlayerByPosition(currentSelected)
             }
             //---------
-            changeAlphaToVisible(newSelected, true)
+//            changeAlphaToVisible(newSelected, true)
             prepareAndPlayByPosition(newSelected)
-            unBlockPlayerByPosition(newSelected)
+//            unBlockPlayerByPosition(newSelected)
         }
         currentSelected = newSelected
     }
@@ -326,7 +326,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
     private fun unBlockPlayerByPosition(newSelected: Int) {
         val viewHolder: AbstractViewHolder<out Visitable<*>>?  = getViewHolder(newSelected)
         if (viewHolder != null && viewHolder is PlayCardViewHolder) {
-            viewHolder.helper?.playerUnBlock()
+//            viewHolder.helper?.playerUnBlock()
         }
     }
 
@@ -369,13 +369,12 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
         super.onViewAttachedToWindow(holder)
         if(holder is PlayCardViewHolder) {
             holder.createHelper()
-
             if (!isFirstItemPlayed && currentSelected == -1) {
                 isFirstItemPlayed = true
                 currentSelected = holder.adapterPosition
                 holder.helper?.preparePlayer()
                 holder.helper?.playerPlay()
-                holder.helper?.playerUnBlock()
+//                holder.helper?.playerUnBlock()
             }
         }
     }
