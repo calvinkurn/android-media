@@ -677,10 +677,10 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
             disableWishlistButton(productItem.id.toString())
             if (productItem.wishlist) {
                 removeWishlist(productItem.id.toString(), userSession.userId, position)
-                catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), false,isUserLoggedIn())
+                catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), false,isUserLoggedIn(),productItem.isTopAds)
             } else {
                 addWishlist(productItem.id.toString(), userSession.userId, position)
-                catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), true,isUserLoggedIn())
+                catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), true,isUserLoggedIn(),productItem.isTopAds)
             }
         } else {
             launchLoginActivity(productItem.id.toString())

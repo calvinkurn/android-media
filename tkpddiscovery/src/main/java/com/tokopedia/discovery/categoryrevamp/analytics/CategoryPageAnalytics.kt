@@ -278,7 +278,11 @@ class CategoryPageAnalytics {
 
     // 13
 
-    fun eventWishistClicked(category_id: String, product_id: String, isWishlisted: Boolean,isLoggedIn:Boolean) {
+    fun eventWishistClicked(category_id: String,
+                            product_id: String,
+                            isWishlisted: Boolean,
+                            isLoggedIn: Boolean,
+                            isTopAds: Boolean) {
         val tracker = getTracker()
         var eventAction: String = if (isWishlisted) {
             "add wishlist - other - "
@@ -425,6 +429,14 @@ class CategoryPageAnalytics {
             "Login"
         } else {
             "Non-Login"
+        }
+    }
+
+    private fun getProductType(isTopAds: Boolean): String {
+        return if (isTopAds) {
+            "topads"
+        } else {
+            "general"
         }
     }
 }
