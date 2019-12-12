@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -18,8 +19,14 @@ import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.AddBankRequest
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
+import com.tokopedia.settingbank.banklist.v2.domain.UploadDocumentPojo
 import com.tokopedia.settingbank.banklist.v2.util.AccountConfirmationType
-import com.tokopedia.settingbank.banklist.v2.view.viewModel.SettingBankTNCViewModel
+import com.tokopedia.settingbank.banklist.v2.util.ImageUtils
+import com.tokopedia.settingbank.banklist.v2.view.viewModel.UploadDocumentViewModel
+import com.tokopedia.settingbank.banklist.v2.view.viewState.DocumentUploadEnd
+import com.tokopedia.settingbank.banklist.v2.view.viewState.DocumentUploadError
+import com.tokopedia.settingbank.banklist.v2.view.viewState.DocumentUploadStarted
+import com.tokopedia.settingbank.banklist.v2.view.viewState.DocumentUploaded
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_confirm_bank_account.*
 import javax.inject.Inject
@@ -36,11 +43,13 @@ class AccountConfirmFragment : BaseDaggerFragment() {
 
     private val REQUEST_CODE_IMAGE: Int = 101
 
+    private val DOC_TYPE_IMAGE = 1
+    private val DOC_TYPE_NAME = 3
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var uploadDocumentViewModel: UploadDocumentViewModel
 
-
-    private lateinit var tNCViewModel: SettingBankTNCViewModel
 
     val builder: AddBankRequest.Builder = AddBankRequest.Builder()
 
@@ -48,8 +57,7 @@ class AccountConfirmFragment : BaseDaggerFragment() {
     lateinit var accountConfirmationType: AccountConfirmationType
     lateinit var kYCName: String
 
-    lateinit var selectedFilePath: String
-
+    var selectedFilePath: String? = null
 
     override fun initInjector() {
         getComponent(SettingBankComponent::class.java).inject(this)
@@ -81,7 +89,7 @@ class AccountConfirmFragment : BaseDaggerFragment() {
 
     private fun initViewModels() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        tNCViewModel = viewModelProvider.get(SettingBankTNCViewModel::class.java)
+        uploadDocumentViewModel = viewModelProvider.get(UploadDocumentViewModel::class.java)
 
     }
 
@@ -114,9 +122,7 @@ class AccountConfirmFragment : BaseDaggerFragment() {
             btn_uploadOrConfirmDocument.text = getString(R.string.sbank_yes_name_matched)
             btn_uploadOrConfirmDocument.isEnabled = true
             ivSelectFile.gone()
-            btn_uploadOrConfirmDocument.setOnClickListener {
-                //todo start upload...
-            }
+            btn_uploadOrConfirmDocument.setOnClickListener { uploadDocument() }
         } else {
             tvDocKTPNameTitle.text = getString(R.string.sbank_complete_document)
             if (accountConfirmationType == AccountConfirmationType.FAMILY)
@@ -133,13 +139,19 @@ class AccountConfirmFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun enableUploadDocument() {
-        btn_uploadOrConfirmDocument.isEnabled = true
-        btn_uploadOrConfirmDocument.setOnClickListener {
-            //todo start upload...
+    private fun uploadDocument() {
+        val uploadDocumentPojo = getUploadDocumentPojo()
+        uploadDocumentPojo?.let {
+            uploadDocumentViewModel.uploadDocument(it)
         }
     }
 
+    private fun enableUploadDocument() {
+        btn_uploadOrConfirmDocument.isEnabled = true
+        btn_uploadOrConfirmDocument.setOnClickListener {
+            uploadDocument()
+        }
+    }
 
     private fun openFilePicker() {
         val pickerTitle = if (accountConfirmationType == AccountConfirmationType.FAMILY)
@@ -167,17 +179,43 @@ class AccountConfirmFragment : BaseDaggerFragment() {
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                    selectedFilePath = selectedImage[0]
-                    enableUploadDocument()
+                    setSelectedFile(selectedImage[0])
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
+    private fun setSelectedFile(filePath: String?) {
+        filePath?.let {
+            selectedFilePath = it
+            tvDocPathOrKTPName.text = ImageUtils.getFileName(it)
+            enableUploadDocument()
+        }
+    }
 
     private fun startObservingViewModels() {
+        uploadDocumentViewModel.uploadDocumentStatus.observe(this, Observer {
+            when (it) {
+                is DocumentUploadStarted -> progressBar.visible()
+                is DocumentUploadEnd -> progressBar.gone()
+                is DocumentUploaded -> {
+                    showTickerMessage(it.message)
+                    activity?.finish()
+                }
+                is DocumentUploadError -> {
+                    showErrorOnUI(it.errorMessage, null)
+                }
+            }
+        })
+    }
 
+    private fun showTickerMessage(message: String?) {
+        message?.let {
+            view?.let { view ->
+                Toaster.make(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            }
+        }
     }
 
     private fun showErrorOnUI(errorMessage: String?, retry: (() -> Unit)?) {
@@ -192,6 +230,24 @@ class AccountConfirmFragment : BaseDaggerFragment() {
 
             }
         }
+    }
+
+    private fun getUploadDocumentPojo(): UploadDocumentPojo? {
+        val docType = if (accountConfirmationType == AccountConfirmationType.OTHER) DOC_TYPE_NAME else DOC_TYPE_IMAGE
+        if (docType == DOC_TYPE_IMAGE && selectedFilePath == null) {
+            showErrorOnUI("Silakan pilih foto dokumen", null)
+            return null
+        }
+        return UploadDocumentPojo(
+                acc_id = bankAccount.accID,
+                acc_name = bankAccount.accName,
+                acc_number = bankAccount.accNumber,
+                bank_id = bankAccount.bankID,
+                doc_type = docType,
+                document_name = ImageUtils.getFileName(selectedFilePath),
+                document_base64 = ImageUtils.encodeToBase64(selectedFilePath),
+                document_ext = ImageUtils.getFileExt(selectedFilePath),
+                document_mime = ImageUtils.getMimeType(context!!, selectedFilePath))
     }
 
 }

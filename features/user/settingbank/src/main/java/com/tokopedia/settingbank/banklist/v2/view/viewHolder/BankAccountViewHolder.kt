@@ -30,7 +30,7 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         ticker.gone()
         setBankStatus(
                 isPrimary = (bankAccount.fsp == 1),
-                status = bankAccount.statusFraud,
+                status = 2,//bankAccount.statusFraud,
                 copyWriting = bankAccount.copyWriting
         )
         addClickListener()
@@ -75,7 +75,6 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
                 hideShowPendingAccountTag(isHide = true)
             }
             3 -> {
-                //todo disable all text data an ticker
                 copyWriting?.let {
                     ticker.tickerType = Ticker.TYPE_ERROR
                     ticker.visible()
@@ -91,7 +90,6 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
             }
             in 4..5 -> {
-                //todo disable all text data an ticker
                 copyWriting?.let {
                     ticker.tickerType = Ticker.TYPE_ERROR
                     ticker.visible()

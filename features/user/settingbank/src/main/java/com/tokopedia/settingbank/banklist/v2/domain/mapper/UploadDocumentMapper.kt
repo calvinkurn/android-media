@@ -1,22 +1,20 @@
 package com.tokopedia.settingbank.banklist.v2.domain.mapper
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.settingbank.banklist.v2.domain.UploadDocumentResponse
 import retrofit2.Response
 import rx.functions.Func1
+import javax.inject.Inject
 
-class UploadDocumentMapper : Func1<Response<DataResponse<UploadDocumentResponse>>, Boolean> {
+class UploadDocumentMapper @Inject constructor() : Func1<Response<UploadDocumentResponse>, String> {
 
-    override fun call(response: Response<DataResponse<UploadDocumentResponse>>): Boolean {
+    override fun call(response: Response<UploadDocumentResponse>): String {
         val body = response.body()
         if (body != null) {
-            if (body.header.messages.isEmpty() ||
-                    body.header.messages[0].isBlank()) {
-                val pojo: UploadDocumentResponse = body.data
-                return (pojo.status == 200)
+            if (body.status == 200) {
+                return body.message
             } else {
-                throw MessageErrorException(body.header.messages[0])
+                throw MessageErrorException(body.message)
             }
         } else {
             throw MessageErrorException("")

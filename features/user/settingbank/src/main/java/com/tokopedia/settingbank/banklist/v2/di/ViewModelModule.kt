@@ -66,5 +66,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(GetKYCViewModel::class)
     internal abstract fun addGetKYCViewModel(viewModel: GetKYCViewModel): ViewModel
+    @Binds
+    @IntoMap
+    @ViewModelKey(UploadDocumentViewModel::class)
+    internal abstract fun addUploadDocumentViewModel(viewModel: UploadDocumentViewModel): ViewModel
 
 }

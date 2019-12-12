@@ -19,12 +19,16 @@ object ImageUtils {
 
     const val IMAGE_QUALITY = 95
 
-    fun getFileName(filePath: String): String {
+    fun getFileName(filePath: String?): String {
+        if (filePath == null)
+            return ""
         val file = File(filePath)
         return file.name
     }
 
-    fun getFileExt(filePath: String): String {
+    fun getFileExt(filePath: String?): String {
+        if (filePath == null)
+            return ""
         return when {
             filePath.endsWith(EXT_JPEG, true) -> EXT_JPEG
             filePath.endsWith(EXT_JPG, true) -> EXT_JPG
@@ -32,11 +36,16 @@ object ImageUtils {
         }
     }
 
-    fun getMimeType(context: Context, file: File): String? {
+    fun getMimeType(context: Context, filePath: String?): String {
+        if (filePath == null)
+            return ""
+        val file = File(filePath)
+        if (!file.exists())
+            return ""
         val uri = Uri.fromFile(file)
         var mimeType: String? = null
         mimeType = if (uri.scheme == ContentResolver.SCHEME_CONTENT) {
-            val cr = context?.contentResolver
+            val cr = context.contentResolver
             cr?.getType(uri)
         } else {
             val fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
@@ -44,10 +53,12 @@ object ImageUtils {
             MimeTypeMap.getSingleton().getMimeTypeFromExtension(
                     fileExtension.toLowerCase())
         }
-        return mimeType
+        return mimeType.let { return@let mimeType } ?: ""
     }
 
-    fun encodeToBase64(imagePath: String): String {
+    fun encodeToBase64(imagePath: String?): String {
+        if (imagePath == null || !File(imagePath).exists())
+            return ""
         val bm = BitmapFactory.decodeFile(imagePath)
         val baos = ByteArrayOutputStream()
         val format = when {

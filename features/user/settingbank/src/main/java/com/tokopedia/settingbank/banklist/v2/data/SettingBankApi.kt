@@ -12,7 +12,7 @@ interface SettingBankApi {
     @FormUrlEncoded
     @POST(SettingBankUrl.PATH_POST_DOCUMENT)
     fun uploadConfirmationDocument(@FieldMap params: HashMap<String, Any>):
-            Observable<Response<DataResponse<UploadDocumentResponse>>>
+            Observable<Response<UploadDocumentResponse>>
 
 
 }
