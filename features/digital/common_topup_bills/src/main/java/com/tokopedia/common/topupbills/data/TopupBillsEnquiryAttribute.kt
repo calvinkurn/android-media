@@ -9,17 +9,17 @@ import com.google.gson.annotations.SerializedName
 class TopupBillsEnquiryAttribute (
     @SerializedName("UserID")
     @Expose
-    val userId: String,
+    val userId: String = "",
     @SerializedName("ProductID")
     @Expose
-    val productId: String,
+    val productId: String = "",
     @SerializedName("Price")
     @Expose
-    val price: String,
+    val price: String = "",
     @SerializedName("PricePlain")
     @Expose
-    val pricePlain: Int,
+    val pricePlain: Int = 0,
     @SerializedName("mainInfo")
     @Expose
-    val mainInfoList: List<TopupBillsEnquiryMainInfo>
+    val mainInfoList: List<TopupBillsEnquiryMainInfo> = listOf()
 )

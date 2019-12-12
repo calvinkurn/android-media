@@ -9,11 +9,11 @@ import com.google.gson.annotations.SerializedName
 class TopupBillsEnquiry (
     @SerializedName("status")
     @Expose
-    val status: String,
+    val status: String = "",
     @SerializedName("retrySec")
     @Expose
-    val retryDuration: Int?,
+    val retryDuration: Int? = null,
     @SerializedName("attributes")
     @Expose
-    val attributes: TopupBillsEnquiryAttribute
+    val attributes: TopupBillsEnquiryAttribute = TopupBillsEnquiryAttribute()
 )

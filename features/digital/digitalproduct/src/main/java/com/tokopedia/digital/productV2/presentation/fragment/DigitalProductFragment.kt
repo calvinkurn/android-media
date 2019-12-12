@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
@@ -22,6 +23,7 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
+import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownBottomSheet
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownBottomSheet.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
@@ -37,6 +39,7 @@ import com.tokopedia.digital.productV2.presentation.adapter.viewholder.OnInputLi
 import com.tokopedia.digital.productV2.presentation.model.DigitalProductSelectDropdownData
 import com.tokopedia.digital.productV2.presentation.viewmodel.DigitalProductViewModel
 import com.tokopedia.digital.productV2.presentation.viewmodel.SharedDigitalProductViewModel
+import com.tokopedia.digital.productV2.widget.DigitalProductCheckoutBottomSheet
 import com.tokopedia.digital.productV2.widget.DigitalProductSelectDropdownBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -46,7 +49,10 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_digital_product.*
 import javax.inject.Inject
 
-class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, DigitalProductAdapter.LoaderListener {
+class DigitalProductFragment: BaseTopupBillsFragment(),
+        OnInputListener,
+        DigitalProductAdapter.LoaderListener,
+        DigitalProductCheckoutBottomSheet.CheckoutListener {
 
     //    @Inject
 //    lateinit var trackingUtil: DigitalHomeTrackingUtil
@@ -402,7 +408,9 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
 
         val recommendationData = sharedViewModel.recommendationItem.value
         recommendationData?.productId?.let { id ->
-            productId = id.toString()
+//            productId = id.toString()
+            // TODO: Remove temporary enquiry params
+            productId = "291"
 
             // Get product object
             if (products.isShowingProduct) {
@@ -424,7 +432,9 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
         recommendationData?.clientNumber?.let { input ->
             adapter.data.forEachIndexed { index, productInput ->
                 if (productInput is DigitalProductInput) {
-                    productInput.value = input
+//                    productInput.value = input
+                    // TODO: Remove temporary enquiry params
+                    productInput.value = "102111106111"
                     adapter.notifyItemChanged(index)
                 }
             }
@@ -468,21 +478,45 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
         enquiry_button.isEnabled = validateEnquiry()
     }
 
-    private fun enquire() {
-        if (validateEnquiry()) {
-            getEnquiry(operatorId!!.toString(), productId!!, inputData!!.filterNotNull().toTypedArray())
-        }
-    }
-
     private fun validateEnquiry(): Boolean {
         return operatorId != null
                 && inputData != null
                 && (inputData!!.isEmpty() || inputData!!.all { it != null })
     }
 
+    private fun enquire() {
+        if (validateEnquiry()) {
+            getEnquiry(operatorId!!.toString(), productId!!, inputData!!.filterNotNull().toTypedArray())
+            // TODO: Remove temporary enquiry params
+//            val enquiryData = Gson().fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_enquiry_data), TopupBillsEnquiryData::class.java)
+//            renderCheckoutView(enquiryData)
+        }
+    }
+
     override fun processEnquiry(data: TopupBillsEnquiryData) {
-        val test = "test"
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        renderCheckoutView(data)
+    }
+
+    private fun renderCheckoutView(data: TopupBillsEnquiryData) {
+        context?.let { context ->
+            val checkoutBottomSheet = BottomSheetUnify()
+            checkoutBottomSheet.setTitle("Checkout")
+            checkoutBottomSheet.setCloseClickListener { checkoutBottomSheet.dismiss() }
+            checkoutBottomSheet.setFullPage(true)
+            checkoutBottomSheet.clearAction()
+
+            val checkoutView = DigitalProductCheckoutBottomSheet(context)
+            checkoutView.setPayload(data.enquiry)
+            checkoutBottomSheet.setChild(checkoutView)
+
+            fragmentManager?.let { fm ->
+                checkoutBottomSheet.show(fm, "checkout view bottom sheet")
+            }
+        }
+    }
+
+    override fun onClickCheckout() {
+        // TODO: Process checkout
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {

@@ -9,8 +9,8 @@ import com.google.gson.annotations.SerializedName
 class TopupBillsEnquiryMainInfo(
         @SerializedName("label")
         @Expose
-        val label: String,
+        val label: String = "",
         @SerializedName("value")
         @Expose
-        val value: String
+        val value: String = ""
 )
