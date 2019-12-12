@@ -134,8 +134,8 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RE
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartFragment extends BaseCheckoutFragment implements ActionListener,
-        CartItemAdapter.ActionListener, ICartListView, PromoActionListener,
+public class CartFragment extends BaseCheckoutFragment implements ICartListView,
+        ActionListener, CartItemAdapter.ActionListener, PromoActionListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener,
         ToolbarRemoveView.ToolbarCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
         ClashBottomSheetFragment.ActionListener, InsuranceItemActionListener, TickerAnnouncementActionListener {
@@ -494,7 +494,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onToolbarRemoveAllCart() {
         sendAnalyticsOnClickRemoveButtonHeader();
-        List<CartItemData> toBeDeletedCartItemDataList = cartAdapter.getSelectedCartItemData();
+        List<CartItemData> toBeDeletedCartItemDataList = getSelectedCartDataList();
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
         if (toBeDeletedCartItemDataList.size() > 0) {
             final DialogUnify dialog = getMultipleItemsDialogDeleteConfirmation(toBeDeletedCartItemDataList.size());
@@ -1215,8 +1215,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
     }
 
-    @Override
-    public void showToastMessage(String message) {
+    private void showToastMessage(String message) {
         View view = getView();
         if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
@@ -1525,11 +1524,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery);
                 break;
         }
-        renderToAddressChoice();
+        navigateToShipmentPage();
     }
 
-    @Override
-    public void renderToAddressChoice() {
+    private void navigateToShipmentPage() {
         FLAG_BEGIN_SHIPMENT_PROCESS = true;
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = true;
         boolean isAutoApplyPromoStackCodeApplied = dPresenter.getCartListData() != null &&
@@ -1575,18 +1573,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
     }
 
-    @Override
-    public void disableSwipeRefresh() {
+    private void disableSwipeRefresh() {
         refreshHandler.setPullEnabled(false);
     }
 
-    @Override
-    public void enableSwipeRefresh() {
+    private void enableSwipeRefresh() {
         refreshHandler.setPullEnabled(true);
     }
 
-    @Override
-    public List<CartItemData> getSelectedCartDataList() {
+    private List<CartItemData> getSelectedCartDataList() {
         return cartAdapter.getSelectedCartItemData();
     }
 
@@ -1811,7 +1806,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             refreshHandler.setRefreshing(true);
             dPresenter.processInitialGetCartData(getCartId(), false, false);
         } else if (resultCode == PaymentConstant.PAYMENT_FAILED) {
-            showToastMessage(getString(R.string.default_request_error_unknown));
+            showToastMessageRed(getString(R.string.default_request_error_unknown));
             sendAnalyticsScreenName(getScreenName());
             refreshHandler.setRefreshing(true);
             if (cartListData != null) {

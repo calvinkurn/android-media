@@ -32,8 +32,6 @@ public interface ICartListView extends CustomerView {
 
     void hideProgressLoading();
 
-    void showToastMessage(String message);
-
     void renderInitialGetCartListDataSuccess(CartListData cartListData);
 
     void renderErrorInitialGetCartListData(String message);
@@ -43,17 +41,9 @@ public interface ICartListView extends CustomerView {
                                      boolean checkoutProductEligibleForCashOnDelivery,
                                      int condition);
 
-    void renderToAddressChoice();
-
     void renderErrorToShipmentForm(String message);
 
-    void disableSwipeRefresh();
-
-    void enableSwipeRefresh();
-
     List<CartShopHolderData> getAllShopDataList();
-
-    List<CartItemData> getSelectedCartDataList();
 
     List<CartItemData> getAllCartDataList();
 
