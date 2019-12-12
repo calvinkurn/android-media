@@ -8,11 +8,13 @@ import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 class OnlineLoanPresenter @Inject
-constructor( val mGetFilterDataUseCase: GetFilterDataUseCase) :
+constructor(val mGetFilterDataUseCase: GetFilterDataUseCase) :
         BaseDaggerPresenter<OnlineLoanContractor.View>(), OnlineLoanContractor.Presenter {
 
     @Inject
     lateinit var userSession: UserSession
+
+    var subscriber: GetFilterDataSubscriber = GetFilterDataSubscriber(this)
 
     override fun attachView(view: OnlineLoanContractor.View) {
         super.attachView(view)
@@ -24,12 +26,7 @@ constructor( val mGetFilterDataUseCase: GetFilterDataUseCase) :
         super.detachView()
     }
 
-    override fun getFilterData() {
-        mGetFilterDataUseCase.execute(GetFilterDataSubscriber(this))
+    private fun getFilterData() {
+        mGetFilterDataUseCase.execute(subscriber)
     }
-
-    override fun isUserLoggedIn(): Boolean {
-        return userSession.isLoggedIn
-    }
-
 }

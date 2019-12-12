@@ -141,10 +141,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
         view.findViewById<View>(com.tokopedia.instantloan.R.id.button_search_pinjaman).setOnClickListener {
 
-            if (!presenter.isUserLoggedIn()) {
-                navigateToLoginPage()
-            } else {
+            if (userSession.isLoggedIn) {
                 searchLoanOnline()
+            } else {
+                navigateToLoginPage()
             }
         }
 
@@ -318,28 +318,16 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         return InstantLoanEventConstants.Screen.TANPA_AGUNAN_SCREEN_NAME
     }
 
-    override fun getAppContext(): Context? {
-        return context?.applicationContext
-    }
-
-    override fun getActivityContext(): Context? {
-        return context
-    }
-
-    override fun navigateToLoginPage() {
+    private fun navigateToLoginPage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         startActivityForResult(intent, LOGIN_REQUEST_CODE)
     }
 
-    override fun showToastMessage(message: String, duration: Int) {
+    private fun showToastMessage(message: String, duration: Int) {
         Toast.makeText(context, message, duration).show()
     }
 
-    override fun openWebView(url: String) {
-        RouteManager.route(context!!, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-    }
-
-    override fun searchLoanOnline() {
+    private fun searchLoanOnline() {
         if (!::selectedLoanPeriodType.isInitialized) {
             loanPeriodLabelTV.error = ""
 
@@ -355,12 +343,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
                             selectedLoanPeriodType.value?.toLowerCase(),
                             loanPeriodValueTV.tag as String,
                             (loanCategoryValueTV.tag as Int).toString()), "UTF-8")))
-
         }
     }
 
     companion object {
-
 
         private val DEFAULT_LOAN_CATEGORY = 0
         private val DEFAULT_MONTH_VALUE = "Month"
