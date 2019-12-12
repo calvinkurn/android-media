@@ -1,14 +1,15 @@
-package com.tokopedia.design.list.widget;
+package com.tokopedia.filter.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.SectionIndexer;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.design.R;
 

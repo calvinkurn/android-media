@@ -1,6 +1,5 @@
-package com.tokopedia.design.list.adapter;
+package com.tokopedia.filter.newdynamicfilter.adapter;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +7,9 @@ import android.widget.FrameLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.design.R;
-import com.tokopedia.design.list.item.SectionDividedItem;
 
 import java.util.ArrayList;
 import java.util.List;
