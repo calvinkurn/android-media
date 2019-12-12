@@ -26,7 +26,7 @@ class OpportunityListActivity: BasePresenterActivity<OpportunityListPresenter>()
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (fragmentManager.findFragmentById(R.id.container) == null) {
-            val fragment = OpportunityListFragment.createInstance(intent.extras)
+            val fragment = OpportunityListFragment.newInstance("")
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.replace(R.id.container, fragment)
             fragmentTransaction.commit()
