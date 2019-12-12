@@ -31,6 +31,7 @@ import com.tokopedia.play.ui.toolbar.ToolbarComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.TitleToolbar
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
+import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -47,7 +48,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 29/11/19
  */
-class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
+class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreActionBottomSheet.Listener {
 
     companion object {
 
@@ -72,6 +73,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
+
+    private lateinit var bottomSheet: PlayMoreActionBottomSheet
 
     private val channelId: String = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
@@ -175,6 +178,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
         job.cancel()
     }
 
+    override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
+        view?.run(::hideInteraction)
+        bottomSheet.dismiss()
+    }
+
     private fun setupView(view: View) {
         view.setOnClickListener { hideInteraction(view) }
     }
@@ -271,6 +279,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
                         when (it) {
                             PlayToolbarInteractionEvent.BackButtonClicked -> activity?.onBackPressed()
                             PlayToolbarInteractionEvent.FollowButtonClicked -> showToast("Follow Button Clicked")
+                            PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
                             PlayToolbarInteractionEvent.UnFollowButtonClicked -> showToast("UnFollow Button Clicked")
                             PlayToolbarInteractionEvent.MoreButtonClicked -> showToast("More Button Clicked")
                         }
@@ -484,5 +493,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope {
                         ScreenStateEvent::class.java,
                         ScreenStateEvent.SetPinned(pinnedMessage)
                 )
+    }
+
+    private fun showMoreActionBottomSheet() {
+        if (!::bottomSheet.isInitialized) {
+            bottomSheet = PlayMoreActionBottomSheet.newInstance(requireContext(), this)
+        }
+        bottomSheet.show(childFragmentManager)
     }
 }
