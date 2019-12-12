@@ -89,7 +89,7 @@ import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
 import com.tokopedia.feedplus.view.analytics.ProductEcommerce
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.di.FeedPlusComponent
-import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
+import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
@@ -174,7 +174,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var feedOnboardingPresenter: FeedOnboardingViewModel
+    lateinit var presenter: FeedViewModel
 
     @Inject
     internal lateinit var analytics: FeedAnalytics
@@ -273,7 +273,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            feedOnboardingPresenter = viewModelProvider.get(FeedOnboardingViewModel::class.java)
+            presenter = viewModelProvider.get(FeedViewModel::class.java)
         }
         initVar()
         retainInstance = true
@@ -282,7 +282,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
-        feedOnboardingPresenter.run {
+        presenter.run {
             onboardingResp.observe(lifecycleOwner, Observer {
                 hideAdapterLoading()
                 when (it) {
@@ -464,7 +464,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val size = adapter.getlist().size
             val lastIndex = size - 1
             if (adapter.getlist()[0] !is EmptyModel && adapter.getlist()[lastIndex] !is RetryModel)
-                feedOnboardingPresenter.getFeedNextPage()
+                presenter.getFeedNextPage()
         }
 
         val loginIdString = userSession.userId
@@ -566,7 +566,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onRefresh() {
         newFeed.visibility = View.GONE
-        feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, true)
+        presenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, true)
         afterRefresh = true
     }
 
@@ -585,7 +585,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         adapter.removeRetry()
         adapter.showLoading()
         adapter.setEndlessScrollListener()
-        feedOnboardingPresenter.getFeedNextPage()
+        presenter.getFeedNextPage()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -687,7 +687,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onAddFavorite(position: Int, dataShop: Data) {
-        feedOnboardingPresenter.doFavoriteShop(dataShop, position)
+        presenter.doFavoriteShop(dataShop, position)
         analytics.eventFeedClickShop(screenName,
                 dataShop.shop.id,
                 FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE)
@@ -745,7 +745,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         activity?.let {
             if (isVisibleToUser && isAdded) {
                 if (!isLoadedOnce) {
-                    feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, false)
+                    presenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, false)
                     isLoadedOnce = !isLoadedOnce
                 }
 
@@ -794,7 +794,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
-            feedOnboardingPresenter.doFollowKol(id, rowNumber)
+            presenter.doFollowKol(id, rowNumber)
         } else {
             onGoToLogin()
         }
@@ -802,7 +802,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
-            feedOnboardingPresenter.doUnfollowKol(id, rowNumber)
+            presenter.doUnfollowKol(id, rowNumber)
         } else {
             onGoToLogin()
         }
@@ -812,7 +812,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                   activityType: String) {
         if (userSession.isLoggedIn) {
-            feedOnboardingPresenter.doLikeKol(id, rowNumber)
+            presenter.doLikeKol(id, rowNumber)
             trackCardPostElementClick(rowNumber, FeedAnalytics.Element.LIKE)
         } else {
             onGoToLogin()
@@ -822,7 +822,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                     activityType: String) {
         if (userSession.isLoggedIn) {
-            feedOnboardingPresenter.doUnlikeKol(id, rowNumber)
+            presenter.doUnlikeKol(id, rowNumber)
             trackCardPostElementClick(rowNumber, FeedAnalytics.Element.UNLIKE)
         } else {
             onGoToLogin()
@@ -862,7 +862,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         dialog.setBtnOk(getString(R.string.button_delete))
         dialog.setBtnCancel(getString(R.string.cancel))
         dialog.setOnOkClickListener {
-            feedOnboardingPresenter.doDeletePost(id, rowNumber)
+            presenter.doDeletePost(id, rowNumber)
             dialog.dismiss()
         }
         dialog.setOnCancelClickListener { dialog.dismiss() }
@@ -955,13 +955,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val userIdInt = id.toIntOrZero()
 
             if (isFollow) {
-                feedOnboardingPresenter.doUnfollowKolFromRecommendation(userIdInt, positionInFeed, adapterPosition)
+                presenter.doUnfollowKolFromRecommendation(userIdInt, positionInFeed, adapterPosition)
             } else {
-                feedOnboardingPresenter.doFollowKolFromRecommendation(userIdInt, positionInFeed, adapterPosition)
+                presenter.doFollowKolFromRecommendation(userIdInt, positionInFeed, adapterPosition)
             }
 
         } else if (type == FollowCta.AUTHOR_SHOP) {
-            feedOnboardingPresenter.doToggleFavoriteShop(positionInFeed, adapterPosition, id)
+            presenter.doToggleFavoriteShop(positionInFeed, adapterPosition, id)
         }
 
         if (adapter.getlist()[positionInFeed] is FeedRecommendationViewModel) {
@@ -995,7 +995,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
-        feedOnboardingPresenter.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
+        presenter.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
 
         if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
             val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
@@ -1043,7 +1043,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
 
             } else if (type == FollowCta.AUTHOR_SHOP) {
-                feedOnboardingPresenter.doToggleFavoriteShop(positionInFeed, 0, id)
+                presenter.doToggleFavoriteShop(positionInFeed, 0, id)
             }
 
             if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
@@ -1172,9 +1172,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
         for (track in trackList) {
             if (isClick) {
-                feedOnboardingPresenter.doTrackAffiliate(track.clickURL)
+                presenter.doTrackAffiliate(track.clickURL)
             } else {
-                feedOnboardingPresenter.doTrackAffiliate(track.viewURL)
+                presenter.doTrackAffiliate(track.viewURL)
             }
         }
     }
@@ -1194,7 +1194,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 "",
                 authorType
         )
-        feedOnboardingPresenter.doAtc(postTagItem)
+        presenter.doAtc(postTagItem)
     }
 
     override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int,
@@ -1313,13 +1313,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<InterestPickDataViewModel>) {
         view?.showLoadingTransparent()
         feedAnalytics.eventClickFeedCheckAccount(selectedItemList.size.toString())
-        feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK, OPEN_INTERESTPICK_RECOM_PROFILE)
+        presenter.submitInterestPickData(selectedItemList, FeedViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK, OPEN_INTERESTPICK_RECOM_PROFILE)
     }
 
     private fun fetchFirstPage() {
         val firstPageCursor: String = if (afterRefresh) getFirstPageCursor() else ""
         showRefresh()
-        feedOnboardingPresenter.getFeedFirstPage(firstPageCursor)
+        presenter.getFeedFirstPage(firstPageCursor)
         afterRefresh = false
     }
 
@@ -1352,10 +1352,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onSuccessSubmitInterestPickData(data : SubmitInterestResponseViewModel) {
         context?.let {
             when (data.source) {
-                FeedOnboardingViewModel.PARAM_SOURCE_SEE_ALL_CLICK -> {
+                FeedViewModel.PARAM_SOURCE_SEE_ALL_CLICK -> {
                     startActivityForResult(FeedOnboardingActivity.getCallingIntent(it, Bundle()), OPEN_INTERESTPICK_DETAIL)
                 }
-                FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK -> {
+                FeedViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK -> {
                     startActivityForResult(FollowRecomActivity.createIntent(it, data.idList.toIntArray()), OPEN_INTERESTPICK_RECOM_PROFILE)
                 }
 
@@ -1468,9 +1468,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         view?.let {
             Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
                 if (data.status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
-                    feedOnboardingPresenter.doUnfollowKol(data.id, data.rowNumber)
+                    presenter.doUnfollowKol(data.id, data.rowNumber)
                 else
-                    feedOnboardingPresenter.doFollowKol(data.id, data.rowNumber)
+                    presenter.doFollowKol(data.id, data.rowNumber)
             })
         }
     }
@@ -1532,7 +1532,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onErrorDeletePost(data : DeletePostViewModel) {
         view?.let {
             Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
-                    feedOnboardingPresenter.doDeletePost(data.id, data.rowNumber)
+                    presenter.doDeletePost(data.id, data.rowNumber)
             })
         }
     }
@@ -1617,7 +1617,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onErrorToggleFavoriteShop(data: FavoriteShopViewModel) {
         ToasterError.make(view, data.errorMessage, BaseToaster.LENGTH_LONG)
                 .setAction(R.string.title_try_again
-                ) { v -> feedOnboardingPresenter.doToggleFavoriteShop(data.rowNumber, data.adapterPosition, data.shopId) }
+                ) { v -> presenter.doToggleFavoriteShop(data.rowNumber, data.adapterPosition, data.shopId) }
                 .show()
     }
 
@@ -1635,7 +1635,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
-        feedOnboardingPresenter.doVote(rowNumber, pollId, optionId)
+        presenter.doVote(rowNumber, pollId, optionId)
     }
 
     private fun onGoToLink(link: String) {

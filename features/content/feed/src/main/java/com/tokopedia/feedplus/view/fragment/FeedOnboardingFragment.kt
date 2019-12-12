@@ -19,7 +19,7 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
-import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
+import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
@@ -59,20 +59,20 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var feedOnboardingPresenter: FeedOnboardingViewModel
+    private lateinit var feedPresenter: FeedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         selectedIdList = arguments?.getIntegerArrayList(EXTRA_SELECTED_IDS)?.toList() ?: arrayListOf()
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            feedOnboardingPresenter = viewModelProvider.get(FeedOnboardingViewModel::class.java)
+            feedPresenter = viewModelProvider.get(FeedViewModel::class.java)
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        feedOnboardingPresenter.onboardingResp.observe(this, Observer {
+        feedPresenter.onboardingResp.observe(this, Observer {
             hideLoading()
             when (it) {
                 is Success -> onSuccessGetData(it.data)
@@ -80,7 +80,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
             }
         })
 
-        feedOnboardingPresenter.submitInterestPickResp.observe(this, Observer {
+        feedPresenter.submitInterestPickResp.observe(this, Observer {
             view?.hideLoadingTransparent()
             when (it) {
                 is Success -> onSuccessSubmitInterestData(it.data)
@@ -151,12 +151,12 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         saveInterest.setOnClickListener {
             feedAnalyticTracker.eventClickFeedCheckInspiration(adapter.getSelectedItemIdList().size.toString())
             view?.showLoadingTransparent()
-            feedOnboardingPresenter.submitInterestPickData(adapter.getSelectedItems(), "", OPEN_RECOM_PROFILE)
+            feedPresenter.submitInterestPickData(adapter.getSelectedItems(), "", OPEN_RECOM_PROFILE)
         }
     }
 
     private fun loadData() {
-        feedOnboardingPresenter.getOnboardingData("",  true)
+        feedPresenter.getOnboardingData("",  true)
         showLoading()
     }
 

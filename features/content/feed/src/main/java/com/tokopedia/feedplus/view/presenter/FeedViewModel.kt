@@ -54,20 +54,20 @@ import javax.inject.Inject
 /**
  * @author by yoasfs on 2019-09-18
  */
-class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private val context: Context,
-                                                  baseDispatcher: CoroutineDispatcher,
-                                                  private val userSession: UserSessionInterface,
-                                                  private val getInterestPickUseCase: GetInterestPickUseCase,
-                                                  private val submitInterestPickUseCase: SubmitInterestPickUseCase,
-                                                  private val getDynamicFeedFirstPageUseCase: GetDynamicFeedFirstPageUseCase,
-                                                  private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-                                                  private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
-                                                  private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
-                                                  private val likeKolPostUseCase: LikeKolPostUseCase,
-                                                  private val sendVoteUseCase: SendVoteUseCase,
-                                                  private val atcUseCase: AddToCartUseCase,
-                                                  private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
-                                                  private val deletePostUseCase: DeletePostUseCase)
+class FeedViewModel @Inject constructor(@ApplicationContext private val context: Context,
+                                        baseDispatcher: CoroutineDispatcher,
+                                        private val userSession: UserSessionInterface,
+                                        private val getInterestPickUseCase: GetInterestPickUseCase,
+                                        private val submitInterestPickUseCase: SubmitInterestPickUseCase,
+                                        private val getDynamicFeedFirstPageUseCase: GetDynamicFeedFirstPageUseCase,
+                                        private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
+                                        private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
+                                        private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
+                                        private val likeKolPostUseCase: LikeKolPostUseCase,
+                                        private val sendVoteUseCase: SendVoteUseCase,
+                                        private val atcUseCase: AddToCartUseCase,
+                                        private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
+                                        private val deletePostUseCase: DeletePostUseCase)
     : BaseViewModel(baseDispatcher) {
 
     companion object {
