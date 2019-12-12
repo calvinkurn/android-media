@@ -1,13 +1,11 @@
 package com.tokopedia.play.view.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.data.Channel
-import com.tokopedia.play.data.Like
-import com.tokopedia.play.data.View
+import com.tokopedia.play.data.TotalView
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.GetChannelInfoUseCase
@@ -46,8 +44,8 @@ class PlayViewModel @Inject constructor(
     private val _observableChatList = MutableLiveData<PlayChat>()
     val observableChatList: LiveData<PlayChat> = _observableChatList
 
-    private val _observableTotalViewsSocket = MutableLiveData<View>()
-    val observableTotalViewsSocket: LiveData<View> = _observableTotalViewsSocket
+    private val _observableTotalViewsSocket = MutableLiveData<TotalView>()
+    val observableTotalViewsSocket: LiveData<TotalView> = _observableTotalViewsSocket
 
     fun getChannelInfo(channelId: String) {
         launchCatchError(block = {
@@ -75,7 +73,7 @@ class PlayViewModel @Inject constructor(
         }, onMessageReceived =  { response ->
             val socketMapper = PlaySocketMapper(response)
             when (val result = socketMapper.mapping()) {
-                is View -> {
+                is TotalView -> {
                     _observableTotalViewsSocket.value = result
                 }
 

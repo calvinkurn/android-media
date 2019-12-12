@@ -1,8 +1,8 @@
 package com.tokopedia.play.data.mapper
 
 import com.google.gson.Gson
-import com.tokopedia.play.data.Like
-import com.tokopedia.play.data.View
+import com.tokopedia.play.data.TotalLike
+import com.tokopedia.play.data.TotalView
 import com.tokopedia.websocket.WebSocketResponse
 import java.util.*
 
@@ -42,11 +42,11 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
         return null
     }
 
-    private fun mapToTotalClick(): Like {
-        return gson.fromJson(webSocketResponse.jsonObject, Like::class.java)
+    private fun mapToTotalClick(): TotalLike {
+        return gson.fromJson(webSocketResponse.jsonObject, TotalLike::class.java)
     }
 
-    private fun mapToTotalView(): View {
-        return gson.fromJson(webSocketResponse.jsonObject, View::class.java)
+    private fun mapToTotalView(): TotalView {
+        return gson.fromJson(webSocketResponse.jsonObject, TotalView::class.java)
     }
 }

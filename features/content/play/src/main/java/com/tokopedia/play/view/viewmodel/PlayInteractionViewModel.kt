@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.PARTNER_NAME_ADMIN
-import com.tokopedia.play.data.Like
+import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.domain.GetShopInfoUseCase
 import com.tokopedia.play.domain.GetTotalLikeUseCase
 import com.tokopedia.play.domain.PostFollowShopUseCase
@@ -38,8 +38,8 @@ class PlayInteractionViewModel @Inject constructor(
     private val _observableToolbarInfo = MutableLiveData<Result<TitleToolbar>>()
     val observableToolbarInfo: LiveData<Result<TitleToolbar>> = _observableToolbarInfo
 
-    private val _observableTotalLikes = MutableLiveData<Result<Like>>()
-    val observableTotalLikes: LiveData<Result<Like>> = _observableTotalLikes
+    private val _observableTotalLikes = MutableLiveData<Result<TotalLike>>()
+    val observableTotalLikes: LiveData<Result<TotalLike>> = _observableTotalLikes
 
     private fun getPeopleInfo(peopleId: String) {
         // TODO get people info / kol profile

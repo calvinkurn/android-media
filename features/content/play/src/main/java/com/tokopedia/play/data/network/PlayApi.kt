@@ -3,10 +3,9 @@ package com.tokopedia.play.data.network
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.play.*
 import com.tokopedia.play.data.Channel
-import com.tokopedia.play.data.Like
+import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.data.StickyComponent
 import com.tokopedia.play.data.VideoStream
-import kotlinx.coroutines.Deferred
 import retrofit2.http.Field
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -36,7 +35,7 @@ interface PlayApi {
     @GET(PLAY_GET_TOTAL_LIKES)
     suspend fun getTotalLike(
             @Path(PLAY_KEY_CHANNEL_ID) channelId: String
-    ): DataResponse<Like>
+    ): DataResponse<TotalLike>
 
     @POST(PLAY_POST_LIKE)
     suspend fun postLike(

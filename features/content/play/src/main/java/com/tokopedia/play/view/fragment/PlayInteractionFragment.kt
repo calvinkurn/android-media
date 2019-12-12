@@ -153,12 +153,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             }
         })
 
-        playViewModel.observableTotalViewsSocket.observe(viewLifecycleOwner, Observer {
-            launch {
-                setTotalView(it.totalView)
-            }
-        })
-
         viewModel.observableToolbarInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
@@ -182,6 +176,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 is Fail -> {
                     showToast("don't forget to handle when get total likes return error ")
                 }
+            }
+        })
+
+        playViewModel.observableTotalViewsSocket.observe(viewLifecycleOwner, Observer {
+            launch {
+                setTotalView(it.totalView)
             }
         })
     }
@@ -258,7 +258,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             likeComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            LikeInteractionEvent.LikeClicked -> showToast("Like Clicked")
+                            LikeInteractionEvent.LikeClicked -> showToast("TotalLike Clicked")
                         }
                     }
         }
