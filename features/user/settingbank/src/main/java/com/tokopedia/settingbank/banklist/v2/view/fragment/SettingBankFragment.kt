@@ -168,7 +168,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     private fun openCheckDataBottomSheet(kycInfo: KYCInfo) {
-        val kycInfo = KYCInfo("Jodhi Adhikaprana", true, true)
         if (!::confirmAccountBottomSheet.isInitialized) {
             activity?.let {
                 confirmAccountBottomSheet = AccountConfirmationBottomSheet(it, kycInfo)
