@@ -379,6 +379,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             when (it) {
                 is Success -> {
                     pdpHashMapUtil.updateRecomData(it.data)
+                    dynamicAdapter.removeRecommendation(pdpHashMapUtil.getEmptyRecomData())
                     dynamicAdapter.notifyRecomAdapter(pdpHashMapUtil.listProductRecomMap)
                 }
                 is Fail -> dynamicAdapter.removeRecommendation(pdpHashMapUtil.listProductRecomMap)
@@ -720,17 +721,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     override fun onInfoClicked(name: String) {
         when (name) {
-            "shipping_info" -> {
+            ProductDetailConstant.PRODUCT_SHIPPING_INFO -> {
                 onShipmentClicked()
             }
-            "cicilan_info" -> {
+            ProductDetailConstant.PRODUCT_INSTALLMENT_INFO -> {
                 openFtInstallmentBottomSheet(viewModel.installmentData ?: FinancingDataResponse())
             }
-            "variant" -> {
+            ProductDetailConstant.PRODUCT_VARIANT_INFO -> {
                 productDetailTracking.eventClickVariant(generateVariantString(), productId ?: "")
                 goToNormalCheckout(ATC_AND_BUY)
             }
-            "wholesale" -> {
+            ProductDetailConstant.PRODUCT_WHOLESALE_INFO -> {
                 val data = DynamicProductDetailMapper.mapToWholesale(viewModel.getDynamicProductInfoP1?.data?.wholesale)
                 if (data != null && data.isNotEmpty()) {
                     context?.run {
@@ -1261,7 +1262,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
     private fun loadProductData(forceRefresh: Boolean = false) {
-        productId = "569576426"
+        productId = "517704393"
         if (productId != null || (productKey != null && shopDomain != null)) {
             viewModel.getProductP1(ProductParams(productId, shopDomain, productKey), true)
         }

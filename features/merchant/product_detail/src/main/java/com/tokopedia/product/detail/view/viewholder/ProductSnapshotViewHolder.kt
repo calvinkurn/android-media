@@ -37,7 +37,8 @@ class ProductSnapshotViewHolder(private val view: View,
                 if (nearestWarehouse.warehouseInfo.id.isNotBlank())
                     header.updateStockAndPriceWarehouse(nearestWarehouse, it.data.campaign)
             }
-//            renderValueProposition(it.data.isOS)
+            view.view_picture_search_bar.renderShopStatusDynamicPdp(element.shopStatus,element.statusTitle,element.statusMessage,
+                    it.basic.status)
         }
 
         renderWishlist(element.isAllowManage, element.isWishlisted)
@@ -125,24 +126,4 @@ class ProductSnapshotViewHolder(private val view: View,
         }
     }
 
-//
-//    private fun renderValueProposition(isOfficialStore: Boolean) {
-//        if (isOfficialStore) {
-//            view.layout_value_proposition.show()
-//            view.container_ori.setOnClickListener {
-//                listener.onValuePropositionClicked(R.id.container_ori)
-//            }
-//
-//            view.container_guarantee_7_days.setOnClickListener {
-//                listener.onValuePropositionClicked(R.id.container_guarantee_7_days)
-//            }
-//
-//            view.container_ready.setOnClickListener {
-//                listener.onValuePropositionClicked(R.id.container_ready)
-//            }
-//
-//        } else {
-//            view.layout_value_proposition.hide()
-//        }
-//    }
 }

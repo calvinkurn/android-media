@@ -84,7 +84,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view, listener)
             ProductMostHelpfulReviewViewHolder.LAYOUT -> ProductMostHelpfulReviewViewHolder(view, listener)
             ProductSeparatorViewHolder.LAYOUT -> ProductSeparatorViewHolder(view)
-            ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view)
+            ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view,listener)
             else -> super.createViewHolder(view, type)
         }
     }

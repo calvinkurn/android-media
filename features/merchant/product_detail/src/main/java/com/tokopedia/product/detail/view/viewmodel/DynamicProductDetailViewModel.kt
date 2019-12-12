@@ -21,7 +21,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTradeinDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -197,15 +196,18 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         }
     }
 
-    private suspend fun getProductV2(){
+    private suspend fun getProductV2() {
 
     }
 
     private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPDPDataModel>) {
+        val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
+        val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
+
         val removedData = initialLayoutData.map {
-            if (getDynamicProductInfoP1?.data?.isTradeIn == false && it is ProductTradeinDataModel && it.name == ProductDetailConstant.TRADE_IN) {
+            if (!isTradein && it is ProductTradeinDataModel && it.name == ProductDetailConstant.TRADE_IN) {
                 it
-            } else if (getDynamicProductInfoP1?.data?.hasWholesale == false && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
+            } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
                 it
             } else {
                 null
@@ -424,31 +426,6 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
     fun cancelEtalaseUseCase() {
         moveProductToEtalaseUseCase.cancelJobs()
-    }
-
-    private fun removeWholesale(initialLayoutData: MutableList<DynamicPDPDataModel>) {
-        var wholesalePosition = -1
-        initialLayoutData.forEachIndexed { index, dynamicPDPDataModel ->
-            if (dynamicPDPDataModel is ProductGeneralInfoDataModel && dynamicPDPDataModel.name == "wholesale") {
-                wholesalePosition = index
-                return@forEachIndexed
-            }
-        }
-        if (wholesalePosition != -1)
-            initialLayoutData.remove(initialLayoutData.toMutableList().removeAt(wholesalePosition))
-
-    }
-
-    private fun removeTradein(initialLayoutData: MutableList<DynamicPDPDataModel>) {
-        var tradeInPosition = -1
-        initialLayoutData.forEachIndexed { index, dynamicPDPDataModel ->
-            if (dynamicPDPDataModel is ProductTradeinDataModel) {
-                tradeInPosition = index
-                return@forEachIndexed
-            }
-        }
-        if (tradeInPosition != -1)
-            initialLayoutData.remove(initialLayoutData.toMutableList().removeAt(tradeInPosition))
     }
 
     private fun mapSelectedProductVariants(userInputVariant: String?): ArrayMap<String, ArrayMap<String, String>>? {

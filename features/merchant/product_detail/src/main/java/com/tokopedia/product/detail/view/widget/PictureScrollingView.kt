@@ -94,6 +94,22 @@ class PictureScrollingView @JvmOverloads constructor(
         }
     }
 
+    fun renderShopStatusDynamicPdp(shopStatus: Int, statusTitle: String, statusMessage: String, productStatus: String, productStatusTitle: String = "", productStatusMessage: String = "") {
+        when {
+            shopStatus != SHOP_STATUS_ACTIVE -> {
+                error_product_container.visible()
+                error_product_title.text = MethodChecker.fromHtml(statusTitle)
+                error_product_descr.text = MethodChecker.fromHtml(statusMessage)
+            }
+            productStatus != ProductStatusTypeDef.ACTIVE -> {
+                error_product_container.visible()
+                error_product_title.text = productStatusTitle
+                error_product_descr.text = productStatusMessage
+            }
+            else -> error_product_container.gone()
+        }
+    }
+
     companion object {
         private const val SHOP_STATUS_ACTIVE = 1
     }

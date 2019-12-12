@@ -38,11 +38,11 @@ class ProductRecommendationViewHolder(private val view: View,
                     listener.onSeeAllRecomClicked(pageName, seeMoreAppLink)
                 }
             }
-            initAdapter(this)
+            initAdapter(this, element.cardModel)
         }
     }
 
-    private fun initAdapter(product: RecommendationWidget) {
+    private fun initAdapter(product: RecommendationWidget, cardModel: List<ProductCardModel>?) {
         view.product_recom_1.initCarouselProductCardView(
                 parentView = view,
                 isScrollable = true,
@@ -81,46 +81,6 @@ class ProductRecommendationViewHolder(private val view: View,
                                 product.title)
                     }
                 },
-                productCardModelList = product.recommendationItemList.map {
-                    ProductCardModel(
-                            slashedPrice = it.slashedPrice,
-                            productName = it.name,
-                            formattedPrice = it.price,
-                            productImageUrl = it.imageUrl,
-                            isTopAds = it.isTopAds,
-                            discountPercentage = it.discountPercentage,
-                            reviewCount = it.countReview,
-                            ratingCount = it.rating,
-                            shopLocation = it.location,
-                            isWishlistVisible = false,
-                            isWishlisted = it.isWishlist,
-                            shopBadgeList = it.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it ?: "")
-                            },
-                            freeOngkir = ProductCardModel.FreeOngkir(
-                                    isActive = it.isFreeOngkirActive,
-                                    imageUrl = it.freeOngkirImageUrl
-                            ),
-                            labelPromo = ProductCardModel.Label(
-                                    title = it.labelPromo.title,
-                                    type = it.labelPromo.type
-                            ),
-                            labelCredibility = ProductCardModel.Label(
-                                    title = it.labelCredibility.title,
-                                    type = it.labelCredibility.type
-                            ),
-                            labelOffers = ProductCardModel.Label(
-                                    title = it.labelOffers.title,
-                                    type = it.labelOffers.type
-                            )
-                    )
-                })
-    }
-
-    override fun bind(element: ProductRecommendationDataModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        if (element == null || payloads.isEmpty()) {
-            return
-        }
+                productCardModelList = cardModel ?: listOf())
     }
 }

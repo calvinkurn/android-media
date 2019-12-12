@@ -19,12 +19,17 @@ data class ProductSnapshotDataModel(
         var nearestWarehouse: MultiOriginWarehouse? = null,
         var shouldShowCod: Boolean = false,
         var shouldShowTradein: Boolean = false,
-        var shouldReinitVideoPicture: Boolean = true
+        var shouldReinitVideoPicture: Boolean = true,
+
+        var statusTitle: String = "",
+        var statusMessage: String = "",
+        var shopStatus: Int = SHOP_STATUS_ACTIVE
 ) : DynamicPDPDataModel {
     override fun name(): String = name
     override fun type(): String = type
 
     companion object {
+        const val SHOP_STATUS_ACTIVE = 1
         val LAYOUT = R.layout.item_dynamic_pdp_snapshot
     }
 

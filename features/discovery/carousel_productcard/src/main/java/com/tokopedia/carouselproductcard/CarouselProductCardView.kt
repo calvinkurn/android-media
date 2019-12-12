@@ -82,11 +82,11 @@ class CarouselProductCardView: BaseCustomView {
         }
 
         carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
-        carouselAdapter = CarouselProductCardAdapter(productCardModelList, isScrollable, carouselProductCardListenerInfo, getMaxProductCardContentHeight(productCardModelList))
         carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
         carouselProductCardRecyclerView.itemAnimator = null
         carouselProductCardRecyclerView.setHasFixedSize(true)
         if (carouselProductCardRecyclerView.adapter == null) {
+            carouselAdapter = CarouselProductCardAdapter(productCardModelList, isScrollable, carouselProductCardListenerInfo, getMaxProductCardContentHeight(productCardModelList))
             carouselProductCardRecyclerView?.adapter = carouselAdapter
         }
     }

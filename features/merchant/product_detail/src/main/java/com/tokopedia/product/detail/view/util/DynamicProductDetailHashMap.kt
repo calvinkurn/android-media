@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
+import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 class DynamicProductDetailHashMap(private val context: Context, private val mapOfData: Map<String, DynamicPDPDataModel>) {
@@ -117,6 +118,9 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             snapShotMap.run {
                 isAllowManage = it.shopInfo?.isAllowManage ?: 0
                 nearestWarehouse = it.nearestWarehouse
+                statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
+                statusTitle = it.shopInfo?.statusInfo?.statusMessage ?: ""
+                shopStatus = it.shopInfo?.statusInfo?.shopStatus ?: 1
             }
 
             productInfoMap?.run {
@@ -166,25 +170,35 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                     ProductDetailConstant.PDP_1 -> {
                         data.getOrNull(0)?.let { recom ->
                             it.recomWidgetData = recom
+                            it.cardModel = mapToCardModel(recom)
                         }
                     }
                     ProductDetailConstant.PDP_2 -> {
                         data.getOrNull(1)?.let { recom ->
                             it.recomWidgetData = recom
+                            it.cardModel = mapToCardModel(recom)
                         }
                     }
                     ProductDetailConstant.PDP_3 -> {
                         data.getOrNull(2)?.let { recom ->
                             it.recomWidgetData = recom
+                            it.cardModel = mapToCardModel(recom)
                         }
                     }
                     ProductDetailConstant.PDP_4 -> {
                         data.getOrNull(3)?.let { recom ->
                             it.recomWidgetData = recom
+                            it.cardModel = mapToCardModel(recom)
                         }
                     }
                 }
             }
+        }
+    }
+
+    fun getEmptyRecomData(): List<ProductRecommendationDataModel>? {
+        return listProductRecomMap?.filter { recom ->
+            recom.recomWidgetData == null || recom.recomWidgetData?.recommendationItemList?.isEmpty() == true
         }
     }
 
@@ -201,4 +215,42 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         }
     }
 
+    private fun mapToCardModel(data: RecommendationWidget): List<ProductCardModel> {
+        return data.recommendationItemList.map {
+            ProductCardModel(
+                    slashedPrice = it.slashedPrice,
+                    productName = it.name,
+                    formattedPrice = it.price,
+                    productImageUrl = it.imageUrl,
+                    isTopAds = it.isTopAds,
+                    discountPercentage = it.discountPercentage,
+                    reviewCount = it.countReview,
+                    ratingCount = it.rating,
+                    shopLocation = it.location,
+                    isWishlistVisible = false,
+                    isWishlisted = it.isWishlist,
+                    shopBadgeList = it.badgesUrl.map {
+                        ProductCardModel.ShopBadge(imageUrl = it ?: "")
+                    },
+                    freeOngkir = ProductCardModel.FreeOngkir(
+                            isActive = it.isFreeOngkirActive,
+                            imageUrl = it.freeOngkirImageUrl
+                    ),
+                    labelPromo = ProductCardModel.Label(
+                            title = it.labelPromo.title,
+                            type = it.labelPromo.type
+                    ),
+                    labelCredibility = ProductCardModel.Label(
+                            title = it.labelCredibility.title,
+                            type = it.labelCredibility.type
+                    ),
+                    labelOffers = ProductCardModel.Label(
+                            title = it.labelOffers.title,
+                            type = it.labelOffers.type
+                    )
+            )
+
+        }
+
+    }
 }
