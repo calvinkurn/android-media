@@ -5,6 +5,7 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.PlayVODType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -27,6 +28,8 @@ class PinnedComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.SetPinned -> uiView.setPinnedMessage(it.author, it.message)
+                            is ScreenStateEvent.SetVideo ->
+                                if (it.vodType is PlayVODType.Live) uiView.show() else uiView.hide()
                         }
                     }
         }

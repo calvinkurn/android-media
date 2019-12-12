@@ -51,7 +51,7 @@ class EventBusFactory private constructor(val owner: LifecycleOwner) {
     }
 
     private fun <T> create(clazz: Class<T>): BroadcastChannel<T> {
-        val channel = BroadcastChannel<T>(Channel.CONFLATED)
+        val channel = BroadcastChannel<T>(Channel.BUFFERED)
         map[clazz] = channel
         return channel
     }

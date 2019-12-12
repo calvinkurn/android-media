@@ -1,31 +1,58 @@
 package com.tokopedia.play.view.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.view.fragment.PlayFragment
-import com.tokopedia.play.view.fragment.PlayInteractionFragment
+import com.tokopedia.play_common.util.PlayLifecycleObserver
+import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalContent#PLAY_DETAIL}
  */
 class PlayActivity : BaseActivity() {
+
+    companion object {
+        fun createIntent(context: Context, channelId: Int) = Intent(context, PlayActivity::class.java).apply {
+            putExtra(PLAY_KEY_CHANNEL_ID, channelId.toString())
+        }
+    }
+
+    @Inject
+    lateinit var playLifecycleObserver: PlayLifecycleObserver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
 
+        inject()
+        lifecycle.addObserver(playLifecycleObserver)
+
         initView()
         setupView()
     }
 
-    private fun getFragment(): Fragment {
-        return PlayFragment.newInstance()
+    private fun inject() {
+        DaggerPlayComponent.builder()
+                .baseAppComponent(
+                        (applicationContext as BaseMainApplication).baseAppComponent
+                )
+                .build()
+                .inject(this)
     }
 
-    private fun initView() {
+    private fun getFragment(): Fragment {
+        return PlayFragment.newInstance(intent?.getStringExtra(PLAY_KEY_CHANNEL_ID).orEmpty())
     }
+
+    private fun initView() {}
 
     private fun setupView() {
         supportFragmentManager.beginTransaction()

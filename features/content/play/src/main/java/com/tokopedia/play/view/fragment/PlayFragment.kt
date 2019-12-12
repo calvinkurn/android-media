@@ -9,9 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
-import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -23,15 +23,15 @@ import javax.inject.Inject
 class PlayFragment : BaseDaggerFragment() {
 
     companion object {
-
-        // TODO retrieve channelId
-        fun newInstance(): PlayFragment {
-            return PlayFragment()
+        fun newInstance(channelId: String): PlayFragment {
+            return PlayFragment().apply {
+                arguments?.putString(PLAY_KEY_CHANNEL_ID, channelId)
+            }
         }
     }
 
-    // TODO remove this hardcoded channelId (1543, 1591, 1387)
-    private var channelId = "1591"
+    // TODO available channelId: 1543, 1591, 1387
+    private var channelId = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -50,6 +50,11 @@ class PlayFragment : BaseDaggerFragment() {
                 .inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID)?:"1387" // TODO remove default value, handle channel_id not found
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         return inflater.inflate(R.layout.fragment_play, container, false)
@@ -58,13 +63,15 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireFragmentManager().beginTransaction()
+        childFragmentManager.beginTransaction()
                 .replace(R.id.fl_video, PlayVideoFragment.newInstance())
                 .commit()
 
-        requireFragmentManager().beginTransaction()
+        childFragmentManager.beginTransaction()
                 .replace(R.id.fl_interaction, PlayInteractionFragment.newInstance())
                 .commit()
+
+        playViewModel.initVideo()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -82,6 +89,4 @@ class PlayFragment : BaseDaggerFragment() {
             }
         })
     }
-
-
 }

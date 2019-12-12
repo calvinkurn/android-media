@@ -7,6 +7,7 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -25,7 +26,7 @@ class VideoComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Play -> uiView.setPlayer(it.exoPlayer)
+                            is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.vodType.exoPlayer)
                         }
                     }
         }
@@ -36,7 +37,7 @@ class VideoComponent(
     }
 
     override fun getUserInteractionEvents(): Flow<Unit> {
-        throw IllegalArgumentException()
+        return emptyFlow()
     }
 
     private fun initUiView(container: ViewGroup): VideoView =

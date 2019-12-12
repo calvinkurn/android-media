@@ -6,6 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.data.Channel
 import com.tokopedia.play.domain.GetChannelInfoUseCase
+import com.tokopedia.play.view.type.PlayVODType
+import com.tokopedia.play_common.player.TokopediaPlayManager
+import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,13 +25,25 @@ import javax.inject.Inject
 /**
  * Created by jegul on 29/11/19
  */
-class PlayViewModel @Inject constructor(private val getChannelInfoUseCase: GetChannelInfoUseCase,
-                                        private val userSessionInterface: UserSessionInterface,
-                                        dispatchers: CoroutineDispatcher) :
-        BaseViewModel(dispatchers) {
+class PlayViewModel @Inject constructor(
+        private val playManager: TokopediaPlayManager,
+        private val getChannelInfoUseCase: GetChannelInfoUseCase,
+        private val userSessionInterface: UserSessionInterface,
+        dispatchers: CoroutineDispatcher
+) : BaseViewModel(dispatchers) {
+
+    val observableVOD: LiveData<PlayVODType>
+        get() = _observableVOD
+
+    val observableVideoState: LiveData<TokopediaPlayVideoState>
+        get() = playManager.getObservablePlayVideoState()
 
     val observeChannel: LiveData<Result<Channel>>
         get() = _channelInfoResult
+
+    private val _observableVOD by lazy {
+        MutableLiveData<PlayVODType>()
+    }
 
     private val _channelInfoResult by lazy {
         MutableLiveData<Result<Channel>>()
@@ -46,6 +61,10 @@ class PlayViewModel @Inject constructor(private val getChannelInfoUseCase: GetCh
         }
     }
 
+    fun startCurrentVideo() {
+        playManager.resumeCurrentVideo()
+    }
+
     fun startWebsocket(url: String) {
         val websocketSubscriber = object : WebSocketSubscriber() {
 
@@ -58,7 +77,7 @@ class PlayViewModel @Inject constructor(private val getChannelInfoUseCase: GetCh
             }
 
             override fun onMessage(webSocketResponse: WebSocketResponse) {
-
+                // TODO create mapper => PlayPresenter.kt
             }
 
             override fun onError(e: Throwable) {
@@ -68,5 +87,17 @@ class PlayViewModel @Inject constructor(private val getChannelInfoUseCase: GetCh
 
         val websocket = RxWebSocket[url, userSessionInterface.accessToken]
         websocket?.subscribe(websocketSubscriber)
+    }
+
+    fun initVideo() {
+//        startVideoWithUrlString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4", false)
+        startVideoWithUrlString("rtmp://fms.105.net/live/rmc1", true)
+    }
+
+    private fun startVideoWithUrlString(urlString: String, isLive: Boolean) {
+        playManager.safePlayVideoWithUriString(urlString, isLive)
+        _observableVOD.value =
+                if (isLive) PlayVODType.Live(playManager.videoPlayer)
+                else PlayVODType.Replay(playManager.videoPlayer)
     }
 }

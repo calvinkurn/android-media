@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.stats
 import android.view.ViewGroup
 import com.tokopedia.play.component.UIComponent
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 /**
  * Created by jegul on 03/12/19
@@ -18,7 +19,7 @@ class StatsComponent(
     }
 
     override fun getUserInteractionEvents(): Flow<Unit> {
-        throw IllegalArgumentException()
+        return emptyFlow()
     }
 
     private fun initView(container: ViewGroup): StatsView =
