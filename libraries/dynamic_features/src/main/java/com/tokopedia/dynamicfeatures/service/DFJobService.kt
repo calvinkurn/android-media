@@ -8,10 +8,11 @@ import android.content.Intent
 import android.os.Build
 import android.os.PersistableBundle
 import androidx.core.app.JobIntentService
+import com.tokopedia.dynamicfeatures.DFInstaller
 import java.util.concurrent.TimeUnit
 
 /**
- * Created by hendry on 11/12/19.
+ * Service to retry installation of Dynamic Feature Module in background
  */
 class DFJobService : JobIntentService() {
     companion object {
@@ -20,24 +21,13 @@ class DFJobService : JobIntentService() {
         const val DELAY_SERVICE_IN_SECOND = 15L
         const val SHARED_PREF_NAME = "df_job_srv"
         const val KEY_SHARED_PREF_MODULE = "module_list"
-        const val DELIMITER = ";"
+        const val DELIMITER = "#"
+        const val DELIMITER_2 = ":"
+        const val MAX_ATTEMPT_DOWNLOAD = 3
 
         var isServiceRunning = false
 
-        private fun getDFModuleList(context: Context):List<String>?{
-            try {
-                val sp = context.getSharedPreferences(
-                    SHARED_PREF_NAME,
-                    Context.MODE_PRIVATE
-                )
-                val moduleList = sp.getString(KEY_SHARED_PREF_MODULE, "")
-                return moduleList?.split(DELIMITER)
-            } catch (e:Exception) {
-                return null
-            }
-        }
-
-        fun startService(context:Context, moduleListToDownload: List<String>) {
+        fun startService(context:Context, moduleListToDownload: List<String>? = null) {
             if (isServiceRunning) {
                 return
             }
@@ -47,7 +37,7 @@ class DFJobService : JobIntentService() {
                     val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler
                         ?: return
                     val bundle = PersistableBundle().apply {
-                        putString(KEY_MODULE_LIST, moduleListToDownload.joinToString(DELIMITER))
+                        putString(KEY_MODULE_LIST, moduleListToDownload?.joinToString(DELIMITER) ?: "")
                     }
 
                     jobScheduler.schedule(JobInfo.Builder(DFJobService.JOB_ID,
@@ -58,7 +48,7 @@ class DFJobService : JobIntentService() {
                         .build())
                 } else {
                     val intent = Intent(context, DFJobService::class.java).apply {
-                        putExtra (KEY_MODULE_LIST, moduleListToDownload.joinToString(DELIMITER))
+                        putExtra (KEY_MODULE_LIST, moduleListToDownload?.joinToString(DELIMITER) ?: "")
                     }
                     enqueueWork(context, DFJobService::class.java, JOB_ID, intent)
                 }
@@ -73,8 +63,70 @@ class DFJobService : JobIntentService() {
         }
         isServiceRunning = true
 
-        //DO WORK HERE
+        //get module list from intent
+        val moduleListString = intent.getStringExtra(KEY_MODULE_LIST)
+        val moduleList = if (moduleListString.isEmpty()) {
+            listOf()
+        } else {
+            moduleListString.split(DELIMITER)
+        }
 
+        // combine module List with the queue
+        val queueList = DFMDownloadQueue.getDFModuleList(this)
+
+        val combinedPairList = if (queueList == null || queueList.isEmpty()) {
+            moduleList.map { Pair(it, 1) }
+        } else {
+            combineList(moduleList, queueList)
+        }
+        DFMDownloadQueue.putDFModuleList(this, combinedPairList)
+        val combinedList = combinedPairList.map { it.first }
+        if (combinedList.isEmpty()) {
+            endService()
+            return
+        }
+        DFInstaller().installOnBackground(application, combinedList, onSuccessInstall = {
+            DFMDownloadQueue.putDFModuleList(this, null)
+            endService()
+        }, onFailedInstall = {
+            // loop all combined list
+            // if installed, remove from list
+            // if not installed, flag++
+            val iterator = combinedPairList.iterator();
+            val combinedListAfterInstall = mutableListOf<Pair<String, Int>>()
+            while (iterator.hasNext()) {
+                val moduleNamePair = iterator.next()
+                if (DFInstaller.manager?.installedModules?.contains(moduleNamePair.first) != true) {
+                    if (moduleNamePair.second < MAX_ATTEMPT_DOWNLOAD) {
+                        combinedListAfterInstall.add(Pair(moduleNamePair.first, moduleNamePair.second + 1))
+                    }
+                }
+            }
+            if (combinedListAfterInstall.isNotEmpty()) {
+                DFMDownloadQueue.putDFModuleList(this, combinedListAfterInstall)
+            }
+            endService()
+        })
+    }
+
+    /***
+     * @param moduleList module To download, requested directly
+     * @param queueList module To download, requested previously and get from the local storage
+     * @return combinedList
+     */
+    private fun combineList(moduleList:List<String>, queueList:List<Pair<String,Int>>): List<Pair<String, Int>> {
+        val list =  moduleList.map { Pair(it, 1) }.toMutableList()
+        queueList.forEach {
+            if (it.second < MAX_ATTEMPT_DOWNLOAD) {
+                if (!moduleList.contains(it.first)) {
+                    list.add(Pair(it.first, it.second))
+                }
+            }
+        }
+        return list
+    }
+
+    private fun endService(){
         isServiceRunning = false
     }
 
