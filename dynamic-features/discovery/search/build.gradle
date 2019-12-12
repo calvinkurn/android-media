@@ -51,4 +51,5 @@ dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
     implementation project(rootProject.ext.features.search)
+    implementation project(rootProject.ext.features.autocomplete)
 }
