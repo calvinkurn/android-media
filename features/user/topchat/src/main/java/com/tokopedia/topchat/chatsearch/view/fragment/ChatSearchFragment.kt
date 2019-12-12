@@ -3,17 +3,19 @@ package com.tokopedia.topchat.chatsearch.view.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.snackbar.Snackbar
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import javax.inject.Inject
 
 /**
@@ -29,11 +31,38 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        renderList(emptyList())
+        setupRecyclerView()
+        setupObserver()
+    }
+
+    private fun setupRecyclerView() {
+        view?.findViewById<VerticalRecyclerView>(recyclerViewResourceId)?.apply {
+            clearItemDecoration()
+            overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+            setPadding(paddingLeft, 16.toPx(), paddingRight, 16.toPx())
+            clipToPadding = false
+        }
+    }
+
+    private fun setupObserver() {
+        viewModel.searchResult.observe(viewLifecycleOwner, Observer {
+            renderList(it, viewModel.hasNext)
+        })
+        viewModel.loadInitialData.observe(viewLifecycleOwner, Observer {
+            if (!it) return@Observer
+            clearAllData()
+            showLoading()
+        })
+        viewModel.showEmpty.observe(viewLifecycleOwner, Observer {
+            if (!it) return@Observer
+            clearAllData()
+            showEmpty()
+        })
     }
 
     override fun onSearchQueryChanged(query: String) {
         viewModel.onSearchQueryChanged(query)
-        showLoading()
     }
 
     override fun loadData(page: Int) {

@@ -21,7 +21,6 @@
             android:id="@+id/ivBack"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_44"
-            android:background="?selectableItemBackgroundBorderless"
             android:paddingStart="@dimen/dp_12"
             android:paddingTop="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_12"

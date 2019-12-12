@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.di.DaggerChatSearchComponent
@@ -98,9 +98,7 @@ class ChatSearchActivity : BaseSimpleActivity(),
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(query: CharSequence?, start: Int, before: Int, count: Int) {
             if (query == null) return
-            if (query.isEmpty()) {
-                ivClear?.hide()
-            }
+            ivClear?.showWithCondition(query.isNotEmpty())
             val searchText = query.toString().trim()
             if (searchText == searchFor) return
             searchFor = searchText

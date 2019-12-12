@@ -1,9 +1,11 @@
 package com.tokopedia.topchat.chatsearch.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
+import com.tokopedia.topchat.chatsearch.data.SearchResult
 import com.tokopedia.topchat.chatsearch.usecase.GetSearchQueryUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -13,16 +15,28 @@ class ChatSearchViewModel @Inject constructor(
         private val getSearchQueryUseCase: GetSearchQueryUseCase
 ) : BaseViewModel(dispatcher) {
 
-    var searchResult = MutableLiveData<String>()
+    val hasNext: Boolean get() = getSearchQueryUseCase.hasNext
+
+    var loadInitialData = MutableLiveData<Boolean>()
+    var showEmpty = MutableLiveData<Boolean>()
+
+    private var _searchResults = MutableLiveData<List<SearchResult>>()
+    val searchResult: LiveData<List<SearchResult>>
+        get() = _searchResults
 
     var query: String = ""
     var page: Int = 1
 
     fun onSearchQueryChanged(newQuery: String) {
-        if (newQuery == query || newQuery.isEmpty()) return
-        if (getSearchQueryUseCase.isSearching) getSearchQueryUseCase.cancelRunningSearch()
+        if (newQuery == query) return
         query = newQuery
         page = 1
+        if (query.isEmpty()) {
+            showEmpty.postValue(true)
+            return
+        }
+        if (getSearchQueryUseCase.isSearching) getSearchQueryUseCase.cancelRunningSearch()
+        loadInitialData.postValue(true)
         doSearch()
     }
 
@@ -38,8 +52,8 @@ class ChatSearchViewModel @Inject constructor(
     }
 
     private fun onSuccessDoSearch(response: GetChatSearchResponse) {
-        val searchResults = response.chatSearch.contact.data
-        Log.d("DO_SEARCH", "query: $query, page: $page")
+        val searchResults = response.chatSearch.contact.searchResults
+        _searchResults.postValue(searchResults)
     }
 
     private fun onErrorDoSearch(throwable: Throwable) {
