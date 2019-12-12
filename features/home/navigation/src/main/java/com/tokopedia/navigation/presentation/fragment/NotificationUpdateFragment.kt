@@ -380,8 +380,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             longerTextDialog.arguments = bundle
         }
 
-        if (!longerTextDialog.isAdded)
+        if (!longerTextDialog.isAdded  && longerTextDialog.dialog?.isShowing == false) {
             longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
+        }
     }
 
     override fun trackNotificationImpression(element: NotificationUpdateItemViewModel) {
