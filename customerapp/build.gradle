@@ -588,8 +588,8 @@ dependencies {
 
 
     if (enableHermes) {
-        debugImplementation 'com.facebook.hermes:hermes-debug:0.0.1@aar'
-        releaseImplementation 'com.facebook.hermes:hermes-release:0.0.1@aar'
+        debugImplementation 'com.facebook.hermes:hermes-debug:0.1.2@aar'
+        releaseImplementation 'com.facebook.hermes:hermes-release:0.1.2@aar'
     } else {
         implementation jscFlavor
     }
