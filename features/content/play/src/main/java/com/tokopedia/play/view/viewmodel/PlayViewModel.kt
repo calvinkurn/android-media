@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.data.Channel
+import com.tokopedia.play.data.Like
+import com.tokopedia.play.data.View
+import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.GetChannelInfoUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
@@ -43,6 +46,9 @@ class PlayViewModel @Inject constructor(
     private val _observableChatList = MutableLiveData<PlayChat>()
     val observableChatList: LiveData<PlayChat> = _observableChatList
 
+    private val _observableTotalViewsSocket = MutableLiveData<View>()
+    val observableTotalViewsSocket: LiveData<View> = _observableTotalViewsSocket
+
     fun getChannelInfo(channelId: String) {
         launchCatchError(block = {
             val response = withContext(Dispatchers.IO) {
@@ -62,16 +68,20 @@ class PlayViewModel @Inject constructor(
     fun startWebSocket(channelId: String, gcToken: String) {
         playSocket.channelId = channelId
         playSocket.gcToken = gcToken
-        playSocket.connect(onOpen = {
-            Log.wtf("Meyta", "socket open")
+        playSocket.connect( onOpen ={
+            // Todo, handle on open web socket
         }, onClose =  {
-            Log.wtf("Meyta", "socket close")
+            // Todo, handle on close web socket
         }, onMessageReceived =  { response ->
-            // PlayWebsocketMapper > response
-            Log.wtf("Meyta", "message: ${response.type}")
-        }, onError = {
+            val socketMapper = PlaySocketMapper(response)
+            when (val result = socketMapper.mapping()) {
+                is View -> {
+                    _observableTotalViewsSocket.value = result
+                }
 
-            Log.wtf("Meyta", "error")
+            }
+        }, onError = {
+            // Todo, handle on error web socket
         })
     }
 

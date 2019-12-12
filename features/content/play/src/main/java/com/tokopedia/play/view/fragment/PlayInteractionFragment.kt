@@ -153,6 +153,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             }
         })
 
+        playViewModel.observableTotalViewsSocket.observe(viewLifecycleOwner, Observer {
+            launch {
+                setTotalView(it.totalView)
+            }
+        })
+
         viewModel.observableToolbarInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
