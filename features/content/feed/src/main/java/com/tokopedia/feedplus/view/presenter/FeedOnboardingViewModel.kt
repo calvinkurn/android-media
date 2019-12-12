@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
@@ -31,6 +32,8 @@ import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
 import com.tokopedia.feedplus.view.viewmodel.VoteViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -45,6 +48,7 @@ import com.tokopedia.vote.domain.usecase.SendVoteUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 /**
@@ -62,6 +66,7 @@ class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private va
                                                   private val likeKolPostUseCase: LikeKolPostUseCase,
                                                   private val sendVoteUseCase: SendVoteUseCase,
                                                   private val atcUseCase: AddToCartUseCase,
+                                                  private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
                                                   private val deletePostUseCase: DeletePostUseCase)
     : BaseViewModel(baseDispatcher) {
 
@@ -84,6 +89,8 @@ class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private va
     val voteResp = MutableLiveData<Result<VoteViewModel>>()
     val deletePostResp = MutableLiveData<Result<DeletePostViewModel>>()
     val atcResp = MutableLiveData<Result<AtcViewModel>>()
+    val toggleFavoriteShopResp = MutableLiveData<Result<FavoriteShopViewModel>>()
+    val trackAffiliateResp = MutableLiveData<Result<TrackAffiliateViewModel>>()
 
     private var currentCursor = ""
     private val pagingHandler: PagingHandler
@@ -261,6 +268,28 @@ class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private va
             atcResp.value = Success(results)
         }) {
             atcResp.value = Fail(it)
+        }
+    }
+
+    fun doTrackAffiliate(url: String) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                trackAffiliate(url)
+            }
+            trackAffiliateResp.value = Success(results)
+        }) {
+            trackAffiliateResp.value = Fail(it)
+        }
+    }
+
+    fun doToggleFavoriteShop(rowNumber: Int, adapterPosition: Int, shopId: String) {
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                toggleFavoriteShop(rowNumber, adapterPosition, shopId)
+            }
+            toggleFavoriteShopResp.value = Success(results)
+        }) {
+            toggleFavoriteShopResp.value = Fail(it)
         }
     }
 
@@ -547,6 +576,40 @@ class FeedOnboardingViewModel @Inject constructor(@ApplicationContext private va
             }
             return data
         } catch (e: Throwable) {
+            throw e
+        }
+    }
+
+    private fun toggleFavoriteShop(rowNumber: Int, adapterPosition: Int, shopId: String): FavoriteShopViewModel {
+       try {
+           val data = FavoriteShopViewModel()
+           data.rowNumber = rowNumber
+           data.adapterPosition = adapterPosition
+           data.shopId = shopId
+           val params = ToggleFavouriteShopUseCase.createRequestParam(shopId)
+           val isSuccess = doFavoriteShopUseCase.createObservable(params).toBlocking().single()
+           if (isSuccess) {
+               data.isSuccess = isSuccess
+           } else {
+               data.errorMessage = ErrorHandler.getErrorMessage(context, RuntimeException())
+           }
+           return data
+       } catch (e: Throwable) {
+            throw e
+       }
+    }
+
+    private fun trackAffiliate(url: String): TrackAffiliateViewModel {
+        try {
+            val data = TrackAffiliateViewModel()
+            data.url = url
+            val params = TrackAffiliateClickUseCase.createRequestParams(url)
+            val isSuccess = trackAffiliateClickUseCase.createObservable(params).toBlocking().single()
+            if (isSuccess) {
+                data.isSuccess = isSuccess
+            }
+            return data
+        } catch(e: Throwable) {
             throw e
         }
     }

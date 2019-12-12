@@ -107,6 +107,7 @@ import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
@@ -134,7 +135,6 @@ import javax.inject.Inject
 
 class FeedPlusFragment : BaseDaggerFragment(),
         FeedPlus.View,
-        FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
         KolPostViewHolderListener,
@@ -428,6 +428,36 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     }
                 }
             })
+
+            toggleFavoriteShopResp.observe(lifecycleOwner, Observer {
+                when(it) {
+                    is Success -> {
+                        val data = it.data
+                        if (data.isSuccess) {
+                            onSuccessToggleFavoriteShop(data.rowNumber, data.adapterPosition)
+                        } else {
+                            onErrorToggleFavoriteShop(data)
+                        }
+                    }
+                    is Fail -> {
+                        val message = it.throwable.localizedMessage
+                        view?.let {
+                            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            })
+
+            trackAffiliateResp.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Fail -> {
+                        val message = it.throwable.localizedMessage
+                        view?.let {
+                            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -555,124 +585,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun setLastCursorOnFirstPage(lastCursor: String) {
-        activity?.applicationContext?.let {
-            val cache = LocalCacheHandler(it, KEY_FEED)
-            cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor)
-            cache.applyEditor()
-        }
-    }
-
-    override fun setFirstPageCursor(firstPageCursor: String) {
-        activity?.applicationContext?.let {
-            val cache = LocalCacheHandler(it, KEY_FEED)
-            cache.putString(KEY_FEED_FIRSTPAGE_CURSOR, firstPageCursor)
-            cache.applyEditor()
-        }
-    }
-
     override fun onInfoClicked() {
         infoBottomSheet.show()
-    }
-
-    @SuppressLint("Range")
-    override fun showSnackbar(s: String) {
-        NetworkErrorHelper.showSnackbar(activity, s)
-    }
-
-    override fun updateFavorite(adapterPosition: Int) {
-
-    }
-
-    override fun updateFavoriteFromEmpty(shopId: String) {
-        onRefresh()
-        analytics.eventFeedClickShop(screenName,
-                shopId, FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE)
-
-    }
-
-    override fun onShowEmpty() {
-        adapter.unsetEndlessScrollListener()
-        adapter.showEmpty()
-        adapter.notifyDataSetChanged()
-    }
-
-    override fun clearData() {
-        adapter.clearData()
-    }
-
-    override fun setEndlessScroll() {
-        adapter.setEndlessScrollListener()
-    }
-
-    override fun unsetEndlessScroll() {
-        adapter.unsetEndlessScrollListener()
-    }
-
-    override fun onShowNewFeed(totalData: String) {
-        newFeed.visibility = View.VISIBLE
-    }
-
-    override fun onHideNewFeed() {
-        newFeed.visibility = View.GONE
-    }
-
-    override fun finishLoading() {
-        swipeToRefresh.isRefreshing = false
-    }
-
-    override fun showInterestPick() {
-        if (context != null && isEnableInterestPick()) {
-            RouteManager.route(context, ApplinkConst.INTEREST_PICK)
-        }
-    }
-
-    private fun isEnableInterestPick(): Boolean{
-        val remoteConfig = FirebaseRemoteConfigImpl(requireContext())
-        return remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_INTEREST_PICK, true)
-    }
-
-    override fun onErrorGetFeedFirstPage(errorMessage: String) {
-        finishLoading()
-        if (adapter.itemCount == 0) {
-            NetworkErrorHelper.showEmptyState(activity, mainContent, errorMessage
-            ) { fetchFirstPage() }
-        } else {
-            NetworkErrorHelper.showSnackbar(activity, errorMessage)
-        }
-
-    }
-
-    override fun onSearchShopButtonClicked() {
-        if (context != null) {
-            val INIT_STATE_FRAGMENT_FAVORITE = 2
-            val EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT"
-            val intent = RouteManager.getIntent(requireContext(), ApplinkConst.HOME)
-            intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_FAVORITE)
-            startActivity(intent)
-        }
-    }
-
-    override fun showRefresh() {
-        if (!swipeToRefresh.isRefreshing) {
-            swipeToRefresh.isRefreshing = true
-        }
-    }
-
-    override fun updateCursor(currentCursor: String) {
-        presenter.setCursor(currentCursor)
-    }
-
-    override fun onShowRetryGetFeed() {
-        adapter.showRetry()
-    }
-
-    override fun hideAdapterLoading() {
-        adapter.removeLoading()
-    }
-
-    override fun getColor(color: Int): Int {
-        return MethodChecker.getColor(activity, color)
     }
 
     override fun onRetryClicked() {
@@ -849,20 +763,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun stopTracePerformanceMon() {
-        performanceMonitoring.stopTrace()
-    }
-
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         loadData(isVisibleToUser)
     }
 
-    override fun hasFeed(): Boolean {
-        return (adapter.getlist() != null
-                && !adapter.getlist().isEmpty()
-                && adapter.getlist().size > 1
-                && adapter.getlist()[0] !is EmptyModel)
+    override fun onSearchShopButtonClicked() {
+        if (context != null) {
+            val INIT_STATE_FRAGMENT_FAVORITE = 2
+            val EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT"
+            val intent = RouteManager.getIntent(requireContext(), ApplinkConst.HOME)
+            intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_FAVORITE)
+            startActivity(intent)
+        }
     }
 
     override fun onGoToKolProfile(rowNumber: Int, userId: String, postId: Int) {
@@ -962,25 +875,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         return dialog
     }
 
-    override fun onGoToLink(link: String) {
-        context?.let {
-            if (!TextUtils.isEmpty(link)) {
-                if (RouteManager.isSupportApplink(it, link)) {
-                    RouteManager.route(it, link)
-                } else {
-                    RouteManager.route(
-                            it,
-                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
-                    )
-                }
-            }
-        }
-    }
-
-    override fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
-        feedOnboardingPresenter.doVote(rowNumber, pollId, optionId)
-    }
-
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
         if (rowNumber != DEFAULT_VALUE
                 && adapter.getlist().size > rowNumber
@@ -1018,56 +912,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
             activity!!.startActivityForResult(intent, REQUEST_LOGIN)
-        }
-    }
-
-    override fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int) {
-        if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            header.followCta.isFollow = !header.followCta.isFollow
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
-        }
-
-        if (adapter.getlist()[rowNumber] is FeedRecommendationViewModel) {
-            val (_, cards) = adapter.getlist()[rowNumber] as FeedRecommendationViewModel
-            cards[adapterPosition].cta.isFollow = !cards[adapterPosition].cta.isFollow
-            adapter.notifyItemChanged(rowNumber, adapterPosition)
-        }
-
-        if (adapter.getlist()[rowNumber] is TopadsShopViewModel) {
-            val (_, dataList) = adapter.getlist()[rowNumber] as TopadsShopViewModel
-            dataList[adapterPosition].isFavorit = !dataList[adapterPosition].isFavorit
-            adapter.notifyItemChanged(rowNumber, adapterPosition)
-        }
-    }
-
-    override fun onErrorToggleFavoriteShop(message: String, rowNumber: Int, adapterPosition: Int,
-                                           shopId: String) {
-        ToasterError.make(view, message, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.title_try_again
-                ) { v -> presenter.toggleFavoriteShop(rowNumber, adapterPosition, shopId) }
-                .show()
-    }
-
-    override fun sendMoEngageOpenFeedEvent() {
-        val isEmptyFeed = !hasFeed()
-        val value = DataLayer.mapOf(
-                MoEngage.LOGIN_STATUS, userSession.isLoggedIn,
-                MoEngage.IS_FEED_EMPTY, isEmptyFeed
-        )
-        TrackApp.getInstance().moEngage.sendTrackEvent(value, EventMoEngage.OPEN_FEED)
-    }
-
-    override fun sendFeedPlusScreenTracking() {
-        if (!isUserEventTrackerDoneTrack) {
-            val isEmptyFeed = !hasFeed()
-
-            feedAnalytics.eventOpenFeedPlusFragment(
-                    userSession.isLoggedIn,
-                    isEmptyFeed
-            )
-
-            isUserEventTrackerDoneTrack = true
         }
     }
 
@@ -1123,7 +967,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
 
         } else if (type == FollowCta.AUTHOR_SHOP) {
-            presenter.toggleFavoriteShop(positionInFeed, adapterPosition, id)
+            feedOnboardingPresenter.doToggleFavoriteShop(positionInFeed, adapterPosition, id)
         }
 
         if (adapter.getlist()[positionInFeed] is FeedRecommendationViewModel) {
@@ -1157,7 +1001,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
-        presenter.toggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
+        feedOnboardingPresenter.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
 
         if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
             val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
@@ -1205,7 +1049,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
 
             } else if (type == FollowCta.AUTHOR_SHOP) {
-                presenter.toggleFavoriteShop(positionInFeed, id)
+                feedOnboardingPresenter.doToggleFavoriteShop(positionInFeed, 0, id)
             }
 
             if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
@@ -1334,9 +1178,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
         for (track in trackList) {
             if (isClick) {
-                presenter.trackAffiliate(track.clickURL)
+                feedOnboardingPresenter.doTrackAffiliate(track.clickURL)
             } else {
-                presenter.trackAffiliate(track.viewURL)
+                feedOnboardingPresenter.doTrackAffiliate(track.viewURL)
             }
         }
     }
@@ -1756,6 +1600,172 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(pdpAppLink)
     }
 
+    private fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int) {
+        if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
+            val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+            header.followCta.isFollow = !header.followCta.isFollow
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
+        }
+
+        if (adapter.getlist()[rowNumber] is FeedRecommendationViewModel) {
+            val (_, cards) = adapter.getlist()[rowNumber] as FeedRecommendationViewModel
+            cards[adapterPosition].cta.isFollow = !cards[adapterPosition].cta.isFollow
+            adapter.notifyItemChanged(rowNumber, adapterPosition)
+        }
+
+        if (adapter.getlist()[rowNumber] is TopadsShopViewModel) {
+            val (_, dataList) = adapter.getlist()[rowNumber] as TopadsShopViewModel
+            dataList[adapterPosition].isFavorit = !dataList[adapterPosition].isFavorit
+            adapter.notifyItemChanged(rowNumber, adapterPosition)
+        }
+    }
+
+    private fun onErrorToggleFavoriteShop(data: FavoriteShopViewModel) {
+        ToasterError.make(view, data.errorMessage, BaseToaster.LENGTH_LONG)
+                .setAction(R.string.title_try_again
+                ) { v -> feedOnboardingPresenter.doToggleFavoriteShop(data.rowNumber, data.adapterPosition, data.shopId) }
+                .show()
+    }
+
+    private fun sendMoEngageOpenFeedEvent() {
+        val isEmptyFeed = !hasFeed()
+        val value = DataLayer.mapOf(
+                MoEngage.LOGIN_STATUS, userSession.isLoggedIn,
+                MoEngage.IS_FEED_EMPTY, isEmptyFeed
+        )
+        TrackApp.getInstance().moEngage.sendTrackEvent(value, EventMoEngage.OPEN_FEED)
+    }
+
+    private fun stopTracePerformanceMon() {
+        performanceMonitoring.stopTrace()
+    }
+
+    private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
+        feedOnboardingPresenter.doVote(rowNumber, pollId, optionId)
+    }
+
+    private fun onGoToLink(link: String) {
+        context?.let {
+            if (!TextUtils.isEmpty(link)) {
+                if (RouteManager.isSupportApplink(it, link)) {
+                    RouteManager.route(it, link)
+                } else {
+                    RouteManager.route(
+                            it,
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setLastCursorOnFirstPage(lastCursor: String) {
+        activity?.applicationContext?.let {
+            val cache = LocalCacheHandler(it, KEY_FEED)
+            cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor)
+            cache.applyEditor()
+        }
+    }
+
+    private fun setFirstPageCursor(firstPageCursor: String) {
+        activity?.applicationContext?.let {
+            val cache = LocalCacheHandler(it, KEY_FEED)
+            cache.putString(KEY_FEED_FIRSTPAGE_CURSOR, firstPageCursor)
+            cache.applyEditor()
+        }
+    }
+
+    private fun sendFeedPlusScreenTracking() {
+        if (!isUserEventTrackerDoneTrack) {
+            val isEmptyFeed = !hasFeed()
+
+            feedAnalytics.eventOpenFeedPlusFragment(
+                    userSession.isLoggedIn,
+                    isEmptyFeed
+            )
+
+            isUserEventTrackerDoneTrack = true
+        }
+    }
+
+    private fun showSnackbar(s: String) {
+        NetworkErrorHelper.showSnackbar(activity, s)
+    }
+
+    private fun showRefresh() {
+        if (!swipeToRefresh.isRefreshing) {
+            swipeToRefresh.isRefreshing = true
+        }
+    }
+
+    private fun updateFavorite(adapterPosition: Int) {
+
+    }
+
+    private fun updateFavoriteFromEmpty(shopId: String) {
+        onRefresh()
+        analytics.eventFeedClickShop(screenName,
+                shopId, FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE)
+
+    }
+
+    private fun finishLoading() {
+        swipeToRefresh.isRefreshing = false
+    }
+
+    private fun showInterestPick() {
+        if (context != null && isEnableInterestPick()) {
+            RouteManager.route(context, ApplinkConst.INTEREST_PICK)
+        }
+    }
+
+    private fun isEnableInterestPick(): Boolean{
+        val remoteConfig = FirebaseRemoteConfigImpl(requireContext())
+        return remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_INTEREST_PICK, true)
+    }
+
+    private fun onShowRetryGetFeed() {
+        adapter.showRetry()
+    }
+
+    private fun hideAdapterLoading() {
+        adapter.removeLoading()
+    }
+
+    private fun onShowEmpty() {
+        adapter.unsetEndlessScrollListener()
+        adapter.showEmpty()
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun clearData() {
+        adapter.clearData()
+    }
+
+    private fun setEndlessScroll() {
+        adapter.setEndlessScrollListener()
+    }
+
+    private fun unsetEndlessScroll() {
+        adapter.unsetEndlessScrollListener()
+    }
+
+    private fun onShowNewFeed(totalData: String) {
+        newFeed.visibility = View.VISIBLE
+    }
+
+    private fun onHideNewFeed() {
+        newFeed.visibility = View.GONE
+    }
+
+    private fun hasFeed(): Boolean {
+        return (adapter.getlist() != null
+                && !adapter.getlist().isEmpty()
+                && adapter.getlist().size > 1
+                && adapter.getlist()[0] !is EmptyModel)
+    }
+
+
     private fun goToContentReport(contentId: Int) {
         if (context != null) {
             val intent = RouteManager.getIntent(
@@ -1772,6 +1782,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             activity!!.startActivity(getProductIntent(productId))
         }
     }
+
 
     private fun getProductIntent(productId: String): Intent? {
         return if (context != null) {
