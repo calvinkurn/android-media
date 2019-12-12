@@ -57,6 +57,8 @@ public class FacadeShopTransaction {
 
         void OnError();
 
+        void onErrorWithMessage(String message);
+
         void onNetworkTimeOut();
     }
 
@@ -66,6 +68,8 @@ public class FacadeShopTransaction {
         void OnNoResult();
 
         void OnError();
+
+        void onErrorWithMessage(String message);
 
         void onNetworkTimeOut();
     }
@@ -138,13 +142,18 @@ public class FacadeShopTransaction {
 
                                     JSONObject jsonObject = null;
                                     try {
-                                        jsonObject = new JSONObject(response.getStringData());
+                                        if (!TextUtils.isEmpty(response.getStringData())) {
+                                            jsonObject = new JSONObject(response.getStringData());
 
-                                        Gson gson = new GsonBuilder().create();
-                                        OrderShippingData data =
-                                                gson.fromJson(jsonObject.toString(), OrderShippingData.class);
-                                        listener.OnSuccess(getNewOrderModel(data), data);
-
+                                            Gson gson = new GsonBuilder().create();
+                                            OrderShippingData data =
+                                                    gson.fromJson(jsonObject.toString(), OrderShippingData.class);
+                                            listener.OnSuccess(getNewOrderModel(data), data);
+                                        } else {
+                                            JSONObject errorObject = new JSONObject(response.getStrResponse());
+                                            String messageError = errorObject.getString("message");
+                                            listener.onErrorWithMessage(messageError);
+                                        }
                                     } catch (Throwable je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
                                         listener.OnError();
@@ -229,13 +238,18 @@ public class FacadeShopTransaction {
 
                                     JSONObject jsonObject = null;
                                     try {
-                                        jsonObject = new JSONObject(response.getStringData());
+                                        if (!TextUtils.isEmpty(response.getStringData())) {
+                                            jsonObject = new JSONObject(response.getStringData());
 
-                                        Gson gson = new GsonBuilder().create();
-                                        OrderShippingData data =
-                                                gson.fromJson(jsonObject.toString(), OrderShippingData.class);
-                                        listener.OnSuccess(getStatusModel(data), data);
-
+                                            Gson gson = new GsonBuilder().create();
+                                            OrderShippingData data =
+                                                    gson.fromJson(jsonObject.toString(), OrderShippingData.class);
+                                            listener.OnSuccess(getStatusModel(data), data);
+                                        } else {
+                                            JSONObject errorObject = new JSONObject(response.getStrResponse());
+                                            String messageError = errorObject.getString("message");
+                                            listener.onErrorWithMessage(messageError);
+                                        }
                                     } catch (Throwable je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
                                         listener.OnError();
@@ -331,15 +345,18 @@ public class FacadeShopTransaction {
 
                                     JSONObject jsonObject = null;
                                     try {
-                                        jsonObject = new JSONObject(response.getStringData());
+                                        if (!TextUtils.isEmpty(response.getStringData())) {
+                                            jsonObject = new JSONObject(response.getStringData());
 
-                                        Gson gson = new GsonBuilder().create();
-                                        OrderShippingData data =
-                                                gson.fromJson(jsonObject.toString(), OrderShippingData.class);
-
-                                        ;
-                                        listener.OnSuccess(getStatusModel(data), data);
-
+                                            Gson gson = new GsonBuilder().create();
+                                            OrderShippingData data =
+                                                    gson.fromJson(jsonObject.toString(), OrderShippingData.class);
+                                            listener.OnSuccess(getStatusModel(data), data);
+                                        } else {
+                                            JSONObject errorObject = new JSONObject(response.getStrResponse());
+                                            String messageError = errorObject.getString("message");
+                                            listener.onErrorWithMessage(messageError);
+                                        }
                                     } catch (JSONException je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
                                         listener.OnError();
