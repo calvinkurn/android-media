@@ -33,10 +33,11 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     override fun onSearchQueryChanged(query: String) {
         viewModel.onSearchQueryChanged(query)
+        showLoading()
     }
 
     override fun loadData(page: Int) {
-
+        viewModel.loadNextPage(page)
     }
 
     override fun getAdapterTypeFactory(): ChatSearchTypeFactory {
