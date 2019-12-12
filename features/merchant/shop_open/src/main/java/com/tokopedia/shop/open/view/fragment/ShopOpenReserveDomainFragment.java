@@ -436,7 +436,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             if (!com.tokopedia.config.GlobalConfig.isSellerApp()) {
                 List<String> listToInstall = new ArrayList<>();
                 listToInstall.add(DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP);
-                new DFInstaller().installOnBackground(getActivity().getApplication(), listToInstall);
+                new DFInstaller().installOnBackground(getActivity().getApplication(), listToInstall, null, null);
             }
             Intent intent = ShopOpenCreateReadyActivity.Companion.newInstance(getActivity(), shopId);
             startActivity(intent);
