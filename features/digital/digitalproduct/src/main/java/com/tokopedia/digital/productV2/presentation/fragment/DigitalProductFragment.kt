@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
-import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
@@ -71,6 +70,7 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
     private var categoryId: String = ""
     private var operatorId: Int? = null
     private var productId: String? = null
+    private var operatorCluster: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_digital_product, container, false)
@@ -177,7 +177,10 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
             operator_cluster_select.setActionListener(object : TopupBillsInputFieldWidget.ActionListener {
                 override fun onFinishInput(input: String) {
                     cluster.operatorGroups.find { it.name == input }?.let {
-                        renderOperatorList(it)
+                        if (operatorCluster != it.name) {
+                            operatorCluster = it.name
+                            renderOperatorList(it)
+                        }
                     }
                 }
 
@@ -193,8 +196,7 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
     }
 
     private fun renderOperatorList(operatorGroup: DigitalProductOperatorCluster.CatalogOperatorGroup) {
-        // Reset operator id
-        operatorId = null
+        resetPartialData()
 
         if (operatorGroup.operators.size == 1) {
             operator_select.hide()
@@ -228,9 +230,7 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
     }
 
     private fun renderInputAndProduct(productData: DigitalProductData) {
-        // Reset input data & product id
-        inputData = null
-        productId = null
+        resetPartialData()
 
         val dataList: MutableList<Visitable<DigitalProductAdapterFactory>> = mutableListOf()
         if (productData.needEnquiry) {
@@ -250,6 +250,19 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
 
         val inputDataSize = productData.enquiryFields.size
         inputData = arrayOfNulls(inputDataSize)
+    }
+
+    // Reset operator id, product id & input data
+    private fun resetData() {
+        operatorId = null
+        resetPartialData()
+    }
+
+    // Reset product id & input data
+    private fun resetPartialData() {
+        productId = null
+        inputData = null
+        toggleEnquiryButton()
     }
 
     private fun showOperatorSelectDropdown(field: TopupBillsInputFieldWidget,
@@ -369,20 +382,14 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
                     if (operatorCluster.operatorGroups.size > 1 && operator_cluster_select.getInputText() != operatorGroup.name) {
                         operator_cluster_select.setInputText(operatorGroup.name)
                     }
-                    // This will trigger getProductList
-                    if (operatorGroup.operators.size > 1 && operator_select.getInputText() != operator.attributes.name) {
-                        operator_select.setInputText(operator.attributes.name)
-                    }
 
                     // Check if product list data is already available; if not wait until data is received
-                    if (operatorId == recentOperatorId
-                            && viewModel.productList.value != null
-                            && viewModel.productList.value is Success) {
+                    if (operatorGroup.operators.size > 1 && operator_select.getInputText() != operator.attributes.name) {
+                        operator_select.setInputText(operator.attributes.name)
+                        isLoadingRecent = true
+                    } else if (viewModel.productList.value != null && viewModel.productList.value is Success) {
                         val products = (viewModel.productList.value as Success).data
                         renderRecentTransactionProduct(products)
-                    } else {
-                        isLoadingRecent = true
-                        operatorId = recentOperatorId
                     }
                     return@loop
                 }
@@ -453,8 +460,12 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
     private fun updateInputData(label: String, input: String, position: Int) {
         inputData?.apply {
             this[position] = if (input.isEmpty()) null else mapOf(label to input)
-            enquiry_button.isEnabled = validateEnquiry()
+            toggleEnquiryButton()
         }
+    }
+
+    private fun toggleEnquiryButton() {
+        enquiry_button.isEnabled = validateEnquiry()
     }
 
     private fun enquire() {
@@ -479,7 +490,7 @@ class DigitalProductFragment: BaseTopupBillsFragment(), OnInputListener, Digital
     }
 
     override fun showEnquiryError(t: Throwable) {
-        showGetListError(t)
+//        showGetListError(t)
     }
 
     override fun showMenuDetailError(t: Throwable) {
