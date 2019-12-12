@@ -26,7 +26,7 @@ class DynamicProductDetailAdapter(
     fun notifyRecomAdapter(listOfData: List<ProductRecommendationDataModel>?) {
         listOfData?.run {
             forEach {
-                if (it.recomWidgetData == null) {
+                if (it.isRecomenDataEmpty) {
                     clearElement(it)
                 } else {
                     notifyItemChanged(list.indexOf(it))

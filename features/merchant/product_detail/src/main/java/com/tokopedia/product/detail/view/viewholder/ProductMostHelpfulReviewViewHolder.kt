@@ -73,7 +73,10 @@ class ProductMostHelpfulReviewViewHolder(val view: View, val listener: DynamicPr
                 rv_review_pdp.run {
                     setHasFixedSize(true)
                     layoutManager = StaggeredGridLayoutManager(if (reviewData.imageAttachments.size == 1) FULL_SPAN else TWO_SPAN, GridLayoutManager.VERTICAL)
-                    addItemDecoration(PaddingItemDecoration())
+
+                    if (itemDecorationCount == 0)
+                        addItemDecoration(PaddingItemDecoration())
+
                     adapter = MostHelpfulReviewAdapter(imageData, reviewData.reviewId.toString(), moreItemCount, listener::onImageHelpfulReviewClick)
                     if (reviewData.imageAttachments.isNotEmpty()) {
                         show()

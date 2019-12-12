@@ -196,12 +196,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         }
     }
 
-    fun getEmptyRecomData(): List<ProductRecommendationDataModel>? {
-        return listProductRecomMap?.filter { recom ->
-            recom.recomWidgetData == null || recom.recomWidgetData?.recommendationItemList?.isEmpty() == true
-        }
-    }
-
     fun updateVariantInfo(productVariant: ProductVariant, selectedOptionString: String) {
         productVariantInfoMap?.run {
             description =

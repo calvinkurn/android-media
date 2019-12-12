@@ -379,7 +379,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             when (it) {
                 is Success -> {
                     pdpHashMapUtil.updateRecomData(it.data)
-                    dynamicAdapter.removeRecommendation(pdpHashMapUtil.getEmptyRecomData())
                     dynamicAdapter.notifyRecomAdapter(pdpHashMapUtil.listProductRecomMap)
                 }
                 is Fail -> dynamicAdapter.removeRecommendation(pdpHashMapUtil.listProductRecomMap)
@@ -1346,6 +1345,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     private fun initRecyclerView(view: View) {
         context?.let {
+            getRecyclerView(view).addOnScrollListener(onScrollListener)
             //            rv_pdp.addItemDecoration(DynamicPdpDividerItemDecoration(it))
             getRecyclerView(view).layoutManager = CenterLayoutManager(it, LinearLayoutManager.VERTICAL, false)
 
