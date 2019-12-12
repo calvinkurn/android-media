@@ -33,8 +33,6 @@ public class CheckoutDealContractor {
 
         void updateAmount(String s);
 
-        void showFailureMessageProductExpired();
-
         void showFailureMessage(String error);
 
     }
