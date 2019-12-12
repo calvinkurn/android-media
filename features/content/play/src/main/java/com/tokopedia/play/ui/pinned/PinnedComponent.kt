@@ -1,7 +1,6 @@
 package com.tokopedia.play.ui.pinned
 
 import android.view.ViewGroup
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -16,10 +15,10 @@ import kotlinx.coroutines.launch
  * Created by jegul on 03/12/19
  */
 class PinnedComponent(
-        private val container: ViewGroup,
+        container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope
-) : UIComponent<Unit>, PinnedView.Listener, CoroutineScope by coroutineScope {
+) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
     private val uiView = initView(container)
 
@@ -44,10 +43,6 @@ class PinnedComponent(
         return emptyFlow()
     }
 
-    override fun onPinnedActionClicked(pinnedView: PinnedView, applink: String) {
-        RouteManager.route(container.context, applink)
-    }
-
     private fun initView(container: ViewGroup): PinnedView =
-            PinnedView(container, this)
+            PinnedView(container)
 }

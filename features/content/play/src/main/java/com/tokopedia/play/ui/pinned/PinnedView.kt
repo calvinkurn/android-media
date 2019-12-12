@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
@@ -18,8 +19,7 @@ import com.tokopedia.play.ui.pinned.model.PinnedMessage
  * Created by jegul on 03/12/19
  */
 class PinnedView(
-        container: ViewGroup,
-        private val listener: Listener
+        container: ViewGroup
 ) : UIView(container) {
 
     private val view: View =
@@ -52,11 +52,7 @@ class PinnedView(
 
         view.findViewById<TextView>(R.id.tv_pinned_action)
                 .setOnClickListener {
-                    listener.onPinnedActionClicked(this, pinnedMessage.appLink)
+                    RouteManager.route(container.context, pinnedMessage.appLink)
                 }
-    }
-
-    interface Listener {
-        fun onPinnedActionClicked(pinnedView: PinnedView, applink: String)
     }
 }
