@@ -185,7 +185,9 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
             moreInfoBottomSheet.setFullPage(false)
             moreInfoBottomSheet.setChild(moreInfoView)
             moreInfoBottomSheet.clearAction()
-            moreInfoBottomSheet.show(fragmentManager,"E-gold more info bottom sheet")
+            fragmentManager?.run {
+                moreInfoBottomSheet.show(this,"E-gold more info bottom sheet")
+            }
         }
     }
 
