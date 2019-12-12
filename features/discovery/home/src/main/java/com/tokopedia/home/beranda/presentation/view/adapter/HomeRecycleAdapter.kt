@@ -40,7 +40,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
        val POSITION_UNDEFINED = -1
        private var mRecyclerView: RecyclerView? = null
        private var isFirstItemPlayed = false
-       private var currentSelected = 0
+       private var currentSelected = -1
 
        private var mLayoutManager: LinearLayoutManager? = null
 
@@ -83,12 +83,15 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
-                    val firstVisible = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: -1
-
-                    if(visitables[firstVisible] !is PlayCardViewModel) return
-
-                    if (firstVisible != currentSelected && visitables[firstVisible] is PlayCardViewModel) {
-                        onSelectedItemChanged(firstVisible)
+                    val firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: -1
+                    val lastVisitable = layoutManager?.findLastVisibleItemPosition() ?: -1
+                    visitables.subList(firstVisible, lastVisitable).withIndex().filter { (index, visitable) ->  visitable is PlayCardViewModel }.map{(index, _) ->
+                        if (index != currentSelected && visitables[index] is PlayCardViewModel) {
+                            onSelectedItemChanged(index)
+                        }
+                        index
+                    }?.also {
+                        if(it.isEmpty()) onSelectedItemChanged(-1)
                     }
                 }
             }
@@ -305,13 +308,17 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
     }
 
     private fun onSelectedItemChanged(newSelected: Int) {
-        changeAlphaToVisible(currentSelected, false)
-        pausePlayerByPosition(currentSelected)
-        blockPlayerByPosition(currentSelected)
-        //---------
-        changeAlphaToVisible(newSelected, true)
-        prepareAndPlayByPosition(newSelected)
-        unBlockPlayerByPosition(newSelected)
+        if(newSelected != -1) {
+            if(currentSelected != -1) {
+                changeAlphaToVisible(currentSelected, false)
+                pausePlayerByPosition(currentSelected)
+                blockPlayerByPosition(currentSelected)
+            }
+            //---------
+            changeAlphaToVisible(newSelected, true)
+            prepareAndPlayByPosition(newSelected)
+            unBlockPlayerByPosition(newSelected)
+        }
         currentSelected = newSelected
     }
 
@@ -363,8 +370,9 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
         if(holder is PlayCardViewHolder) {
             holder.createHelper()
 
-            if (!isFirstItemPlayed && holder.adapterPosition == 0) {
+            if (!isFirstItemPlayed && currentSelected == -1) {
                 isFirstItemPlayed = true
+                currentSelected = holder.adapterPosition
                 holder.helper?.preparePlayer()
                 holder.helper?.playerPlay()
                 holder.helper?.playerUnBlock()

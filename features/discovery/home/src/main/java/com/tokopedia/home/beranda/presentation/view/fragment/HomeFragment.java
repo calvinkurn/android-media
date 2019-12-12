@@ -711,6 +711,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 this
         );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList());
+        getLifecycle().addObserver(adapter);
         homeRecyclerView.setAdapter(adapter);
     }
 
@@ -960,7 +961,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (needToPerformanceMonitoring()) setOnRecyclerViewLayoutReady();
         List<Visitable> list = new ArrayList<>(items);
         if (repositoryFlag == HomePresenter.FLAG_FROM_NETWORK) {
-            adapter.setItems( needToShowGeolocationComponent() ? removeReviewComponent(list) : removeGeolocationComponent(items));
+            adapter.setItems(new ArrayList(needToShowGeolocationComponent() ? removeReviewComponent(list) : removeGeolocationComponent(items)));
             presenter.getHeaderData(false);
             presenter.getFeedTabData();
             adapter.showLoading();
@@ -971,7 +972,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
 
         } else {
-            adapter.setItems(needToShowGeolocationComponent() ? list : removeGeolocationComponent(items));
+            adapter.setItems(new ArrayList(needToShowGeolocationComponent() ? list : removeGeolocationComponent(items)));
         }
     }
 

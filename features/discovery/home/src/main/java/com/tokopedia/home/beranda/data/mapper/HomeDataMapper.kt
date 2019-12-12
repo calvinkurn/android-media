@@ -54,6 +54,9 @@ class HomeDataMapper(
                     homeData.homeFlag.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)
             ))
         }
+
+        list.add(PlayCardViewModel())
+
         if (homeData.dynamicHomeChannel != null && homeData.dynamicHomeChannel.channels != null && !homeData.dynamicHomeChannel.channels.isEmpty()) {
             var position = 1
             for (channel in homeData.dynamicHomeChannel.channels) {

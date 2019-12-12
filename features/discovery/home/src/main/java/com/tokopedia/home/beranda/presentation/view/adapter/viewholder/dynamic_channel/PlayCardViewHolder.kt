@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -16,19 +15,18 @@ import com.tokopedia.dynamicbanner.entity.PlayCard
 import com.tokopedia.dynamicbanner.entity.PlayCardHome
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.listener.VideoPlayerListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
 import com.tokopedia.home.beranda.presentation.view.helper.ExoThumbListener
 import com.tokopedia.home.beranda.presentation.view.helper.TokopediaPlayerHelper
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import timber.log.Timber
 
 
 class PlayCardViewHolder(
         val view: View,
-        val listener: HomeCategoryListener,
-        val videoPlayerListener: VideoPlayerListener
-): AbstractViewHolder<PlayCardViewModel>(view), TokopediaPlayer, ExoPlayerListener, ExoThumbListener {
+        val listener: HomeCategoryListener
+): AbstractViewHolder<PlayCardViewModel>(view), ExoPlayerListener, ExoThumbListener {
 
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
     private val imgBanner = view.findViewById<ImageView>(R.id.imgBanner)
@@ -43,28 +41,10 @@ class PlayCardViewHolder(
     val videoPlayer = view.findViewById<PlayerView>(R.id.video_player)
 
     private var playCardHome: PlayCardHome? = null
-    private val progressBar: ProgressBar? = view.findViewById(R.id.progressBar)
 
     override fun bind(element: PlayCardViewModel) {
         mVideoUrl = element.url
         mThumbUrl = "https://i.ytimg.com/vi/JQ5xItF40yA/maxresdefault.jpg"
-    }
-
-    override fun reset() {
-        videoPlayerListener.getPlayer().release()
-    }
-
-    override fun play() {
-        if(videoPlayer.player == null) videoPlayer.player = videoPlayerListener.getPlayer()
-        videoPlayer.player.playWhenReady = true
-    }
-
-    override fun pause() {
-        videoPlayerListener.getPlayer().release()
-    }
-
-    override fun release() {
-        videoPlayer.player.release()
     }
 
     fun createHelper() {
@@ -73,45 +53,44 @@ class PlayCardViewHolder(
                 .setToPrepareOnResume(false)
                 .setVideoUrls(mVideoUrl)
                 .setExoPlayerEventsListener(this)
-                .setThumbImageViewEnabled(this)
                 .addProgressBarWithColor(Color.RED)
                 .create()
     }
 
     override fun onLoadingStatusChanged(isLoading: Boolean, bufferedPosition: Long, bufferedPercentage: Int) {
-        
+        Timber.tag("ExoPlayer").d("On Loading status changed $isLoading, $bufferedPosition, $bufferedPercentage")
     }
 
     override fun onPlayerPlaying(currentWindowIndex: Int) {
-        
+        Timber.tag("ExoPlayer").d("On Player Playing $currentWindowIndex")
     }
 
     override fun onPlayerPaused(currentWindowIndex: Int) {
-        
+        Timber.tag("ExoPlayer").d("On Player Pause $currentWindowIndex")
     }
 
     override fun onPlayerBuffering(currentWindowIndex: Int) {
-        
+        Timber.tag("ExoPlayer").d("On Buffering $currentWindowIndex")
     }
 
     override fun onPlayerStateEnded(currentWindowIndex: Int) {
-        
+        Timber.tag("ExoPlayer").d("On State end $currentWindowIndex")
     }
 
     override fun onPlayerStateIdle(currentWindowIndex: Int) {
-        
+        Timber.tag("ExoPlayer").d("On Idle $currentWindowIndex")
     }
 
     override fun onPlayerError(errorString: String?) {
-        
+        Timber.tag("ExoPlayer").d("On Error $errorString")
     }
 
     override fun createExoPlayerCalled(isToPrepare: Boolean) {
-        
+        Timber.tag("ExoPlayer").d("On Create Player Called $isToPrepare")
     }
 
     override fun releaseExoPlayerCalled() {
-
+        Timber.tag("ExoPlayer").d("On Release Exo")
     }
 
     override fun onVideoResumeDataLoaded(window: Int, position: Long, isResumeWhenReady: Boolean) {
@@ -165,11 +144,4 @@ class PlayCardViewHolder(
         @LayoutRes val LAYOUT = R.layout.play_banner
     }
 
-}
-
-interface TokopediaPlayer{
-    fun play()
-    fun pause()
-    fun reset()
-    fun release()
 }

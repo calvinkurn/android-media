@@ -31,29 +31,9 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="12dp"
-        app:use_controller="false"
-        app:layout_constraintDimensionRatio="2:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description"/>
-    <ImageView
-        android:id="@+id/thumbnail"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="12dp"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        app:layout_constraintDimensionRatio="2:1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description"
-        tools:background="@drawable/addproduct" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#80FFFFFF"
-        app:layout_constraintTop_toTopOf="@+id/live"
-        app:layout_constraintBottom_toBottomOf="parent"/>
     <TextView
         android:id="@+id/live"
         android:layout_width="wrap_content"
@@ -99,7 +79,7 @@
         app:layout_constraintBottom_toTopOf="@+id/title_description"
         app:layout_constraintEnd_toStartOf="@+id/play"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="Review Australia fabulous vintage and green" />
+        android:text="Review Australia fabulous vintage and green" />
     <TextView
         android:id="@+id/title_description"
         android:layout_width="wrap_content"
@@ -113,7 +93,7 @@
         android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="Yoenik Apparel" />
+        android:text="Yoenik Apparel" />
 
     <ImageView
         android:id="@+id/play"
@@ -144,14 +124,14 @@
             app:srcCompat="@drawable/ic_volume_down"/>
     </FrameLayout>
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/video_player"
-        app:layout_constraintBottom_toBottomOf="@+id/video_player"/>
+<!--    <ProgressBar-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/progressBar"-->
+<!--        style="?android:attr/progressBarStyle"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/video_player"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/video_player"/>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

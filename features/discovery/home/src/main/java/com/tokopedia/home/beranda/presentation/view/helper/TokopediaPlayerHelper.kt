@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -14,6 +15,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer.DecoderInitializationException
+import com.google.android.exoplayer2.mediacodec.MediaCodecUtil.DecoderQueryException
+import com.google.android.exoplayer2.source.BehindLiveWindowException
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -27,8 +31,10 @@ import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.upstream.cache.*
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.home.R
+import com.tokopedia.kotlin.extensions.view.hide
 import timber.log.Timber
 import java.io.File
+import java.io.IOException
 
 
 @SuppressWarnings("WeakerAccess")
@@ -85,12 +91,12 @@ class TokopediaPlayerHelper(
 
     private fun addProgressBar(color: Int) {
         val frameLayout = exoPlayerView.overlayFrameLayout
-        mProgressBar = frameLayout?.findViewById(R.id.progressBar)
+        mProgressBar = frameLayout?.findViewById(R.id.exoProgressBar)
         if (mProgressBar != null) {
             return
         }
         mProgressBar = ProgressBar(context, null, R.attr.progressBarStyle)
-        mProgressBar?.id = R.id.progressBar
+        mProgressBar?.id = R.id.exoProgressBar
         val params = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT)
@@ -168,31 +174,32 @@ class TokopediaPlayerHelper(
 
     private fun setProgressVisible(visible: Boolean) {
         if (mProgressBar != null) {
-            mProgressBar!!.visibility = if (visible) View.VISIBLE else View.GONE
+            mProgressBar?.visibility = if (visible) View.VISIBLE else View.GONE
         }
     }
 
     private fun addThumbImageView() {
-        if (mThumbImage != null) {
-            return;
-        }
-        val frameLayout = exoPlayerView.findViewById<AspectRatioFrameLayout>(R.id.exo_content_frame);
-        mThumbImage = ImageView(context)
-        mThumbImage?.id = R.id.thumbnail
-        val  params = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT)
-        params.gravity = Gravity.CENTER
-        mThumbImage?.layoutParams = params
-        mThumbImage?.setBackgroundColor(Color.BLACK)
-        frameLayout?.addView(mThumbImage)
+        val frameLayout = exoPlayerView.findViewById<AspectRatioFrameLayout>(R.id.exo_content_frame)
+        mThumbImage = frameLayout.findViewById(R.id.thumbImg)
+        if(mThumbImage == null) {
+            mThumbImage = ImageView(context)
+            mThumbImage?.id = R.id.thumbImg
+            val params = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT)
+            params.gravity = Gravity.CENTER
+            mThumbImage?.layoutParams = params
+            mThumbImage?.setBackgroundColor(Color.BLACK)
+            frameLayout?.addView(mThumbImage)
 
-        mExoThumbListener?.onThumbImageViewReady(mThumbImage)
+            mExoThumbListener?.onThumbImageViewReady(mThumbImage)
+        }
     }
 
     private fun removeThumbImageView() {
+        val frameLayout = exoPlayerView.findViewById<AspectRatioFrameLayout>(R.id.exo_content_frame)
+        mThumbImage = frameLayout.findViewById(R.id.thumbImg)
         if (mThumbImage != null) {
-            val frameLayout: AspectRatioFrameLayout = exoPlayerView.findViewById(R.id.exo_content_frame)
             frameLayout.removeView(mThumbImage)
             mThumbImage = null
         }
@@ -433,6 +440,116 @@ class TokopediaPlayerHelper(
             mPlayer?.seekTo(mResumeWindow, mResumePosition + 100)
             mExoPlayerListener?.onVideoResumeDataLoaded(mResumeWindow, mResumePosition, isResumePlayWhenReady)
         }
+    }
+
+    override fun onLoadingChanged(isLoading: Boolean) {
+        onPlayerLoadingChanged()
+        mExoPlayerListener?.onLoadingStatusChanged(isLoading, mPlayer?.bufferedPosition ?: -1, mPlayer?.bufferedPercentage ?: -1)
+    }
+
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        if (mExoPlayerListener == null || mPlayer == null) {
+            return
+        }
+        when (playbackState) {
+            Player.STATE_READY -> if (playWhenReady) {
+                onPlayerPlaying()
+                mExoPlayerListener?.onPlayerPlaying(mPlayer?.currentWindowIndex ?: -1)
+            } else {
+                onPlayerPaused()
+                mExoPlayerListener?.onPlayerPaused(mPlayer?.currentWindowIndex ?: -1)
+            }
+            Player.STATE_BUFFERING -> {
+                onPlayerBuffering()
+                mExoPlayerListener?.onPlayerBuffering(mPlayer?.currentWindowIndex ?: -1)
+            }
+            Player.STATE_ENDED -> mExoPlayerListener?.onPlayerStateEnded(mPlayer?.currentWindowIndex ?: -1)
+            Player.STATE_IDLE -> mExoPlayerListener?.onPlayerStateIdle(mPlayer?.currentWindowIndex ?: -1)
+            else -> Timber.tag(TokopediaPlayerHelper::class.java.name).e("onPlayerStateChanged unknown: $playbackState")
+        }
+    }
+
+    override fun onPlayerError(error: ExoPlaybackException) {
+        var errorString: String? = null
+
+        when (error.type) {
+            ExoPlaybackException.TYPE_SOURCE -> {
+                //https://github.com/google/ExoPlayer/issues/2702
+                val ex: IOException = error.sourceException
+                val msg = ex.message
+                if (msg != null) {
+                    Timber.tag(TokopediaPlayerHelper::class.java.name).e(msg)
+                    errorString = msg
+                }
+            }
+            ExoPlaybackException.TYPE_RENDERER -> {
+                val exception: Exception = error.rendererException
+                if (exception.message != null) {
+                    Timber.tag(TokopediaPlayerHelper::class.java.name).e(exception)
+                }
+            }
+            ExoPlaybackException.TYPE_UNEXPECTED -> {
+                val runtimeException: RuntimeException = error.unexpectedException
+                Timber.tag(TokopediaPlayerHelper::class.java.name).e(if (runtimeException.message == null) "Message is null" else runtimeException.message)
+                if (runtimeException.message == null) {
+                    runtimeException.printStackTrace()
+                }
+                errorString = runtimeException.message
+            }
+            ExoPlaybackException.TYPE_OUT_OF_MEMORY -> {
+            }
+            ExoPlaybackException.TYPE_REMOTE -> {
+            }
+        }
+
+
+        if (error.type == ExoPlaybackException.TYPE_RENDERER) {
+            val cause: Exception = error.rendererException
+            if (cause is DecoderInitializationException) { // Special case for decoder initialization failures.
+                val decoderInitializationException = cause
+                errorString = if (decoderInitializationException.decoderName == null) {
+                    if (decoderInitializationException.cause is DecoderQueryException) {
+                        context.getString(R.string.error_querying_decoders)
+                    } else if (decoderInitializationException.secureDecoderRequired) {
+                        context.getString(R.string.error_no_secure_decoder,
+                                decoderInitializationException.mimeType)
+                    } else {
+                        context.getString(R.string.error_no_decoder,
+                                decoderInitializationException.mimeType)
+                    }
+                } else {
+                    context.getString(R.string.error_instantiating_decoder,
+                            decoderInitializationException.decoderName)
+                }
+            }
+        }
+        if (errorString != null) {
+            Timber.tag(TokopediaPlayerHelper::class.java.name).e("$errorString")
+        }
+
+        if (isBehindLiveWindow(error)) {
+            createPlayer(true)
+            Timber.tag(TokopediaPlayerHelper::class.java.name).e("isBehindLiveWindow is true")
+        }
+
+
+        if (mExoPlayerListener != null) {
+            mExoPlayerListener?.onPlayerError(errorString)
+        }
+    }
+
+    private fun isBehindLiveWindow(e: ExoPlaybackException): Boolean {
+        if (e.type != ExoPlaybackException.TYPE_SOURCE) {
+            return false
+        }
+        var cause: Throwable? = e.sourceException
+        while (cause != null) {
+            if (cause is BehindLiveWindowException) {
+                return true
+            }
+            cause = cause.cause
+        }
+        return false
     }
 
     override fun releasePlayer() {
