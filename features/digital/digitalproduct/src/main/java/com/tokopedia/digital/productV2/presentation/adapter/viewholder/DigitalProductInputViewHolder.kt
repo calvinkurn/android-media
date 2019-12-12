@@ -17,7 +17,8 @@ class DigitalProductInputViewHolder(val view: View, val listener: OnInputListene
         inputView.setInputType(enquiryData.style)
         inputView.setActionListener(object : TopupBillsInputFieldWidget.ActionListener{
             override fun onFinishInput(input: String) {
-                if (verifyField(enquiryData.validations, input)) {
+                if (input.isEmpty() || verifyField(enquiryData.validations, input)) {
+                    inputView.hideErrorMessage()
                     listener.onFinishInput(enquiryData.name, input, adapterPosition)
                 } else {
                     inputView.setErrorMessage("Input tidak sesuai")
@@ -35,7 +36,6 @@ class DigitalProductInputViewHolder(val view: View, val listener: OnInputListene
 
     private fun verifyField(fieldValidation: List<CatalogProductInput.Validation>,
                             input: String): Boolean {
-        if (input.isEmpty()) return false
         for (validation in fieldValidation) {
             if (validation.rule.isNotEmpty() && !Pattern.matches(validation.rule, input)) {
                 return false
