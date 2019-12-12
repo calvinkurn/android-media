@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
@@ -16,6 +17,7 @@ import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatViewHolder
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import javax.inject.Inject
 
@@ -59,6 +61,15 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
             if (!it) return@Observer
             clearAllData()
             showEmpty()
+        })
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { errorMsg ->
+            if (viewModel.isFirstPage()) {
+                clearAllData()
+                showEmpty()
+            }
+            view?.let {
+                Toaster.make(it, errorMsg, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            }
         })
     }
 

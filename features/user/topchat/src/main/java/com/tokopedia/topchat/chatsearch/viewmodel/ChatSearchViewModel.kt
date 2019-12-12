@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatsearch.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_DEFAULT
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import com.tokopedia.topchat.chatsearch.data.SearchResult
 import com.tokopedia.topchat.chatsearch.usecase.GetSearchQueryUseCase
@@ -18,6 +19,7 @@ class ChatSearchViewModel @Inject constructor(
 
     var loadInitialData = MutableLiveData<Boolean>()
     var showEmpty = MutableLiveData<Boolean>()
+    var errorMessage = MutableLiveData<String>()
 
     private var _searchResults = MutableLiveData<List<SearchResult>>()
     val searchResult: LiveData<List<SearchResult>>
@@ -46,6 +48,10 @@ class ChatSearchViewModel @Inject constructor(
         }
     }
 
+    fun isFirstPage(): Boolean {
+        return page == 1
+    }
+
     private fun doSearch() {
         getSearchQueryUseCase.doSearch(::onSuccessDoSearch, ::onErrorDoSearch, query, page)
     }
@@ -55,6 +61,6 @@ class ChatSearchViewModel @Inject constructor(
     }
 
     private fun onErrorDoSearch(throwable: Throwable) {
-
+        errorMessage.postValue(MESSAGE_ERROR_DEFAULT)
     }
 }
