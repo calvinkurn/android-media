@@ -20,4 +20,5 @@ data class SomDetailShipping (
         val onlineBookingState: Int = -1,
         val onlineBookingMsg: String = "",
         val onlineBookingMsgArray: List<String> = listOf(),
-        val onlineBookingType: String = "")
+        val onlineBookingType: String = "",
+        val isRemoveAwb: Boolean = false)

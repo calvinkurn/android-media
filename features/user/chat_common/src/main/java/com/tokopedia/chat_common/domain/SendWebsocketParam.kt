@@ -123,6 +123,7 @@ object SendWebsocketParam {
         json.addProperty("code", EVENT_TOPCHAT_READ_MESSAGE)
         val data = JsonObject()
         data.addProperty("msg_id", Integer.valueOf(messageId))
+        data.addProperty("no_update", true)
         json.add("data", data)
         return json
     }

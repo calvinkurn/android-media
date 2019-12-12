@@ -3,11 +3,8 @@ package com.tokopedia.navigation.presentation.adapter.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.BigBannerNotificationViewHolder
-import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.ProductRecomNotificationViewHolder
-import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.SmallBannerNotificationViewHolder
-import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.TextNotificationViewHolder
-import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.WishListNotificationViewHolder
+import com.tokopedia.navigation.domain.model.EmptyUpdateState
+import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.*
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 
@@ -33,6 +30,10 @@ class NotificationUpdateTypeFactoryImpl(var notificationUpdateListener: Notifica
         }
     }
 
+    override fun type(emptyState: EmptyUpdateState): Int {
+        return EmptyStateViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             TextNotificationViewHolder.LAYOUT -> TextNotificationViewHolder(parent, notificationUpdateListener)
@@ -40,6 +41,7 @@ class NotificationUpdateTypeFactoryImpl(var notificationUpdateListener: Notifica
             BigBannerNotificationViewHolder.LAYOUT -> BigBannerNotificationViewHolder(parent, notificationUpdateListener)
             ProductRecomNotificationViewHolder.LAYOUT -> ProductRecomNotificationViewHolder(parent, notificationUpdateListener)
             WishListNotificationViewHolder.LAYOUT -> WishListNotificationViewHolder(parent, notificationUpdateListener)
+            EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
