@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatsearch.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -52,11 +51,10 @@ class ChatSearchViewModel @Inject constructor(
     }
 
     private fun onSuccessDoSearch(response: GetChatSearchResponse) {
-        val searchResults = response.chatSearch.contact.searchResults
-        _searchResults.postValue(searchResults)
+        _searchResults.postValue(response.searchResults)
     }
 
     private fun onErrorDoSearch(throwable: Throwable) {
-        Log.d("DO_SEARCH", "query: $query, page: $page")
+
     }
 }
