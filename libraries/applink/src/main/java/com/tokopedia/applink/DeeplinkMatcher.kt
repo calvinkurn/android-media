@@ -8,6 +8,7 @@ import com.tokopedia.applink.DeepLinkChecker.CATEGORY
 import com.tokopedia.applink.DeepLinkChecker.CONTENT
 import com.tokopedia.applink.DeepLinkChecker.DISCOVERY_PAGE
 import com.tokopedia.applink.DeepLinkChecker.ETALASE
+import com.tokopedia.applink.DeepLinkChecker.FIND
 import com.tokopedia.applink.DeepLinkChecker.FLIGHT
 import com.tokopedia.applink.DeepLinkChecker.GROUPCHAT
 import com.tokopedia.applink.DeepLinkChecker.HOT
@@ -55,6 +56,8 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "search")) to BROWSE)
             add(Pattern(EQ, 1, mapOf(0 to "hot")) to HOT_LIST)
             add(Pattern(GT, 1, mapOf(0 to "hot")) to HOT)
+            add(Pattern(GT, 0, mapOf(0 to "find")) to FIND)
+            add(Pattern(GT, 1, mapOf(1 to "find")) to FIND)
             add(Pattern(GT, 0, mapOf(0 to "catalog")) to CATALOG)
             add(Pattern(EQ, 2, mapOf(0 to "b")) to DISCOVERY_PAGE)
             add(Pattern(EQ, 2, mapOf(0 to "discovery")) to DISCOVERY_PAGE)

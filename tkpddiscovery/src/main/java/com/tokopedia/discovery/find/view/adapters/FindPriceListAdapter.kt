@@ -1,0 +1,68 @@
+package com.tokopedia.discovery.find.view.adapters
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.discovery.R
+import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
+import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
+import com.tokopedia.unifyprinciples.Typography
+
+class FindPriceListAdapter(var productList: ArrayList<ProductsItem>, private var productListener: ProductCardListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object {
+        const val VIEW_PRICE = 0
+        const val SHIMMER_LAYOUT_COUNT = 4
+        const val PRICE_COUNT = 10
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            VIEW_PRICE -> {
+                val v = LayoutInflater.from(parent.context).inflate(PriceViewHolder.LAYOUT, parent, false)
+                PriceViewHolder(v)
+            }
+            else -> {
+                val v = LayoutInflater.from(parent.context).inflate(QuickFilterAdapter.ShimmerViewHolder.Layout, parent, false)
+                return QuickFilterAdapter.ShimmerViewHolder(v)
+            }
+        }
+    }
+
+    class PriceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        companion object {
+            val LAYOUT = R.layout.related_price_rv_item
+        }
+
+        val findItem: Typography = itemView.findViewById(R.id.find_item)
+        val findItemPrice: Typography = itemView.findViewById(R.id.find_item_price)
+    }
+
+    override fun getItemCount(): Int {
+        return if (productList.size <= 0) {
+            SHIMMER_LAYOUT_COUNT
+        } else {
+            PRICE_COUNT
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (getItemViewType(position)) {
+            VIEW_PRICE -> setRelatedLinkData(holder as PriceViewHolder, position)
+            else -> {
+            }
+        }
+    }
+
+    private fun setRelatedLinkData(viewHolder: PriceViewHolder, position: Int) {
+        val product = productList[position]
+        viewHolder.findItem.text = product.name.trim()
+        viewHolder.findItemPrice.text = product.price
+        viewHolder.findItem.setOnClickListener {
+            productListener.onItemClicked(product, viewHolder.adapterPosition)
+        }
+    }
+
+}

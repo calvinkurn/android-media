@@ -93,4 +93,8 @@
     <string name="buka_browser">Buka Browser</string>
     <string name="category_server_error_header">There is some error on server</string>
     <string name="try_again">try again</string>
+    <string name="load_more">Lihat Selebihnya</string>
+    <string name="read_more">Baca Selengkapnya</string>
+    <string name="related_search">Pencarian Terkait</string>
+    <string name="banned_product">Produk dibatasi di Android</string>
 </resources>
