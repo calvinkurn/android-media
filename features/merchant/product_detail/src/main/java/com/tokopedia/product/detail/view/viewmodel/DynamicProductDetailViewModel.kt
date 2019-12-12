@@ -90,9 +90,9 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     var installmentData: FinancingDataResponse? = null
 
     private var submitTicketSubscription: Subscription? = null
-
-    fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
+    val isUserSessionActive: Boolean
+        get() = userSessionInterface.isLoggedIn
     val userId: String
         get() = userSessionInterface.userId
     val isUserHasShop: Boolean
@@ -151,53 +151,60 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             getDynamicProductInfoP1 = productData.layoutData
 
             removeDynamicComponent(initialLayoutData)
+            //Render initial data first
             productLayout.value = Success(initialLayoutData)
 
-            getDynamicProductInfoP1?.let {
-                val p2ShopDeferred = getProductInfoP2ShopAsync(it.basic.getShopId(),
-                        it.basic.productID, "", false)
-
-                val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive()) {
-                    getProductInfoP2LoginAsync(it.basic.getShopId(),
-                            it.basic.getProductId())
-                } else null
-
-                val userIdInt = userId.toIntOrNull() ?: 0
-                val categoryId = it.basic.category.id.toIntOrNull() ?: 0
-
-                val p2GeneralAsync: Deferred<ProductInfoP2General> = getProductInfoP2GeneralAsync(it.basic.getShopId(),
-                        it.basic.getProductId(), it.data.price.value,
-                        it.basic.condition,
-                        it.getProductName,
-                        categoryId, it.basic.catalogID, userIdInt, it.basic.minOrder)
-
-                shopInfo = p2ShopDeferred.await().shopInfo
-                p2ShopDataResp.value = p2ShopDeferred.await()
-                p2General.value = p2GeneralAsync.await()
-                p2LoginDeferred?.let {
-                    p2Login.value = it.await()
-                }
-
-                p2ShopDataResp.value?.let { p2Shop ->
-                    multiOrigin = p2Shop.nearestWarehouse.warehouseInfo
-                    val domain = productParams.shopDomain ?: p2Shop.shopInfo?.shopCore?.domain
-                    ?: return@launchCatchError
-
-                    if (isUserSessionActive()) {
-                        val origin = if (multiOrigin.isFulfillment) multiOrigin.origin else null
-                        productInfoP3resp.value = getProductInfoP3(it.basic.getWeightUnit(), domain, true,
-                                it.shouldShowCod, origin)
-                    }
-                }
-            }
+            // Then update the following, it will not throw anything when error
+            getProductP2()
+            getProductP3(productParams.shopDomain)
 
         }) {
             productLayout.value = Fail(it)
         }
     }
 
-    private suspend fun getProductV2() {
+    private suspend fun getProductP2() {
+        getDynamicProductInfoP1?.let {
+            val p2ShopDeferred = getProductInfoP2ShopAsync(it.basic.getShopId(),
+                    it.basic.productID, "", false)
 
+            val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
+                getProductInfoP2LoginAsync(it.basic.getShopId(),
+                        it.basic.getProductId())
+            } else null
+
+            val userIdInt = userId.toIntOrNull() ?: 0
+            val categoryId = it.basic.category.id.toIntOrNull() ?: 0
+
+            val p2GeneralAsync: Deferred<ProductInfoP2General> = getProductInfoP2GeneralAsync(it.basic.getShopId(),
+                    it.basic.getProductId(), it.data.price.value,
+                    it.basic.condition,
+                    it.getProductName,
+                    categoryId, it.basic.catalogID, userIdInt, it.basic.minOrder)
+
+            shopInfo = p2ShopDeferred.await().shopInfo
+            p2ShopDataResp.value = p2ShopDeferred.await()
+            p2General.value = p2GeneralAsync.await()
+            p2LoginDeferred?.let {
+                p2Login.value = it.await()
+            }
+        }
+    }
+
+    private suspend fun getProductP3(shopDomain: String?) {
+        getDynamicProductInfoP1?.run {
+            p2ShopDataResp.value?.let { p2Shop ->
+                multiOrigin = p2Shop.nearestWarehouse.warehouseInfo
+                val domain = shopDomain ?: p2Shop.shopInfo?.shopCore?.domain
+                ?: return@run
+
+                if (isUserSessionActive) {
+                    val origin = if (multiOrigin.isFulfillment) multiOrigin.origin else null
+                    productInfoP3resp.value = getProductInfoP3(basic.getWeightUnit(), domain, true,
+                            shouldShowCod, origin)
+                }
+            }
+        }
     }
 
     private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPDPDataModel>) {
@@ -302,17 +309,6 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IS_ACTIVE, productFsIsActive)
             putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IMAGE_URL, productFsImageUrl)
         }
-    }
-
-    fun getImageUriPaths(): ArrayList<String> {
-        val mediaData = getDynamicProductInfoP1?.data?.media ?: listOf()
-        return ArrayList(mediaData.map {
-            if (it.type == "image") {
-                it.uRLOriginal
-            } else {
-                it.uRLThumbnail
-            }
-        })
     }
 
     fun loadRecommendation() {
@@ -470,7 +466,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     }
 
     private suspend fun getPdpLayout(productId: String): ProductDetailDataModel {
-        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, isUserSessionActive(), isUserHasShop)
+        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, isUserSessionActive, isUserHasShop)
         getPdpLayoutUseCase.isFromCacheFirst = false
         return getPdpLayoutUseCase.executeOnBackground()
     }

@@ -168,28 +168,16 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             forEach {
                 when (it.name) {
                     ProductDetailConstant.PDP_1 -> {
-                        data.getOrNull(0)?.let { recom ->
-                            it.recomWidgetData = recom
-                            it.cardModel = mapToCardModel(recom)
-                        }
+                        fillRecomData(it,data,0)
                     }
                     ProductDetailConstant.PDP_2 -> {
-                        data.getOrNull(1)?.let { recom ->
-                            it.recomWidgetData = recom
-                            it.cardModel = mapToCardModel(recom)
-                        }
+                        fillRecomData(it,data,1)
                     }
                     ProductDetailConstant.PDP_3 -> {
-                        data.getOrNull(2)?.let { recom ->
-                            it.recomWidgetData = recom
-                            it.cardModel = mapToCardModel(recom)
-                        }
+                        fillRecomData(it,data,2)
                     }
                     ProductDetailConstant.PDP_4 -> {
-                        data.getOrNull(3)?.let { recom ->
-                            it.recomWidgetData = recom
-                            it.cardModel = mapToCardModel(recom)
-                        }
+                        fillRecomData(it,data,3)
                     }
                 }
             }
@@ -243,8 +231,13 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                             type = it.labelOffers.type
                     )
             )
-
         }
+    }
 
+    private fun fillRecomData(dataModel: ProductRecommendationDataModel, recomWidget: List<RecommendationWidget>, position: Int) {
+        recomWidget.getOrNull(position)?.let { recom ->
+            dataModel.recomWidgetData = recom
+            dataModel.cardModel = mapToCardModel(recom)
+        }
     }
 }

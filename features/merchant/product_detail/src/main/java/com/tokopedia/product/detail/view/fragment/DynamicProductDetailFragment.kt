@@ -140,11 +140,6 @@ import kotlin.math.roundToLong
 
 class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener {
 
-    companion object {
-        const val PAYLOAD_TOOGLE_FAVORITE = 2
-        const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
-    }
-
     private var shouldShowCartAnimation = false
     @Inject
     lateinit var productDetailTracking: ProductDetailTracking
@@ -184,14 +179,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     //View
     private lateinit var bottomSheet: ValuePropositionBottomSheet
-
-    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this) }
-    private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory) }
-    private var menu: Menu? = null
     private lateinit var varToolbar: Toolbar
     private lateinit var actionButtonView: PartialButtonActionView
     private lateinit var stickyLoginView: StickyLoginView
     private lateinit var pdpHashMapUtil: DynamicProductDetailHashMap
+    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this) }
+    private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory) }
+    private var menu: Menu? = null
     private var loadingProgressDialog: ProgressDialog? = null
 
     val errorBottomsheets: ErrorBottomsheets by lazy {
@@ -334,13 +328,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     }
                     viewModel.getDynamicProductInfoP1?.let { productInfo ->
                         pdpHashMapUtil.updateDataP1(productInfo)
-
                         if (productInfo.data.isTradeIn) {
                             renderTradein(productInfo)
                         }
-
+                        // if when first time and the product is actually a variant product, then select the default variant
+                        if (userInputVariant == null && productInfo.data.variant.isVariant && productInfo.data.variant.parentID != productId) {
+                            userInputVariant = productId
+                        }
                         shouldShowCodP1 = productInfo.data.isCOD
-
                         actionButtonView.isLeasing = productInfo.basic.isLeasing
                         actionButtonView.renderData(!productInfo.basic.isActive(),
                                 (viewModel.isShopOwner(productInfo.basic.getShopId())
@@ -350,10 +345,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                         if (productInfo.basic.category.isAdult) {
                             AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId
                                     ?: "")
-                        }
-                        // if when first time and the product is actually a variant product, then select the default variant
-                        if (userInputVariant == null && productInfo.data.variant.isVariant && productInfo.data.variant.parentID != productId) {
-                            userInputVariant = productId
                         }
                     }
 
@@ -365,7 +356,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
                     activity?.invalidateOptionsMenu()
                     renderList(it.data)
-
                 }
                 is Fail -> {
                     actionButtonView.visibility = false
@@ -391,11 +381,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
             it.pdpAffiliate?.let { renderAffiliate(it) }
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
-
         })
 
         viewModel.p2ShopDataResp.observe(this, Observer {
-            if (!viewModel.isUserSessionActive() && ::performanceMonitoringFull.isInitialized)
+            if (!viewModel.isUserSessionActive && ::performanceMonitoringFull.isInitialized)
                 performanceMonitoringFull.stopTrace()
 
             performanceMonitoringP2.stopTrace()
@@ -419,7 +408,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                             shopInfo.shopCore.shopID,
                             shopInfo.goldOS.shopTypeString,
                             productId ?: "")
-
                 }
             }
 
@@ -700,7 +688,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     override fun onShipmentClicked() {
         productDetailTracking.eventShippingClicked(productId ?: "")
-        if (viewModel.isUserSessionActive()) {
+        if (viewModel.isUserSessionActive) {
             val productP3value = viewModel.productInfoP3resp.value
             if (!productP3value?.ratesModel?.services.isNullOrEmpty()) {
                 gotoRateEstimation()
@@ -752,12 +740,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     override fun eventRecommendationClick(recomItem: RecommendationItem, position: Int, pageName: String, title: String) {
         productDetailTracking.eventRecommendationClick(
-                recomItem, position, viewModel.isUserSessionActive(), pageName, title)
+                recomItem, position, viewModel.isUserSessionActive, pageName, title)
     }
 
     override fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String) {
         productDetailTracking.eventRecommendationImpression(
-                position, recomItem, viewModel.isUserSessionActive(), pageName, title)
+                position, recomItem, viewModel.isUserSessionActive, pageName, title)
     }
 
     /**
@@ -765,7 +753,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
      */
     override fun openShopClicked() {
         activity?.let {
-            if (viewModel.isUserSessionActive()) {
+            if (viewModel.isUserSessionActive) {
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.OPEN_SHOP)
                         ?: return@let
                 startActivity(intent)
@@ -888,10 +876,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
      * ProductSnapshotViewHolder
      */
     override fun onImageClicked(position: Int) {
-        startActivity(ImagePreviewActivity.getCallingIntent(context!!,
-                viewModel.getDynamicProductInfoP1?.data?.getImagePath()!!,
-                null,
-                position))
+        context?.let {
+            startActivity(ImagePreviewActivity.getCallingIntent(it,
+                    viewModel.getDynamicProductInfoP1?.data?.getImagePath() ?: arrayListOf(),
+                    null,
+                    position))
+        }
     }
 
     override fun txtTradeinClicked(adapterPosition: Int) {
@@ -916,7 +906,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     override fun onFabWishlistClicked(isActive: Boolean) {
         val shopInfo = viewModel.shopInfo
         val productInfo = viewModel.getDynamicProductInfoP1
-        if (viewModel.isUserSessionActive()) {
+        if (viewModel.isUserSessionActive) {
             val productP3value = viewModel.productInfoP3resp.value
             if (shopInfo != null && shopInfo.isAllowManage == 1) {
                 if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
@@ -1222,7 +1212,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     private fun reportProduct() {
         viewModel.getDynamicProductInfoP1?.run {
-            if (viewModel.isUserSessionActive()) {
+            if (viewModel.isUserSessionActive) {
                 context?.let {
                     val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.REPORT_PRODUCT,
                             basic.productID)
@@ -1391,7 +1381,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             activity?.let {
                 productDetailTracking.eventClickAffiliate(viewModel.userId, productInfo.basic.getShopId(),
                         pdpAffiliate.productId.toString(), isRegularPdp)
-                if (viewModel.isUserSessionActive()) {
+                if (viewModel.isUserSessionActive) {
                     RouteManager.getIntent(it,
                             ApplinkConst.AFFILIATE_CREATE_POST,
                             pdpAffiliate.productId.toString(),
@@ -1461,7 +1451,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         performanceMonitoringP2 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_TRACE)
         performanceMonitoringP2General = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_GENERAL_TRACE)
 
-        if (viewModel.isUserSessionActive()) {
+        if (viewModel.isUserSessionActive) {
             performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
             performanceMonitoringFull = PerformanceMonitoring.start(ProductDetailConstant.PDP_P3_TRACE)
         }
@@ -1534,7 +1524,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         val isExpressCheckout = (viewModel.p2Login.value)?.isExpressCheckoutType
                 ?: false
         if (isExpressCheckout) {
-            if (viewModel.isUserSessionActive()) {
+            if (viewModel.isUserSessionActive) {
                 goToAtcExpress()
             } else {
                 context?.let {
@@ -1749,9 +1739,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private fun onShopFavoriteClick() {
         val shop = viewModel.shopInfo ?: return
         activity?.let {
-            if (viewModel.isUserSessionActive()) {
+            if (viewModel.isUserSessionActive) {
                 pdpHashMapUtil.getShopInfo.toogleFavorite = false
-                dynamicAdapter.notifyShopInfo(pdpHashMapUtil.getShopInfo, PAYLOAD_TOOGLE_FAVORITE)
+                dynamicAdapter.notifyShopInfo(pdpHashMapUtil.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
                 viewModel.toggleFavorite(shop.shopCore.shopID,
                         this::onSuccessFavoriteShop, this::onFailFavoriteShop)
             } else {
@@ -1772,7 +1762,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             pdpHashMapUtil.getShopInfo.shopInfo = pdpHashMapUtil.getShopInfo.shopInfo?.copy(favoriteData = newFavorite)
             pdpHashMapUtil.getShopInfo.isFavorite = favorite.alreadyFavorited != 1
             pdpHashMapUtil.getShopInfo.toogleFavorite = true
-            dynamicAdapter.notifyShopInfo(pdpHashMapUtil.getShopInfo, PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
+            dynamicAdapter.notifyShopInfo(pdpHashMapUtil.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
         }
     }
 
@@ -1783,7 +1773,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     .setAction(R.string.retry_label) { onShopFavoriteClick() }
         }
         pdpHashMapUtil.getShopInfo.toogleFavorite = true
-        dynamicAdapter.notifyShopInfo(pdpHashMapUtil.getShopInfo, PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
+        dynamicAdapter.notifyShopInfo(pdpHashMapUtil.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
     }
 
 
@@ -1791,7 +1781,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         val shop = viewModel.shopInfo ?: return
         val product = viewModel.getDynamicProductInfoP1 ?: return
         activity?.let {
-            if (viewModel.isUserSessionActive()) {
+            if (viewModel.isUserSessionActive) {
                 val intent = RouteManager.getIntent(it,
                         ApplinkConst.TOPCHAT_ASKSELLER,
                         shop.shopCore.shopID, "",
@@ -1866,7 +1856,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     private fun gotoCart() {
         activity?.let {
-            if (viewModel.isUserSessionActive()) {
+            if (viewModel.isUserSessionActive) {
                 startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
             } else {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),

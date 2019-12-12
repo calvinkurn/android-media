@@ -5,7 +5,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 
 class DynamicProductDetailAdapter(
-        private val adapterTypeFactory: DynamicProductDetailAdapterFactoryImpl
+        adapterTypeFactory: DynamicProductDetailAdapterFactoryImpl
 ) : BaseListAdapter<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(adapterTypeFactory) {
 
     fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel, payload: Int) {

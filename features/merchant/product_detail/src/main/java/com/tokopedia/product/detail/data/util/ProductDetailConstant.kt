@@ -62,6 +62,8 @@ object ProductDetailConstant {
     const val PAYLOAD_WISHLIST = 1
     const val PAYLOAD_COD = 2
     const val PAYLOAD_TRADEIN = 3
+    const val PAYLOAD_TOOGLE_FAVORITE = 2
+    const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
 
     //Request Code
     const val REQUEST_CODE_TALK_PRODUCT = 1
