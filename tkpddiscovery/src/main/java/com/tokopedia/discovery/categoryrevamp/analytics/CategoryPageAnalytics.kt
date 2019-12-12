@@ -290,7 +290,7 @@ class CategoryPageAnalytics {
                 KEY_EVENT, EVENT_NAME_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
                 KEY_EVENT_ACTION, eventAction,
-                KEY_EVENT_LABEL, product_id,
+                KEY_EVENT_LABEL, product_id + " - " + getProductType(isTopAds),
                 KEY_CATEGORY_ID, category_id
         )
         tracker.sendEnhanceEcommerceEvent(map)
