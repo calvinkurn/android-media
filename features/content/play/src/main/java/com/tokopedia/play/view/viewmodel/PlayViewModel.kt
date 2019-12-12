@@ -62,7 +62,7 @@ class PlayViewModel @Inject constructor(
     }
 
     fun startCurrentVideo() {
-        playManager.startCurrentVideo()
+        playManager.resumeCurrentVideo()
     }
 
     fun startWebsocket(url: String) {
