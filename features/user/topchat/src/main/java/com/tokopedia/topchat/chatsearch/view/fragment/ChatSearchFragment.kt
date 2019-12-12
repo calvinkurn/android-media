@@ -70,6 +70,8 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
             view?.let {
                 Toaster.make(it, errorMsg, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
             }
+            hideLoading()
+            stopLoading()
         })
     }
 

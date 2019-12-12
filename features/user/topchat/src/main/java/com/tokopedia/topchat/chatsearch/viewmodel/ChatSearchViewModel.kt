@@ -42,7 +42,7 @@ class ChatSearchViewModel @Inject constructor(
     }
 
     fun loadNextPage(nextPage: Int) {
-        if (nextPage > page && getSearchQueryUseCase.hasNext) {
+        if (nextPage >= page && getSearchQueryUseCase.hasNext) {
             page = nextPage
             doSearch()
         }
