@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.view.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -31,7 +30,6 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -91,9 +89,7 @@ import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
 import com.tokopedia.feedplus.view.analytics.ProductEcommerce
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.di.FeedPlusComponent
-import com.tokopedia.feedplus.view.listener.FeedPlus
 import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
-import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
@@ -108,6 +104,9 @@ import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
+import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder
+import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder
+import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
@@ -134,7 +133,6 @@ import javax.inject.Inject
  */
 
 class FeedPlusFragment : BaseDaggerFragment(),
-        FeedPlus.View,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
         KolPostViewHolderListener,
@@ -150,7 +148,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
         HighlightAdapter.HighlightListener,
-        OnboardingAdapter.InterestPickItemListener{
+        OnboardingAdapter.InterestPickItemListener,
+        EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener,
+        RetryViewHolder.RetryViewHolderListener,
+        EmptyFeedViewHolder.EmptyFeedListener{
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -174,11 +175,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var feedOnboardingPresenter: FeedOnboardingViewModel
-
-    @Inject
-    @get:RestrictTo(RestrictTo.Scope.TESTS)
-    @set:RestrictTo(RestrictTo.Scope.TESTS)
-    lateinit var presenter: FeedPlusPresenter
 
     @Inject
     internal lateinit var analytics: FeedAnalytics
@@ -494,7 +490,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     @RestrictTo(RestrictTo.Scope.TESTS)
     fun reInitInjector(component: FeedPlusComponent) {
         component.inject(this)
-        presenter.attachView(this)
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -513,7 +508,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         newFeed = parentView.findViewById(R.id.layout_new_feed)
 
         prepareView()
-        presenter.attachView(this)
         return parentView
 
     }
@@ -578,8 +572,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.detachView()
-
         if (layoutManager != null) {
             layoutManager = null
         }
@@ -719,7 +711,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onResume() {
         super.onResume()
         registerNewFeedReceiver()
-        if (userVisibleHint && ::presenter.isInitialized) {
+        if (userVisibleHint) {
             loadData(userVisibleHint)
         }
     }
@@ -750,15 +742,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun loadData(isVisibleToUser: Boolean) {
-        if (isVisibleToUser && isAdded && activity != null && ::presenter.isInitialized) {
-            if (!isLoadedOnce) {
-                feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, false)
-                isLoadedOnce = !isLoadedOnce
-            }
+        activity?.let {
+            if (isVisibleToUser && isAdded) {
+                if (!isLoadedOnce) {
+                    feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, false)
+                    isLoadedOnce = !isLoadedOnce
+                }
 
-            if (afterPost) {
-                showAfterPostToaster()
-                afterPost = false
+                if (afterPost) {
+                    showAfterPostToaster()
+                    afterPost = false
+                }
             }
         }
     }
