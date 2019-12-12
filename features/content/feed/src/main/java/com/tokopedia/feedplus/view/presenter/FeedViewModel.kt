@@ -446,7 +446,7 @@ class FeedViewModel @Inject constructor(@ApplicationContext private val context:
             data.id = id
             data.rowNumber = rowNumber
             val params = LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like)
-            val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().single()
+            val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
             if (!isSuccess) {
                 data.errorMessage = context.getString(R.string.default_request_error_unknown)
@@ -554,7 +554,7 @@ class FeedViewModel @Inject constructor(@ApplicationContext private val context:
             data.id = id
             data.rowNumber = rowNumber
             val params = DeletePostUseCase.createRequestParams(id.toString())
-            val isSuccess = deletePostUseCase.createObservable(params).toBlocking().single()
+            val isSuccess = deletePostUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
             if (!isSuccess) {
                 data.errorMessage = context.getString(R.string.default_request_error_unknown)
@@ -587,7 +587,7 @@ class FeedViewModel @Inject constructor(@ApplicationContext private val context:
            data.adapterPosition = adapterPosition
            data.shopId = shopId
            val params = ToggleFavouriteShopUseCase.createRequestParam(shopId)
-           val isSuccess = doFavoriteShopUseCase.createObservable(params).toBlocking().single()
+           val isSuccess = doFavoriteShopUseCase.createObservable(params).toBlocking().first()
            if (isSuccess) {
                data.isSuccess = isSuccess
            } else {
@@ -604,7 +604,7 @@ class FeedViewModel @Inject constructor(@ApplicationContext private val context:
             val data = TrackAffiliateViewModel()
             data.url = url
             val params = TrackAffiliateClickUseCase.createRequestParams(url)
-            val isSuccess = trackAffiliateClickUseCase.createObservable(params).toBlocking().single()
+            val isSuccess = trackAffiliateClickUseCase.createObservable(params).toBlocking().first()
             if (isSuccess) {
                 data.isSuccess = isSuccess
             }
