@@ -43,16 +43,27 @@ data class SomListOrderParam(
 
         @SerializedName("sort_by")
         @Expose
-        var sortBy: Int = 2
+        var sortBy: Int = 0,
+
+        @SerializedName("is_mobile")
+        @Expose
+        var isMobile: Boolean = true,
+
+        @SerializedName("next_order_id")
+        @Expose
+        var nextOrderId: Int = 0
+
 ) : Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readString() ?: "",
-                parcel.readString()  ?: "",
-                parcel.readString()  ?: "",
+                parcel.readString() ?: "",
+                parcel.readString() ?: "",
                 parcel.readInt(),
                 parcel.createIntList(),
                 parcel.createIntList(),
                 parcel.createIntList(),
+                parcel.readInt(),
+                parcel.readByte() != 0.toByte(),
                 parcel.readInt())
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -64,6 +75,8 @@ data class SomListOrderParam(
                 parcel.writeIntList(shippingList)
                 parcel.writeIntList(orderTypeList)
                 parcel.writeInt(sortBy)
+                parcel.writeByte(if (isMobile) 1 else 0)
+                parcel.writeInt(nextOrderId)
         }
 
         override fun describeContents(): Int {
@@ -79,4 +92,5 @@ data class SomListOrderParam(
                         return arrayOfNulls(size)
                 }
         }
+
 }

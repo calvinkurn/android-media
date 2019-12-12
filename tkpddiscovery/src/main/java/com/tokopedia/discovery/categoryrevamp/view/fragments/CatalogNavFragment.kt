@@ -27,6 +27,8 @@ import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CatalogCardListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CatalogNavViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -61,7 +63,6 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
     lateinit var catalogNavViewModel: CatalogNavViewModel
 
 
@@ -193,10 +194,12 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
             layout_no_data.visibility = View.VISIBLE
+            txt_catalog_count.hide()
             txt_no_data_header.text = resources.getText(R.string.category_nav_catalog_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_catalog_no_data_description)
         } else {
             layout_no_data.visibility = View.GONE
+            txt_catalog_count.show()
         }
 
     }
@@ -241,11 +244,9 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun initView() {
-        activity?.let { observer ->
-            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
-            catalogNavViewModel = viewModelProvider.get(CatalogNavViewModel::class.java)
-            fetchCatalogData(getCatalogListParams(0))
-        }
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        catalogNavViewModel = viewModelProvider.get(CatalogNavViewModel::class.java)
+        fetchCatalogData(getCatalogListParams(0))
     }
 
     private fun getCatalogListParams(page: Int): RequestParams {
@@ -310,11 +311,6 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         catalogNavViewModel.fetchCatalogDetail(paramMap)
     }
 
-
-    override fun onDetach() {
-        super.onDetach()
-        catalogNavViewModel.onDetach()
-    }
 
     override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
 

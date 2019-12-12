@@ -323,6 +323,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             smsRetrieverClient.startSmsRetriever();
             requestOtp();
         }
+        showKeyboard();
     }
 
     private void updateViewFromServer() {
@@ -667,4 +668,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyOtp();
     }
 
+    private void showKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInputFromWindow(inputOtp.getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+    }
 }

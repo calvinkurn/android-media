@@ -3,7 +3,6 @@
     package="com.tokopedia.fintech.wallet">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/wallet_title">
         <dist:fusing dist:include="true" />

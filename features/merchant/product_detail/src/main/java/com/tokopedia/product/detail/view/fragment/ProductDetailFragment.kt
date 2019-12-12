@@ -51,6 +51,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.customviews.TradeInTextView
+import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -131,9 +134,6 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
-import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.common_tradein.customviews.TradeInTextView
-import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.dialog.UnifyDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
@@ -160,6 +160,7 @@ import kotlinx.android.synthetic.main.partial_product_recom_4.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
@@ -1262,12 +1263,20 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productDetailTracking.eventClickPDPInstallmentSeeMore(productId)
 
         val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
-        val bundleData = Bundle()
-        bundleData.putParcelable(KEY_PDP_FINANCING_DATA, installmentData)
-        bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price ?: 0f)
-        bundleData.putBoolean(KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
-        pdpInstallmentBottomSheet.arguments = bundleData
-        pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
+
+        context?.let {
+            val cacheManager = SaveInstanceCacheManager(it, true)
+            cacheManager.put(FinancingDataResponse::class.java.simpleName, installmentData, TimeUnit.HOURS.toMillis(1))
+            val bundleData = Bundle()
+
+            bundleData.putString(KEY_PDP_FINANCING_DATA, cacheManager.id!!)
+            bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price ?: 0f)
+            bundleData.putBoolean(KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
+
+            pdpInstallmentBottomSheet.arguments = bundleData
+            pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
+        }
+
     }
 
     private fun showAddToCartDoneBottomSheet(successMessage: String) {
@@ -1513,40 +1522,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     wholesale_divider.gone()
                 }
                 base_view_wholesale.visible()
-
             } else {
-                base_view_wholesale.hide()
+                label_installment.hide()
+                label_desc_installment.hide()
                 iv_ovo_installment_icon.hide()
                 iv_arrow_next.hide()
-            }
-        }
-
-        /*productInfoP2.minInstallment?.let {
-            label_installment.visible()
-            label_installment.text = getString(R.string.new_installment_template,
-                    (if (shopInfo?.goldOS?.isOfficial == 1) it.osMonthlyPrice else it.monthlyPrice).getCurrencyFormatted())
-            label_desc_installment.visible()
-            label_desc_installment.setOnClickListener {
-                activity?.let {
-                    val price = (
-                            if (productInfo?.campaign?.isActive == true && (productInfo?.campaign?.id?.toIntOrNull()
-                                            ?: 0) > 0)
-                                productInfo?.campaign?.discountedPrice
-                            else
-                                productInfo?.basic?.price
-                            ) ?: 0f
-                    startActivity(ProductInstallmentActivity.createIntent(it,
-                            shopInfo?.goldOS?.isOfficial == 1,
-                            price))
-                }
-            }
-            if (label_min_wholesale.isVisible) {
-                wholesale_divider.visible()
-            } else {
                 wholesale_divider.gone()
             }
-            base_view_wholesale.visible()
-        }*/
+        }
 
         productShopView.renderShopFeature(productInfoP2.shopFeature)
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
@@ -1558,9 +1541,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
                 productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
-        /*if (!isAffiliate) {
-            otherProductView.renderData(productInfoP2.productOthers)
-        }*/
 
         partialVariantAndRateEstView.renderPurchaseProtectionData(productInfoP2.productPurchaseProtectionInfo)
         productInfo?.run {
@@ -1631,7 +1611,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         shouldShowCod = data.shouldShowCod
         isLeasing = data.basic.isLeasing
         headerView.renderData(data)
-        varPictureImage.renderData(data.media, this::onPictureProductClicked, childFragmentManager)
+        varPictureImage.renderData(data.media, this::onPictureProductClicked, this::onSwipePicture, childFragmentManager)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data)
@@ -1916,18 +1896,22 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         }
         productDetailTracking.eventSendMessage()
-        productDetailTracking.eventSendChat(productId ?: "")
     }
 
     /**
      * go to preview image activity to show larger image of Product
      */
     private fun onPictureProductClicked(position: Int) {
+        productDetailTracking.eventProductImageClicked(productId)
         activity?.let {
             val intent = ImagePreviewPdpActivity.createIntent(it, productId
                     ?: "", isWishlisted, getImageURIPaths(), null, position)
             startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW)
         }
+    }
+
+    private fun onSwipePicture(swipeDirection: String) {
+        productDetailTracking.eventProductImageOnSwipe(productId, swipeDirection)
     }
 
     private fun getImageURIPaths(): ArrayList<String> {

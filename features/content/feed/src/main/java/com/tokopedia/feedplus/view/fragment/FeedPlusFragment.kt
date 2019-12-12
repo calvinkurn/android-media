@@ -930,7 +930,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int,
-                                             redirectLink: String) {
+                                             redirectLink: String, postType: String, authorId: String) {
         onGoToLink(redirectLink)
 
         if (adapter.getlist()[positionInFeed] is FeedRecommendationViewModel) {
@@ -946,6 +946,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     userIdInt
             )
         }
+        if (postType.equals(FollowCta.AUTHOR_USER) || postType.equals(FollowCta.AUTHOR_SHOP))
+        feedAnalytics.eventClickFeedProfileRecommendation(authorId, postType)
     }
 
     override fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int,
@@ -991,6 +993,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     break
                 }
             }
+            feedAnalytics.eventClickTopadsPromoted(shop.id)
         }
     }
 
@@ -1024,10 +1027,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
+    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta) {
         onGoToLink(redirectUrl)
-
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.AVATAR)
+        feedAnalytics.eventClickFeedAvatar(activityId.toString(), activityName, followCta.authorID, followCta.authorType)
     }
 
     override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String,

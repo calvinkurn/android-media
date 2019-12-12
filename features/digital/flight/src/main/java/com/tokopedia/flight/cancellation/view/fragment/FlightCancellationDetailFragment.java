@@ -1,11 +1,6 @@
 package com.tokopedia.flight.cancellation.view.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +8,17 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
-import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.bookingV2.presentation.adapter.FlightSimpleAdapter;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPassengerAdapter;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPassengerAdapterTypeFactory;

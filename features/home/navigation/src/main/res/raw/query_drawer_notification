@@ -6,17 +6,6 @@ query {
     }
   }
   notifications{
-    purchase {
-      deliveryConfirm
-      orderStatus
-      paymentConfirm
-      reorder
-    }
-    sales {
-      newOrder
-      shippingConfirm
-      shippingStatus
-	}
     resolutionAs {
       buyer
       seller
@@ -24,7 +13,6 @@ query {
     sellerInfo {
       notification
     }
-    userSatisfactionSurvey
     buyerOrderStatus {
       paymentStatus
       confirmed
@@ -38,7 +26,6 @@ query {
       shipped
       arriveAtDestination
     }
-    total_notif
   }
   notifcenter_unread {
     notif_unread
