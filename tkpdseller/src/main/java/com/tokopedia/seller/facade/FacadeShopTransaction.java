@@ -144,6 +144,7 @@ public class FacadeShopTransaction {
 
                                     } catch (Throwable je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
+                                        listener.OnError();
                                     }
                                 } else {
                                     listener.OnError();
@@ -234,6 +235,7 @@ public class FacadeShopTransaction {
 
                                     } catch (Throwable je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
+                                        listener.OnError();
                                     }
                                 } else {
                                     listener.OnError();
@@ -337,6 +339,7 @@ public class FacadeShopTransaction {
 
                                     } catch (JSONException je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
+                                        listener.OnError();
                                     }
                                 } else {
                                     listener.OnError();
@@ -401,6 +404,7 @@ public class FacadeShopTransaction {
 
                                     } catch (Throwable je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
+                                        listener.OnError();
                                     }
                                 } else {
                                     listener.OnError();
