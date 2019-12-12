@@ -167,18 +167,6 @@ data class Channel(
             @SerializedName("applink")
             val applink: String = "")
 
-    data class PinnedMessage(
-            @SerializedName("pinned_message_id")
-            val pinnedMessageId: String = "",
-            @SerializedName("title")
-            val title: String = "",
-            @SerializedName("message")
-            val message: String = "",
-            @SerializedName("image_url")
-            val imageUrl: String = "",
-            @SerializedName("redirect_url")
-            val redirectUrl: String = "")
-
     data class Settings(
             @SerializedName("ping_interval")
             val pingInterval: Int = 0,

@@ -1,8 +1,8 @@
 package com.tokopedia.play.view.event
 
 import com.tokopedia.play.component.ComponentEvent
+import com.tokopedia.play.data.PinnedMessage
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play.ui.pinned.model.PinnedMessage
 import com.tokopedia.play.ui.toolbar.model.TitleToolbar
 import com.tokopedia.play.view.type.PlayVODType
 import com.tokopedia.play_common.state.TokopediaPlayVideoState

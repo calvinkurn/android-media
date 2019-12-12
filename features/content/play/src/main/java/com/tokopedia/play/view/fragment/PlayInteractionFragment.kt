@@ -16,12 +16,12 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.data.PinnedMessage
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.like.LikeComponent
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import com.tokopedia.play.ui.pinned.PinnedComponent
-import com.tokopedia.play.ui.pinned.model.PinnedMessage
 import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
 import com.tokopedia.play.ui.sendchat.SendChatComponent
@@ -139,11 +139,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                          viewModel.getToolbarInfo(it.data.partnerType, it.data.partnerId)
                          setTitle(it.data.title)
                          setTotalView(it.data.totalViews)
-                         setPinnedMessage(PinnedMessage(
-                                 it.data.pinnedMessage.title,
-                                 it.data.pinnedMessage.message,
-                                 it.data.pinnedMessage.redirectUrl,
-                                 it.data.pinnedMessage.imageUrl))
+                         setPinnedMessage(it.data.pinnedMessage)
                          setQuickReply(it.data.quickReply)
                      }
                  }
