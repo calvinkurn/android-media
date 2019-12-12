@@ -1,6 +1,7 @@
 package com.tokopedia.seller.facade;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -397,7 +398,7 @@ public class FacadeShopTransaction {
 
                                     JSONObject jsonObject = null;
                                     try {
-                                        if (response.getStringData() != null) {
+                                        if (!TextUtils.isEmpty(response.getStringData())) {
                                             jsonObject = new JSONObject(response.getStringData());
 
                                             Gson gson = new GsonBuilder().create();
