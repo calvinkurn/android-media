@@ -15,6 +15,7 @@ import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.EventSeatLayoutResonse;
+import com.tokopedia.events.data.source.EventException;
 import com.tokopedia.events.domain.GetEventSeatLayoutUseCase;
 import com.tokopedia.events.domain.model.request.verify.ValidateShow;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
@@ -130,10 +131,16 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
             @Override
             public void onError(Throwable throwable) {
                 Log.d("BookTicketPresenter", "onError");
+                if (throwable instanceof EventException) {
+                    mView.showSnackBar(throwable.getMessage(), false);
+
+                } else {
+
+                    NetworkErrorHelper.showEmptyState(mView.getActivity(),
+                            mView.getRootView(), () -> validateSelection());
+                }
                 throwable.printStackTrace();
                 mView.hideProgressBar();
-                NetworkErrorHelper.showEmptyState(mView.getActivity(),
-                        mView.getRootView(), () -> validateSelection());
             }
 
             @Override
