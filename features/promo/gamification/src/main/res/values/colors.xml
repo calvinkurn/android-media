@@ -14,4 +14,15 @@
     <color name="gf_tint_close_color">#6C727C</color>
     <color name="charcoal_gray_88">#e131353b</color>
     <color name="gf_tooltip_transparent">#4c31353b</color>
+    <color name="gf_clr_31353b">#31353b</color>
+
+    <color name="gf_grad_btn_outer_start_blue">#b4d6dc</color>
+    <color name="gf_grad_btn_outer_end_blue">#c0d9dc</color>
+    <color name="gf_grad_btn_inner_start_blue">#ddeaf3</color>
+    <color name="gf_grad_btn_inner_end_blue">#f6f6f6</color>
+
+    <color name="gf_grad_btn_outer_start_green">#96c93d</color>
+    <color name="gf_grad_btn_outer_end_green">#26962d</color>
+    <color name="gf_grad_btn_inner_start_green">#96c93d</color>
+    <color name="gf_grad_btn_inner_end_green">#42b549</color>
 </resources>

@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangInEmptyState
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
@@ -349,6 +350,7 @@ class SomFilterFragment : BaseDaggerFragment() {
         renderCourierList()
         renderOrderType()
         renderStatusList()
+        SomAnalytics.eventClickResetButtonOnFilterPage()
     }
 
     @SuppressLint("SetTextI18n")

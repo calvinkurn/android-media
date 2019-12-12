@@ -70,7 +70,6 @@ interface HomeCategoryListener {
 
     fun onTokopointCheckNowClicked(applink: String)
 
-
     fun launchPermissionChecker()
 
     fun onCloseGeolocationView()

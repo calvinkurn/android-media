@@ -364,21 +364,21 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, object : FilterSortManager.Callback {
-            override fun onFilterResult(queryParams: MutableMap<String, String>?, selectedFilters: MutableMap<String, String>?, selectedOptions: MutableList<Option>?) {
+            override fun onFilterResult(queryParams: Map<String, String>?, selectedFilters: Map<String, String>?, selectedOptions: List<Option>?) {
 
             }
 
-            override fun onSortResult(selectedSort: MutableMap<String, String>, selectedSortName: String?, autoApplyFilter: String?) {
-                setSelectedSort(HashMap(selectedSort))
-                selectedSort.let {
+            override fun onSortResult(selectedSort: Map<String, String>?, selectedSortName: String?, autoApplyFilter: String?) {
+                setSelectedSort(HashMap(selectedSort?.toMutableMap() ?: mutableMapOf()))
+                selectedSort?.let {
                     searchParameter.getSearchParameterHashMap().putAll(it)
                 }
 
                 clearDataFilterSort()
                 reloadData()
-                sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort["ob"]?.toInt())
+                sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort?.get("ob")?.toInt())
                 onSortAppliedEvent(selectedSortName ?: "",
-                        selectedSort["ob"]?.toInt() ?: 0)
+                        selectedSort?.get("ob")?.toInt() ?: 0)
             }
         })
     }

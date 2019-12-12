@@ -475,7 +475,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                 override fun onNext(t: Boolean?) {
                     val priceViewModel = FlightPriceViewModel()
                     priceViewModel.departurePrice = buildFare(journeyViewModel.fare, !view.getSearchPassData().isOneWay)
-                    view.navigateToTheNextPage(journeyViewModel.id, priceViewModel, journeyViewModel.isBestPairing)
+                    view.navigateToTheNextPage(journeyViewModel.id, journeyViewModel.term, priceViewModel, journeyViewModel.isBestPairing)
                 }
             }
 

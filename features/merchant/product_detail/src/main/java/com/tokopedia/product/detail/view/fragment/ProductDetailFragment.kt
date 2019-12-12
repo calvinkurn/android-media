@@ -160,6 +160,7 @@ import kotlinx.android.synthetic.main.partial_product_recom_4.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
@@ -1262,12 +1263,20 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productDetailTracking.eventClickPDPInstallmentSeeMore(productId)
 
         val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
-        val bundleData = Bundle()
-        bundleData.putParcelable(KEY_PDP_FINANCING_DATA, installmentData)
-        bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price ?: 0f)
-        bundleData.putBoolean(KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
-        pdpInstallmentBottomSheet.arguments = bundleData
-        pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
+
+        context?.let {
+            val cacheManager = SaveInstanceCacheManager(it, true)
+            cacheManager.put(FinancingDataResponse::class.java.simpleName, installmentData, TimeUnit.HOURS.toMillis(1))
+            val bundleData = Bundle()
+
+            bundleData.putString(KEY_PDP_FINANCING_DATA, cacheManager.id!!)
+            bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price ?: 0f)
+            bundleData.putBoolean(KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
+
+            pdpInstallmentBottomSheet.arguments = bundleData
+            pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
+        }
+
     }
 
     private fun showAddToCartDoneBottomSheet(successMessage: String) {
@@ -1602,7 +1611,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         shouldShowCod = data.shouldShowCod
         isLeasing = data.basic.isLeasing
         headerView.renderData(data)
-        varPictureImage.renderData(data.media, this::onPictureProductClicked, childFragmentManager)
+        varPictureImage.renderData(data.media, this::onPictureProductClicked, this::onSwipePicture, childFragmentManager)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data)
@@ -1856,8 +1865,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun onReviewClicked() {
         productInfo?.run {
-            productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
-                    ?: "")
+            productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
             productDetailTracking.eventReviewClicked()
             productDetailTracking.sendMoEngageClickReview(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")
@@ -1888,18 +1896,22 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         }
         productDetailTracking.eventSendMessage()
-        productDetailTracking.eventSendChat(productId ?: "")
     }
 
     /**
      * go to preview image activity to show larger image of Product
      */
     private fun onPictureProductClicked(position: Int) {
+        productDetailTracking.eventProductImageClicked(productId)
         activity?.let {
             val intent = ImagePreviewPdpActivity.createIntent(it, productId
                     ?: "", isWishlisted, getImageURIPaths(), null, position)
             startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW)
         }
+    }
+
+    private fun onSwipePicture(swipeDirection: String) {
+        productDetailTracking.eventProductImageOnSwipe(productId, swipeDirection)
     }
 
     private fun getImageURIPaths(): ArrayList<String> {
