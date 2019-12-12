@@ -197,8 +197,14 @@ public class CartMapper implements ICartMapper {
                 }
                 cartItemDataOrigin.setCod(data.getProduct().isCod());
                 cartItemDataOrigin.setFavorite(false);
-                cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
-                cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());
+                cartItemDataOrigin.setMinOrder(data.getProduct().getProductMinOrder());
+                if (data.getProduct().getProductSwitchInvenage() == 0) {
+                    cartItemDataOrigin.setMaxOrder(data.getProduct().getProductMaxOrder());
+                } else if (data.getProduct().getProductMaxOrder() <= data.getProduct().getProductInvenageValue()) {
+                    cartItemDataOrigin.setMaxOrder(data.getProduct().getProductMaxOrder());
+                } else {
+                    cartItemDataOrigin.setMaxOrder(data.getProduct().getProductInvenageValue());
+                }
                 cartItemDataOrigin.setPriceChangesState(data.getProduct().getPriceChanges().getChangesState());
                 cartItemDataOrigin.setPriceChangesDesc(data.getProduct().getPriceChanges().getDescription());
                 cartItemDataOrigin.setProductInvenageByUserText(data.getProduct().getProductInvenageTotal().getByUserText().getComplete());
@@ -252,7 +258,6 @@ public class CartMapper implements ICartMapper {
                 cartItemDataUpdated.setRemark(cartItemDataOrigin.getProductVarianRemark());
                 cartItemDataUpdated.setQuantity(data.getProduct().getProductQuantity());
                 cartItemDataUpdated.setMaxCharRemark(cartDataListResponse.getMaxCharNote());
-                cartItemDataUpdated.setMaxQuantity(cartDataListResponse.getMaxQuantity());
 
                 CartItemData.MessageErrorData cartItemMessageErrorData = new CartItemData.MessageErrorData();
                 cartItemMessageErrorData.setErrorCheckoutPriceLimit(cartDataListResponse.getMessages().getErrorCheckoutPriceLimit());
@@ -451,8 +456,14 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setPreOrderInfo("PO " + data.getProduct().getProductPreorder().getDurationText());
             }
             cartItemDataOrigin.setFavorite(false);
-            cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
-            cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());
+            cartItemDataOrigin.setMinOrder(data.getProduct().getProductMinOrder());
+            if (data.getProduct().getProductSwitchInvenage() == 0) {
+                cartItemDataOrigin.setMaxOrder(data.getProduct().getProductMaxOrder());
+            } else if (data.getProduct().getProductMaxOrder() <= data.getProduct().getProductInvenageValue()) {
+                cartItemDataOrigin.setMaxOrder(data.getProduct().getProductMaxOrder());
+            } else {
+                cartItemDataOrigin.setMaxOrder(data.getProduct().getProductInvenageValue());
+            }
             cartItemDataOrigin.setFreeReturn(data.getProduct().getIsFreereturns() == 1);
             cartItemDataOrigin.setTrackerAttribution(data.getProduct().getProductTrackerData().getAttribution());
             cartItemDataOrigin.setTrackerListName(data.getProduct().getProductTrackerData().getTrackerListName());
@@ -489,7 +500,6 @@ public class CartMapper implements ICartMapper {
             cartItemDataUpdated.setRemark(cartItemDataOrigin.getProductVarianRemark());
             cartItemDataUpdated.setQuantity(data.getProduct().getProductQuantity());
             cartItemDataUpdated.setMaxCharRemark(cartDataListResponse.getMaxCharNote());
-            cartItemDataUpdated.setMaxQuantity(cartDataListResponse.getMaxQuantity());
 
             CartItemData.MessageErrorData cartItemMessageErrorData = new CartItemData.MessageErrorData();
             cartItemMessageErrorData.setErrorCheckoutPriceLimit(cartDataListResponse.getMessages().getErrorCheckoutPriceLimit());

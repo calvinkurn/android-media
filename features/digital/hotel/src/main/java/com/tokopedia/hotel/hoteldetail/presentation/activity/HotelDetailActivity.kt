@@ -27,6 +27,9 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
     private var propertyId: Int = 0
     private var roomCount: Int = 1
     private var adultCount: Int = 1
+    private var destinationType: String = ""
+    private var destinationName: String = ""
+    private var isDirectPayment: Boolean =  true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
@@ -51,6 +54,9 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                 propertyId = getIntExtra(EXTRA_PROPERTY_ID, 0)
                 roomCount = getIntExtra(EXTRA_ROOM_COUNT, 1)
                 adultCount = getIntExtra(EXTRA_ADULT_COUNT, 1)
+                destinationType = getStringExtra(EXTRA_DESTINATION_TYPE)
+                destinationName = getStringExtra(EXTRA_DESTINATION_NAME)
+                isDirectPayment =  getBooleanExtra(EXTRA_IS_DIRECT_PAYMENT, true)
             }
         }
 
@@ -63,7 +69,8 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
     override fun shouldShowMenuWhite(): Boolean = true
 
     override fun getNewFragment(): Fragment =
-            HotelDetailFragment.getInstance(checkInDate, checkOutDate, propertyId, roomCount, adultCount)
+            HotelDetailFragment.getInstance(checkInDate, checkOutDate, propertyId, roomCount,
+                    adultCount, destinationType, destinationName, isDirectPayment)
 
     override fun getComponent(): HotelDetailComponent =
             DaggerHotelDetailComponent.builder()
@@ -79,6 +86,9 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
         const val EXTRA_ADULT_COUNT = "EXTRA_ADULT_COUNT"
         const val EXTRA_CHECK_IN_DATE = "EXTRA_CHECK_IN_DATE"
         const val EXTRA_CHECK_OUT_DATE = "EXTRA_CHECK_OUT_DATE"
+        const val EXTRA_DESTINATION_TYPE = "EXTRA_DESTINATION_TYPE"
+        const val EXTRA_DESTINATION_NAME = "EXTRA_DESTINATION_NAME"
+        const val EXTRA_IS_DIRECT_PAYMENT = "EXTRA_IS_DIRECT_PAYMENT"
 
         const val PARAM_CHECK_IN = "check_in"
         const val PARAM_CHECK_OUT = "check_out"
@@ -87,13 +97,16 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
         const val PARAM_ADULT_COUNT = "adult"
 
         fun getCallingIntent(context: Context, checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
-                             adultCount: Int): Intent =
+                             adultCount: Int, destinationType: String, destinationName: String, isDirectPayment: Boolean = true): Intent =
                 Intent(context, HotelDetailActivity::class.java)
                         .putExtra(EXTRA_CHECK_IN_DATE, checkInDate)
                         .putExtra(EXTRA_CHECK_OUT_DATE, checkOutDate)
                         .putExtra(EXTRA_PROPERTY_ID, propertyId)
                         .putExtra(EXTRA_ROOM_COUNT, roomCount)
                         .putExtra(EXTRA_ADULT_COUNT, adultCount)
+                        .putExtra(EXTRA_DESTINATION_TYPE, destinationType)
+                        .putExtra(EXTRA_DESTINATION_NAME, destinationName)
+                        .putExtra(EXTRA_IS_DIRECT_PAYMENT, isDirectPayment)
 
     }
 }

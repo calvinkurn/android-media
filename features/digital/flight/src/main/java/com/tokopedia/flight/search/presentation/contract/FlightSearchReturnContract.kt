@@ -25,7 +25,8 @@ interface FlightSearchReturnContract {
 
         fun navigateToCart(returnFlightSearchViewModel: FlightJourneyViewModel? = null,
                            selectedFlightReturn: String? = null,
-                           flightPriceViewModel: FlightPriceViewModel)
+                           flightPriceViewModel: FlightPriceViewModel,
+                           selectedFlightTerm: String? = null)
 
     }
 
@@ -33,7 +34,7 @@ interface FlightSearchReturnContract {
 
         fun onFlightSearchSelected(selectedFlightDeparture: String, returnJourneyViewModel: FlightJourneyViewModel, adapterPosition: Int = -1)
 
-        fun onFlightSearchSelected(selectedFlightDeparture: String, selectedFlightReturn: String)
+        fun onFlightSearchSelected(selectedFlightDeparture: String, selectedFlightReturn: String, selectedTerm: String)
 
         fun onDestroy()
 

@@ -2,6 +2,7 @@ package com.tokopedia.discovery.categoryrevamp.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -34,6 +35,10 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
 
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
+        val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+        when(visitables[position]){
+            is LoadingMoreModel -> layout.isFullSpan = true
+        }
         holder.bind(visitables[position])
     }
 

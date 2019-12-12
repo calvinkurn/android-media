@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
@@ -187,7 +188,7 @@ class DynamicFeedFragment:
         }
     }
 
-    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
+    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta) {
         val item = ((adapter.list[positionInFeed]) as HighlightViewModel)
         feedAnalyticTracker.eventTrendingClickProfile(item.postId)
         onGoToLink(redirectUrl)

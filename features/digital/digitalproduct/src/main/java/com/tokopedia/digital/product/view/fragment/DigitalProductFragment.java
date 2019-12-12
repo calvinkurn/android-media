@@ -479,6 +479,12 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void sendOpenScreenEventTracking(CategoryData categoryData) {
+        rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn(), categoryData.getName(),
+                categoryData.getCategoryId());
+    }
+
+    @Override
     public void renderCheckPulsaBalanceData(int selectedSim, String ussdCode, String phoneNumber, String operatorErrorMsg, Boolean isSimActive, String carrierName) {
         CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
         checkPulsaBalanceView.setActionListener(this);

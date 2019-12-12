@@ -75,7 +75,28 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
     }
 
     private void submitProduct(final long draftProductId, final ProductViewModel productViewModel, final ProductSubmitNotificationListener notificationCountListener) {
-        submitProductUseCase.execute(SubmitProductUseCase.createParams(productViewModel, notificationCountListener), new Subscriber<Integer>() {
+        submitProductUseCase.execute(
+                SubmitProductUseCase.createParams(productViewModel, notificationCountListener),
+                getSubmitProductUseCaseSubscriber(draftProductId,productViewModel,notificationCountListener)
+        );
+    }
+
+    public void uploadProduct(final ProductViewModel productViewModel, final ProductSubmitNotificationListener notificationCountListener) {
+        notificationCountListener.setProductViewModel(productViewModel);
+        notificationCountListener.setMaxCount(MIN_NOTIFICATION_PROGRESS + getUploadPictureCount(productViewModel));
+        notificationCountListener.addProgress();
+        submitProductUseCase.execute(
+                SubmitProductUseCase.createParams(productViewModel, notificationCountListener),
+                getSubmitProductUseCaseSubscriber(-1,productViewModel,notificationCountListener)
+        );
+    }
+
+    private Subscriber<Integer> getSubmitProductUseCaseSubscriber(
+            final long draftProductId,
+            final ProductViewModel productViewModel,
+            final ProductSubmitNotificationListener notificationCountListener
+    ) {
+        return new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
 
@@ -95,13 +116,14 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
             @Override
             public void onNext(Integer productId) {
                 notificationCountListener.addProgress();
-                deleteSingleDraftProductUseCase.executeSync(DeleteSingleDraftProductUseCase.createRequestParams(draftProductId));
+                if (draftProductId > -1)
+                    deleteSingleDraftProductUseCase.executeSync(DeleteSingleDraftProductUseCase.createRequestParams(draftProductId));
                 deletePictureCacheList(productViewModel);
                 notificationCountListener.addProgress();
                 notificationCountListener.getProductViewModel().setProductId(productId.toString());
                 getView().onSuccessAddProduct(notificationCountListener);
             }
-        });
+        };
     }
 
     private void deletePictureCacheList(ProductViewModel productViewModel) {

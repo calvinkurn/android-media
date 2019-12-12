@@ -67,7 +67,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
             }
         }
 
-        activity?.resources?.getString(R.string.change_name_note, chancesChangeName)?.let {
+        activity?.getString(R.string.change_name_note, chancesChangeName)?.let {
             changeNameHint -> changeNameTextNote?.text = changeNameHint
         }
 
