@@ -43,7 +43,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
-import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.view.common.TickerAnnouncementActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
@@ -141,7 +140,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         ToolbarRemoveView.ToolbarCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
         ClashBottomSheetFragment.ActionListener, InsuranceItemActionListener, TickerAnnouncementActionListener {
 
-    public static final int SHOP_INDEX_PROMO_GLOBAL = -1;
+    private static final int SHOP_INDEX_PROMO_GLOBAL = -1;
 
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
@@ -149,8 +148,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private static final String CART_ALL_TRACE = "mp_cart_all";
     private static final String CART_PAGE = "cart";
     private static final int NAVIGATION_PDP = 64728;
-    public static final int GO_TO_DETAIL = 2;
-    public static final int GO_TO_LIST = 1;
+    private static final int GO_TO_DETAIL = 2;
+    static final int GO_TO_LIST = 1;
     private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
     private boolean FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
     private boolean FLAG_IS_CART_EMPTY = false;
@@ -1129,7 +1128,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onCartDataDisableToCheckout() {
         if (isAdded() && btnToShipment != null) {
-            btnToShipment.setOnClickListener(view -> getString(R.string.message_checkout_empty_selection));
+            btnToShipment.setOnClickListener(view -> checkGoToShipment(getString(R.string.message_checkout_empty_selection)));
         }
     }
 
@@ -1227,62 +1226,22 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
         if (cartListData != null) {
             endlessRecyclerViewScrollListener.resetState();
+
             sendAnalyticsScreenName(getScreenName());
+
             if (refreshHandler != null) {
                 refreshHandler.finishRefresh();
             }
+
             this.cartListData = cartListData;
             cartAdapter.resetData();
-            boolean flagAutoApplyStack = false;
-            PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
-            if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
-                    && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getCode())) {
-                AutoApplyStackData autoApplyStackData = cartListData.getAutoApplyStackData();
-                if (autoApplyStackData != null) {
-                    if (autoApplyStackData.getMessageSuccess() != null && autoApplyStackData.getCode() != null
-                            && autoApplyStackData.getState() != null && autoApplyStackData.getTitleDescription() != null) {
-                        builderGlobal.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
-                                PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
-                                .description(autoApplyStackData.getMessageSuccess())
-                                .amount(autoApplyStackData.getDiscountAmount())
-                                .promoCode(autoApplyStackData.getCode())
-                                .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()))
-                                .title(autoApplyStackData.getTitleDescription())
-                                .build();
-                        sendAnalyticsOnViewPromoAutoApply();
-                        flagAutoApplyStack = true;
-                    }
-                } else {
-                    builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
-                }
-            } else {
-                builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
-            }
 
-            if (!flagAutoApplyStack) {
-                if (cartListData.getGlobalCouponAttrData() != null) {
-                    if (cartListData.getGlobalCouponAttrData().getDescription() != null) {
-                        if (!cartListData.getGlobalCouponAttrData().getDescription().isEmpty()) {
-                            builderGlobal.title(cartListData.getGlobalCouponAttrData().getDescription());
-                            builderGlobal.titleDefault(cartListData.getGlobalCouponAttrData().getDescription());
-                        }
-                    }
-
-                    if (cartListData.getGlobalCouponAttrData().getQuantityLabel() != null) {
-                        if (!cartListData.getGlobalCouponAttrData().getQuantityLabel().isEmpty()) {
-                            builderGlobal.counterLabel(cartListData.getGlobalCouponAttrData().getQuantityLabel());
-                            builderGlobal.counterLabelDefault(cartListData.getGlobalCouponAttrData().getQuantityLabel());
-                        }
-                    }
-                }
-            }
-
-            PromoStackingData promoStackingData = builderGlobal.build();
+            renderTickerAnnouncement(cartListData);
 
             if (cartListData.getShopGroupAvailableDataList().isEmpty() && cartListData.getShopGroupWithErrorDataList().isEmpty()) {
-                renderCartEmpty(cartListData, promoStackingData);
+                renderCartEmpty(cartListData);
             } else {
-                renderCartNotEmpty(cartListData, promoStackingData);
+                renderCartNotEmpty(cartListData);
             }
 
             if (recentViewList == null) {
@@ -1302,30 +1261,93 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             } else {
                 renderRecommendation(null);
             }
-
         }
     }
 
-    private void renderCartNotEmpty(CartListData cartListData, PromoStackingData promoStackingData) {
+    private void renderCartNotEmpty(CartListData cartListData) {
+        FLAG_IS_CART_EMPTY = false;
         cartAdapter.removeCartEmptyData();
 
+        PromoStackingData promoStackingData = getPromoGlobalData(cartListData);
+        renderPromoGlobal(promoStackingData);
+        renderTickerError(cartListData);
+        renderCartAvailable(cartListData);
+        renderCartNotAvailable(cartListData);
+        loadMacroInsurance(cartListData);
+
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
+        if (cbSelectAll != null) {
+            cbSelectAll.setChecked(cartListData.isAllSelected());
+        }
+
+        cartAdapter.checkForShipmentForm();
+        if (cartRecyclerView.getItemDecorationCount() == 0) {
+            cartRecyclerView.addItemDecoration(cartItemDecoration);
+        }
+        if (getActivity() != null) {
+            llCartContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.checkout_module_color_background));
+        }
+
+        cartPageAnalytics.eventViewCartListFinishRender();
+        List<CartItemData> cartItemDataList = cartAdapter.getAllCartItemData();
+        cartPageAnalytics.enhancedECommerceCartLoadedStep0(
+                dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
+        );
+
+        cartAdapter.notifyDataSetChanged();
+    }
+
+    private void renderCartEmpty(CartListData cartListData) {
+        FLAG_IS_CART_EMPTY = true;
+
+        PromoStackingData promoStackingData = getPromoGlobalData(cartListData);
+        if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.EMPTY) {
+            renderPromoGlobal(promoStackingData);
+        }
+
+        renderEmptyCartPlaceholder();
+        enableSwipeRefresh();
+        sendAnalyticsOnDataCartIsEmpty();
+        showEmptyCartContainer();
+        notifyBottomCartParent();
+
+        if (cartRecyclerView.getItemDecorationCount() > 0) {
+            cartRecyclerView.removeItemDecoration(cartItemDecoration);
+        }
+        if (getActivity() != null) {
+            llCartContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
+        }
+
+        cartAdapter.notifyDataSetChanged();
+    }
+
+    private void renderTickerAnnouncement(CartListData cartListData) {
         TickerData tickerData = cartListData.getTickerData();
         if (tickerData != null && tickerData.isValid(CART_PAGE)) {
             cartAdapter.addCartTicker(new TickerAnnouncementHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
         }
+    }
+
+    private void renderPromoGlobal(PromoStackingData promoStackingData) {
         cartAdapter.addPromoStackingVoucherData(promoStackingData);
         if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
             onPromoGlobalTrackingImpression(promoStackingData);
         }
+    }
 
+    private void renderTickerError(CartListData cartListData) {
         if (cartListData.isError()) {
             CartItemTickerErrorHolderData cartItemTickerErrorHolderData = new CartItemTickerErrorHolderData();
             cartItemTickerErrorHolderData.setCartTickerErrorData(cartListData.getCartTickerErrorData());
             cartAdapter.addCartTickerError(cartItemTickerErrorHolderData);
         }
+    }
 
+    private void renderCartAvailable(CartListData cartListData) {
         cartAdapter.addAvailableDataList(cartListData.getShopGroupAvailableDataList());
+    }
 
+    private void renderCartNotAvailable(CartListData cartListData) {
         if (cartListData.getShopGroupWithErrorDataList().size() > 0) {
             cartAdapter.addNotAvailableHeader(viewHolderDataMapper.mapDisabledItemHeaderHolderData(
                     cartListData.getCartTickerErrorData().getErrorCount()));
@@ -1339,44 +1361,65 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
             }
         }
+    }
 
+    private void renderEmptyCartPlaceholder() {
+        cartAdapter.addCartEmptyData();
+    }
+
+    @NotNull
+    private PromoStackingData getPromoGlobalData(CartListData cartListData) {
+        boolean flagAutoApplyStack = false;
+        PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
+        if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
+                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getCode())) {
+            AutoApplyStackData autoApplyStackData = cartListData.getAutoApplyStackData();
+            if (autoApplyStackData != null) {
+                if (autoApplyStackData.getMessageSuccess() != null && autoApplyStackData.getCode() != null
+                        && autoApplyStackData.getState() != null && autoApplyStackData.getTitleDescription() != null) {
+                    builderGlobal.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
+                            PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
+                            .description(autoApplyStackData.getMessageSuccess())
+                            .amount(autoApplyStackData.getDiscountAmount())
+                            .promoCode(autoApplyStackData.getCode())
+                            .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()))
+                            .title(autoApplyStackData.getTitleDescription())
+                            .build();
+                    sendAnalyticsOnViewPromoAutoApply();
+                    flagAutoApplyStack = true;
+                }
+            } else {
+                builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
+            }
+        } else {
+            builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
+        }
+
+        if (!flagAutoApplyStack) {
+            if (cartListData.getGlobalCouponAttrData() != null) {
+                if (cartListData.getGlobalCouponAttrData().getDescription() != null) {
+                    if (!cartListData.getGlobalCouponAttrData().getDescription().isEmpty()) {
+                        builderGlobal.title(cartListData.getGlobalCouponAttrData().getDescription());
+                        builderGlobal.titleDefault(cartListData.getGlobalCouponAttrData().getDescription());
+                    }
+                }
+
+                if (cartListData.getGlobalCouponAttrData().getQuantityLabel() != null) {
+                    if (!cartListData.getGlobalCouponAttrData().getQuantityLabel().isEmpty()) {
+                        builderGlobal.counterLabel(cartListData.getGlobalCouponAttrData().getQuantityLabel());
+                        builderGlobal.counterLabelDefault(cartListData.getGlobalCouponAttrData().getQuantityLabel());
+                    }
+                }
+            }
+        }
+
+        return builderGlobal.build();
+    }
+
+    private void loadMacroInsurance(CartListData cartListData) {
         if (!cartListData.getShopGroupAvailableDataList().isEmpty() && isInsuranceEnabled) {
             dPresenter.getInsuranceTechCart();
         }
-
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
-        if (cbSelectAll != null) {
-            cbSelectAll.setChecked(cartListData.isAllSelected());
-        }
-
-        cartAdapter.checkForShipmentForm();
-        onCartNotEmpty();
-
-        cartPageAnalytics.eventViewCartListFinishRender();
-        List<CartItemData> cartItemDataList = cartAdapter.getAllCartItemData();
-        cartPageAnalytics.enhancedECommerceCartLoadedStep0(
-                dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
-        );
-
-        cartAdapter.notifyDataSetChanged();
-    }
-
-    private void renderCartEmpty(CartListData cartListData, PromoStackingData promoStackingData) {
-        if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.EMPTY) {
-            cartAdapter.addPromoStackingVoucherData(promoStackingData);
-            if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
-                onPromoGlobalTrackingImpression(promoStackingData);
-            }
-        }
-        cartAdapter.addCartEmptyData();
-
-        TickerData tickerData = cartListData.getTickerData();
-        if (tickerData != null && tickerData.isValid(CART_PAGE)) {
-            cartAdapter.addCartTicker(new TickerAnnouncementHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
-        }
-
-        onCartEmpty();
-        cartAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -1413,7 +1456,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
     }
 
-    public void showMainContainerLoadingInitData() {
+    private void showMainContainerLoadingInitData() {
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
         bottomLayout.setVisibility(View.GONE);
@@ -1421,7 +1464,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cardHeader.setVisibility(View.GONE);
     }
 
-    public void showMainContainer() {
+    private void showMainContainer() {
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
         bottomLayout.setVisibility(View.VISIBLE);
@@ -1429,7 +1472,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cardHeader.setVisibility(View.VISIBLE);
     }
 
-    public void showErrorContainer() {
+    private void showErrorContainer() {
         rlContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
         bottomLayout.setVisibility(View.GONE);
@@ -1437,7 +1480,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cardHeader.setVisibility(View.GONE);
     }
 
-    public void showEmptyCartContainer() {
+    private void showEmptyCartContainer() {
         llNetworkErrorView.setVisibility(View.GONE);
         bottomLayout.setVisibility(View.GONE);
         bottomLayoutShadow.setVisibility(View.GONE);
@@ -1514,30 +1557,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         showToastMessageRed(message);
     }
 
-    private void onCartEmpty() {
-        FLAG_IS_CART_EMPTY = true;
-        enableSwipeRefresh();
-        sendAnalyticsOnDataCartIsEmpty();
-        showEmptyCartContainer();
-        notifyBottomCartParent();
-        if (cartRecyclerView.getItemDecorationCount() > 0) {
-            cartRecyclerView.removeItemDecoration(cartItemDecoration);
-        }
-        if (getActivity() != null) {
-            llCartContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
-        }
-    }
-
-    private void onCartNotEmpty() {
-        FLAG_IS_CART_EMPTY = false;
-        if (cartRecyclerView.getItemDecorationCount() == 0) {
-            cartRecyclerView.addItemDecoration(cartItemDecoration);
-        }
-        if (getActivity() != null) {
-            llCartContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.checkout_module_color_background));
-        }
-    }
-
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
@@ -1569,10 +1588,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public List<CartItemData> getSelectedCartDataList() {
         return cartAdapter.getSelectedCartItemData();
-    }
-
-    public List<InsuranceCartShops> getSelectedRecommendedInsuranceList() {
-        return cartAdapter.getSelectedRecommendedInsuranceList();
     }
 
     @Override
@@ -1758,7 +1773,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 showMainContainer();
             }
             dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true);
-            String promo = PersistentCacheManager.instance.getString("KEY_CACHE_PROMO_CODE", "");
+//            String promo = PersistentCacheManager.instance.getString("KEY_CACHE_PROMO_CODE", "");
 //            if (!TextUtils.isEmpty(promo)) {
 //                dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
 //            }
