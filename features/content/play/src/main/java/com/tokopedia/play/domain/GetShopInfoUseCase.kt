@@ -30,7 +30,7 @@ class GetShopInfoUseCase @Inject constructor(private val gqlUseCase: MultiReques
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ShopInfo.Response::class.java)
         if (error == null || error.isEmpty()) {
-            return (gqlResponse.getData(ShopInfo.Data::class.java) as ShopInfo.Data).data.shopInfo
+            return (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result.data[0]
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
@@ -40,27 +40,32 @@ class GetShopInfoUseCase @Inject constructor(private val gqlUseCase: MultiReques
         private const val PARAM_SHOP_IDS = "shopIds"
         private const val PARAM_SHOP_FIELDS = "fields"
 
-        private val query by lazy {
-            val shopId = "\$shopId"
+        private val query = getQuery()
+
+        private fun getQuery(): String {
+            val shopId = "\$shopIds"
             val fields = "\$fields"
 
-            """
-            query getShopInfo($shopId: Int!, $fields: [String!]!){
-             shopInfoByID(input: {
-                 shopIDs: $shopId,
-                 fields: $fields}){
-                 result {
-                     favoriteData{
-                         totalFavorite
-                         alreadyFavorited
+            return """query getShopInfo($shopId: [Int!]!, $fields: [String!]!){
+                 shopInfoByID(input: {
+                     shopIDs: $shopId,
+                     fields: $fields}){
+                     result {
+                         shopCore {
+                            name,
+                            shopID
+                          },
+                         favoriteData{
+                             totalFavorite
+                             alreadyFavorited
+                         }
+                     }
+                     error {
+                         message
                      }
                  }
-                 error {
-                     message
-                 }
              }
-         }
-        """.trimIndent()
+            """.trimIndent()
         }
 
         private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",

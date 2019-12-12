@@ -1,18 +1,16 @@
 package com.tokopedia.play.view.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.PARTNER_TYPE_ADMIN
-import com.tokopedia.play.PARTNER_TYPE_INFLUENCER
-import com.tokopedia.play.PARTNER_TYPE_SHOP
+import com.tokopedia.play.PARTNER_NAME_ADMIN
 import com.tokopedia.play.data.Like
 import com.tokopedia.play.domain.GetShopInfoUseCase
 import com.tokopedia.play.domain.GetTotalLikeUseCase
 import com.tokopedia.play.domain.PostFollowShopUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.toolbar.model.TitleToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -44,7 +42,7 @@ class PlayInteractionViewModel @Inject constructor(
     val observableTotalLikes: LiveData<Result<Like>> = _observableTotalLikes
 
     private fun getPeopleInfo(peopleId: String) {
-        Log.wtf("Meyta", "getPeopleInfo $peopleId")
+        // TODO get people info / kol profile
     }
 
     private fun getShopInfo(shopId: String, partnerType: String)  {
@@ -56,9 +54,9 @@ class PlayInteractionViewModel @Inject constructor(
 
             val titleToolbar = TitleToolbar(
                     shopId,
-                    response.result[0].shopCore.name,
+                    response.shopCore.name,
                     partnerType,
-                    response.result[0].favoriteData.alreadyFavorited == 1)
+                    response.favoriteData.alreadyFavorited == 1)
             _observableToolbarInfo.value = Success(titleToolbar)
         }) {
             _observableToolbarInfo.value = Fail(it)
@@ -66,11 +64,20 @@ class PlayInteractionViewModel @Inject constructor(
     }
 
     fun getToolbarInfo(partnerType: String, partnerId: String) {
-        if (partnerType == PARTNER_TYPE_ADMIN)
+        if (partnerType == PartnerType.ADMIN.value) {
+            val titleToolbar = TitleToolbar(
+                    partnerId,
+                    PARTNER_NAME_ADMIN,
+                    partnerType,
+                    true)
+            _observableToolbarInfo.value = Success(titleToolbar)
             return
-        if (partnerType == PARTNER_TYPE_SHOP)
+        }
+
+
+        if (partnerType == PartnerType.SHOP.value)
             getShopInfo(partnerId, partnerType)
-        else if (partnerId == PARTNER_TYPE_INFLUENCER)
+        else if (partnerId == PartnerType.INFLUENCER.value)
             getPeopleInfo(partnerId)
     }
 

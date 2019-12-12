@@ -17,6 +17,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2019-12-10.
  */
+
 class PostFollowShopUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<Boolean>() {
 
     var params: RequestParams = RequestParams.EMPTY
@@ -50,10 +51,12 @@ class PostFollowShopUseCase @Inject constructor(private val gqlUseCase: MultiReq
         const val ACTION = "action"
         const val INPUT = "input"
 
-        private val query by lazy {
+        private val query = getQuery()
+
+        private fun getQuery() : String {
             val input = "\$input"
 
-            """
+            return """
             mutation followShop($input: ParamFollowShop!) {
               followShop(input:\$input){
                 success

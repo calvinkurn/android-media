@@ -5,14 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.play.PARTNER_TYPE_ADMIN
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.toolbar.model.TitleToolbar
 import com.tokopedia.unifyprinciples.Typography
 
@@ -69,8 +67,8 @@ class ToolbarView(
             container.context.resources.getString(R.string.play_following) else
             container.context.resources.getString(R.string.play_follow)
 
-        if (titleToolbar.partnerType == PARTNER_TYPE_ADMIN) {
-            tvFollow.hide()
+        if (titleToolbar.partnerType == PartnerType.ADMIN.value) {
+            tvFollow.setOnClickListener {}
         } else {
             tvFollow.setOnClickListener {
                 if (titleToolbar.isAlreadyFavorite) {

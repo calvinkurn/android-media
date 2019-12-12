@@ -58,7 +58,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         fun newInstance(channelId: String): PlayInteractionFragment {
             return PlayInteractionFragment().apply {
-                arguments?.putString(PLAY_KEY_CHANNEL_ID, channelId)
+                val bundle = Bundle()
+                bundle.putString(PLAY_KEY_CHANNEL_ID, channelId)
+                arguments = bundle
             }
         }
     }
@@ -76,7 +78,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
 
-    private val channelId: String = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+    private var channelId: String = ""
 
     override fun getScreenName(): String = "Play Interaction"
 
@@ -87,6 +89,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 )
                 .build()
                 .inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

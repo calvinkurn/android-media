@@ -21,6 +21,4 @@ const val PLAY_GET_TOTAL_LIKES = "${PLAY_GET_CHANNEL_INFO_V3}/lope_lope"
 
 const val PLAY_POST_LIKE = "${PLAY_GET_CHANNEL_INFO_V3}/click_lope_lope"
 
-const val PARTNER_TYPE_ADMIN = "0"
-const val PARTNER_TYPE_SHOP = "1"
-const val PARTNER_TYPE_INFLUENCER = "4"
+const val PARTNER_NAME_ADMIN = "Admin"
