@@ -30,6 +30,7 @@ import kotlin.coroutines.CoroutineContext
 class ChatSearchActivity : BaseSimpleActivity(),
         HasComponent<ChatSearchComponent>, CoroutineScope {
 
+    private val textDebounce = 200L
     override val coroutineContext: CoroutineContext = Dispatchers.Main
 
     interface Listener {
@@ -104,7 +105,7 @@ class ChatSearchActivity : BaseSimpleActivity(),
             if (searchText == searchFor) return
             searchFor = searchText
             launch {
-                delay(800)
+                delay(textDebounce)
                 if (searchText != searchFor) {
                     return@launch
                 }

@@ -32,9 +32,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     override fun onSearchQueryChanged(query: String) {
-        view?.let {
-            Toaster.make(it, query, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-        }
+        viewModel.onSearchQueryChanged(query)
     }
 
     override fun loadData(page: Int) {
