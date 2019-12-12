@@ -38,6 +38,6 @@ object ApplinkConstInternalTopAds {
     @JvmField
     val TOPADS_AUTOADS = "${DeeplinkConstant.SCHEME_SELLERAPP}://${HOST_TOPADS}/autoads"
     @JvmField
-    val TOPADS_KEYWORD_NEW_CHOOSE_GROUP = "${INTERNAL_TOPADS}/keyword-new-choose-group/?is_pos={isPos}&EXTRA_CHOOSEN_GROUP={groupId}"
+    val TOPADS_KEYWORD_NEW_CHOOSE_GROUP = "${INTERNAL_TOPADS}/keyword-new-choose-group?is_pos={isPos}&EXTRA_CHOOSEN_GROUP={groupId}"
 
 }

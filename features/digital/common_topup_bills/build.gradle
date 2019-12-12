@@ -6,13 +6,6 @@ repositories {
     maven { url 'https://hansel.io/maven' }
 }
 
-project.ext {
-    artifactId = 'common_topup_bills'
-    groupId = 'com.tokopedia.common_topup_bills'
-    versionName = "2.22"
-    artifactName = "tkpdcommontopupbills-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -24,6 +17,7 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
@@ -37,13 +31,21 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
+}
 
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
+project.ext {
+    artifactId = 'common-topup-bills'
+    groupId = 'com.tokopedia.digital'
+    versionName = "0.0.1"
+    artifactName = "common_topup_bills-release"
 }
 
 apply from: '../../../publish_local.gradle'

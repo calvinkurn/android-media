@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentButtonViewModel;
 
@@ -16,14 +15,14 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttach
 public class FlightCancellationAttachmentButtonViewHolder extends AbstractViewHolder<FlightCancellationAttachmentButtonViewModel> {
 
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_cancellation_attachment_button;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_cancellation_attachment_button;
 
     private LinearLayout containerLayout;
     private FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener interactionListener;
 
     public FlightCancellationAttachmentButtonViewHolder(View itemView, FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener interactionListener) {
         super(itemView);
-        containerLayout = itemView.findViewById(R.id.upload_container);
+        containerLayout = itemView.findViewById(com.tokopedia.flight.R.id.upload_container);
         this.interactionListener = interactionListener;
         containerLayout.setOnClickListener(new View.OnClickListener() {
             @Override

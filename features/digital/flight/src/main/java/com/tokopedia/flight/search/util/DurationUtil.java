@@ -3,7 +3,6 @@ package com.tokopedia.flight.search.util;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.presentation.model.Duration;
 
 /**
@@ -34,9 +33,9 @@ public class DurationUtil {
         String durationFormat = "";
         if (day > 0) {
             if (useLongFormat) {
-                durationFormat += context.getString(R.string.flight_duration_ddd, day);
+                durationFormat += context.getString(com.tokopedia.flight.R.string.flight_duration_ddd, day);
             } else {
-                durationFormat += context.getString(R.string.flight_duration_dd, day);
+                durationFormat += context.getString(com.tokopedia.flight.R.string.flight_duration_dd, day);
             }
         }
         if (hour > 0) {
@@ -44,9 +43,9 @@ public class DurationUtil {
                 durationFormat += " ";
             }
             if (useLongFormat) {
-                durationFormat += context.getString(R.string.flight_duration_hhh, hour);
+                durationFormat += context.getString(com.tokopedia.flight.R.string.flight_duration_hhh, hour);
             } else {
-                durationFormat += context.getString(R.string.flight_duration_hh, hour);
+                durationFormat += context.getString(com.tokopedia.flight.R.string.flight_duration_hh, hour);
             }
         }
 
@@ -55,9 +54,9 @@ public class DurationUtil {
                 durationFormat += " ";
             }
             if (useLongFormat) {
-                durationFormat += context.getString(R.string.flight_duration_mmm, minute);
+                durationFormat += context.getString(com.tokopedia.flight.R.string.flight_duration_mmm, minute);
             } else {
-                durationFormat += context.getString(R.string.flight_duration_mm, minute);
+                durationFormat += context.getString(com.tokopedia.flight.R.string.flight_duration_mm, minute);
             }
         }
         return durationFormat;

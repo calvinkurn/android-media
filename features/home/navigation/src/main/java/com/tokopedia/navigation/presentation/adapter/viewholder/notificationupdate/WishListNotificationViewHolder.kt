@@ -42,6 +42,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
 
         assignClickListenerAtc(element)
         assignProductClickListener(element)
+        getAnalytic().saveProductCardImpression(element, adapterPosition)
     }
 
     private fun assignClickListenerAtc(element: NotificationUpdateItemViewModel) {

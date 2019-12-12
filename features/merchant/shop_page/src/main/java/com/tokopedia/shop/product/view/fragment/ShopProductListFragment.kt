@@ -757,7 +757,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
         viewModel.etalaseResponse.removeObservers(this)
         viewModel.shopInfoResp.removeObservers(this)
         viewModel.productResponse.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 

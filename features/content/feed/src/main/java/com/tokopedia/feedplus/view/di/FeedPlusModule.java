@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.FeedAuthInterceptor;
@@ -126,8 +127,9 @@ public class FeedPlusModule {
     @Provides
     DynamicFeedContract.Presenter provideDynamicFeedPresenter(UserSessionInterface userSession,
                                                               GetDynamicFeedUseCase getDynamicFeedUseCase,
-                                                              LikeKolPostUseCase likeKolPostUseCase) {
-        return new DynamicFeedPresenter(userSession, getDynamicFeedUseCase, likeKolPostUseCase);
+                                                              LikeKolPostUseCase likeKolPostUseCase,
+                                                              TrackAffiliateClickUseCase trackAffiliateClickUseCase) {
+        return new DynamicFeedPresenter(userSession, getDynamicFeedUseCase, likeKolPostUseCase, trackAffiliateClickUseCase);
     }
 
     //SHOP COMMON

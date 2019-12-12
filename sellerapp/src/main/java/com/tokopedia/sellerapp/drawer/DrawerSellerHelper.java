@@ -229,7 +229,8 @@ public class DrawerSellerHelper extends DrawerHelper
         return drawerCache.getInt(DrawerNotification.CACHE_INBOX_MESSAGE, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TALK, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_REVIEW, 0) +
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET, 0);
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET, 0) +
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_SELLER_INFO, 0);
     }
 
     private int getTotalSellerNotif() {
@@ -307,7 +308,7 @@ public class DrawerSellerHelper extends DrawerHelper
                         new GMTracking().sendClickHamburgerMenuEvent(item.label);
                     }
                     eventClickGoldMerchantViaDrawer();
-                    RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                     intent = SellerRouter.getActivitySellingTransactionNewOrder(context);
@@ -476,7 +477,7 @@ public class DrawerSellerHelper extends DrawerHelper
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 sendGMAnalyticDialogEvent(true);
-                RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+                RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
             }
         });
         alertDialog.setNegativeButton(R.string.title_cancel, new DialogInterface.OnClickListener() {

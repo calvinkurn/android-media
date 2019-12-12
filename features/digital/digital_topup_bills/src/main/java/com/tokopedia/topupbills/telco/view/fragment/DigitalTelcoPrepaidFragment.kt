@@ -156,7 +156,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun getCatalogMenuDetail() {
         catalogMenuDetailViewModel.getCatalogMenuDetailPrepaid(GraphqlHelper.loadRawString(resources,
-                R.raw.query_menu_detail),
+                com.tokopedia.common.topupbills.R.raw.query_menu_detail),
                 this::onLoadingMenuDetail, this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
         catalogMenuDetailViewModel.getFavNumbersPrepaid(GraphqlHelper.loadRawString(resources,
                 R.raw.query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
@@ -424,7 +424,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun onDestroy() {
-        sharedModel.clear()
+        sharedModel.flush()
         super.onDestroy()
     }
 

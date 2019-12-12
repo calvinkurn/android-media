@@ -11,9 +11,9 @@ data class TopAdsGetProductManage(
             @SerializedName("ad_id")
             val adId: String = "",
             @SerializedName("ad_type")
-            val adType: Int = 1,
+            val adType: String = "1",
             @SerializedName("is_enable_ad")
-            val isEnableAd: Int = 0,
+            val isEnableAd: String = "0",
             @SerializedName("item_id")
             val itemId: String = "",
             @SerializedName("item_image")

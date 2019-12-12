@@ -128,7 +128,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onDestroyView() {
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroyView()
     }
 

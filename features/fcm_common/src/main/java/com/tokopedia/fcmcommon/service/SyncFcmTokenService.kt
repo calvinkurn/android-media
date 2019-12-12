@@ -1,53 +1,48 @@
 package com.tokopedia.fcmcommon.service
 
-import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.os.IBinder
+import androidx.core.app.JobIntentService
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
-import java.lang.Exception
+import timber.log.Timber
 import javax.inject.Inject
 
-class SyncFcmTokenService: Service(), FirebaseMessagingManager.SyncListener {
+class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncListener {
 
     @Inject
     lateinit var fcmManager: FirebaseMessagingManager
 
     override fun onCreate() {
         super.onCreate()
+        initInjector()
+    }
+
+    private fun initInjector() {
         DaggerFcmComponent.builder()
                 .fcmModule(FcmModule(this))
                 .build()
                 .inject(this)
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        fcmManager.syncFcmToken(this)
-        return START_NOT_STICKY
+    override fun onHandleWork(intent: Intent) {
+        try {
+            fcmManager.syncFcmToken(this)
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 
-    override fun onSuccess() {
-        stopSelf()
-    }
+    override fun onSuccess() { }
 
-    override fun onError(exception: Exception?) {
-        stopSelf()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        fcmManager.clear()
-    }
-
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
+    override fun onError(exception: Exception?) { }
 
     companion object {
-        fun getIntent(context: Context): Intent {
-            return Intent(context, SyncFcmTokenService::class.java)
+        const val JOB_ID = 91219
+        fun startService(context: Context) {
+            val intent = Intent(context, SyncFcmTokenService::class.java)
+            enqueueWork(context, SyncFcmTokenService::class.java, JOB_ID, intent)
         }
     }
 }

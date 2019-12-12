@@ -439,7 +439,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         viewModel.etalaseResponse.removeObservers(this)
         viewModel.productHighlightResp.removeObservers(this)
         viewModel.productResponse.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
         merchantVoucherListPresenter.detachView()
     }

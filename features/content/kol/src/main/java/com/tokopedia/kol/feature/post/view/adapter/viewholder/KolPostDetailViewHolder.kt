@@ -7,10 +7,8 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.kol.R
 import com.tokopedia.user.session.UserSessionInterface
 
 
@@ -31,11 +29,4 @@ class KolPostDetailViewHolder(private val kolView: View,
                 imagePostListener, youtubePostListener, pollOptionListener, gridItemListener,
                 videoViewListener, feedMultipleImageViewListener, userSession) {
 
-
-    override fun bind(element: DynamicPostViewModel?) {
-        super.bind(element)
-        val footer = kolView.findViewById<View>(R.id.footer)
-        val footerCta = footer.findViewById<View>(R.id.footerCta)
-        footerCta.visibility = View.GONE
-    }
 }

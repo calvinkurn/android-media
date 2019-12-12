@@ -24,6 +24,7 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
 import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
+import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTracker
 import com.tokopedia.profilecompletion.customview.UnifyDialog
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
@@ -31,12 +32,12 @@ import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
 import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureResult
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileRoleViewModel
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
@@ -53,8 +54,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val profileInfoViewModel by lazy { viewModelProvider.get(ProfileInfoViewModel::class.java) }
     private val profileRoleViewModel by lazy { viewModelProvider.get(ProfileRoleViewModel::class.java) }
@@ -155,6 +161,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     REQUEST_CODE_EDIT_PROFILE_PHOTO -> {
                         onSuccessGetProfilePhoto(data)
                     }
+                    REQUEST_CODE_CHANGE_NAME -> {
+                        onSuccessChangeName(data)
+                    }
                     REQUEST_CODE_ADD_BOD -> {
                         onSuccessAddBOD(data)
                     }
@@ -175,6 +184,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun onSuccessChangeName(data: Intent?) {
+        refreshProfile()
+        view?.run {
+            Toaster.make(this, getString(R.string.change_name_change_success), Snackbar.LENGTH_LONG)
         }
     }
 
@@ -289,11 +305,16 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
 
-        name.showFilled(
+        name?.showFilled(
                 getString(R.string.subtitle_name_setting_profile),
                 profileCompletionData.fullName,
-                false,
-                false
+                showVerified = false,
+                showButton = true,
+                fieldClickListener = View.OnClickListener {
+                    ChangeNameTracker().clickOnChangeName()
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_NAME, profileCompletionData.fullName)
+                    startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
+                }
         )
 
         if (profileCompletionData.birthDay.isEmpty()) {
@@ -426,6 +447,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private fun onSuccessGetProfileRole(profileRoleData: ProfileRoleData) {
         dismissLoading()
         bod.isEnabled = profileRoleData.isAllowedChangeDob
+        name?.isEnabled = profileRoleData.isAllowedChangeName && remoteConfig.getBoolean(REMOTE_KEY_CHANGE_NAME, false)
     }
 
     private fun onErrorGetProfileRole(throwable: Throwable) {
@@ -471,7 +493,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
     override fun onDestroy() {
         super.onDestroy()
         profileInfoViewModel.userProfileInfo.removeObservers(this)
-        profileInfoViewModel.clear()
+        profileInfoViewModel.flush()
     }
 
     inner class EditUserProfilePhotoListener : View.OnClickListener {
@@ -507,10 +529,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_EDIT_PHONE = 203
         const val REQUEST_CODE_EDIT_BOD = 204
 
+        const val REQUEST_CODE_CHANGE_NAME = 300
         const val REQUEST_CODE_ADD_BOD = 301
         const val REQUEST_CODE_ADD_EMAIL = 302
         const val REQUEST_CODE_ADD_PHONE = 303
         const val REQUEST_CODE_ADD_GENDER = 304
+
+        const val REMOTE_KEY_CHANGE_NAME = "android_customer_change_public_name"
 
         const val HEADER_PICT_URL = "https://ecs7.tokopedia.net/img/android/others/bg_setting_profile_header.png"
 

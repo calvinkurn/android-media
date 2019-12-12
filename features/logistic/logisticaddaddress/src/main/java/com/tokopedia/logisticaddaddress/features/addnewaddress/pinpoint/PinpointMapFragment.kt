@@ -6,18 +6,25 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import com.google.android.gms.location.*
-import com.google.android.gms.maps.*
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -38,11 +45,15 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.utils.rxPinPoint
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
+import rx.Subscriber
+import rx.Subscription
+import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
 /**
@@ -56,7 +67,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var currentLong: Double = 0.0
     private var isShowingAutocomplete: Boolean = true
     private var bottomSheetBehavior: BottomSheetBehavior<CoordinatorLayout>? = null
-    val handler = Handler()
+    private val handler = Handler()
     private var UNNAMED_ROAD: String = "Unnamed Road"
     private var isGetDistrict = false
     private val FINISH_FLAG = 1212
@@ -75,6 +86,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var isChangesRequested: Boolean = false
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var continueWithLocation: Boolean? = false
+
+    private var composite = CompositeSubscription()
 
     @Inject
     lateinit var presenter: PinpointMapPresenter
@@ -141,7 +154,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
-        presenter.autofill(currentLat ?: 0.0, currentLong ?: 0.0)
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -233,20 +245,31 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             }
         }
 
-
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetBehavior?.isHideable = false
-        this.googleMap?.setOnCameraMoveListener { onMapDraggedListener() }
-        this.googleMap?.setOnCameraIdleListener { onMapIdleListener() }
+        this.googleMap?.setOnCameraMoveStartedListener { _ -> showLoading() }
+        this.googleMap?.let {
+            rxPinPoint(it).subscribe(object : Subscriber<Boolean>() {
+                override fun onNext(t: Boolean?) {
+                    getAutofill()
+                }
+
+                override fun onCompleted() {
+                }
+
+                override fun onError(e: Throwable?) {
+                }
+            }).toCompositeSubs()
+        }
     }
 
-    private fun onMapDraggedListener() {
+    override fun showLoading() {
         getdistrict_container?.visibility = View.GONE
         invalid_container?.visibility = View.GONE
         whole_loading_container?.visibility = View.VISIBLE
     }
 
-    private fun onMapIdleListener() {
+    private fun getAutofill() {
         if (!isGetDistrict) {
             val target: LatLng? = this.googleMap?.cameraPosition?.target
             val latTarget = target?.latitude ?: 0.0
@@ -280,7 +303,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun moveMap(latLng: LatLng) {
-        println("## masuk moveMap - lat = ${latLng.latitude}, long = ${latLng.longitude}")
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
                 .zoom(16f)
@@ -402,7 +424,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         invalid_button?.visibility = View.GONE
 
         invalid_ic_search_btn?.setOnClickListener {
-            currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
         }
     }
 
@@ -417,7 +439,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         invalid_button?.visibility = View.GONE
 
         invalid_ic_search_btn?.setOnClickListener {
-            currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
         }
     }
 
@@ -660,5 +682,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     override fun onDetach() {
         super.onDetach()
         presenter.detachView()
+        composite.unsubscribe()
+    }
+
+    private fun Subscription.toCompositeSubs() {
+        composite.add(this)
     }
 }

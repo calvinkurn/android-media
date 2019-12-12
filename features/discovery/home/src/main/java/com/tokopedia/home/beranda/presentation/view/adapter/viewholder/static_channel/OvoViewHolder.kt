@@ -24,9 +24,9 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapResource
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.gamification.util.HexValidator
 import com.tokopedia.home.R
@@ -72,16 +72,16 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
         containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.white, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
         val radius = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 8f, itemView.resources.displayMetrics).roundToInt()
+                TypedValue.COMPLEX_UNIT_DIP, 16f, itemView.resources.displayMetrics).roundToInt()
 
         Glide.with(itemView.context)
                 .load(BG_CONTAINER_URL)
-                .transform(RoundedRightCornerTransformation(itemView.context, radius))
+                .transform(RoundedRightCornerTransformation(context, radius))
                 .into(imgNonLogin)
 
         container.setOnClickListener {
             HomePageTracking.eventTokopointNonLogin(itemView.context)
-            listener.onTokopointCheckNowClicked(ApplinkConst.TOKOPOINTS)
+            listener.onTokopointCheckNowClicked(ApplinkConstInternalPromo.TOKOPOINTS_HOME)
         }
         scanHolder.setOnClickListener { goToScanner() }
     }
@@ -348,7 +348,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         }
 
         override fun updateDiskCacheKey(messageDigest: MessageDigest) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
         }
 
         private val mDiameter: Int = mRadius * 2

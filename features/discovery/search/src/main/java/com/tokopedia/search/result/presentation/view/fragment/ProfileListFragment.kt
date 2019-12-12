@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -369,32 +368,9 @@ class ProfileListFragment :
     private fun launchProfilePage(userId : String) {
         val applink : String = ApplinkConst.PROFILE.replace(PARAM_USER_ID, userId)
 
-        if(isActivityAnApplinkRouter()) {
-            handleItemClickedIfActivityAnApplinkRouter(applink, false)
+        activity?.let {
+            RouteManager.route(it, applink)
         }
-    }
-
-    private fun isActivityAnApplinkRouter(): Boolean {
-        return activity != null && activity!!.applicationContext is ApplinkRouter
-    }
-
-    private fun handleItemClickedIfActivityAnApplinkRouter(applink: String, shouldFinishActivity: Boolean) {
-        activity?.run {
-            val router = activity!!.applicationContext as ApplinkRouter
-            if (router.isSupportApplink(applink)) {
-                handleRouterSupportApplink(router, applink, shouldFinishActivity)
-            }
-        }
-    }
-
-    private fun handleRouterSupportApplink(router: ApplinkRouter, applink: String, shouldFinishActivity: Boolean) {
-        finishActivityIfRequired(shouldFinishActivity)
-        router.goToApplinkActivity(activity, applink)
-    }
-
-    private fun finishActivityIfRequired(shouldFinishActivity: Boolean) {
-        if (shouldFinishActivity)
-            activity?.finish()
     }
 
     override fun callInitialLoadAutomatically(): Boolean {

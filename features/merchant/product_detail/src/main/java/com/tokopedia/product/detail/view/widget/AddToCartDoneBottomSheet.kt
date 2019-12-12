@@ -20,7 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST
+import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -227,7 +227,7 @@ class AddToCartDoneBottomSheet :
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
-                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
+                val wishlistStatusFromPdp = data.getBooleanExtra(WISHLIST_STATUS_IS_WISHLIST,
                         false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
                 updateWishlist(wishlistStatusFromPdp, position)

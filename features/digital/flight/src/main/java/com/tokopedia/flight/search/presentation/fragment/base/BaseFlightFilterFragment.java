@@ -57,7 +57,7 @@ public abstract class BaseFlightFilterFragment<T extends Visitable, F extends Ba
     @Nullable
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_flight_filter_general, container, false);
+        return inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_filter_general, container, false);
     }
 
     @Override

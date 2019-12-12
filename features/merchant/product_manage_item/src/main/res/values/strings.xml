@@ -84,9 +84,9 @@
     <string name="product_label_maksimum_buy">Pemesanan Maksimum</string>
     <string name="product_label_add_maksimum_buy">+Tambah Pemesanan Maksimum</string>
     <string name="product_label_stock_count">Jumlah Stok</string>
-    <string name="product_label_stock_always_available">Stok Selalu Tersedia</string>
+    <string name="product_label_stock_active">Aktif</string>
     <string name="product_label_stock_limited">Stok Terbatas</string>
-    <string name="product_label_stock_empty">Stok Kosong</string>
+    <string name="product_label_stock_nonactive">Nonaktif</string>
     <string name="product_label_insurance">Asuransi Pengiriman</string>
     <string name="product_label_free_return">Free Returns</string>
     <string name="product_label_pre_order">Pre order</string>
@@ -200,6 +200,6 @@
     <string name="product_action_view_error">Lihat</string>
     <string name="product_category_locked">Kategori Terkunci</string>
     <string name="product_category_locked_description">Tidak dapat mengubah kategori dari produk yang sudah memiliki varian.</string>
-
+    <string name="save_product_error_custom_exception_format">Error save product. userId: %1$s | userEmail: %2$s | %3$s</string>
     <string name="product_stock_available_label">Tersedia</string>
 </resources>

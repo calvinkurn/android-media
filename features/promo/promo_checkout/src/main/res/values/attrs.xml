@@ -5,4 +5,16 @@
         <attr name="tcw_progress" format="integer" />
         <attr name="tcw_time" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="PromoTicketView">
+        <attr name="cornerradius" format="dimension" />
+        <attr name="scallopRadius" format="dimension" />
+        <attr name="offset" format="dimension" />
+        <attr name="shadowblur" format="dimension" />
+        <attr name="cardheight" format="dimension" />
+        <attr name="backgroundcolor" format="color"/>
+        <attr name="showborder" format="boolean"/>
+        <attr name="borderwidth" format="dimension"/>
+        <attr name="offsetafter" format="dimension"/>
+    </declare-styleable>
 </resources>

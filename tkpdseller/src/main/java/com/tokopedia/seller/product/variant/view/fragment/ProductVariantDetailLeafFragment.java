@@ -172,8 +172,12 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
             labelSwitchStatus.setChecked(true);
             labelSwitchStatus.setClickable(false);
             labelSwitchStatus.disableSwitch();
-            counterInputViewStock.setValue(1);
-            productVariantCombinationViewModel.setStock(1);
+            counterInputViewStock.setValue(productVariantCombinationViewModel.getStock());
+            if (productVariantCombinationViewModel.getStock() == 0) {
+                productVariantCombinationViewModel.setStock(1);
+            } else {
+                productVariantCombinationViewModel.setStock(productVariantCombinationViewModel.getStock());
+            }
 
         } else {
             labelSwitchStatus.setChecked(productVariantCombinationViewModel.getStock() != 0);

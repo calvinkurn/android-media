@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">product_manage_list</string>
     <string name="pml_price_format_text">%1$s %2$s</string>
-    <string name="pml_product_variant_stock_limited">Stok Terbatas</string>
+    <string name="pml_product_variant_stock_active">Stok Aktif</string>
     <string name="pml_product_manage_label_add_product_to_sell">Tambah produk Anda untuk dapat mulai berjualan.</string>
     <string name="pml_product_manage_label_add_product">+ Tambah Produk</string>
     <string name="pml_product_manage_label_supervision">Pengawasan</string>
@@ -15,8 +15,12 @@
     <string name="product_manage_item_stock">Stok %1$s</string>
     <string name="product_manage_item_cashback">Cashback %1$d%%</string>
     <string name="product_manage_menu_set_price">Atur Harga</string>
-    <string name="product_manage_menu_set_cashback">Atur &#37; cashback</string>
+    <string name="product_manage_menu_set_cashback">Atur Cashback</string>
     <string name="product_manage_menu_set_promo_ads">Iklan TopAds</string>
+    <string name="product_manage_menu_set_featured_product">Atur Produk Unggulan</string>
+    <string name="product_manage_menu_add_featured_product">Jadikan Produk Unggulan</string>
+    <string name="product_manage_menu_delete_product">Hapus</string>
+    <string name="product_manage_menu_remove_featured_product">Hapus dari Produk Unggulan</string>
     <string name="product_manage_filter_menu_etalase_all">Semua Produk</string>
     <string name="product_manage_filter_menu_category_all">Semua Kategori</string>
     <string name="product_manage_cashback_title">Atur Cashback</string>
@@ -45,10 +49,14 @@
     <string name="product_manage_empty_list_title">Masukkan informasi produk yang benar di pencarian.</string>
     <string name="product_manage_change_btn">Ubah</string>
     <string name="product_manage_bulk_change_btn">Ubah sekaligus</string>
-
+    <string name="product_manage_success_add_featured_product">Berhasil tambah Produk Unggulan</string>
+    <string name="product_manage_success_remove_featured_product">Berhasil hapus Produk Unggulan</string>
+    <string name="product_manage_failed_set_featured_product">Oops, ada gangguan yang perlu kami bereskan.</string>
+    <string name="product_manage_failed_no_internet">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
+    <string name="product_manage_refresh">Refresh</string>
 
     <string name="product_bs_etalase_title">Etalase produk</string>
-    <string name="product_bs_stock_title">Stok produk</string>
+    <string name="product_bs_stock_title">Status produk</string>
     <string name="product_bs_delete_title">Hapus produk</string>
     <string name="product_bs_title">Atur produk</string>
 

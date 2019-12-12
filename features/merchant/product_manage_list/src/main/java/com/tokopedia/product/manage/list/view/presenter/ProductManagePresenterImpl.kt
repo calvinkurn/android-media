@@ -17,6 +17,7 @@ import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductU
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Response
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.product.manage.list.domain.BulkUpdateProductUseCase
+import com.tokopedia.product.manage.list.domain.EditFeaturedProductUseCase
 import com.tokopedia.product.manage.list.domain.EditPriceUseCase
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.list.view.listener.ProductManageView
@@ -45,7 +46,8 @@ class ProductManagePresenterImpl @Inject constructor(
         private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
         private val getProductListUseCase: GetProductListUseCase,
         val productListMapperView: ProductListMapperView,
-        private val bulkUpdateProductUseCase: BulkUpdateProductUseCase
+        private val bulkUpdateProductUseCase: BulkUpdateProductUseCase,
+        private val editFeaturedProductUseCase: EditFeaturedProductUseCase
 ) : BaseDaggerPresenter<ProductManageView>(), ProductManagePresenter {
 
     override fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
@@ -60,9 +62,13 @@ class ProductManagePresenterImpl @Inject constructor(
             val isGoldMerchant: Boolean? = shopInfo.goldOS.isGold == 1
             val isOfficialStore: Boolean? = shopInfo.goldOS.isOfficial == 1
             val shopDomain: String? = shopInfo.shopCore.domain
-
-            view.onSuccessGetShopInfo(isGoldMerchant
-                    ?: false, isOfficialStore ?: false, shopDomain ?: "")
+            if (isViewAttached) {
+                view.onSuccessGetShopInfo(
+                        isGoldMerchant ?: false,
+                        isOfficialStore ?: false,
+                        shopDomain ?: ""
+                )
+            }
         }) {
             it.printStackTrace()
         }
@@ -248,6 +254,27 @@ class ProductManagePresenterImpl @Inject constructor(
                     }
 
                 })
+    }
+
+    override fun setFeaturedProduct(productId: String, status: Int) {
+        //loading animation
+        view.showLoadingProgress()
+
+        editFeaturedProductUseCase.execute(EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status),
+                object : Subscriber<Unit>() {
+                    override fun onNext(unit: Unit) {
+                        view.onSuccessChangeFeaturedProduct(productId, status)
+                    }
+
+                    override fun onCompleted() {
+                        //No OP
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        view.onFailedChangeFeaturedProduct(throwable)
+                    }
+                })
+
     }
 
     private fun getShopIdInteger(): Int {

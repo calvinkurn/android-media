@@ -8,6 +8,8 @@
         android:supportsRtl="true">
         <service
             android:name=".service.SyncFcmTokenService"
-            android:exported="false" />
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 </manifest>

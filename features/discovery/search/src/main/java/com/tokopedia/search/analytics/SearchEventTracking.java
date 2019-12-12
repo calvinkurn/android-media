@@ -36,10 +36,15 @@ public interface SearchEventTracking {
         String CLICK_CART_BUTTON_SEARCH_RESULT = "click cart button - search result";
         String CLICK_HOME_BUTTON_SEARCH_RESULT = "click home button - search result";
         String CLICK_SEARCH_BOX = "click search box";
+        String MODULE = "module";
+        String LOGIN = "login";
+        String NON_LOGIN = "nonlogin";
     }
 
     interface Label {
         String KEYWORD_PRODUCT_ID = "Keyword: %s - product id: %s";
+        String TOPADS = "topads";
+        String GENERAL = "general";
     }
 
     interface MOENGAGE {
