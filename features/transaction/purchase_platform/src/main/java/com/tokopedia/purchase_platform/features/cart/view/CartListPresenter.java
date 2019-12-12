@@ -538,7 +538,7 @@ public class CartListPresenter implements ICartListPresenter {
                     if (!data.isSuccess()) {
                         view.showToastMessageRed(data.getMessage());
                     } else {
-                        if (stateGoTo == CartFragment.GO_TO_LIST) {
+                        if (stateGoTo == CartFragment.Companion.getGO_TO_LIST()) {
                             view.goToCouponList();
                         } else {
                             view.goToDetailPromoStacking(promoStackingData);

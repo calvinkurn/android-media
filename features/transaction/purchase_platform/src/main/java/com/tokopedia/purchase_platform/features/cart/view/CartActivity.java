@@ -79,7 +79,7 @@ public class CartActivity extends BaseCheckoutActivity {
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_CART_ID, cartId);
-        cartFragment = CartFragment.newInstance(bundle,"");
+        cartFragment = CartFragment.Companion.newInstance(bundle,"");
         return cartFragment;
     }
 
