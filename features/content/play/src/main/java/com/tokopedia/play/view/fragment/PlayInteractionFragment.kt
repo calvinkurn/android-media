@@ -161,7 +161,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     }
                 }
                 is Fail -> {
-                    showToast("don't forget to handle when get total likes return error ")
+                    showToast("don't forget to handle when get toolbar info return error ")
                 }
             }
         })

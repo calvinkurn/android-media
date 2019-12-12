@@ -93,38 +93,6 @@ class PlayInteractionViewModel @Inject constructor(
         }
     }
 
-//    private val _observableChatList = MutableLiveData<PlayChat>()
-//    val observableChatList: LiveData<PlayChat> = _observableChatList
-//
-//    private val listOfUser = listOf(
-//            "Rifqi",
-//            "Meyta",
-//            "IJ",
-//            "Yehez"
-//    )
-//
-//    private val listOfMessage = listOf(
-//            "Great product!",
-//            "I watched all of that till te end and i decided i will buy this dress.",
-//            "Great, wellspoken review. Such a wonderful information. Thanks a lot!"
-//    )
-
-//    fun startObservingChatList() {
-//        launch {
-//            var id = 0
-//            while (job.isActive) {
-//                _observableChatList.value =
-//                        PlayChat(
-//                                ++id,
-//                                listOfUser.random(),
-//                                listOfMessage.random()
-//                        )
-//                delay(5000)
-//            }
-//        }
-
-//    }
-
     override fun onCleared() {
         super.onCleared()
         job.cancelChildren()

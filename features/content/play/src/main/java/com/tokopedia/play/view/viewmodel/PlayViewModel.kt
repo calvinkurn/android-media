@@ -8,15 +8,14 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.data.Channel
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.GetChannelInfoUseCase
+import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.type.PlayVODType
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -38,11 +37,11 @@ class PlayViewModel @Inject constructor(
         MutableLiveData<PlayVODType>()
     }
 
-    val observeGetChannelInfo: LiveData<Result<Channel>>
-        get() = _observableGetChannelInfo
-    private val _observableGetChannelInfo by lazy {
-        MutableLiveData<Result<Channel>>()
-    }
+    private val _observableGetChannelInfo = MutableLiveData<Result<Channel>>()
+    val observeGetChannelInfo: LiveData<Result<Channel>> = _observableGetChannelInfo
+
+    private val _observableChatList = MutableLiveData<PlayChat>()
+    val observableChatList: LiveData<PlayChat> = _observableChatList
 
     fun getChannelInfo(channelId: String) {
         launchCatchError(block = {
@@ -60,7 +59,7 @@ class PlayViewModel @Inject constructor(
         playManager.startCurrentVideo()
     }
 
-    fun startWebsocket(channelId: String, gcToken: String) {
+    fun startWebSocket(channelId: String, gcToken: String) {
         playSocket.channelId = channelId
         playSocket.gcToken = gcToken
         playSocket.connect(onOpen = {
@@ -92,4 +91,33 @@ class PlayViewModel @Inject constructor(
     fun destroy() {
         playSocket.destroy()
     }
+
+
+//    private val listOfUser = listOf(
+//            "Rifqi",
+//            "Meyta",
+//            "IJ",
+//            "Yehez"
+//    )
+//
+//    private val listOfMessage = listOf(
+//            "Great product!",
+//            "I watched all of that till te end and i decided i will buy this dress.",
+//            "Great, wellspoken review. Such a wonderful information. Thanks a lot!"
+//    )
+//
+//    fun startObservingChatList() {
+//        launch {
+//            var id = 0
+//            while (job.isActive) {
+//                _observableChatList.value =
+//                        PlayChat(
+//                                ++id,
+//                                listOfUser.random(),
+//                                listOfMessage.random()
+//                        )
+//                delay(5000)
+//            }
+//        }
+//    }
 }

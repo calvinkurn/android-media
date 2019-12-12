@@ -79,7 +79,7 @@ class PlayFragment : BaseDaggerFragment() {
         playViewModel.observeGetChannelInfo.observe(this, Observer {
             when(it)  {
                 is Success -> {
-                    playViewModel.startWebsocket(channelId, it.data.gcToken)
+                    playViewModel.startWebSocket(channelId, it.data.gcToken)
                 }
             }
         })
