@@ -17,22 +17,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <androidx.cardview.widget.CardView
             android:layout_width="@dimen/dp_52"
             android:layout_height="@dimen/dp_52"
+            android:layout_margin="@dimen/dp_2"
             android:layout_centerHorizontal="true"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/digital_ic_squircle" />
+            android:elevation="@dimen/dp_2"
+            app:cardCornerRadius="@dimen/dp_16" >
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon_operator"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="@dimen/dp_4"
-            app:srcCompat="@drawable/digital_ic_emoney"
-            tools:ignore="VectorDrawableCompat" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/icon_operator"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_4"
+                tools:ignore="VectorDrawableCompat" />
+
+        </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
 

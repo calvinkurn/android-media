@@ -4,5 +4,6 @@
     <string name="text_copy_promo_code">Salin</string>
     <string name="text_has_copied_promo_code">Disalin</string>
     <string name="title_promo">Promo</string>
+    <string name="title_promo_code">Kode Promo: </string>
     <string name="title_reccent_transaction_widget">Transaksi Terakhir</string>
 </resources>
