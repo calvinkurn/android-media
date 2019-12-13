@@ -45,11 +45,6 @@ public class GraphqlClient {
             TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
             tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
             tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
-            tkpdOkHttpBuilder.addInterceptor(chain -> {
-                Request.Builder newRequest = chain.request().newBuilder();
-                newRequest.addHeader("User-Agent", getUserAgent());
-                return chain.proceed(newRequest.build());
-            });
 
             if (GlobalConfig.isAllowDebuggingTools()) {
                 tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));

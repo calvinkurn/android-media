@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase;
 
+import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers;
 import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository;
 import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.IVoucherCouponMapper;
@@ -33,16 +34,19 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
 
     private final ICartRepository cartRepository;
     private final IVoucherCouponMapper voucherCouponMapper;
-    private CheckPromoCodeUseCase checkPromoCodeUseCase;
+    private final CheckPromoCodeUseCase checkPromoCodeUseCase;
+    private final ExecutorSchedulers schedulers;
 
 
     @Inject
     public CheckPromoCodeCartListUseCase(ICartRepository cartRepository,
                                          IVoucherCouponMapper voucherCouponMapper,
-                                         @PromoCheckoutQualifier CheckPromoCodeUseCase checkPromoCodeUseCase) {
+                                         @PromoCheckoutQualifier CheckPromoCodeUseCase checkPromoCodeUseCase,
+                                         ExecutorSchedulers schedulers) {
         this.cartRepository = cartRepository;
         this.voucherCouponMapper = voucherCouponMapper;
         this.checkPromoCodeUseCase = checkPromoCodeUseCase;
+        this.schedulers = schedulers;
     }
 
 
@@ -64,7 +68,10 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
                                     Boolean.parseBoolean(paramCheckPromo.get(PARAM_ONE_CLICK_SHIPMENT))))
                             .map(
                                     voucherCouponMapper::convertPromoCodeCartListData
-                            ));
+                            )
+                    )
+                    .subscribeOn(schedulers.getIo())
+                    .observeOn(schedulers.getMain());
         else
             return checkPromoCodeUseCase.createObservable(checkPromoCodeUseCase.createRequestParams(
                     paramCheckPromo.get(PARAM_PROMO_CODE), false,
@@ -74,6 +81,8 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
                             Boolean.parseBoolean(paramCheckPromo.get(PARAM_ONE_CLICK_SHIPMENT))))
                     .map(
                             voucherCouponMapper::convertPromoCodeCartListData
-                    );
+                    )
+                    .subscribeOn(schedulers.getIo())
+                    .observeOn(schedulers.getMain());
     }
 }

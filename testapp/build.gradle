@@ -210,25 +210,20 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.base
 
     implementation rootProject.ext.firebase.core
-
-    // TO BE ADDED AS FEATURE REQUIREMENT
-
-
     androidTestImplementation(rootProject.ext.testDependencies.espressoContrib, {
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude module: 'recyclerview-v7'
     })
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    //implementation project(rootProject.ext.features.shopSettings)
-    // for staging-only
-    // implementation "com.tokopedia.url:url:1.0.2"
-    implementation project(rootProject.ext.features.sellerorder)
-//
+
 //    implementation project(rootProject.ext.libraries.logger)
 //    implementation (rootProject.ext.debugToolsDependencies.timber){
 //        exclude group: 'org.jetbrains', module: 'annotations'
 //    }
+
+    //------- DO NOT DELETE THIS PART -------//
+    // TO BE ADDED AS FEATURE REQUIREMENT
 }
 
 repositories {
