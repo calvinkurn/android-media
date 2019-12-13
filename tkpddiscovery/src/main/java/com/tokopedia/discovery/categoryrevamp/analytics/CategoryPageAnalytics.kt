@@ -426,9 +426,9 @@ class CategoryPageAnalytics {
 
     private fun getLoginType(isUserLoggedIn: Boolean): String {
         return if (isUserLoggedIn) {
-            "Login"
+            "login"
         } else {
-            "Non-Login"
+            "nonlogin"
         }
     }
 
