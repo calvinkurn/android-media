@@ -151,6 +151,11 @@ class OtpModeListFragment : BaseDaggerFragment(), OtpModeListAdapter.ClickListen
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        otpModeListViewModel.clear()
+    }
+
     private fun showLoading() {
         progress_bar?.show()
         main_view?.hide()
