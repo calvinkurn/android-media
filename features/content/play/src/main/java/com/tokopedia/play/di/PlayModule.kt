@@ -10,6 +10,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.data.network.PlayApi
 import com.tokopedia.play_common.player.TokopediaPlayManager
+import com.tokopedia.play_common.util.PlayLifecycleObserver
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,6 +29,10 @@ class PlayModule {
     @PlayScope
     @Provides
     fun provideTokopediaPlayPlayerInstance(@ApplicationContext ctx: Context): TokopediaPlayManager = TokopediaPlayManager.getInstance(ctx)
+
+    @PlayScope
+    @Provides
+    fun providePlayLifecycleObserver(playManager: TokopediaPlayManager): PlayLifecycleObserver = PlayLifecycleObserver(playManager)
 
     @PlayScope
     @Provides

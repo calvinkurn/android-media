@@ -68,7 +68,7 @@ class PlayViewModel @Inject constructor(
     }
 
     fun startCurrentVideo() {
-        playManager.startCurrentVideo()
+        playManager.resumeCurrentVideo()
     }
 
     fun startWebSocket(channelId: String, gcToken: String) {
@@ -106,8 +106,8 @@ class PlayViewModel @Inject constructor(
     }
 
     fun initVideo() {
-        // startVideoWithUrlString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4",  false)
-        startVideoWithUrlString("rtmp://fms.105.net/live/rmc1", true)
+         startVideoWithUrlString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4",  false)
+//        startVideoWithUrlString("rtmp://fms.105.net/live/rmc1", true)
     }
 
     private fun startVideoWithUrlString(urlString: String, isLive: Boolean) {

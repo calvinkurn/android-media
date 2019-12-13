@@ -31,6 +31,7 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
         @Volatile
         private var INSTANCE: TokopediaPlayManager? = null
 
+        @JvmStatic
         fun getInstance(applicationContext: Context): TokopediaPlayManager {
             return INSTANCE ?: synchronized(this) {
                 TokopediaPlayManager(applicationContext).also {
@@ -39,6 +40,7 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
             }
         }
 
+        @JvmStatic
         fun deleteInstance() = synchronized(this) {
             if (INSTANCE != null) {
                 INSTANCE!!.videoPlayer.removeListener(INSTANCE!!.playerEventListener)
@@ -70,8 +72,6 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
         addListener(playerEventListener)
     }
 
-    fun getObservablePlayVideoState(): LiveData<TokopediaPlayVideoState> = _observablePlayVideoState
-
     //region public method
     fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
         if (!videoPlayer.isPlaying) playVideoWithUri(uri, autoPlay)
@@ -90,13 +90,19 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
     //endregion
 
     //region player control
-    fun startCurrentVideo() {
+    fun resumeCurrentVideo() {
         videoPlayer.playWhenReady = true
     }
 
     fun pauseCurrentVideo() {
         videoPlayer.playWhenReady = false
     }
+    //endregion
+
+    //region video state
+    fun getObservablePlayVideoState(): LiveData<TokopediaPlayVideoState> = _observablePlayVideoState
+
+    fun isVideoPlaying(): Boolean = videoPlayer.isPlaying
     //endregion
 
     //region private method

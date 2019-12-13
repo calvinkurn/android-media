@@ -19,6 +19,8 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.data.PinnedMessage
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponent
+import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
+import com.tokopedia.play.ui.immersivebox.interaction.ImmersiveBoxInteractionEvent
 import com.tokopedia.play.ui.like.LikeComponent
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import com.tokopedia.play.ui.pinned.PinnedComponent
@@ -40,6 +42,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -192,19 +195,24 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
-        view?.run(::hideInteraction)
+        view?.let { triggerImmersive(it, VISIBLE_ALPHA) }
         bottomSheet.dismiss()
     }
 
     private fun setupView(view: View) {
-        view.setOnClickListener { hideInteraction(view) }
+        view.setOnClickListener {
+            triggerImmersive(
+                    view = view,
+                    whenAlpha = INVISIBLE_ALPHA
+            )
+        }
     }
 
-    private fun hideInteraction(view: View) {
+    private fun triggerImmersive(view: View, whenAlpha: Float) {
         view.animate().apply {
+            val finalAlpha = if (whenAlpha == VISIBLE_ALPHA) INVISIBLE_ALPHA else VISIBLE_ALPHA
 
-            if (view.alpha == INVISIBLE_ALPHA) alpha(VISIBLE_ALPHA)
-            else alpha(INVISIBLE_ALPHA)
+            if (view.alpha == whenAlpha) alpha(finalAlpha)
             duration = VISIBILITY_ANIMATION_DURATION
         }
                 .withStartAction { view.isClickable = false }
@@ -218,8 +226,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         val statsComponent: UIComponent<*> = initStatsComponent(container)
         val pinnedComponent: UIComponent<*> = initPinnedComponent(container)
         val chatListComponent: UIComponent<*> = initChatListComponent(container)
+        val immersiveBoxComponent: UIComponent<*> = initImmersiveBoxComponent(container)
         val videoControlComponent: UIComponent<*> = initVideoControlComponent(container)
         val toolbarComponent: UIComponent<*> = initToolbarComponent(container)
+        //play button should be on top of other component so it can be clicked
         val playButtonComponent: UIComponent<*> = initPlayButtonComponent(container)
 
         layoutView(
@@ -231,7 +241,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 chatListComponentId = chatListComponent.getContainerId(),
                 videoControlComponentId = videoControlComponent.getContainerId(),
                 toolbarComponentId = toolbarComponent.getContainerId(),
-                playButtonComponentId = playButtonComponent.getContainerId()
+                playButtonComponentId = playButtonComponent.getContainerId(),
+                immersiveBoxComponentId = immersiveBoxComponent.getContainerId()
         )
     }
 
@@ -317,6 +328,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         return playButtonComponent
     }
 
+    private fun initImmersiveBoxComponent(container: ViewGroup): UIComponent<ImmersiveBoxInteractionEvent> {
+        val immersiveBoxComponent = ImmersiveBoxComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+
+        launch {
+            immersiveBoxComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            ImmersiveBoxInteractionEvent.BoxClicked -> view?.let { fragmentView -> triggerImmersive(fragmentView, VISIBLE_ALPHA) }
+                        }
+                    }
+        }
+
+        return immersiveBoxComponent
+    }
+
     private fun layoutView(
             container: ViewGroup,
             @IdRes sendChatComponentId: Int,
@@ -326,7 +352,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             @IdRes chatListComponentId: Int,
             @IdRes videoControlComponentId: Int,
             @IdRes toolbarComponentId: Int,
-            @IdRes playButtonComponentId: Int
+            @IdRes playButtonComponentId: Int,
+            @IdRes immersiveBoxComponentId: Int
     ) {
 
         fun layoutChat(container: ViewGroup, @IdRes id: Int, @IdRes likeComponentId: Int) {
@@ -440,6 +467,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
+        fun layoutImmersiveBox(container: ViewGroup, @IdRes id: Int, toolbarComponentId: Int, statsComponentId: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+                connect(id, ConstraintSet.TOP, toolbarComponentId, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.BOTTOM, statsComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_16))
+            }
+
+            constraintSet.applyTo(container)
+        }
+
         layoutToolbar(container, toolbarComponentId)
         layoutVideoControl(container, videoControlComponentId)
         layoutLike(container, likeComponentId, videoControlComponentId)
@@ -448,6 +490,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         layoutPinned(container, pinnedComponentId, chatListComponentId, likeComponentId)
         layoutStats(container, statsComponentId, pinnedComponentId)
         layoutPlayButton(container, playButtonComponentId)
+        layoutImmersiveBox(container, immersiveBoxComponentId, toolbarComponentId, statsComponentId)
     }
     //endregion
 
