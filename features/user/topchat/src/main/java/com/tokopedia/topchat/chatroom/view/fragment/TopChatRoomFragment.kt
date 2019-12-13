@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
@@ -229,9 +228,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onToolbarClicked(): () -> Unit {
         return {
-
-            analytics.trackHeaderClicked()
-
+            analytics.trackHeaderClicked(shopId)
             goToDetailOpponent()
         }
     }

@@ -44,6 +44,7 @@ public class TopChatAnalytics {
         public static final String CHAT_DETAIL = "chat detail";
         public static final String UPDATE_TEMPLATE = "update template";
         public static final String ADD_TEMPLATE = "add template";
+        String MESSAGE_ROOM = "message room";
 
         static String EVENT_CATEGORY_INBOX_CHAT = "inbox-chat";
 
@@ -91,9 +92,8 @@ public class TopChatAnalytics {
         public static final String CLICK_REPORT_USER = "click report user on chat";
         public static final String CLICK_BANNED_PRODUCT = "click on lanjut browser";
         public static final String VIEW_BANNED_PRODUCT = "view banned product bubble";
-
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
-
+        String CLICK_HEADER = "click header-shop icon";
     }
 
     public interface Label {
@@ -140,15 +140,13 @@ public class TopChatAnalytics {
         ));
     }
 
-    public void trackHeaderClicked() {
-
+    public void trackHeaderClicked(int shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Name.INBOX_CHAT,
-                "message room",
-                "click header - shop icon",
-                ""
+                Category.MESSAGE_ROOM,
+                Action.CLICK_HEADER,
+                String.valueOf(shopId)
         ));
-
     }
 
     public void trackClickImageAnnouncement(String blastId, @NotNull String attachmentId) {
