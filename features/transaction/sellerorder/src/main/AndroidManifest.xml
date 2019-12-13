@@ -73,7 +73,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/tokopedia_scheme"
+                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
                     android:path="@string/path_order"/>
 
