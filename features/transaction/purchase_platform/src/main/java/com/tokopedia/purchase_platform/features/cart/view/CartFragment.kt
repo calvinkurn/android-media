@@ -494,7 +494,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun toolbarRemoveWithBackView(): ToolbarRemoveWithBackView? {
         activity?.let {
             return ToolbarRemoveWithBackView(it).apply {
-                navigateUp(activity)
+                navigateUp(it)
                 setOnClickGoToChuck(this@CartFragment)
                 setTitle(getString(R.string.cart))
             }
