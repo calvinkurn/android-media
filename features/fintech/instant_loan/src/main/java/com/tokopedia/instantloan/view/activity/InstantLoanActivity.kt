@@ -59,7 +59,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         DanaInstantFragment.ActivityInteractor, BannerPagerAdapter.BannerClick {
 
     @Inject
-    lateinit var mBannerPresenter: InstantLoanLendingDataPresenter
+    lateinit var mLendingDataPresenter: InstantLoanLendingDataPresenter
 
     @Inject
     lateinit var instantLoanAnalytics: InstantLoanAnalytics
@@ -111,7 +111,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
         initInjector()
-        mBannerPresenter.attachView(this)
+        mLendingDataPresenter.attachView(this)
         initializeView()
         attachViewListener()
         setupToolbar()
@@ -460,7 +460,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     override fun onDestroy() {
         super.onDestroy()
-        mBannerPresenter.detachView()
+        mLendingDataPresenter.detachView()
         if (observable != null && !observable?.isUnsubscribed!!)
             observable?.unsubscribe()
     }

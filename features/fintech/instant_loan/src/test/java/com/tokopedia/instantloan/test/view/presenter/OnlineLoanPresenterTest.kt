@@ -12,39 +12,25 @@ import org.junit.Test
 class OnlineLoanPresenterTest {
 
     lateinit var onlineLoanPresenter: OnlineLoanPresenter
-
     var view: OnlineLoanContractor.View = mockk()
     var mGetFilterDataUseCase: GetFilterDataUseCase = mockk()
     var subscriber: GetFilterDataSubscriber = mockk()
-
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
         onlineLoanPresenter = OnlineLoanPresenter(mGetFilterDataUseCase)
         onlineLoanPresenter.subscriber = subscriber
-
     }
 
     @Test
     fun test_attach_view(){
-        every { mGetFilterDataUseCase.execute(subscriber) } returns mockk()
+        every {
+            mGetFilterDataUseCase.execute(subscriber)
+        } returns mockk()
         onlineLoanPresenter.attachView(view)
         verify (exactly = 1) {
             mGetFilterDataUseCase.execute(subscriber)
         }
     }
-
-//    @Test
-//    fun get_filter_data_test() {
-//
-//        val expected = InstantLoanDummyProvider.getLoanDataSuccessResponse()
-//        every { mGetFilterDataUseCase.execute(subscriber) } answers { Observable.just(expected) }
-//
-////        onlineLoanPresenter.getFilterData()
-//
-//        verify (exactly = 1) {
-//            mGetFilterDataUseCase.execute(subscriber)
-//        }
-//    }
 }

@@ -13,8 +13,7 @@ constructor(val mGetFilterDataUseCase: GetFilterDataUseCase) :
 
     @Inject
     lateinit var userSession: UserSession
-
-    var subscriber: GetFilterDataSubscriber = GetFilterDataSubscriber(this)
+    var subscriber = GetFilterDataSubscriber(this)
 
     override fun attachView(view: OnlineLoanContractor.View) {
         super.attachView(view)

@@ -25,9 +25,7 @@ class GetLendingDataUseCase @Inject constructor(@ApplicationContext context: Con
     private val cacheDuration: Long = TimeUnit.HOURS.toSeconds(1)
 
     fun execute(subscriber: Subscriber<GraphqlResponse>) {
-
         graphqlUseCase.clearRequest()
-
         val usableRequestMap = HashMap<String, Any>()
         val graphqlRequestForUsable = GraphqlRequest(
                 GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.instantloan.R.raw.query_lending_data),
@@ -37,6 +35,5 @@ class GetLendingDataUseCase @Inject constructor(@ApplicationContext context: Con
         graphqlUseCase.setCacheStrategy(cacheStrategy)
         graphqlUseCase.addRequest(graphqlRequestForUsable)
         graphqlUseCase.execute(subscriber)
-
     }
 }

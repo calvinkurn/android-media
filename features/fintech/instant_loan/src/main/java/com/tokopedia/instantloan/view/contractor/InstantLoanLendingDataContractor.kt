@@ -13,7 +13,7 @@ interface InstantLoanLendingDataContractor {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun getLendingData()
-        fun checkUserOnGoingLoanStatus()
+        fun isViewAttached(): Boolean
+        fun getView(): View
     }
 }

@@ -53,9 +53,6 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     private lateinit var selectedLoanPeriodMonth: LoanPeriodType
     private lateinit var selectedLoanPeriodYear: LoanPeriodType
     private lateinit var selectedLoanCategoryData: GqlLendingCategoryData
-    private lateinit var selectedLoanAmountResponse: GqlLoanAmountResponse
-
-    private var currentLoanPeriodType: Int = 0
 
     private var loanPeriodMonthList: ArrayList<LoanPeriodType> = ArrayList()
     private var loanPeriodYearList: ArrayList<LoanPeriodType> = ArrayList()
