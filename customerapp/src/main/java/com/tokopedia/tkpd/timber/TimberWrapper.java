@@ -11,7 +11,6 @@ import com.tokopedia.logger.utils.DataLogConfig;
 import com.tokopedia.logger.utils.TimberReportingTree;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.sellerapp.BuildConfig;
 import com.tokopedia.user.session.UserSession;
 
 import timber.log.Timber;
@@ -34,9 +33,9 @@ public class TimberWrapper {
         initByConfig(application, new FirebaseRemoteConfigImpl(application));
     }
 
-    private static void initByConfig(@NonNull Application application, @NonNull RemoteConfig remoteConfig){
+    public static void initByConfig(@NonNull Application application, @NonNull RemoteConfig remoteConfig){
         Timber.uprootAll();
-        boolean isDebug = BuildConfig.DEBUG;
+        boolean isDebug = GlobalConfig.DEBUG;
         if (isDebug) {
             Timber.plant(new TimberDebugTree());
         } else {

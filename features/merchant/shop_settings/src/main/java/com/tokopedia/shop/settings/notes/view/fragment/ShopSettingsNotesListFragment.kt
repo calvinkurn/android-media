@@ -75,7 +75,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
         shopSettingNoteListPresenter.getShopNotes()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (shopNoteModels == null) {
             menu!!.clear()
         } else if (shopNoteModels!!.size == 0 || getNonTermsCount(shopNoteModels!!) < MIN_DATA_TO_REORDER) {
@@ -95,7 +95,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
         return count
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         KeyboardHandler.DropKeyboard(context, view)
         if (item!!.itemId == R.id.menu_add) {
             onAddNoteButtonClicked()

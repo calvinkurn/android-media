@@ -88,7 +88,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     protected abstract var addEditPageType: AddEditPageType
     private var listenerOnAddEditFragmentCreated: ListenerOnAddEditFragmentCreated? = null
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is ListenerOnAddEditFragmentCreated)
             listenerOnAddEditFragmentCreated = context

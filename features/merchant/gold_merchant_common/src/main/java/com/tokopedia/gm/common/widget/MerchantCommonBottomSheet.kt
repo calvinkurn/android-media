@@ -84,7 +84,7 @@ class MerchantCommonBottomSheet : BottomSheets() {
         fun onBottomSheetButtonClicked()
     }
 
-    override fun setupDialog(dialog: Dialog?, style: Int) {
+    override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         updateHeight()
     }
