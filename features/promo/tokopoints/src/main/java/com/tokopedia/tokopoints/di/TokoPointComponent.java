@@ -16,7 +16,7 @@ import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment;
 import dagger.Component;
 
 @TokoPointScope
-@Component(dependencies = BaseAppComponent.class)
+@Component(dependencies = BaseAppComponent.class , modules = {ViewModelModule.class,TokopointsQueryModule.class})
 public interface TokoPointComponent {
 
     void inject(TokoPointsHomeFragmentNew fragment);

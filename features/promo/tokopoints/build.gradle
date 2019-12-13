@@ -50,6 +50,12 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+
+    implementation rootProject.ext.miscDependencies.viewModel
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+
+
 }
 
 project.ext {

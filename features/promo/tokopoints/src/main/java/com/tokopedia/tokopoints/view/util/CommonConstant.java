@@ -121,4 +121,8 @@ public interface CommonConstant {
         String COLUMN_2_1_BY_1 = "2_column_1:1";
         String COLUMN_2_3_BY_4 = "2_column_3:4";
     }
+
+    interface GQLQuery {
+        String TP_GQL_CURRENT_POINTS = "tp_gql_current_points";
+    }
 }
