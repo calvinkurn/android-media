@@ -14,19 +14,17 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.ToasterNormal
@@ -34,17 +32,13 @@ import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
 import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
 import com.tokopedia.otp.common.design.PinInputEditText
-import com.tokopedia.otp.validator.data.ModeListData
-import com.tokopedia.otp.validator.data.OtpModeListData
-import com.tokopedia.otp.validator.data.OtpRequestData
-import com.tokopedia.otp.validator.data.OtpValidateData
+import com.tokopedia.otp.validator.data.*
 import com.tokopedia.otp.validator.di.ValidatorComponent
 import com.tokopedia.otp.validator.viewmodel.ValidatorViewModel
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_cotp_miscall_verification.*
 import javax.inject.Inject
 
 /**
@@ -73,9 +67,8 @@ class ValidatorFragment: BaseDaggerFragment(){
     private lateinit var parent: View
     private lateinit var progressBar: ProgressBar
 
-    private var otpType = ""
-    private var email = ""
-    private var source = ""
+    private var otpParams = OtpParams()
+    private var modeListData = ModeListData()
 
     override fun getScreenName(): String = SCREEN_ACCOUNT_ACTIVATION
 
@@ -109,17 +102,16 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         prepareView()
 
         verifyButton.setOnClickListener {
             analytics.trackClickActivationButton()
-            validatorViewModel.otpValidateEmail(otpType, inputVerifyCode.text.toString(), email)
+            validatorViewModel.otpValidateEmail(otpParams.otpType.toString(), inputVerifyCode.text.toString(), otpParams.email)
         }
 
         footer.setOnClickListener {
             analytics.trackClickResendButton()
-            showChangeEmailDialog(email)
+            showChangeEmailDialog(otpParams.email)
         }
 
         inputVerifyCode.addTextChangedListener(object : TextWatcher{
@@ -139,7 +131,7 @@ class ValidatorFragment: BaseDaggerFragment(){
 
         inputVerifyCode.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEND) {
-                validatorViewModel.otpValidateEmail(otpType, inputVerifyCode.text.toString(), email)
+                validatorViewModel.otpValidateEmail(otpParams.otpType.toString(), inputVerifyCode.text.toString(), otpParams.email)
                 true
             }else false
         }
@@ -149,7 +141,7 @@ class ValidatorFragment: BaseDaggerFragment(){
             removeErrorOtp()
         }
 
-        validatorViewModel.otpRequestEmail(otpType, email, false)
+        validatorViewModel.otpRequestEmail(otpParams.otpType.toString(), otpParams.email, false)
         showKeyboard()
     }
 
@@ -157,9 +149,14 @@ class ValidatorFragment: BaseDaggerFragment(){
         activity?.let {
             initVar()
             initObserver()
-            if(email.isNotEmpty() && otpType.isNotEmpty())
-                showLoading()
-                validatorViewModel.otpModeListEmail(otpType, email)
+
+            if (modeListData.otpListImgUrl.isNotEmpty()) {
+                ImageHandler.LoadImage(registerIcon, modeListData.otpListImgUrl)
+            }
+
+            if (modeListData.afterOtpListTextHtml.isNotEmpty()) {
+                setActivateTextFull(modeListData.afterOtpListTextHtml)
+            }
 
             val spannable = SpannableString(getString(R.string.validation_resend_email))
             spannable.setSpan(
@@ -179,12 +176,6 @@ class ValidatorFragment: BaseDaggerFragment(){
     }
 
     private fun initObserver(){
-        validatorViewModel.otpModeListResponse.observe(this, Observer {
-            when(it){
-                is Success -> onSuccessOtpModeList(it.data)
-                is Fail -> onErrorOtpModeList(it.throwable)
-            }
-        })
         validatorViewModel.otpRequestResponse.observe(this, Observer {
             when(it){
                 is Success -> onSuccessOtpRequest(it.data)
@@ -207,9 +198,8 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun initVar() {
         arguments?.let {
-            otpType = it.getString(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, "")
-            email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
-            source = it.getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "")
+            otpParams = it.getParcelable(OtpConstant.OTP_PARAMS) as OtpParams
+            modeListData = it.getParcelable(OtpConstant.OTP_MODE_PARAM) as ModeListData
         }
     }
 
@@ -219,30 +209,11 @@ class ValidatorFragment: BaseDaggerFragment(){
                 when (requestCode){
                     REQUEST_CHANGE_EMAIL_REGISTER -> {
                         data?.extras?.let {
-                            email = it.getString(EXTRA_EMAIL, "")
-                            setActivateText(email)
+                            otpParams.email = it.getString(EXTRA_EMAIL, "")
+                            setActivateText(otpParams.email)
                         }
                     }
                 }
-            }
-        }
-    }
-
-    private fun onSuccessOtpModeList(modeListData: ModeListData){
-        dismissLoading()
-        if(modeListData.afterOtpListTextHtml.isNotEmpty())
-            setActivateTextFull(modeListData.afterOtpListTextHtml)
-
-        if(modeListData.otpListImgUrl.isNotEmpty())
-            ImageHandler.LoadImage(registerIcon, modeListData.otpListImgUrl)
-
-    }
-
-    private fun onErrorOtpModeList(throwable: Throwable){
-        view?.let {
-            val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
-            NetworkErrorHelper.showEmptyState(context, it, error) {
-                validatorViewModel.otpModeListEmail(otpType, email)
             }
         }
     }
@@ -252,7 +223,12 @@ class ValidatorFragment: BaseDaggerFragment(){
     }
 
     private fun onErrorOtpRequest(throwable: Throwable){
-
+        view?.let {
+            val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
+            NetworkErrorHelper.showEmptyState(context, it, error) {
+                validatorViewModel.otpRequestEmail(otpParams.otpType.toString(), otpParams.email, true)
+            }
+        }
     }
 
     private fun onSuccessOtpResendRequest(otpRequestData: OtpRequestData){
@@ -287,9 +263,9 @@ class ValidatorFragment: BaseDaggerFragment(){
                 it.finish()
             }else{
                 val intent = Intent()
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, otpParams.email)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, otpParams.source)
                 it.setResult(Activity.RESULT_OK, intent)
                 it.finish()
             }
@@ -314,12 +290,6 @@ class ValidatorFragment: BaseDaggerFragment(){
         }
     }
 
-    private fun goToChangeEmail(email: String){
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_EMAIL_REGISTER)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-        startActivityForResult(intent, REQUEST_CHANGE_EMAIL_REGISTER)
-    }
-
     private fun showChangeEmailDialog(email: String) {
         if (activity != null) {
             val dialogMessage = getString(R.string.message_resend_email_to) + " <b>" + email + "</b>"
@@ -328,7 +298,7 @@ class ValidatorFragment: BaseDaggerFragment(){
                     .setMessage(MethodChecker.fromHtml(dialogMessage))
                     .setPositiveButton(android.R.string.yes) { dialog, which ->
                         analytics.trackClickOkResendButton()
-                        validatorViewModel.otpRequestEmail(otpType, email, true)
+                        validatorViewModel.otpRequestEmail(otpParams.otpType.toString(), email, true)
                     }
                     .setNegativeButton(R.string.cancel_dialog_change_email){ dialog, which ->
                         analytics.trackFailedClickResendButton(
@@ -390,7 +360,7 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun showKeyboard() {
         val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.toggleSoftInputFromWindow(textInputOtp.windowToken, InputMethodManager.SHOW_FORCED, 0)
+        inputMethodManager.toggleSoftInputFromWindow(inputVerifyCode.windowToken, InputMethodManager.SHOW_FORCED, 0)
     }
 
     companion object {
@@ -399,7 +369,11 @@ class ValidatorFragment: BaseDaggerFragment(){
 
         const val EXTRA_EMAIL = "EXTRA_EMAIL"
 
-        fun createInstance(bundle: Bundle): ValidatorFragment {
+        fun createInstance(otpParams: OtpParams, modeListData: ModeListData): Fragment {
+            val bundle = Bundle()
+            bundle.putParcelable(OtpConstant.OTP_PARAMS, otpParams)
+            bundle.putParcelable(OtpConstant.OTP_MODE_PARAM, modeListData)
+
             val fragment = ValidatorFragment()
             fragment.arguments = bundle
             return fragment
