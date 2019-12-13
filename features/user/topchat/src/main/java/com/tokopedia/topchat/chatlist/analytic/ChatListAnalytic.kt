@@ -36,6 +36,7 @@ class ChatListAnalytic @Inject constructor(){
             const val ACTION_CLICK_ON_MARK_MESSAGE = "click on mark message"
             const val ACTION_CLICK_BROADCAST_WIZARD = "click on broadcast wizard"
             const val DELETE_CHAT = "click on delete chat"
+            const val CLICK_CHAT_SETTING = "click on gear icon setting"
         }
     }
 
@@ -108,6 +109,18 @@ class ChatListAnalytic @Inject constructor(){
                         Event.CLICK_CHAT_DETAIL,
                         Category.CATEGORY_CHAT_DETAIL,
                         Action.DELETE_CHAT,
+                        ""
+                )
+        )
+    }
+
+    // #CL4
+    fun eventClickChatSetting() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        Event.CLICK_INBOX_CHAT,
+                        Category.CATEGORY_INBOX_CHAT,
+                        Action.CLICK_CHAT_SETTING,
                         ""
                 )
         )

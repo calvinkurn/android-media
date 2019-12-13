@@ -125,6 +125,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 true
             }
             R.id.menu_chat_setting -> {
+                chatListAnalytics.eventClickChatSetting()
                 val intent = ChatSettingActivity.getIntent(context, isTabSeller())
                 startActivity(intent)
                 true
