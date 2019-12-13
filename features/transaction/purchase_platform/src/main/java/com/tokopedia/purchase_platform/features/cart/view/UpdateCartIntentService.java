@@ -66,22 +66,23 @@ public class UpdateCartIntentService extends JobIntentService {
             requestParams.putObject(UpdateCartUseCase.Companion.getPARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART(),
                     getGeneratedAuthParamNetwork(paramUpdate));
 
-            updateCartUseCase.execute(requestParams, new Subscriber<UpdateCartData>() {
-                @Override
-                public void onCompleted() {
+            updateCartUseCase.createObservable(requestParams)
+                    .subscribe(new Subscriber<UpdateCartData>() {
+                        @Override
+                        public void onCompleted() {
 
-                }
+                        }
 
-                @Override
-                public void onError(Throwable e) {
-                    e.printStackTrace();
-                }
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
 
-                @Override
-                public void onNext(UpdateCartData updateCartData) {
-                    // Expected to do nothing
-                }
-            });
+                        @Override
+                        public void onNext(UpdateCartData updateCartData) {
+                            // Expected to do nothing
+                        }
+                    });
         }
     }
 

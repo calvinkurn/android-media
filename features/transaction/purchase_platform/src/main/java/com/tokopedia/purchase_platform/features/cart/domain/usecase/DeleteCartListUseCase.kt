@@ -2,11 +2,11 @@ package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper
 import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
 import rx.Observable
 import java.util.*
 import javax.inject.Inject
@@ -16,9 +16,10 @@ import javax.inject.Inject
  */
 class DeleteCartListUseCase @Inject constructor(private val cartRepository: ICartRepository,
                                                 private val cartMapper: ICartMapper,
-                                                private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase) : UseCase<DeleteAndRefreshCartListData>() {
+                                                private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                                private val schedulers: ExecutorSchedulers) {
 
-    override fun createObservable(requestParams: RequestParams?): Observable<DeleteAndRefreshCartListData> {
+    fun createObservable(requestParams: RequestParams?): Observable<DeleteAndRefreshCartListData> {
 
         val paramDelete = requestParams?.getObject(PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART) as TKPDMapParam<String, String>
         val toBeDeletedPromoCode = requestParams.getObject(PARAM_TO_BE_REMOVED_PROMO_CODES) as ArrayList<String>
@@ -39,6 +40,8 @@ class DeleteCartListUseCase @Inject constructor(private val cartRepository: ICar
                                 .map { deleteAndRefreshCartListData }
                     }
                 }
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
     }
 
     companion object {
