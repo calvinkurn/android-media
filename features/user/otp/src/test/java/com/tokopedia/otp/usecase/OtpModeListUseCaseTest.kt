@@ -1,4 +1,4 @@
-package com.tokopedia.otp.otpmodelist
+package com.tokopedia.otp.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.otp.ext.InstantRunExecutorSpek
