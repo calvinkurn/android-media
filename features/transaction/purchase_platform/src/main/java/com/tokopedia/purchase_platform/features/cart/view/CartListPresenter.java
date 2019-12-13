@@ -56,6 +56,10 @@ import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListS
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartActionFieldData;
+import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartClickData;
+import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartData;
+import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartProductData;
 import com.tokopedia.purchase_platform.features.cart.view.subscriber.AddToCartSubscriber;
 import com.tokopedia.purchase_platform.features.cart.view.subscriber.CheckPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.purchase_platform.features.cart.view.subscriber.ClearCacheAutoApplyAfterClashSubscriber;
