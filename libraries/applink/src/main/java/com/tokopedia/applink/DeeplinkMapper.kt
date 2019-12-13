@@ -61,7 +61,8 @@ object DeeplinkMapper {
                         getCreateReviewInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(deeplink)
-                    deeplink.startsWith(ApplinkConst.CHAT_BOT,true) ->
+                    deeplink.startsWith(ApplinkConst.CHAT_BOT, true) ||
+                            deeplink.startsWith(ApplinkConst.TOP_CHAT, true) ->
                         getChatbotDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.MONEYIN, true) ->
                         getRegisteredNavigationMoneyIn(deeplink)
