@@ -123,7 +123,7 @@ public class TkpdWebView extends WebView {
         }
     }
 
-    private   String getRegistrationIdWithTemp(Context context) {
+    private String getRegistrationIdWithTemp(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         if (cache.getString(GCM_ID, "").equals("")) {
             String tempID = UUID.randomUUID().toString();;
