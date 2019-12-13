@@ -33,6 +33,7 @@ class ChatSearchViewModel @Inject constructor(
         query = newQuery
         page = 1
         if (query.isEmpty()) {
+            getSearchQueryUseCase.cancelRunningSearch()
             showEmpty.postValue(true)
             return
         }
