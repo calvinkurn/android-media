@@ -6,6 +6,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
 import android.os.PersistableBundle
 import androidx.core.app.JobIntentService
 import com.tokopedia.dynamicfeatures.DFInstaller
@@ -17,17 +18,18 @@ import java.util.concurrent.TimeUnit
 class DFJobService : JobIntentService() {
     companion object {
         const val JOB_ID = 7122
-        const val KEY_MODULE_LIST = "module_list"
         const val DELAY_SERVICE_IN_SECOND = 15L
         const val SHARED_PREF_NAME = "df_job_srv"
         const val KEY_SHARED_PREF_MODULE = "module_list"
         const val DELIMITER = "#"
         const val DELIMITER_2 = ":"
         const val MAX_ATTEMPT_DOWNLOAD = 3
+        val DELAY_IN_MILIS = TimeUnit.SECONDS.toMillis(DELAY_SERVICE_IN_SECOND)
 
         var isServiceRunning = false
 
         fun startService(context:Context, moduleListToDownload: List<String>? = null) {
+            getCombineListAndPut(context, moduleListToDownload)
             if (isServiceRunning) {
                 return
             }
@@ -36,9 +38,7 @@ class DFJobService : JobIntentService() {
                     // put Delay, so it does not execute immediately
                     val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler
                         ?: return
-                    val bundle = PersistableBundle().apply {
-                        putString(KEY_MODULE_LIST, moduleListToDownload?.joinToString(DELIMITER) ?: "")
-                    }
+                    val bundle = PersistableBundle()
 
                     jobScheduler.schedule(JobInfo.Builder(DFJobService.JOB_ID,
                         ComponentName(context, DFJobService::class.java))
@@ -47,14 +47,53 @@ class DFJobService : JobIntentService() {
                         .setExtras(bundle)
                         .build())
                 } else {
-                    val intent = Intent(context, DFJobService::class.java).apply {
-                        putExtra (KEY_MODULE_LIST, moduleListToDownload?.joinToString(DELIMITER) ?: "")
-                    }
-                    enqueueWork(context, DFJobService::class.java, JOB_ID, intent)
+                    //it is efficient to run using Handler, rather than using AlarmManager,
+                    // this only happen when app is active
+                    Handler().postDelayed({
+                        enqueueWork(context, DFJobService::class.java, JOB_ID,
+                            Intent(context, DFJobService::class.java))
+                    }, DELAY_IN_MILIS)
                 }
-            } catch (e: Exception) {
+            } catch (ignored: Exception) { }
+        }
 
+        /***
+         * @param moduleList module To download, requested directly
+         * @return combinedList
+         *
+         * moduleList = module_seller, module_travel
+         * output: module_seller, 1; module_travel, 1; module_digital,2
+         */
+        private fun getCombineListAndPut(context:Context, moduleList:List<String>?): List<Pair<String, Int>> {
+            val queueList = DFMDownloadQueue.getDFModuleList(context)
+            val list = if (queueList.isEmpty()) {
+                moduleList?.map { Pair(it, 1) } ?: emptyList()
+            } else {
+                combineList(moduleList, queueList)
             }
+            DFMDownloadQueue.putDFModuleList(context, list)
+            return list
+        }
+
+        /***
+         * @param moduleList module To download, requested directly
+         * @param queueList module To download, requested previously and get from the local storage
+         * @return combinedList
+         *
+         * moduleList = module_seller, module_travel
+         * queueList = module_seller,2 ; module_digital,2
+         * output: module_seller, 1; module_travel, 1; module_digital,2
+         */
+        private fun combineList(moduleList:List<String>?, queueList:List<Pair<String,Int>>): List<Pair<String, Int>> {
+            val list =  moduleList?.map { Pair(it, 1) }?.toMutableList() ?: mutableListOf()
+            queueList.forEach {
+                if (it.second < MAX_ATTEMPT_DOWNLOAD) {
+                    if (moduleList?.contains(it.first) != true) {
+                        list.add(Pair(it.first, it.second))
+                    }
+                }
+            }
+            return list
         }
     }
     override fun onHandleWork(intent: Intent) {
@@ -63,23 +102,7 @@ class DFJobService : JobIntentService() {
         }
         isServiceRunning = true
 
-        //get module list from intent
-        val moduleListString = intent.getStringExtra(KEY_MODULE_LIST)
-        val moduleList = if (moduleListString.isEmpty()) {
-            listOf()
-        } else {
-            moduleListString.split(DELIMITER)
-        }
-
-        // combine module List with the queue
-        val queueList = DFMDownloadQueue.getDFModuleList(this)
-
-        val combinedPairList = if (queueList == null || queueList.isEmpty()) {
-            moduleList.map { Pair(it, 1) }
-        } else {
-            combineList(moduleList, queueList)
-        }
-        DFMDownloadQueue.putDFModuleList(this, combinedPairList)
+        val combinedPairList = DFMDownloadQueue.getDFModuleList(this)
         val combinedList = combinedPairList.map { it.first }
         if (combinedList.isEmpty()) {
             endService()
@@ -107,23 +130,6 @@ class DFJobService : JobIntentService() {
             }
             endService()
         })
-    }
-
-    /***
-     * @param moduleList module To download, requested directly
-     * @param queueList module To download, requested previously and get from the local storage
-     * @return combinedList
-     */
-    private fun combineList(moduleList:List<String>, queueList:List<Pair<String,Int>>): List<Pair<String, Int>> {
-        val list =  moduleList.map { Pair(it, 1) }.toMutableList()
-        queueList.forEach {
-            if (it.second < MAX_ATTEMPT_DOWNLOAD) {
-                if (!moduleList.contains(it.first)) {
-                    list.add(Pair(it.first, it.second))
-                }
-            }
-        }
-        return list
     }
 
     private fun endService(){

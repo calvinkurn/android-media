@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.feedcomponent.view.decor.PostStatisticItemDecoration
 
 
@@ -155,7 +156,7 @@ class PostStatisticBottomSheet : BottomSheetUnify(), PostStatisticAdapter.Listen
     private fun initLoading(view: View) {
         Glide.with(view)
                 .asGif()
-                .load(R.drawable.ic_feed_loading_indeterminate)
+                .load(R.drawable.ic_loading_indeterminate)
                 .into(ivLoading)
     }
 

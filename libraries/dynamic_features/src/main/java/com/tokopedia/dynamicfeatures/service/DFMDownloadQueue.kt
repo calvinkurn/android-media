@@ -9,7 +9,7 @@ object DFMDownloadQueue {
      * example output: listOf("merchant_seller:2#merchant_buyer:5")
      * merchant_seller:2 means 2 failed attemps to download
      */
-    fun getDFModuleList(context: Context):List<Pair<String, Int>>?{
+    fun getDFModuleList(context: Context):List<Pair<String, Int>>{
         try {
             val sp = context.getSharedPreferences(
                 DFJobService.SHARED_PREF_NAME,
@@ -17,9 +17,9 @@ object DFMDownloadQueue {
             )
             val moduleList = sp.getString(KEY_SHARED_PREF_MODULE, "")
             return moduleList?.split(DFJobService.DELIMITER)?.map { it ->
-                it.split(DFJobService.DELIMITER_2).let{ Pair(it[0], it[1].toInt()) }}
+                it.split(DFJobService.DELIMITER_2).let{ Pair(it[0], it[1].toInt()) }} ?: listOf()
         } catch (e:Exception) {
-            return null
+            return listOf()
         }
     }
 

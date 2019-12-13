@@ -2,25 +2,26 @@ package com.tokopedia.dynamicfeatures
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import androidx.fragment.app.Fragment
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.coroutines.*
-import java.io.File
-import java.lang.Exception
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 
@@ -40,12 +41,9 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
 
     private lateinit var manager: SplitInstallManager
 
-    private lateinit var progressBar: ProgressBar
-    private lateinit var progressText: TextView
-    private lateinit var progressTextPercent: TextView
+    private lateinit var progressBar: ImageView
     private lateinit var buttonDownload: Button
     private lateinit var imageView: ImageView
-    private lateinit var progressGroup: View
     private var isAutoDownload = false
     private var sessionId: Int? = null
 
@@ -122,23 +120,16 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     }
 
     private fun initializeViews() {
-        progressBar = findViewById(R.id.progress_bar)
-        progressBar.getProgressDrawable().setColorFilter(
-            ContextCompat.getColor(this, R.color.tkpd_main_green),
-            android.graphics.PorterDuff.Mode.MULTIPLY)
-        progressText = findViewById(R.id.progress_text)
-        progressTextPercent = findViewById(R.id.progress_text_percent)
+        progressBar = findViewById(R.id.iv_loading)
+        ImageHandler.loadGif(progressBar, R.drawable.ic_loading_indeterminate, -1)
+
         imageView = findViewById(R.id.image)
 
-        progressBar.getProgressDrawable().setColorFilter(
-            ContextCompat.getColor(this, R.color.tkpd_main_green),
-            android.graphics.PorterDuff.Mode.MULTIPLY);
         buttonDownload = findViewById(R.id.button_download)
 
         buttonDownload.setOnClickListener {
             downloadFeature()
         }
-        progressGroup = findViewById(R.id.progress_group)
         title_txt.setText(String.format(getString(R.string.feature_download_title), moduleNameTranslated))
         subtitle_txt.setText(String.format(getString(R.string.feature_download_subtitle), moduleNameTranslated))
     }
@@ -147,7 +138,6 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         launch {
             moduleSize = 0
             displayProgress()
-            progressText.text = getString(R.string.downloading_x, moduleNameTranslated)
 
             // Skip loading if the module already is installed. Perform success action directly.
             if (manager.installedModules.contains(name)) {
@@ -185,7 +175,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
         successInstall = manager.installedModules.contains(moduleName)
-        progressGroup.visibility = View.INVISIBLE
+        progressBar.visibility = View.INVISIBLE
         if (launch && successInstall) {
             launchAndForwardIntent(applink)
         }
@@ -273,12 +263,39 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                 gotoPlayStore()
             }
         } else {
-            image.setImageResource(R.drawable.ic_ill_general_error)
-            title_txt.setText(getString(R.string.download_error_general_title))
-            subtitle_txt.setText(getString(R.string.download_error_general_subtitle))
-            button_download.setOnClickListener {
-                downloadFeature()
+            val isPlayServiceUptoDate = checkPlayServiceUptoDate()
+            if (isPlayServiceUptoDate) {
+                image.setImageResource(R.drawable.ic_ill_general_error)
+                title_txt.setText(getString(R.string.download_error_general_title))
+                subtitle_txt.setText(getString(R.string.download_error_general_subtitle))
+                button_download.setOnClickListener {
+                    downloadFeature()
+                }
+            } else {
+                image.setImageResource(R.drawable.ic_ill_general_error)
+                title_txt.setText(getString(R.string.download_error_playservice_title))
+                subtitle_txt.setText(getString(R.string.download_error_playservice_subtitle))
+                button_download.setOnClickListener {
+                    val hasBeenUpdated = checkPlayServiceUptoDate()
+                    if (hasBeenUpdated) {
+                        downloadFeature()
+                    }
+                }
             }
+        }
+    }
+
+    private fun checkPlayServiceUptoDate():Boolean{
+        // this code should be on main thread.
+        val googleAPI = GoogleApiAvailability.getInstance()
+        val result = googleAPI.isGooglePlayServicesAvailable(this)
+        return if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(this, result, 9000).show()
+            }
+            false
+        } else {
+            true
         }
     }
 
@@ -299,28 +316,21 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     }
 
     private fun updateProgressMessage(message: String) {
-        progressText.text = message
+        //no-op, no progress shown in UI
     }
 
     /** Display a loading state to the user. */
     private fun displayLoadingState(state: SplitInstallSessionState, message: String) {
-        val totalBytesToDowload = state.totalBytesToDownload().toInt()
-        val bytesDownloaded = state.bytesDownloaded().toInt()
-        progressBar.max = totalBytesToDowload
-        progressBar.progress = bytesDownloaded
-        progressText.text = String.format("%.2f KB / %.2f KB",
-            (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
-        progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
         button_download.visibility = View.INVISIBLE
     }
 
     private fun displayProgress() {
-        progressGroup.visibility = View.VISIBLE
+        progressBar.visibility = View.VISIBLE
         buttonDownload.visibility = View.INVISIBLE
     }
 
     private fun hideProgress() {
-        progressGroup.visibility = View.INVISIBLE
+        progressBar.visibility = View.INVISIBLE
         buttonDownload.visibility = View.VISIBLE
     }
 
