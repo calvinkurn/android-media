@@ -69,11 +69,6 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
     protected void setupBundlePass(Bundle extras) {
         this.addressData = extras.getParcelable(EXTRA_RECIPIENT_ADDRESS_DATA);
         this.cartIds = extras.getString(EXTRA_SHIPMENT_CART_IDS);
@@ -81,21 +76,6 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
 
     @Override
     protected void initView() {
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
 
     }
 

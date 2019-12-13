@@ -29,10 +29,6 @@ public class CartActivity extends BaseCheckoutActivity {
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-    }
-
-    @Override
     protected void setupBundlePass(Bundle extras) {
         cartId = extras.getString(EXTRA_CART_ID);
     }
@@ -58,21 +54,6 @@ public class CartActivity extends BaseCheckoutActivity {
         } else {
             finish();
         }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

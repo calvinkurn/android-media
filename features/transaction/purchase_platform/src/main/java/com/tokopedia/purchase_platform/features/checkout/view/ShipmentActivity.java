@@ -59,12 +59,13 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     }
 
     @Override
-    protected void initInjector() {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        checkoutAnalyticsCourierSelection = new CheckoutAnalyticsCourierSelection();
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
+    protected void initInjector() {
 
     }
 
@@ -75,23 +76,6 @@ public class ShipmentActivity extends BaseCheckoutActivity {
 
     @Override
     protected void initView() {
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-        checkoutAnalyticsCourierSelection = new CheckoutAnalyticsCourierSelection(
-
-        );
-    }
-
-    @Override
-    protected void setActionVar() {
 
     }
 
