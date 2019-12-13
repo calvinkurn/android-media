@@ -463,8 +463,4 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     public LoadingModel getLoadingModel() {
         return new LoadingModel();
     }
-
-    protected void stopLoading() {
-        endlessRecyclerViewScrollListener.stopLoading();
-    }
 }
