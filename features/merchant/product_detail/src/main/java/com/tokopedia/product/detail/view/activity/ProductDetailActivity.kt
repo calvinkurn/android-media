@@ -16,6 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
 
 
@@ -93,7 +94,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     override fun getNewFragment(): Fragment =
-            ProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
+            DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
                     productKey, isFromDeeplink,
                     isFromAffiliate, trackerAttribution,
                     trackerListName, affiliateString, deeplinkUrl)

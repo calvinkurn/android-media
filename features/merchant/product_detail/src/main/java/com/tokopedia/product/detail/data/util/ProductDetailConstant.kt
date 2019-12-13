@@ -105,4 +105,30 @@ object ProductDetailConstant {
     const val PRODUCT_FULLFILMENT = "fullfilment"
     const val PRODUCT_PROTECTION = "protection"
 
+    //Arguments
+    const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
+    const val ARG_WAREHOUSE_ID = "ARG_WAREHOUSE_ID"
+    const val ARG_PRODUCT_KEY = "ARG_PRODUCT_KEY"
+    const val ARG_SHOP_DOMAIN = "ARG_SHOP_DOMAIN"
+    const val ARG_TRACKER_ATTRIBUTION = "ARG_TRACKER_ATTRIBUTION"
+    const val ARG_TRACKER_LIST_NAME = "ARG_TRACKER_LIST_NAME"
+    const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
+    const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
+    const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
+    const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
+
+    //Animation
+    const val CART_MAX_COUNT = 99
+    const val CART_ALPHA_ANIMATION_FROM = 1f
+    const val CART_ALPHA_ANIMATION_TO = 0f
+    const val CART_SCALE_ANIMATION_FROM = 1f
+    const val CART_SCALE_ANIMATION_TO = 2f
+    const val CART_SCALE_ANIMATION_PIVOT = 0.5f
+    const val CART_ANIMATION_DURATION = 700L
+
+    //Save Instance State
+    const val SAVED_NOTE = "saved_note"
+    const val SAVED_QUANTITY = "saved_quantity"
+    const val SAVED_VARIANT = "saved_variant"
+
 }

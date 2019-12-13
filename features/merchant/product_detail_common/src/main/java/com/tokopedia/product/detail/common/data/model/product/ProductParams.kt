@@ -7,15 +7,16 @@ data class ProductParams(var productId: String? = null,
                          var shopDomain: String? = null,
                          var productName: String? = null,
                          var productPrice: String? = null,
-                         var productImage: String? = null): Parcelable {
+                         var productImage: String? = null,
+                         var warehouseId: String? = null) : Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readString()) {
-    }
+            parcel.readString(),
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productId)
@@ -23,6 +24,7 @@ data class ProductParams(var productId: String? = null,
         parcel.writeString(productName)
         parcel.writeString(productPrice)
         parcel.writeString(productImage)
+        parcel.writeString(warehouseId)
     }
 
     override fun describeContents(): Int {

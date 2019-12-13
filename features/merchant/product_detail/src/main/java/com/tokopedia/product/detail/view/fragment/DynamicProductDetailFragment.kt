@@ -140,6 +140,33 @@ import kotlin.math.roundToLong
 
 class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener {
 
+    companion object {
+        fun newInstance(productId: String? = null,
+                        warehouseId: String? = null,
+                        shopDomain: String? = null,
+                        productKey: String? = null,
+                        isFromDeeplink: Boolean = false,
+                        isAffiliate: Boolean = false,
+                        trackerAttribution: String? = null,
+                        trackerListName: String? = null,
+                        affiliateString: String? = null,
+                        deeplinkUrl: String? = null) =
+                DynamicProductDetailFragment().also {
+                    it.arguments = Bundle().apply {
+                        productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
+                        warehouseId?.let { whId -> putString(ProductDetailConstant.ARG_WAREHOUSE_ID, whId) }
+                        productKey?.let { pkey -> putString(ProductDetailConstant.ARG_PRODUCT_KEY, pkey) }
+                        shopDomain?.let { domain -> putString(ProductDetailConstant.ARG_SHOP_DOMAIN, domain) }
+                        trackerAttribution?.let { attribution -> putString(ProductDetailConstant.ARG_TRACKER_ATTRIBUTION, attribution) }
+                        trackerListName?.let { listName -> putString(ProductDetailConstant.ARG_TRACKER_LIST_NAME, listName) }
+                        affiliateString?.let { affiliateString -> putString(ProductDetailConstant.ARG_AFFILIATE_STRING, affiliateString) }
+                        deeplinkUrl?.let { deeplinkUrl -> putString(ProductDetailConstant.ARG_DEEPLINK_URL, deeplinkUrl) }
+                        putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
+                        putBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, isAffiliate)
+                    }
+                }
+    }
+
     private var shouldShowCartAnimation = false
     @Inject
     lateinit var productDetailTracking: ProductDetailTracking
@@ -169,13 +196,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private var isAffiliate = false
     private var affiliateString: String? = null
     private var deeplinkUrl: String = ""
-
     private var userInputNotes = ""
     private var userInputQuantity = 0
     private var userInputVariant: String? = null
     private var delegateTradeInTracking = false
     private var trackerAttribution: String? = ""
     private var trackerListName: String? = ""
+    private var warehouseId: String? = null
 
     //View
     private lateinit var bottomSheet: ValuePropositionBottomSheet
@@ -229,13 +256,34 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            userInputNotes = savedInstanceState.getString(ProductDetailConstant.SAVED_NOTE, "")
+            userInputQuantity = savedInstanceState.getInt(ProductDetailConstant.SAVED_QUANTITY, 1)
+            userInputVariant = savedInstanceState.getString(ProductDetailConstant.SAVED_VARIANT)
+        }
         super.onCreate(savedInstanceState)
-
-        setHasOptionsMenu(true)
-
+        arguments?.let {
+            productId = it.getString(ProductDetailConstant.ARG_PRODUCT_ID)
+            warehouseId = it.getString(ProductDetailConstant.ARG_WAREHOUSE_ID)
+            productKey = it.getString(ProductDetailConstant.ARG_PRODUCT_KEY)
+            shopDomain = it.getString(ProductDetailConstant.ARG_SHOP_DOMAIN)
+            trackerAttribution = it.getString(ProductDetailConstant.ARG_TRACKER_ATTRIBUTION)
+            trackerListName = it.getString(ProductDetailConstant.ARG_TRACKER_LIST_NAME)
+            affiliateString = it.getString(ProductDetailConstant.ARG_AFFILIATE_STRING)
+            isAffiliate = it.getBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, false)
+            deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
+        }
         activity?.run {
             remoteConfig = FirebaseRemoteConfigImpl(this)
         }
+        setHasOptionsMenu(true)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(ProductDetailConstant.SAVED_NOTE, userInputNotes)
+        outState.putInt(ProductDetailConstant.SAVED_QUANTITY, userInputQuantity)
+        outState.putString(ProductDetailConstant.SAVED_VARIANT, userInputVariant)
     }
 
     override fun onStop() {
@@ -243,6 +291,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         context?.let {
             LocalBroadcastManager.getInstance(it).unregisterReceiver(tradeInBroadcastReceiver)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        productDetailTracking.sendAllQueue()
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
@@ -574,7 +627,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     }
                 }
             }
-            ProductDetailFragment.REQUEST_CODE_ATC_EXPRESS -> {
+            ProductDetailConstant.REQUEST_CODE_ATC_EXPRESS -> {
                 if (resultCode == Constant.RESULT_CODE_ERROR && data != null) {
                     val message = data.getStringExtra(Constant.EXTRA_MESSAGES_ERROR)
                     if (message != null && message.isNotEmpty()) {
@@ -606,13 +659,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     goToNormalCheckout()
                 }
             }
-            ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT -> {
+            ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT -> {
                 loadProductData(true)
             }
-            ProductDetailFragment.REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
+            ProductDetailConstant.REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
                 doBuy()
             }
-            ProductDetailFragment.REQUEST_CODE_REPORT -> {
+            ProductDetailConstant.REQUEST_CODE_REPORT -> {
                 if (resultCode == Activity.RESULT_OK)
                     showToastSuccess(getString(R.string.success_to_report))
             }
@@ -638,7 +691,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     /**
      * ProductInfoViewHolder
      */
-
     override fun onSubtitleInfoClicked(applink: String, etalaseId: String, shopId: Int, categoryId: String) {
         when {
             applink.startsWith(ApplinkConst.SHOP_ETALASE) -> {
@@ -759,7 +811,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        ProductDetailFragment.REQUEST_CODE_LOGIN)
+                        ProductDetailConstant.REQUEST_CODE_LOGIN)
             }
         }
     }
@@ -836,7 +888,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 productDetailTracking.eventClickMerchantVoucherSeeDetail(basic.getProductId())
                 val intent = MerchantVoucherDetailActivity.createIntent(it, merchantVoucherViewModel.voucherId,
                         merchantVoucherViewModel, basic.shopID)
-                startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_MERCHANT_VOUCHER_DETAIL)
+                startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_MERCHANT_VOUCHER_DETAIL)
             }
         }
     }
@@ -847,7 +899,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 productDetailTracking.eventClickMerchantVoucherSeeAll(basic.getProductId())
                 val intent = MerchantVoucherListActivity.createIntent(it, basic.shopID,
                         viewModel.shopInfo?.shopCore?.name)
-                startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_MERCHANT_VOUCHER)
+                startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_MERCHANT_VOUCHER)
             }
         }
     }
@@ -950,7 +1002,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             productDetailTracking.eventPDPAddToWishlistNonLogin(productInfo?.basic?.productID.toString())
             context?.run {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        ProductDetailFragment.REQUEST_CODE_LOGIN)
+                        ProductDetailConstant.REQUEST_CODE_LOGIN)
             }
         }
     }
@@ -962,7 +1014,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             val intent = RouteManager.getIntent(it,
                     ApplinkConst.PRODUCT_TALK, viewModel.getDynamicProductInfoP1?.basic?.productID
                     ?: "")
-            startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT)
+            startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_TALK_PRODUCT)
         }
         viewModel.getDynamicProductInfoP1?.run {
             dynamicProductDetailTracking.eventDiscussionClickedIris(this, deeplinkUrl, viewModel.shopInfo?.shopCore?.name
@@ -1216,14 +1268,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 context?.let {
                     val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.REPORT_PRODUCT,
                             basic.productID)
-                    startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_REPORT)
+                    startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_REPORT)
                 }
 
                 productDetailTracking.eventReportLogin()
             } else {
                 context?.run {
                     startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                            ProductDetailFragment.REQUEST_CODE_LOGIN)
+                            ProductDetailConstant.REQUEST_CODE_LOGIN)
                 }
                 productDetailTracking.eventReportNoLogin()
             }
@@ -1245,15 +1297,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: ""
                 val shopEtalasePickerIntent = ShopEtalasePickerActivity.createIntent(this,
                         shopId, etalaseId, false, true)
-                startActivityForResult(shopEtalasePickerIntent, ProductDetailFragment.REQUEST_CODE_ETALASE)
+                startActivityForResult(shopEtalasePickerIntent, ProductDetailConstant.REQUEST_CODE_ETALASE)
             }
         }
     }
 
     private fun loadProductData(forceRefresh: Boolean = false) {
-        productId = "517704393"
         if (productId != null || (productKey != null && shopDomain != null)) {
-            viewModel.getProductP1(ProductParams(productId, shopDomain, productKey), true)
+            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh)
         }
     }
 
@@ -1392,7 +1443,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     it.finish()
                 } else {
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                            ProductDetailFragment.REQUEST_CODE_LOGIN)
+                            ProductDetailConstant.REQUEST_CODE_LOGIN)
                 }
             }
         }
@@ -1486,7 +1537,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
                 startActivityForResult(intent,
-                        ProductDetailFragment.REQUEST_CODE_NORMAL_CHECKOUT)
+                        ProductDetailConstant.REQUEST_CODE_NORMAL_CHECKOUT)
             }
         }
     }
@@ -1511,7 +1562,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     putExtra(Constant.EXTRA_ATC_REQUEST, atcRequestParam)
                     putExtra(Constant.TRACKER_ATTRIBUTION, trackerAttribution)
                     putExtra(Constant.TRACKER_LIST_NAME, trackerListName)
-                    startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_ATC_EXPRESS)
+                    startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_ATC_EXPRESS)
                     it.overridePendingTransition(R.anim.pull_up, 0)
                 }
             } catch (e: Exception) {
@@ -1529,7 +1580,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             } else {
                 context?.let {
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                            ProductDetailFragment.REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS)
+                            ProductDetailConstant.REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS)
                 }
             }
         } else {
@@ -1583,7 +1634,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         val id = viewModel.getDynamicProductInfoP1?.data?.variant?.parentID ?: return
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_ITEM, id)
-            intent?.run { startActivityForResult(this, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT) }
+            intent?.run { startActivityForResult(this, ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT) }
         }
     }
 
@@ -1634,7 +1685,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             updateStickyState()
         }
         stickyLoginView.setOnClickListener {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), ProductDetailFragment.REQUEST_CODE_LOGIN)
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), ProductDetailConstant.REQUEST_CODE_LOGIN)
             stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
         }
         stickyLoginView.setOnDismissListener(View.OnClickListener {
@@ -1732,7 +1783,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: return
             startActivityForResult(RouteManager.getIntent(it,
                     ApplinkConst.SHOP, shopId),
-                    ProductDetailFragment.REQUEST_CODE_SHOP_INFO)
+                    ProductDetailConstant.REQUEST_CODE_SHOP_INFO)
         }
     }
 
@@ -1746,7 +1797,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                         this::onSuccessFavoriteShop, this::onFailFavoriteShop)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        ProductDetailFragment.REQUEST_CODE_LOGIN)
+                        ProductDetailConstant.REQUEST_CODE_LOGIN)
             }
         }
     }
@@ -1790,7 +1841,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        ProductDetailFragment.REQUEST_CODE_LOGIN)
+                        ProductDetailConstant.REQUEST_CODE_LOGIN)
             }
         }
         productDetailTracking.eventSendMessage()
@@ -1860,7 +1911,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
             } else {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        ProductDetailFragment.REQUEST_CODE_LOGIN)
+                        ProductDetailConstant.REQUEST_CODE_LOGIN)
             }
             productDetailTracking.eventCartMenuClicked(viewModel.generateVariantString(), productId
                     ?: "")
@@ -1875,7 +1926,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             val icon = ContextCompat.getDrawable(this, cartImageView.tag as Int)
             if (icon is LayerDrawable) {
                 val badge = CountDrawable(this)
-                badge.setCount(if (cartCount > ProductDetailFragment.CART_MAX_COUNT) {
+                badge.setCount(if (cartCount > ProductDetailConstant.CART_MAX_COUNT) {
                     getString(R.string.pdp_label_cart_count_max)
                 } else {
                     cartCount.toString()
@@ -1884,13 +1935,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
                 cartImageView.setImageDrawable(icon)
                 if (animate) {
-                    val alphaAnimation = AlphaAnimation(ProductDetailFragment.CART_ALPHA_ANIMATION_FROM, ProductDetailFragment.CART_ALPHA_ANIMATION_TO)
-                    val scaleAnimation = ScaleAnimation(ProductDetailFragment.CART_SCALE_ANIMATION_FROM, ProductDetailFragment.CART_SCALE_ANIMATION_TO, ProductDetailFragment.CART_SCALE_ANIMATION_FROM, ProductDetailFragment.CART_SCALE_ANIMATION_TO, Animation.RELATIVE_TO_SELF, ProductDetailFragment.CART_SCALE_ANIMATION_PIVOT, Animation.RELATIVE_TO_SELF, ProductDetailFragment.CART_SCALE_ANIMATION_PIVOT)
+                    val alphaAnimation = AlphaAnimation(ProductDetailConstant.CART_ALPHA_ANIMATION_FROM, ProductDetailConstant.CART_ALPHA_ANIMATION_TO)
+                    val scaleAnimation = ScaleAnimation(ProductDetailConstant.CART_SCALE_ANIMATION_FROM, ProductDetailConstant.CART_SCALE_ANIMATION_TO, ProductDetailConstant.CART_SCALE_ANIMATION_FROM, ProductDetailConstant.CART_SCALE_ANIMATION_TO, Animation.RELATIVE_TO_SELF, ProductDetailConstant.CART_SCALE_ANIMATION_PIVOT, Animation.RELATIVE_TO_SELF, ProductDetailConstant.CART_SCALE_ANIMATION_PIVOT)
                     scaleAnimation.fillAfter = false
                     val animationSet = AnimationSet(false)
                     animationSet.addAnimation(alphaAnimation)
                     animationSet.addAnimation(scaleAnimation)
-                    animationSet.duration = ProductDetailFragment.CART_ANIMATION_DURATION
+                    animationSet.duration = ProductDetailConstant.CART_ANIMATION_DURATION
                     animationSet.fillAfter = false
                     animationSet.fillBefore = false
                     animationSet.setAnimationListener(object : Animation.AnimationListener {
