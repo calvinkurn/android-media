@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cameraview.CameraListener
@@ -16,7 +18,10 @@ import com.tokopedia.cameraview.CameraView
 import com.tokopedia.cameraview.PictureResult
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.rechargeocr.data.RechargeUploadImageData
+import com.tokopedia.rechargeocr.data.RechargeUploadImageResponse
 import com.tokopedia.rechargeocr.di.RechargeCameraInstance
+import com.tokopedia.rechargeocr.viewmodel.RechargeUploadImageViewModel
 import com.tokopedia.rechargeocr.widget.FocusCameraView
 import java.io.File
 import javax.inject.Inject
@@ -33,11 +38,14 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     private lateinit var loading: ProgressBar
     private lateinit var cameraListener: CameraListener
     private lateinit var recaptureBtn: RelativeLayout
+    private lateinit var uploadImageviewModel: RechargeUploadImageViewModel
 
     private var imagePath: String = ""
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_recharge_camera, container, false)
@@ -51,6 +59,14 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         loading = view.findViewById(R.id.progress_bar)
         recaptureBtn = view.findViewById(R.id.recapture_button)
         return view
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.let {
+            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            uploadImageviewModel = viewModelProvider.get(RechargeUploadImageViewModel::class.java)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -149,10 +165,20 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             imagePath = cameraResultFile.absolutePath
             showImagePreview()
             //TODO hit to backend to get url
+            uploadImageviewModel.uploadImageRecharge(imagePath, this::onSuccessUploadImage,
+                    this::onErrorUploadImage)
         } else {
             Toast.makeText(context, "Terjadi kesalahan, silahkan coba lagi", Toast
                     .LENGTH_LONG).show()
         }
+    }
+
+    private fun onSuccessUploadImage(rechargeUploadImageData: RechargeUploadImageData) {
+        Toast.makeText(activity, rechargeUploadImageData.picSrc, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onErrorUploadImage(throwable: Throwable) {
+        Toast.makeText(activity, throwable.message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onResume() {
