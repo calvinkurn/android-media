@@ -3,8 +3,6 @@ package com.tokopedia.topchat.chatlist.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.FragmentManager
@@ -26,7 +24,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.debug
+import com.tokopedia.kotlin.extensions.view.goToFirst
+import com.tokopedia.kotlin.extensions.view.showErrorToaster
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -125,7 +126,6 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 true
             }
             R.id.menu_chat_setting -> {
-                chatListAnalytics.eventClickChatSetting()
                 val intent = ChatSettingActivity.getIntent(context, isTabSeller())
                 startActivity(intent)
                 true
@@ -463,7 +463,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         val moveToTop = extras.getBoolean(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP)
-                        if(moveToTop) {
+                        if (moveToTop) {
                             val lastItem = extras.getParcelable<ReplyParcelableModel>(TopChatInternalRouter.Companion.RESULT_LAST_ITEM)
                             lastItem?.let {
                                 val replyTimeStamp = chatItemListViewModel.getReplyTimeStampFrom(lastItem)
