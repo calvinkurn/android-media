@@ -95,7 +95,7 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         // V4
         clearEnhanceEcommerce();
-        pushGeneral(value);
+        pushGeneral(clone(value));
 
         StringBuilder stacktrace = new StringBuilder();
 
@@ -1107,7 +1107,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void pushGeneral(Map<String, Object> values) {
-        Map<String, Object> data = clone(values);
+        Map<String, Object> data = new HashMap<>(values);
         Observable.just(data)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())

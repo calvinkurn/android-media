@@ -256,10 +256,10 @@ public class CartListPresenter implements ICartListPresenter {
             view.showProgressLoading();
         }
 
-        compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(RequestParams.EMPTY)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetCartListSimplifiedUseCase.PARAM_SELECTED_CART_ID, cartId);
+
+        compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(requestParams)
                 .subscribe(getSubscriberInitialCartListData(initialLoad))
         );
     }
@@ -372,7 +372,9 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processDeleteCartItem(List<CartItemData> allCartItemData,
                                       List<CartItemData> removedCartItems,
-                                      ArrayList<String> appliedPromoOnDeletedProductList, boolean addWishList, boolean removeInsurance) {
+                                      ArrayList<String> appliedPromoOnDeletedProductList,
+                                      boolean addWishList,
+                                      boolean removeInsurance) {
         view.showProgressLoading();
         boolean removeAllItem = allCartItemData.size() == removedCartItems.size();
 
@@ -394,9 +396,6 @@ public class CartListPresenter implements ICartListPresenter {
         requestParams.putObject(DeleteCartListUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, appliedPromoOnDeletedProductList);
 
         compositeSubscription.add(deleteCartListUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
                 .subscribe(getSubscriberDeleteAndRefreshCart(toBeDeletedCartIds, removedCartItems, removeAllItem, removeInsurance)));
     }
 
@@ -420,9 +419,6 @@ public class CartListPresenter implements ICartListPresenter {
 
         compositeSubscription.add(
                 updateCartUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberToShipmentSingleAddress(cartItemDataList))
         );
     }
@@ -448,9 +444,6 @@ public class CartListPresenter implements ICartListPresenter {
 
         compositeSubscription.add(
                 updateCartUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberUpdateCartPromoMerchant(shopGroupAvailableData))
         );
     }
@@ -477,9 +470,6 @@ public class CartListPresenter implements ICartListPresenter {
 
         compositeSubscription.add(
                 updateCartUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberUpdateCartPromoGlobal(promoStackingData, goToDetail))
         );
     }
@@ -584,9 +574,6 @@ public class CartListPresenter implements ICartListPresenter {
 
         compositeSubscription.add(
                 updateAndReloadCartUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<UpdateAndRefreshCartListData>() {
                             @Override
                             public void onCompleted() {
@@ -825,9 +812,6 @@ public class CartListPresenter implements ICartListPresenter {
 
         compositeSubscription.add(
                 checkPromoCodeCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberCheckPromoCodeFromSuggestion(isAutoApply))
         );
 

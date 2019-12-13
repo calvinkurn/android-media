@@ -16,11 +16,11 @@
     <string name="digital_topup_title">Digital Topup</string>
     <string name="title_digital_deals" >Deals</string>
 
-    <!--Discovery Search-->
+    <!-- Discovery Search -->
     <string name="title_image_search" >Pencarian Gambar</string>
     <string name="title_similar_search" >Produk Serupa</string>
     <string name="title_autocomplete" >Pencarian</string>
-    <string name="title_search_result" >Hasil Pencarian</string>
+    <string name="title_search_result" >Pencarian</string>
 
     <string name="title_applink_pm_subscribe">Power Merchant</string>
     <string name="title_applink_product_manage">Atur Produk</string>

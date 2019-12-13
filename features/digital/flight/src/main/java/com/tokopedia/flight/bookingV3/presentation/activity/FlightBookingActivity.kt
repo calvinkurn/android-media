@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent
-import com.tokopedia.flight.booking.di.FlightBookingComponent
+import com.tokopedia.flight.bookingV2.di.DaggerFlightBookingComponent
+import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV3.presentation.fragment.FlightBookingFragment
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel

@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.search.di.module.AddWishListUseCaseModule;
+import com.tokopedia.search.di.module.AdvertisingLocalCacheHandlerModule;
 import com.tokopedia.search.di.module.GraphqlRepositoryModule;
 import com.tokopedia.search.di.module.RecommendationModule;
 import com.tokopedia.search.di.module.RemoteConfigModule;
@@ -32,6 +33,7 @@ import dagger.Component;
         RemoteConfigModule.class,
         ResourcesModule.class,
         GraphqlRepositoryModule.class,
+        AdvertisingLocalCacheHandlerModule.class
 }, dependencies = BaseAppComponent.class)
 public interface ProductListPresenterComponent {
 

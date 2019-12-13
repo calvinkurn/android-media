@@ -155,7 +155,7 @@ internal class HandleViewCreatedTest: Spek({
                 val similarSearchLiveData = similarSearchViewModel.getSimilarSearchLiveData().value
 
                 similarSearchLiveData.shouldBeInstanceOf<State.Error<*>>()
-                similarSearchLiveData.shouldHaveCorrectErrorResultView()
+                similarSearchLiveData.shouldHaveCorrectEmptyResultView()
             }
 
             Then("assert has next page is false") {
@@ -168,6 +168,14 @@ internal class HandleViewCreatedTest: Spek({
                 val trackingEmptyResultContent = trackingEmptyResultEvent?.getContentIfNotHandled()
 
                 trackingEmptyResultContent shouldBe true
+            }
+
+            Then("assert tracking impression similar product event is null") {
+                val trackingImpressionSimilarProductEvent = similarSearchViewModel.getTrackingImpressionSimilarProductEventLiveData().value
+                val trackingSimilarProductContent = trackingImpressionSimilarProductEvent?.getContentIfNotHandled()
+
+                trackingSimilarProductContent.shouldBe(null,
+                        "Tracking similar product event should be null")
             }
         }
 
@@ -201,7 +209,7 @@ internal class HandleViewCreatedTest: Spek({
                 val similarSearchLiveData = similarSearchViewModel.getSimilarSearchLiveData().value
 
                 similarSearchLiveData.shouldBeInstanceOf<State.Error<*>>()
-                similarSearchLiveData.shouldHaveCorrectErrorResultView()
+                similarSearchLiveData.shouldHaveCorrectEmptyResultView()
             }
 
             Then("assert has next page is false") {
@@ -214,6 +222,14 @@ internal class HandleViewCreatedTest: Spek({
                 val trackingEmptyResultContent = trackingEmptyResultEvent?.getContentIfNotHandled()
 
                 trackingEmptyResultContent shouldBe true
+            }
+
+            Then("assert tracking impression similar product event is null") {
+                val trackingImpressionSimilarProductEvent = similarSearchViewModel.getTrackingImpressionSimilarProductEventLiveData().value
+                val trackingSimilarProductContent = trackingImpressionSimilarProductEvent?.getContentIfNotHandled()
+
+                trackingSimilarProductContent.shouldBe(null,
+                        "Tracking similar product event should be null")
             }
         }
 
@@ -235,12 +251,12 @@ internal class HandleViewCreatedTest: Spek({
                 similarSearchViewModel.onViewCreated()
             }
 
-            Then("assert original product state is success and contains original product data") {
+            Then("assert original product live data value should be null") {
                 val originalProductData = similarSearchViewModel.getOriginalProductLiveData().value
 
                 originalProductData.shouldBe(
-                        similarProductModelEmptyResult.getOriginalProduct(),
-                        "Original Product data should be equal to original product data from API"
+                        null,
+                        "Original Product Data should be null"
                 )
             }
 
@@ -261,6 +277,14 @@ internal class HandleViewCreatedTest: Spek({
                 val trackingEmptyResultContent = trackingEmptyResultEvent?.getContentIfNotHandled()
 
                 trackingEmptyResultContent shouldBe true
+            }
+
+            Then("assert tracking impression similar product event is null") {
+                val trackingImpressionSimilarProductEvent = similarSearchViewModel.getTrackingImpressionSimilarProductEventLiveData().value
+                val trackingSimilarProductContent = trackingImpressionSimilarProductEvent?.getContentIfNotHandled()
+
+                trackingSimilarProductContent.shouldBe(null,
+                        "Tracking similar product event should be null")
             }
         }
 

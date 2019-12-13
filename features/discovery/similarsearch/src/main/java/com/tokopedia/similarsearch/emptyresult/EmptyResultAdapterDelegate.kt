@@ -6,7 +6,9 @@ import com.tokopedia.similarsearch.abstraction.BaseAdapterDelegate
 import com.tokopedia.similarsearch.abstraction.BaseViewHolder
 import com.tokopedia.similarsearch.utils.setFullSpanStaggeredGrid
 
-internal class EmptyResultAdapterDelegate: BaseAdapterDelegate<EmptyResultViewModel, EmptyResultViewHolder>() {
+internal class EmptyResultAdapterDelegate(
+        private val emptyResultListener: EmptyResultListener
+): BaseAdapterDelegate<EmptyResultViewModel, EmptyResultViewHolder>() {
 
     override fun isForViewType(items: List<Any>, position: Int): Boolean {
         return items[position] is EmptyResultViewModel
@@ -17,7 +19,7 @@ internal class EmptyResultAdapterDelegate: BaseAdapterDelegate<EmptyResultViewMo
     }
 
     override fun onCreateViewHolder(inflatedView: View): RecyclerView.ViewHolder {
-        return EmptyResultViewHolder(inflatedView)
+        return EmptyResultViewHolder(inflatedView, emptyResultListener)
     }
 
     override fun onBindViewHolder(item: EmptyResultViewModel, viewHolder: BaseViewHolder<EmptyResultViewModel>) {

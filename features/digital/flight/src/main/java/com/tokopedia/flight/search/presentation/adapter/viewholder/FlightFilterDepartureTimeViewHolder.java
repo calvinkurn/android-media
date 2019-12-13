@@ -23,7 +23,7 @@ public class FlightFilterDepartureTimeViewHolder extends BaseCheckableViewHolder
 
     public FlightFilterDepartureTimeViewHolder(View itemView, CheckableInteractionListener checkableInteractionListener) {
         super(itemView, checkableInteractionListener);
-        tvTitle = (TextView) itemView.findViewById(com.tokopedia.design.R.id.tv_title);
+        tvTitle = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.tv_title);
         tvDesc = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.tv_desc);
         checkBox = (AppCompatCheckBox) itemView.findViewById(com.tokopedia.flight.R.id.checkbox);
     }

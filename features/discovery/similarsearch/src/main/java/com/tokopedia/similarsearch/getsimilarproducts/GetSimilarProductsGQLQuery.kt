@@ -18,6 +18,7 @@ private fun getProductInfoGQLQuery() = """
      reputation
      clover
      is_official
+     name
     }
     badges {
       image_url
@@ -31,6 +32,7 @@ private fun getProductInfoGQLQuery() = """
     discount_start_time
     discount_percentage
     wishlist
+    min_order
 """.trimIndent().replace("\n", " ")
 
 internal fun getSimilarProductsGQLQuery() = """

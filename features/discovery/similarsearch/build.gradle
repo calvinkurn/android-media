@@ -29,7 +29,8 @@ android {
 }
 
 dependencies {
-    
+
+    implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.discoveryCommon)

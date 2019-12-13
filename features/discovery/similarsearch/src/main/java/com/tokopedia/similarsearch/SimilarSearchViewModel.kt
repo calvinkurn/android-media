@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
 import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.State
@@ -15,13 +18,17 @@ import com.tokopedia.similarsearch.emptyresult.EmptyResultViewModel
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
 import com.tokopedia.similarsearch.title.TitleViewModel
-import com.tokopedia.similarsearch.utils.asObjectDataLayer
+import com.tokopedia.similarsearch.utils.asObjectDataLayerAddToCart
+import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import rx.Subscriber
 import kotlin.math.min
+import com.tokopedia.usecase.UseCase as RxUseCase
 
 internal class SimilarSearchViewModel(
         dispatcherProvider: DispatcherProvider,
@@ -29,6 +36,7 @@ internal class SimilarSearchViewModel(
         private val getSimilarProductsUseCase: UseCase<SimilarProductModel>,
         private val addWishlistUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
+        private val addToCartUseCase: RxUseCase<AddToCartDataModel>,
         private val userSession: UserSessionInterface
 ): BaseViewModel(dispatcherProvider.ui()) {
 
@@ -47,6 +55,10 @@ internal class SimilarSearchViewModel(
     private val trackingImpressionSimilarProductEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val trackingEmptyResultEventLiveData = MutableLiveData<Event<Boolean>>()
     private val trackingWishlistEventLiveData = MutableLiveData<Event<WishlistTrackingModel>>()
+    private val trackingAddToCartEventLiveData = MutableLiveData<Event<Any>>()
+    private val addToCartEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val routeToCartPageEventLiveData = MutableLiveData<Event<Boolean>>()
+    private var addToCartFailedMessage = ""
 
     fun onViewCreated() {
         if (!hasLoadData) {
@@ -80,25 +92,24 @@ internal class SimilarSearchViewModel(
         similarProductModelList.addAll(similarProductModel.getSimilarProductList())
         similarProductModelList.forEachIndexed { index, product -> product.position = index + 1 }
 
-        initFirstPageSimilarSearchViewModelList()
-
-        if (similarProductModelList.isEmpty()) {
-            addEmptyResultView()
-            postTrackingEmptyResult()
-        }
-        else {
-            addTitleView()
-            processSimilarProductListForOnePage()
-        }
-
-        postOriginalProductLiveData(similarProductModel.getOriginalProduct())
+        processSimilarSearchViewModelList(similarProductModel)
         postSimilarSearchLiveDataSuccess()
-        postTrackingImpressionSimilarProduct(similarProductModel)
     }
 
-    private fun initFirstPageSimilarSearchViewModelList() {
+    private fun processSimilarSearchViewModelList(similarProductModel: SimilarProductModel) {
         similarSearchViewModelList.clear()
-        similarSearchViewModelList.add(DividerViewModel())
+
+        if (similarProductModelList.isEmpty()) {
+            processSimilarSearchViewModelEmptyResult()
+        }
+        else {
+            processSimilarSearchViewModelData(similarProductModel)
+        }
+    }
+
+    private fun processSimilarSearchViewModelEmptyResult() {
+        addEmptyResultView()
+        postTrackingEmptyResult()
     }
 
     private fun addEmptyResultView() {
@@ -109,16 +120,29 @@ internal class SimilarSearchViewModel(
         trackingEmptyResultEventLiveData.postValue(Event(true))
     }
 
+    private fun processSimilarSearchViewModelData(similarProductModel: SimilarProductModel) {
+        addDividerModel()
+        addTitleView()
+        addSimilarProductListForOnePage()
+
+        postOriginalProductLiveData(similarProductModel.getOriginalProduct())
+        postTrackingImpressionSimilarProduct(similarProductModel)
+    }
+
+    private fun addDividerModel() {
+        similarSearchViewModelList.add(DividerViewModel())
+    }
+
     private fun addTitleView() {
         similarSearchViewModelList.add(TitleViewModel())
     }
 
-    private fun processSimilarProductListForOnePage() {
+    private fun addSimilarProductListForOnePage() {
         val productList = getProductListForOnePage()
 
         if (productList.isNotEmpty()) {
-            appendSimilarProductList(productList)
-            appendLoadingMoreView()
+            addSimilarProductList(productList)
+            addLoadingMoreView()
         }
     }
 
@@ -134,11 +158,11 @@ internal class SimilarSearchViewModel(
         return productListForOnePage
     }
 
-    private fun appendSimilarProductList(productList: List<Product>) {
+    private fun addSimilarProductList(productList: List<Product>) {
         similarSearchViewModelList.addAll(productList)
     }
 
-    private fun appendLoadingMoreView() {
+    private fun addLoadingMoreView() {
         if (getHasNextPage()) {
             similarSearchViewModelList.add(loadingMoreModel)
         }
@@ -153,20 +177,18 @@ internal class SimilarSearchViewModel(
         this.originalProductLiveData.postValue(originalProduct)
     }
 
-    private fun postSimilarSearchLiveDataSuccess() {
-        similarSearchLiveData.postValue(Success(similarSearchViewModelList))
-    }
-
     private fun postTrackingImpressionSimilarProduct(similarProductModel: SimilarProductModel) {
-        if (similarProductModel.getSimilarProductList().isEmpty()) return
-
         val trackingImpressionSimilarProductList = mutableListOf<Any>()
 
         similarProductModel.getSimilarProductList().forEach { productItem ->
-            trackingImpressionSimilarProductList.add(productItem.asObjectDataLayer())
+            trackingImpressionSimilarProductList.add(productItem.asObjectDataLayerImpressionAndClick())
         }
 
         trackingImpressionSimilarProductEventLiveData.postValue(Event(trackingImpressionSimilarProductList))
+    }
+
+    private fun postSimilarSearchLiveDataSuccess() {
+        similarSearchLiveData.postValue(Success(similarSearchViewModelList))
     }
 
     private fun catchGetSimilarProductsError(throwable: Throwable?) {
@@ -190,7 +212,7 @@ internal class SimilarSearchViewModel(
         if (!getHasNextPage()) return
 
         removeLoadingMoreModel()
-        processSimilarProductListForOnePage()
+        addSimilarProductListForOnePage()
 
         postSimilarSearchLiveDataSuccess()
     }
@@ -262,7 +284,6 @@ internal class SimilarSearchViewModel(
     fun onViewToggleWishlistSimilarProduct(productId: String, isWishlisted: Boolean) {
         if (!userSession.isLoggedIn) {
             trackingWishlistEventLiveData.postValue(Event(createWishlistTrackingModel(!isWishlisted, productId)))
-
             routeToLoginPageEventLiveData.postValue(Event(true))
             return
         }
@@ -326,6 +347,89 @@ internal class SimilarSearchViewModel(
         return if (similarSearchViewModelItem is Product) similarSearchViewModelItem else null
     }
 
+    fun onViewClickAddToCart(shouldRouteToCart: Boolean = false) {
+        if (!userSession.isLoggedIn) {
+            routeToLoginPageEventLiveData.postValue(Event(true))
+        }
+        else {
+            val requestParams = createAddToCartUseCaseRequestParams()
+            val addToCartUseCaseSubscriber = createAddToCartUseCaseSubscriber(shouldRouteToCart)
+
+            addToCartUseCase.execute(requestParams, addToCartUseCaseSubscriber)
+        }
+    }
+
+    private fun createAddToCartUseCaseRequestParams(): RequestParams {
+        return RequestParams.create().also {
+            it.putObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, createAddToCartRequestParams())
+        }
+    }
+
+    private fun createAddToCartRequestParams(): AddToCartRequestParams {
+        return AddToCartRequestParams(
+                productId = originalProduct.id.toLong(),
+                shopId = originalProduct.shop.id,
+                quantity = originalProduct.minOrder
+        )
+    }
+
+    private fun createAddToCartUseCaseSubscriber(shouldRouteToCart: Boolean): Subscriber<AddToCartDataModel> {
+        return object : Subscriber<AddToCartDataModel>() {
+            override fun onNext(addToCartDataModel: AddToCartDataModel?) {
+                onAddToCartSuccess(addToCartDataModel, shouldRouteToCart)
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                onAddToCartFailed()
+            }
+        }
+    }
+
+    private fun onAddToCartSuccess(addToCartDataModel: AddToCartDataModel?, shouldRouteToCart: Boolean) {
+        if (isAddToCartStatusOK(addToCartDataModel)) {
+            onAddToCartStatusOK(addToCartDataModel, shouldRouteToCart)
+        }
+        else {
+            onAddToCartFailed(addToCartDataModel)
+        }
+    }
+
+    private fun isAddToCartStatusOK(addToCartDataModel: AddToCartDataModel?): Boolean {
+        return addToCartDataModel?.status == AddToCartDataModel.STATUS_OK
+                && addToCartDataModel.data.success == 1
+    }
+
+    private fun onAddToCartStatusOK(addToCartDataModel: AddToCartDataModel?, shouldRouteToCart: Boolean) {
+        trackAddToCartStatusOK(addToCartDataModel)
+
+        handleAddToCartStatusOKAction(shouldRouteToCart)
+    }
+
+    private fun trackAddToCartStatusOK(addToCartDataModel: AddToCartDataModel?) {
+        val cartId = addToCartDataModel?.data?.cartId ?: 0
+        val originalProductAsObjectDataLayerAddToCart = originalProduct.asObjectDataLayerAddToCart(cartId)
+
+        trackingAddToCartEventLiveData.postValue(Event(originalProductAsObjectDataLayerAddToCart))
+    }
+
+    private fun handleAddToCartStatusOKAction(shouldRouteToCart: Boolean) {
+        if (shouldRouteToCart) {
+            routeToCartPageEventLiveData.postValue(Event(true))
+        }
+        else {
+            addToCartEventLiveData.postValue(Event(true))
+        }
+    }
+
+    private fun onAddToCartFailed(addToCartDataModel: AddToCartDataModel? = null) {
+        addToCartFailedMessage = addToCartDataModel?.errorMessage?.get(0) ?: ""
+        addToCartEventLiveData.postValue(Event(false))
+    }
+
     fun getUpdateWishlistOriginalProductEventLiveData(): LiveData<Event<Boolean>> {
         return updateWishlistOriginalProductEventLiveData
     }
@@ -362,5 +466,21 @@ internal class SimilarSearchViewModel(
 
     fun getTrackingWishlistEventLiveData(): LiveData<Event<WishlistTrackingModel>> {
         return trackingWishlistEventLiveData
+    }
+
+    fun getTrackingAddToCartEventLiveData(): LiveData<Event<Any>> {
+        return trackingAddToCartEventLiveData
+    }
+
+    fun getAddToCartEventLiveData(): LiveData<Event<Boolean>> {
+        return addToCartEventLiveData
+    }
+
+    fun getRouteToCartPageEventLiveData(): LiveData<Event<Boolean>> {
+        return routeToCartPageEventLiveData
+    }
+
+    fun getAddToCartFailedMessage(): String {
+        return addToCartFailedMessage
     }
 }

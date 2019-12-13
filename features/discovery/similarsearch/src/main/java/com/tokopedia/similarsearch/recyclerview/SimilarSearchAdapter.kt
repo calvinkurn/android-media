@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.similarsearch.divider.DividerAdapterDelegate
 import com.tokopedia.similarsearch.emptyresult.EmptyResultAdapterDelegate
+import com.tokopedia.similarsearch.emptyresult.EmptyResultListener
 import com.tokopedia.similarsearch.loadingmore.LoadingMoreAdapterDelegate
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.similarsearch.productitem.SimilarProductItemAdapterDelegate
@@ -12,7 +13,8 @@ import com.tokopedia.similarsearch.productitem.SimilarProductItemListener
 import com.tokopedia.similarsearch.title.TitleAdapterDelegate
 
 internal class SimilarSearchAdapter(
-        similarProductItemListener: SimilarProductItemListener
+        similarProductItemListener: SimilarProductItemListener,
+        emptyResultListener: EmptyResultListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val list: MutableList<Any> = mutableListOf()
@@ -21,7 +23,7 @@ internal class SimilarSearchAdapter(
             .addDelegate(DividerAdapterDelegate())
             .addDelegate(TitleAdapterDelegate())
             .addDelegate(LoadingMoreAdapterDelegate())
-            .addDelegate(EmptyResultAdapterDelegate())
+            .addDelegate(EmptyResultAdapterDelegate(emptyResultListener))
 
     override fun getItemViewType(position: Int): Int {
         return adapterDelegatesManager.getItemViewType(list, position)
