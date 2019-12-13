@@ -12,7 +12,6 @@ import android.webkit.WebView;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.play.core.splitcompat.SplitCompat;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.authentication.AuthConstant;
 import com.tokopedia.authentication.AuthHelper;
@@ -27,9 +26,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
-import java.util.UUID;
-
-import static com.tokopedia.abstraction.common.utils.network.AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE;
 
 /**
  * Created by nisie on 11/30/16.
@@ -38,10 +34,6 @@ public class TkpdWebView extends WebView {
 
     private static final String PARAM_URL = "url";
     private static final String FORMAT_UTF_8 = "UTF-8";
-    private static final String HEADER_TKPD_SESSION_ID = "tkpd-sessionid";
-    private static final String HEADER_TKPD_USER_AGENT = "tkpd-useragent";
-    private static final String GCM_STORAGE = "GCM_STORAGE";
-    private static final String GCM_ID = "gcm_id";
     private RemoteConfig remoteConfig;
 
     private @Nullable TkpdWebView.WebviewScrollListener scrollListener = null;
@@ -102,7 +94,7 @@ public class TkpdWebView extends WebView {
             if (path == null) {
                 path = "";
             }
-            Map<String,String> header = AuthHelper.getDefaultHeaderMapOld(
+            loadUrl(urlToLoad, AuthHelper.getDefaultHeaderMapOld(
                     path,
                     getQuery(Uri.parse(url).getQuery()),
                     "GET",
@@ -110,28 +102,8 @@ public class TkpdWebView extends WebView {
                     AuthKey.KEY_WSV4,
                     AuthConstant.DATE_FORMAT,
                     userSession.getUserId(),
-                    userSession);
-            header.put(
-                    HEADER_TKPD_SESSION_ID,
-                    getRegistrationIdWithTemp(getContext())
-            );
-            header.put(
-                    HEADER_TKPD_USER_AGENT ,
-                    DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
-            );
-            loadUrl(urlToLoad,header);
+                    userSession));
         }
-    }
-
-    private String getRegistrationIdWithTemp(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        if (cache.getString(GCM_ID, "").equals("")) {
-            String tempID = UUID.randomUUID().toString();;
-            cache.putString(GCM_ID, tempID);
-            cache.applyEditor();
-            return tempID;
-        }
-        return cache.getString(GCM_ID, "");
     }
 
     /**
