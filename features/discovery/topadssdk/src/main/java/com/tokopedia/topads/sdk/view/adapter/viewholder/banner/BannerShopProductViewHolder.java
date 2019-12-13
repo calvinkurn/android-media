@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.banner;
 
 import android.content.Context;
+
 import androidx.annotation.LayoutRes;
 
 import android.view.View;
@@ -75,14 +76,15 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         });
         descTxt.setText(TopAdsBannerView.Companion.escapeHTML(element.getProduct().getName()));
         priceTxt.setText(element.getProduct().getPriceFormat());
-        reviewCountTxt.setText(String.format("(%s)", element.getProduct().getCountReviewFormat()));
-        if(element.getProduct().isProductNewLabel()){
+        String reviewCount = element.getProduct().getCountReviewFormat();
+        reviewCountTxt.setText(String.format("(%s)", (reviewCount.isEmpty()) ? "0" : reviewCount));
+        if (element.getProduct().isProductNewLabel()) {
             newLabelTxt.setVisibility(View.VISIBLE);
         } else {
             newLabelTxt.setVisibility(View.GONE);
         }
         discountTxt.setText(element.getProduct().getProductCashbackRate());
-        if(element.getProduct().isProductCashback()){
+        if (element.getProduct().isProductCashback()) {
             discountTxt.setVisibility(View.VISIBLE);
         } else {
             discountTxt.setVisibility(View.GONE);
@@ -116,7 +118,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     }
 
     private int getRatingDrawable(Boolean isActive) {
-        if(isActive){
+        if (isActive) {
             return R.drawable.topads_ic_rating_active;
         } else {
             return R.drawable.topads_ic_rating_default;

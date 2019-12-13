@@ -2,8 +2,8 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="148dp"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/dp_148"
+    android:layout_height="match_parent"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
@@ -15,9 +15,10 @@
 
     <com.tokopedia.topads.sdk.view.ImpressedImageView
         android:id="@+id/icon"
-        android:layout_width="@dimen/dp_128"
-        android:layout_height="@dimen/dp_128"
+        android:layout_width="@dimen/dp_148"
+        android:layout_height="@dimen/dp_148"
         android:adjustViewBounds="true"
+        tools:src="@tools:sample/avatars"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -47,7 +48,7 @@
         android:layout_marginTop="0dp"
         android:textStyle="bold"
         android:visibility="gone"
-        tools:visibility="visible"
+        tools:visibility="gone"
         app:labelType="general_light_red"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description"
@@ -67,7 +68,7 @@
         app:typographyType="small"
         android:visibility="gone"
         android:layout_marginLeft="@dimen/dp_5"
-        tools:visibility="visible"
+        tools:visibility="gone"
         tools:text="1000.000" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -79,6 +80,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp"
+        android:paddingBottom="@dimen/dp_2"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
         android:maxLines="2"
@@ -179,7 +181,7 @@
         android:textSize="10sp"
         android:textStyle="bold"
         android:visibility="gone"
-        tools:visibility="visible"
+        tools:visibility="gone"
         app:labelType="general_light_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

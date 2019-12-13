@@ -28,6 +28,7 @@ import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.ProductImage
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsListener
@@ -84,7 +85,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener))
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
-            val mItemOffset = resources.getDimensionPixelOffset(R.dimen.dp_8)
+            val mItemOffset = resources.getDimensionPixelOffset(R.dimen.dp_2)
 //            list.addItemDecoration(object : RecyclerView.ItemDecoration() {
 //                override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
 //                    if (parent.getChildAdapterPosition(view) == 0) {
@@ -97,6 +98,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             shop_image.addOnImpressionListener(cpmData.cpm.cpmShop.imageShop) {
                 impressionListener?.let {
                     it.onImpressionHeadlineAdsItem(0, cpmData)
+                    ImpresionTask().execute(cpmData.cpm.cpmShop.imageShop.getsUrl())
                 }
             }
             template = SHOP_TEMPLATE
