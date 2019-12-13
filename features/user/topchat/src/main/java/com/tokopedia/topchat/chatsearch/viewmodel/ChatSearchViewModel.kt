@@ -18,6 +18,7 @@ class ChatSearchViewModel @Inject constructor(
 
     var loadInitialData = MutableLiveData<Boolean>()
     var emptyQuery = MutableLiveData<Boolean>()
+    var triggerSearch = MutableLiveData<String>()
     var errorMessage = MutableLiveData<Throwable>()
 
     private var _searchResults = MutableLiveData<List<SearchResult>>()
@@ -65,6 +66,7 @@ class ChatSearchViewModel @Inject constructor(
     }
 
     private fun doSearch() {
+        triggerSearch.postValue(query)
         getSearchQueryUseCase.doSearch(::onSuccessDoSearch, ::onErrorDoSearch, query, page)
     }
 

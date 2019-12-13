@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.topchat.chatsearch.analytic.ChatSearchAnalytic
 import com.tokopedia.topchat.chatsearch.data.RecentSearch
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity
@@ -25,6 +26,9 @@ import javax.inject.Inject
  */
 class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>(),
         ChatSearchActivity.Listener, LifecycleOwner, ItemSearchChatViewHolder.Listener {
+
+    @Inject
+    lateinit var analytic: ChatSearchAnalytic
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -71,6 +75,9 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
                 clearAllData()
             }
             showGetListError(error)
+        })
+        viewModel.triggerSearch.observe(viewLifecycleOwner, Observer {
+            analytic.eventQueryTriggered()
         })
     }
 
