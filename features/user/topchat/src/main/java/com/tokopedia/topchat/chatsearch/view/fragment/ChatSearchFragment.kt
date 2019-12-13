@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.topchat.chatsearch.data.RecentSearch
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
@@ -32,9 +33,14 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderList(emptyList())
+        showRecentSearch()
         setupRecyclerView()
         setupObserver()
+    }
+
+    private fun showRecentSearch() {
+        val recentSearch = listOf( RecentSearch() )
+        renderList(recentSearch)
     }
 
     private fun setupRecyclerView() {
@@ -55,10 +61,10 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
             clearAllData()
             showLoading()
         })
-        viewModel.showEmpty.observe(viewLifecycleOwner, Observer {
+        viewModel.emptyQuery.observe(viewLifecycleOwner, Observer {
             if (!it) return@Observer
             clearAllData()
-            showEmpty()
+            showRecentSearch()
         })
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer { error ->
             if (viewModel.isFirstPage()) {

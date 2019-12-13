@@ -17,7 +17,7 @@ class ChatSearchViewModel @Inject constructor(
     val hasNext: Boolean get() = getSearchQueryUseCase.hasNext
 
     var loadInitialData = MutableLiveData<Boolean>()
-    var showEmpty = MutableLiveData<Boolean>()
+    var emptyQuery = MutableLiveData<Boolean>()
     var errorMessage = MutableLiveData<Throwable>()
 
     private var _searchResults = MutableLiveData<List<SearchResult>>()
@@ -35,7 +35,7 @@ class ChatSearchViewModel @Inject constructor(
         page = 1
         if (query.isEmpty()) {
             getSearchQueryUseCase.cancelRunningSearch()
-            showEmpty.postValue(true)
+            emptyQuery.postValue(true)
             return
         }
         if (getSearchQueryUseCase.isSearching) getSearchQueryUseCase.cancelRunningSearch()

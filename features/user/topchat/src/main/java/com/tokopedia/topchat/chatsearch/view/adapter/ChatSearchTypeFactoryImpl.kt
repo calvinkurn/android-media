@@ -7,10 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
+import com.tokopedia.topchat.chatsearch.data.RecentSearch
 import com.tokopedia.topchat.chatsearch.data.SearchResult
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.EmptySearchChatViewHolder
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatViewHolder
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.LoadingSearchChatViewHolder
+import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.RecentSearchChatViewHolder
 
 class ChatSearchTypeFactoryImpl(
         private val listener: ItemSearchChatViewHolder.Listener
@@ -28,11 +30,16 @@ class ChatSearchTypeFactoryImpl(
         return EmptySearchChatViewHolder.LAYOUT
     }
 
+    override fun type(recentSearch: RecentSearch): Int {
+        return RecentSearchChatViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             ChatItemListViewHolder.LAYOUT -> ItemSearchChatViewHolder(parent, listener)
             LoadingSearchChatViewHolder.LAYOUT -> LoadingSearchChatViewHolder(parent)
             EmptySearchChatViewHolder.LAYOUT -> EmptySearchChatViewHolder(parent)
+            RecentSearchChatViewHolder.LAYOUT -> RecentSearchChatViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
