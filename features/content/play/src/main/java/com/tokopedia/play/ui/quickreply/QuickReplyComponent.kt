@@ -30,6 +30,8 @@ class QuickReplyComponent(
                         when (it) {
                             is ScreenStateEvent.SetVideo ->
                                 if (it.vodType is PlayVODType.Live) uiView.show() else uiView.hide()
+//                            is ScreenStateEvent.SetQuickReply ->
+//                                uiView.setQuickReply(it.quickReply)
                         }
                     }
         }
@@ -42,7 +44,12 @@ class QuickReplyComponent(
                                 "UUuuuuuuuuUUUUU",
                                 "YEYEYEY",
                                 "KEREN BANGET CUI",
-                                "WOOOOOOSSSHHH"
+                                "WOOOOOOSSSHHH",
+                                "TERBAIK👍",
+                                "IDOL!😍",
+                                "YES!",
+                                "HAI MIN👋",
+                                "MAKSIMAL"
                         )
                 )
         )

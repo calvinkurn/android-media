@@ -54,6 +54,11 @@ class PlaySocket @Inject constructor(
             override fun onError(e: Throwable) {
                 onError()
             }
+
+            override fun onReconnect() {
+                super.onReconnect()
+
+            }
         }
 
         val webSocketSubscription = RxWebSocket[wsConnectUrl, userSessionInterface.accessToken]?.subscribe(webSocketSubscriber)

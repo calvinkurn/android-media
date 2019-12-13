@@ -17,6 +17,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.data.PinnedMessage
+import com.tokopedia.play.data.QuickReply
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
@@ -144,7 +145,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                      setTitle(it.data.title)
                      setTotalView(it.data.totalViews)
                      setPinnedMessage(it.data.pinnedMessage)
-                     setQuickReply(it.data.quickReply)
+                     setQuickReply(QuickReply(it.data.quickReply))
                  }
                 is Fail -> {
                     showToast("don't forget to handle when get channel info return error ")
@@ -578,7 +579,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
 
-    private fun setQuickReply(quickReply: List<String>) {
+    private fun setQuickReply(quickReply: QuickReply) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
