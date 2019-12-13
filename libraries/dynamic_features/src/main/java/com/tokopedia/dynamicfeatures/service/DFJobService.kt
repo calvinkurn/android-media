@@ -18,13 +18,15 @@ import java.util.concurrent.TimeUnit
 class DFJobService : JobIntentService() {
     companion object {
         const val JOB_ID = 7122
-        const val DELAY_SERVICE_IN_SECOND = 15L
+        const val DELAY_SERVICE_IN_SECOND = 60L
         const val SHARED_PREF_NAME = "df_job_srv"
         const val KEY_SHARED_PREF_MODULE = "module_list"
         const val DELIMITER = "#"
         const val DELIMITER_2 = ":"
         const val MAX_ATTEMPT_DOWNLOAD = 3
         val DELAY_IN_MILIS = TimeUnit.SECONDS.toMillis(DELAY_SERVICE_IN_SECOND)
+        lateinit var dfGlobalHandler:Handler
+        lateinit var dfGlobalRunnable:Runnable
 
         var isServiceRunning = false
 
@@ -49,10 +51,17 @@ class DFJobService : JobIntentService() {
                 } else {
                     //it is efficient to run using Handler, rather than using AlarmManager,
                     // this only happen when app is active
-                    Handler().postDelayed({
+                    if (!::dfGlobalHandler.isInitialized) {
+                        dfGlobalHandler = Handler()
+                    }
+                    if (::dfGlobalRunnable.isInitialized) {
+                        dfGlobalHandler.removeCallbacks(dfGlobalRunnable)
+                    }
+                    dfGlobalRunnable = Runnable {
                         enqueueWork(context, DFJobService::class.java, JOB_ID,
                             Intent(context, DFJobService::class.java))
-                    }, DELAY_IN_MILIS)
+                    }
+                    dfGlobalHandler.postDelayed(dfGlobalRunnable, DELAY_IN_MILIS)
                 }
             } catch (ignored: Exception) { }
         }
@@ -109,13 +118,14 @@ class DFJobService : JobIntentService() {
             return
         }
         DFInstaller().installOnBackground(application, combinedList, onSuccessInstall = {
-            DFMDownloadQueue.putDFModuleList(this, null)
+            DFMDownloadQueue.clearDFModuleList(this, combinedPairList)
             endService()
         }, onFailedInstall = {
             // loop all combined list
-            // if installed, remove from list
             // if not installed, flag++
-            val iterator = combinedPairList.iterator();
+            // if installed, it will be removed from queue list
+            val iterator = combinedPairList.iterator()
+            val successfulListAfterInstall = mutableListOf<Pair<String, Int>>()
             val combinedListAfterInstall = mutableListOf<Pair<String, Int>>()
             while (iterator.hasNext()) {
                 val moduleNamePair = iterator.next()
@@ -123,10 +133,15 @@ class DFJobService : JobIntentService() {
                     if (moduleNamePair.second < MAX_ATTEMPT_DOWNLOAD) {
                         combinedListAfterInstall.add(Pair(moduleNamePair.first, moduleNamePair.second + 1))
                     }
+                } else {
+                    successfulListAfterInstall.add(Pair(moduleNamePair.first, 1))
                 }
             }
             if (combinedListAfterInstall.isNotEmpty()) {
-                DFMDownloadQueue.putDFModuleList(this, combinedListAfterInstall)
+                DFMDownloadQueue.appendDFModuleList(this, combinedListAfterInstall)
+            }
+            if (successfulListAfterInstall.isNotEmpty()) {
+                DFMDownloadQueue.clearDFModuleList(this, successfulListAfterInstall)
             }
             endService()
         })

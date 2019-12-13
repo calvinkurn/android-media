@@ -600,13 +600,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun installDynamicFeatureAtLogin() {
         // for POC - start install when login
-        activity?.run {
-            val remoteConfig = FirebaseRemoteConfigImpl(this)
-            val installAtLogin = remoteConfig.getBoolean(KEY_REMOTE_CONFIG_INSTALL_DF_AT_LOGIN, false)
-            if (!GlobalConfig.isSellerApp() && installAtLogin) {
-                if (userSession.hasShop()) {
-                    DFInstaller().installOnBackground(application, listOf(DFM_MERCHANT_SELLER_CUSTOMERAPP))
-                }
+        if (userSession.hasShop()) {
+            activity?.run {
+                DFInstaller().installOnBackground(this.application, listOf(DFM_MERCHANT_SELLER_CUSTOMERAPP))
             }
         }
     }
