@@ -27,5 +27,4 @@ class SaldoInfoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
         itemView.tv_reasonTitle.text = list.reasonTitle
         itemView.tv_valueReason.text = list.reason
     }
-
 }

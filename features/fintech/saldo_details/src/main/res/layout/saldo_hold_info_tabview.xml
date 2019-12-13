@@ -1,0 +1,130 @@
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/viewflipper_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintStart_toStartOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/toolbar_saldo_info"
+            layout="@layout/saldo_info_toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/saldo_hold_info_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:closeButtonVisibility="gone"
+            app:descriptionText="Saldo tertahan milikmu sedang dalam pemeriksaan pihak Tokopedia. "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_saldo_info"
+            app:tickerShapeType="full"
+            app:tickerType="announcement" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_totalSaldoHold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_20"
+            android:text="Total Saldo Tertahan"
+            android:typeface="normal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/saldo_hold_info_ticker"
+            app:layout_goneMarginTop="@dimen/dp_20"
+            app:typographyType="heading_5"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_valueTotalSaldoHold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:text="Rp4.000.000"
+            android:textColor="#03ac0e"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/saldo_hold_info_ticker"
+            app:typographyType="heading_4" />
+
+        <View
+            android:id="@+id/bottom_sep1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="#f3f4f5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_totalSaldoHold" />
+
+        <LinearLayout
+            android:id="@+id/ll_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/view1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bottom_sep1">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+                <com.tokopedia.design.component.Tabs
+                    android:id="@+id/tabs_saldo_info_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:theme="@style/ThemeOverlay.AppCompat.Light"
+                    app:tabGravity="fill"
+                    app:tabIndicatorColor="@color/tkpd_main_green"
+                    app:tabPaddingBottom="@dimen/dp_12"
+                    app:tabSelectedTextColor="@color/tkpd_main_green"
+                    app:tabTextColor="@color/black_38">
+                </com.tokopedia.design.component.Tabs>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/view_pager_saldo_info_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:background="@drawable/bg_hold_info_shadow"
+            app:layout_constraintBottom_toTopOf="@+id/btn_bantuan"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/btn_bantuan"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:background="@drawable/bg_round_corner_solid_green"
+            android:gravity="center"
+            android:text="Bantuan"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ViewFlipper>
