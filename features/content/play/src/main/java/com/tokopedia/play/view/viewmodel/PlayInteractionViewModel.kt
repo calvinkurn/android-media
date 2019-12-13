@@ -41,10 +41,6 @@ class PlayInteractionViewModel @Inject constructor(
     private val _observableTotalLikes = MutableLiveData<Result<TotalLike>>()
     val observableTotalLikes: LiveData<Result<TotalLike>> = _observableTotalLikes
 
-    private fun getPeopleInfo(peopleId: String) {
-        // TODO get people info / kol profile
-    }
-
     private fun getShopInfo(shopId: String, partnerType: String)  {
         launchCatchError(block = {
             val response = withContext(Dispatchers.IO) {
@@ -73,12 +69,18 @@ class PlayInteractionViewModel @Inject constructor(
             _observableToolbarInfo.value = Success(titleToolbar)
             return
         }
-
+        if (partnerId == PartnerType.INFLUENCER.value) {
+            val titleToolbar = TitleToolbar(
+                    partnerId,
+                    "",
+                    partnerType,
+                    true)
+            _observableToolbarInfo.value = Success(titleToolbar)
+            return
+        }
 
         if (partnerType == PartnerType.SHOP.value)
             getShopInfo(partnerId, partnerType)
-        else if (partnerId == PartnerType.INFLUENCER.value)
-            getPeopleInfo(partnerId)
     }
 
     fun getTotalLikes(channelId: String) {

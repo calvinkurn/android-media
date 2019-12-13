@@ -135,13 +135,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         playViewModel.observeGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                  is Success -> {
-                     launch {
-                         viewModel.getToolbarInfo(it.data.partnerType, it.data.partnerId)
-                         setTitle(it.data.title)
-                         setTotalView(it.data.totalViews)
-                         setPinnedMessage(it.data.pinnedMessage)
-                         setQuickReply(it.data.quickReply)
-                     }
+                     viewModel.getToolbarInfo(it.data.partnerType, it.data.partnerId)
+                     setTitle(it.data.title)
+                     setTotalView(it.data.totalViews)
+                     setPinnedMessage(it.data.pinnedMessage)
+                     setQuickReply(it.data.quickReply)
                  }
                 is Fail -> {
                     showToast("don't forget to handle when get channel info return error ")
@@ -152,9 +150,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.observableToolbarInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
-                    launch {
-                        setToolbarTitle(it.data)
-                    }
+                    setToolbarTitle(it.data)
                 }
                 is Fail -> {
                     showToast("don't forget to handle when get toolbar info return error ")
@@ -165,9 +161,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is  Success -> {
-                    launch {
-                        setTotalLikes(it.data.totalClick)
-                    }
+                    setTotalLikes(it.data.totalClick)
                 }
                 is Fail -> {
                     showToast("don't forget to handle when get total likes return error ")
@@ -178,6 +172,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         playViewModel.observableTotalViewsSocket.observe(viewLifecycleOwner, Observer {
             launch {
                 setTotalView(it.totalView)
+            }
+        })
+
+        playViewModel.observableChatListSocket.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.IncomingChat(it)
+                        )
             }
         })
     }
@@ -455,53 +459,65 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     /**
      * Emit data to ui component
      */
-    private suspend fun setTitle(title: String) {
-        EventBusFactory.get(viewLifecycleOwner)
-                .emit(
-                        ScreenStateEvent::class.java,
-                        ScreenStateEvent.SetTitle(title)
-                )
+    private fun setTitle(title: String) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetTitle(title)
+                    )
+        }
     }
 
-    private suspend fun setToolbarTitle(titleToolbar: TitleToolbar) {
-        EventBusFactory.get(viewLifecycleOwner)
-                .emit(
-                        ScreenStateEvent::class.java,
-                        ScreenStateEvent.SetTitleToolbar(titleToolbar)
-                )
+    private fun setToolbarTitle(titleToolbar: TitleToolbar) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetTitleToolbar(titleToolbar)
+                    )
+        }
     }
 
-    private suspend fun setTotalView(totalView: String) {
-        EventBusFactory.get(viewLifecycleOwner)
-                .emit(
-                        ScreenStateEvent::class.java,
-                        ScreenStateEvent.SetTotalViews(totalView)
-                )
+    private fun setTotalView(totalView: String) {
+       launch {
+           EventBusFactory.get(viewLifecycleOwner)
+                   .emit(
+                           ScreenStateEvent::class.java,
+                           ScreenStateEvent.SetTotalViews(totalView)
+                   )
+       }
     }
 
 
-    private suspend fun setTotalLikes(totalLikes: String) {
-        EventBusFactory.get(viewLifecycleOwner)
-                .emit(
-                        ScreenStateEvent::class.java,
-                        ScreenStateEvent.SetTotalLikes(totalLikes)
-                )
+    private fun setTotalLikes(totalLikes: String) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetTotalLikes(totalLikes)
+                    )
+        }
     }
 
-    private suspend fun setQuickReply(quickReply: List<String>) {
-        EventBusFactory.get(viewLifecycleOwner)
-                .emit(
-                        ScreenStateEvent::class.java,
-                        ScreenStateEvent.SetQuickReply(quickReply)
-                )
+    private fun setQuickReply(quickReply: List<String>) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetQuickReply(quickReply)
+                    )
+        }
     }
 
-    private suspend fun setPinnedMessage(pinnedMessage: PinnedMessage) {
-        EventBusFactory.get(viewLifecycleOwner)
-                .emit(
-                        ScreenStateEvent::class.java,
-                        ScreenStateEvent.SetPinned(pinnedMessage)
-                )
+    private fun setPinnedMessage(pinnedMessage: PinnedMessage) {
+        launch {
+          EventBusFactory.get(viewLifecycleOwner)
+                  .emit(
+                          ScreenStateEvent::class.java,
+                          ScreenStateEvent.SetPinned(pinnedMessage)
+                  )
+        }
     }
 
     private fun showMoreActionBottomSheet() {

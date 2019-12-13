@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.data.Channel
-import com.tokopedia.play.data.TotalView
+import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.GetChannelInfoUseCase
@@ -41,11 +40,20 @@ class PlayViewModel @Inject constructor(
     private val _observableGetChannelInfo = MutableLiveData<Result<Channel>>()
     val observeGetChannelInfo: LiveData<Result<Channel>> = _observableGetChannelInfo
 
-    private val _observableChatList = MutableLiveData<PlayChat>()
-    val observableChatList: LiveData<PlayChat> = _observableChatList
+    private val _observableChatListSocket = MutableLiveData<PlayChat>()
+    val observableChatListSocket: LiveData<PlayChat> = _observableChatListSocket
 
     private val _observableTotalViewsSocket = MutableLiveData<TotalView>()
     val observableTotalViewsSocket: LiveData<TotalView> = _observableTotalViewsSocket
+
+    private val _observablePinnedMessageSocket = MutableLiveData<PinnedMessage>()
+    val observablePinnedMessageSocket: LiveData<PinnedMessage> = _observablePinnedMessageSocket
+
+    private val _observableQuickReplySocket = MutableLiveData<QuickReply>()
+    val observableQuickReplySocket: LiveData<QuickReply> = _observableQuickReplySocket
+
+    private val _observableBannedFreezeSocket = MutableLiveData<BannedFreeze>()
+    val observableBannedFreezeSocket: LiveData<BannedFreeze> = _observableBannedFreezeSocket
 
     fun getChannelInfo(channelId: String) {
         launchCatchError(block = {
@@ -73,10 +81,24 @@ class PlayViewModel @Inject constructor(
         }, onMessageReceived =  { response ->
             val socketMapper = PlaySocketMapper(response)
             when (val result = socketMapper.mapping()) {
+                is TotalLike -> {
+
+                }
                 is TotalView -> {
                     _observableTotalViewsSocket.value = result
                 }
-
+                is PlayChat -> {
+                    _observableChatListSocket.value = result
+                }
+                is PinnedMessage -> {
+                    _observablePinnedMessageSocket.value = result
+                }
+                is QuickReply -> {
+                    _observableQuickReplySocket.value = result
+                }
+                is BannedFreeze -> {
+                    _observableBannedFreezeSocket.value = result
+                }
             }
         }, onError = {
             // Todo, handle on error web socket
@@ -99,33 +121,4 @@ class PlayViewModel @Inject constructor(
     fun destroy() {
         playSocket.destroy()
     }
-
-
-//    private val listOfUser = listOf(
-//            "Rifqi",
-//            "Meyta",
-//            "IJ",
-//            "Yehez"
-//    )
-//
-//    private val listOfMessage = listOf(
-//            "Great product!",
-//            "I watched all of that till te end and i decided i will buy this dress.",
-//            "Great, wellspoken review. Such a wonderful information. Thanks a lot!"
-//    )
-//
-//    fun startObservingChatList() {
-//        launch {
-//            var id = 0
-//            while (job.isActive) {
-//                _observableChatList.value =
-//                        PlayChat(
-//                                ++id,
-//                                listOfUser.random(),
-//                                listOfMessage.random()
-//                        )
-//                delay(5000)
-//            }
-//        }
-//    }
 }

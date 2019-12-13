@@ -20,13 +20,13 @@ class ChatViewHolder(
     private val tvChat = itemView.findViewById<TextView>(R.id.tv_chat)
 
     fun bind(chat: PlayChat) {
-        val spannableString = SpannableString("${chat.firstName} ${chat.message}")
+        val spannableString = SpannableString("${chat.user.name} ${chat.message}")
         spannableString.setSpan(
                 ForegroundColorSpan(
                         MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Neutral_N150)
                 ),
-                spannableString.indexOf(chat.firstName),
-                chat.firstName.length,
+                spannableString.indexOf(chat.user.name),
+                chat.user.name.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         tvChat.text = spannableString
