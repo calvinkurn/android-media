@@ -38,10 +38,6 @@ class ChatSearchActivity : BaseSimpleActivity(),
     }
 
     override fun getNewFragment(): Fragment {
-        val bundle = Bundle()
-        intent.extras?.let {
-            bundle.putAll(it)
-        }
         return ChatSearchFragment.createFragment()
     }
 
