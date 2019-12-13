@@ -53,11 +53,6 @@ public abstract class BaseCheckoutActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
     }

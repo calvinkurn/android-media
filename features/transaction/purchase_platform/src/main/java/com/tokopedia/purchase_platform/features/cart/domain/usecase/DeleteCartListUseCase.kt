@@ -18,10 +18,9 @@ class DeleteCartListUseCase @Inject constructor(private val cartRepository: ICar
                                                 private val cartMapper: ICartMapper,
                                                 private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase) : UseCase<DeleteAndRefreshCartListData>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<DeleteAndRefreshCartListData> {
+    override fun createObservable(requestParams: RequestParams?): Observable<DeleteAndRefreshCartListData> {
 
-        val paramDelete = requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART) as TKPDMapParam<String, String>
-
+        val paramDelete = requestParams?.getObject(PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART) as TKPDMapParam<String, String>
         val toBeDeletedPromoCode = requestParams.getObject(PARAM_TO_BE_REMOVED_PROMO_CODES) as ArrayList<String>
 
         return Observable.just(DeleteAndRefreshCartListData())

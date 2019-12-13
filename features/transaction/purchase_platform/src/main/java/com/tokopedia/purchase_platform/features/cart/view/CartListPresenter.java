@@ -366,6 +366,9 @@ public class CartListPresenter implements ICartListPresenter {
                                       boolean removeInsurance) {
         view.showProgressLoading();
         boolean removeAllItem = allCartItemData.size() == removedCartItems.size();
+        if (appliedPromoOnDeletedProductList == null) {
+            appliedPromoOnDeletedProductList = new ArrayList<>();
+        }
 
         List<Integer> toBeDeletedCartIds = new ArrayList<>();
         for (CartItemData cartItemData : removedCartItems) {

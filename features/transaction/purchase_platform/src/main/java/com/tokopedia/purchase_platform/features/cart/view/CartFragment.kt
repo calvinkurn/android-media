@@ -184,7 +184,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         private val CART_PAGE = "cart"
         private val NAVIGATION_PDP = 64728
         private val GO_TO_DETAIL = 2
-        private val GO_TO_LIST = 1
+        val GO_TO_LIST = 1
 
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
             var tmpBundle = bundle
@@ -203,7 +203,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun getDialogDeleteConfirmation(): DialogUnify? {
         activity?.apply {
-            return DialogUnify(activity!!, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            return DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.label_dialog_title_delete_item))
                 setDescription(getString(R.string.label_dialog_message_remove_cart_item))
                 setPrimaryCTAText(getString(R.string.label_dialog_action_delete))
@@ -318,7 +318,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         try {
             val cartItemDataList = selectedCartDataList
             activity?.let {
-                if (hasChanges && cartItemDataList != null && cartItemDataList.isNotEmpty() && !FLAG_BEGIN_SHIPMENT_PROCESS) {
+                if (hasChanges && cartItemDataList?.isNotEmpty() == true && !FLAG_BEGIN_SHIPMENT_PROCESS) {
                     val service = Intent(it, UpdateCartIntentService::class.java)
                     service.putParcelableArrayListExtra(
                             UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, ArrayList(cartAdapter.selectedCartItemData)
@@ -582,9 +582,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (activity != null) {
+        activity?.let {
             setHasOptionsMenu(true)
-            activity!!.title = activity!!.getString(R.string.title_activity_cart)
+            it.title = it.getString(R.string.title_activity_cart)
             if (savedInstanceState == null) {
                 refreshHandler.startRefresh()
             } else {
@@ -965,9 +965,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             index++
         }
 
-        if (recommendationItemClick != null) {
+        recommendationItemClick?.let {
             sendAnalyticsOnClickProductRecommendation(index.toString(),
-                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, index))
+                    dPresenter.generateRecommendationDataOnClickAnalytics(it, FLAG_IS_CART_EMPTY, index))
         }
 
         onProductClicked(productId)
@@ -1002,14 +1002,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onSeeErrorProductsClicked() {
-        if (cartRecyclerView.layoutManager != null) {
+        cartRecyclerView.layoutManager?.let {
             val linearSmoothScroller = object : LinearSmoothScroller(cartRecyclerView.context) {
                 override fun getVerticalSnapPreference(): Int {
-                    return LinearSmoothScroller.SNAP_TO_START
+                    return SNAP_TO_START
                 }
             }
             linearSmoothScroller.targetPosition = cartAdapter.disabledItemHeaderPosition
-            cartRecyclerView.layoutManager?.startSmoothScroll(linearSmoothScroller)
+            it.startSmoothScroll(linearSmoothScroller)
         }
     }
 
@@ -1029,9 +1029,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         sendAnalyticsOnClickShopCartItem(cartShopHolderData.shopGroupAvailableData.shopId
                 ?: "", cartShopHolderData.shopGroupAvailableData.shopName ?: "")
 
-        if (activity != null) {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.SHOP, cartShopHolderData.shopGroupAvailableData.shopId)
-            activity!!.startActivity(intent)
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, cartShopHolderData.shopGroupAvailableData.shopId)
+            it.startActivity(intent)
         }
     }
 
@@ -1051,7 +1051,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartPromoUseVoucherGlobalPromoClicked(cartPromoGlobal: PromoStackingData, position: Int) {
         val cartItemData = selectedCartDataList
-        if (cartItemData != null && cartItemData.size > 0) {
+        if (cartItemData?.isNotEmpty() == true) {
             trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon()
             dPresenter.processUpdateCartDataPromoStacking(cartItemData, cartPromoGlobal, GO_TO_LIST)
         } else {
@@ -1089,7 +1089,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onClickDetailPromoGlobal(dataGlobal: PromoStackingData, position: Int) {
         val cartItemData = selectedCartDataList
-        if (cartItemData != null && cartItemData.isNotEmpty()) {
+        if (cartItemData?.isNotEmpty() == true) {
             trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon()
             dPresenter.processUpdateCartDataPromoStacking(cartItemData, dataGlobal, GO_TO_DETAIL)
         }
@@ -1127,12 +1127,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onWishlistCheckChanged(productId: String, isChecked: Boolean) {
-        if (activity != null) {
-            if (isChecked) {
-                dPresenter.processAddToWishlist(productId, userSession.userId, getCartAvailableWishlistActionListener())
-            } else {
-                dPresenter.processRemoveFromWishlist(productId, userSession.userId, getCartAvailableWishlistActionListener())
-            }
+        if (isChecked) {
+            dPresenter.processAddToWishlist(productId, userSession.userId, getCartAvailableWishlistActionListener())
+        } else {
+            dPresenter.processRemoveFromWishlist(productId, userSession.userId, getCartAvailableWishlistActionListener())
         }
     }
 
@@ -1177,20 +1175,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
-        if (cartListData != null) {
+        cartListData?.let {
             sendAnalyticsScreenName(screenName)
 
             endlessRecyclerViewScrollListener.resetState()
             refreshHandler.finishRefresh()
-            this.cartListData = cartListData
+            this.cartListData = it
             cartAdapter.resetData()
 
-            renderTickerAnnouncement(cartListData)
+            renderTickerAnnouncement(it)
 
-            if (cartListData.shopGroupAvailableDataList.isEmpty() && cartListData.shopGroupWithErrorDataList.isEmpty()) {
-                renderCartEmpty(cartListData)
+            if (it.shopGroupAvailableDataList.isEmpty() && it.shopGroupWithErrorDataList.isEmpty()) {
+                renderCartEmpty(it)
             } else {
-                renderCartNotEmpty(cartListData)
+                renderCartNotEmpty(it)
             }
 
             if (recentViewList == null) {
@@ -1525,9 +1523,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderDetailInfoSubTotal(qty: String, subtotalPrice: String, selectAllCartItem: Boolean, unselectAllItem: Boolean, hasAvailableItems: Boolean) {
-        if (dPresenter.cartListData != null) {
-            dPresenter.cartListData.isAllSelected = selectAllCartItem
-        }
+        dPresenter.cartListData?.isAllSelected = selectAllCartItem
         if (cbSelectAll.isChecked != selectAllCartItem) {
             cbSelectAll.isChecked = selectAllCartItem
         }
@@ -1554,7 +1550,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         activity?.let {
             if (promoStackingData.typePromo == PromoStackingData.TYPE_COUPON) {
-                val intent = getIntentToPromoDetail(promo, promoStackingData)
+                val intent = getIntentToPromoDetail(promo, promoStackingData, it)
                 startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE)
             } else {
                 val intent = getIntentToPromoList(promo, it)
@@ -1627,7 +1623,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         notifyBottomCartParent()
     }
 
-    override fun onRefresh(view: View) {
+    override fun onRefresh(view: View?) {
         if (dPresenter.dataHasChanged()) {
             showMainContainer()
             dPresenter.processToUpdateAndReloadCartData()
@@ -1711,8 +1707,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
 
                 for (cartItemData in cartAdapter.allCartItemData) {
-                    if (promoStackingData != null && promoStackingData.trackingDetailUiModels.isNotEmpty()) {
-                        for (trackingDetailUiModel in promoStackingData.trackingDetailUiModels) {
+                    if (promoStackingData?.trackingDetailUiModels?.isNotEmpty() == true) {
+                        val trackingDetailsUiModels = promoStackingData.trackingDetailUiModels
+                        for (trackingDetailUiModel in trackingDetailsUiModels) {
                             if (trackingDetailUiModel.productId.toString().equals(cartItemData.originData?.productId, ignoreCase = true)) {
                                 cartItemData.originData?.promoCodes = trackingDetailUiModel.promoCodesTracking
                                 cartItemData.originData?.promoDetails = trackingDetailUiModel.promoDetailsTracking
@@ -1878,7 +1875,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun showMerchantVoucherListBottomsheet(shopGroupAvailableData: ShopGroupAvailableData) {
         val promo = dPresenter.generateCheckPromoFirstStepParam(cartAdapter.promoStackingGlobalData)
-        fragmentManager?.let {
+        if (fragmentManager != null) {
             var shopId = 0
             try {
                 shopId = Integer.parseInt(shopGroupAvailableData.shopId ?: "0")
@@ -1909,13 +1906,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                 }
 
-                MerchantVoucherListBottomSheetFragment.newInstance(
+                val merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance(
                         shopId, shopGroupAvailableData.cartString ?: "",
                         promo, "cart", cartItemDataVoucherArrayList
-                ).apply {
-                    actionListener = this@CartFragment
-                    show(fragmentManager, "")
-                }
+                )
+                merchantVoucherListBottomSheetFragment.actionListener = this@CartFragment
+                merchantVoucherListBottomSheetFragment.show(fragmentManager, "")
             }
         }
     }
@@ -1938,10 +1934,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         try {
             val insuranceCartDigitalProductArrayList = ArrayList<InsuranceCartDigitalProduct>()
             for (insuranceCartShops in cartAdapter.insuranceCartShops) {
-                if (insuranceCartShops != null && !insuranceCartShops.shopItemsList.isEmpty()) {
-                    for ((_, digitalProductList) in insuranceCartShops.shopItemsList) {
-                        if (digitalProductList != null && !digitalProductList.isEmpty()) {
-                            for (insuranceCartDigitalProduct in digitalProductList) {
+                if (insuranceCartShops?.shopItemsList?.isNotEmpty() == true) {
+                    for (insuranceCartShopItem in insuranceCartShops.shopItemsList) {
+                        if (insuranceCartShopItem.digitalProductList.isNotEmpty()) {
+                            for (insuranceCartDigitalProduct in insuranceCartShopItem.digitalProductList) {
                                 insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct)
                             }
                         }
@@ -1957,9 +1953,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun removeInsuranceProductItem(productId: List<Long>) {
-        if (cartAdapter != null) {
-            cartAdapter.removeInsuranceDataItem(productId)
-        }
+        cartAdapter.removeInsuranceDataItem(productId)
     }
 
     override fun renderInsuranceCartData(insuranceCartResponse: InsuranceCartResponse?, isRecommendation: Boolean) {
@@ -1969,8 +1963,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
          * then insurance product is of type micro insurance and should be tagged at product level,
          * for micro insurance product add insurance data in shopGroup list*/
 
-        if (insuranceCartResponse != null && insuranceCartResponse.cartShopsList != null &&
-                !insuranceCartResponse.cartShopsList.isEmpty()) {
+        if (insuranceCartResponse?.cartShopsList?.isNotEmpty() == true) {
             for (insuranceCartShops in insuranceCartResponse.cartShopsList) {
                 val shopId = insuranceCartShops.shopId
                 for ((productId, digitalProductList) in insuranceCartShops.shopItemsList) {
@@ -1994,15 +1987,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onSuccessCheckPromoFirstStep(responseGetPromoStackUiModel: ResponseGetPromoStackUiModel) {
         // Update global promo state
-        if (responseGetPromoStackUiModel.data.codes.size > 0) {
+        if (responseGetPromoStackUiModel.data.codes.isNotEmpty()) {
             val promoStackingGlobalData = cartAdapter.promoStackingGlobalData
-            promoMapper.convertPromoGlobalModel(responseGetPromoStackUiModel, promoStackingGlobalData!!)
+            promoMapper.convertPromoGlobalModel(responseGetPromoStackUiModel, promoStackingGlobalData)
         }
 
         // Update merchant voucher state
-        val cartShopHolderDataList = cartAdapter.allShopGroupDataList
-        if (cartShopHolderDataList != null) {
-            for (cartShopHolderData in cartShopHolderDataList) {
+        cartAdapter.allShopGroupDataList?.let {
+            for (cartShopHolderData in it) {
                 for (voucherOrdersItemUiModel in responseGetPromoStackUiModel.data.voucherOrders) {
                     if (voucherOrdersItemUiModel.uniqueId == cartShopHolderData.shopGroupAvailableData.cartString) {
                         var voucherOrdersItemData = cartShopHolderData.shopGroupAvailableData.voucherOrdersItemData
@@ -2014,19 +2006,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         break
                     }
                 }
-                if (responseGetPromoStackUiModel.data.trackingDetailUiModel.size > 0) {
+                if (responseGetPromoStackUiModel.data.trackingDetailUiModel.isNotEmpty()) {
                     for (trackingDetailUiModel in responseGetPromoStackUiModel.data.trackingDetailUiModel) {
-                        if (cartShopHolderData.shopGroupAvailableData.cartItemDataList != null) {
-                            for ((cartItemData) in cartShopHolderData.shopGroupAvailableData.cartItemDataList!!) {
-                                if (trackingDetailUiModel.productId.toString().equals(cartItemData.originData!!.productId!!, ignoreCase = true)) {
-                                    cartItemData.originData!!.promoCodes = trackingDetailUiModel.promoCodesTracking
-                                    cartItemData.originData!!.promoDetails = trackingDetailUiModel.promoDetailsTracking
+                        val cartItemHolderDataList = cartShopHolderData.shopGroupAvailableData.cartItemDataList
+                        cartItemHolderDataList?.let {
+                            for (cartItemHolderData in cartItemHolderDataList) {
+                                if (trackingDetailUiModel.productId.toString().equals(cartItemHolderData.cartItemData.originData?.productId, ignoreCase = true)) {
+                                    cartItemHolderData.cartItemData.originData?.promoCodes = trackingDetailUiModel.promoCodesTracking
+                                    cartItemHolderData.cartItemData.originData?.promoDetails = trackingDetailUiModel.promoDetailsTracking
                                 }
                             }
                         }
                     }
                 }
-
             }
         }
 
@@ -2035,17 +2027,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onSuccessClearPromoStack(shopIndex: Int) {
         if (shopIndex == SHOP_INDEX_PROMO_GLOBAL) {
-            if (cartListData!!.shopGroupAvailableDataList.isEmpty()) {
+            if (cartListData?.shopGroupAvailableDataList?.isEmpty() == true) {
                 cartAdapter.removePromoStackingVoucherData()
             } else {
                 val promoStackingData = cartAdapter.promoStackingGlobalData
-                resetPromoGlobal(promoStackingData!!)
+                resetPromoGlobal(promoStackingData)
                 cartAdapter.updateItemPromoStackVoucher(promoStackingData)
             }
         } else {
-            val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(shopIndex)
-            if (cartShopHolderData != null) {
-                cartShopHolderData.shopGroupAvailableData.voucherOrdersItemData = null
+            cartAdapter.getCartShopHolderDataByIndex(shopIndex)?.let {
+                it.shopGroupAvailableData.voucherOrdersItemData = null
                 cartAdapter.notifyItemChanged(shopIndex)
             }
         }
@@ -2054,12 +2045,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onSuccessClearPromoStackAfterClash() {
         // Reset global promo
         val promoStackingData = cartAdapter.promoStackingGlobalData
-        resetPromoGlobal(promoStackingData!!)
+        resetPromoGlobal(promoStackingData)
 
         // Reset merchant promo
         val cartShopHolderDataList = cartAdapter.allCartShopHolderData
         for (cartShopHolderData in cartShopHolderDataList) {
-            if (cartShopHolderData != null) {
+            cartShopHolderData?.let {
                 cartShopHolderData.shopGroupAvailableData.voucherOrdersItemData = null
             }
         }
@@ -2090,8 +2081,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     // get newly added cart id if open cart after ATC on PDP
     override fun getCartId(): String? {
-        return if (arguments != null && !TextUtils.isEmpty(arguments!!.getString(CartActivity.EXTRA_CART_ID))) {
-            arguments!!.getString(CartActivity.EXTRA_CART_ID)
+        return if (!TextUtils.isEmpty(arguments?.getString(CartActivity.EXTRA_CART_ID))) {
+            arguments?.getString(CartActivity.EXTRA_CART_ID)
         } else "0"
     }
 
@@ -2116,22 +2107,24 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.sendEventChangeInsuranceState(isChecked, insuranceTitle)
     }
 
-    override fun deleteMacroInsurance(insuranceCartDigitalProductArrayList: ArrayList<InsuranceCartDigitalProduct>, showConfirmationDialog: Boolean) {
+    override fun deleteMacroInsurance(insuranceCartDigitalProductList: ArrayList<InsuranceCartDigitalProduct>, showConfirmationDialog: Boolean) {
         if (showConfirmationDialog) {
-            val view = layoutInflater.inflate(R.layout.remove_insurance_product, null, false)
-            val alertDialog = AlertDialog.Builder(context!!)
-                    .setView(view)
-                    .setCancelable(true)
-                    .show()
+            activity?.let {
+                val view = layoutInflater.inflate(R.layout.remove_insurance_product, null, false)
+                val alertDialog = AlertDialog.Builder(it)
+                        .setView(view)
+                        .setCancelable(true)
+                        .show()
 
-            view.findViewById<View>(R.id.button_positive).setOnClickListener { v ->
-                dPresenter.processDeleteCartInsurance(insuranceCartDigitalProductArrayList, showConfirmationDialog)
-                alertDialog.dismiss()
+                view.findViewById<View>(R.id.button_positive).setOnClickListener {
+                    dPresenter.processDeleteCartInsurance(insuranceCartDigitalProductList, showConfirmationDialog)
+                    alertDialog.dismiss()
+                }
+
+                view.findViewById<View>(R.id.button_negative).setOnClickListener { alertDialog.dismiss() }
             }
-
-            view.findViewById<View>(R.id.button_negative).setOnClickListener { v -> alertDialog.dismiss() }
         } else {
-            dPresenter.processDeleteCartInsurance(insuranceCartDigitalProductArrayList, showConfirmationDialog)
+            dPresenter.processDeleteCartInsurance(insuranceCartDigitalProductList, showConfirmationDialog)
         }
     }
 
@@ -2192,19 +2185,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         } else {
             // Render from Cache
-            if (recommendationList != null && recommendationList!!.size != 0) {
+            if (recommendationList?.size != 0) {
                 cartRecommendationItemHolderDataList.addAll(this.recommendationList!!)
             }
         }
 
         var cartSectionHeaderHolderData: CartSectionHeaderHolderData? = null
-        if (endlessRecyclerViewScrollListener.currentPage == 0 && recommendationWidget == null || recommendationWidget != null && endlessRecyclerViewScrollListener.currentPage == 1 && recommendationSectionHeader == null) {
+        if ((endlessRecyclerViewScrollListener.currentPage == 0 && recommendationWidget == null) ||
+                (recommendationWidget != null && endlessRecyclerViewScrollListener.currentPage == 1 && recommendationSectionHeader == null)) {
             if (recommendationSectionHeader != null) {
                 cartSectionHeaderHolderData = recommendationSectionHeader
             } else {
                 cartSectionHeaderHolderData = CartSectionHeaderHolderData()
-                if (recommendationWidget != null && !TextUtils.isEmpty(recommendationWidget.title)) {
-                    cartSectionHeaderHolderData.title = recommendationWidget.title
+                if (!TextUtils.isEmpty(recommendationWidget?.title)) {
+                    cartSectionHeaderHolderData.title = recommendationWidget?.title ?: ""
                 } else {
                     cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_recommendation)
                 }
@@ -2237,24 +2231,28 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         var eventCategory = ""
         var eventAction = ""
         var eventLabel = ""
-        if (productModel is CartWishlistItemHolderData) {
-            eventCategory = ConstantTransactionAnalytics.EventCategory.CART
-            eventAction = ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_WISHLIST
-            eventLabel = ""
-            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer(productModel, addToCartDataResponseModel, FLAG_IS_CART_EMPTY)
-        } else if (productModel is CartRecentViewItemHolderData) {
-            eventCategory = ConstantTransactionAnalytics.EventCategory.CART
-            eventAction = ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_RECENT_VIEW_PAGE
-            eventLabel = ""
-            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer(productModel, addToCartDataResponseModel, FLAG_IS_CART_EMPTY)
-        } else if (productModel is CartRecommendationItemHolderData) {
-            eventCategory = ConstantTransactionAnalytics.EventCategory.CART
-            eventAction = ConstantTransactionAnalytics.EventAction.CLICK_ADD_TO_CART
-            eventLabel = ""
-            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer(productModel, addToCartDataResponseModel, FLAG_IS_CART_EMPTY)
+        when (productModel) {
+            is CartWishlistItemHolderData -> {
+                eventCategory = ConstantTransactionAnalytics.EventCategory.CART
+                eventAction = ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_WISHLIST
+                eventLabel = ""
+                stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer(productModel, addToCartDataResponseModel, FLAG_IS_CART_EMPTY)
+            }
+            is CartRecentViewItemHolderData -> {
+                eventCategory = ConstantTransactionAnalytics.EventCategory.CART
+                eventAction = ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_RECENT_VIEW_PAGE
+                eventLabel = ""
+                stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer(productModel, addToCartDataResponseModel, FLAG_IS_CART_EMPTY)
+            }
+            is CartRecommendationItemHolderData -> {
+                eventCategory = ConstantTransactionAnalytics.EventCategory.CART
+                eventAction = ConstantTransactionAnalytics.EventAction.CLICK_ADD_TO_CART
+                eventLabel = ""
+                stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer(productModel, addToCartDataResponseModel, FLAG_IS_CART_EMPTY)
+            }
         }
 
-        if (stringObjectMap != null) {
+        stringObjectMap?.let {
             cartPageAnalytics.sendEnhancedECommerceAddToCart(stringObjectMap, eventCategory, eventAction, eventLabel)
         }
     }
@@ -2297,11 +2295,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 )
             }
             dialog.dismiss()
-            Unit
         }
         dialog?.setSecondaryCTAClickListener {
             dialog.dismiss()
-            Unit
         }
         dialog?.show()
     }
@@ -2320,9 +2316,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dialog?.setPrimaryCTAClickListener {
             dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, null, false, false)
             sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                    dPresenter.generateCartDataAnalytics(
-                            cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
-                    )
+                    dPresenter.generateCartDataAnalytics(cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION)
             )
             dialog.dismiss()
         }
