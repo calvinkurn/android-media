@@ -58,6 +58,7 @@ internal class SimilarSearchViewModel(
     private val trackingAddToCartEventLiveData = MutableLiveData<Event<Any>>()
     private val addToCartEventLiveData = MutableLiveData<Event<Boolean>>()
     private val routeToCartPageEventLiveData = MutableLiveData<Event<Boolean>>()
+    private var addToCartFailedMessage = ""
 
     fun onViewCreated() {
         if (!hasLoadData) {
@@ -393,7 +394,7 @@ internal class SimilarSearchViewModel(
             onAddToCartStatusOK(addToCartDataModel, shouldRouteToCart)
         }
         else {
-            onAddToCartFailed()
+            onAddToCartFailed(addToCartDataModel)
         }
     }
 
@@ -424,7 +425,8 @@ internal class SimilarSearchViewModel(
         }
     }
 
-    private fun onAddToCartFailed() {
+    private fun onAddToCartFailed(addToCartDataModel: AddToCartDataModel? = null) {
+        addToCartFailedMessage = addToCartDataModel?.errorMessage?.get(0) ?: ""
         addToCartEventLiveData.postValue(Event(false))
     }
 
@@ -476,5 +478,9 @@ internal class SimilarSearchViewModel(
 
     fun getRouteToCartPageEventLiveData(): LiveData<Event<Boolean>> {
         return routeToCartPageEventLiveData
+    }
+
+    fun getAddToCartFailedMessage(): String {
+        return addToCartFailedMessage
     }
 }

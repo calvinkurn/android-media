@@ -300,6 +300,12 @@ internal class HandleViewClickAddToCart: Spek({
                 addToCartEventLiveData?.getContentIfNotHandled() shouldBe false
             }
 
+            Then("assert get add to cart failed message is the failed message from addToCartUseCase") {
+                val addToCartFailedMessage = similarSearchViewModel.getAddToCartFailedMessage()
+
+                addToCartFailedMessage shouldBe addToCartErrorModel.errorMessage[0]
+            }
+
             Then("assert route to cart page event is null (do not route to cart page)") {
                 val routeToCartPageEventLiveData = similarSearchViewModel.getRouteToCartPageEventLiveData().value
 

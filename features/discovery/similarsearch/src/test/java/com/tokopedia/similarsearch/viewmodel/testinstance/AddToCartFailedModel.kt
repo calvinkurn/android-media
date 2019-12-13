@@ -5,7 +5,9 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 
 internal fun getAddToCartFailedModel() = AddToCartDataModel(
         status = AddToCartDataModel.STATUS_ERROR,
-        errorMessage = arrayListOf(),
+        errorMessage = arrayListOf<String>().also {
+                it.add("Jumlah barang melebihi stok di toko. Kurangi pembelianmu, ya!")
+        },
         data = DataModel(
                 success = 0
         )
