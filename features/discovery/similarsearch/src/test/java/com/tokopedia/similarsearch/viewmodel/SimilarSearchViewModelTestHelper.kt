@@ -1,5 +1,6 @@
 package com.tokopedia.similarsearch.viewmodel
 
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.similarsearch.SimilarSearchViewModel
 import com.tokopedia.similarsearch.testutils.TestDispatcherProvider
 import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
@@ -11,6 +12,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.mockk
 import org.spekframework.spek2.dsl.TestBody
 import org.spekframework.spek2.style.gherkin.FeatureBody
+import com.tokopedia.usecase.UseCase as RxUseCase
 
 @Suppress("UNUSED_VARIABLE")
 internal fun FeatureBody.createTestInstance() {
@@ -29,6 +31,10 @@ internal fun FeatureBody.createTestInstance() {
     val userSession by memoized {
         mockk<UserSessionInterface>(relaxed = true)
     }
+
+    val addToCartUseCase by memoized {
+        mockk<RxUseCase<AddToCartDataModel>>(relaxed = true)
+    }
 }
 
 internal fun TestBody.createSimilarSearchViewModel(): SimilarSearchViewModel {
@@ -36,6 +42,7 @@ internal fun TestBody.createSimilarSearchViewModel(): SimilarSearchViewModel {
     val addWishListUseCase by memoized<AddWishListUseCase>()
     val removeWishListUseCase by memoized<RemoveWishListUseCase>()
     val userSession by memoized<UserSessionInterface>()
+    val addToCartUseCase by memoized<RxUseCase<AddToCartDataModel>>()
 
     return SimilarSearchViewModel(
             TestDispatcherProvider(),
@@ -43,6 +50,7 @@ internal fun TestBody.createSimilarSearchViewModel(): SimilarSearchViewModel {
             getSimilarProductsUseCase,
             addWishListUseCase,
             removeWishListUseCase,
+            addToCartUseCase,
             userSession
     )
 }

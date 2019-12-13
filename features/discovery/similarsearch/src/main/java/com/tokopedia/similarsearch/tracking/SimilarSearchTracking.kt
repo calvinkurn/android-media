@@ -93,4 +93,24 @@ internal object SimilarSearchTracking {
                 )
         )
     }
+
+    fun trackEventSuccessAddToCart(productItem: Any) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.CLICK_SIMILAR_SEARCH,
+                        TrackAppUtils.EVENT_CATEGORY, Category.SIMILAR_PRODUCT,
+                        TrackAppUtils.EVENT_ACTION, Action.CLICK_ADD_TO_CART_ON_SIMILAR_SEARCH,
+                        TrackAppUtils.EVENT_LABEL, "",
+                        ECOMMERCE, DataLayer.mapOf(
+                            ECommerce.CURRENCY_CODE, ECommerce.IDR,
+                            ECommerce.ADD, DataLayer.mapOf(
+                                ECommerce.ACTION_FIELD, DataLayer.mapOf(
+                                        "list", "/similarproduct"
+                                ),
+                                ECommerce.PRODUCTS, DataLayer.listOf(productItem)
+                            )
+                    )
+                )
+        )
+    }
 }

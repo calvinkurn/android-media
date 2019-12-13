@@ -9,6 +9,7 @@ include 'features:discovery:wishlist_common'
 include 'features:discovery:topadssdk'
 include 'features:merchant:gold_merchant_resource'
 include 'features:transaction:purchase_platform_common'
+include 'features:transaction:atc_common'
 
 include 'libraries:analytics'
 include 'libraries:applink'

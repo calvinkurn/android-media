@@ -29,6 +29,7 @@ internal interface Action {
         const val LOGIN = "login"
         const val NON_LOGIN = "nonlogin"
         const val CLICK_BUY_ON_SIMILAR_SEARCH = "click buy on similar search"
+        const val CLICK_ADD_TO_CART_ON_SIMILAR_SEARCH = "click add to cart on similar search"
     }
 }
 
@@ -51,5 +52,6 @@ internal interface ECommerce {
         const val CLICK = "click"
         const val ACTION_FIELD = "actionField"
         const val PRODUCTS = "products"
+        const val ADD = "add"
     }
 }

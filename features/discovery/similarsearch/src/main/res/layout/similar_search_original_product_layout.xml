@@ -25,7 +25,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutOriginalProduct"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         android:padding="@dimen/dp_8">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -215,6 +215,7 @@
             android:focusable="true"
             android:text="@string/similar_search_original_product_add_to_cart_collapsed"
             android:alpha="0.0"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:unifyButtonSize="small"

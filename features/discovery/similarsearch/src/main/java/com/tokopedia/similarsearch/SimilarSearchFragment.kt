@@ -3,7 +3,6 @@ package com.tokopedia.similarsearch
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -24,7 +22,6 @@ import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_PRODUCT_ID
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
-import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.purchase_platform.common.constant.ProductAction
 import com.tokopedia.similarsearch.emptyresult.EmptyResultListener
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
@@ -35,7 +32,6 @@ import com.tokopedia.similarsearch.recyclerview.SimilarSearchAdapter
 import com.tokopedia.similarsearch.recyclerview.SimilarSearchItemDecoration
 import com.tokopedia.similarsearch.tracking.SimilarSearchTracking
 import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
-import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
 
@@ -92,17 +88,17 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
 
 
-        recyclerViewSimilarSearch?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                Log.v("RecyclerView Scroll", "OnScroll dx: $dx, dy: $dy, vertical scroll offset: ${recyclerView.computeVerticalScrollOffset()}")
-                if (dy > 0) {
-                    originalProductView?.collapse(recyclerViewSimilarSearch?.computeVerticalScrollOffset() ?: 0)
-                }
-                else if (dy <= 0) {
-                    originalProductView?.expand(recyclerViewSimilarSearch?.computeVerticalScrollOffset() ?: 0)
-                }
-            }
-        })
+//        recyclerViewSimilarSearch?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                Log.v("RecyclerView Scroll", "OnScroll dx: $dx, dy: $dy, vertical scroll offset: ${recyclerView.computeVerticalScrollOffset()}")
+//                if (dy > 0) {
+//                    originalProductView?.collapse(recyclerViewSimilarSearch?.computeVerticalScrollOffset() ?: 0)
+//                }
+//                else if (dy <= 0) {
+//                    originalProductView?.expand(recyclerViewSimilarSearch?.computeVerticalScrollOffset() ?: 0)
+//                }
+//            }
+//        })
     }
 
     private fun initRecyclerViewAdapter() {
@@ -154,9 +150,11 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         observeWishlistSimilarProductEventLiveData()
         observeAddWishlistEventLiveData()
         observeRemoveWishlistEventLiveData()
+        observeAddToCartEventLiveData()
         observeTrackingImpressionSimilarProductEventLiveData()
         observeTrackingEmptyResultEventLiveData()
         observeTrackingWishlistEventLiveData()
+        observeTrackingAddToCartEventLiveData()
     }
 
     private fun observeOriginalProductLiveData() {
@@ -193,7 +191,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
             }
 
             override fun onButtonAddToCartClicked() {
-                selectedProductOnButtonAddToCartClicked(originalProduct)
+                selectedProductOnButtonAddToCartClicked()
             }
         }
     }
@@ -211,8 +209,8 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         routeToCheckout(originalProduct, ATC_AND_BUY)
     }
 
-    private fun selectedProductOnButtonAddToCartClicked(originalProduct: Product) {
-        routeToCheckout(originalProduct, ATC_ONLY)
+    private fun selectedProductOnButtonAddToCartClicked() {
+        similarSearchViewModel?.onViewClickAddToCart()
     }
 
     private fun routeToCheckout(originalProduct: Product, @ProductAction action: Int) {
@@ -312,6 +310,21 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
     }
 
+    private fun observeAddToCartEventLiveData() {
+        similarSearchViewModel?.getAddToCartEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccess ->
+            handleAddToCartEvent(isSuccess)
+        })
+    }
+
+    private fun handleAddToCartEvent(isSuccess: Boolean) {
+        if (isSuccess) {
+            showSnackbar(R.string.similar_search_add_to_cart_success)
+        }
+        else {
+            showSnackbar(R.string.similar_search_add_to_cart_failed, Toaster.TYPE_ERROR)
+        }
+    }
+
     private fun observeTrackingImpressionSimilarProductEventLiveData() {
         similarSearchViewModel?.getTrackingImpressionSimilarProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             SimilarSearchTracking.trackEventImpressionSimilarProduct(getOriginalProductId(), it)
@@ -340,6 +353,12 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         })
     }
 
+    private fun observeTrackingAddToCartEventLiveData() {
+        similarSearchViewModel?.getTrackingAddToCartEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            SimilarSearchTracking.trackEventSuccessAddToCart(it)
+        })
+    }
+
     override fun onItemClicked(similarProductItem: Product, adapterPosition: Int) {
         trackEventClickSimilarProduct(similarProductItem)
         routeToProductDetail(similarProductItem.id)
@@ -357,11 +376,8 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
         when(requestCode) {
             REQUEST_CODE_GO_TO_PRODUCT_DETAIL -> handleResultFromProductDetail(data)
-            REQUEST_CODE_GO_TO_CHECKOUT -> handleResultFromNormalCheckout(resultCode)
         }
     }
 
@@ -374,14 +390,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
     }
 
-    private fun handleResultFromNormalCheckout(resultCode: Int) {
-        when(resultCode) {
-            RESULT_CODE_ERROR_TICKET -> showSnackbar(R.string.similar_search_add_to_cart_failed, Toaster.TYPE_ERROR)
-            Activity.RESULT_OK -> showSnackbar(R.string.similar_search_add_to_cart_success)
-        }
-    }
-
-    override fun onEmptyButtonClicked() {
+    override fun onEmptyResultButtonClicked() {
         activity?.finish()
     }
 }

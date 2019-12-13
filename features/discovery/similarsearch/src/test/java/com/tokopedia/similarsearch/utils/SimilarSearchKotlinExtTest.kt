@@ -85,10 +85,12 @@ internal class SimilarSearchKotlinExtTest: Spek({
                         id = 12345,
                         isOfficial = true,
                         name = "enterkomputer2"
-                )
+                ),
+                minOrder = 1
         )
+        val cartId = 12345
 
-        val objectDataLayer = product.asObjectDataLayerAddToCart()
+        val objectDataLayer = product.asObjectDataLayerAddToCart(cartId)
 
         it ("should be a map with correct data layer key and values") {
             objectDataLayer.shouldBeInstanceOf<Map<String, Any>>()
@@ -102,12 +104,12 @@ internal class SimilarSearchKotlinExtTest: Spek({
             objectDataLayerMap["brand"] shouldBe NONE_OTHER
             objectDataLayerMap["category"] shouldBe product.categoryName
             objectDataLayerMap["variant"] shouldBe NONE_OTHER
-            // quantity
+            objectDataLayerMap["quantity"] shouldBe product.minOrder
             objectDataLayerMap["shop_id"] shouldBe product.shop.id
             objectDataLayerMap["shop_type"] shouldBe product.shop.getType()
             objectDataLayerMap["shop_name"] shouldBe product.shop.name
             objectDataLayerMap["category_id"] shouldBe product.categoryId
-            // dimension82 cart id
+            objectDataLayerMap["dimension82"] shouldBe cartId
         }
     }
 })

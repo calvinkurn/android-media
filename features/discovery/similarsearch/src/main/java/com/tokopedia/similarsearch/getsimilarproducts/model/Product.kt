@@ -70,7 +70,11 @@ internal data class Product(
 
         @SerializedName("wishlist")
         @Expose
-        var isWishlisted: Boolean = false
+        var isWishlisted: Boolean = false,
+
+        @SerializedName("min_order")
+        @Expose
+        val minOrder: Int = 0
 ) {
 
         var position: Int = 0

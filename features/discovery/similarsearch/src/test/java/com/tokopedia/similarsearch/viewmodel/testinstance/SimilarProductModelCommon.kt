@@ -568,7 +568,8 @@ private val similarProductModelCommonJSONString = """
           "discount_expired_time": "",
           "discount_start_time": "",
           "discount_percentage": 0,
-          "wishlist": false
+          "wishlist": false,
+          "min_order": 1
         }
       }
     }

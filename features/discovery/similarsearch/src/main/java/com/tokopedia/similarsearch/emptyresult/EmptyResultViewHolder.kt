@@ -16,7 +16,7 @@ internal class EmptyResultViewHolder(
 
     override fun bind(item: EmptyResultViewModel) {
         itemView.similarSearchEmptyButton?.setOnClickListener {
-            emptyResultListener.onEmptyButtonClicked()
+            emptyResultListener.onEmptyResultButtonClicked()
         }
     }
 }
