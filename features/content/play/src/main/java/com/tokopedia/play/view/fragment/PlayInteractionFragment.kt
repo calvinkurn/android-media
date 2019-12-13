@@ -420,7 +420,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
                 connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
                 connect(id, ConstraintSet.TOP, toolbarComponentId, ConstraintSet.BOTTOM)
-                connect(id, ConstraintSet.BOTTOM, statsComponentId, ConstraintSet.TOP)
+                connect(id, ConstraintSet.BOTTOM, statsComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_16))
             }
 
             constraintSet.applyTo(container)
