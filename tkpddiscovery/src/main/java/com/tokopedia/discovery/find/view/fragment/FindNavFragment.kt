@@ -96,7 +96,7 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
     private var pageCount = 0
     private var rows = 10
     private var isPagingAllowed: Boolean = true
-    private var bannedProductFoundListener: OnFindNavFragmentInteractionListener? = null
+    private var bannedProductFoundListener: OnBannedProductFoundListener? = null
 
     private lateinit var findSearchParam: String
 
@@ -565,22 +565,19 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
 
     private fun showBannedDataScreen() {
         val bannedProduct = Data()
+        bannedProduct.bannedMsgHeader = getString(R.string.banned_product)
         bannedProduct.bannedMessage = findNavViewModel.mBannedData[0]
         bannedProduct.appRedirection = findNavViewModel.mBannedData[1]
         bannedProduct.displayButton = findNavViewModel.mBannedData[1].isNotEmpty()
         bannedProductFoundListener?.onBannedProductFound(bannedProduct)
     }
 
-    interface OnFindNavFragmentInteractionListener {
-        fun onBannedProductFound(bannedProduct: Data)
-    }
-
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnFindNavFragmentInteractionListener) {
+        if (context is OnBannedProductFoundListener) {
             bannedProductFoundListener = context
         } else {
-            throw RuntimeException("$context must implement OnFragmentInteractionListener")
+            throw RuntimeException("$context must implement OnBannedProductFoundListener")
         }
     }
 
@@ -588,5 +585,4 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
         super.onDetach()
         bannedProductFoundListener = null
     }
-
 }

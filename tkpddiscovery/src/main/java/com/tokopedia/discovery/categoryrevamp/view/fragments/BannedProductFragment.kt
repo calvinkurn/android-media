@@ -22,8 +22,7 @@ import com.tokopedia.discovery.categoryrevamp.viewmodel.BannedProdNavViewModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_product_nav.*
-import kotlinx.android.synthetic.main.layout_nav_banned_layout.*
+import kotlinx.android.synthetic.main.fragment_banned_product.*
 import javax.inject.Inject
 
 private const val BANNED_PRODUCT = "banned_product"
@@ -112,7 +111,6 @@ class BannedProductFragment : Fragment() {
     }
 
     private fun onSeamlessError() {
-        layout_banned_screen.show()
         txt_header.text = getString(R.string.category_server_error_header)
         txt_sub_header.text = getString(R.string.try_again)
     }

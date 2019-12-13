@@ -85,11 +85,4 @@
     </androidx.core.widget.NestedScrollView>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-
-    <include
-        android:id="@+id/layout_banned_screen"
-        layout="@layout/layout_nav_banned_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
 </LinearLayout>

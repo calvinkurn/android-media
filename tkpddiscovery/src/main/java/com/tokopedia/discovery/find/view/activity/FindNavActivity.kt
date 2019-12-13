@@ -22,6 +22,7 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import java.util.*
 
@@ -33,7 +34,7 @@ private const val ORDER_BY = "ob"
 class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         BottomSheetListener, SearchNavigationView.SearchNavClickListener,
         BaseCategorySectionFragment.SortAppliedListener, BannedProductFragment.OnBannedFragmentInteractionListener,
-        FindNavFragment.OnFindNavFragmentInteractionListener {
+        BaseCategorySectionFragment.OnBannedProductFoundListener {
 
     private var bottomSheetFilterView: BottomSheetFilterView? = null
     private var searchNavContainer: SearchNavigationView? = null
@@ -233,6 +234,7 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
 
     override fun onBannedProductFound(bannedProduct: Data) {
         hideBottomNavigation()
+        findViewById<ImageButton>(R.id.img_display_button).invisible()
         val fragment = BannedProductFragment.newInstance(bannedProduct)
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
                 fragment).commit()

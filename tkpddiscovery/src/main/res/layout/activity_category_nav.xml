@@ -151,11 +151,13 @@
         app:layout_behavior="com.tokopedia.filter.widget.UserLockBottomSheetBehavior" />
 
     <include
-        android:id="@+id/layout_banned_screen"
-        layout="@layout/layout_nav_banned_layout"
+        android:id="@+id/layout_no_data"
+        layout="@layout/layout_nav_no_product"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
         android:visibility="gone" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

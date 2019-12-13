@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
+import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -441,6 +442,10 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     interface SortAppliedListener {
         fun onSortApplied(showTick: Boolean)
+    }
+
+    interface OnBannedProductFoundListener {
+        fun onBannedProductFound(bannedProduct: Data)
     }
 
     fun resetSortTick() {
