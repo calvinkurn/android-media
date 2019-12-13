@@ -7,11 +7,11 @@ import com.google.gson.annotations.SerializedName
  * @author anggaprasetiyo on 20/02/18.
  */
 
-class RemoveCartRequest {
+data class RemoveCartRequest(
     @SerializedName("cart_ids")
     @Expose
-    var cartIds: List<Int>? = null
+    var cartIds: List<Int>? = null,
     @SerializedName("add_wishlist")
     @Expose
     var addWishlist: Int = 0
-}
+)
