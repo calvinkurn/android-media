@@ -42,7 +42,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.opportunity.fragment.OpportunityListFragment;
+//import com.tokopedia.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -319,7 +319,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     private void initVariable() {
         CONTENT = new String[]{
-                getString(com.tokopedia.core2.R.string.title_opportunity_list),
+//                getString(com.tokopedia.core2.R.string.title_opportunity_list),
                 getString(com.tokopedia.core2.R.string.title_tab_new_order),
                 getString(R.string.title_seller_tx_ready_to_ship),
                 getString(R.string.title_seller_tx_shipped),
@@ -332,7 +332,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         if (getIntent().hasExtra(EXTRA_QUERY)) {
             query = getIntent().getStringExtra(EXTRA_QUERY);
         }
-        fragmentList.add(OpportunityListFragment.newInstance(query));
+//        fragmentList.add(OpportunityListFragment.newInstance(query));
         fragmentList.add(FragmentSellingNewOrder.createInstance());
         fragmentList.add(FragmentSellingShipping.createInstance());
         fragmentList.add(FragmentSellingShipped.newInstance());
