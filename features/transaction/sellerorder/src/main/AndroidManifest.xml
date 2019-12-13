@@ -26,22 +26,22 @@
                     android:path="@string/path_new_order"/>
 
                 <data
-                    android:scheme="@string/tokopedia_scheme"
+                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
                     android:path="@string/path_ready_to_ship"/>
 
                 <data
-                    android:scheme="@string/tokopedia_scheme"
+                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
                     android:path="@string/path_shipped"/>
 
                 <data
-                    android:scheme="@string/tokopedia_scheme"
+                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
                     android:path="@string/path_delivered"/>
 
                 <data
-                    android:scheme="@string/tokopedia_scheme"
+                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_seller"
                     android:path="@string/path_history"/>
 
