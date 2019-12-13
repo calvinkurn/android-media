@@ -19,9 +19,9 @@ import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.coroutines.*
-import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 
@@ -68,6 +68,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
         private const val ONE_KB = 1024
+        const val TAG_LOG= "DFM"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -265,12 +266,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         } else {
             val isPlayServiceUptoDate = checkPlayServiceUptoDate()
             if (isPlayServiceUptoDate) {
-                image.setImageResource(R.drawable.ic_ill_general_error)
-                title_txt.setText(getString(R.string.download_error_general_title))
-                subtitle_txt.setText(getString(R.string.download_error_general_subtitle))
-                button_download.setOnClickListener {
-                    downloadFeature()
-                }
+                showGeneralError()
             } else {
                 image.setImageResource(R.drawable.ic_ill_general_error)
                 title_txt.setText(getString(R.string.download_error_playservice_title))
@@ -278,10 +274,20 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                 button_download.setOnClickListener {
                     val hasBeenUpdated = checkPlayServiceUptoDate()
                     if (hasBeenUpdated) {
+                        showGeneralError()
                         downloadFeature()
                     }
                 }
             }
+        }
+    }
+
+    fun showGeneralError(){
+        image.setImageResource(R.drawable.ic_ill_general_error)
+        title_txt.setText(getString(R.string.download_error_general_title))
+        subtitle_txt.setText(getString(R.string.download_error_general_subtitle))
+        button_download.setOnClickListener {
+            downloadFeature()
         }
     }
 
@@ -353,7 +359,10 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     override fun onDestroy() {
         super.onDestroy()
         val applicationContext = this.applicationContext
-        DFInstallerLogUtil.logStatus(applicationContext, "DFM",
+        trackDownloadDF(listOf(moduleName),
+            errorList,
+            false)
+        DFInstallerLogUtil.logStatus(applicationContext, TAG_LOG,
             moduleName, usableSpaceBeforeDownload, moduleSize,
             errorList, downloadTimes, successInstall)
         job.cancel()

@@ -5,6 +5,7 @@ import android.content.Context
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.dynamicfeatures.service.DFJobService
+import com.tokopedia.dynamicfeatures.track.DFTracking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -124,12 +125,22 @@ class DFInstaller {
     }
 
     internal fun logSuccessStatus(tag: String, context: Context, moduleNameToDownload: List<String>) {
+        if (tag == TAG_LOG_DFM_BG || tag == DFInstallerActivity.TAG_LOG) {
+            DFTracking.trackDownloadDF(moduleNameToDownload,
+                null,
+                tag == TAG_LOG_DFM_BG)
+        }
         DFInstallerLogUtil.logStatus(context, tag,
             moduleNameToDownload.joinToString(), moduleSize, usableSpaceBeforeDownload, null, 1, true)
     }
 
     internal fun logFailedStatus(tag: String, applicationContext: Context, moduleNameToDownload: List<String>,
                                  errorCode: String = "") {
+        if (tag == TAG_LOG_DFM_BG || tag == DFInstallerActivity.TAG_LOG) {
+            DFTracking.trackDownloadDF(moduleNameToDownload,
+                listOf(errorCode),
+                tag == TAG_LOG_DFM_BG)
+        }
         DFInstallerLogUtil.logStatus(applicationContext,
             tag, moduleNameToDownload.joinToString(), usableSpaceBeforeDownload, moduleSize,
             listOf(errorCode), 1, false)
@@ -173,6 +184,9 @@ private class SplitInstallListener(val dfInstaller: DFInstaller,
                 dfInstaller.unregisterListener()
             }
             SplitInstallSessionStatus.FAILED -> {
+                DFTracking.trackDownloadDF(moduleNameToDownload,
+                    listOf(it.errorCode().toString()),
+                    true)
                 dfInstaller.logFailedStatus(DFInstaller.TAG_LOG_DFM_BG, application, moduleNameToDownload, it.errorCode().toString())
                 onFailedInstall?.invoke()
                 dfInstaller.unregisterListener()
