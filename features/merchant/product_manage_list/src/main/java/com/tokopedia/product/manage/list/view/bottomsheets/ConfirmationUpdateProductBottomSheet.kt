@@ -72,13 +72,13 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
         return com.tokopedia.design.R.id.bottomsheet_container
     }
 
-    override fun getTv_title(): Int {
-        return com.tokopedia.design.R.id.tv_title
-    }
-
-    override fun getLayout_title(): Int {
-        return com.tokopedia.design.R.id.layout_title
-    }
+//    override fun getTv_title(): Int {
+//        return com.tokopedia.design.R.id.tv_title
+//    }
+//
+//    override fun getLayout_title(): Int {
+//        return com.tokopedia.design.R.id.layout_title
+//    }
 
     override fun configView(parentView: View) {
         getArgument()
