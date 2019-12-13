@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatsearch.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_DEFAULT
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import com.tokopedia.topchat.chatsearch.data.SearchResult
 import com.tokopedia.topchat.chatsearch.usecase.GetSearchQueryUseCase
@@ -19,7 +18,7 @@ class ChatSearchViewModel @Inject constructor(
 
     var loadInitialData = MutableLiveData<Boolean>()
     var showEmpty = MutableLiveData<Boolean>()
-    var errorMessage = MutableLiveData<String>()
+    var errorMessage = MutableLiveData<Throwable>()
 
     private var _searchResults = MutableLiveData<List<SearchResult>>()
     val searchResult: LiveData<List<SearchResult>>
@@ -27,6 +26,8 @@ class ChatSearchViewModel @Inject constructor(
 
     var query: String = ""
     var page: Int = 1
+
+    private var canRetry = false
 
     fun onSearchQueryChanged(newQuery: String) {
         if (newQuery == query) return
@@ -42,11 +43,21 @@ class ChatSearchViewModel @Inject constructor(
         doSearch()
     }
 
-    fun loadNextPage(nextPage: Int) {
-        if (nextPage >= page && getSearchQueryUseCase.hasNext) {
-            page = nextPage
-            doSearch()
+    fun loadPage(page: Int) {
+        if (page > this.page && getSearchQueryUseCase.hasNext) {
+            loadNextPage(page)
+        } else if (page == this.page && canRetry) {
+            retryLoadCurrentPage()
         }
+    }
+
+    private fun loadNextPage(nextPage: Int) {
+        this.page = nextPage
+        doSearch()
+    }
+
+    private fun retryLoadCurrentPage() {
+        doSearch()
     }
 
     fun isFirstPage(): Boolean {
@@ -58,10 +69,12 @@ class ChatSearchViewModel @Inject constructor(
     }
 
     private fun onSuccessDoSearch(response: GetChatSearchResponse) {
+        canRetry = false
         _searchResults.postValue(response.searchResults)
     }
 
     private fun onErrorDoSearch(throwable: Throwable) {
-        errorMessage.postValue(MESSAGE_ERROR_DEFAULT)
+        canRetry = true
+        errorMessage.postValue(throwable)
     }
 }

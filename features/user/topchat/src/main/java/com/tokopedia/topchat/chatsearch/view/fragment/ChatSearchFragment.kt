@@ -7,7 +7,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
@@ -17,7 +16,6 @@ import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatViewHolder
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import javax.inject.Inject
 
@@ -62,16 +60,11 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
             clearAllData()
             showEmpty()
         })
-        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { errorMsg ->
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { error ->
             if (viewModel.isFirstPage()) {
                 clearAllData()
-                showEmpty()
             }
-            view?.let {
-                Toaster.make(it, errorMsg, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
-            }
-            hideLoading()
-            stopLoading()
+            showGetListError(error)
         })
     }
 
@@ -80,7 +73,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     override fun loadData(page: Int) {
-        viewModel.loadNextPage(page)
+        viewModel.loadPage(page)
     }
 
     override fun getAdapterTypeFactory(): ChatSearchTypeFactory {
