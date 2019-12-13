@@ -7,21 +7,21 @@ import com.google.gson.annotations.SerializedName
  */
 data class PlayChat(
         @SerializedName("channel_id")
-        var channelId: String = "",
+        val channelId: String = "",
         @SerializedName("msg_id")
-        var messageId: String = "",
+        val messageId: String = "",
         @SerializedName("message")
-        var message: String = "",
+        val message: String = "",
         @SerializedName("user")
-        var user: UserData = UserData()
+        val user: UserData = UserData()
 ) {
 
     data class UserData(
             @SerializedName("id")
-            var id: String = "",
+            val id: String = "",
             @SerializedName("name")
-            var name: String = "",
+            val name: String = "",
             @SerializedName("image")
-            var image: String = ""
+            val image: String = ""
         )
 }
