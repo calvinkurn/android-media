@@ -69,15 +69,15 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
     override fun getTheme(): Int = R.style.BaseBottomSheetDialog
 
     override fun getBottomsheet_container(): Int {
-        return com.tokopedia.design.R.id.bottomsheet_container
+        return com.tokopedia.product.manage.list.R.id.bottomsheet_container
     }
 
     override fun getTv_title(): Int {
-        return com.tokopedia.design.R.id.tv_title
+        return com.tokopedia.product.manage.list.R.id.tv_title
     }
 
     override fun getLayout_title(): Int {
-        return com.tokopedia.design.R.id.layout_title
+        return com.tokopedia.product.manage.list.R.id.layout_title
     }
 
     override fun configView(parentView: View) {
