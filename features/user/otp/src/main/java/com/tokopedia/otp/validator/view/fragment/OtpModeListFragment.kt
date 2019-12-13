@@ -95,6 +95,8 @@ class OtpModeListFragment : BaseDaggerFragment(), OtpModeListAdapter.ClickListen
     }
 
     private fun prepareView() {
+        phone_inactive?.hide()
+        
         otpModeListAdapter = OtpModeListAdapter.createInstance(this)
         method_list?.adapter = otpModeListAdapter
         method_list?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
