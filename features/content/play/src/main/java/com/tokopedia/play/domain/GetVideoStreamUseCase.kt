@@ -11,7 +11,6 @@ import javax.inject.Inject
  * Created by mzennis on 2019-12-03.
  */
 
-// Please use this usecase to get wether video is vod or stream, the `is_live=true` means stream
 class GetVideoStreamUseCase @Inject constructor(private val playApi: PlayApi) : UseCase<VideoStream>() {
 
     var channelId = ""

@@ -2,8 +2,12 @@ package com.tokopedia.play.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
+import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.data.network.PlayApi
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.util.PlayLifecycleObserver
@@ -71,4 +75,17 @@ class PlayModule {
     fun providePlayApi(retrofit: Retrofit): PlayApi {
         return retrofit.create(PlayApi::class.java)
     }
+
+    @PlayScope
+    @Provides
+    fun provideMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase {
+        return GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
+    }
+
+    @PlayScope
+    @Provides
+    fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
+        return LocalCacheHandler(context, KEY_GROUPCHAT_PREFERENCES)
+    }
+
 }

@@ -4,22 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.data.Channel
+import com.tokopedia.play.data.*
+import com.tokopedia.play.data.mapper.PlaySocketMapper
+import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.GetChannelInfoUseCase
+import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.type.PlayVODType
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.RxWebSocket
-import com.tokopedia.websocket.WebSocketResponse
-import com.tokopedia.websocket.WebSocketSubscriber
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import okhttp3.WebSocket
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -28,26 +24,36 @@ import javax.inject.Inject
 class PlayViewModel @Inject constructor(
         private val playManager: TokopediaPlayManager,
         private val getChannelInfoUseCase: GetChannelInfoUseCase,
-        private val userSessionInterface: UserSessionInterface,
+        private val playSocket: PlaySocket,
         dispatchers: CoroutineDispatcher
 ) : BaseViewModel(dispatchers) {
-
-    val observableVOD: LiveData<PlayVODType>
-        get() = _observableVOD
 
     val observableVideoState: LiveData<TokopediaPlayVideoState>
         get() = playManager.getObservablePlayVideoState()
 
-    val observeChannel: LiveData<Result<Channel>>
-        get() = _channelInfoResult
-
+    val observableVOD: LiveData<PlayVODType>
+        get() = _observableVOD
     private val _observableVOD by lazy {
         MutableLiveData<PlayVODType>()
     }
 
-    private val _channelInfoResult by lazy {
-        MutableLiveData<Result<Channel>>()
-    }
+    private val _observableGetChannelInfo = MutableLiveData<Result<Channel>>()
+    val observeGetChannelInfo: LiveData<Result<Channel>> = _observableGetChannelInfo
+
+    private val _observableChatListSocket = MutableLiveData<PlayChat>()
+    val observableChatListSocket: LiveData<PlayChat> = _observableChatListSocket
+
+    private val _observableTotalViewsSocket = MutableLiveData<TotalView>()
+    val observableTotalViewsSocket: LiveData<TotalView> = _observableTotalViewsSocket
+
+    private val _observablePinnedMessageSocket = MutableLiveData<PinnedMessage>()
+    val observablePinnedMessageSocket: LiveData<PinnedMessage> = _observablePinnedMessageSocket
+
+    private val _observableQuickReplySocket = MutableLiveData<QuickReply>()
+    val observableQuickReplySocket: LiveData<QuickReply> = _observableQuickReplySocket
+
+    private val _observableBannedFreezeSocket = MutableLiveData<BannedFreeze>()
+    val observableBannedFreezeSocket: LiveData<BannedFreeze> = _observableBannedFreezeSocket
 
     fun getChannelInfo(channelId: String) {
         launchCatchError(block = {
@@ -55,9 +61,9 @@ class PlayViewModel @Inject constructor(
                 getChannelInfoUseCase.channelId = channelId
                 getChannelInfoUseCase.executeOnBackground()
             }
-            _channelInfoResult.value = Success(response)
+            _observableGetChannelInfo.value = Success(response)
         }) {
-            _channelInfoResult.value = Fail(it)
+            _observableGetChannelInfo.value = Fail(it)
         }
     }
 
@@ -65,32 +71,42 @@ class PlayViewModel @Inject constructor(
         playManager.resumeCurrentVideo()
     }
 
-    fun startWebsocket(url: String) {
-        val websocketSubscriber = object : WebSocketSubscriber() {
+    fun startWebSocket(channelId: String, gcToken: String) {
+        playSocket.channelId = channelId
+        playSocket.gcToken = gcToken
+        playSocket.connect( onOpen ={
+            // Todo, handle on open web socket
+        }, onClose =  {
+            // Todo, handle on close web socket
+        }, onMessageReceived =  { response ->
+            val socketMapper = PlaySocketMapper(response)
+            when (val result = socketMapper.mapping()) {
+                is TotalLike -> {
 
-            override fun onOpen(webSocket: WebSocket) {
-
+                }
+                is TotalView -> {
+                    _observableTotalViewsSocket.value = result
+                }
+                is PlayChat -> {
+                    _observableChatListSocket.value = result
+                }
+                is PinnedMessage -> {
+                    _observablePinnedMessageSocket.value = result
+                }
+                is QuickReply -> {
+                    _observableQuickReplySocket.value = result
+                }
+                is BannedFreeze -> {
+                    _observableBannedFreezeSocket.value = result
+                }
             }
-
-            override fun onClose() {
-
-            }
-
-            override fun onMessage(webSocketResponse: WebSocketResponse) {
-                // TODO create mapper => PlayPresenter.kt
-            }
-
-            override fun onError(e: Throwable) {
-
-            }
-        }
-
-        val websocket = RxWebSocket[url, userSessionInterface.accessToken]
-        websocket?.subscribe(websocketSubscriber)
+        }, onError = {
+            // Todo, handle on error web socket
+        })
     }
 
     fun initVideo() {
-        startVideoWithUrlString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4", false)
+         startVideoWithUrlString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4",  false)
 //        startVideoWithUrlString("rtmp://fms.105.net/live/rmc1", true)
     }
 
@@ -99,5 +115,10 @@ class PlayViewModel @Inject constructor(
         _observableVOD.value =
                 if (isLive) PlayVODType.Live(playManager.videoPlayer)
                 else PlayVODType.Replay(playManager.videoPlayer)
+    }
+
+    // TODO don't forget to destroy socket
+    fun destroy() {
+        playSocket.destroy()
     }
 }
