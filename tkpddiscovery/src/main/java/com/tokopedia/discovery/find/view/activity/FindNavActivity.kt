@@ -11,6 +11,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
+import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
+import com.tokopedia.discovery.categoryrevamp.view.fragments.BannedProductFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.find.view.fragment.FindNavFragment
@@ -23,8 +25,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import java.util.*
 
+private const val STATE_GRID = 1
+private const val STATE_LIST = 2
+private const val STATE_BIG = 3
+private const val ORDER_BY = "ob"
+
 class FindNavActivity : BaseActivity(), CategoryNavigationListener,
-        BottomSheetListener, SearchNavigationView.SearchNavClickListener, BaseCategorySectionFragment.SortAppliedListener {
+        BottomSheetListener, SearchNavigationView.SearchNavClickListener,
+        BaseCategorySectionFragment.SortAppliedListener, BannedProductFragment.OnBannedFragmentInteractionListener,
+        FindNavFragment.OnFindNavFragmentInteractionListener {
 
     private var bottomSheetFilterView: BottomSheetFilterView? = null
     private var searchNavContainer: SearchNavigationView? = null
@@ -33,10 +42,6 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
     private lateinit var findNavFragment: BaseCategorySectionFragment
     private lateinit var findSearchParam: String
     private var findNavScreenName: String = ""
-    private val STATE_GRID = 1
-    private val STATE_LIST = 2
-    private val STATE_BIG = 3
-    private val ORDER_BY = "ob"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,8 +73,8 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         findNavScreenName = findSearchParam.replace("-", " ")
         val splits = findNavScreenName.split(" ")
         findNavScreenName = ""
-        for(i in splits){
-            findNavScreenName = findNavScreenName.plus(i.capitalize()+" ")
+        for (i in splits) {
+            findNavScreenName = findNavScreenName.plus(i.capitalize() + " ")
         }
         findNavScreenName.trim()
     }
@@ -97,8 +102,8 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
                 "",
                 FilterEventTracking.Category.PREFIX_CATEGORY_PAGE))
         bottomSheetFilterView?.setCallback(object : BottomSheetFilterView.Callback {
-            override fun onApplyFilter(filterParameter: Map<String, String>) {
-                applyFilter(filterParameter)
+            override fun onApplyFilter(filterParameter: Map<String, String>?) {
+                filterParameter?.let { applyFilter(it) }
             }
 
             override fun onShow() {
@@ -189,7 +194,7 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         searchNavContainer?.hide()
     }
 
-    override fun loadFilterItems(filters: ArrayList<Filter>?, searchParameter: MutableMap<String, String>?) {
+    override fun loadFilterItems(filters: ArrayList<Filter>?, searchParameter: Map<String, String>?) {
         bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
     }
 
@@ -222,4 +227,14 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         searchNavContainer?.onSortSelected(showTick)
     }
 
+    override fun onButtonClicked(bannedProduct: Data) {
+        //To handle Analytics
+    }
+
+    override fun onBannedProductFound(bannedProduct: Data) {
+        hideBottomNavigation()
+        val fragment = BannedProductFragment.newInstance(bannedProduct)
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
+                fragment).commit()
+    }
 }

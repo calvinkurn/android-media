@@ -44,13 +44,13 @@
     <string name="template_widget_promo_period">Periode : %1$s</string>
     <string name="template_widget_promo_min_transaction">Min Transaksi : %1$s</string>
     <string name="no_result_found">No Results Found</string>
-    <string name="on_board_title" >Pencarian Gambar</string>
-    <string name="on_board_desc" >Kini lebih mudah. Cukup ambil gambar dan temukan produk yang diinginkan.</string>
-    <string name="search_title" >Pencarian</string>
+    <string name="on_board_title">Pencarian Gambar</string>
+    <string name="on_board_desc">Kini lebih mudah. Cukup ambil gambar dan temukan produk yang diinginkan.</string>
+    <string name="search_title">Pencarian</string>
     <string name="baca_deskripsi">Baca Deskripsi</string>
     <string name="product_count">%s+ Produk</string>
-    <string name="cashback_text" >cashback</string>
-    <string name="cashback" >cashback</string>
+    <string name="cashback_text">cashback</string>
+    <string name="cashback">cashback</string>
     <string name="bottom_sheet_filter_finish_button_template_text">Tampilkan %s produk</string>
     <string name="other_filter_title">Lainnya</string>
     <string name="title_all">Semua</string>
@@ -85,7 +85,6 @@
     <string name="category_nav_catalog_no_data_description">Tapi kamu mungkin bisa coba rekomendasi di bawah ini</string>
 
 
-
     <string name="catalog_marketprice">Harga Pasar</string>
     <string name="catalog_complete_specifications">Spesifikasi lengkap</string>
     <string name="bullet_string">• %1$s</string>
@@ -97,4 +96,7 @@
     <string name="read_more">Baca Selengkapnya</string>
     <string name="related_search">Pencarian Terkait</string>
     <string name="banned_product">Produk dibatasi di Android</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

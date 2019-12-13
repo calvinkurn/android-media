@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.find.view.fragment
 
+import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -27,6 +27,7 @@ import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.ProductNavListAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
+import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactoryImpl
@@ -56,16 +57,19 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.find_nav_fragment.*
-import kotlinx.android.synthetic.main.find_nav_fragment.layout_banned_screen
 import kotlinx.android.synthetic.main.fragment_hotlist_nav.layout_no_data
 import kotlinx.android.synthetic.main.fragment_hotlist_nav.product_recyclerview
 import kotlinx.android.synthetic.main.fragment_hotlist_nav.quickfilter_recyclerview
 import kotlinx.android.synthetic.main.layout_find_related.*
-import kotlinx.android.synthetic.main.layout_nav_banned_layout.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+
+private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
+private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
+private const val REQUEST_PRODUCT_ITEM_CLICK = 1002
+private const val FIND_SHARE_URI = "https://www.tokopedia.com/find/"
 
 class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
         BaseCategoryAdapter.OnItemChangeView,
@@ -92,16 +96,12 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
     private var pageCount = 0
     private var rows = 10
     private var isPagingAllowed: Boolean = true
+    private var bannedProductFoundListener: OnFindNavFragmentInteractionListener? = null
 
-    private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
-    private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
-    private val REQUEST_PRODUCT_ITEM_CLICK = 1002
     private lateinit var findSearchParam: String
-    private val FIND_SHARE_URI = "https://www.tokopedia.com/find/"
-
 
     companion object {
-        private val EXTRA_FIND_PARAM = "findParam"
+        private const val EXTRA_FIND_PARAM = "findParam"
         fun newInstance(searchParam: String): Fragment {
             val fragment = FindNavFragment()
             val bundle = Bundle()
@@ -564,39 +564,29 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
     }
 
     private fun showBannedDataScreen() {
-        layout_banned_screen.show()
-        category_btn_banned_navigation.show()
-        swipe_refresh_layout.hide()
-        observeSeamlessLogin()
-        txt_header.text = resources.getText(R.string.banned_product)
-        txt_sub_header.text = findNavViewModel.mBannedData[0]
-        category_btn_banned_navigation.setOnClickListener() {
-            findNavViewModel.openBrowserSeamlessly()
+        val bannedProduct = Data()
+        bannedProduct.bannedMessage = findNavViewModel.mBannedData[0]
+        bannedProduct.appRedirection = findNavViewModel.mBannedData[1]
+        bannedProduct.displayButton = findNavViewModel.mBannedData[1].isNotEmpty()
+        bannedProductFoundListener?.onBannedProductFound(bannedProduct)
+    }
+
+    interface OnFindNavFragmentInteractionListener {
+        fun onBannedProductFound(bannedProduct: Data)
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is OnFindNavFragmentInteractionListener) {
+            bannedProductFoundListener = context
+        } else {
+            throw RuntimeException("$context must implement OnFragmentInteractionListener")
         }
     }
 
-    private fun observeSeamlessLogin() {
-        findNavViewModel.mSeamlessLogin.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    openUrlSeamlessly(it.data)
-                }
-
-                is Fail -> {
-                    onSeamlessError()
-                }
-            }
-        })
+    override fun onDetach() {
+        super.onDetach()
+        bannedProductFoundListener = null
     }
 
-    private fun openUrlSeamlessly(url: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        startActivity(browserIntent)
-    }
-
-    private fun onSeamlessError() {
-        layout_banned_screen.show()
-        txt_header.text = getString(R.string.category_server_error_header)
-        txt_sub_header.text = getString(R.string.try_again)
-    }
 }

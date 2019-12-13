@@ -26,7 +26,7 @@ class FindNavRepository @Inject constructor() {
 
     suspend fun getQuickFilterList(reqParams: Map<String, String>): MutableList<Filter>? {
         val query = GraphqlHelper.loadRawString(resources, R.raw.gql_nav_quick_filter)
-        return (baseRepository.getGQLData(query, FilterResponse::class.java, reqParams) as FilterResponse).dynamicAttribute?.data?.filter
+        return (baseRepository.getGQLData(query, FilterResponse::class.java, reqParams) as FilterResponse).dynamicAttribute?.data?.filter as MutableList<Filter>?
     }
 
     suspend fun getDynamicFilterList(reqParams: Map<String, String>): DynamicFilterModel? {

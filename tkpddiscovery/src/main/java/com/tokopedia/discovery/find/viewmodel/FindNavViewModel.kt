@@ -11,8 +11,6 @@ import com.tokopedia.discovery.find.util.FindNavParamBuilder
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,15 +18,12 @@ import javax.inject.Inject
 
 class FindNavViewModel @Inject constructor() : ViewModel() {
 
-    @Inject
-    lateinit var seamlessLoginUsecase: SeamlessLoginUsecase
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
     val mProductCount = MutableLiveData<String>()
     var mBannedData = ArrayList<String>()
     var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
     var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     var mRelatedLinkList = MutableLiveData<Result<List<RelatedLinkData>>>()
-    val mSeamlessLogin: MutableLiveData<Result<String>> by lazy { MutableLiveData<Result<String>>() }
     private val findNavParamBuilder: FindNavParamBuilder by lazy { FindNavParamBuilder() }
 
     @Inject
@@ -99,19 +94,4 @@ class FindNavViewModel @Inject constructor() : ViewModel() {
             mRelatedLinkList.value = Fail(it)
         })
     }
-
-    fun openBrowserSeamlessly() {
-        seamlessLoginUsecase.generateSeamlessUrl(mBannedData[1], seamlessLoginSubscriber)
-    }
-
-    private val seamlessLoginSubscriber: SeamlessLoginSubscriber? = object : SeamlessLoginSubscriber {
-        override fun onUrlGenerated(url: String) {
-            mSeamlessLogin.value = Success(url)
-        }
-
-        override fun onError(msg: String) {
-            mSeamlessLogin.value = Fail(Throwable(msg))
-        }
-    }
-
 }
