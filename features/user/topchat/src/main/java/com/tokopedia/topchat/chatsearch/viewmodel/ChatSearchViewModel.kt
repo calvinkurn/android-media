@@ -16,14 +16,20 @@ class ChatSearchViewModel @Inject constructor(
 
     val hasNext: Boolean get() = getSearchQueryUseCase.hasNext
 
-    var loadInitialData = MutableLiveData<Boolean>()
-    var emptyQuery = MutableLiveData<Boolean>()
-    var triggerSearch = MutableLiveData<String>()
-    var errorMessage = MutableLiveData<Throwable>()
+    private var _loadInitialData = MutableLiveData<Boolean>()
+    val loadInitialData: LiveData<Boolean> get() = _loadInitialData
+
+    private var _emptyQuery = MutableLiveData<Boolean>()
+    val emptyQuery: LiveData<Boolean> get() = _emptyQuery
+
+    private var _triggerSearch = MutableLiveData<String>()
+    val triggerSearch: LiveData<String> get() = _triggerSearch
+
+    private var _errorMessage = MutableLiveData<Throwable>()
+    val errorMessage: LiveData<Throwable> get() = _errorMessage
 
     private var _searchResults = MutableLiveData<List<SearchResult>>()
-    val searchResult: LiveData<List<SearchResult>>
-        get() = _searchResults
+    val searchResult: LiveData<List<SearchResult>> get() = _searchResults
 
     var query: String = ""
     var page: Int = 1
@@ -36,11 +42,11 @@ class ChatSearchViewModel @Inject constructor(
         page = 1
         if (query.isEmpty()) {
             getSearchQueryUseCase.cancelRunningSearch()
-            emptyQuery.postValue(true)
+            _emptyQuery.postValue(true)
             return
         }
         if (getSearchQueryUseCase.isSearching) getSearchQueryUseCase.cancelRunningSearch()
-        loadInitialData.postValue(true)
+        _loadInitialData.postValue(true)
         doSearch()
     }
 
@@ -66,7 +72,7 @@ class ChatSearchViewModel @Inject constructor(
     }
 
     private fun doSearch() {
-        triggerSearch.postValue(query)
+        _triggerSearch.postValue(query)
         getSearchQueryUseCase.doSearch(::onSuccessDoSearch, ::onErrorDoSearch, query, page)
     }
 
@@ -77,6 +83,6 @@ class ChatSearchViewModel @Inject constructor(
 
     private fun onErrorDoSearch(throwable: Throwable) {
         canRetry = true
-        errorMessage.postValue(throwable)
+        _errorMessage.postValue(throwable)
     }
 }
