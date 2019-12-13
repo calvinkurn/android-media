@@ -300,8 +300,19 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
             showSnackbar(R.string.similar_search_add_to_cart_success)
         }
         else {
-            showSnackbar(R.string.similar_search_add_to_cart_failed, Toaster.TYPE_ERROR)
+            showAddToCartErrorMessage()
         }
+    }
+
+    private fun showAddToCartErrorMessage() {
+        view?.let {
+            val errorMessage = getAddToCartErrorMessage()
+            Toaster.make(it, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun getAddToCartErrorMessage(): String {
+        return similarSearchViewModel?.getAddToCartFailedMessage() ?: getString(R.string.similar_search_add_to_cart_failed)
     }
 
     private fun observeRouteToCartEventLiveData() {
