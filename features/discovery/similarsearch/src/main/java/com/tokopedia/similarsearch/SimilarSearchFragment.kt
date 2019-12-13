@@ -21,8 +21,6 @@ import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_PRODUCT_ID
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
-import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
-import com.tokopedia.purchase_platform.common.constant.ProductAction
 import com.tokopedia.similarsearch.emptyresult.EmptyResultListener
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.similarsearch.originalproduct.OriginalProductView
@@ -151,6 +149,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         observeAddWishlistEventLiveData()
         observeRemoveWishlistEventLiveData()
         observeAddToCartEventLiveData()
+        observeRouteToCartEventLiveData()
         observeTrackingImpressionSimilarProductEventLiveData()
         observeTrackingEmptyResultEventLiveData()
         observeTrackingWishlistEventLiveData()
@@ -187,11 +186,12 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
             }
 
             override fun onButtonBuyClicked() {
-                selectedProductOnButtonBuyClicked(originalProduct)
+                SimilarSearchTracking.trackEventClickBuy()
+                similarSearchViewModel?.onViewClickAddToCart(true)
             }
 
             override fun onButtonAddToCartClicked() {
-                selectedProductOnButtonAddToCartClicked()
+                similarSearchViewModel?.onViewClickAddToCart()
             }
         }
     }
@@ -201,27 +201,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
 
             startActivityForResult(intent, REQUEST_CODE_GO_TO_PRODUCT_DETAIL)
-        }
-    }
-
-    private fun selectedProductOnButtonBuyClicked(originalProduct: Product) {
-        SimilarSearchTracking.trackEventClickBuy()
-        routeToCheckout(originalProduct, ATC_AND_BUY)
-    }
-
-    private fun selectedProductOnButtonAddToCartClicked() {
-        similarSearchViewModel?.onViewClickAddToCart()
-    }
-
-    private fun routeToCheckout(originalProduct: Product, @ProductAction action: Int) {
-        activity?.let { activity ->
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).also {
-                it.putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, originalProduct.shop.id.toString())
-                it.putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, originalProduct.id)
-                it.putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
-            }
-
-            startActivityForResult(intent, REQUEST_CODE_GO_TO_CHECKOUT)
         }
     }
 
@@ -323,6 +302,14 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         else {
             showSnackbar(R.string.similar_search_add_to_cart_failed, Toaster.TYPE_ERROR)
         }
+    }
+
+    private fun observeRouteToCartEventLiveData() {
+        similarSearchViewModel?.getRouteToCartPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            activity?.let { activity ->
+                RouteManager.route(activity, ApplinkConst.CART)
+            }
+        })
     }
 
     private fun observeTrackingImpressionSimilarProductEventLiveData() {

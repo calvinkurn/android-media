@@ -59,6 +59,24 @@ internal class HandleViewClickAddToCart: Spek({
                 routeToLoginEvent?.getContentIfNotHandled().shouldBe(true,
                         "Route to login page should be true")
             }
+
+            Then("assert tracking click add to cart event should be null") {
+                val trackingAddToCartEventLiveData = similarSearchViewModel.getTrackingAddToCartEventLiveData().value
+
+                trackingAddToCartEventLiveData?.getContentIfNotHandled() shouldBe null
+            }
+
+            Then("assert add to cart event should be null") {
+                val addToCartEventLiveData = similarSearchViewModel.getAddToCartEventLiveData().value
+
+                addToCartEventLiveData?.getContentIfNotHandled() shouldBe null
+            }
+
+            Then("assert route to cart page event is null (do not route to cart page)") {
+                val routeToCartPageEventLiveData = similarSearchViewModel.getRouteToCartPageEventLiveData().value
+
+                routeToCartPageEventLiveData?.getContentIfNotHandled() shouldBe null
+            }
         }
 
         Scenario("Add to Cart Status Success") {
@@ -130,6 +148,89 @@ internal class HandleViewClickAddToCart: Spek({
 
                 addToCartEventLiveData?.getContentIfNotHandled() shouldBe true
             }
+
+            Then("assert route to cart page event is null (do not route to cart page)") {
+                val routeToCartPageEventLiveData = similarSearchViewModel.getRouteToCartPageEventLiveData().value
+
+                routeToCartPageEventLiveData?.getContentIfNotHandled() shouldBe null
+            }
+        }
+
+        Scenario("Add to Cart Status Success and Route To Cart Page") {
+            val similarProductModelCommon = getSimilarProductModelCommon()
+            val addToCartSuccessModel = getAddToCartSuccessModel()
+
+            val addToCartUseCase by memoized<RxUseCase<AddToCartDataModel>>()
+            val userSession by memoized<UserSessionInterface>()
+
+            val addToCartUseCaseInputSlot = slot<RequestParams>()
+
+            lateinit var similarSearchViewModel: SimilarSearchViewModel
+
+            Given("similar search view model") {
+                similarSearchViewModel = createSimilarSearchViewModel()
+            }
+
+            Given("user is logged in") {
+                every { userSession.isLoggedIn }.returns(true)
+            }
+
+            Given("view already created and has similar search data") {
+                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
+                similarSearchViewModel.onViewCreated()
+            }
+
+            Given("add to cart use case will return add to cart model with success status") {
+                every { addToCartUseCase.execute(capture(addToCartUseCaseInputSlot), any()) }.answers {
+                    secondArg<Subscriber<AddToCartDataModel>>().onStart()
+                    secondArg<Subscriber<AddToCartDataModel>>().onNext(addToCartSuccessModel)
+                    secondArg<Subscriber<AddToCartDataModel>>().onCompleted()
+                }
+            }
+
+            When("handle view click add to cart and route to cart page") {
+                similarSearchViewModel.onViewClickAddToCart(true)
+            }
+
+            Then("should not post event to login page") {
+                val routeToLoginEvent = similarSearchViewModel.getRouteToLoginPageEventLiveData().value
+
+                routeToLoginEvent?.getContentIfNotHandled().shouldBe(null,
+                        "Route to login page should be null")
+            }
+
+            Then("assert addToCartUseCase is executed with the correct input") {
+                val addToCartUseCaseInput = addToCartUseCaseInputSlot.captured.parameters
+                addToCartUseCaseInput.size shouldBe 1
+
+                val addToCartRequestParams = addToCartUseCaseInput[REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST] as AddToCartRequestParams
+
+                addToCartRequestParams.productId shouldBe similarProductModelCommon.getOriginalProduct().id.toLong()
+                addToCartRequestParams.shopId shouldBe similarProductModelCommon.getOriginalProduct().shop.id
+                addToCartRequestParams.quantity shouldBe similarProductModelCommon.getOriginalProduct().minOrder
+            }
+
+            Then("assert tracking click add to cart event should contain original product as object data layer") {
+                val expectedTrackingData = similarProductModelCommon.getOriginalProduct()
+                        .asObjectDataLayerAddToCart(addToCartSuccessModel.data.cartId)
+
+                val trackingAddToCartEventLiveData = similarSearchViewModel.getTrackingAddToCartEventLiveData().value
+
+                trackingAddToCartEventLiveData?.getContentIfNotHandled() shouldBe expectedTrackingData
+            }
+
+            Then("assert add to cart event should be null (no popup dialog)") {
+                val addToCartEventLiveData = similarSearchViewModel.getAddToCartEventLiveData().value
+
+                addToCartEventLiveData?.getContentIfNotHandled() shouldBe null
+            }
+
+            Then("assert route to cart page event is true") {
+                val routeToCartPageEventLiveData = similarSearchViewModel.getRouteToCartPageEventLiveData().value
+
+                routeToCartPageEventLiveData?.getContentIfNotHandled() shouldBe true
+            }
         }
 
         Scenario("Add to Cart Status Error") {
@@ -198,6 +299,12 @@ internal class HandleViewClickAddToCart: Spek({
 
                 addToCartEventLiveData?.getContentIfNotHandled() shouldBe false
             }
+
+            Then("assert route to cart page event is null (do not route to cart page)") {
+                val routeToCartPageEventLiveData = similarSearchViewModel.getRouteToCartPageEventLiveData().value
+
+                routeToCartPageEventLiveData?.getContentIfNotHandled() shouldBe null
+            }
         }
 
         Scenario("Add to Cart Error with Exception") {
@@ -264,6 +371,12 @@ internal class HandleViewClickAddToCart: Spek({
                 val addToCartEventLiveData = similarSearchViewModel.getAddToCartEventLiveData().value
 
                 addToCartEventLiveData?.getContentIfNotHandled() shouldBe false
+            }
+
+            Then("assert route to cart page event is null (do not route to cart page)") {
+                val routeToCartPageEventLiveData = similarSearchViewModel.getRouteToCartPageEventLiveData().value
+
+                routeToCartPageEventLiveData?.getContentIfNotHandled() shouldBe null
             }
         }
     }

@@ -57,6 +57,7 @@ internal class SimilarSearchViewModel(
     private val trackingWishlistEventLiveData = MutableLiveData<Event<WishlistTrackingModel>>()
     private val trackingAddToCartEventLiveData = MutableLiveData<Event<Any>>()
     private val addToCartEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val routeToCartPageEventLiveData = MutableLiveData<Event<Boolean>>()
 
     fun onViewCreated() {
         if (!hasLoadData) {
@@ -345,13 +346,13 @@ internal class SimilarSearchViewModel(
         return if (similarSearchViewModelItem is Product) similarSearchViewModelItem else null
     }
 
-    fun onViewClickAddToCart() {
+    fun onViewClickAddToCart(shouldRouteToCart: Boolean = false) {
         if (!userSession.isLoggedIn) {
             routeToLoginPageEventLiveData.postValue(Event(true))
         }
         else {
             val requestParams = createAddToCartUseCaseRequestParams()
-            val addToCartUseCaseSubscriber = createAddToCartUseCaseSubscriber()
+            val addToCartUseCaseSubscriber = createAddToCartUseCaseSubscriber(shouldRouteToCart)
 
             addToCartUseCase.execute(requestParams, addToCartUseCaseSubscriber)
         }
@@ -371,10 +372,10 @@ internal class SimilarSearchViewModel(
         )
     }
 
-    private fun createAddToCartUseCaseSubscriber(): Subscriber<AddToCartDataModel> {
+    private fun createAddToCartUseCaseSubscriber(shouldRouteToCart: Boolean): Subscriber<AddToCartDataModel> {
         return object : Subscriber<AddToCartDataModel>() {
             override fun onNext(addToCartDataModel: AddToCartDataModel?) {
-                onAddToCartSuccess(addToCartDataModel)
+                onAddToCartSuccess(addToCartDataModel, shouldRouteToCart)
             }
 
             override fun onCompleted() {
@@ -387,9 +388,9 @@ internal class SimilarSearchViewModel(
         }
     }
 
-    private fun onAddToCartSuccess(addToCartDataModel: AddToCartDataModel?) {
+    private fun onAddToCartSuccess(addToCartDataModel: AddToCartDataModel?, shouldRouteToCart: Boolean) {
         if (isAddToCartStatusOK(addToCartDataModel)) {
-            onAddToCartStatusOK(addToCartDataModel)
+            onAddToCartStatusOK(addToCartDataModel, shouldRouteToCart)
         }
         else {
             onAddToCartFailed()
@@ -401,12 +402,26 @@ internal class SimilarSearchViewModel(
                 && addToCartDataModel.data.success == 1
     }
 
-    private fun onAddToCartStatusOK(addToCartDataModel: AddToCartDataModel?) {
+    private fun onAddToCartStatusOK(addToCartDataModel: AddToCartDataModel?, shouldRouteToCart: Boolean) {
+        trackAddToCartStatusOK(addToCartDataModel)
+
+        handleAddToCartStatusOKAction(shouldRouteToCart)
+    }
+
+    private fun trackAddToCartStatusOK(addToCartDataModel: AddToCartDataModel?) {
         val cartId = addToCartDataModel?.data?.cartId ?: 0
         val originalProductAsObjectDataLayerAddToCart = originalProduct.asObjectDataLayerAddToCart(cartId)
 
         trackingAddToCartEventLiveData.postValue(Event(originalProductAsObjectDataLayerAddToCart))
-        addToCartEventLiveData.postValue(Event(true))
+    }
+
+    private fun handleAddToCartStatusOKAction(shouldRouteToCart: Boolean) {
+        if (shouldRouteToCart) {
+            routeToCartPageEventLiveData.postValue(Event(true))
+        }
+        else {
+            addToCartEventLiveData.postValue(Event(true))
+        }
     }
 
     private fun onAddToCartFailed() {
@@ -457,5 +472,9 @@ internal class SimilarSearchViewModel(
 
     fun getAddToCartEventLiveData(): LiveData<Event<Boolean>> {
         return addToCartEventLiveData
+    }
+
+    fun getRouteToCartPageEventLiveData(): LiveData<Event<Boolean>> {
+        return routeToCartPageEventLiveData
     }
 }
