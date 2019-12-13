@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 public class TopChatAnalytics {
 
-
     @Inject
     public TopChatAnalytics() {
     }
