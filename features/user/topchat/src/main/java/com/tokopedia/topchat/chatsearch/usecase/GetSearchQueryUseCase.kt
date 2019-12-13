@@ -59,7 +59,7 @@ class GetSearchQueryUseCase @Inject constructor(
                   hasNext
                   data {
                     contact {
-                        id
+                      id
                       role
                       attributes {
                         domain

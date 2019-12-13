@@ -35,6 +35,8 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
+import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -597,7 +599,7 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent {
         val quantity = element.minOrder
-        val atcOnly = 0
+        val atcOnly = ATC_ONLY
         val needRefresh = true
         val shopName = view?.getShopName()
         return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
@@ -618,7 +620,7 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun getBuyPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent {
         val quantity = element.minOrder
-        val atcAndBuyAction = 1
+        val atcAndBuyAction = ATC_AND_BUY
         val needRefresh = true
         val shopName = view?.getShopName()
         return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
