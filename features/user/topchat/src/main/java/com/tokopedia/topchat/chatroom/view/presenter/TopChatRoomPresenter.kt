@@ -636,7 +636,7 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, element.productName)
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.priceInt.toFloat())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
         }
     }
 
