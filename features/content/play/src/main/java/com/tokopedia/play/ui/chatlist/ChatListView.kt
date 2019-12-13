@@ -12,7 +12,6 @@ import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.chatlist.adapter.ChatAdapter
 import com.tokopedia.play.ui.chatlist.itemdecoration.ChatListItemDecoration
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import timber.log.Timber
 
 /**
  * Created by jegul on 03/12/19

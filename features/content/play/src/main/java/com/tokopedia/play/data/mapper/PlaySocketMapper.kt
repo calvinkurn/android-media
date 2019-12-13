@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.websocket.WebSocketResponse
-import java.util.*
 
 /**
  * Created by mzennis on 2019-12-10.

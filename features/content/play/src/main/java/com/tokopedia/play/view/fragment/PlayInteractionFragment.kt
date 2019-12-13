@@ -26,6 +26,8 @@ import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import com.tokopedia.play.ui.pinned.PinnedComponent
 import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
+import com.tokopedia.play.ui.quickreply.QuickReplyComponent
+import com.tokopedia.play.ui.quickreply.interaction.QuickReplyInteractionEvent
 import com.tokopedia.play.ui.sendchat.SendChatComponent
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import com.tokopedia.play.ui.stats.StatsComponent
@@ -229,6 +231,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         val immersiveBoxComponent: UIComponent<*> = initImmersiveBoxComponent(container)
         val videoControlComponent: UIComponent<*> = initVideoControlComponent(container)
         val toolbarComponent: UIComponent<*> = initToolbarComponent(container)
+        val quickReplyComponent: UIComponent<*> = initQuickReplyComponent(container)
         //play button should be on top of other component so it can be clicked
         val playButtonComponent: UIComponent<*> = initPlayButtonComponent(container)
 
@@ -242,7 +245,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 videoControlComponentId = videoControlComponent.getContainerId(),
                 toolbarComponentId = toolbarComponent.getContainerId(),
                 playButtonComponentId = playButtonComponent.getContainerId(),
-                immersiveBoxComponentId = immersiveBoxComponent.getContainerId()
+                immersiveBoxComponentId = immersiveBoxComponent.getContainerId(),
+                quickReplyComponentId = quickReplyComponent.getContainerId()
         )
     }
 
@@ -343,6 +347,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         return immersiveBoxComponent
     }
 
+    private fun initQuickReplyComponent(container: ViewGroup): UIComponent<QuickReplyInteractionEvent> {
+        val quickReplyComponent = QuickReplyComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+
+        launch {
+            quickReplyComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            is QuickReplyInteractionEvent.ReplyClicked -> showToast("Sending Chat: ${it.replyString}")
+                        }
+                    }
+        }
+
+        return quickReplyComponent
+    }
+
     private fun layoutView(
             container: ViewGroup,
             @IdRes sendChatComponentId: Int,
@@ -353,7 +372,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             @IdRes videoControlComponentId: Int,
             @IdRes toolbarComponentId: Int,
             @IdRes playButtonComponentId: Int,
-            @IdRes immersiveBoxComponentId: Int
+            @IdRes immersiveBoxComponentId: Int,
+            @IdRes quickReplyComponentId: Int
     ) {
 
         fun layoutChat(container: ViewGroup, @IdRes id: Int, @IdRes likeComponentId: Int) {
@@ -383,7 +403,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
-        fun layoutChatList(container: ViewGroup, @IdRes id: Int, @IdRes sendChatComponentId: Int, @IdRes likeComponentId: Int) {
+        fun layoutChatList(container: ViewGroup, @IdRes id: Int, @IdRes quickReplyComponentId: Int, @IdRes likeComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
@@ -391,7 +411,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.apply {
                 connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
                 connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, resources.getDimensionPixelOffset(R.dimen.dp_8))
-                connect(id, ConstraintSet.BOTTOM, sendChatComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
+                connect(id, ConstraintSet.BOTTOM, quickReplyComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
             }
 
             constraintSet.applyTo(container)
@@ -482,6 +502,20 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
+        fun layoutQuickReply(container: ViewGroup, @IdRes id: Int, sendChatComponentId: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+                connect(id, ConstraintSet.BOTTOM, sendChatComponentId, ConstraintSet.TOP, resources.getDimensionPixelOffset(R.dimen.dp_8))
+            }
+
+            constraintSet.applyTo(container)
+        }
+
         layoutToolbar(container, toolbarComponentId)
         layoutVideoControl(container, videoControlComponentId)
         layoutLike(container, likeComponentId, videoControlComponentId)
@@ -491,6 +525,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         layoutStats(container, statsComponentId, pinnedComponentId)
         layoutPlayButton(container, playButtonComponentId)
         layoutImmersiveBox(container, immersiveBoxComponentId, toolbarComponentId, statsComponentId)
+        layoutQuickReply(container, quickReplyComponentId, sendChatComponentId)
     }
     //endregion
 

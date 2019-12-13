@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.adapter_delegate.BaseViewHolder
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 
@@ -15,9 +16,14 @@ import com.tokopedia.play.ui.chatlist.model.PlayChat
  */
 class ChatViewHolder(
         itemView: View
-) : RecyclerView.ViewHolder(itemView) {
+) : BaseViewHolder(itemView) {
 
     private val tvChat = itemView.findViewById<TextView>(R.id.tv_chat)
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        itemView.setOnClickListener {  }
+    }
 
     fun bind(chat: PlayChat) {
         val spannableString = SpannableString("${chat.user.name} ${chat.message}")
@@ -30,5 +36,10 @@ class ChatViewHolder(
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         tvChat.text = spannableString
+    }
+
+    fun bind(quickReplyString: String, onQuickReplyClicked: (String) -> Unit) {
+        tvChat.text = quickReplyString
+        if (!itemView.hasOnClickListeners()) itemView.setOnClickListener { onQuickReplyClicked(quickReplyString) }
     }
 }
