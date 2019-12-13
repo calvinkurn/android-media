@@ -480,7 +480,7 @@ public class CartListPresenter implements ICartListPresenter {
                     view.hideProgressLoading();
                     String errorMessage = e.getMessage();
                     if (!(e instanceof CartResponseErrorException)) {
-                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivityObject(), e);
                     }
                     view.showToastMessageRed(errorMessage);
                     processInitialGetCartData(view.getCartId(), cartListData == null, false);
@@ -516,7 +516,7 @@ public class CartListPresenter implements ICartListPresenter {
                     view.hideProgressLoading();
                     String errorMessage = e.getMessage();
                     if (!(e instanceof CartResponseErrorException)) {
-                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivityObject(), e);
                     }
                     view.showToastMessageRed(errorMessage);
                     processInitialGetCartData(view.getCartId(), cartListData == null, false);
@@ -578,7 +578,7 @@ public class CartListPresenter implements ICartListPresenter {
                                     view.hideProgressLoading();
                                     String errorMessage = e.getMessage();
                                     if (!(e instanceof CartResponseErrorException)) {
-                                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                                        errorMessage = ErrorHandler.getErrorMessage(view.getActivityObject(), e);
                                     }
                                     view.showToastMessageRed(errorMessage);
                                 }
@@ -601,7 +601,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void reCalculateSubTotal(List<CartShopHolderData> dataList, ArrayList<InsuranceCartShops> insuranceCartShopsArrayList) {
+    public void reCalculateSubTotal(@NotNull List<? extends CartShopHolderData> dataList, @NotNull ArrayList<InsuranceCartShops> insuranceCartShopsArrayList) {
         double totalCashback = 0;
         double totalPrice = 0;
         int totalItemQty = 0;
@@ -790,7 +790,7 @@ public class CartListPresenter implements ICartListPresenter {
                     view.renderLoadGetCartDataFinish();
                     String errorMessage = e.getMessage();
                     if (!(e instanceof CartResponseErrorException)) {
-                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivityObject(), e);
                     }
                     view.renderErrorInitialGetCartListData(errorMessage);
                     view.stopCartPerformanceTrace();
@@ -830,7 +830,7 @@ public class CartListPresenter implements ICartListPresenter {
                     e.printStackTrace();
                     String errorMessage = e.getMessage();
                     if (!(e instanceof CartResponseErrorException)) {
-                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivityObject(), e);
                     }
                     view.showToastMessageRed(errorMessage);
                 }
@@ -879,7 +879,7 @@ public class CartListPresenter implements ICartListPresenter {
                     view.hideProgressLoading();
                     String errorMessage = e.getMessage();
                     if (!(e instanceof CartResponseErrorException)) {
-                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivityObject(), e);
                     }
                     view.renderErrorToShipmentForm(errorMessage);
                     processInitialGetCartData(view.getCartId(), cartListData == null, false);
@@ -1600,9 +1600,9 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void redirectToLite(String url) {
-        if (view != null && view.getActivity() != null) {
+        if (view != null && view.getActivityObject() != null) {
             view.showProgressLoading();
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), ADVERTISINGID);
+            LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivityObject(), ADVERTISINGID);
             String adsId = localCacheHandler.getString(KEY_ADVERTISINGID);
             if (adsId != null && !adsId.trim().isEmpty()) {
                 seamlessLoginUsecase.generateSeamlessUrl(url.replace(QUERY_APP_CLIENT_ID, adsId), new SeamlessLoginSubscriber() {
@@ -1624,7 +1624,7 @@ public class CartListPresenter implements ICartListPresenter {
                 });
             } else {
                 view.hideProgressLoading();
-                view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), null));
+                view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivityObject(), null));
             }
         }
     }
