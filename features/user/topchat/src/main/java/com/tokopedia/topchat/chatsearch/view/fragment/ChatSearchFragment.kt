@@ -43,7 +43,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     private fun showRecentSearch() {
-        val recentSearch = listOf( RecentSearch() )
+        val recentSearch = listOf(RecentSearch())
         renderList(recentSearch)
     }
 
@@ -57,25 +57,45 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     private fun setupObserver() {
+        observeSearchResult()
+        observeLoadInitialData()
+        observeEmptyQuery()
+        observeErrorSearch()
+        observeSearchTriggered()
+    }
+
+    private fun observeSearchResult() {
         viewModel.searchResult.observe(viewLifecycleOwner, Observer {
             renderList(it, viewModel.hasNext)
         })
+    }
+
+    private fun observeLoadInitialData() {
         viewModel.loadInitialData.observe(viewLifecycleOwner, Observer {
             if (!it) return@Observer
             clearAllData()
             showLoading()
         })
+    }
+
+    private fun observeEmptyQuery() {
         viewModel.emptyQuery.observe(viewLifecycleOwner, Observer {
             if (!it) return@Observer
             clearAllData()
             showRecentSearch()
         })
+    }
+
+    private fun observeErrorSearch() {
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer { error ->
             if (viewModel.isFirstPage()) {
                 clearAllData()
             }
             showGetListError(error)
         })
+    }
+
+    private fun observeSearchTriggered() {
         viewModel.triggerSearch.observe(viewLifecycleOwner, Observer {
             analytic.eventQueryTriggered()
         })
