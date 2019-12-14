@@ -37,8 +37,8 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productMostHelpfulMap: ProductMostHelpfulReviewDataModel?
         get() = mapOfData[ProductDetailConstant.MOST_HELPFUL_REVIEW] as? ProductMostHelpfulReviewDataModel
 
-    val productTradeinMap: ProductTradeinDataModel?
-        get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductTradeinDataModel
+    val productTradeinMap: ProductGeneralInfoDataModel?
+        get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
 
     val productMerchantVoucherMap: ProductMerchantVoucherDataModel?
         get() = mapOfData[ProductDetailConstant.SHOP_VOUCHER] as? ProductMerchantVoucherDataModel
@@ -67,6 +67,9 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productFullfilmentMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_FULLFILMENT] as? ProductGeneralInfoDataModel
 
+    val valuePropositionDataModel: ProductValuePropositionDataModel?
+        get() = mapOfData[ProductDetailConstant.VALUE_PROP] as? ProductValuePropositionDataModel
+
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
                 || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
@@ -87,6 +90,10 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 isWishlisted = it.data.isWishlist
             }
 
+            valuePropositionDataModel?.run {
+                isOfficialStore = it.data.isOS
+            }
+
             productDiscussionMap?.run {
                 shopId = it.basic.shopID
                 // Should be in p2
@@ -105,7 +112,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             productLastSeenMap?.run {
                 lastSeen = KMNumbers.formatRupiahString(it.data.price.value.toLong())
             }
-
         }
     }
 
@@ -113,6 +119,10 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         data?.let {
             shopInfoMap?.run {
                 shopInfo = it.shopInfo
+            }
+
+            productFullfilmentMap?.run {
+                description = context.getString(R.string.multiorigin_desc)
             }
 
             snapShotMap.run {
@@ -137,6 +147,14 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
             productInfoMap?.run {
                 productSpecification = it.productSpecificationResponse
+            }
+
+            orderPriorityMap?.run {
+                description = it.shopCommitment.staticMessages.pdpMessage
+            }
+
+            productProtectionMap?.run {
+                description = it.productPurchaseProtectionInfo.ppItemDetailPage!!.subTitlePDP ?: ""
             }
 
             socialProofMap?.run {
@@ -168,16 +186,16 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             forEach {
                 when (it.name) {
                     ProductDetailConstant.PDP_1 -> {
-                        fillRecomData(it,data,0)
+                        fillRecomData(it, data, 0)
                     }
                     ProductDetailConstant.PDP_2 -> {
-                        fillRecomData(it,data,1)
+                        fillRecomData(it, data, 1)
                     }
                     ProductDetailConstant.PDP_3 -> {
-                        fillRecomData(it,data,2)
+                        fillRecomData(it, data, 2)
                     }
                     ProductDetailConstant.PDP_4 -> {
-                        fillRecomData(it,data,3)
+                        fillRecomData(it, data, 3)
                     }
                 }
             }

@@ -5,7 +5,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductValuePropositionDataModel(
         val type: String = "",
         val name: String = "",
-        val isOfficialStore: Boolean = false
+        var isOfficialStore: Boolean = false
 ) : DynamicPDPDataModel {
     override fun type(): String = type
     override fun name(): String = name

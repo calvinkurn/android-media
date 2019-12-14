@@ -14,7 +14,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductInfoDataModel): Int
     fun type(data: ProductGeneralInfoDataModel): Int
     fun type(data: ProductMerchantVoucherDataModel): Int
-    fun type(data: ProductTradeinDataModel): Int
     fun type(data: ProductRecommendationDataModel): Int
     fun type(data: ProductOpenShopDataModel): Int
     fun type(data: ProductLastSeenDataModel): Int

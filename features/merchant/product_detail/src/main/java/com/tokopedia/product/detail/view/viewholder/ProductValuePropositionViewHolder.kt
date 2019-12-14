@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductValuePropositionDataModel
@@ -35,8 +34,6 @@ class ProductValuePropositionViewHolder(val view: View,
                 listener.onValuePropositionClicked(R.id.container_ready)
             }
 
-        } else {
-            view.layout_value_proposition.hide()
         }
     }
 

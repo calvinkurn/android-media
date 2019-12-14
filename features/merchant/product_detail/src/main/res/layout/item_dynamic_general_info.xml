@@ -21,8 +21,7 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_product_fintech_qr_normal_24"
-        tools:visibility="visible" />
+        tools:src="@drawable/ic_product_fintech_qr_normal_24" />
 
     <ImageView
         android:id="@+id/pdp_arrow_right"
@@ -31,6 +30,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/pdp_info_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
+        android:visibility="invisible"
         app:srcCompat="@drawable/ic_arrow_right_grey" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -43,6 +43,7 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         tools:text="Varian Produk"
+        android:visibility="invisible"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:textColor="@color/charcoal_grey_88"/>
@@ -54,14 +55,36 @@
         android:layout_marginTop="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
         app:layout_constraintStart_toEndOf="@+id/pdp_icon"
         app:layout_constraintStart_toStartOf="@+id/pdp_info_title"
         app:layout_constraintTop_toBottomOf="@+id/pdp_info_title"
         app:typographyType="body_2"
-        tools:text="Pilih warna dan ukuran"
-        tools:visibility="visible" />
+        tools:text="Pilih warna dan ukuran" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/titleShimmering"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
+        app:layout_constraintBottom_toBottomOf="@+id/pdp_info_title"
+        app:layout_constraintStart_toStartOf="@+id/pdp_info_title"
+        app:layout_constraintEnd_toEndOf="@+id/pdp_info_title"
+        app:width_weight="0.8"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/descShimmering"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintBottom_toBottomOf="@+id/pdp_info_desc"
+        app:layout_constraintStart_toStartOf="@+id/pdp_info_desc"
+        app:layout_constraintEnd_toEndOf="@+id/pdp_info_desc"
+        app:width_weight="0.6" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

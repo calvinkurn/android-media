@@ -95,7 +95,6 @@ class ProductInfoViewHolder(private val view: View,
                                 isOfficial = productInfo.data.isOS),
 
                         productSpecificationResponse.productCatalogQuery.data.catalog.specification
-
                 )
 
             }

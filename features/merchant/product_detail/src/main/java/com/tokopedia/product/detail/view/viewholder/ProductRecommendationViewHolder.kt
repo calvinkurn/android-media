@@ -6,6 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -34,9 +35,11 @@ class ProductRecommendationViewHolder(private val view: View,
             view.product_recom_1.show()
             if (seeMoreAppLink.isNotEmpty()) {
                 view.see_more_recom_1.show()
-                view.see_more_recom_1.setOnClickListener {
-                    listener.onSeeAllRecomClicked(pageName, seeMoreAppLink)
-                }
+            } else {
+                view.see_more_recom_1.hide()
+            }
+            view.see_more_recom_1.setOnClickListener {
+                listener.onSeeAllRecomClicked(pageName, seeMoreAppLink)
             }
             initAdapter(this, element.cardModel)
         }

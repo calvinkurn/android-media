@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.listener
 import android.app.Application
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Video
@@ -57,11 +56,6 @@ interface DynamicProductDetailListener {
     fun onSeeAllMerchantVoucherClick()
 
     /**
-     * ProductTradeinViewHolder
-     */
-    fun onTradeinClicked(tradeInParams: TradeInParams)
-
-    /**
      * ProductSocialProofViewHolder
      */
     fun onShipmentClicked()
@@ -82,6 +76,10 @@ interface DynamicProductDetailListener {
      * ProductGeneralInfoViewHolder
      */
     fun onInfoClicked(name: String)
-
     fun onValuePropositionClicked(view: Int)
+
+    /**
+     * ProductRecom
+     */
+    fun loadTopads()
 }

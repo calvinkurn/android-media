@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -18,12 +19,19 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
     }
 
     override fun bind(element: ProductGeneralInfoDataModel) {
+        showLoading()
         element.data?.run {
             view.pdp_info_title.text = MethodChecker.fromHtml(title)
-
+            view.pdp_info_title.show()
             if (element.description.isNotEmpty()) {
+                hideLoading()
                 view.pdp_info_desc.show()
                 view.pdp_info_desc.text = MethodChecker.fromHtml(element.description)
+                view.setOnClickListener {
+                    listener.onInfoClicked(element.name)
+                }
+            } else {
+                view.pdp_info_desc.text = ""
                 view.setOnClickListener {
                     listener.onInfoClicked(element.name)
                 }
@@ -36,4 +44,15 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
             }
         }
     }
+
+    private fun hideLoading() {
+        view.titleShimmering.hide()
+        view.descShimmering.hide()
+    }
+
+    private fun showLoading() {
+        view.titleShimmering.show()
+        view.descShimmering.show()
+    }
+
 }
