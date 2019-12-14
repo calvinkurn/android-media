@@ -1,0 +1,73 @@
+package com.tokopedia.notifcenter.data.mapper
+
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.notifcenter.domain.model.TransactionItemNotification
+import com.tokopedia.notifcenter.domain.model.TransactionNotification
+import com.tokopedia.notifcenter.domain.pojo.NotificationCenterDetail
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateItemViewModel
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateViewModel
+import javax.inject.Inject
+
+/**
+ * @author : Steven 11/04/19
+ */
+class GetNotificationUpdateMapper @Inject constructor(){
+
+    open fun map(pojo: NotificationCenterDetail) : NotificationUpdateViewModel {
+        var item = pojo.pojo
+        var list = arrayListOf<NotificationUpdateItemViewModel>()
+        for (notificationUpdateItem in item.list) {
+            var datum = NotificationUpdateItemViewModel(
+                    notificationId = notificationUpdateItem.notifId,
+                    iconUrl = notificationUpdateItem.sectionIcon,
+                    contentUrl = notificationUpdateItem.dataNotification.infoThumbnailUrl,
+                    time = notificationUpdateItem.createTime,
+                    title = notificationUpdateItem.title,
+                    body = MethodChecker.fromHtml(notificationUpdateItem.shortDescription).toString(),
+                    sectionTitle = notificationUpdateItem.sectionKey,
+                    templateKey = notificationUpdateItem.templateKey,
+                    isRead = convertReadStatus(notificationUpdateItem.readStatus),
+                    appLink = notificationUpdateItem.dataNotification.appLink,
+                    label = notificationUpdateItem.typeOfUser,
+                    hasShop = item.userInfo.hasShop(),
+                    typeLink = notificationUpdateItem.typeLink,
+                    totalProduct = notificationUpdateItem.totalProducts,
+                    btnText = notificationUpdateItem.btnText,
+                    products = notificationUpdateItem.productData
+            )
+            list.add(datum)
+        }
+        return NotificationUpdateViewModel(item.paging, list, item.userInfo)
+    }
+
+    fun mapToNotifTransaction(pojo: NotificationCenterDetail) : TransactionNotification {
+        var item = pojo.pojo
+        var list = arrayListOf<TransactionItemNotification>()
+        for (notificationUpdateItem in item.list) {
+            var datum = TransactionItemNotification(
+                    notificationId = notificationUpdateItem.notifId,
+                    iconUrl = notificationUpdateItem.sectionIcon,
+                    contentUrl = notificationUpdateItem.dataNotification.infoThumbnailUrl,
+                    time = notificationUpdateItem.createTime,
+                    title = notificationUpdateItem.title,
+                    body = MethodChecker.fromHtml(notificationUpdateItem.shortDescription).toString(),
+                    sectionTitle = notificationUpdateItem.sectionKey,
+                    templateKey = notificationUpdateItem.templateKey,
+                    isRead = convertReadStatus(notificationUpdateItem.readStatus),
+                    appLink = notificationUpdateItem.dataNotification.appLink,
+                    label = notificationUpdateItem.typeOfUser,
+                    hasShop = item.userInfo.hasShop(),
+                    typeLink = notificationUpdateItem.typeLink,
+                    totalProduct = notificationUpdateItem.totalProducts,
+                    btnText = notificationUpdateItem.btnText,
+                    products = notificationUpdateItem.productData
+            )
+            list.add(datum)
+        }
+        return TransactionNotification(item.paging, list, item.userInfo)
+    }
+
+    private fun convertReadStatus(readStatus: Long): Boolean {
+        return readStatus != 1L
+    }
+}
