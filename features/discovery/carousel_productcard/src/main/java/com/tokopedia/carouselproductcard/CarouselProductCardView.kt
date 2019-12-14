@@ -61,37 +61,32 @@ class CarouselProductCardView: BaseCustomView {
             carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
             carouselProductCardOnWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null) {
-        if (carouselAdapter == null) {
 
-            val carouselProductCardListenerInfo = CarouselProductCardListenerInfo().also {
-                it.onItemClickListener = carouselProductCardOnItemClickListener
-                it.onItemLongClickListener = carouselProductCardOnItemLongClickListener
-                it.onItemImpressedListener = carouselProductCardOnItemImpressedListener
-                it.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
-                it.onWishlistItemClickListener = carouselProductCardOnWishlistItemClickListener
-            }
-
-            parentView?.run {
-                if (deviceWidth > 0) {
-                    measureParentView(deviceWidth, this)
-                } else if (activity != null) {
-                    val display = activity.windowManager.defaultDisplay
-                    val size = Point()
-                    display.getSize(size)
-                    measureParentView(size.x, this)
-                }
-            }
-
-            carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
-            carouselAdapter = CarouselProductCardAdapter(productCardModelList, isScrollable, carouselProductCardListenerInfo, getMaxProductCardContentHeight(productCardModelList))
-            carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
-            carouselProductCardRecyclerView.itemAnimator = null
-            carouselProductCardRecyclerView.setHasFixedSize(true)
-            carouselProductCardRecyclerView?.adapter = carouselAdapter
-        } else {
-            carouselAdapter?.productCardModelList = productCardModelList
-            carouselAdapter?.notifyDataSetChanged()
+        val carouselProductCardListenerInfo = CarouselProductCardListenerInfo().also {
+            it.onItemClickListener = carouselProductCardOnItemClickListener
+            it.onItemLongClickListener = carouselProductCardOnItemLongClickListener
+            it.onItemImpressedListener = carouselProductCardOnItemImpressedListener
+            it.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
+            it.onWishlistItemClickListener = carouselProductCardOnWishlistItemClickListener
         }
+
+        parentView?.run {
+            if (deviceWidth > 0) {
+                measureParentView(deviceWidth, this)
+            } else if (activity != null) {
+                val display = activity.windowManager.defaultDisplay
+                val size = Point()
+                display.getSize(size)
+                measureParentView(size.x, this)
+            }
+        }
+
+        carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
+        carouselAdapter = CarouselProductCardAdapter(productCardModelList, isScrollable, carouselProductCardListenerInfo, getMaxProductCardContentHeight(productCardModelList))
+        carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
+        carouselProductCardRecyclerView.itemAnimator = null
+        carouselProductCardRecyclerView.setHasFixedSize(true)
+        carouselProductCardRecyclerView?.adapter = carouselAdapter
     }
 
     /**

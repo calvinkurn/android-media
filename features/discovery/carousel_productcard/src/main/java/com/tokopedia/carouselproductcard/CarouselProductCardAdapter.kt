@@ -7,7 +7,7 @@ import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 
 internal class CarouselProductCardAdapter(
-        var productCardModelList: List<ProductCardModel> = ArrayList(),
+        private var productCardModelList: List<ProductCardModel> = ArrayList(),
         private val isScrollable: Boolean,
         private val carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
         private val productCardHeight: Int = 0

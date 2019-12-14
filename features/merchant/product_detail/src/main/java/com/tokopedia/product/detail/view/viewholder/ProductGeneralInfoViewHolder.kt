@@ -22,10 +22,8 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         showLoading()
         element.data?.run {
             view.pdp_info_title.text = MethodChecker.fromHtml(title)
-            view.pdp_info_title.show()
             if (element.description.isNotEmpty()) {
                 hideLoading()
-                view.pdp_info_desc.show()
                 view.pdp_info_desc.text = MethodChecker.fromHtml(element.description)
                 view.setOnClickListener {
                     listener.onInfoClicked(element.name)
@@ -46,11 +44,15 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
     }
 
     private fun hideLoading() {
+        view.pdp_info_title.show()
+        view.pdp_info_desc.show()
         view.titleShimmering.hide()
         view.descShimmering.hide()
     }
 
     private fun showLoading() {
+        view.pdp_info_title.hide()
+        view.pdp_info_desc.hide()
         view.titleShimmering.show()
         view.descShimmering.show()
     }
