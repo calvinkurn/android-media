@@ -25,7 +25,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopProductViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads_banner_shop_product;
+    public static int LAYOUT = R.layout.layout_ads_banner_shop_a_product;
     private static final String TAG = BannerShopProductViewHolder.class.getSimpleName();
     private ImpressedImageView imageView;
     private TextView descTxt;

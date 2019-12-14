@@ -31,7 +31,7 @@
         tools:src="@tools:sample/avatars"
         tools:visibility="visible" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_promote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,11 +41,12 @@
         android:fontFamily="sans-serif-medium"
         android:textColor="#61000000"
         android:textSize="@dimen/sp_10"
+        android:text="@string/title_promote_by"
         app:layout_constraintStart_toEndOf="@+id/shop_image"
         app:layout_constraintTop_toBottomOf="@+id/shop_name"
-        tools:text="Promoted by" />
+        />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shop_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,8 +64,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:paddingLeft="@dimen/dp_2"
-        android:paddingRight="@dimen/dp_2"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
         android:overScrollMode="never"
         android:clipChildren="false"
         android:clipToPadding="false"
