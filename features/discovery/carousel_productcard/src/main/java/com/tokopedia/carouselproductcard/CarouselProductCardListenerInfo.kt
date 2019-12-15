@@ -1,6 +1,6 @@
 package com.tokopedia.carouselproductcard
 
-class CarouselProductCardListenerInfo {
+internal class CarouselProductCardListenerInfo {
     
      var onItemClickListener: CarouselProductCardListener.OnItemClickListener? = null
      var onItemLongClickListener: CarouselProductCardListener.OnItemLongClickListener? = null
