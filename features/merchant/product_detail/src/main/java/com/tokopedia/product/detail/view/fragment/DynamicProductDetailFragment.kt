@@ -51,6 +51,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.carouselproductcard.common.CarouselProductPool
 import com.tokopedia.common_tradein.customviews.TradeInTextView
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
@@ -218,6 +219,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     val errorBottomsheets: ErrorBottomsheets by lazy {
         ErrorBottomsheets()
     }
+
+    val carouselProductPool = CarouselProductPool()
 
     //Performance Monitoring
     lateinit var performanceMonitoringP1: PerformanceMonitoring
@@ -684,9 +687,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         viewModel.moveToWarehouseResult.removeObservers(this)
         viewModel.moveToEtalaseResult.removeObservers(this)
         viewModel.clear()
+        carouselProductPool.release()
         super.onDestroy()
     }
-
 
     /**
      * ProductInfoViewHolder
@@ -798,6 +801,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     override fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String) {
         productDetailTracking.eventRecommendationImpression(
                 position, recomItem, viewModel.isUserSessionActive, pageName, title)
+    }
+
+    override fun getPdpCarouselPool(): CarouselProductPool {
+        return carouselProductPool
     }
 
     /**

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
+import com.tokopedia.carouselproductcard.common.CarouselProductPool
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -20,11 +21,18 @@ import kotlinx.android.synthetic.main.partial_product_recom_1.view.*
 class ProductRecommendationViewHolder(private val view: View,
                                       private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductRecommendationDataModel>(view) {
 
+    var carouselModelId: String? = null
+
     companion object {
         val LAYOUT = R.layout.partial_product_recom_1
     }
 
+    init {
+        view.product_recom_1.carouselProductPool = listener.getPdpCarouselPool()
+    }
+
     override fun bind(element: ProductRecommendationDataModel) {
+        this.carouselModelId = element.name
         view.product_recom_1.gone()
         view.visible()
         view.loading_recom_1.visible()
@@ -43,9 +51,10 @@ class ProductRecommendationViewHolder(private val view: View,
     }
 
     private fun initAdapter(product: RecommendationWidget, cardModel: List<ProductCardModel>?) {
-        view.product_recom_1.initCarouselProductCardView(
+        view.product_recom_1.bindCarouselProductCardView(
                 parentView = view,
                 isScrollable = true,
+                carouselModelId = carouselModelId,
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
                         val productRecommendation = product.recommendationItemList[adapterPosition]
@@ -81,6 +90,11 @@ class ProductRecommendationViewHolder(private val view: View,
                                 product.title)
                     }
                 },
-                productCardModelList = cardModel ?: listOf())
+                productCardModelList = cardModel?.toMutableList() ?: listOf())
+    }
+
+    override fun onViewRecycled() {
+        view.product_recom_1.onViewRecycled(carouselModelId?:"")
+        super.onViewRecycled()
     }
 }
