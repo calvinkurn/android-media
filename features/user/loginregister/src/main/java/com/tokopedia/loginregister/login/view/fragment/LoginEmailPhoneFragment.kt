@@ -47,6 +47,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.dynamicfeatures.DFInstaller
+import com.tokopedia.dynamicfeatures.DFInstaller.Companion.isInstalled
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
@@ -602,7 +603,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         // for POC - start install when login
         if (userSession.hasShop()) {
             activity?.run {
-                DFInstaller().installOnBackground(this.application, listOf(DFM_MERCHANT_SELLER_CUSTOMERAPP))
+                if (!isInstalled(application, DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
+                    DFInstaller().installOnBackground(this.application, listOf(DFM_MERCHANT_SELLER_CUSTOMERAPP))
+                }
             }
         }
     }
