@@ -19,7 +19,7 @@ class DFDownloadWorker(appContext: Context, workerParams: WorkerParameters)
                 .setInitialDelay(delayDuration, TimeUnit.SECONDS)
                 .setBackoffCriteria(
                     BackoffPolicy.LINEAR,
-                    OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                    delayDuration,
                     TimeUnit.MILLISECONDS)
                 .setConstraints(
                     Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
