@@ -11,15 +11,25 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
+import com.tokopedia.carouselproductcard.common.CarouselProductPool
+import com.tokopedia.carouselproductcard.helper.CarouselProductCardDefaultDecorator
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
+import com.tokopedia.carouselproductcard.helper.StartSnapHelper
+import com.tokopedia.carouselproductcard.model.CarouselProductCardModel
 
 class CarouselProductCardView: BaseCustomView {
 
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
-    private var carouselAdapter: CarouselProductCardAdapter? = null
+    private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
+
+    /**
+     * If you're working with recyclerview, give it dedicated carouselProductPool for better performance
+     * because the calculation process of product card height can be expensive
+     */
+    var carouselProductPool: CarouselProductPool = CarouselProductPool()
 
     constructor(context: Context): super(context) {
         init()
@@ -39,6 +49,9 @@ class CarouselProductCardView: BaseCustomView {
     
     private fun init() {
         View.inflate(context, R.layout.carousel_product_card_layout, this)
+        if (carouselProductCardRecyclerView.itemDecorationCount > 0)
+            carouselProductCardRecyclerView.removeItemDecorationAt(0)
+        carouselProductCardRecyclerView.addItemDecoration(defaultRecyclerViewDecorator)
     }
 
     /**
@@ -49,11 +62,15 @@ class CarouselProductCardView: BaseCustomView {
      * @param activity mandatory if isScrollable is false, to measure device width.
      * @param parentView mandatory if isScrollable is false, to measure device width.
      * @param deviceWidth alternative if you provide your own view total width.
+     * @param recyclerviewDecorator alternative if you provide your own recyclerview decorator.
+     * @param carouselModelId alternative if you want to share pool. Just pass any unique id
+     * to differentiate your item in pool
      */
-    fun initCarouselProductCardView(
+    fun bindCarouselProductCardView(
             activity: Activity? = null,
             deviceWidth: Int = 0,
             parentView: View? = null,
+            carouselModelId: String? = null,
             productCardModelList: List<ProductCardModel>,
             isScrollable: Boolean = true,
             carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener? = null,
@@ -70,6 +87,59 @@ class CarouselProductCardView: BaseCustomView {
             it.onWishlistItemClickListener = carouselProductCardOnWishlistItemClickListener
         }
 
+        val knownAdapter = carouselProductPool.carouselAdapters[carouselModelId]
+        val knownPosition = carouselProductPool.carouselAdaptersPositions[carouselModelId]
+
+        if (knownAdapter == null && productCardModelList.isNotEmpty()) {
+            measureThisParentView(parentView, deviceWidth, activity)
+            carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
+            val newCarouselAdapter = createProductCardCarouselAdapter(isScrollable, productCardModelList, carouselModelId)
+            setupCarouselProductCardRecyclerView(newCarouselAdapter)
+            submitProductCardCarouselData(newCarouselAdapter, productCardModelList, carouselProductCardListenerInfo)
+        } else {
+            carouselProductCardRecyclerView.adapter = knownAdapter
+            knownAdapter?.let {
+                submitProductCardCarouselData(knownAdapter, productCardModelList, carouselProductCardListenerInfo)
+            }
+        }
+
+        carouselLayoutManager?.run {
+            if (this is LinearLayoutManager) {
+                scrollToPositionWithOffset(knownPosition?:0,
+                        context.applicationContext.resources.getDimensionPixelOffset(
+                                R.dimen.dp_16
+                        ))
+            }
+        }
+    }
+
+    private fun submitProductCardCarouselData(newCarouselAdapter: CarouselProductCardAdapter, productCardModelList: List<ProductCardModel>, carouselProductCardListenerInfo: CarouselProductCardListenerInfo) {
+        newCarouselAdapter.submitList(productCardModelList.map {
+            CarouselProductCardModel(it, carouselProductCardListenerInfo)
+        })
+    }
+
+    private fun setupCarouselProductCardRecyclerView(newCarouselAdapter: CarouselProductCardAdapter) {
+        val snapHelper = StartSnapHelper()
+        if (carouselProductCardRecyclerView.onFlingListener == null) {
+            snapHelper.attachToRecyclerView(carouselProductCardRecyclerView)
+        }
+        carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
+        carouselProductCardRecyclerView.itemAnimator = null
+        carouselProductCardRecyclerView.setHasFixedSize(true)
+        carouselProductCardRecyclerView?.adapter = newCarouselAdapter
+    }
+
+    private fun createProductCardCarouselAdapter(isScrollable: Boolean, productCardModelList: List<ProductCardModel>, carouselModelId: String?): CarouselProductCardAdapter {
+        val newCarouselAdapter = CarouselProductCardAdapter(isScrollable, getMaxProductCardContentHeight(productCardModelList))
+
+        carouselModelId?.let { id ->
+            carouselProductPool.carouselAdapters.put(id, newCarouselAdapter)
+        }
+        return newCarouselAdapter
+    }
+
+    private fun measureThisParentView(parentView: View?, deviceWidth: Int, activity: Activity?) {
         parentView?.run {
             if (deviceWidth > 0) {
                 measureParentView(deviceWidth, this)
@@ -80,13 +150,27 @@ class CarouselProductCardView: BaseCustomView {
                 measureParentView(size.x, this)
             }
         }
+    }
 
-        carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
-        carouselAdapter = CarouselProductCardAdapter(productCardModelList, isScrollable, carouselProductCardListenerInfo, getMaxProductCardContentHeight(productCardModelList))
-        carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
-        carouselProductCardRecyclerView?.adapter = carouselAdapter
-        carouselProductCardRecyclerView.itemAnimator = null
-        carouselProductCardRecyclerView.setHasFixedSize(true)
+    /**
+     * Use this function onViewRecycled to retains scroll position
+     */
+    fun onViewRecycled(carouselModelId: String) {
+        if (carouselModelId.isEmpty()) return
+        carouselLayoutManager?.let {
+            if (it is LinearLayoutManager) {
+                val positionState = it.findFirstCompletelyVisibleItemPosition()
+                carouselProductPool.carouselAdaptersPositions[carouselModelId] = positionState
+            }
+        }
+    }
+
+    /**
+     * Invalidate recyclerview to produce new adapter
+     */
+    fun invalidateRecyclerView() {
+        carouselProductPool.carouselAdapters.clear()
+        carouselLayoutManager = null
     }
 
     /**
