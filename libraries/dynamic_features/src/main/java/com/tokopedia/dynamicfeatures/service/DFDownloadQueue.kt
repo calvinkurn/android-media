@@ -108,6 +108,7 @@ object DFDownloadQueue {
             for ((index, item) in currentList.withIndex()) {
                 val indexRemoveFind = moduleListToRemoveList.indexOf(item.first)
                 if (indexRemoveFind > -1) {
+                    // not adding to final list, so just continue
                     continue
                 }
                 val indexAppendFind = moduleListToAppendList.indexOf(item.first)
