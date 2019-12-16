@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.attachinvoice.ItuUsecase
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
@@ -849,6 +850,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {
         analytics.eventClickBannedProduct(viewModel)
         presenter.onClickBannedProduct(viewModel.liteUrl)
+        val asd= ItuUsecase()
     }
 
     override fun redirectToBrowser(url: String) {

@@ -146,6 +146,7 @@ include "features:transaction:purchase_platform_common"
 include "features:transaction:sellerorder"
 
 include "features:user:attachproduct"
+include "features:user:attachinvoice"
 include "features:user:chat_common"
 include "features:user:chatbot"
 //include "features:user:chatbot_no_op"
