@@ -109,7 +109,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     NestedScrollView formContainerLayout;
     View returnDateSeparatorView;
     View bannerLayout;
-    Banner bannerView;
+    BannerView bannerView;
     TickerView tickerView;
     List<TravelCollectiveBannerModel.Banner> bannerList;
 

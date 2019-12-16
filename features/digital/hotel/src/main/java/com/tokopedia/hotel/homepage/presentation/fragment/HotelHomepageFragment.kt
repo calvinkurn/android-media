@@ -10,11 +10,11 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.banner.Indicator
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -30,6 +30,7 @@ import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageVi
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -44,8 +45,7 @@ import javax.inject.Inject
  * @author by furqan on 28/03/19
  */
 class HotelHomepageFragment : HotelBaseFragment(),
-        HotelRoomAndGuestBottomSheets.HotelGuestListener,
-        HotelPromoAdapter.PromoClickListener {
+        HotelRoomAndGuestBottomSheets.HotelGuestListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -116,14 +116,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
         homepageViewModel.promoData.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SHOW_PROMO) && it.data.size > 0) {
-                        promoDataList = it.data
-                        renderHotelPromo(promoDataList)
+                    if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SHOW_PROMO) && it.data.banners.isNotEmpty()) {
+                        renderHotelPromo(it.data.banners)
                     } else {
                         hidePromoContainer()
                     }
-                }
-                is Fail -> {
+                    renderHotelPromo(it.data.banners)
                 }
             }
         })
@@ -329,32 +327,39 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun countRoomDuration(): Long = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
 
     private fun loadPromoData() {
-        homepageViewModel.getHotelPromo(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_home_promo))
+        homepageViewModel.getHotelPromo(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_collective_banner))
     }
 
-    private fun renderHotelPromo(promoDataList: List<HotelPromoEntity>) {
+    private fun renderHotelPromo(promoDataList: List<TravelCollectiveBannerModel.Banner>) {
         showPromoContainer()
-        if (!::promoAdapter.isInitialized) {
-            promoAdapter = HotelPromoAdapter(promoDataList)
-            promoAdapter.promoClickListener = this
 
-            val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-            rv_hotel_homepage_promo.layoutManager = layoutManager
-            rv_hotel_homepage_promo.setHasFixedSize(true)
-            rv_hotel_homepage_promo.isNestedScrollingEnabled = false
-            rv_hotel_homepage_promo.adapter = promoAdapter
-            if (promoDataList.isNotEmpty()) trackingHotelUtil.hotelBannerImpression(promoDataList.first(), 0)
-            rv_hotel_homepage_promo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                        trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)
-                                ?: HotelPromoEntity(), position)
-                    }
-                }
-            })
-        } else promoAdapter.updateItem(promoDataList)
+        banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
+        banner_hotel_homepage_promo.setOnPromoScrolledListener { position ->
+            trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)
+                    ?: TravelCollectiveBannerModel.Banner(), position)
+        }
+        if (promoDataList.isNotEmpty()) trackingHotelUtil.hotelBannerImpression(promoDataList.first(), 0)
+
+        banner_hotel_homepage_promo.setOnPromoClickListener { position ->
+            onPromoClicked(promoDataList.getOrNull(position)
+                    ?: TravelCollectiveBannerModel.Banner(), position)
+            RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.appUrl ?: "")
+        }
+
+        renderBannerView(promoDataList)
+    }
+
+    private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {
+        showPromoContainer()
+        val promoUrls = ArrayList<String>()
+        for ((_, _, attribute) in bannerList) {
+            promoUrls.add(attribute.imageUrl)
+        }
+
+        banner_hotel_homepage_promo.setPromoList(promoUrls)
+        banner_hotel_homepage_promo.buildView()
+        banner_hotel_homepage_promo.bannerSeeAll.hide()
+        banner_hotel_homepage_promo.bannerIndicator.hide()
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
@@ -387,7 +392,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotel_container_promo.visibility = View.GONE
     }
 
-    override fun onPromoClicked(promo: HotelPromoEntity, position: Int) {
+    fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner, position: Int) {
         trackingHotelUtil.hotelClickBanner(promo, position)
     }
 

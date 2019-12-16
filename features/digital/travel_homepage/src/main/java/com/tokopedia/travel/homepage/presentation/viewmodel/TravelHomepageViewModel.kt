@@ -45,7 +45,7 @@ class TravelHomepageViewModel @Inject constructor(
 
     fun getBanner(rawQuery: String, isFromCloud: Boolean) {
         launch {
-            val banners = getTravelCollectiveBannerUseCase.execute(rawQuery, TravelType.SUB_HOMEPAGE, isFromCloud)
+            val banners = getTravelCollectiveBannerUseCase.execute(rawQuery, TravelType.ALL, isFromCloud)
             when (banners) {
                 is Success -> {
                     travelItemList.value?.let {

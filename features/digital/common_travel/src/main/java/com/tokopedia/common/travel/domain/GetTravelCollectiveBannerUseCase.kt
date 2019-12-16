@@ -63,6 +63,7 @@ class GetTravelCollectiveBannerUseCase @Inject constructor(private val multiRequ
             TravelType.FLIGHT -> PARAM_PRODUCT_FLIGHT
             TravelType.HOTEL -> PARAM_PRODUCT_HOTEL
             TravelType.SUB_HOMEPAGE -> PARAM_PRODUCT_SUB_HOMEPAGE
+            TravelType.ALL -> PARAM_PRODUCT_ALL
             else -> PARAM_PRODUCT_ALL
         }
     }

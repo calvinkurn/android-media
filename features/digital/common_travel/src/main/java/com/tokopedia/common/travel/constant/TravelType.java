@@ -7,5 +7,6 @@ public enum TravelType {
     TRAIN,
     FLIGHT,
     HOTEL,
-    SUB_HOMEPAGE
+    SUB_HOMEPAGE,
+    ALL
 }
