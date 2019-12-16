@@ -165,7 +165,7 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     private fun observeTrackingSeeSimilarProductsEventLiveData() {
         productCardOptionsViewModel?.getTrackingSeeSimilarProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             ProductCardOptionsTracking.eventClickSeeSimilarProduct(
-                    productCardOptionsViewModel?.productCardOptionsModel?.screenName ?: "",
+                    productCardOptionsViewModel?.productCardOptionsModel?.seeSimilarProductEvent ?: "",
                     productCardOptionsViewModel?.productCardOptionsModel?.screenName ?: "",
                     productCardOptionsViewModel?.productCardOptionsModel?.keyword ?: "",
                     productCardOptionsViewModel?.productCardOptionsModel?.productId ?: ""
