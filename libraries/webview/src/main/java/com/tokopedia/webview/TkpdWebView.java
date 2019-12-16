@@ -12,7 +12,6 @@ import android.webkit.WebView;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.play.core.splitcompat.SplitCompat;
-import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.authentication.AuthConstant;
 import com.tokopedia.authentication.AuthHelper;
@@ -80,6 +79,8 @@ public class TkpdWebView extends WebView {
      * isUseFlag=true will add custom query parameter
      */
     public void loadAuthUrl(@NonNull String url,@Nullable UserSessionInterface userSession, boolean isUseFlag) {
+        url = WebViewHelper.appendGAClientIdAsQueryParam(url, getContext());
+
         String urlToLoad;
         if (isUseFlag) {
             urlToLoad = generateUri(url);

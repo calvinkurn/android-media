@@ -40,6 +40,10 @@ class CategoryPageAnalytics {
     val KEY_PROMOVIEW = "promoView"
     val KEY_EVENT_BANNED_CLICK = "clickCategoryBanned"
     val KEY_EVENT_BANNED_VIEW = "viewCategoryBannedIris"
+    val KEY_PRODUCT_GROUP_NAME = "productGroupName"
+    val KEY_PRODUCT_GROUP_ID = "productGroupId"
+    val KEY_SUBCATEGORY = "subcategory"
+    val KEY_SUBCATEGORY_ID = "subcategoryId"
 
     val EVENT_NAME_VALUE = "clickCategory"
     val EVENT_CATEGORY_VALUE = "category page"
@@ -417,5 +421,23 @@ class CategoryPageAnalytics {
                 KEY_CATEGORY_ID, categoryId
         )
         tracker.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun createOpenScreenEventMap(parentId: String?,
+                                 parentName: String?,
+                                 categoryId: String,
+                                 categoryName: String): Map<String, String>? {
+        val map = HashMap<String, String>()
+        map[KEY_CATEGORY] = KEY_CATEGORY
+        map[KEY_CATEGORY_ID] = categoryId
+        map[KEY_PRODUCT_GROUP_NAME] = ""
+        map[KEY_PRODUCT_GROUP_ID] = ""
+        map[KEY_SUBCATEGORY] = parentName ?: categoryName
+        map[KEY_SUBCATEGORY_ID] = parentId ?: categoryId
+        if (parentId != null) {
+            map[KEY_PRODUCT_GROUP_NAME] = categoryName
+            map[KEY_PRODUCT_GROUP_ID] = categoryId
+        }
+        return map
     }
 }

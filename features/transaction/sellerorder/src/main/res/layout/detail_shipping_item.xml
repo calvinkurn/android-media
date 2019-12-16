@@ -135,7 +135,9 @@
                     app:typographyWeight="bold"
                     app:typographyType="body_3"
                     android:layout_toLeftOf="@+id/driver_call_btn"
-                    android:layout_toStartOf="@+id/driver_call_btn"/>
+                    android:layout_toStartOf="@+id/driver_call_btn"
+                    android:textIsSelectable="true"
+                    android:inputType="none"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_driver_phone"
@@ -148,7 +150,9 @@
                     app:typographyType="body_3"
                     tools:text="@string/tv_driver_phone_example"
                     android:layout_toLeftOf="@+id/driver_call_btn"
-                    android:layout_toStartOf="@+id/driver_call_btn"/>
+                    android:layout_toStartOf="@+id/driver_call_btn"
+                    android:textIsSelectable="true"
+                    android:inputType="none"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_driver_license"
@@ -209,7 +213,9 @@
             tools:text="AS Misbeh"
             app:layout_constrainedWidth="true"
             android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"/>
+            android:layout_marginEnd="@dimen/dp_8"
+            android:textIsSelectable="true"
+            android:inputType="none"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_receiver_phone"
@@ -223,7 +229,9 @@
             tools:text="08113400775"
             app:layout_constrainedWidth="true"
             android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"/>
+            android:layout_marginEnd="@dimen/dp_8"
+            android:textIsSelectable="true"
+            android:inputType="none"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_receiver_street"
@@ -240,8 +248,9 @@
             android:textColor="@color/Neutral_N700_96"
             tools:text="Wisma 77 Tower 2"
             android:lineSpacingMultiplier="0.8"
-            android:inputType="textMultiLine"
-            android:scrollHorizontally="false"/>
+            android:scrollHorizontally="false"
+            android:textIsSelectable="true"
+            android:inputType="none"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_receiver_district"
@@ -255,11 +264,12 @@
             tools:text="Slipi, Jakarta Barat 14410"
             android:lineSpacingMultiplier="0.8"
             android:scrollHorizontally="false"
-            android:inputType="textMultiLine"
             app:layout_constrainedWidth="true"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textIsSelectable="true"
+            android:inputType="none"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_receiver_notes"
@@ -275,7 +285,8 @@
             app:layout_constrainedWidth="true"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:textIsSelectable="true"
+            android:inputType="none"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_notes_label"
@@ -349,7 +360,9 @@
                 android:layout_below="@id/booking_code_title"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_16"
-                tools:text="ABCDEFHIJK"/>
+                tools:text="ABCDEFHIJK"
+                android:textIsSelectable="true"
+                android:inputType="none"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/booking_code_see_btn"

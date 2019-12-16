@@ -24,23 +24,23 @@ class ProductManageListViewHolder(view: View, checkableListener: CheckableIntera
 
     companion object {
         @LayoutRes
-        var LAYOUT = R.layout.item_manage_product_list
+        var LAYOUT = com.tokopedia.product.manage.list.R.layout.item_manage_product_list
     }
 
-    private val productImageView: ImageView = view.findViewById(R.id.image_view_product)
-    private val titleTextView: TextView = view.findViewById(R.id.text_view_title);
-    private val stockTextView: TextView = view.findViewById(R.id.text_view_stock);
-    private val priceTextView: TextView = view.findViewById(R.id.text_view_price);
-    private val featuredImageView: ImageView = view.findViewById(R.id.image_view_featured);
-    private val cashbackTextView: TextView = view.findViewById(R.id.text_view_cashback);
-    private val wholesaleTextView: TextView = view.findViewById(R.id.text_view_wholesale);
-    private val preOrderTextView: TextView = view.findViewById(R.id.text_view_pre_order);
-    private val freeReturnImageView: ImageView = view.findViewById(R.id.image_view_free_return);
-    private val optionImageButton: View = view.findViewById(R.id.image_button_option);
-    private val checkBoxProduct: CheckBox = view.findViewById(R.id.check_box_product);
-    private val tagEmptyStock: TextView = view.findViewById(R.id.tag_empty_product);
-    private val viewSuperVision: View = view.findViewById(R.id.view_product_on_supervision);
-    private val textViewVariant: TextView = view.findViewById(R.id.text_view_variant);
+    private val productImageView: ImageView = view.findViewById(com.tokopedia.product.manage.list.R.id.image_view_product)
+    private val titleTextView: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.text_view_title);
+    private val stockTextView: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.text_view_stock);
+    private val priceTextView: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.text_view_price);
+    private val featuredImageView: ImageView = view.findViewById(com.tokopedia.product.manage.list.R.id.image_view_featured);
+    private val cashbackTextView: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.text_view_cashback);
+    private val wholesaleTextView: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.text_view_wholesale);
+    private val preOrderTextView: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.text_view_pre_order);
+    private val freeReturnImageView: ImageView = view.findViewById(com.tokopedia.product.manage.list.R.id.image_view_free_return);
+    private val optionImageButton: View = view.findViewById(com.tokopedia.product.manage.list.R.id.image_button_option);
+    private val checkBoxProduct: CheckBox = view.findViewById(com.tokopedia.product.manage.list.R.id.check_box_product);
+    private val tagEmptyStock: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.tag_empty_product);
+    private val viewSuperVision: View = view.findViewById(com.tokopedia.product.manage.list.R.id.view_product_on_supervision);
+    private val textViewVariant: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.text_view_variant);
 
     interface ProductManageViewHolderListener {
         fun onClickOptionItem(productManageViewModel: ProductManageViewModel)
@@ -76,14 +76,14 @@ class ProductManageListViewHolder(view: View, checkableListener: CheckableIntera
 
         titleTextView.text = MethodChecker.fromHtml(productManageViewModel.productName)
         priceTextView.text = priceTextView.context.getString(
-                R.string.pml_price_format_text, productManageViewModel.productCurrencySymbol,
+                com.tokopedia.product.manage.list.R.string.pml_price_format_text, productManageViewModel.productCurrencySymbol,
                 CurrencyUtils.getPriceFormatted(productManageViewModel.productCurrencyId,
                         productManageViewModel.productPricePlain)
         )
 
         if (productManageViewModel.productCashback > 0) {
             cashbackTextView.text = cashbackTextView.context.getString(
-                    R.string.product_manage_item_cashback, productManageViewModel.productCashback)
+                    com.tokopedia.product.manage.list.R.string.product_manage_item_cashback, productManageViewModel.productCashback)
             cashbackTextView.visibility = View.VISIBLE
         } else {
             cashbackTextView.visibility = View.GONE
@@ -98,9 +98,9 @@ class ProductManageListViewHolder(view: View, checkableListener: CheckableIntera
         if (!statusStockEmpty && productManageViewModel.productUsingStock == ProductManageStockDef.USING_STOCK) {
             stockTextView.visibility = View.VISIBLE
             if (productManageViewModel.isProductVariant) {
-                stockTextView.text = itemView.context.getString(R.string.pml_product_variant_stock_limited)
+                stockTextView.text = itemView.context.getString(com.tokopedia.product.manage.list.R.string.pml_product_variant_stock_limited)
             } else {
-                stockTextView.text = itemView.context.getString(R.string.product_manage_label_stock_counter, productManageViewModel.productStock)
+                stockTextView.text = itemView.context.getString(com.tokopedia.product.manage.list.R.string.product_manage_label_stock_counter, productManageViewModel.productStock)
             }
         } else {
             stockTextView.visibility = View.GONE

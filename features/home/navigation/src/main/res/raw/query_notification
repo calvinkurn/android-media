@@ -7,7 +7,6 @@ query Notification($cursor: String) {
   }
 
   notifications{
-  	total_notif
   	total_cart
     inbox {
       talk
@@ -44,8 +43,6 @@ query Notification($cursor: String) {
   }
 
   feed_last_feeds(cursor:$cursor){
-      error
-      content
       newFeeds
     }
 

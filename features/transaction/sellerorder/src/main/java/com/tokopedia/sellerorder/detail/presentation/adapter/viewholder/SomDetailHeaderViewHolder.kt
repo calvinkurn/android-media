@@ -20,6 +20,7 @@ import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelInfoAdapter
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.detail_header_item.view.*
 import kotlinx.android.synthetic.main.detail_header_resi_item.view.*
 
@@ -33,12 +34,38 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
     @SuppressLint("Range")
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailHeader) {
-            itemView.header_title.text = item.dataObject.statusText
+            itemView.header_title?.text = item.dataObject.statusText
             itemView.header_see_history?.setOnClickListener {
                 itemView.context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.HISTORY_ORDER, "")
                         .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)
                         .putExtra(EXTRA_USER_MODE, 2))
             }
+
+            if (item.dataObject.isBuyerRequestCancel) {
+                itemView.ticker_detail_buyer_request_cancel?.apply {
+                    visibility = View.VISIBLE
+                    closeButtonVisibility = View.GONE
+                    setHtmlDescription(itemView.context.getString(R.string.buyer_request_cancel_html))
+                    setOnClickListener { actionListener.onShowBuyerRequestCancelReasonBottomSheet() }
+                    setDescriptionClickEvent(object: TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            actionListener.onShowBuyerRequestCancelReasonBottomSheet()
+                        }
+
+                        override fun onDismiss() {}
+
+                    })
+                    post {
+                        measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        requestLayout()
+                    }
+                }
+
+            } else {
+                itemView.ticker_detail_buyer_request_cancel?.visibility = View.GONE
+            }
+
             itemView.header_buyer_value?.text = item.dataObject.custName
             itemView.header_date_value?.text = item.dataObject.paymentDate
 
@@ -76,7 +103,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
 
             itemView.header_invoice?.text = item.dataObject.invoice
             itemView.header_see_invoice?.setOnClickListener {
-                RouteManager.route(it.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, item.dataObject.invoiceUrl))
+                actionListener.onSeeInvoice(item.dataObject.invoiceUrl)
             }
 
             if (item.dataObject.awb.isNotEmpty()) {
@@ -86,7 +113,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     itemView.header_resi_value?.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
                 }
                 itemView.header_copy_resi?.setOnClickListener {
-                    actionListener.onTextCopied(itemView.context.getString(R.string.awb_label), itemView.context.getString(R.string.resi_tersalin))
+                    actionListener.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb)
                 }
             } else {
                 itemView.layout_resi?.visibility = View.GONE

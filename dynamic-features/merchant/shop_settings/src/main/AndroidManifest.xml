@@ -3,7 +3,6 @@
     package="com.tokopedia.shop.settings.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="true"
         dist:title="@string/shop_settings_title">
         <dist:fusing dist:include="true" />

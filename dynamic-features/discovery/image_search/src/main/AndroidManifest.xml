@@ -3,7 +3,6 @@
     package="com.tokopedia.imagesearch.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_image_search_module_name">
         <dist:fusing dist:include="true" />

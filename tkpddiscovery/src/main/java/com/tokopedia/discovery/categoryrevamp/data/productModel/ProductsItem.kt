@@ -15,7 +15,7 @@ data class ProductsItem(
         @field:SerializedName("imageURL700")
         var imageURL700: String = "",
 
-        @field:SerializedName("shop")
+        @SerializedName("shop")
         val shop: Shop = Shop(),
 
         @field:SerializedName("originalPrice")
@@ -109,7 +109,10 @@ data class ProductsItem(
         var productWishlistTrackingUrl: String = "",
 
         @field:SerializedName("adapterPosition")
-        var adapter_position: Int = 0
+        var adapter_position: Int = 0,
+
+        @field:SerializedName("free_ongkir")
+        var freeOngkir: FreeOngkir? = null
 
 
 ) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
@@ -207,3 +210,10 @@ data class ProductsItem(
         }
     }
 }
+
+data class FreeOngkir(
+        @SerializedName("is_active")
+        val isActive: Boolean,
+        @SerializedName("img_url")
+        val imageUrl: String
+)

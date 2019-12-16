@@ -244,6 +244,19 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         finishConnection();
         if (listDatas.size() == 0) {
             view.addRetry();
+            view.removeRetryMessage();
+            view.hideFab();
+        } else {
+            NetworkErrorHelper.showSnackbar((Activity) context);
+        }
+    }
+
+    @Override
+    public void onErrorWithMessage(String message) {
+        finishConnection();
+        if (listDatas.size() == 0) {
+            view.addRetry();
+            view.addRetryMessage(message);
             view.hideFab();
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);
@@ -255,6 +268,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         finishConnection();
         if (listDatas.size() == 0) {
             view.addRetry();
+            view.removeRetryMessage();
             view.hideFab();
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);

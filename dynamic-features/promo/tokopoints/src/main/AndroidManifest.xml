@@ -3,7 +3,6 @@
     package="com.tokopedia.tokopoints.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_tokopoints">
         <dist:fusing dist:include="true" />
