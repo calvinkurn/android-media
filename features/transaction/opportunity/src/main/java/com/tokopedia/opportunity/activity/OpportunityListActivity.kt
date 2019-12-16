@@ -18,7 +18,7 @@ class OpportunityListActivity: BasePresenterActivity<OpportunityListPresenter>()
     override fun initialPresenter() {}
 
     override fun getLayoutId(): Int {
-        return R.layout.activity_simple_fragment
+        return R.layout.activity_simple_fragment_opportunity
     }
 
     override fun initView() {

@@ -39,8 +39,8 @@ public class PictureView extends BaseView<ProductDetailData, SnapShotFragmentVie
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(getLayoutView(), this, true);
 
-        vpImage = (ViewPager) findViewById(R.id.view_pager);
-        indicator = (LinePageIndicator) findViewById(R.id.indicator);
+        vpImage = (ViewPager) findViewById(com.tokopedia.opportunity.R.id.view_pager);
+        indicator = (LinePageIndicator) findViewById(com.tokopedia.opportunity.R.id.indicator);
     }
 
     public PictureView(Context context) {

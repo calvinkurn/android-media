@@ -50,7 +50,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, SnapShotFragmentVi
         ivGoldShop = (ImageView) findViewById(R.id.iv_gold);
         ivOfficialStore = (ImageView) findViewById(R.id.iv_official);
         ivLuckyShop = (ImageView) findViewById(R.id.iv_lucky);
-        tvShopName = (TextView) findViewById(R.id.tv_name);
+        tvShopName = (TextView) findViewById(com.tokopedia.opportunity.R.id.tv_name);
         tvShopLoc = (TextView) findViewById(R.id.tv_location);
         ivBtnFav = (ImageView) findViewById(R.id.iv_fav);
         ivShopMessage = (ImageView) findViewById(R.id.iv_message);

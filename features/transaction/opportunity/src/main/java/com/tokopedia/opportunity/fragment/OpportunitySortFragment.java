@@ -95,12 +95,12 @@ public class OpportunitySortFragment extends BasePresenterFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_sort, menu);
+        inflater.inflate(com.tokopedia.core2.R.menu.menu_sort, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_close) {
+        if (item.getItemId() == com.tokopedia.core2.R.id.action_close) {
             getActivity().finish();
             return true;
         } else

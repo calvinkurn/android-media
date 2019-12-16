@@ -128,7 +128,7 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
     private void bindParentViewHolder(ParentViewHolder holder, final int position) {
         holder.title.setText(filterViewModel.getListChild().get(position).getName());
         holder.title.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
-                (holder.title.getContext(), R.drawable.arrow_drop_down), null);
+                (holder.title.getContext(), com.tokopedia.core2.R.drawable.arrow_drop_down), null);
     }
 
 

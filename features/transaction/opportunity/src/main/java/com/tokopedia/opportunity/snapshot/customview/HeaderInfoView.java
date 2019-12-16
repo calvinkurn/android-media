@@ -33,7 +33,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, SnapShotFragment
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(getLayoutView(), this, true);
 
-        tvName = (TextView) findViewById(R.id.tv_name);
+        tvName = (TextView) findViewById(com.tokopedia.opportunity.R.id.tv_name);
         tvPrice = (TextView) findViewById(R.id.tv_price);
         cashbackTextView = (TextView) findViewById(R.id.label_cashback);
         cashbackHolder = (LinearLayout) findViewById(R.id.cashback_holder);

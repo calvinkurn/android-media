@@ -77,9 +77,9 @@ public class OpportunityFilterTitleAdapter extends RecyclerView.Adapter<Opportun
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         if (list.get(position).isSelected())
-            holder.mainView.setBackgroundColor(MethodChecker.getColor(context, R.color.white));
+            holder.mainView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.white));
         else
-            holder.mainView.setBackgroundColor(MethodChecker.getColor(context, R.color.transparent));
+            holder.mainView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.transparent));
 
         if (list.get(position).isActive())
             holder.redDot.setVisibility(View.VISIBLE);
