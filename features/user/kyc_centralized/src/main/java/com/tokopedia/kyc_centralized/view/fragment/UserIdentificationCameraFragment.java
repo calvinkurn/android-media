@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-import static com.tokopedia.kyc_centralized.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
+import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 
 /**
  * @author by alvinatin on 12/11/18.

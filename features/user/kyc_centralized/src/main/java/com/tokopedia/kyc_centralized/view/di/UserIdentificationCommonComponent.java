@@ -1,7 +1,7 @@
-package com.tokopedia.kyc_centralized.di;
+package com.tokopedia.kyc_centralized.view.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.user_identification_common.view.fragment.UserIdentificationFormFinalFragment;
+import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFinalFragment;
 
 import dagger.Component;
 

@@ -31,8 +31,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
-import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent;
-import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent;
+import com.tokopedia.kyc_centralized.view.di.DaggerUserIdentificationCommonComponent;
+import com.tokopedia.kyc_centralized.view.di.UserIdentificationCommonComponent;
 import com.tokopedia.user_identification_common.subscriber.GetKtpStatusSubscriber;
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity;
@@ -45,9 +45,9 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.kyc_centralized.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
-import static com.tokopedia.kyc_centralized.KYCConstant.REQUEST_CODE_CAMERA_FACE;
-import static com.tokopedia.kyc_centralized.KYCConstant.REQUEST_CODE_CAMERA_KTP;
+import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
+import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
+import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
 import static com.tokopedia.kyc_centralized.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
 import static com.tokopedia.kyc_centralized.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
 

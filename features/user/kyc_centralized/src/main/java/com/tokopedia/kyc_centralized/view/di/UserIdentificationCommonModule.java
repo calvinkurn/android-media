@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.di;
+package com.tokopedia.kyc_centralized.view.di;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -11,15 +11,15 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository;
 import com.tokopedia.imageuploader.domain.UploadImageRepository;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
+import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage;
+import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationUploadImagePresenter;
+import com.tokopedia.kyc_centralized.view.viewmodel.AttachmentImageModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCase;
 import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentificationUseCase;
 import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase;
 import com.tokopedia.user_identification_common.util.AppSchedulerProvider;
-import com.tokopedia.user_identification_common.view.listener.UserIdentificationUploadImage;
-import com.tokopedia.user_identification_common.view.presenter.UserIdentificationUploadImagePresenter;
-import com.tokopedia.user_identification_common.view.viewmodel.AttachmentImageModel;
 
 import dagger.Module;
 import dagger.Provides;
@@ -45,7 +45,7 @@ public class UserIdentificationCommonModule {
                                                                                                   @ImageUploaderQualifier Gson gson,
                                                                                                   @ImageUploaderQualifier UserSessionInterface userSession,
                                                                                                   @ImageUploaderQualifier ImageUploaderUtils imageUploaderUtils) {
-        return new UploadImageUseCase<>(uploadImageRepository, generateHostRepository, gson, userSession, AttachmentImageModel.class, imageUploaderUtils);
+        return new UploadImageUseCase<AttachmentImageModel>(uploadImageRepository, generateHostRepository, gson, userSession, AttachmentImageModel.class, imageUploaderUtils);
     }
 
 
