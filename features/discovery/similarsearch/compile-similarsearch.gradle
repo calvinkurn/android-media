@@ -14,6 +14,7 @@ include 'features:transaction:atc_common'
 include 'libraries:analytics'
 include 'libraries:applink'
 include 'libraries:cache_api'
+include 'libraries:common_network'
 include 'libraries:core_legacy'
 include 'libraries:core_network'
 include "libraries:cpm"

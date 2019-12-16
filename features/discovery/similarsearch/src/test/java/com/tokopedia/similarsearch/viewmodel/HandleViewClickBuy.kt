@@ -14,22 +14,22 @@ import com.tokopedia.similarsearch.viewmodel.testinstance.getAddToCartFailedMode
 import com.tokopedia.similarsearch.viewmodel.testinstance.getAddToCartSuccessModel
 import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelCommon
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase as RxUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.slot
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Subscriber
+import com.tokopedia.usecase.UseCase as RxUseCase
 
-internal class HandleViewClickAddToCart: Spek({
+internal class HandleViewClickBuy: Spek({
 
     InstantTaskExecutorRuleSpek(this)
 
-    Feature("Original Product Click Add to Cart") {
+    Feature("Original Product Click Buy") {
         createTestInstance()
 
-        Scenario("Add to Cart Not Logged In") {
+        Scenario("Click Buy, Not Logged In") {
             val similarProductModelCommon = getSimilarProductModelCommon()
             val userSession by memoized<UserSessionInterface>()
 
@@ -49,8 +49,8 @@ internal class HandleViewClickAddToCart: Spek({
                 similarSearchViewModel.onViewCreated()
             }
 
-            When("handle view click add to cart") {
-                similarSearchViewModel.onViewClickAddToCart()
+            When("handle view click buy") {
+                similarSearchViewModel.onViewClickBuy()
             }
 
             Then("should post event go to login page") {
@@ -60,10 +60,10 @@ internal class HandleViewClickAddToCart: Spek({
                         "Route to login page should be true")
             }
 
-            Then("assert tracking click add to cart event should be null") {
-                val trackingAddToCartEventLiveData = similarSearchViewModel.getTrackingAddToCartEventLiveData().value
+            Then("assert tracking click buy event should be null") {
+                val trackingBuyEventLiveData = similarSearchViewModel.getTrackingBuyEventLiveData().value
 
-                trackingAddToCartEventLiveData?.getContentIfNotHandled() shouldBe null
+                trackingBuyEventLiveData?.getContentIfNotHandled() shouldBe null
             }
 
             Then("assert add to cart event should be null") {
@@ -71,9 +71,15 @@ internal class HandleViewClickAddToCart: Spek({
 
                 addToCartEventLiveData?.getContentIfNotHandled() shouldBe null
             }
+
+            Then("assert route to cart page event is null (do not route to cart page)") {
+                val routeToCartPageEventLiveData = similarSearchViewModel.getRouteToCartPageEventLiveData().value
+
+                routeToCartPageEventLiveData?.getContentIfNotHandled() shouldBe null
+            }
         }
 
-        Scenario("Add to Cart Status Success") {
+        Scenario("Click Buy with Add To Cart API success") {
             val similarProductModelCommon = getSimilarProductModelCommon()
             val addToCartSuccessModel = getAddToCartSuccessModel()
 
@@ -106,8 +112,8 @@ internal class HandleViewClickAddToCart: Spek({
                 }
             }
 
-            When("handle view click add to cart") {
-                similarSearchViewModel.onViewClickAddToCart()
+            When("handle view click buy") {
+                similarSearchViewModel.onViewClickBuy()
             }
 
             Then("should not post event to login page") {
@@ -128,19 +134,25 @@ internal class HandleViewClickAddToCart: Spek({
                 addToCartRequestParams.quantity shouldBe similarProductModelCommon.getOriginalProduct().minOrder
             }
 
-            Then("assert tracking click add to cart event should contain original product as object data layer") {
+            Then("assert tracking click buy event should contain original product as object data layer") {
                 val expectedTrackingData = similarProductModelCommon.getOriginalProduct()
                         .asObjectDataLayerAddToCart(addToCartSuccessModel.data.cartId)
 
-                val trackingAddToCartEventLiveData = similarSearchViewModel.getTrackingAddToCartEventLiveData().value
+                val trackingBuyEventLiveData = similarSearchViewModel.getTrackingBuyEventLiveData().value
 
-                trackingAddToCartEventLiveData?.getContentIfNotHandled() shouldBe expectedTrackingData
+                trackingBuyEventLiveData?.getContentIfNotHandled() shouldBe expectedTrackingData
             }
 
-            Then("assert add to cart event should be true (success)") {
+            Then("assert add to cart event should be null (no popup dialog)") {
                 val addToCartEventLiveData = similarSearchViewModel.getAddToCartEventLiveData().value
 
-                addToCartEventLiveData?.getContentIfNotHandled() shouldBe true
+                addToCartEventLiveData?.getContentIfNotHandled() shouldBe null
+            }
+
+            Then("assert route to cart page event is true") {
+                val routeToCartPageEventLiveData = similarSearchViewModel.getRouteToCartPageEventLiveData().value
+
+                routeToCartPageEventLiveData?.getContentIfNotHandled() shouldBe true
             }
         }
 
@@ -177,8 +189,8 @@ internal class HandleViewClickAddToCart: Spek({
                 }
             }
 
-            When("handle view click add to cart") {
-                similarSearchViewModel.onViewClickAddToCart()
+            When("handle view click buy") {
+                similarSearchViewModel.onViewClickBuy()
             }
 
             Then("should not post event to login page") {
@@ -199,10 +211,10 @@ internal class HandleViewClickAddToCart: Spek({
                 addToCartRequestParams.quantity shouldBe similarProductModelCommon.getOriginalProduct().minOrder
             }
 
-            Then("assert tracking click add to cart event should be null") {
-                val trackingAddToCartEventLiveData = similarSearchViewModel.getTrackingAddToCartEventLiveData().value
+            Then("assert tracking click buy event should be null") {
+                val trackingBuyEventLiveData = similarSearchViewModel.getTrackingBuyEventLiveData().value
 
-                trackingAddToCartEventLiveData?.getContentIfNotHandled() shouldBe null
+                trackingBuyEventLiveData?.getContentIfNotHandled() shouldBe null
             }
 
             Then("assert add to cart event should be false (failed)") {
@@ -215,6 +227,12 @@ internal class HandleViewClickAddToCart: Spek({
                 val addToCartFailedMessage = similarSearchViewModel.getAddToCartFailedMessage()
 
                 addToCartFailedMessage shouldBe addToCartErrorModel.errorMessage[0]
+            }
+
+            Then("assert route to cart page event is null (do not route to cart page)") {
+                val routeToCartPageEventLiveData = similarSearchViewModel.getRouteToCartPageEventLiveData().value
+
+                routeToCartPageEventLiveData?.getContentIfNotHandled() shouldBe null
             }
         }
 
@@ -250,8 +268,8 @@ internal class HandleViewClickAddToCart: Spek({
                 }
             }
 
-            When("handle view click add to cart") {
-                similarSearchViewModel.onViewClickAddToCart()
+            When("handle view click buy") {
+                similarSearchViewModel.onViewClickBuy()
             }
 
             Then("should not post event to login page") {
@@ -282,6 +300,12 @@ internal class HandleViewClickAddToCart: Spek({
                 val addToCartEventLiveData = similarSearchViewModel.getAddToCartEventLiveData().value
 
                 addToCartEventLiveData?.getContentIfNotHandled() shouldBe false
+            }
+
+            Then("assert route to cart page event is null (do not route to cart page)") {
+                val routeToCartPageEventLiveData = similarSearchViewModel.getRouteToCartPageEventLiveData().value
+
+                routeToCartPageEventLiveData?.getContentIfNotHandled() shouldBe null
             }
         }
     }
