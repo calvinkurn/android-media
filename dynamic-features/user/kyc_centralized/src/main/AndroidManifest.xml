@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    package="com.tokopedia.kyc_centralized.mainapp">
+
+    <dist:module
+        dist:onDemand="false"
+        dist:title="@string/user_identification_common_title">
+        <dist:fusing dist:include="true" />
+    </dist:module>
+
+    <application android:hasCode="false" />
+</manifest>

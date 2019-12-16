@@ -47,6 +47,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory.MONEYIN_INTER
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.config.GlobalConfig
@@ -117,6 +118,7 @@ object DeeplinkDFMapper {
     private val DFM_PAYMENT_SETTING_SELLERAPP = "payment_setting_sellerapp"
     private val DFM_PRODUCT_MANAGE_CUSTOMER = "product_manage_customer"
     private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
+    private val DFM_USER_IDENTIFICATION_COMMON = "user_identification_common"
 
     @JvmField
     val DFM_ONBOARDING = "onboarding"
@@ -174,6 +176,7 @@ object DeeplinkDFMapper {
 
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING, R.string.payment_settings_title))
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_SETTING_NOTIF, R.string.notif_settings_title))
+            add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DFM_USER_IDENTIFICATION_COMMON, R.string.user_identification_common_title))
         }
     }
 

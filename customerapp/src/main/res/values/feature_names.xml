@@ -175,4 +175,8 @@
 
     <!-- Dynamic feature for manage product list-->
     <string name="title_product_manage">Daftar Produk</string>
+
+    <!-- Dynamic feature for user identification commmon-->
+    <string name="title_upload_user_identification_common">Upload Foto</string>
+
 </resources>
