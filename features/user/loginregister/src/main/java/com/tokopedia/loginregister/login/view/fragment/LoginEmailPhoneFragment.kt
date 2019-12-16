@@ -601,11 +601,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun installDynamicFeatureAtLogin() {
         // for POC - start install when login
-        if (userSession.hasShop()) {
-            activity?.run {
-                if (!isInstalled(application, DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
-                    DFInstaller().installOnBackground(this.application, listOf(DFM_MERCHANT_SELLER_CUSTOMERAPP))
-                }
+        activity?.run {
+            if (userSession.hasShop()) {
+                DFInstaller().installOnBackground(this.application, listOf(DFM_MERCHANT_SELLER_CUSTOMERAPP))
             }
         }
     }
