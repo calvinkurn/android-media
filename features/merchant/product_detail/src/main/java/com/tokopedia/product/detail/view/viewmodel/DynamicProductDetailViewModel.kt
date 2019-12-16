@@ -10,15 +10,13 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.debugTrace
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
-import com.tokopedia.product.detail.data.model.ProductInfoP2General
-import com.tokopedia.product.detail.data.model.ProductInfoP2Login
-import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
-import com.tokopedia.product.detail.data.model.ProductInfoP3
+import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
@@ -71,6 +69,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                                                         private val trackAffiliateUseCase: TrackAffiliateUseCase,
                                                         private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                                         private val updateCartCounterUseCase: UpdateCartCounterUseCase,
+                                                        private val getTradeinInfoUseCase: GetTradeinInfoUseCase,
                                                         private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher) {
 
     val productInfoP1 = MutableLiveData<Result<ProductInfoP1>>()
@@ -82,11 +81,14 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     val loadTopAdsProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
     val moveToWarehouseResult = MutableLiveData<Result<Boolean>>()
     val moveToEtalaseResult = MutableLiveData<Result<Boolean>>()
+    val tradeinResult = MutableLiveData<TradeinResponse>()
 
     var multiOrigin: WarehouseInfo = WarehouseInfo()
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var shopInfo: ShopInfo? = null
     var installmentData: FinancingDataResponse? = null
+    private var shouldShowTradein = true
+    var tradeInParams: TradeinParams = TradeinParams()
 
     private var submitTicketSubscription: Subscription? = null
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
@@ -143,13 +145,19 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
     fun getProductP1(productParams: ProductParams, forceRefresh: Boolean = false) {
         launchCatchError(block = {
+            shouldShowTradein = true
             val productData = getPdpLayout(productParams.productId ?: "", forceRefresh)
             val initialLayoutData = productData.listOfLayout
             getDynamicProductInfoP1 = productData.layoutData
 
             removeDynamicComponent(initialLayoutData)
+
             //Render initial data first
             productLayout.value = Success(initialLayoutData)
+            val tradeinParams = renderTradein(getDynamicProductInfoP1, deviceId)
+            if (shouldShowTradein) {
+                getTradein(tradeinParams)
+            }
 
             // Then update the following, it will not throw anything when error
             getProductP2(forceRefresh, productParams.warehouseId)
@@ -158,6 +166,33 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             productLayout.value = Fail(it)
         }
     }
+
+    private suspend fun getTradein(tradeinParams: TradeinParams) {
+        getTradeinInfoUseCase.params = GetTradeinInfoUseCase.createParams(tradeinParams)
+        tradeinResult.value = getTradeinInfoUseCase.executeOnBackground()
+    }
+
+    private fun renderTradein(productInfoP1: DynamicProductInfoP1?, deviceId: String?): TradeinParams {
+        tradeInParams = TradeinParams()
+        productInfoP1?.let {
+            tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
+            tradeInParams.deviceId = deviceId ?: ""
+            tradeInParams.userId = if (userId.isNotEmpty())
+                userId.toIntOrZero()
+            else
+                0
+            tradeInParams.newPrice = it.data.price.value
+            tradeInParams.productId = it.basic.getProductId()
+            tradeInParams.shopId = it.basic.getShopId()
+            tradeInParams.productName = it.getProductName
+
+            tradeInParams.isPreOrder = it.data.preOrder.isPreOrderActive()
+            tradeInParams.isOnCampaign = it.data.campaign.isActive
+        }
+
+        return tradeInParams
+    }
+
 
     private suspend fun getProductP2(forceRefresh: Boolean, warehouseId: String?) {
         getDynamicProductInfoP1?.let {
@@ -210,6 +245,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
         val removedData = initialLayoutData.map {
             if (!isTradein && it.name() == ProductDetailConstant.TRADE_IN) {
+                shouldShowTradein = false
                 it
             } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
                 it

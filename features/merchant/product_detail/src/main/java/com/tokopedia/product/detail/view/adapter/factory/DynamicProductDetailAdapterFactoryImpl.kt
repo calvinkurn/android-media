@@ -29,11 +29,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
     }
 
     override fun type(data: ProductMostHelpfulReviewDataModel): Int {
-        return ProductMostHelpfulReviewViewHolder.LAYOUT
-    }
-
-    override fun type(data: ProductImageReviewDataModel): Int {
-        return ProductImageReviewViewHolder.LAYOUT
+        return ProductReviewViewHolder.LAYOUT
     }
 
     override fun type(data: ProductDiscussionDataModel): Int {
@@ -70,16 +66,15 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductOpenShopViewHolder.LAYOUT -> ProductOpenShopViewHolder(view, listener)
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
             ProductMerchantVoucherViewHolder.LAYOUT -> ProductMerchantVoucherViewHolder(view, listener)
-            ProductImageReviewViewHolder.LAYOUT -> ProductImageReviewViewHolder(view, listener)
             ProductSnapshotViewHolder.LAYOUT -> ProductSnapshotViewHolder(view, listener)
             ProductShopInfoViewHolder.LAYOUT -> ProductShopInfoViewHolder(view, listener)
             ProductSocialProofViewHolder.LAYOUT -> ProductSocialProofViewHolder(view, listener)
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)
             ProductDiscussionViewHolder.LAYOUT -> ProductDiscussionViewHolder(view, listener)
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view, listener)
-            ProductMostHelpfulReviewViewHolder.LAYOUT -> ProductMostHelpfulReviewViewHolder(view, listener)
+            ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener)
             ProductSeparatorViewHolder.LAYOUT -> ProductSeparatorViewHolder(view)
-            ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view,listener)
+            ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

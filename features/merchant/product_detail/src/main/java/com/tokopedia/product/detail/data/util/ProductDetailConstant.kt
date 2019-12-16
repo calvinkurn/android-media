@@ -86,7 +86,6 @@ object ProductDetailConstant {
     const val SHOP_INFO = "shop_info"
     const val PRODUCT_INFO = "product_info"
     const val DISCUSSION = "discussion"
-    const val IMAGE_REVIEW = "image_review"
     const val MOST_HELPFUL_REVIEW = "most_helpful_review"
     const val TRADE_IN = "tradein"
     const val INFO = "info"

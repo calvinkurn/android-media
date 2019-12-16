@@ -68,7 +68,6 @@ data class ProductInfo(
         @Expose
         val freeOngkir: FreeOngkir = FreeOngkir()
 
-
 ) {
 
     fun getProductImageUrl(): String? {

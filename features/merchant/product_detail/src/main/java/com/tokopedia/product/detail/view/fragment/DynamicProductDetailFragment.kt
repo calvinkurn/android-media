@@ -51,7 +51,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_tradein.customviews.TradeInTextView
-import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
@@ -173,7 +172,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     lateinit var dynamicProductDetailTracking: DynamicProductDetailTracking
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var tradeInParams: TradeInParams
     private lateinit var tradeInBroadcastReceiver: TradeInBroadcastReceiver
 
     private val viewModel by lazy {
@@ -203,6 +201,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private var trackerListName: String? = ""
     private var warehouseId: String? = null
     private var isTopdasLoaded: Boolean = false
+    private var deviceId: String = ""
 
     //View
     private lateinit var bottomSheet: ValuePropositionBottomSheet
@@ -278,6 +277,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             isAffiliate = it.getBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, false)
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
         }
+        deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
         activity?.run {
             remoteConfig = FirebaseRemoteConfigImpl(this)
         }
@@ -385,10 +385,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     }
                     viewModel.getDynamicProductInfoP1?.let { productInfo ->
                         pdpHashMapUtil.updateDataP1(productInfo)
-                        if (productInfo.data.isTradeIn) {
-                            renderTradein(productInfo)
-                            tv_trade_in_pdp.tradeInReceiver.checkTradeIn(tradeInParams, false, getApplicationContext())
-                        }
                         // if when first time and the product is actually a variant product, then select the default variant
                         if (userInputVariant == null && productInfo.data.variant.isVariant && productInfo.data.variant.parentID != productId) {
                             userInputVariant = productId
@@ -419,6 +415,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     actionButtonView.visibility = false
                     onGetListErrorWithEmptyData(it.throwable)
                     showToasterError(it.throwable.message ?: "")
+                }
+            }
+        })
+
+        viewModel.tradeinResult.observe(this, Observer {
+            val tradeinResponse = it.validateTradeInPDP
+            if (!tradeinResponse.isEligible) {
+                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productTradeinMap)
+            } else {
+                pdpHashMapUtil.productTradeinMap?.run {
+                    description = getString(R.string.tradein_template, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
                 }
             }
         })
@@ -474,7 +481,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             }
 
             if (delegateTradeInTracking) {
-                trackProductView(tradeInParams.isEligible == 1)
+                trackProductView(viewModel.tradeInParams.isEligible == 1)
                 delegateTradeInTracking = false
             }
 
@@ -489,11 +496,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 dynamicAdapter.removeDiscussionSection(pdpHashMapUtil.productDiscussionMap)
             }
 
-            if (it.imageReviews.isEmpty()) {
-                dynamicAdapter.removeImageReviewSection(pdpHashMapUtil.productImageReviewMap)
-            }
-
-            if (it.helpfulReviews.isEmpty()) {
+            if (it.helpfulReviews.isEmpty() && it.rating.totalRating == 0) {
                 dynamicAdapter.removeMostHelpfulReviewSection(pdpHashMapUtil.productMostHelpfulMap)
             }
 
@@ -854,7 +857,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
     /**
-     * ProductImageReviewViewHolder Listener
+     * ProductReviewViewHolder
      */
     override fun onSeeAllReviewClick() {
         context?.let {
@@ -893,9 +896,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         }
     }
 
-    /**
-     * ProductMostHelpfulReviewViewHolder
-     */
     override fun onImageHelpfulReviewClick(listOfImages: List<String>, position: Int, reviewId: String?) {
         productDetailTracking.eventClickReviewOnMostHelpfulReview(viewModel.getDynamicProductInfoP1?.basic?.getProductId()
                 ?: 0, reviewId)
@@ -1087,7 +1087,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     private fun onTradeinClicked() {
         goToNormalCheckout(TRADEIN_BUY)
-        if (tradeInParams.usedPrice > 0)
+        if (viewModel.tradeInParams.usedPrice > 0)
             productDetailTracking.trackTradeinAfterDiagnotics()
         else
             productDetailTracking.trackTradeinBeforeDiagnotics()
@@ -1339,7 +1339,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     private fun loadProductData(forceRefresh: Boolean = false) {
         if (productId != null || (productKey != null && shopDomain != null)) {
-            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh)
+            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId,
+                    deviceId = deviceId), forceRefresh)
         }
     }
 
@@ -1471,7 +1472,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
                 dynamicProductDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                        isElligible, tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment, deeplinkUrl)
+                        isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment, deeplinkUrl)
                 return
             }
         }
@@ -1490,24 +1491,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         bundleData.putBoolean(FtPDPInstallmentBottomSheet.KEY_PDP_IS_OFFICIAL, viewModel.shopInfo?.goldOS?.isOfficial == 1)
         pdpInstallmentBottomSheet.arguments = bundleData
         pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
-    }
-
-
-    private fun renderTradein(productInfoP1: DynamicProductInfoP1) {
-        tradeInParams = TradeInParams()
-        tradeInParams.categoryId = productInfoP1.basic.category.id.toIntOrZero()
-        tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
-        tradeInParams.userId = if (viewModel.userId.isNotEmpty())
-            viewModel.userId.toIntOrZero()
-        else
-            0
-        tradeInParams.setPrice(productInfoP1.data.price.value)
-        tradeInParams.productId = productInfoP1.basic.getProductId()
-        tradeInParams.shopId = productInfoP1.basic.getShopId()
-        tradeInParams.productName = productInfoP1.getProductName
-
-        tradeInParams.isPreorder = productInfoP1.data.preOrder.isPreOrderActive()
-        tradeInParams.isOnCampaign = productInfoP1.data.campaign.isActive
     }
 
     private fun initPerformanceMonitoring() {
@@ -1546,15 +1529,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOcsCheckoutType)
                     putExtra(ApplinkConst.Transaction.EXTRA_IS_LEASING, it.basic.isLeasing)
                 }
-                if (::tradeInParams.isInitialized) {
-                    intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
-                }
+                intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, viewModel.tradeInParams)
                 startActivityForResult(intent,
                         ProductDetailConstant.REQUEST_CODE_NORMAL_CHECKOUT)
             }
         }
     }
-
 
     private fun goToAtcExpress() {
         activity?.let {

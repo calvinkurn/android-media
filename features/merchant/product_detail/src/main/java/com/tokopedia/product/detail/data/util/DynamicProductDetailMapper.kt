@@ -25,9 +25,6 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SOCIAL_PROOF -> {
                     listOfComponent.add(ProductSocialProofDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.IMAGE_REVIEW -> {
-                    listOfComponent.add(ProductImageReviewDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.MOST_HELPFUL_REVIEW -> {
                     listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
                 }
