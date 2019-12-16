@@ -5,13 +5,13 @@ import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
+import com.tokopedia.rechargegeneral.di.DaggerRechargeGeneralComponent
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
-//import com.tokopedia.rechargegeneral.di.DaggerRechargeGeneralComponent
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment
 
-class RechargeGeneralActivity : BaseSimpleActivity()
-//        , HasComponent<RechargeGeneralComponent>
-{
+
+class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGeneralComponent> {
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
@@ -20,11 +20,11 @@ class RechargeGeneralActivity : BaseSimpleActivity()
         return RechargeGeneralFragment.newInstance(categoryId, menuId)
     }
 
-//    override fun getComponent(): RechargeGeneralComponent {
-//        return DaggerRechargeGeneralComponent.builder()
-//                .baseAppComponent(application)
-//                .build()
-//    }
+    override fun getComponent(): RechargeGeneralComponent {
+        return DaggerRechargeGeneralComponent.builder()
+                    .commonTopupBillsComponent(CommonTopupBillsComponentInstance.getCommonTopupBillsComponent(application))
+                    .build()
+    }
 
     companion object {
 

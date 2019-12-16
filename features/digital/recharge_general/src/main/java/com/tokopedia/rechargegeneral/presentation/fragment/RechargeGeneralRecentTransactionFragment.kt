@@ -20,6 +20,7 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
     lateinit var viewModel: SharedRechargeGeneralViewModel
 
     private lateinit var recommendationList: ArrayList<TopupBillsRecommendation>

@@ -9,7 +9,7 @@ import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 /**
  * Created by resakemal on 26/11/19.
  */
-class RechargeGeneralItemData(
+class RechargeGeneralProductItemData(
 
         @SerializedName("name")
         @Expose
@@ -22,6 +22,6 @@ class RechargeGeneralItemData(
         var dataCollections: List<CatalogProductData.DataCollection> = listOf(),
         var value: String = ""
 
-): Visitable<RechargeGeneralAdapterFactory> {
+) : Visitable<RechargeGeneralAdapterFactory> {
         override fun type(typeFactory: RechargeGeneralAdapterFactory) = typeFactory.type(this)
 }

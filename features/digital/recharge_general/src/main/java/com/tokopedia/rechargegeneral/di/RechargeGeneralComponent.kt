@@ -12,17 +12,17 @@ import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 
 @RechargeGeneralScope
-@Component(modules = [RechargeGeneralModule::class, RechargeGeneralViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [RechargeGeneralModule::class, RechargeGeneralViewModelModule::class], dependencies = [CommonTopupBillsComponent::class])
 interface RechargeGeneralComponent {
 
     @ApplicationContext
     fun context(): Context
 
-    fun userSession(): UserSessionInterface
+    fun userSessionInterface(): UserSessionInterface
 
-    fun dispatcher(): CoroutineDispatcher
+    fun coroutineDispatcher(): CoroutineDispatcher
 
-    fun graphQlRepository(): GraphqlRepository
+    fun graphqlRepository(): GraphqlRepository
 
     fun inject(rechargeGeneralFragment: RechargeGeneralFragment)
 

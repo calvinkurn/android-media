@@ -1,7 +1,7 @@
 package com.tokopedia.rechargegeneral.presentation.model
 
 
-class RechargeGeneralProductSelectDropdownData (
+class RechargeGeneralProductSelectData (
         val id: String = "",
         val title: String = "",
         val description: String = "",

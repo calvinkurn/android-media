@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by resakemal on 26/11/19.
  */
-class RechargeGeneralData(
+class RechargeGeneralProductData(
 
         @SerializedName("needEnquiry")
         @Expose
@@ -16,15 +16,15 @@ class RechargeGeneralData(
         val isShowingProduct: Boolean = true,
         @SerializedName("enquiryFields")
         @Expose
-        val enquiryFields: List<RechargeGeneralInput> = listOf(),
+        val enquiryFields: List<RechargeGeneralProductInput> = listOf(),
         @SerializedName("product")
         @Expose
-        val product: RechargeGeneralItemData = RechargeGeneralItemData()
+        val product: RechargeGeneralProductItemData = RechargeGeneralProductItemData()
 
 ) {
         class Response(
                 @SerializedName("rechargeCatalogProductInput")
                 @Expose
-                val response: RechargeGeneralData = RechargeGeneralData()
+                val response: RechargeGeneralProductData = RechargeGeneralProductData()
         )
 }

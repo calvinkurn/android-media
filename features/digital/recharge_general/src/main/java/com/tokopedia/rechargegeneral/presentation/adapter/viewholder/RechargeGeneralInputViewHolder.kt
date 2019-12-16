@@ -4,12 +4,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
-import com.tokopedia.rechargegeneral.model.RechargeGeneralInput
+import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
 import java.util.regex.Pattern
 
-class RechargeGeneralProductInputViewHolder(val view: View, val listener: OnInputListener) : AbstractViewHolder<RechargeGeneralInput>(view) {
+class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListener) : AbstractViewHolder<RechargeGeneralProductInput>(view) {
 
-    override fun bind(enquiryData: RechargeGeneralInput) {
+    override fun bind(enquiryData: RechargeGeneralProductInput) {
         val inputView = itemView as TopupBillsInputFieldWidget
         inputView.resetState()
         inputView.setLabel(enquiryData.text)
@@ -17,7 +17,8 @@ class RechargeGeneralProductInputViewHolder(val view: View, val listener: OnInpu
         inputView.setInputType(enquiryData.style)
         inputView.setActionListener(object : TopupBillsInputFieldWidget.ActionListener{
             override fun onFinishInput(input: String) {
-                if (verifyField(enquiryData.validations, input)) {
+                if (input.isEmpty() || verifyField(enquiryData.validations, input)) {
+                    inputView.hideErrorMessage()
                     listener.onFinishInput(enquiryData.name, input, adapterPosition)
                 } else {
                     inputView.setErrorMessage("Input tidak sesuai")
@@ -35,7 +36,6 @@ class RechargeGeneralProductInputViewHolder(val view: View, val listener: OnInpu
 
     private fun verifyField(fieldValidation: List<CatalogProductInput.Validation>,
                             input: String): Boolean {
-        if (input.isEmpty()) return false
         for (validation in fieldValidation) {
             if (validation.rule.isNotEmpty() && !Pattern.matches(validation.rule, input)) {
                 return false

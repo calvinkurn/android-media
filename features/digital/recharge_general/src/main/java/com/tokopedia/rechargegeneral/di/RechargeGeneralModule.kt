@@ -17,16 +17,6 @@ class RechargeGeneralModule {
 
     @RechargeGeneralScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
-    }
-
-    @RechargeGeneralScope
-    @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
-    @RechargeGeneralScope
-    @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideGetProductUseCase(graphqlRepository: GraphqlRepository): GetProductUseCase = GetProductUseCase(graphqlRepository)
 
 }

@@ -20,6 +20,7 @@ class RechargeGeneralPromoListFragment: BaseDaggerFragment(), TopupBillsPromoLis
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
     lateinit var viewModel: SharedRechargeGeneralViewModel
 
     private lateinit var promoList: ArrayList<TopupBillsPromo>
