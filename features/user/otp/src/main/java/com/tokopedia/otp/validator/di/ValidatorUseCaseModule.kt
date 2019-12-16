@@ -1,12 +1,15 @@
 package com.tokopedia.otp.validator.di
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.otp.validator.data.OtpModeListPojo
 import com.tokopedia.otp.validator.data.OtpRequestPojo
 import com.tokopedia.otp.validator.data.OtpValidatePojo
+import com.tokopedia.otp.validator.domain.usecase.OtpModeListUseCase
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-10-21.
@@ -15,7 +18,7 @@ import dagger.Provides
 
 @ValidatorScope
 @Module
-class ValidatorUseCaseModule{
+class ValidatorUseCaseModule {
 
     @Provides
     fun provideOtpModeListGraphQlUseCase(graphqlRepository: GraphqlRepository)
