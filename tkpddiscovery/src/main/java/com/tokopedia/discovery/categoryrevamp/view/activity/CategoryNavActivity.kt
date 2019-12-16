@@ -57,6 +57,30 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         BaseCategorySectionFragment.SortAppliedListener,
         BottomSheetListener {
 
+    override fun onSortApplied(showTick: Boolean) {
+        searchNavContainer?.onSortSelected(showTick)
+    }
+
+    override fun hideBottomNavigation() {
+        searchNavContainer?.visibility = View.GONE
+    }
+
+    fun showBottomNavigation() {
+        searchNavContainer?.visibility = View.VISIBLE
+    }
+
+    override fun loadFilterItems(filters: java.util.ArrayList<Filter>?, searchParameter: Map<String, String>?) {
+        bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
+    }
+
+    override fun setFilterResultCount(formattedResultCount: String?) {
+        bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
+    }
+
+    override fun launchFilterBottomSheet() {
+        bottomSheetFilterView?.launchFilterBottomSheet()
+    }
+
     private var categorySectionPagerAdapter: CategoryNavigationPagerAdapter? = null
     private var isForceSwipeToShop: Boolean = false
     private var activeTabPosition: Int = 0

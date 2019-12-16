@@ -443,7 +443,7 @@ class CategoryPageAnalytics {
             "general"
         }
     }
-
+  
     fun createOpenScreenEventMap(parentId: String?,
                                  parentName: String?,
                                  categoryId: String,

@@ -250,6 +250,10 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         return "click atc on bottom sheet"
     }
 
+    fun getBuyEventAction(): String {
+        return "click buy on bottom sheet"
+    }
+
     fun doesNotHaveVariant(): Boolean {
         return variants.isEmpty()
     }
