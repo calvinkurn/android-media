@@ -22,7 +22,7 @@ internal class CarouselProductCardViewHolder(
         val onItemClickListener = carouselProductCardModel.getOnItemClickListener()
         val onItemLongClickListener = carouselProductCardModel.getOnItemLongClickListener()
         val onItemImpressedListener = carouselProductCardModel.getOnItemImpressedListener()
-        val onItemAddToCartListener = carouselProductCardModel.getOnItemImpressedListener()
+        val onItemAddToCartListener = carouselProductCardModel.getOnItemAddToCartListener()
         val onWishlistClickListener = carouselProductCardModel.getOnWishlistItemClickListener()
 
         itemView.carouselProductCardItem?.setProductModel(productCardModel)
