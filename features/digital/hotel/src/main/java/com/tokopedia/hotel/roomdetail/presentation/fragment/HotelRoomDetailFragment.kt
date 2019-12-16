@@ -35,6 +35,7 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -190,11 +191,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 override fun onImageClicked(position: Int) {
                     trackingHotelUtil.hotelClickRoomDetailsPhoto(hotelRoom.additionalPropertyInfo.propertyId,
                             hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString())
-                    context?.run {
-                        startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                                this, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position
-                        ))
-                    }
+                    ImagePreviewSlider.getInstance().start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, null)
                 }
             }
         }

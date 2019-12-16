@@ -3,14 +3,15 @@ package com.tokopedia.hotel.roomlist.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomInfo
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
-import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import kotlinx.android.synthetic.main.item_hotel_room_full.view.*
 import kotlinx.android.synthetic.main.item_hotel_room_list.view.*
+import kotlinx.android.synthetic.main.layout_image_slider.view.*
 import kotlin.math.min
 
 /**
@@ -90,9 +91,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
             room_image_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
                     listener.onPhotoClickListener(room)
-                    context.startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                            context, room.roomInfo.name, imageUrls, imageUrls, position
-                    ))
+                    ImagePreviewSlider.getInstance().start(context, room.roomInfo.name, imageUrls, imageUrls, position, itemView.image_banner)
                 }
             }
             room_image_view_pager.buildView()
