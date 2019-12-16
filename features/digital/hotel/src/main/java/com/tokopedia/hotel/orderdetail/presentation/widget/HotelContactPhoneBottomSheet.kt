@@ -32,7 +32,7 @@ class HotelContactPhoneBottomSheet: BottomSheets(){
         recyclerView.adapter = contactAdapter
     }
 
-    override fun setupDialog(dialog: Dialog?, style: Int) {
+    override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         updateHeight()
     }

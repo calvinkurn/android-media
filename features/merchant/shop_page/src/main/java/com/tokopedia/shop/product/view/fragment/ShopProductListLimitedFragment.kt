@@ -645,7 +645,9 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                     data.membershipClaimBenefitResponse.subTitle,
                     data.membershipClaimBenefitResponse.resultStatus.code, lastQuestId)
             bottomSheetMembership.setListener(this)
-            bottomSheetMembership.show(fragmentManager, "membership_shop_page")
+            fragmentManager?.run {
+                bottomSheetMembership.show(this, "membership_shop_page")
+            }
         }
     }
 

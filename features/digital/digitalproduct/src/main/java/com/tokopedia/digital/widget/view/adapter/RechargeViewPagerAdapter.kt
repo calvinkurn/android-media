@@ -11,7 +11,7 @@ import com.tokopedia.digital.widget.view.model.category.Category
 /**
  * Created by Rizky on 19/11/18.
  */
-class RechargeViewPagerAdapter(fm: FragmentManager?, private val categoryList: MutableList<Category>) : FragmentStatePagerAdapter(fm) {
+class RechargeViewPagerAdapter(fm: FragmentManager, private val categoryList: MutableList<Category>) : FragmentStatePagerAdapter(fm) {
 
     private var currentPosition = -1
 

@@ -34,7 +34,7 @@ import kotlin.coroutines.CoroutineContext
  * To send message to server:
  * LogManager.log(serverSeverity, priority, message)
  */
-class LogManager : CoroutineScope {
+class LogManager(val application: Application) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + handler
@@ -73,7 +73,7 @@ class LogManager : CoroutineScope {
 
         @JvmStatic
         fun init(application: Application) {
-            instance = LogManager()
+            instance = LogManager(application)
             val logsDao = LoggerRoomDatabase.getDatabase(application).logDao()
             val server = LoggerCloudDatasource()
             loggerRepository = LoggerRepository(logsDao, server)

@@ -751,14 +751,19 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         bottomSheetBuilder.addItem(R.id.edit_product_menu, R.string.title_edit, R.drawable.ic_manage_product_edit)
         bottomSheetBuilder.addItem(R.id.duplicat_product_menu, R.string.product_manage_title_duplicate_product_menu, R.drawable.ic_manage_product_duplicate)
         bottomSheetBuilder.addItem(R.id.delete_product_menu, R.string.product_manage_menu_delete_product, R.drawable.ic_manage_product_delete, ContextCompat.getColor(context, R.color.product_manage_menu_delete_color))
-        //If shop is power merchant or official store, shop owner can add or remove featured product
-        if (productManagePresenter.isPowerMerchant() || isOfficialStore) {
-            //If the product is a featured product, show remove option. Show add option when the product is not.
-            if (productManageViewModel.isFeatureProduct)
-                bottomSheetBuilder.addItem(R.id.set_featured_product, R.string.product_manage_menu_remove_featured_product, R.drawable.ic_manage_featured_product)
-            else
-                bottomSheetBuilder.addItem(R.id.set_featured_product, R.string.product_manage_menu_add_featured_product, R.drawable.ic_manage_featured_product)
-        }
+
+        //Commented this code as quick fix in response to backend gql still hasn't been pushed to production env.
+        //Activate it later after the backend gql as soon after backend gql prod is up running.
+
+//        //If shop is power merchant or official store, shop owner can add or remove featured product
+//        if (productManagePresenter.isPowerMerchant() || isOfficialStore) {
+//            //If the product is a featured product, show remove option. Show add option when the product is not.
+//            if (productManageViewModel.isFeatureProduct)
+//                bottomSheetBuilder.addItem(R.id.set_featured_product, R.string.product_manage_menu_remove_featured_product, R.drawable.ic_manage_featured_product)
+//            else
+//                bottomSheetBuilder.addItem(R.id.set_featured_product, R.string.product_manage_menu_add_featured_product, R.drawable.ic_manage_featured_product)
+//        }
+
         bottomSheetBuilder.addItem(R.id.set_cashback_product_menu, R.string.product_manage_menu_set_cashback, R.drawable.ic_manage_product_set_cashback)
         if (productManageViewModel.productStatus != StatusProductOption.EMPTY) {
             bottomSheetBuilder.addItem(R.id.set_promo_ads_product_menu, R.string.product_manage_menu_set_promo_ads, R.drawable.ic_manage_product_topads)
@@ -808,12 +813,16 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 onSetCashbackClicked(productManageViewModel)
             } else if (itemId == R.id.set_promo_ads_product_menu) {
                 onPromoTopAdsClicked(productManageViewModel)
-            } else if (itemId == R.id.set_featured_product) {
-                if (productManageViewModel.isFeatureProduct)
-                    onSetFeaturedProductClicked(productManageViewModel,ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)
-                else
-                    onSetFeaturedProductClicked(productManageViewModel,ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
             }
+
+            //Commented this code as quick fix in response to backend gql still hasn't been pushed to production env.
+            //Activate it later after the backend gql as soon after backend gql prod is up running.
+//            else if (itemId == R.id.set_featured_product) {
+//                if (productManageViewModel.isFeatureProduct)
+//                    onSetFeaturedProductClicked(productManageViewModel,ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)
+//                else
+//                    onSetFeaturedProductClicked(productManageViewModel,ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
+//            }
         }
     }
 

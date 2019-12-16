@@ -169,4 +169,6 @@
     <!-- Content -->
     <string name="title_profile">Profile</string>
     <string name="title_profile_following">Following</string>
+
+    <string name="saldo_webview_title">Tokopedia</string>
 </resources>

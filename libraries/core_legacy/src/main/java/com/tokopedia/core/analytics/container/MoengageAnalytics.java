@@ -128,8 +128,9 @@ public class MoengageAnalytics extends ContextAnalytics {
 
     @SuppressWarnings("RestrictedApi")
     public void setMoengageUserProfile(String... customerWrapper) {
-        Preconditions.checkArrayElementsNotNull(customerWrapper, "please pass 3 value, customerId, fullName, emailAddress");
-
+        if (customerWrapper.length != 3) {
+            return;
+        }
         final String customerId = customerWrapper[0];
         final String fullName = customerWrapper[1];
         final String emailAddress = customerWrapper[2];
