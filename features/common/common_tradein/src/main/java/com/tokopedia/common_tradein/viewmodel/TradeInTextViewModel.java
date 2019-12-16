@@ -1,23 +1,24 @@
 package com.tokopedia.common_tradein.viewmodel;
 
 import android.app.Application;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import android.content.Intent;
+
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.common_tradein.R;
+import com.tokopedia.common_tradein.customviews.TradeInTextView;
 import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse;
 import com.tokopedia.common_tradein.model.ValidateTradePDP;
-import com.tokopedia.common_tradein.customviews.TradeInTextView;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tradein_common.viewcontrollers.AccessRequestFragment;
 
 import java.lang.ref.WeakReference;
@@ -30,7 +31,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
     private MutableLiveData<ValidateTradeInResponse> responseData;
     private WeakReference<FragmentActivity> activityWeakReference;
 
-    public TradeInTextViewModel(){
+    public TradeInTextViewModel() {
         super();
         responseData = new MutableLiveData<>();
     }
@@ -91,6 +92,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
                             responseData.setValue(tradeInResponse);
                             Intent intent = new Intent(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE);
                             intent.putExtra(TradeInTextView.EXTRA_ISELLIGIBLE, tradeInResponse.isEligible());
+                            intent.putExtra(TradeInTextView.EXTRA_DESCRIPTION, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInResponse.getUsedPrice(), true));
                             LocalBroadcastManager.getInstance(activityWeakReference.get()).sendBroadcast(intent);
 
                             tradeInParams.setIsEligible(tradeInResponse.isEligible() ? 1 : 0);

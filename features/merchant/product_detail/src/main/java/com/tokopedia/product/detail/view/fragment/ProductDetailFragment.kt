@@ -493,7 +493,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
-        tradeInBroadcastReceiver.setBroadcastListener {
+        tradeInBroadcastReceiver.setBroadcastListener { it , desc ->
             if (it) {
                 if (tv_trade_in_promo != null) {
                     tv_trade_in_promo.visible()

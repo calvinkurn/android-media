@@ -1,11 +1,16 @@
 package com.tokopedia.product.detail.view.adapter.dynamicadapter
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 
 class DynamicProductDetailAdapter(
-        adapterTypeFactory: DynamicProductDetailAdapterFactoryImpl
+        adapterTypeFactory: DynamicProductDetailAdapterFactoryImpl,
+        val listener: DynamicProductDetailListener
 ) : BaseListAdapter<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(adapterTypeFactory) {
 
     fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel, payload: Int) {
@@ -47,7 +52,7 @@ class DynamicProductDetailAdapter(
         clearElement(data)
     }
 
-    fun removeInstallmentSection(data: ProductGeneralInfoDataModel?) {
+    fun removeGeneralInfo(data: ProductGeneralInfoDataModel?) {
         clearElement(data)
     }
 
@@ -59,8 +64,10 @@ class DynamicProductDetailAdapter(
         clearElement(data)
     }
 
-    fun removeTradeinSection(data: ProductTradeinDataModel?) {
-        clearElement(data)
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is ProductRecommendationViewHolder) {
+            listener.loadTopads()
+        }
     }
-
 }

@@ -31,9 +31,6 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.MOST_HELPFUL_REVIEW -> {
                     listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.TRADE_IN -> {
-                    listOfComponent.add(ProductTradeinDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.INFO -> {
                     val contentData = component.componentData.firstOrNull()
                     listOfComponent.add(ProductGeneralInfoDataModel(ProductGeneralInfoData(contentData?.applink

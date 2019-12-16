@@ -46,7 +46,7 @@ class CarouselProductCardView: BaseCustomView {
     ) : super(context, attrs, defStyleAttr) {
         init()
     }
-    
+
     private fun init() {
         View.inflate(context, R.layout.carousel_product_card_layout, this)
         if (carouselProductCardRecyclerView.itemDecorationCount > 0)

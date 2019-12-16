@@ -77,6 +77,8 @@ object ProductDetailConstant {
     const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
     const val REQUEST_CODE_REPORT = 570
     const val REQUEST_CODE_SHOP_INFO = 998
+    const val REQUEST_CODE_IMAGE_PREVIEW = 999
+
 
     //Mapper
     const val SOCIAL_PROOF = "social_proof"
@@ -86,7 +88,7 @@ object ProductDetailConstant {
     const val DISCUSSION = "discussion"
     const val IMAGE_REVIEW = "image_review"
     const val MOST_HELPFUL_REVIEW = "most_helpful_review"
-    const val TRADE_IN = "trade_in"
+    const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"
     const val SEPARATOR = "separator"
@@ -99,11 +101,12 @@ object ProductDetailConstant {
     const val PRODUCT_LAST_SEEN = "product_last_seen"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
-    const val PRODUCT_INSTALLMENT_INFO = "installment_info"
-    const val PRODUCT_SHIPPING_INFO = "shipping_info"
+    const val PRODUCT_INSTALLMENT_INFO = "installment"
+    const val PRODUCT_SHIPPING_INFO = "shipping"
     const val ORDER_PRIORITY = "order_prio"
-    const val PRODUCT_FULLFILMENT = "fullfilment"
+    const val PRODUCT_FULLFILMENT = "fulfillment"
     const val PRODUCT_PROTECTION = "protection"
+    const val VALUE_PROP = "value_prop"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"

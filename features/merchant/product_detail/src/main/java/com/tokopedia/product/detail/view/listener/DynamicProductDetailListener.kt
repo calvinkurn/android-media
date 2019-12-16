@@ -58,11 +58,6 @@ interface DynamicProductDetailListener {
     fun onSeeAllMerchantVoucherClick()
 
     /**
-     * ProductTradeinViewHolder
-     */
-    fun onTradeinClicked(tradeInParams: TradeInParams)
-
-    /**
      * ProductSocialProofViewHolder
      */
     fun onShipmentClicked()
@@ -84,6 +79,10 @@ interface DynamicProductDetailListener {
      * ProductGeneralInfoViewHolder
      */
     fun onInfoClicked(name: String)
-
     fun onValuePropositionClicked(view: Int)
+
+    /**
+     * ProductRecom
+     */
+    fun loadTopads()
 }

@@ -28,7 +28,7 @@ class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String
     }
 
     var requestParams = RequestParams.EMPTY
-    var isFromCacheFirst = false
+    var forceRefresh = false
     val request by lazy {
         GraphqlRequest(rawQueries[QUERY_GET_PDP_LAYOUT], ProductDetailLayout::class.java, requestParams.parameters)
     }
@@ -36,7 +36,7 @@ class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(request)
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
+        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ProductDetailLayout::class.java) ?: listOf()

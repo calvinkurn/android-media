@@ -21,7 +21,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductTradeinDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -144,9 +143,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
     fun getProductP1(productParams: ProductParams, forceRefresh: Boolean = false) {
         launchCatchError(block = {
-            var needRequestCod = false
-
-            val productData = getPdpLayout(productParams.productId ?: "")
+            val productData = getPdpLayout(productParams.productId ?: "", forceRefresh)
             val initialLayoutData = productData.listOfLayout
             getDynamicProductInfoP1 = productData.layoutData
 
@@ -155,18 +152,17 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             productLayout.value = Success(initialLayoutData)
 
             // Then update the following, it will not throw anything when error
-            getProductP2()
-            getProductP3(productParams.shopDomain)
-
+            getProductP2(forceRefresh, productParams.warehouseId)
+            getProductP3(productParams.shopDomain, forceRefresh)
         }) {
             productLayout.value = Fail(it)
         }
     }
 
-    private suspend fun getProductP2() {
+    private suspend fun getProductP2(forceRefresh: Boolean, warehouseId: String?) {
         getDynamicProductInfoP1?.let {
             val p2ShopDeferred = getProductInfoP2ShopAsync(it.basic.getShopId(),
-                    it.basic.productID, "", false)
+                    it.basic.productID, warehouseId ?: "", forceRefresh)
 
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
@@ -180,7 +176,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                     it.basic.getProductId(), it.data.price.value,
                     it.basic.condition,
                     it.getProductName,
-                    categoryId, it.basic.catalogID, userIdInt, it.basic.minOrder)
+                    categoryId, it.basic.catalogID, userIdInt, it.basic.minOrder, forceRefresh)
 
             shopInfo = p2ShopDeferred.await().shopInfo
             p2ShopDataResp.value = p2ShopDeferred.await()
@@ -191,7 +187,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         }
     }
 
-    private suspend fun getProductP3(shopDomain: String?) {
+    private suspend fun getProductP3(shopDomain: String?, forceRefresh: Boolean) {
         getDynamicProductInfoP1?.run {
             p2ShopDataResp.value?.let { p2Shop ->
                 multiOrigin = p2Shop.nearestWarehouse.warehouseInfo
@@ -200,7 +196,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
                 if (isUserSessionActive) {
                     val origin = if (multiOrigin.isFulfillment) multiOrigin.origin else null
-                    productInfoP3resp.value = getProductInfoP3(basic.getWeightUnit(), domain, true,
+                    productInfoP3resp.value = getProductInfoP3(basic.getWeightUnit(), domain, forceRefresh,
                             shouldShowCod, origin)
                 }
             }
@@ -210,11 +206,14 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPDPDataModel>) {
         val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
+        val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
 
         val removedData = initialLayoutData.map {
-            if (!isTradein && it is ProductTradeinDataModel && it.name == ProductDetailConstant.TRADE_IN) {
+            if (!isTradein && it.name() == ProductDetailConstant.TRADE_IN) {
                 it
             } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
+                it
+            } else if (!isOfficialStore && it.name() == ProductDetailConstant.VALUE_PROP) {
                 it
             } else {
                 null
@@ -436,10 +435,9 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                                           warehouseId: String,
                                           forceRefresh: Boolean = false): Deferred<ProductInfoP2ShopData> {
         return async {
-            getProductInfoP2ShopUseCase.createRequestParams(shopId, productId, warehouseId, true)
+            getProductInfoP2ShopUseCase.createRequestParams(shopId, productId, warehouseId, forceRefresh)
             getProductInfoP2ShopUseCase.executeOnBackground()
         }
-
     }
 
     private fun getProductInfoP2LoginAsync(shopId: Int, productId: Int): Deferred<ProductInfoP2Login> {
@@ -454,7 +452,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                                              userId: Int, minOrder: Int,
                                              forceRefresh: Boolean = false): Deferred<ProductInfoP2General> {
         return async {
-            getProductInfoP2GeneralUseCase.createRequestParams(shopId, productId, productPrice, condition, productTitle, categoryId, catalogId, userId, true, minOrder)
+            getProductInfoP2GeneralUseCase.createRequestParams(shopId, productId, productPrice, condition, productTitle, categoryId, catalogId, userId, forceRefresh, minOrder)
             getProductInfoP2GeneralUseCase.executeOnBackground()
         }
     }
@@ -465,9 +463,9 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         return getProductInfoP3UseCase.executeOnBackground()
     }
 
-    private suspend fun getPdpLayout(productId: String): ProductDetailDataModel {
+    private suspend fun getPdpLayout(productId: String, forceRefresh: Boolean): ProductDetailDataModel {
         getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, isUserSessionActive, isUserHasShop)
-        getPdpLayoutUseCase.isFromCacheFirst = false
+        getPdpLayoutUseCase.forceRefresh = forceRefresh
         return getPdpLayoutUseCase.executeOnBackground()
     }
 }
