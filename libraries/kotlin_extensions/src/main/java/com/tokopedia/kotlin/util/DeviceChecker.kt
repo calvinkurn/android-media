@@ -32,4 +32,8 @@ object DeviceChecker {
                 ?: return ""
         return activityManager.memoryClass.toString()
     }
+
+    fun getDeviceDpi(context: Context?): String {
+        return context?.applicationContext?.resources?.displayMetrics?.density?.toString()?:""
+    }
 }

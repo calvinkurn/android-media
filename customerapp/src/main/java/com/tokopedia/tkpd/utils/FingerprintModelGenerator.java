@@ -137,6 +137,7 @@ public class FingerprintModelGenerator {
                 .deviceLng(new LocationCache(context).getLongitudeCache())
                 .availableProcessor(DeviceChecker.INSTANCE.getAvailableProcessor(context.getApplicationContext()))
                 .deviceMemoryClassCapacity(DeviceChecker.INSTANCE.getDeviceMemoryClassCapacity(context.getApplicationContext()))
+                .deviceDpi(DeviceChecker.INSTANCE.getDeviceDpi(context.getApplicationContext()))
                 .build();
 
         return new Gson().toJson(fp);
