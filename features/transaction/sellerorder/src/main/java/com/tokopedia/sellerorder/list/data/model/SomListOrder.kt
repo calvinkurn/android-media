@@ -17,6 +17,10 @@ data class SomListOrder (
             val orderList: OrderList = OrderList()
     ) {
         data class OrderList (
+                @SerializedName("cursor_order_id")
+                @Expose
+                val cursorOrderId: Int = -1,
+
                 @SerializedName("list")
                 @Expose
                 val orders: List<Order> = listOf()

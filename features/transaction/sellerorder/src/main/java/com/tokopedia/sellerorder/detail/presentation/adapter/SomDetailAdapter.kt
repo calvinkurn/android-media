@@ -31,6 +31,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onShowBookingCode(bookingCode: String, bookingType: String)
         fun onShowBuyerRequestCancelReasonBottomSheet()
         fun onSeeInvoice(invoiceUrl: String)
+        fun onClickProduct(productId: Int)
     }
 
     companion object {
@@ -49,7 +50,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
             }
             LAYOUT_PRODUCTS -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.detail_products_item, parent, false)
-                SomDetailProductsViewHolder(view)
+                SomDetailProductsViewHolder(view, actionListener)
             }
             LAYOUT_SHIPPING -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.detail_shipping_item, parent, false)

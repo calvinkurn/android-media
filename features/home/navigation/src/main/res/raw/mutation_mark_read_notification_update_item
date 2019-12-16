@@ -1,5 +1,5 @@
-mutation markReadStatusNotificationUpdateItem($notifId: String!){
-  notifcenter_markReadStatus(notif_id: $notifId) {
+mutation markReadStatusNotificationUpdateItem($notifId: String!, $typeOfNotif: Int){
+  notifcenter_markReadStatus(notif_id: $notifId, type_of_notif: $typeOfNotif) {
     data {
         is_success
     }

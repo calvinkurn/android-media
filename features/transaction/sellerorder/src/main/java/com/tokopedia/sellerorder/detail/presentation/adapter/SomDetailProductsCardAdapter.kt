@@ -13,13 +13,8 @@ import kotlinx.android.synthetic.main.detail_product_card_item.view.*
 /**
  * Created by fwidjaja on 2019-10-04.
  */
-class SomDetailProductsCardAdapter: RecyclerView.Adapter<SomDetailProductsCardAdapter.ViewHolder>() {
-    private lateinit var actionListener: ActionListener
+class SomDetailProductsCardAdapter(private val actionListener: SomDetailAdapter.ActionListener): RecyclerView.Adapter<SomDetailProductsCardAdapter.ViewHolder>() {
     var listProducts = mutableListOf<SomDetailOrder.Data.GetSomDetail.Products>()
-
-    interface ActionListener {
-        fun onClickProduct(productId: Int)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.detail_product_card_item, parent, false))
@@ -44,7 +39,6 @@ class SomDetailProductsCardAdapter: RecyclerView.Adapter<SomDetailProductsCardAd
             holder.itemView.divider_product.visibility = View.GONE
             holder.itemView.tv_product_notes.visibility = View.GONE
         }
-
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
