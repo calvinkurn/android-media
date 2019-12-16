@@ -31,6 +31,8 @@ class ToolbarComponent(
                                 uiView.setTitle(it.title)
                             is ScreenStateEvent.SetTitleToolbar ->
                                 uiView.setTitleToolbar(it.titleToolbar)
+                            is ScreenStateEvent.VideoStreamChanged ->
+                                uiView.setLiveBadgeVisibility(it.videoStream.videoType.isLive)
                         }
                     }
         }

@@ -49,6 +49,7 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
         }
     }
 
+    private var currentVideoUri: Uri? = null
     private val _observablePlayVideoState = MutableLiveData<TokopediaPlayVideoState>()
 
     private val playerEventListener = object : Player.EventListener {
@@ -74,7 +75,11 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
 
     //region public method
     fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
-        if (!videoPlayer.isPlaying) playVideoWithUri(uri, autoPlay)
+        if (uri != currentVideoUri) {
+            currentVideoUri = uri
+            playVideoWithUri(uri, autoPlay)
+        }
+        if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
 
     fun safePlayVideoWithUriString(uriString: String, autoPlay: Boolean) = safePlayVideoWithUri(Uri.parse(uriString), autoPlay)

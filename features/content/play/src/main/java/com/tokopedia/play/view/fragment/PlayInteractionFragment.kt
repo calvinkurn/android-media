@@ -16,6 +16,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.data.VideoStream
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
@@ -37,6 +38,7 @@ import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
+import com.tokopedia.play.view.uimodel.VideoStreamUiModel
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -137,7 +139,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         })
 
         //TODO("propagate this to each of the observable")
-        playViewModel.observeGetChannelInfo.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                  is Success -> {
                      viewModel.getToolbarInfo(it.data.partner.partnerType, it.data.partner.partnerId)
@@ -152,6 +154,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             }
         })
 
+        observeVideoStream()
         observeToolbarInfo()
         observeTotalLikes()
         observeTotalViews()
@@ -170,6 +173,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     //region observe
+    private fun observeVideoStream() {
+        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer(::setVideoStream))
+    }
+
     private fun observeToolbarInfo() {
         viewModel.observableToolbarInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
@@ -616,6 +623,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                           ScreenStateEvent::class.java,
                           ScreenStateEvent.SetPinned(pinnedMessage)
                   )
+        }
+    }
+
+    private fun setVideoStream(videoStream: VideoStreamUiModel) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.VideoStreamChanged(videoStream)
+                    )
         }
     }
     //endregion

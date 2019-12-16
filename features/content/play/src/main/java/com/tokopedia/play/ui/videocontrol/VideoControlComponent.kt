@@ -35,6 +35,7 @@ class VideoControlComponent(
                             is ScreenStateEvent.SetVideo -> {
                                 uiView.setPlayer(it.videoPlayer)
                             }
+                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.hide() else uiView.show()
                         }
                     }
         }
