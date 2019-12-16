@@ -99,8 +99,8 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
             viewModel.getTransactionNotification(it)
         })
 
-        swipeRefresh.setOnRefreshListener {
-            swipeRefresh.isRefreshing = true
+        swipeRefresh?.setOnRefreshListener {
+            swipeRefresh?.isRefreshing = true
 
             /*
             * add some delay for 1 sec to
@@ -134,7 +134,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     private fun onViewError() = Observer<String> { message ->
-        swipeRefresh.hide()
+        swipeRefresh?.hide()
         notificationEmpty.show()
         activity?.let {
             NetworkErrorHelper.showEmptyState(it,
@@ -146,7 +146,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun loadData(page: Int) {
-        swipeRefresh.isRefreshing = false
+        swipeRefresh?.isRefreshing = false
         renderList(buyerMenu(), false)
         viewModel.getInfoStatusNotification()
     }
@@ -269,6 +269,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         analytics.saveNotificationImpression(element)
     }
 
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
     override fun getRecyclerViewResourceId() = R.id.lstNotification
     override fun onItemClicked(t: Visitable<*>?) = Unit
