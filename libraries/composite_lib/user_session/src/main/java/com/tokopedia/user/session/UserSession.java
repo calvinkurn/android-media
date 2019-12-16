@@ -6,6 +6,9 @@ import android.text.TextUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import static com.tokopedia.user.session.Constants.*;
+
+import java.util.List;
 
 /**
  * @author by milhamj on 04/04/18.
@@ -13,55 +16,35 @@ import org.jetbrains.annotations.Nullable;
  */
 
 public class UserSession implements UserSessionInterface {
+
     private static final String DEFAULT_EMPTY_SHOP_ID = "0";
     private static final String DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1";
-    private static final String IS_LOGIN = "IS_LOGIN";
-    private static final String LOGIN_ID = "LOGIN_ID";
-    private static final String GTM_LOGIN_ID = "GTM_LOGIN_ID";
-    private static final String FULL_NAME = "FULL_NAME";
-    private static final String LOGIN_SESSION = "LOGIN_SESSION";
-    private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
-    private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
-    private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
-    private static final String EMAIL = "EMAIL";
-    private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
-    private static final String IS_AFFILIATE = "is_affiliate";
-    private static final String PHONE_NUMBER = "PHONE_NUMBER";
-    private static final String GC_TOKEN = "GC_TOKEN";
 
-    private static final String TEMP_USER_ID = "temp_login_id";
-    private static final String TEMP_EMAIL = "TEMP_EMAIL";
-    private static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
     private static final String TEMP_NAME = "TEMP_NAME";
 
     private static final String GCM_STORAGE = "GCM_STORAGE";
-    private static final String GCM_ID = "gcm_id";
 
-    private static final String LOGIN_UUID_KEY = "LOGIN_UUID";
-    private static final String UUID_KEY = "uuid";
-
-    private static final String SHOP_ID = "SHOP_ID";
     private static final String SHOP_NAME = "SHOP_NAME";
-    private static final String SHOP_AVATAR = "SHOP_AVATAR";
-    private static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
-    private static final String IS_POWER_MERCHANT_IDLE = "IS_POWER_MERCHANT_IDLE";
     private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
     private static final String KEY_IV = "tokopedia1234567";
-    private static final String TOKEN_TYPE = "TOKEN_TYPE";
     private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
-    private static final String IS_FIRST_TIME_USER_NEW_ONBOARDING = "IS_FIRST_TIME_NEW_ONBOARDING";
-    private static final String HAS_PASSWORD = "HAS_PASSWORD";
-    private static final String HAS_SHOWN_SALDO_WARNING = "HAS_SHOWN_SALDO_WARNING";
-    private static final String HAS_SHOWN_SALDO_INTRO_PAGE = "HAS_SHOWN_SALDO_INTRO_PAGE";
-    private static final String AUTOFILL_USER_DATA = "AUTOFILL_USER_DATA";
-    private static final String LOGIN_METHOD = "LOGIN_METHOD";
 
-    /**
-     * Twitter Prefs
-     */
+
     private static final String TWITTER_ACCESS_TOKEN = "TWITTER_ACCESS_TOKEN";
     private static final String TWITTER_ACCESS_TOKEN_SECRET = "TWITTER_ACCESS_TOKEN_SECRET";
     private static final String TWITTER_SHOULD_POST = "TWITTER_SHOULD_POST";
+
+    public static final String[] KEYS = {
+            ACCESS_TOKEN, TOKEN_TYPE, REFRESH_TOKEN, LOGIN_ID, IS_LOGIN,
+            LOGIN_SESSION, SHOP_ID, GC_TOKEN, IS_GOLD_MERCHANT, FULL_NAME,
+            PROFILE_PICTURE, TEMP_USER_ID, GCM_ID, TEMP_EMAIL, TEMP_PHONE_NUMBER,
+            IS_MSISDN_VERIFIED, IS_AFFILIATE, HAS_SHOWN_SALDO_WARNING, HAS_SHOWN_SALDO_INTRO_PAGE,
+            PHONE_NUMBER, EMAIL, IS_FIRST_TIME_USER_NEW_ONBOARDING, HAS_PASSWORD,
+            SHOP_AVATAR, IS_POWER_MERCHANT_IDLE, AUTOFILL_USER_DATA, LOGIN_METHOD,
+            TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET, TWITTER_SHOULD_POST,
+            UUID_KEY, LOGIN_UUID_KEY, GTM_LOGIN_ID
+    };
+
 
     private Context context;
 
