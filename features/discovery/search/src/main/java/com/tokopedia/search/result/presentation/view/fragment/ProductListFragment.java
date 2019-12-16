@@ -112,6 +112,7 @@ public class ProductListFragment
         RecommendationListener,
         BannedProductsRedirectToBrowserListener {
 
+    private static final String SCREEN_NAME_SEARCH_RESULT = "search result";
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final String SHOP = "shop";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -681,6 +682,7 @@ public class ProductListFragment
         productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
         productCardOptionsModel.setProductId(item.getProductID());
         productCardOptionsModel.setTopAds(item.isTopAds());
+        productCardOptionsModel.setScreenName(SCREEN_NAME_SEARCH_RESULT);
 
         return productCardOptionsModel;
     }
