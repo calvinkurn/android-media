@@ -19,11 +19,11 @@ internal class CarouselProductCardViewHolder(
 
     fun bind(carouselProductCardModel: CarouselProductCardModel) {
         val productCardModel = carouselProductCardModel.productCardModel
-        val onItemClickListener = carouselProductCardModel.carouselProductCardListenerInfo.onItemClickListener
-        val onItemLongClickListener = carouselProductCardModel.carouselProductCardListenerInfo.onItemLongClickListener
-        val onItemImpressedListener = carouselProductCardModel.carouselProductCardListenerInfo.onItemImpressedListener
-        val onItemAddToCartListener = carouselProductCardModel.carouselProductCardListenerInfo.onItemAddToCartListener
-        val onWishlistClickListener = carouselProductCardModel.carouselProductCardListenerInfo.onWishlistItemClickListener
+        val onItemClickListener = carouselProductCardModel.getOnItemClickListener()
+        val onItemLongClickListener = carouselProductCardModel.getOnItemLongClickListener()
+        val onItemImpressedListener = carouselProductCardModel.getOnItemImpressedListener()
+        val onItemAddToCartListener = carouselProductCardModel.getOnItemImpressedListener()
+        val onWishlistClickListener = carouselProductCardModel.getOnWishlistItemClickListener()
 
         itemView.carouselProductCardItem?.setProductModel(productCardModel)
 

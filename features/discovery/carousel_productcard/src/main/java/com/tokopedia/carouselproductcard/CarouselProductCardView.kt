@@ -79,6 +79,8 @@ class CarouselProductCardView: BaseCustomView {
             carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
             carouselProductCardOnWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null) {
 
+        if (productCardModelList.isEmpty()) return
+
         val carouselProductCardListenerInfo = CarouselProductCardListenerInfo().also {
             it.onItemClickListener = carouselProductCardOnItemClickListener
             it.onItemLongClickListener = carouselProductCardOnItemLongClickListener
