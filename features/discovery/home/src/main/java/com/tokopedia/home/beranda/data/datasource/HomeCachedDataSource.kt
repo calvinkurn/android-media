@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Named
 class HomeCachedDataSource(
         private val homeDao: HomeDao) {
-    private val timeout = TimeUnit.SECONDS.toMillis(10)
+    private val timeout = TimeUnit.DAYS.toMillis(30)
 
     suspend fun getCachedHomeData(): Flow<HomeData?> {
         return homeDao.getHomeData().map {

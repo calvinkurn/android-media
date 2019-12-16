@@ -13,15 +13,15 @@ class HomeUseCase @Inject constructor(
 ) {
     @ExperimentalCoroutinesApi
     fun getHomeData(): Flow<HomeViewModel> = flow {
-        var firstTimeDbConsumed = false
+        var firstTimeDataHasBeenConsumed = false
         homeRepository.getHomeData().collect { data->
-            if (!firstTimeDbConsumed) {
+            if (!firstTimeDataHasBeenConsumed) {
                 //first time observe, get latest data from cache
                 emit(homeDataMapper.mapToHomeViewModel(data, true))
                 //fetch new data
-                firstTimeDbConsumed = true
+                firstTimeDataHasBeenConsumed = true
             }
-            //not first time emit real data from network
+            //not first time, emit real data from network
             else emit(homeDataMapper.mapToHomeViewModel(data, false))
         }
     }
