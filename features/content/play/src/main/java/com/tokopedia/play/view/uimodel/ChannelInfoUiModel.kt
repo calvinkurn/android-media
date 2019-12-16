@@ -26,5 +26,6 @@ data class PartnerUiModel(
 data class PinnedMessageUiModel(
         val applink: String,
         val title: String,
-        val message: String
+        val message: String,
+        val shouldRemove: Boolean
 )

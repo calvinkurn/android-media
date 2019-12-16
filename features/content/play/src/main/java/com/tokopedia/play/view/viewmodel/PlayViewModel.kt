@@ -13,6 +13,7 @@ import com.tokopedia.play.domain.GetChannelInfoUseCase
 import com.tokopedia.play.domain.GetVideoStreamUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.type.PlayVideoType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play_common.player.TokopediaPlayManager
@@ -31,8 +32,8 @@ class PlayViewModel @Inject constructor(
         private val getChannelInfoUseCase: GetChannelInfoUseCase,
         private val getVideoStreamUseCase: GetVideoStreamUseCase,
         private val playSocket: PlaySocket,
-        dispatchers: CoroutineDispatcher
-) : BaseViewModel(dispatchers) {
+        private val dispatchers: CoroutineDispatcherProvider
+) : BaseViewModel(dispatchers.main) {
 
     private val _observableVideoType = MutableLiveData<PlayVideoType>()
 
@@ -54,8 +55,8 @@ class PlayViewModel @Inject constructor(
     private val _observableTotalViewsSocket = MutableLiveData<TotalView>()
     val observableTotalViewsSocket: LiveData<TotalView> = _observableTotalViewsSocket
 
-    private val _observablePinnedMessageSocket = MutableLiveData<PinnedMessage>()
-    val observablePinnedMessageSocket: LiveData<PinnedMessage> = _observablePinnedMessageSocket
+    private val _observablePinnedMessageSocket = MutableLiveData<PinnedMessageUiModel>()
+    val observablePinnedMessageSocket: LiveData<PinnedMessageUiModel> = _observablePinnedMessageSocket
 
     private val _observableQuickReplySocket = MutableLiveData<QuickReply>()
     val observableQuickReplySocket: LiveData<QuickReply> = _observableQuickReplySocket
@@ -65,7 +66,7 @@ class PlayViewModel @Inject constructor(
 
     fun getChannelInfo(channelId: String) {
         launchCatchError(block = {
-            val (channel, videoStream) = withContext(Dispatchers.IO) {
+            val (channel, videoStream) = withContext(dispatchers.io) {
                 getChannelInfoUseCase.channelId = channelId
                 val channel = getChannelInfoUseCase.executeOnBackground()
 
@@ -111,25 +112,30 @@ class PlayViewModel @Inject constructor(
         }, onClose =  {
             // Todo, handle on close web socket
         }, onMessageReceived =  { response ->
-            val socketMapper = PlaySocketMapper(response)
-            when (val result = socketMapper.mapping()) {
-                is TotalLike -> {
+            launch {
+                val result = withContext(dispatchers.io) {
+                    val socketMapper = PlaySocketMapper(response)
+                    socketMapper.mapping()
+                }
+                when (result) {
+                    is TotalLike -> {
 
-                }
-                is TotalView -> {
-                    _observableTotalViewsSocket.value = result
-                }
-                is PlayChat -> {
-                    _observableChatListSocket.value = result
-                }
-                is PinnedMessage -> {
-                    _observablePinnedMessageSocket.value = result
-                }
-                is QuickReply -> {
-                    _observableQuickReplySocket.value = result
-                }
-                is BannedFreeze -> {
-                    _observableBannedFreezeSocket.value = result
+                    }
+                    is TotalView -> {
+                        _observableTotalViewsSocket.value = result
+                    }
+                    is PlayChat -> {
+                        _observableChatListSocket.value = result
+                    }
+                    is PinnedMessage -> {
+                        _observablePinnedMessageSocket.value = mapPinnedMessage(result)
+                    }
+                    is QuickReply -> {
+                        _observableQuickReplySocket.value = result
+                    }
+                    is BannedFreeze -> {
+                        _observableBannedFreezeSocket.value = result
+                    }
                 }
             }
         }, onError = {
@@ -158,12 +164,15 @@ class PlayViewModel @Inject constructor(
                     channel.partnerId
             ),
             isActive = videoStream.isActive,
-            pinnedMessage = if (channel.pinnedMessage.pinnedMessageId <= 0) null else PinnedMessageUiModel(
-                    channel.pinnedMessage.redirectUrl,
-                    channel.pinnedMessage.title,
-                    channel.pinnedMessage.message
-            ),
+            pinnedMessage = mapPinnedMessage(channel.pinnedMessage),
             quickReply = channel.quickReply,
             totalView = channel.totalViews
+    )
+
+    private fun mapPinnedMessage(pinnedMessage: PinnedMessage) = PinnedMessageUiModel(
+            applink = pinnedMessage.redirectUrl,
+            title = pinnedMessage.title,
+            message = pinnedMessage.message,
+            shouldRemove = pinnedMessage.pinnedMessageId <= 0
     )
 }

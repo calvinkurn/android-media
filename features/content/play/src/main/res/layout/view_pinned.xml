@@ -41,16 +41,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl2"
                 android:layout_marginLeft="@dimen/spacing_lvl2"
-                app:lineHeight="@dimen/fontSize_lvl5"
                 android:lineHeight="@dimen/fontSize_lvl5"
-                android:text="@string/play_mock_pinned_message"
                 android:textColor="@color/Neutral_N0"
-                app:typographyType="body_3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toEndOf="@id/iv_pinned"
                 app:layout_constraintTop_toTopOf="parent"
+                app:lineHeight="@dimen/fontSize_lvl5"
+                app:typographyType="body_3"
+                tools:text="@string/play_mock_pinned_message"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

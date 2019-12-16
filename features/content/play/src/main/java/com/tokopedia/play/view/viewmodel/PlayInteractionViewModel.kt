@@ -12,6 +12,7 @@ import com.tokopedia.play.domain.PostFollowShopUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.toolbar.model.TitleToolbar
+import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,8 +28,8 @@ class PlayInteractionViewModel @Inject constructor(
         private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val postLikeUseCase: PostLikeUseCase,
         private val postFollowShopUseCase: PostFollowShopUseCase,
-        dispatchers: CoroutineDispatcher
-) : BaseViewModel(dispatchers), CoroutineScope {
+        dispatchers: CoroutineDispatcherProvider
+) : BaseViewModel(dispatchers.main), CoroutineScope {
 
     private val job = SupervisorJob()
 

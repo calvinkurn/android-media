@@ -136,6 +136,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             }
         })
 
+        //TODO("propagate this to each of the observable")
         playViewModel.observeGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                  is Success -> {
@@ -151,43 +152,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             }
         })
 
-        viewModel.observableToolbarInfo.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Success -> {
-                    setToolbarTitle(it.data)
-                }
-                is Fail -> {
-                    showToast("don't forget to handle when get toolbar info return error ")
-                }
-            }
-        })
-
-        viewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is  Success -> {
-                    setTotalLikes(it.data.totalClick)
-                }
-                is Fail -> {
-                    showToast("don't forget to handle when get total likes return error ")
-                }
-            }
-        })
-
-        playViewModel.observableTotalViewsSocket.observe(viewLifecycleOwner, Observer {
-            launch {
-                setTotalView(it.totalView)
-            }
-        })
-
-        playViewModel.observableChatListSocket.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.IncomingChat(it)
-                        )
-            }
-        })
+        observeToolbarInfo()
+        observeTotalLikes()
+        observeTotalViews()
+        observeChatList()
+        observePinnedMessage()
     }
 
     override fun onDestroy() {
@@ -199,6 +168,56 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         view?.let { triggerImmersive(it, VISIBLE_ALPHA) }
         bottomSheet.dismiss()
     }
+
+    //region observe
+    private fun observeToolbarInfo() {
+        viewModel.observableToolbarInfo.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> {
+                    setToolbarTitle(it.data)
+                }
+                is Fail -> {
+                    showToast("don't forget to handle when get toolbar info return error ")
+                }
+            }
+        })
+    }
+
+    private fun observeTotalLikes() {
+        viewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is  Success -> {
+                    setTotalLikes(it.data.totalClick)
+                }
+                is Fail -> {
+                    showToast("don't forget to handle when get total likes return error ")
+                }
+            }
+        })
+    }
+
+    private fun observeTotalViews() {
+        playViewModel.observableTotalViewsSocket.observe(viewLifecycleOwner, Observer {
+            setTotalView(it.totalView)
+        })
+    }
+
+    private fun observeChatList() {
+        playViewModel.observableChatListSocket.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.IncomingChat(it)
+                        )
+            }
+        })
+    }
+
+    private fun observePinnedMessage() {
+        playViewModel.observablePinnedMessageSocket.observe(this, Observer(::setPinnedMessage))
+    }
+    //endregion
 
     private fun setupView(view: View) {
         view.setOnClickListener {
@@ -360,7 +379,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         return quickReplyComponent
     }
+    //endregion
 
+    //region layouting
     private fun layoutView(
             container: ViewGroup,
             @IdRes sendChatComponentId: Int,
@@ -533,6 +554,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
 
+    //region set data
     /**
      * Emit data to ui component
      */
@@ -596,6 +618,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                   )
         }
     }
+    //endregion
 
     private fun showMoreActionBottomSheet() {
         if (!::bottomSheet.isInitialized) {

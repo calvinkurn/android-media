@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class PinnedMessage(
         @SerializedName("pinned_message_id")
-        val pinnedMessageId: Int = 0,
+        val pinnedMessageId: Long = 0L,
         @SerializedName("title")
         val title: String = "",
         @SerializedName("message")
@@ -16,4 +16,5 @@ data class PinnedMessage(
         @SerializedName("image_url")
         val imageUrl: String = "",
         @SerializedName("redirect_url")
-        val redirectUrl: String = "")
+        val redirectUrl: String = ""
+)

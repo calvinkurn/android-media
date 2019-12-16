@@ -27,6 +27,7 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
                 return mapToIncomingChat()
             }
             PlaySocketType.PINNED_MESSAGE.value -> {
+                //TODO("check if the default behaviour is really to be called twice (one for remove, one for new)")
                 return mapToPinnedMessage()
             }
             PlaySocketType.QUICK_REPLY.value -> {
@@ -49,18 +50,18 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
     }
 
     private fun mapToIncomingChat(): PlayChat {
-        return  gson.fromJson(webSocketResponse.jsonObject, PlayChat::class.java)
+        return gson.fromJson(webSocketResponse.jsonObject, PlayChat::class.java)
     }
 
     private fun mapToPinnedMessage(): PinnedMessage {
-        return  gson.fromJson(webSocketResponse.jsonObject, PinnedMessage::class.java)
+        return gson.fromJson(webSocketResponse.jsonObject, PinnedMessage::class.java)
     }
 
     private fun mapToQuickReply(): QuickReply {
-        return  gson.fromJson(webSocketResponse.jsonObject, QuickReply::class.java)
+        return gson.fromJson(webSocketResponse.jsonObject, QuickReply::class.java)
     }
 
     private fun mapToBannedFreeze(): BannedFreeze {
-        return  gson.fromJson(webSocketResponse.jsonObject, BannedFreeze::class.java)
+        return gson.fromJson(webSocketResponse.jsonObject, BannedFreeze::class.java)
     }
 }

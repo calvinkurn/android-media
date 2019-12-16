@@ -22,12 +22,19 @@ class PinnedComponent(
     private val uiView = initView(container)
 
     init {
+        uiView.hide()
+
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.SetPinned -> uiView.setPinnedMessage(it.pinnedMessage)
-                            is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.SetPinned -> {
+                                if (it.pinnedMessage.shouldRemove) uiView.hide()
+                                else {
+                                    uiView.show()
+                                    uiView.setPinnedMessage(it.pinnedMessage)
+                                }
+                            }
                         }
                     }
         }
