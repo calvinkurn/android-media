@@ -152,13 +152,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         descriptionLayout = view.findViewById(R.id.description_layout);
         retryStatus = view.findViewById(R.id.tv_retry_status);
 
-        // DO NOT DELETE - TO BE REPLACED LATER
-        /*TextView furtherInformationText = view.findViewById(R.id.further_information_text);
-        furtherInformationText.setText(Html
-                        .fromHtml(getString(R.string.further_information_text_html)),
-                TextView.BufferType.SPANNABLE);
-        furtherInformationText.setOnClickListener(onFurtherInformationClicked());*/
-
         liveTrackingButton = view.findViewById(R.id.live_tracking_button);
         tickerInfoCourier = view.findViewById(R.id.ticker_info_courier);
         fetchData();
@@ -284,6 +277,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
             if (additionalInfoUiModelList.isEmpty()) {
                 tickerInfoCourier.setVisibility(View.GONE);
             } else {
+                tickerInfoCourier.setVisibility(View.VISIBLE);
                 if (additionalInfoUiModelList.size() > 1) {
                     List<TickerData> tickerDataList = new ArrayList<>();
                     for (int i=0; i<additionalInfoUiModelList.size(); i++) {
@@ -404,8 +398,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private View.OnClickListener onLiveTrackingClickedListener() {
         return view -> {
             mAnalytics.eventClickOrderTrackingClickButtonLiveTracking();
-            startActivity(
-                    SimpleWebViewActivity.createIntent(getActivity(), mTrackingUrl));
+            String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, mTrackingUrl);
+            RouteManager.route(getActivity(), applink);
         };
     }
 

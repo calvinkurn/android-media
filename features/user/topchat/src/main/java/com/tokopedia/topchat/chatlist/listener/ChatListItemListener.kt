@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.listener
 
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.usecase.coroutines.Result
@@ -16,4 +17,6 @@ interface ChatListItemListener {
     fun decreaseNotificationCounter()
     fun trackChangeReadStatus(element: ItemChatListPojo)
     fun trackDeleteChat(element: ItemChatListPojo)
+    fun isTabSeller(): Boolean
+    fun getSupportChildFragmentManager(): FragmentManager
 }

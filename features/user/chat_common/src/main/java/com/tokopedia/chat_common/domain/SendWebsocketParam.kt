@@ -9,6 +9,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYP
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
+import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.view.viewmodel.InvoiceViewModel
 
 /**
@@ -30,12 +31,11 @@ object SendWebsocketParam {
     }
 
     fun generateParamSendProductAttachment(
-        messageId: String,
-        product: ResultProduct,
-        startTime: String,
-        toUid : String,
-        productFsIsActive: Boolean = false,
-        productFsImageUrl: String = ""
+            messageId: String,
+            product: ResultProduct,
+            startTime: String,
+            toUid: String,
+            productPreview: ProductPreview
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -52,10 +52,11 @@ object SendWebsocketParam {
         productProfile.addProperty("price", product.price)
         productProfile.addProperty("image_url", product.productImageThumbnail)
         productProfile.addProperty("url", product.productUrl)
+        productProfile.add("variant", productPreview.generateVariantRequest())
 
         val freeShipping = JsonObject()
-        freeShipping.addProperty("is_active", productFsIsActive)
-        freeShipping.addProperty("image_url", productFsImageUrl)
+        freeShipping.addProperty("is_active", productPreview.productFsIsActive)
+        freeShipping.addProperty("image_url", productPreview.productFsImageUrl)
         productProfile.add("free_ongkir", freeShipping)
 
         data.add("product_profile", productProfile)
@@ -66,7 +67,7 @@ object SendWebsocketParam {
     fun generateParamSendInvoiceAttachment(messageId: String,
                                            invoice: InvoiceViewModel,
                                            startTime: String,
-                                           toUid : String): JsonObject {
+                                           toUid: String): JsonObject {
 
         val attributes = JsonObject()
         attributes.addProperty("id", invoice.id)
@@ -101,7 +102,7 @@ object SendWebsocketParam {
     }
 
 
-    fun generateParamSendImage(messageId: String, path: String, startTime: String, toUid : String):
+    fun generateParamSendImage(messageId: String, path: String, startTime: String, toUid: String):
             JsonObject {
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -122,6 +123,7 @@ object SendWebsocketParam {
         json.addProperty("code", EVENT_TOPCHAT_READ_MESSAGE)
         val data = JsonObject()
         data.addProperty("msg_id", Integer.valueOf(messageId))
+        data.addProperty("no_update", true)
         json.add("data", data)
         return json
     }

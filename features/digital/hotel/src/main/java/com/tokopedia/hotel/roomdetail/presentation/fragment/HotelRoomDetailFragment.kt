@@ -1,12 +1,9 @@
 package com.tokopedia.hotel.roomdetail.presentation.fragment
 
 import android.app.ProgressDialog
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -15,6 +12,9 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -98,7 +98,9 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 is Success -> {
                     val cartId = it.data.response.cartId
                     context?.run {
-                        startActivity(HotelBookingActivity.getCallingIntent(this, cartId))
+                        startActivity(HotelBookingActivity.getCallingIntent(this, cartId,
+                                addToCartParam.destinationType, addToCartParam.destinationName,
+                                addToCartParam.roomCount, addToCartParam.adult))
                     }
                 }
                 is Fail -> {
@@ -340,9 +342,9 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
         room_detail_button.setOnClickListener {
             progressDialog.show()
-            room_detail_button.isEnabled = false
             if (userSessionInterface.isLoggedIn) {
-                trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
+                room_detail_button.isEnabled = false
+                trackingHotelUtil.hotelChooseRoomDetails(hotelRoom, roomIndex, addToCartParam)
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {
                 goToLoginPage()

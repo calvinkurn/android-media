@@ -2,13 +2,13 @@ package com.tokopedia.flight.detail.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.Nullable;
+
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
-import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
-public class FlightInvoiceActivity extends BaseWebViewActivity {
+public class FlightInvoiceActivity extends BaseSimpleActivity {
     public static final String URL = "WEBVIEW_URL";
     private String url;
 
@@ -24,11 +24,5 @@ public class FlightInvoiceActivity extends BaseWebViewActivity {
             url = getIntent().getExtras().getString(URL);
         }
         return BaseSessionWebViewFragment.newInstance(url);
-    }
-
-    @Nullable
-    @Override
-    protected Intent getContactUsIntent() {
-        return null;
     }
 }

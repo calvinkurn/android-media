@@ -232,7 +232,22 @@
         <activity
             android:name=".purchase.detail.activity.OrderHistoryActivity"
             android:label="@string/transaction_title_activity_order_history"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_order"
+                    android:path="@string/path_history"/>
+
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".purchase.detail.activity.CustomScannerBarcodeActivity"
             android:label="@string/title_scan_awb"
@@ -241,6 +256,27 @@
             android:name=".purchase.detail.activity.BookingCodeActivity"
             android:label="@string/title_booking_code_detail"
             android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".opportunity.activity.OpportunityListActivity"
+            android:label="@string/title_opportunity_detail"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_opportunity"/>
+
+            </intent-filter>
+        </activity>
 
     </application>
 

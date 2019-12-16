@@ -51,7 +51,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -71,6 +71,8 @@ dependencies {
     testImplementation "org.robolectric:multidex:3.4.2"
     testImplementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     testAnnotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    testImplementation "androidx.arch.core:core-testing:2.0.0-rc01"
 }
 
 project.ext {

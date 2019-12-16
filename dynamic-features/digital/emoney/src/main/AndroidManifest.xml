@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    package="com.tokopedia.emoney.customerapp">
+
+    <dist:module
+        dist:onDemand="true"
+        dist:title="@string/title_digital_emoney">
+        <dist:fusing dist:include="true" />
+    </dist:module>
+
+    <application android:hasCode="false" />
+</manifest>

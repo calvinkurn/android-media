@@ -1,5 +1,5 @@
-query get_notification_update_filter{
-  notifcenter_filter {
+query get_notification_update_filter($typeOfNotif: Int){
+  notifcenter_filter(type_of_notif: $typeOfNotif) {
     notifcenter_typeList {
       list {
         id

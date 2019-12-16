@@ -23,7 +23,6 @@ public interface CatalogListItemContract {
 
         void hideLoader();
 
-        void populateCatalog(List<CatalogsValueEntity> items);
 
         Context getActivityContext();
 
@@ -31,7 +30,6 @@ public interface CatalogListItemContract {
 
         Resources getResources();
 
-        int getCurrentSortType();
 
         int getCurrentCategoryId();
 

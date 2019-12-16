@@ -1,6 +1,8 @@
 package com.tokopedia.otp.validator.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.otp.validator.view.activity.ValidatorActivity
+import com.tokopedia.otp.validator.view.fragment.OtpModeListFragment
 import com.tokopedia.otp.validator.view.fragment.ValidatorFragment
 import dagger.Component
 import dagger.Module
@@ -18,5 +20,7 @@ import dagger.Module
     ValidatorViewModelModule::class
 ], dependencies = [BaseAppComponent::class])
 interface ValidatorComponent{
+    fun inject(activity: ValidatorActivity)
     fun inject(fragment: ValidatorFragment)
+    fun inject(fragment: OtpModeListFragment)
 }

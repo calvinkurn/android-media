@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -16,9 +15,6 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
-            exclude group: 'com.android.tools.build', module: 'gradle'
-        }
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -29,9 +25,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.features.affiliateCommon)
+    implementation project(rootProject.ext.features.interestPickCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.feedComponent)
-    implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.navigationCommon)
@@ -55,7 +51,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.cameraview)
-    implementation project(rootProject.ext.features.tkpdcore)
 
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components
@@ -78,7 +73,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lottie
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation rootProject.ext.networkDependencies.glide
     implementation (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'

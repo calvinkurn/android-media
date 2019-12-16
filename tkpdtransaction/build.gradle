@@ -72,7 +72,7 @@ dependencies {
     kapt rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     kapt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
@@ -80,6 +80,8 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+    implementation "com.tokopedia.unify.compositions:datepicker:0.0.1@aar"
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 
 project.ext {

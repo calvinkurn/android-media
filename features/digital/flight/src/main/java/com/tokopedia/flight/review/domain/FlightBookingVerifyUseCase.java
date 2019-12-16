@@ -2,9 +2,9 @@ package com.tokopedia.flight.review.domain;
 
 import android.text.TextUtils;
 
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityViewModel;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.AmenityPassenger;

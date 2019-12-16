@@ -2,6 +2,7 @@ package com.tokopedia.discovery.categoryrevamp.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -19,7 +20,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
                             val visitables: ArrayList<Visitable<ProductTypeFactory>>,
                             val onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
 
-    private val loadingMoreModel: LoadingMoreModel  by lazy { LoadingMoreModel() }
+    private val loadingMoreModel: LoadingMoreModel by lazy { LoadingMoreModel() }
 
     private val listShimmerModel: ListShimmerModel by lazy { ListShimmerModel() }
 
@@ -28,11 +29,16 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
     private val bigListShimmerModel: BigListShimmerModel by lazy { BigListShimmerModel() }
 
     val viewMap = HashMap<Int, Boolean>()
-
+    var viewedProductList = ArrayList<Visitable<ProductTypeFactory>>()
+    var viewedTopAdsList = ArrayList<Visitable<ProductTypeFactory>>()
     var isShimmer: Boolean = false
 
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
+        val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+        when(visitables[position]){
+            is LoadingMoreModel -> layout.isFullSpan = true
+        }
         holder.bind(visitables[position])
     }
 
@@ -155,9 +161,16 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
             val position = holder.adapterPosition
             if (!viewMap.containsKey(position)) {
                 viewMap[position] = true
-                onItemChangeView.onListItemImpressionEvent(visitables[position] as Visitable<Any>,position)
-            }
+                val item = visitables[position] as ProductsItem
+                item.adapter_position = position
 
+                if (item.isTopAds) {
+                    onItemChangeView.topAdsTrackerUrlTrigger(item.productImpTrackingUrl)
+                    viewedTopAdsList.add(item)
+                } else {
+                    viewedProductList.add(item)
+                }
+            }
         }
     }
 
@@ -166,5 +179,13 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
             return "category$path-$id"
         }
         return ""
+    }
+
+    fun onPause() {
+        if (viewedProductList.isNotEmpty() || viewedTopAdsList.isNotEmpty()) {
+            onItemChangeView.onListItemImpressionEvent(viewedProductList as List<Visitable<Any>>, viewedTopAdsList as List<Visitable<Any>>)
+        }
+        viewedProductList.clear()
+        viewedTopAdsList.clear()
     }
 }

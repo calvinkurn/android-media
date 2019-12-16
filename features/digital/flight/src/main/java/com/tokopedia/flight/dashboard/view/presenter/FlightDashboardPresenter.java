@@ -107,6 +107,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     @Override
+    public void sendAnalyticsOpenScreen(String screenName) {
+        flightAnalytics.eventOpenScreen(screenName, userSession.isLoggedIn());
+    }
+
+    @Override
     public void onSingleTripChecked() {
         flightAnalytics.eventTripTypeClick(getView().getString(com.tokopedia.flight.R.string.flight_dashboard_analytic_one_way).toString());
         flightDashboardCache.putRoundTrip(false);

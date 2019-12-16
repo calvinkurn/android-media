@@ -10,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -17,13 +18,12 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
-import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
+import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
-import com.tokopedia.kol.KolComponentInstance
+import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
+import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -37,8 +37,8 @@ import javax.inject.Inject
 class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestPickItemListener, FeedOnboardingActivity.FeedOnboardingActivityListener {
 
     companion object {
-        private val OPEN_RECOM_PROFILE = 1236
-        val EXTRA_SELECTED_IDS = "EXTRA_SELECTED_IDS"
+        private const val OPEN_RECOM_PROFILE = 1236
+        const val EXTRA_SELECTED_IDS = "EXTRA_SELECTED_IDS"
         fun getInstance(bundle: Bundle): FeedOnboardingFragment {
             val fragment = FeedOnboardingFragment()
             fragment.arguments = bundle
@@ -122,21 +122,23 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     override fun initInjector() {
         activity?.application?.let {
             DaggerFeedPlusComponent.builder()
-                    .kolComponent(KolComponentInstance.getKolComponent(it))
+                    .baseAppComponent(
+                            (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                    )
                     .build()
                     .inject(this)
         }
     }
 
-    override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
+    override fun onInterestPickItemClicked(item: InterestPickDataViewModel) {
         checkButtonSaveInterest()
         feedAnalyticTracker.eventClickFeedInterestPick(item.name)
     }
 
-    override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
+    override fun onLihatSemuaItemClicked(selectedItemList: List<InterestPickDataViewModel>) {
     }
 
-    override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
+    override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<InterestPickDataViewModel>) {
     }
 
     override fun onBackPressedOnActivity(): Intent {
