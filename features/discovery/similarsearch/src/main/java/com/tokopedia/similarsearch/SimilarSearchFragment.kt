@@ -358,7 +358,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun observeTrackingBuyEventLiveData() {
-        similarSearchViewModel?.getTrackingAddToCartEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+        similarSearchViewModel?.getTrackingBuyEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             SimilarSearchTracking.trackEventClickBuy(it)
         })
     }
