@@ -1,17 +1,14 @@
-package com.tokopedia.design.color;
+package com.tokopedia.filter.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.tokopedia.design.R;
+import androidx.annotation.Nullable;
 
-/**
- * Created by henrypriyono on 8/23/17.
- */
+import com.tokopedia.design.R;
 
 public class ColorSampleView extends View {
 

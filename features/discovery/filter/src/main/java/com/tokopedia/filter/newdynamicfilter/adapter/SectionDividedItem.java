@@ -1,8 +1,5 @@
-package com.tokopedia.design.list.item;
+package com.tokopedia.filter.newdynamicfilter.adapter;
 
-/**
- * Created by henrypriyono on 8/30/17.
- */
 
 public interface SectionDividedItem {
     int POPULAR_SECTION_ID = 1;

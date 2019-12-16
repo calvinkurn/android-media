@@ -1,15 +1,10 @@
-package com.tokopedia.design.list.adapter;
+package com.tokopedia.filter.newdynamicfilter.adapter;
 
 import android.text.TextUtils;
-
-import com.tokopedia.design.list.item.SectionDividedItem;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by henrypriyono on 9/12/17.
- */
 
 public class SectionTitleDictionary {
     private static final String SECTION_TITLE_POPULAR = "Populer";
