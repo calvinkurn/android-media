@@ -9,6 +9,7 @@ import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
@@ -193,7 +194,7 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
-
+        RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
     }
 
 }
