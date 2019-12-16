@@ -24,7 +24,7 @@ class QuickReplyAdapter(
                 .addDelegate(QuickReplyAdapterDelegate(onQuickReplyClicked))
     }
 
-    fun setQuickReply(quickReply: QuickReply) {
-        setItemsAndAnimateChanges(quickReply.data)
+    fun setQuickReply(quickReplyList: List<String>) {
+        setItemsAndAnimateChanges(quickReplyList)
     }
 }

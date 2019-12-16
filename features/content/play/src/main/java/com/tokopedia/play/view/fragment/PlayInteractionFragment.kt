@@ -154,6 +154,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             }
         })
 
+        observeQuickReply()
         observeVideoStream()
         observeToolbarInfo()
         observeTotalLikes()
@@ -173,6 +174,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     //region observe
+    private fun observeQuickReply() {
+        playViewModel.observableQuickReplySocket.observe(viewLifecycleOwner, Observer(::setQuickReply))
+    }
+
     private fun observeVideoStream() {
         playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer(::setVideoStream))
     }

@@ -29,22 +29,23 @@ class QuickReplyComponent(
                         when (it) {
                             is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.SetQuickReply -> uiView.setQuickReply(it.quickReply)
                         }
                     }
         }
 
-        uiView.setQuickReply(
-                QuickReply(
-                        listOf(
-                                "Keren",
-                                "Mantap",
-                                "UUuuuuuuuuUUUUU",
-                                "YEYEYEY",
-                                "KEREN BANGET CUI",
-                                "WOOOOOOSSSHHH"
-                        )
-                )
-        )
+//        uiView.setQuickReply(
+//                QuickReply(
+//                        listOf(
+//                                "Keren",
+//                                "Mantap",
+//                                "UUuuuuuuuuUUUUU",
+//                                "YEYEYEY",
+//                                "KEREN BANGET CUI",
+//                                "WOOOOOOSSSHHH"
+//                        )
+//                )
+//        )
     }
 
     override fun getContainerId(): Int {

@@ -54,8 +54,8 @@ class PlayViewModel @Inject constructor(
     private val _observablePinnedMessageSocket = MutableLiveData<PinnedMessageUiModel>()
     val observablePinnedMessageSocket: LiveData<PinnedMessageUiModel> = _observablePinnedMessageSocket
 
-    private val _observableQuickReplySocket = MutableLiveData<QuickReply>()
-    val observableQuickReplySocket: LiveData<QuickReply> = _observableQuickReplySocket
+    private val _observableQuickReplySocket = MutableLiveData<QuickReplyUiModel>()
+    val observableQuickReplySocket: LiveData<QuickReplyUiModel> = _observableQuickReplySocket
 
     private val _observableBannedFreezeSocket = MutableLiveData<BannedFreeze>()
     val observableBannedFreezeSocket: LiveData<BannedFreeze> = _observableBannedFreezeSocket
@@ -132,7 +132,7 @@ class PlayViewModel @Inject constructor(
                         _observablePinnedMessageSocket.value = mapPinnedMessage(result)
                     }
                     is QuickReply -> {
-                        _observableQuickReplySocket.value = result
+                        _observableQuickReplySocket.value = mapQuickReply(result)
                     }
                     is BannedFreeze -> {
                         _observableBannedFreezeSocket.value = result
@@ -186,4 +186,6 @@ class PlayViewModel @Inject constructor(
             videoType = if (videoStream.isLive) PlayVideoType.Live else PlayVideoType.VOD,
             isActive = videoStream.isActive
     )
+
+    private fun mapQuickReply(quickReply: QuickReply) = quickReply.data
 }

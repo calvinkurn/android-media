@@ -47,8 +47,8 @@ class QuickReplyView(
         view.hide()
     }
 
-    fun setQuickReply(quickReply: QuickReply) {
-        quickReplyAdapter.setQuickReply(quickReply)
+    fun setQuickReply(quickReplyList: List<String>) {
+        quickReplyAdapter.setQuickReply(quickReplyList)
     }
 
     interface Listener {
