@@ -1,9 +1,5 @@
 package com.tokopedia.user.session.util;
 
-
-
-import android.util.Base64;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -20,7 +16,7 @@ public class EncoderDecoder {
 	    	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 	    	cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivs);
 	    	byte[] encryptedData = cipher.doFinal(text.getBytes());     
-	    	encode_result = Base64.encodeToString(encryptedData, 0);
+	    	encode_result = Base64_.encodeToString(encryptedData, 0);
 	    	encode_result.replace("\n", "");
     	}
     	catch (Exception e) {
@@ -38,7 +34,7 @@ public class EncoderDecoder {
 	    	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 	    	cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivs);
 	    	byte[] encryptedData = cipher.doFinal(text.getBytes());     
-	    	encode_result = Base64.encodeToString(encryptedData, 0);
+	    	encode_result = Base64_.encodeToString(encryptedData, 0);
 	    	encode_result.replace("\n", "");
     	}
     	catch (Exception e) {
@@ -53,12 +49,12 @@ public class EncoderDecoder {
     	String decode_result = null;
     	IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
     	try {
-    		byte[] data = Base64.decode(text, Base64.DEFAULT);
+    		byte[] data = Base64_.decode(text, Base64_.DEFAULT);
 	    	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 	    	cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivs);
 	    	byte[] decryptedData = cipher.doFinal(data);     
 	    	decode_result = new String(decryptedData);
-	    	//decode_result = Base64.encodeToString(encryptedData, 0);
+	    	//decode_result = Base64_.encodeToString(encryptedData, 0);
 	    	//decode_result.replace("\n", "");
     	}
     	catch (Exception e) {
@@ -74,12 +70,12 @@ public class EncoderDecoder {
 		String decode_result = null;
 		IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
 		try {
-			byte[] data = Base64.decode(text, Base64.DEFAULT);
+			byte[] data = Base64_.decode(text, Base64_.DEFAULT);
 			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 			cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivs);
 			byte[] decryptedData = cipher.doFinal(data);
 			decode_result = new String(decryptedData);
-			//decode_result = Base64.encodeToString(encryptedData, 0);
+			//decode_result = Base64_.encodeToString(encryptedData, 0);
 			//decode_result.replace("\n", "");
 		}
 		catch (Exception e) {
