@@ -102,23 +102,18 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     }
 
     private fun routeToSimilarSearch() {
-        activity?.let {
+        activity?.let { activity ->
             val productCardOptionsModel = productCardOptionsViewModel?.productCardOptionsModel
                     ?: return
 
-            startSimilarSearch(it, productCardOptionsModel.productId, productCardOptionsModel.keyword)
-            finish()
+            startSimilarSearch(activity, productCardOptionsModel.productId, productCardOptionsModel.keyword)
         }
     }
 
     private fun observeCloseProductCardOptionsEventLiveData() {
         productCardOptionsViewModel?.getCloseProductCardOptionsEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            finish()
+            activity?.finish()
         })
-    }
-
-    private fun finish() {
-        activity?.finish()
     }
 
     private fun observeRouteToLoginPageEventLiveData() {

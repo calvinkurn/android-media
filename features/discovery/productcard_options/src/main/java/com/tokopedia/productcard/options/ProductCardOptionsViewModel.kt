@@ -75,25 +75,22 @@ internal class ProductCardOptionsViewModel(
 
     private fun tryToggleWishlist(isAddWishlist: Boolean) {
         if (!userSession.isLoggedIn) {
-            postWishlistTrackingEvent(isAddWishlist)
-            postRouteToLoginPageEvent()
+            trackingWishlistEventLiveData.postValue(Event(createWishlistTrackingModel(isAddWishlist)))
+            routeToLoginPageEventLiveData.postValue(Event(true))
+            closeProductCardOptionsEventLiveData.postValue(Event(true))
         } else {
             doWishlistAction(isAddWishlist)
         }
     }
 
-    private fun postWishlistTrackingEvent(isAddWishlist: Boolean) {
-        trackingWishlistEventLiveData.postValue(Event(WishlistTrackingModel(
+    private fun createWishlistTrackingModel(isAddWishlist: Boolean): WishlistTrackingModel {
+        return WishlistTrackingModel(
                 isAddWishlist = isAddWishlist,
                 productId = productCardOptionsModel?.productId ?: "",
                 isTopAds = productCardOptionsModel?.isTopAds ?: false,
                 keyword = productCardOptionsModel?.keyword ?: "",
                 isUserLoggedIn = userSession.isLoggedIn
-        )))
-    }
-
-    private fun postRouteToLoginPageEvent() {
-        routeToLoginPageEventLiveData.postValue(Event(true))
+        )
     }
 
     private fun doWishlistAction(isAddWishlist: Boolean) {
@@ -109,7 +106,7 @@ internal class ProductCardOptionsViewModel(
     private fun createWishlistActionListener(): WishListActionListener {
         return object: WishListActionListener {
             override fun onSuccessRemoveWishlist(productId: String?) {
-                postWishlistTrackingEvent(false)
+                trackingWishlistEventLiveData.postValue(Event(createWishlistTrackingModel(false)))
                 removeWishlistEventLiveData.postValue(Event(true))
             }
 
@@ -122,7 +119,7 @@ internal class ProductCardOptionsViewModel(
             }
 
             override fun onSuccessAddWishlist(productId: String?) {
-                postWishlistTrackingEvent(true)
+                trackingWishlistEventLiveData.postValue(Event(createWishlistTrackingModel(true)))
                 addWishlistEventLiveData.postValue(Event(true))
             }
         }

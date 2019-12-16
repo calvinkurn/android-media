@@ -58,6 +58,12 @@ internal class ToggleWishlistOptionsTest: Spek({
                 routeToLoginEvent?.getContentIfNotHandled().shouldBe(true,
                         "Route to login page should be true")
             }
+
+            Then("should post event close product card options") {
+                val closeProductCardOptionsEvent = productCardOptionsViewModel.getCloseProductCardOptionsEventLiveData().value
+
+                closeProductCardOptionsEvent?.getContentIfNotHandled() shouldBe true
+            }
         }
 
         Scenario("Add Wishlist Product Success") {
@@ -269,6 +275,12 @@ internal class ToggleWishlistOptionsTest: Spek({
 
                 routeToLoginEvent?.getContentIfNotHandled().shouldBe(true,
                         "Route to login page should be true")
+            }
+
+            Then("should post event close product card options") {
+                val closeProductCardOptionsEvent = productCardOptionsViewModel.getCloseProductCardOptionsEventLiveData().value
+
+                closeProductCardOptionsEvent?.getContentIfNotHandled() shouldBe true
             }
         }
 

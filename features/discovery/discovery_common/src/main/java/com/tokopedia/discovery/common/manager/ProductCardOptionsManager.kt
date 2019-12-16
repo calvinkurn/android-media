@@ -43,13 +43,23 @@ fun showProductCardOptions(fragment: Fragment, productCardOptionsModel: ProductC
 
 fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?, wishlistCallback: ProductCardOptionsWishlistCallback?) {
     if (requestCode == PRODUCT_CARD_OPTIONS_REQUEST_CODE) {
-        if (resultCode == Activity.RESULT_OK) {
-            val isAddWishlist = data?.getBooleanExtra(PRODUCT_CARD_OPTION_RESULT_IS_ADD_WISHLIST, false) ?: false
-            val isSuccess = data?.getBooleanExtra(PRODUCT_CARD_OPTION_RESULT_IS_SUCCESS, false) ?: false
-            val productCardOptionsModel = data?.getParcelableExtra(PRODUCT_CARD_OPTION_RESULT_PRODUCT) ?: ProductCardOptionsModel()
+        handleRequestFromProductCardOptions(resultCode, data, wishlistCallback)
+    }
+}
 
-            wishlistCallback?.onReceiveWishlistResult(isAddWishlist, isSuccess, productCardOptionsModel)
-        }
+private fun handleRequestFromProductCardOptions(resultCode: Int, data: Intent?, wishlistCallback: ProductCardOptionsWishlistCallback?) {
+    if (resultCode == Activity.RESULT_OK && data != null) {
+        handleProductCardOptionsResultOK(data, wishlistCallback)
+    }
+}
+
+private fun handleProductCardOptionsResultOK(data: Intent, wishlistCallback: ProductCardOptionsWishlistCallback?) {
+    val isAddWishlist = data.getBooleanExtra(PRODUCT_CARD_OPTION_RESULT_IS_ADD_WISHLIST, false)
+    val isSuccess = data.getBooleanExtra(PRODUCT_CARD_OPTION_RESULT_IS_SUCCESS, false)
+    val productCardOptionsModel = data.getParcelableExtra<ProductCardOptionsModel>(PRODUCT_CARD_OPTION_RESULT_PRODUCT)
+
+    if (productCardOptionsModel != null) {
+        wishlistCallback?.onReceiveWishlistResult(isAddWishlist, isSuccess, productCardOptionsModel)
     }
 }
 
