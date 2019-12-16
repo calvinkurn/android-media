@@ -8,10 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
-import com.tokopedia.design.color.ColorSampleView
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetDynamicFilterView
+import com.tokopedia.filter.widget.ColorSampleView
 
 import java.util.ArrayList
 
