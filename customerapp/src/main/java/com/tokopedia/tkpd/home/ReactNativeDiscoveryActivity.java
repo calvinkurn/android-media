@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-
 import androidx.annotation.RequiresApi;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -37,7 +36,6 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setCrashLog();
         if (getSupportActionBar() != null) {
