@@ -16,11 +16,7 @@ class EmptyDataViewHolder(view: View): AbstractViewHolder<EmptyState>(view) {
 
     override fun bind(element: EmptyState) {
         txtMessage.text = element.title
-        if (element.icon != 0) {
-            imgState.setImageResource(element.icon)
-        } else {
-            imgState.hide()
-        }
+        imgState.setImageResource(element.icon)
     }
 
     companion object {

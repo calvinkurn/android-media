@@ -274,6 +274,13 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         finish();
     }
 
+    public static void createApplinkDelegateInBackground(){
+        Observable.fromCallable(() -> {
+            getApplinkDelegateInstance();
+            return true;
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -321,7 +328,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     private void routeApplink(ApplinkDelegate deepLinkDelegate, String applinkString, Bundle defaultBundle) {
         if (deepLinkDelegate.supportsUri(applinkString)) {
-            routeFromApplink(Uri.parse(applinkString), defaultBundle);
+            routeFromApplink(deepLinkDelegate, Uri.parse(applinkString), defaultBundle);
         } else {
             Intent intent = RouteManager.getIntent(this, applinkString);
             if (defaultBundle != null) {
@@ -348,11 +355,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 label);
     }
 
-    private void routeFromApplink(Uri applink, Bundle defaultBudle) {
+    private void routeFromApplink(ApplinkDelegate applinkDelegate, Uri applink, Bundle defaultBudle) {
         if (applink != null) {
             try {
 
-                Intent nextIntent = ((ApplinkRouter) getApplicationContext()).applinkDelegate().getIntent(this, applink.toString());
+                Intent nextIntent = applinkDelegate.getIntent(this, applink.toString());
                 if (defaultBudle != null) {
                     nextIntent.putExtras(defaultBudle);
                 }
@@ -406,17 +413,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
             return launchIntent;
         }
-    }
-
-    @DeepLink({ApplinkConst.PROMO})
-    public static Intent getPromoIntent(Context context, Bundle bundle) {
-        String promoId = bundle.getString("promo_id", "");
-        String url = BerandaUrl.PROMO_URL;
-        if (!TextUtils.isEmpty(promoId)) {
-            url += promoId;
-        }
-        url += FLAG_APP;
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
     @DeepLink(ApplinkConst.BROWSER)

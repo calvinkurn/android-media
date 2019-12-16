@@ -70,7 +70,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
-
+    implementation project(rootProject.ext.libraries.traceroute)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -102,7 +102,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation rootProject.ext.viewDependencies.appIntro
+
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.multiDex

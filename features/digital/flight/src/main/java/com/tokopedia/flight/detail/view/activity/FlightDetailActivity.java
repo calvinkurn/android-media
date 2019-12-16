@@ -34,6 +34,7 @@ public class FlightDetailActivity extends BaseTabActivity {
 
     public static final String EXTRA_FLIGHT_SEARCH_MODEL = "EXTRA_FLIGHT_DETAIL_MODEL";
     public static final String EXTRA_FLIGHT_SELECTED = "EXTRA_FLIGHT_SELECTED";
+    public static final String EXTRA_FLIGHT_SELECTED_TERM = "EXTRA_FLIGHT_SELECTED_TERM";
     private static final String EXTRA_FLIGHT_DISPLAY_SUBMIT = "EXTRA_FLIGHT_DISPLAY_SUBMIT";
     @Inject
     FlightAnalytics flightAnalytics;
@@ -146,6 +147,7 @@ public class FlightDetailActivity extends BaseTabActivity {
     private void setResultAndFinish() {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_FLIGHT_SELECTED, flightDetailViewModel.getId());
+        intent.putExtra(EXTRA_FLIGHT_SELECTED_TERM, flightDetailViewModel.getTerm());
         setResult(RESULT_OK, intent);
         finish();
     }

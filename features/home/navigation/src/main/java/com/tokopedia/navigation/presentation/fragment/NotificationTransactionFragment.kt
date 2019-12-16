@@ -1,6 +1,8 @@
 package com.tokopedia.navigation.presentation.fragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,20 +84,31 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
             _adapter.addElement(it)
         })
         viewModel.notification.observe(this, Observer {
+            _adapter.removeEmptyState()
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
                 val emptyString = EmptyState(
-                        0,
+                        R.drawable.bg_empty_state_notification,
                         getString(R.string.notification_empty_message))
                 _adapter.addElement(emptyString)
             }  else {
-                _adapter.removeEmptyState()
                 onSuccessNotificationData(it)
             }
         })
         viewModel.lastNotificationId.observe(this, Observer {
             viewModel.getTransactionNotification(it)
         })
+
+        swipeRefresh.setOnRefreshListener {
+            swipeRefresh.isRefreshing = true
+
+            /*
+            * add some delay for 1 sec to
+            * preventing twice swipe to refresh*/
+            Handler().postDelayed({
+                loadInitialData()
+            }, REFRESH_DELAY)
+        }
     }
 
     override fun onPause() {
@@ -133,6 +146,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun loadData(page: Int) {
+        swipeRefresh.isRefreshing = false
         renderList(buyerMenu(), false)
         viewModel.getInfoStatusNotification()
     }
@@ -172,6 +186,9 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun updateFilter(filter: HashMap<String, Int>) {
+        //preventing bounce notification
+        _adapter.addElement(EmptyState(0, ""))
+
         viewModel.updateNotificationFilter(filter)
         cursor = ""
         _adapter.removeItem()
@@ -253,9 +270,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
-    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
     override fun getRecyclerViewResourceId() = R.id.lstNotification
-    override fun hasInitialSwipeRefresh(): Boolean = true
     override fun onItemClicked(t: Visitable<*>?) = Unit
     override fun getScreenName() = SCREEN_NAME
 
@@ -269,6 +284,10 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         private const val PARAM_CTA_APPLINK = "cta applink"
         private const val PARAM_BUTTON_TEXT = "button text"
         private const val PARAM_TEMPLATE_KEY = "template key"
+
+        private const val REFRESH_DELAY = 1000L
+
+        private const val LIST_ITEM_STATE = "list_notif"
     }
 
 }

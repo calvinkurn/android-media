@@ -14,6 +14,6 @@ abstract class HomeDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun save(item: HomeRoomData)
 
-    @Query("DELETE FROM HomeDbData")
+    @Query("DELETE FROM HomeRoomData")
     abstract fun deleteHomeData()
 }

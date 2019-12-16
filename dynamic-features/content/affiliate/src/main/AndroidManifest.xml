@@ -3,7 +3,6 @@
     package="com.tokopedia.affiliate.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/title_af_affiliate">
         <dist:fusing dist:include="true" />

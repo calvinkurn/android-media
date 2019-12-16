@@ -1,5 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.contract
 
+import com.tokopedia.common_digital.cart.view.model.cart.FintechProduct
+
 interface DigitalCartMyBillsContract {
     interface View : DigitalBaseContract.View {
         fun isSubscriptionChecked(): Boolean
@@ -8,7 +10,7 @@ interface DigitalCartMyBillsContract {
 
         fun renderMyBillsSusbcriptionView(headerTitle: String?, description: String?, checked: Boolean, isSubcribed: Boolean)
 
-        fun renderMyBillsEgoldView(headerTitle: String?, description: String?, isCheckboxDisabled: Boolean)
+        fun renderMyBillsEgoldView(data: FintechProduct?)
 
         fun updateCheckoutButtonText(buttonTitle: String?)
 
