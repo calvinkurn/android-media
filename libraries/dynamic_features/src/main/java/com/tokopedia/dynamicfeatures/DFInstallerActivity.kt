@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.coroutines.*
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 
@@ -327,6 +328,11 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
 
     /** Display a loading state to the user. */
     private fun displayLoadingState(state: SplitInstallSessionState, message: String) {
+        val totalBytesToDowload = state.totalBytesToDownload().toInt()
+        val bytesDownloaded = state.bytesDownloaded().toInt()
+        val progressText = String.format("%.2f KB / %.2f KB",
+            (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
+        Timber.i(progressText)
         button_download.visibility = View.INVISIBLE
     }
 
