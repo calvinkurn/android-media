@@ -743,7 +743,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 }
             } else {
                 ((TextView) premiumAccountView.findViewById(R.id.tv_rekeningTitle))
-                        .setText(getString(R.string.swd_program_tarik_saldo));
+                        .setText(getString(R.string.swd_rekening_premium));
 
                 if (rekeningAccountStatus == REKENING_ACCOUNT_NOT_JOINED || rekeningAccountStatus == REKENING_ACCOUNT_PendingOut
                         || rekeningAccountStatus == REKENING_ACCOUNT_InProgressOut || rekeningAccountStatus == REKENING_ACCOUNT_ApprovedOut
@@ -794,7 +794,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             } else {
 
                 ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
-                        .setText(getString(R.string.swd_program_tarik_saldo));
+                        .setText(getString(R.string.swd_rekening_premium));
                 ((TextView) view.findViewById(R.id.tv_wdProgramDescription))
                         .setText(getString(R.string.swd_program_tarik_saldo_description));
                 ((TextView) view.findViewById(R.id.wdProgramContinue))
