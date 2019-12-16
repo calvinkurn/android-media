@@ -19,4 +19,11 @@ class TokopointsQueryModule {
     fun getGQLCurrentPoint(@ApplicationContext context: Context) : String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_current_points)
     }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_HISTORY_POINTS)
+    fun getGQLHistoryPoint(@ApplicationContext context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_point_history)
+    }
 }

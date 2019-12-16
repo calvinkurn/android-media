@@ -124,5 +124,6 @@ public interface CommonConstant {
 
     interface GQLQuery {
         String TP_GQL_CURRENT_POINTS = "tp_gql_current_points";
+        String TP_GQL_HISTORY_POINTS = "tp_gql_point_history";
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.activity
+package com.tokopedia.tokopoints.view.pointhistory
 
 import android.content.Context
 import android.content.Intent
@@ -12,8 +12,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent
 import com.tokopedia.tokopoints.di.TokoPointComponent
-import com.tokopedia.tokopoints.view.fragment.PointHistoryFragment
-import com.tokopedia.tokopoints.view.util.CommonConstant
 
 class PointHistoryActivity : BaseSimpleActivity(), HasComponent<TokoPointComponent> {
     private val tokoPointComponent: TokoPointComponent by lazy { initInjector() }

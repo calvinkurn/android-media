@@ -8,7 +8,7 @@ import com.tokopedia.tokopoints.view.fragment.CatalogListingFragment;
 import com.tokopedia.tokopoints.view.fragment.CouponCatalogFragment;
 import com.tokopedia.tokopoints.view.fragment.CouponDetailFragment;
 import com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment;
-import com.tokopedia.tokopoints.view.fragment.PointHistoryFragment;
+import com.tokopedia.tokopoints.view.pointhistory.PointHistoryFragment;
 import com.tokopedia.tokopoints.view.fragment.SendGiftFragment;
 import com.tokopedia.tokopoints.view.fragment.TokoPointsHomeFragmentNew;
 import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment;

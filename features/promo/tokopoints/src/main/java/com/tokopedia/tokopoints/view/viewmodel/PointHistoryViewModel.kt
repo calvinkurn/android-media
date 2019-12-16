@@ -1,29 +1,31 @@
 package com.tokopedia.tokopoints.view.viewmodel
 
 import android.content.Context
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity
+import com.tokopedia.tokopoints.view.model.PointHistoryBase
 import com.tokopedia.tokopoints.view.model.TokoPointEntity
-import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity
-import com.tokopedia.tokopoints.view.respository.PointHistoryRepository
+import com.tokopedia.tokopoints.view.pointhistory.PointHistoryRepository
+import com.tokopedia.tokopoints.view.util.ErrorMessage
+import com.tokopedia.tokopoints.view.util.Loading
 import com.tokopedia.tokopoints.view.util.Resources
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistoryRepository) : BaseViewModel(Dispatchers.Main) {
+class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistoryRepository) : BaseViewModel(Dispatchers.Main), AdapterCallback {
+
+
+
+
 
 
     val data = MutableLiveData<Resources<TokoPointEntity>>()
-    val listLoading = MutableLiveData<Boolean>()
+    val listLoading = MutableLiveData<Resources<PointHistoryBase>>()
 
     init {
         hitApi()
@@ -31,7 +33,7 @@ class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistor
 
     private fun hitApi() {
         launch {
-            listLoading.value = true
+            listLoading.value = Loading()
             mUserRepository.getPointsDetail(data)
         }
     }
@@ -45,8 +47,41 @@ class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistor
         }
     }
 
+     fun loadData(currentPageIndex: Int) {
+         launch {
+             mUserRepository.getPointList(currentPageIndex, listLoading)
+         }
+    }
+
     override fun onCleared() {
         super.onCleared()
         mUserRepository.onCleared()
+    }
+
+    override fun onRetryPageLoad(pageNumber: Int) {
+
+    }
+
+    override fun onEmptyList(rawObject: Any) {
+
+    }
+
+    override fun onStartFirstPageLoad() {
+    }
+
+    override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
+    }
+
+    override fun onStartPageLoad(pageNumber: Int) {
+
+    }
+
+    override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
+
+    }
+
+    override fun onError(pageNumber: Int) {
+       listLoading.value = ErrorMessage("n/a")
+
     }
 }

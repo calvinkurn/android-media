@@ -130,7 +130,7 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
     @Override
     public void onSuccess(List<CouponFilterItem> data) {
 
-        //Setting up sort types tabs
+        //Setting up sort types tabsK
         mAdapter = new StackedCouponFilterPagerAdapter(getSupportFragmentManager(), data);
 
         mPagerFilter.setAdapter(mAdapter);

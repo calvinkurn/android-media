@@ -96,7 +96,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".view.activity.PointHistoryActivity"
+            android:name=".view.pointhistory.PointHistoryActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>

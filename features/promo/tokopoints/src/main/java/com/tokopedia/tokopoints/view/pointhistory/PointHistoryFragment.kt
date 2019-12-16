@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.fragment
+package com.tokopedia.tokopoints.view.pointhistory
 
 import android.content.Context
 import android.os.Bundle
@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -14,18 +13,14 @@ import androidx.lifecycle.ViewModelProviders
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokoPointComponent
-import com.tokopedia.tokopoints.view.adapter.PointHistoryListAdapter
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
 import com.tokopedia.tokopoints.view.contract.PointHistoryContract
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity
-import com.tokopedia.tokopoints.view.presenter.PointHistoryPresenter
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.viewmodel.PointHistoryViewModel
 import kotlinx.android.synthetic.main.layout_tp_server_error.view.*
@@ -36,19 +31,21 @@ import kotlinx.android.synthetic.main.tp_history_point_header.*
 
 import javax.inject.Inject
 
-class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, AdapterCallback, View.OnClickListener {
+class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, View.OnClickListener {
 
 
     override fun getScreenName(): String {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private var mAdapter: PointHistoryListAdapter? = null
     private var mStrPointExpInfo: String? = null
     private var mStrLoyaltyExpInfo: String? = null
 
     @Inject
     lateinit var viewModelFactory : ViewModelProvider.Factory
+
+    @Inject
+    lateinit var mAdapter: PointHistoryListAdapter
 
     private  val mPresenter: PointHistoryViewModel by  lazy { ViewModelProviders.of(this,viewModelFactory).get(PointHistoryViewModel::class.java) }
 
@@ -67,8 +64,6 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Ad
         if (view.rv_history_point.itemDecorationCount == 0) {
             view.rv_history_point.addItemDecoration(SpacesItemDecoration(activityContext!!.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_2), 0, 0))
         }
-
-        mAdapter = PointHistoryListAdapter(context, this)
         view.rv_history_point.adapter = mAdapter
         view.btn_history_info.setOnClickListener { this.onClick(it) }
         view.text_failed_action.setOnClickListener { this.onClick(it) }
@@ -82,7 +77,14 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Ad
     private fun addListLoadingObserver() {
         mPresenter.listLoading.observe(this, Observer {
             it?.let {
-                if (it) mAdapter?.startDataLoading()
+                when (it) {
+                    is Loading -> mAdapter.startDataLoading()
+                    is ErrorMessage -> onError(it.data)
+                    is Success -> {
+                        mAdapter.showData(it.data)
+                    }
+
+                }
             }
         })
     }
@@ -92,12 +94,28 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Ad
             it?.let {
                 when (it) {
                     is Loading -> showLoading()
-                    is ErrorMessage -> onError(it.data)
+                    is ErrorMessage -> {
+                        if (it.data.isEmpty()){
+                            onEmptyList()
+                            return@let
+                        }
+                        onError(it.data)
+                    }
                     is Success -> onSuccess(it.data.status?.points)
 
                 }
             }
         })
+    }
+
+    private fun onEmptyList() {
+        view?.apply {
+            container_main.displayedChild = PointHistoryFragment.CONTAINER_ERROR
+            img_error.setImageResource(R.drawable.tp_ic_empty_list)
+            text_title_error.setText(R.string.tp_history_empty_title)
+            text_label_error.setText(R.string.tp_history_empty_desc)
+            text_failed_action.setText(R.string.tp_history_btn_action)
+        }
     }
 
 
@@ -136,41 +154,7 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Ad
         return activity
     }
 
-    override fun onRetryPageLoad(pageNumber: Int) {
 
-    }
-
-    override fun onEmptyList(rawObject: Any) {
-        view?.apply {
-            container_main.displayedChild = CONTAINER_ERROR
-            img_error.setImageResource(R.drawable.tp_ic_empty_list)
-            text_title_error.setText(R.string.tp_history_empty_title)
-            text_label_error.setText(R.string.tp_history_empty_desc)
-            text_failed_action.setText(R.string.tp_history_btn_action)
-        }
-    }
-
-    override fun onStartFirstPageLoad() {
-        showLoading()
-    }
-
-    override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        view?.container_main?.displayedChild = CONTAINER_DATA
-    }
-
-    override fun onStartPageLoad(pageNumber: Int) {
-
-    }
-
-    override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-
-    }
-
-    override fun onError(pageNumber: Int) {
-        if (pageNumber == 1) {
-            onError("n/a")
-        }
-    }
 
     override fun onClick(v: View) {
         if (v.id == R.id.btn_history_info) {
@@ -200,7 +184,7 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Ad
         private val CONTAINER_DATA = 1
         private val CONTAINER_ERROR = 2
 
-        fun newInstance(extras: Bundle): Fragment {
+        fun newInstance(extras: Bundle?): Fragment {
             val fragment = PointHistoryFragment()
             fragment.arguments = extras
             return fragment
