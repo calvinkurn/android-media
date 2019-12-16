@@ -42,15 +42,15 @@ class DFDownloadWorker(appContext: Context, workerParams: WorkerParameters)
         }
         isServiceRunning = true
 
-        val combinedPairList = DFDownloadQueue.getDFModuleList(applicationContext)
-        val combinedList = combinedPairList.map { it.first }
-        if (combinedList.isEmpty()) {
+        val moduleToDownloadPairList = DFDownloadQueue.getDFModuleList(applicationContext)
+        val moduleToDownloadList = moduleToDownloadPairList.map { it.first }
+        if (moduleToDownloadList.isEmpty()) {
             DFDownloadQueue.clear(applicationContext)
             setFlagServiceFalse()
             return Result.success()
         }
-        val result = DFInstaller().installOnBackgroundDefer(applicationContext, combinedList, onSuccessInstall = {
-            DFDownloadQueue.removeModuleFromQueue(applicationContext, combinedPairList)
+        val result = DFInstaller().installOnBackgroundDefer(applicationContext, moduleToDownloadList, onSuccessInstall = {
+            DFDownloadQueue.removeModuleFromQueue(applicationContext, moduleToDownloadPairList)
             setFlagServiceFalse()
         }, onFailedInstall = {
             // loop all combined list
@@ -59,7 +59,7 @@ class DFDownloadWorker(appContext: Context, workerParams: WorkerParameters)
             val successfulListAfterInstall = mutableListOf<Pair<String, Int>>()
             val combinedListAfterInstall = mutableListOf<Pair<String, Int>>()
 
-            for (moduleNamePair in combinedPairList) {
+            for (moduleNamePair in moduleToDownloadPairList) {
                 if (DFInstaller.manager?.installedModules?.contains(moduleNamePair.first) != true) {
                     combinedListAfterInstall.add(Pair(moduleNamePair.first, moduleNamePair.second + 1))
                 } else {
