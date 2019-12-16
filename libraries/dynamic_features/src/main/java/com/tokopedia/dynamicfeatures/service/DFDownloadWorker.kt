@@ -57,16 +57,16 @@ class DFDownloadWorker(appContext: Context, workerParams: WorkerParameters)
             // if not installed, flag++
             // if installed, it will be removed from queue list
             val successfulListAfterInstall = mutableListOf<Pair<String, Int>>()
-            val combinedListAfterInstall = mutableListOf<Pair<String, Int>>()
+            val failedListAfterInstall = mutableListOf<Pair<String, Int>>()
 
             for (moduleNamePair in moduleToDownloadPairList) {
                 if (DFInstaller.manager?.installedModules?.contains(moduleNamePair.first) != true) {
-                    combinedListAfterInstall.add(Pair(moduleNamePair.first, moduleNamePair.second + 1))
+                    failedListAfterInstall.add(Pair(moduleNamePair.first, moduleNamePair.second + 1))
                 } else {
                     successfulListAfterInstall.add(Pair(moduleNamePair.first, 1))
                 }
             }
-            DFDownloadQueue.updateQueue(applicationContext, combinedListAfterInstall, successfulListAfterInstall)
+            DFDownloadQueue.updateQueue(applicationContext, failedListAfterInstall, successfulListAfterInstall)
             setFlagServiceFalse()
         } , isInitial = false)
         val remainingList = DFDownloadQueue.getDFModuleList(applicationContext)
