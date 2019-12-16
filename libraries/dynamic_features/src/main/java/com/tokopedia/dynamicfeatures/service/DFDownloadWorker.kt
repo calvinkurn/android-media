@@ -12,6 +12,7 @@ class DFDownloadWorker(appContext: Context, workerParams: WorkerParameters)
     : CoroutineWorker(appContext, workerParams) {
 
     companion object {
+        const val WORKER_NAME = "DF Download Worker"
         fun start(context: Context, moduleListToDownload: List<String>? = null) {
             combineListAndPut(context, moduleListToDownload)
             if (isServiceRunning) {
@@ -27,7 +28,7 @@ class DFDownloadWorker(appContext: Context, workerParams: WorkerParameters)
                 .setConstraints(
                     Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                 .build()
-            WorkManager.getInstance(context.applicationContext).enqueue(uploadWorkRequest)
+            WorkManager.getInstance(context.applicationContext).enqueueUniqueWork(WORKER_NAME, ExistingWorkPolicy.KEEP, uploadWorkRequest)
         }
     }
 

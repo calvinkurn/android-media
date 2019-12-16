@@ -28,7 +28,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.miscDependencies.workManager
+    implementation (rootProject.ext.miscDependencies.workManager){
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
 }
 
 project.ext {
