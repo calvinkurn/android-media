@@ -10,5 +10,6 @@ sealed class TokopediaPlayVideoState {
     object Pause : TokopediaPlayVideoState()
     object NoMedia : TokopediaPlayVideoState()
     object Ended : TokopediaPlayVideoState()
+    object NotConfigured : TokopediaPlayVideoState()
     data class Error(val error: Throwable) : TokopediaPlayVideoState()
 }

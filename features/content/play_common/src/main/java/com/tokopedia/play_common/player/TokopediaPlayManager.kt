@@ -17,7 +17,7 @@ import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.play_common.type.Http
 import com.tokopedia.play_common.type.Rtmp
-import com.tokopedia.play_common.type.TokopediaPlayVideoType
+import com.tokopedia.play_common.type.PlayVideoProtocol
 import com.tokopedia.play_common.type.getVideoTypeByUri
 
 /**
@@ -80,8 +80,8 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
     fun safePlayVideoWithUriString(uriString: String, autoPlay: Boolean) = safePlayVideoWithUri(Uri.parse(uriString), autoPlay)
 
     fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
-        val videoType = TokopediaPlayVideoType.getVideoTypeByUri(uri)
-        val mediaSource = getMediaSourceByVideoType(videoType)
+        val videoType = PlayVideoProtocol.getVideoTypeByUri(uri)
+        val mediaSource = getMediaSourceByProtocol(videoType)
         videoPlayer.playWhenReady = autoPlay
         videoPlayer.prepare(mediaSource, true, true)
     }
@@ -106,14 +106,14 @@ class TokopediaPlayManager private constructor(applicationContext: Context) {
     //endregion
 
     //region private method
-    private fun getMediaSourceByVideoType(type: TokopediaPlayVideoType): MediaSource {
+    private fun getMediaSourceByProtocol(protocol: PlayVideoProtocol): MediaSource {
         return ProgressiveMediaSource.Factory(
-                getExoDataSourceFactoryByVideoType(type)
-        ).createMediaSource(type.uri)
+                getExoDataSourceFactoryByProtocol(protocol)
+        ).createMediaSource(protocol.uri)
     }
 
-    private fun getExoDataSourceFactoryByVideoType(type: TokopediaPlayVideoType): DataSource.Factory {
-        return when (type) {
+    private fun getExoDataSourceFactoryByProtocol(protocol: PlayVideoProtocol): DataSource.Factory {
+        return when (protocol) {
             is Http -> DefaultHttpDataSourceFactory(EXOPLAYER_AGENT)
             is Rtmp -> RtmpDataSourceFactory()
         }

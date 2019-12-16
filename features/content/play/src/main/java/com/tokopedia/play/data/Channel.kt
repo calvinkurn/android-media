@@ -26,7 +26,7 @@ data class Channel(
         val startTime: String = "",
 
         @SerializedName("end_time")
-        val endTime: String = "",
+        val endTime: Long = 0L,
 
         @SerializedName("total_participants_online")
         val totalParticipantsOnline: String = "",
@@ -68,10 +68,10 @@ data class Channel(
         val quickReply: List<String> = emptyList(),
 
         @SerializedName("partner_id")
-        val partnerId: String = "",
+        val partnerId: Long = 0L,
 
         @SerializedName("partner_type")
-        val partnerType: String = "",
+        val partnerType: Int = 0,
 
         @SerializedName("settings")
         val settings: Settings = Settings(),

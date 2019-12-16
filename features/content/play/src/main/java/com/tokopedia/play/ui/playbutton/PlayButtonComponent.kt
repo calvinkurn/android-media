@@ -27,7 +27,7 @@ class PlayButtonComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.VideoStateChanged -> handleVideoStateChanged(it.state)
+                            is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.type.isLive, it.videoProp.state)
                         }
                     }
         }
@@ -53,7 +53,11 @@ class PlayButtonComponent(
     private fun initView(container: ViewGroup) =
             PlayButtonView(container, this)
 
-    private fun handleVideoStateChanged(state: TokopediaPlayVideoState) {
+    private fun handleVideoStateChanged(isLive: Boolean, state: TokopediaPlayVideoState) {
+        if (isLive) {
+            uiView.hide()
+            return
+        }
         when (state) {
             TokopediaPlayVideoState.Playing -> uiView.hide()
             TokopediaPlayVideoState.Pause -> uiView.show()

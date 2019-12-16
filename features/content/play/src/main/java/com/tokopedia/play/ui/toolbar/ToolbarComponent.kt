@@ -3,10 +3,8 @@ package com.tokopedia.play.ui.toolbar
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
-import com.tokopedia.play.domain.PostFollowShopUseCase
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayVODType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -28,10 +26,7 @@ class ToolbarComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.SetVideo ->
-                                uiView.setLiveBadgeVisibility(
-                                        (it.vodType is PlayVODType.Live)
-                                )
+                            is ScreenStateEvent.VideoPropertyChanged -> uiView.setLiveBadgeVisibility(it.videoProp.type.isLive)
                             is ScreenStateEvent.SetTitle ->
                                 uiView.setTitle(it.title)
                             is ScreenStateEvent.SetTitleToolbar ->

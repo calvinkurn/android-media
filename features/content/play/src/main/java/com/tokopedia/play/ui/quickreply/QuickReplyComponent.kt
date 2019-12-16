@@ -6,7 +6,6 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.data.QuickReply
 import com.tokopedia.play.ui.quickreply.interaction.QuickReplyInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayVODType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -28,8 +27,7 @@ class QuickReplyComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.SetVideo ->
-                                if (it.vodType is PlayVODType.Live) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
                         }
                     }
         }

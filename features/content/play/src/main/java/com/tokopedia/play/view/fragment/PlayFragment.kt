@@ -68,20 +68,10 @@ class PlayFragment : BaseDaggerFragment() {
         childFragmentManager.beginTransaction()
                 .replace(R.id.fl_interaction, PlayInteractionFragment.newInstance(channelId))
                 .commit()
-
-        playViewModel.initVideo()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         playViewModel.getChannelInfo(channelId)
-
-        playViewModel.observeGetChannelInfo.observe(this, Observer {
-            when(it)  {
-                is Success -> {
-                    playViewModel.startWebSocket(channelId, it.data.gcToken)
-                }
-            }
-        })
     }
 }

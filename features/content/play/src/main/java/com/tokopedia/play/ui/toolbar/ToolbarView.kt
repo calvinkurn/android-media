@@ -67,7 +67,7 @@ class ToolbarView(
             container.context.resources.getString(R.string.play_following) else
             container.context.resources.getString(R.string.play_follow)
 
-        if (titleToolbar.partnerType == PartnerType.ADMIN.value) {
+        if (titleToolbar.partnerType == PartnerType.ADMIN) {
             tvFollow.setOnClickListener {}
         } else {
             tvFollow.setOnClickListener {

@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.data.PinnedMessage
+import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
 
 /**
  * Created by jegul on 03/12/19
@@ -38,7 +39,7 @@ class PinnedView(
         view.hide()
     }
 
-    fun setPinnedMessage(pinnedMessage: PinnedMessage) {
+    fun setPinnedMessage(pinnedMessage: PinnedMessageUiModel) {
         val spannableString = SpannableString("${pinnedMessage.title} ${pinnedMessage.message}")
         spannableString.setSpan(
                 ForegroundColorSpan(
@@ -52,7 +53,7 @@ class PinnedView(
 
         view.findViewById<TextView>(R.id.tv_pinned_action)
                 .setOnClickListener {
-                    RouteManager.route(container.context, pinnedMessage.redirectUrl)
+                    RouteManager.route(container.context, pinnedMessage.applink)
                 }
     }
 }
