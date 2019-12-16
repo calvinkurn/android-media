@@ -18,6 +18,7 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
 
         when(webSocketResponse.type) {
             PlaySocketType.VideoStream.value -> {
+                //TODO("check as to why the vod -> live still return `is_live` = false")
                 return mapToVideoStream()
             }
             PlaySocketType.TotalClick.value -> {
