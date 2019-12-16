@@ -72,14 +72,15 @@ public class ViewEngine {
             if (activityWeakReference.get() == null)
                 return null;
             View view = LayoutInflater.from(activityWeakReference.get()).inflate(R.layout.layout_inapp, null, false);
-            view.findViewById(R.id.mainContainer).setOnClickListener(v -> {
+            View mainContainer = view.findViewById(R.id.mainContainer);
+            mainContainer.setOnClickListener(v -> {
             });
-            view.findViewById(R.id.mainContainer).setTag(cmInApp);
+            mainContainer.setTag(cmInApp);
             inAppView = view;
             View innerContainer = view.findViewById(R.id.innerContainer);
             addOnClose(view, cmInApp);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) innerContainer.getLayoutParams();
-            setMainContainerMargin(layoutParams, cmInApp, innerContainer);
+            setMainContainerMargin(mainContainer, layoutParams, cmInApp, innerContainer);
             setMainContainerBackGround(view, cmInApp);
             CMLayout cmLayout = cmInApp.getCmLayout();
 
@@ -96,6 +97,23 @@ public class ViewEngine {
                     break;
                 case CmInAppConstant.TYPE_BORDER_TOP:
                 case CmInAppConstant.TYPE_BORDER_BOTTOM:
+                    if (cmLayout.getTitleText() == null || TextUtils.isEmpty(cmLayout.getTitleText().getTxt())
+                            || (cmLayout.getTitleText().getTxt() != null
+                            && TextUtils.isEmpty(cmLayout.getTitleText().getTxt().trim())))
+                        innerContainer.findViewById(R.id.tv_cmTitle).setVisibility(View.GONE);
+                    else setCmInAppTitle(view, cmLayout);
+
+                    if (cmLayout.getMessageText() == null || TextUtils.isEmpty(cmLayout.getMessageText().getTxt())
+                            || (cmLayout.getMessageText().getTxt() != null
+                            && TextUtils.isEmpty(cmLayout.getMessageText().getTxt().trim())))
+                        innerContainer.findViewById(R.id.tv_cmMessage).setVisibility(View.GONE);
+                    else
+                        setCmInAppMessage(view, cmLayout);
+                    setButtons(view, cmInApp);
+                    mainContainer.findViewById(R.id.iv_secondary_close).setVisibility(View.VISIBLE);
+                    mainContainer.findViewById(R.id.blank_iv).setVisibility(View.VISIBLE);
+                    innerContainer.findViewById(resCmClose).setVisibility(View.GONE);
+                    break;
                 case CmInAppConstant.TYPE_ALERT:
                     if (cmLayout.getTitleText() == null || TextUtils.isEmpty(cmLayout.getTitleText().getTxt())
                             || (cmLayout.getTitleText().getTxt() != null
@@ -131,7 +149,7 @@ public class ViewEngine {
         }
     }
 
-    private void setMainContainerMargin(RelativeLayout.LayoutParams layoutParams, CMInApp cmInApp, View innerContainer) {
+    private void setMainContainerMargin(View mainContainer, RelativeLayout.LayoutParams layoutParams, CMInApp cmInApp, View innerContainer) {
         int navigationHeight = getNavigationBarHeight();
         int statusBarHeight = getStatusBarHeight();
         int[] margins = {0, statusBarHeight, 0, navigationHeight};
@@ -139,6 +157,7 @@ public class ViewEngine {
 
         int pXtoDP40 = (int) getPXtoDP(40F);
         boolean isAppLinkSupported = false;
+        boolean showSecondaryCross = false;
         CMLayout cmLayout = cmInApp.getCmLayout();
         switch (cmInApp.getType()) {
             case CmInAppConstant.TYPE_FULL_SCREEN:
@@ -157,15 +176,18 @@ public class ViewEngine {
             case CmInAppConstant.TYPE_BORDER_BOTTOM:
                 innerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 innerLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                ((RelativeLayout.LayoutParams)mainContainer.findViewById(R.id.blank_iv).getLayoutParams()).addRule(RelativeLayout.ABOVE, R.id.innerContainer);
                 changeConstraintToBorderView((ConstraintLayout) innerContainer, cmInApp);
+                showSecondaryCross = true;
 
                 if (isStickWithOnlyText(cmInApp))
                     isAppLinkSupported = true;
                 break;
             case CmInAppConstant.TYPE_BORDER_TOP:
                 innerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                innerLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                innerLayoutParams.addRule(RelativeLayout.BELOW, R.id.blank_iv);
                 changeConstraintToBorderView((ConstraintLayout) innerContainer, cmInApp);
+                showSecondaryCross = true;
 
                 if (isStickWithOnlyText(cmInApp))
                     isAppLinkSupported = true;
@@ -208,7 +230,13 @@ public class ViewEngine {
         }
 
         innerContainer.setLayoutParams(innerLayoutParams);
-        layoutParams.setMargins(margins[0], margins[1], margins[2], margins[3]);
+        if (showSecondaryCross) {
+            RelativeLayout.LayoutParams mainContainerLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mainContainerLayoutParams.setMargins(margins[0], margins[1], margins[2], margins[3]);
+            mainContainer.setLayoutParams(mainContainerLayoutParams);
+        } else {
+            layoutParams.setMargins(margins[0], margins[1], margins[2], margins[3]);
+        }
     }
 
     private boolean isStickWithOnlyText(CMInApp cmInApp) {
@@ -411,15 +439,17 @@ public class ViewEngine {
 
     private void addOnClose(final View view, CMInApp cmInApp) {
         View closeView = view.findViewById(R.id.iv_close);
-        closeView.setOnClickListener(v -> {
+        View secondaryCloseView = view.findViewById(R.id.iv_secondary_close);
+        View.OnClickListener onClickListener = v -> {
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
                 listener.onCMInAppClosed(cmInApp);
                 listener.onCMinAppDismiss();
             }
             ((ViewGroup) view.getParent()).removeView(view);
-        });
-
+        };
+        closeView.setOnClickListener(onClickListener);
+        secondaryCloseView.setOnClickListener(onClickListener);
     }
 
     private void handleBackPress(View view, CMInApp cmInApp) {
