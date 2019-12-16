@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
@@ -26,6 +27,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownBottomSheet
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownBottomSheet.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.rechargegeneral.R
@@ -506,6 +508,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             checkoutBottomSheet.clearAction()
 
             val checkoutView = RechargeGeneralCheckoutBottomSheet(context)
+            checkoutView.listener = this
             checkoutView.setPayload(data.enquiry)
             checkoutBottomSheet.setChild(checkoutView)
 
@@ -516,7 +519,31 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickCheckout() {
-        // TODO: Process checkout
+        processCheckout()
+    }
+
+    private fun processCheckout() {
+        // Setup checkout pass data
+        if (categoryId.isNotEmpty()
+                && operatorId != null
+                && productId != null) {
+            checkoutPassData = DigitalCheckoutPassData.Builder()
+                    .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                    .categoryId(categoryId)
+                    .instantCheckout("0")
+                    // TODO: Check promo
+//                    .isPromo(if (selectedProduct.attributes.promo != null) "1" else "0")
+                    .isPromo("1")
+                    .operatorId(operatorId.toString())
+                    .productId(productId.toString())
+                    .utmCampaign(categoryId)
+                    .utmContent(GlobalConfig.VERSION_NAME)
+                    .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                    .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                    .voucherCodeCopied("").build()
+
+            processToCart()
+        }
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {

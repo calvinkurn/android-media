@@ -85,6 +85,6 @@ class TopupBillsEnquiryData @JvmOverloads constructor(@NotNull context: Context,
     }
 
     companion object {
-        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_4
+        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
     }
 }
