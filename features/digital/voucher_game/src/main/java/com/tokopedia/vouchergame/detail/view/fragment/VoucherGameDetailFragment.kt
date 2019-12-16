@@ -334,7 +334,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             val dropdownView = TopupBillsInputDropdownBottomSheet(context, listener = object : TopupBillsInputDropdownBottomSheet.OnClickListener{
                 override fun onItemClicked(item: TopupBillsInputDropdownData) {
                     field.setInputText(item.label)
-                    onReceiveInput(item.label)
                 }
             }, selected = field.getInputText())
             dropdownView.setData(data)

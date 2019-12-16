@@ -1,6 +1,7 @@
 package com.tokopedia.common.topupbills.di
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
@@ -15,6 +16,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 @CommonTopupBillsScope
 @Component(modules = [CommonTopupBillsModule::class, CommonTopupBillsViewModelModule::class], dependencies = [DigitalCommonComponent::class])
 interface CommonTopupBillsComponent {
+
+    @ApplicationContext
+    fun context(): Context
 
     fun userSessionInterface(): UserSessionInterface
 

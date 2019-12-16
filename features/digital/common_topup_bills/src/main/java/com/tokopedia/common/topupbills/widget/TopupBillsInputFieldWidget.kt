@@ -110,9 +110,9 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
         return ac_input.text.toString()
     }
 
-    fun setInputText(input: String) {
+    fun setInputText(input: String, triggerListener: Boolean = true) {
         ac_input.setText(input)
-        listener?.onFinishInput(input)
+        if (triggerListener) listener?.onFinishInput(input)
     }
 
     fun setErrorMessage(message: String) {
