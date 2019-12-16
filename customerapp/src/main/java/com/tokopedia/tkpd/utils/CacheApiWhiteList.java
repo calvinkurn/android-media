@@ -48,7 +48,7 @@ public class CacheApiWhiteList {
         private static final long THREE_HOURS = TimeUnit.HOURS.toSeconds(3);
         private static final long ONE_DAY = TimeUnit.HOURS.toSeconds(24);
 
-        public static List<CacheApiWhiteListDomain> getWhiteList() {
+        static List<CacheApiWhiteListDomain> getWhiteList() {
             List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
 
             // Opportunity category
