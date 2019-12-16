@@ -21,6 +21,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BUY = "clickBuy";
         String CLICK_CHECKOUT = "clickCheckout";
         String VIEW_ATC = "viewATC";
+        String VIEW_ATC_IRIS = "viewATCIris";
         String REMOVE_FROM_CART = "removeFromCart";
         String CHECKOUT = "checkout";
         String ADD_TO_CART = "addToCart";
@@ -67,6 +68,8 @@ public interface ConstantTransactionAnalytics {
         String RECENT_VIEW = "recent view";
         String RECOMMENDATION_PAGE = "recommendation page";
         String TRACK_SOM = "track seller order management";
+        String FIN_INSURANCE_CART = "fin - cart page";
+        String FIN_INSURANCE_CHECKOUT = "fin - mp checkout";
     }
 
     interface EventAction {
@@ -75,7 +78,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_GUNAKAN_KODE_PROMO = "click gunakan kode promo";
         String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
         String CLICK_HAPUS_ON_TOP_RIGHT_CORNER = "click hapus on top right corner";
-        String CLICK_SHOP_NAME = "click shop name";
+        String CLICK_SHOP = "click - shop - login";
         String CLICK_PRODUCT_NAME = "click product name";
         String CLICK_BUTTON_PLUS = "click button +";
         String CLICK_BUTTON_MIN = "click button -";
@@ -189,6 +192,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_MORE_LIKE_THIS = "click more like this";
         String CLICK_PRODUCT_WISHLIST_ON_CART_LIST = "click product wishlist on cart list";
         String CLICK_PRODUCT_LAST_SEEN_ON_CART_LIST = "click product last seen on cart list";
+        String CLICK_DONATION = "click donation";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -270,6 +274,9 @@ public interface ConstantTransactionAnalytics {
         String CLICK_GANTI_NOMOR = "click ganti nomor";
         String CLICK_BUTTON_PILIH_DURASI = "click button pilih durasi";
         String CLICK_KURIR_TRADE_IN = "click kurir trade in";
+        String CLICK_JEMPUT_TAB = "click - jemput tab";
+        String CLICK_DROP_OFF_TAB = "click - drop off tab";
+        String CLICK_UBAH_TITIK_DROP_OFF_BUTTON = "click - ubah titik drop off button";
 
         //PROMO STACKING
         String CLICK_PILIH_MERCHANT_VOUCHER = "click pilih merchant voucher";
@@ -328,6 +335,20 @@ public interface ConstantTransactionAnalytics {
         String REMOVE_WISHLIST_LAST_SEEN = "remove wishlist - last seen - login";
         String ADD_WISHLIST_WISHLIST = "add wishlist - wishlist - login";
         String REMOVE_WISHLIST_WISHLIST = "remove wishlist - wishlist - login";
+
+        //Tobacco
+        String CLICK_BROWSE_BUTTON_ON_TICKER_PRODUCT_CONTAIN_TOBACCO = "click browse button on ticker product contain tobacco";
+        String VIEW_TICKER_PRODUCT_CONTAIN_TOBACCO = "view ticker product contain tobacco";
+        String CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO = "click hapus button on product contain tobacco";
+        String CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO = "click trash icon button on product contain tobacco";
+
+        //Insurance
+        String FIN_INSURANCE_CART_DELETE = "ins - click delete from cart";
+        String FIN_INSURANCE_CART_IMPRESSION = "ins - impression insurance box in cart ";
+        String FIN_INSURANCE_STATE_CHANGE = "ins - click tick insurance for payment";
+        String FIN_INSURANCE_CLICK_BUY = "ins - click buy";
+        String FIN_INSURANCE_CHECKOUT = "ins - click pilih pembayaran";
+        String FIN_INSURANCE_CHECKOUT_IMPRESSION = "ins - impression insurance box in checkout page";
     }
 
     interface EventLabel {

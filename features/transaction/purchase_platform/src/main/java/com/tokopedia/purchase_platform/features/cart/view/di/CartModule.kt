@@ -1,10 +1,13 @@
 package com.tokopedia.purchase_platform.features.cart.view.di
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.graphql.coroutines.data.Interactor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
@@ -16,6 +19,9 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformQualifier
+import com.tokopedia.purchase_platform.common.domain.schedulers.DefaultSchedulers
+import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
+import com.tokopedia.purchase_platform.common.domain.schedulers.IOSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
@@ -23,15 +29,13 @@ import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.data.api.CartApi
 import com.tokopedia.purchase_platform.features.cart.data.repository.CartRepository
 import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartMapper
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.IVoucherCouponMapper
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.VoucherCouponMapper
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.*
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartItemDecoration
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -174,6 +178,30 @@ class CartModule {
 
     @Provides
     @CartScope
+    fun provideResources(@ApplicationContext context: Context): Resources {
+        return context.resources
+    }
+
+    @Provides
+    @CartScope
+    fun provideGraphqlRepository(): GraphqlRepository {
+        return Interactor.getInstance().graphqlRepository
+    }
+
+    @Provides
+    @CartScope
+    fun provideExecutorSchedulers(): ExecutorSchedulers = DefaultSchedulers
+
+    @Provides
+    @CartScope
+    @Named("UpdateReloadUseCase")
+    fun provideGetCartListSimplifiedUseCase(@Named("shopGroupSimplifiedQuery") queryString: String,
+                                            graphqlUseCase: GraphqlUseCase,
+                                            cartMapperV3: CartMapperV3): GetCartListSimplifiedUseCase =
+            GetCartListSimplifiedUseCase(queryString, graphqlUseCase, cartMapperV3, IOSchedulers)
+
+    @Provides
+    @CartScope
     fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
                                   deleteCartListUseCase: DeleteCartListUseCase,
                                   updateCartUseCase: UpdateCartUseCase,
@@ -193,7 +221,8 @@ class CartModule {
                                   addToCartUseCase: AddToCartUseCase,
                                   getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                   removeInsuranceProductUsecase: RemoveInsuranceProductUsecase,
-                                  updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase): ICartListPresenter {
+                                  updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase,
+                                  seamlessLoginUsecase: SeamlessLoginUsecase): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartListUseCase,
                 updateCartUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
@@ -201,7 +230,7 @@ class CartModule {
                 updateAndReloadCartUseCase, userSessionInterface,
                 clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
                 getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                removeInsuranceProductUsecase, updateInsuranceProductDataUsecase)
+                removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase)
     }
 
 }

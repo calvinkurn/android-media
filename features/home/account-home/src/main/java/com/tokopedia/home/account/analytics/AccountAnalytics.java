@@ -216,6 +216,19 @@ public class AccountAnalytics {
         analytics.sendGeneralEvent(eventTracking);
     }
 
+    public void eventTrackingInbox() {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put(SCREEN_NAME, SCREEN_NAME_ACCOUNT);
+        eventTracking.put(EVENT, CLICK_HOME_PAGE);
+        eventTracking.put(EVENT_CATEGORY, TOP_NAV);
+        eventTracking.put(EVENT_ACTION, String.format("%s %s", AccountConstants.Analytics.CLICK, INBOX));
+        eventTracking.put(EVENT_LABEL, "");
+
+        analytics.sendGeneralEvent(eventTracking);
+    }
+
     public void eventClickTokopediaCornerSetting() {
 
         Analytics analytics = TrackApp.getInstance().getGTM();
@@ -402,5 +415,18 @@ public class AccountAnalytics {
                     ""
             );
         }
+    }
+
+    public void eventTrackingNotifCenter() {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataNotifCenter());
+    }
+
+    private Map<String, Object> dataNotifCenter() {
+        Map<String, Object> trackerMap = new HashMap<>();
+        trackerMap.put(EVENT, AccountConstants.Analytics.CLICK_NOTIF_CENTER);
+        trackerMap.put(EVENT_CATEGORY, AccountConstants.Analytics.NOTIF_CENTER);
+        trackerMap.put(EVENT_ACTION, AccountConstants.Analytics.NOTIF_CENTER_ACTION);
+        trackerMap.put(EVENT_LABEL, "");
+        return trackerMap;
     }
 }

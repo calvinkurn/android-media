@@ -3,6 +3,7 @@ package com.tokopedia.navigation.presentation.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.navigation.domain.model.EmptyUpdateState
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateTypeFactoryImpl
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 
@@ -25,4 +26,10 @@ open class NotificationUpdateAdapter(notificationUpdateTypeFactory: Notification
             notifyItemChanged(visitables.indexOf(datum))
         }
     }
+
+    fun removeEmptyState() {
+        visitables.removeAll { it is EmptyUpdateState }
+        notifyDataSetChanged()
+    }
+
 }

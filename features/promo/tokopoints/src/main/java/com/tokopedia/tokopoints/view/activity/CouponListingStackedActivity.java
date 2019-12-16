@@ -63,6 +63,10 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
         mPresenter.attachView(this);
         mContainerMain = findViewById(R.id.container);
         serverErrorView = findViewById(R.id.server_error_view);
+        serverErrorView.setErrorButtonClickListener((view) -> {
+            mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
+            showLoading();
+        });
         initViews();
         UserSessionInterface userSession = new UserSession(this);
         if (userSession.isLoggedIn()) {
@@ -112,7 +116,12 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
             mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
             showLoading();
         } else if ((requestCode == REQUEST_CODE_STACKED_IN_ADAPTER || requestCode == REQUEST_CODE_STACKED_ADAPTER) && resultCode == RESULT_OK) {
-            mAdapter.getRegisteredFragment(mPagerFilter.getCurrentItem()).onActivityResult(requestCode,resultCode,data);
+            if (mAdapter != null) {
+                Fragment fragemnt = mAdapter.getRegisteredFragment(mPagerFilter.getCurrentItem());
+                if (fragemnt != null) {
+                    fragemnt.onActivityResult(requestCode, resultCode, data);
+                }
+            }
         } else {
             finish();
         }

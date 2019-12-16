@@ -6,7 +6,6 @@
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:label="@string/autocomplete_app_name"
         android:largeHeap="true"
         android:supportsRtl="true">
 

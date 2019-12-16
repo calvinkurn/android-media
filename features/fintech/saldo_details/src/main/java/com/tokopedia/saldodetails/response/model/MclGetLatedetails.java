@@ -17,8 +17,8 @@ public class MclGetLatedetails{
 
 	@Override
  	public String toString(){
-		return 
-			"MclGetLatedetails{" + 
+		return
+			"MclGetLatedetails{" +
 			"lateCount = '" + lateCount + '\'' +
 			"}";
 		}

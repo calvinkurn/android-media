@@ -38,6 +38,8 @@ class CategoryPageAnalytics {
     val KEY_ACTIONFIELD = "actionField"
     val KEY_CLICK = "click"
     val KEY_PROMOVIEW = "promoView"
+    val KEY_EVENT_BANNED_CLICK = "clickCategoryBanned"
+    val KEY_EVENT_BANNED_VIEW = "viewCategoryBannedIris"
 
     val EVENT_NAME_VALUE = "clickCategory"
     val EVENT_CATEGORY_VALUE = "category page"
@@ -276,18 +278,23 @@ class CategoryPageAnalytics {
 
     // 13
 
-    fun eventWishistClicked(category_id: String, product_id: String, isWishlisted: Boolean) {
+    fun eventWishistClicked(category_id: String,
+                            product_id: String,
+                            isWishlisted: Boolean,
+                            isLoggedIn: Boolean,
+                            isTopAds: Boolean) {
         val tracker = getTracker()
-        val eventAction: String = if (isWishlisted) {
-            "add wishlist"
+        var eventAction: String = if (isWishlisted) {
+            "add wishlist - other - "
         } else {
-            "remove wishlist"
+            "remove wishlist - other - "
         }
+        eventAction += getLoginType(isLoggedIn)
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_NAME_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
                 KEY_EVENT_ACTION, eventAction,
-                KEY_EVENT_LABEL, product_id,
+                KEY_EVENT_LABEL, product_id + " - " + getProductType(isTopAds),
                 KEY_CATEGORY_ID, category_id
         )
         tracker.sendEnhanceEcommerceEvent(map)
@@ -393,4 +400,43 @@ class CategoryPageAnalytics {
         return ""
     }
 
+    fun eventBukaClick(destinationUrl: String, categoryId: String) {
+        getTracker().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        KEY_EVENT, KEY_EVENT_BANNED_CLICK,
+                        KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
+                        KEY_EVENT_ACTION, "click buka mobile web button",
+                        KEY_EVENT_LABEL, destinationUrl,
+                        KEY_CATEGORY_ID, categoryId
+                )
+        )
+    }
+
+    fun eventBukaView(destinationUrl: String, categoryId: String) {
+        val tracker = getTracker()
+        val map = DataLayer.mapOf(
+                KEY_EVENT, KEY_EVENT_BANNED_VIEW,
+                KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
+                KEY_EVENT_ACTION, "buka mobile web button impression",
+                KEY_EVENT_LABEL, destinationUrl,
+                KEY_CATEGORY_ID, categoryId
+        )
+        tracker.sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun getLoginType(isUserLoggedIn: Boolean): String {
+        return if (isUserLoggedIn) {
+            "login"
+        } else {
+            "nonlogin"
+        }
+    }
+
+    private fun getProductType(isTopAds: Boolean): String {
+        return if (isTopAds) {
+            "topads"
+        } else {
+            "general"
+        }
+    }
 }
