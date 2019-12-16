@@ -18,7 +18,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.cacheApi)
-//    implementation project(rootProject.ext.features.userIdentificationCommon)
+    implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.cameraview)
 
