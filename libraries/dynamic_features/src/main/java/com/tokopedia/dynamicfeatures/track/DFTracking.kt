@@ -7,7 +7,7 @@ import com.tokopedia.track.TrackApp
  */
 class DFTracking {
     companion object {
-        const val EVENT = "/df download pages"
+        const val EVENT = "clickDownload"
         const val CAT_DL_BG = "download background"
         const val CAT_DL = "download page"
         const val ACTION_SUCCESS = "success"

@@ -14,6 +14,9 @@ class DFDownloadWorker(appContext: Context, workerParams: WorkerParameters)
     companion object {
         fun start(context: Context, moduleListToDownload: List<String>? = null) {
             combineListAndPut(context, moduleListToDownload)
+            if (isServiceRunning) {
+                return
+            }
             val delayDuration = INITIAL_DELAY_DURATION_IN_SECOND
             val uploadWorkRequest = OneTimeWorkRequest.Builder(DFDownloadWorker::class.java)
                 .setInitialDelay(delayDuration, TimeUnit.SECONDS)
@@ -64,11 +67,19 @@ class DFDownloadWorker(appContext: Context, workerParams: WorkerParameters)
             }
             DFDownloadQueue.updateQueue(applicationContext, combinedListAfterInstall, successfulListAfterInstall)
             setFlagServiceFalse()
-        })
+        } , isInitial = false)
+        val remainingList = DFDownloadQueue.getDFModuleList(applicationContext)
         return if (result) {
+            if (remainingList.isNotEmpty()) {
+                DFInstaller().installOnBackground(applicationContext, remainingList.map { it.first })
+            }
             Result.success()
         } else {
-            Result.retry()
+            if (remainingList.isEmpty()) {
+                Result.success()
+            } else {
+                Result.retry()
+            }
         }
     }
 }

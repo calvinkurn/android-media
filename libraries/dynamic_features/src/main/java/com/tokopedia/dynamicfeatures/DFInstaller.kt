@@ -48,7 +48,7 @@ class DFInstaller {
                                          moduleNames: List<String>,
                                          onSuccessInstall: (() -> Unit)? = null,
                                          onFailedInstall: (() -> Unit)? = null,
-                                         isInitial: Boolean = false): Boolean {
+                                         isInitial: Boolean = true): Boolean {
         val result = GlobalScope.async(Dispatchers.Default) {
             val applicationContext = context.applicationContext
             if (moduleNames.isEmpty()) {
@@ -105,12 +105,12 @@ class DFInstaller {
         return result.await()
     }
 
-    fun installOnBackground(application: Application, moduleNames: List<String>,
+    fun installOnBackground(context: Context, moduleNames: List<String>,
                             onSuccessInstall: (() -> Unit)? = null,
                             onFailedInstall: (() -> Unit)? = null) {
         GlobalScope.launch {
             try {
-                installOnBackgroundDefer(application, moduleNames, onSuccessInstall, onFailedInstall, true)
+                installOnBackgroundDefer(context, moduleNames, onSuccessInstall, onFailedInstall)
             } catch (ignored: Exception) {
 
             }
