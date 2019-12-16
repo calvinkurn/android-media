@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.kyc_centralized.subscriber.GetKtpStatusSubscriber;
+import com.tokopedia.user_identification_common.subscriber.GetKtpStatusSubscriber;
 import com.tokopedia.kyc_centralized.view.viewmodel.ImageUploadModel;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
 

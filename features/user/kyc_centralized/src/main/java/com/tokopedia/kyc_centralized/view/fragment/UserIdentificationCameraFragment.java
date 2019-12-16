@@ -27,9 +27,9 @@ import com.tokopedia.cameraview.PictureResult;
 import com.tokopedia.cameraview.Size;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.kyc_centralized.KYCConstant;
+import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.kyc_centralized.R;
-import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics;
+import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
 
 import org.jetbrains.annotations.NotNull;
 

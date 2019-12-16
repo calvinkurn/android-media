@@ -16,14 +16,14 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.kyc_centralized.KYCConstant;
+import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.kyc_centralized.R;
-import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics;
+import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
 
-import static com.tokopedia.kyc_centralized.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
-import static com.tokopedia.kyc_centralized.KYCConstant.REQUEST_CODE_CAMERA_FACE;
-import static com.tokopedia.kyc_centralized.KYCConstant.REQUEST_CODE_CAMERA_KTP;
+import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
+import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
+import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
 
 /**
  * @author by alvinatin on 12/11/18.
