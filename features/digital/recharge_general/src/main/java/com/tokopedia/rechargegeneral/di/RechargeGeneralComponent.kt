@@ -1,8 +1,8 @@
 package com.tokopedia.rechargegeneral.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralPromoListFragment

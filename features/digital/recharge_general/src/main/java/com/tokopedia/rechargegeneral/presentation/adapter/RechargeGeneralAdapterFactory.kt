@@ -1,16 +1,16 @@
 package com.tokopedia.rechargegeneral.presentation.adapter
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.rechargegeneral.model.RechargeGeneralInput
-import com.tokopedia.rechargegeneral.model.RechargeGeneralItemData
-import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralProductInputViewHolder
-import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralProductSelectViewHolder
-import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.rechargegeneral.R
+import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
+import com.tokopedia.rechargegeneral.model.RechargeGeneralProductItemData
+import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputListener
+import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralInputViewHolder
+import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralProductSelectViewHolder
 
 
 /**
