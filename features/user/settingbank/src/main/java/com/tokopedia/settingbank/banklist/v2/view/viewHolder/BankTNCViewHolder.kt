@@ -13,12 +13,13 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 class BankTNCViewHolder (val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(templateData: TemplateData?) {
+        val context = view.context
         val ticker = view.findViewById<Ticker>(R.id.tickerCatatan)
         templateData?.let {
-            ticker.tickerTitle = "Catatan:"
+            ticker.tickerTitle = context?.getString(R.string.sbank_catatan)
             ticker.setHtmlDescription(templateData.template)
             ticker.findViewById<TextView>(R.id.ticker_description).text = Html.fromHtml(templateData.template)
-            ticker.findViewById<TextView>(R.id.ticker_description).setTextColor(ticker.context.resources.getColor(R.color.grey_796))
+            ticker.findViewById<TextView>(R.id.ticker_description).setTextColor(context.resources.getColor(com.tokopedia.design.R.color.grey_796))
         } ?: ticker.gone()
     }
 

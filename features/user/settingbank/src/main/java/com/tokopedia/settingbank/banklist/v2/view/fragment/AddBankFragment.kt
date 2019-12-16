@@ -276,7 +276,7 @@ class AddBankFragment : BaseDaggerFragment() {
         val spannableString = SpannableString(readMoreText)
         val startIndex = 0
         val endIndex = spannableString.length
-        val color = this.resources.getColor(R.color.tkpd_main_green)
+        val color = this.resources.getColor(com.tokopedia.design.R.color.tkpd_main_green)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {

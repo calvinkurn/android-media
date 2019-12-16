@@ -77,6 +77,7 @@ mempermudah proses penarikan dana</string>
     <string name="sbank_complete_document">Lengkapi dokumen berikut</string>
     <string name="sbank_pic_of_family_card">Foto Kartu Keluarga (KK)</string>
     <string name="sbank_saving_acc_document">Rekening Tabungan</string>
+    <string name="sbank_catatan">"Catatan:"</string>
 
 
 </resources>
