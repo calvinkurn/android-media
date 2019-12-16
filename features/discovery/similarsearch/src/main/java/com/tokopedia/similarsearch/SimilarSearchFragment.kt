@@ -154,6 +154,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         observeTrackingEmptyResultEventLiveData()
         observeTrackingWishlistEventLiveData()
         observeTrackingAddToCartEventLiveData()
+        observeTrackingBuyEventLiveData()
     }
 
     private fun observeOriginalProductLiveData() {
@@ -186,8 +187,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
             }
 
             override fun onButtonBuyClicked() {
-                SimilarSearchTracking.trackEventClickBuy()
-                similarSearchViewModel?.onViewClickAddToCart(true)
+                similarSearchViewModel?.onViewClickBuy()
             }
 
             override fun onButtonAddToCartClicked() {
@@ -353,7 +353,13 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun observeTrackingAddToCartEventLiveData() {
         similarSearchViewModel?.getTrackingAddToCartEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            SimilarSearchTracking.trackEventSuccessAddToCart(it)
+            SimilarSearchTracking.trackEventClickAddToCart(it)
+        })
+    }
+
+    private fun observeTrackingBuyEventLiveData() {
+        similarSearchViewModel?.getTrackingAddToCartEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            SimilarSearchTracking.trackEventClickBuy(it)
         })
     }
 

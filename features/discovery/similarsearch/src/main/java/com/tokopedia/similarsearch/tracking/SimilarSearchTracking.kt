@@ -83,18 +83,27 @@ internal object SimilarSearchTracking {
         return if (isTopAds) Label.TOPADS else Label.GENERAL
     }
 
-    fun trackEventClickBuy() {
+    fun trackEventClickBuy(productItem: Any) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.CLICK_SIMILAR_SEARCH,
                         TrackAppUtils.EVENT_CATEGORY, Category.SIMILAR_PRODUCT,
                         TrackAppUtils.EVENT_ACTION, Action.CLICK_BUY_ON_SIMILAR_SEARCH,
-                        TrackAppUtils.EVENT_LABEL, ""
+                        TrackAppUtils.EVENT_LABEL, "",
+                        ECOMMERCE, DataLayer.mapOf(
+                            ECommerce.CURRENCY_CODE, ECommerce.IDR,
+                            ECommerce.ADD, DataLayer.mapOf(
+                                    ECommerce.ACTION_FIELD, DataLayer.mapOf(
+                                        "list", "/similarproduct"
+                                    ),
+                                    ECommerce.PRODUCTS, DataLayer.listOf(productItem)
+                            )
+                        )
                 )
         )
     }
 
-    fun trackEventSuccessAddToCart(productItem: Any) {
+    fun trackEventClickAddToCart(productItem: Any) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.CLICK_SIMILAR_SEARCH,
