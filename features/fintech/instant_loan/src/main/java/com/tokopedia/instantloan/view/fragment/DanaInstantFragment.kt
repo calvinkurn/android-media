@@ -240,7 +240,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     }
 
     override fun searchLoanOnline() {
-        if (presenter.isUserLoggedIn()) {
+        if (userSession.isLoggedIn) {
             sendCariPinjamanClickEvent()
             presenter.getLoanProfileStatus()
         } else {

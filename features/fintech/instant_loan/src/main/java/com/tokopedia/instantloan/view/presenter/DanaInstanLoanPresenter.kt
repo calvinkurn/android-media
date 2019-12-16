@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.instantloan.constant.DeviceDataKeys
 import com.tokopedia.instantloan.data.model.response.ResponsePhoneData
-import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager
 import com.tokopedia.instantloan.ddcollector.OnDeviceDataReady
 import com.tokopedia.instantloan.ddcollector.PermissionResultCallback
@@ -15,9 +14,9 @@ import com.tokopedia.instantloan.ddcollector.app.Application
 import com.tokopedia.instantloan.ddcollector.bdd.BasicDeviceData
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase
+import com.tokopedia.instantloan.domain.subscriber.GetDanaInstanLoanProfileSubscriber
 import com.tokopedia.instantloan.view.contractor.DanaInstanLoanContractor
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 import java.lang.reflect.Type
 import java.util.*
@@ -28,9 +27,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
             private val mPostPhoneDataUseCase: PostPhoneDataUseCase) :
         BaseDaggerPresenter<DanaInstanLoanContractor.View>(), DanaInstanLoanContractor.Presenter {
 
-    @Inject
-    lateinit var userSession: UserSession
-
+    private val danaInstanLoanProfileSubscriber = GetDanaInstanLoanProfileSubscriber(this)
     private val mPermissionRequestCallback = object : PermissionResultCallback {
 
         override fun permissionGranted(requestCode: Int) {
@@ -52,10 +49,6 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
         super.attachView(view)
     }
 
-    override fun initialize() {
-
-    }
-
     override fun detachView() {
         mGetLoanProfileStatusUseCase.unsubscribe()
         mPostPhoneDataUseCase.unsubscribe()
@@ -64,31 +57,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
 
     override fun getLoanProfileStatus() {
         view.showLoader()
-        mGetLoanProfileStatusUseCase.execute(object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-                view.hideLoader()
-            }
-
-            override fun onError(e: Throwable) {
-                if (isViewAttached) {
-                    view.onErrorLoanProfileStatus(ErrorHandler.getErrorMessage(view.getActivityContext(), e))
-                }
-            }
-
-            override fun onNext(typeRestResponseMap: Map<Type, RestResponse>) {
-                val restResponse = typeRestResponseMap[ResponseUserProfileStatus::class.java]
-                val responseUserProfileStatus = restResponse!!.getData<ResponseUserProfileStatus>()
-                view.onSuccessLoanProfileStatus(responseUserProfileStatus?.userProfileLoanEntity!!)
-                view.setUserOnGoingLoanStatus(
-                        responseUserProfileStatus.userProfileLoanEntity!!.onGoingLoanId != 0,
-                        responseUserProfileStatus.userProfileLoanEntity!!.onGoingLoanId)
-
-            }
-        })
-    }
-
-    override fun isUserLoggedIn(): Boolean {
-        return userSession.isLoggedIn
+        mGetLoanProfileStatusUseCase.execute(danaInstanLoanProfileSubscriber)
     }
 
     override fun startDataCollection() {
@@ -100,7 +69,9 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
                 mPostPhoneDataUseCase.setBody(getPhoneDataPayload(data))
                 mPostPhoneDataUseCase.execute(object : Subscriber<Map<Type, RestResponse>>() {
                     override fun onCompleted() {
-                        view.hideLoaderIntroDialog()
+                        if (isViewAttached) {
+                            view.hideLoaderIntroDialog()
+                        }
                     }
 
                     override fun onError(e: Throwable) {
@@ -181,8 +152,6 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
 
             data.addProperty(DeviceDataKeys.Common.APPS, apps.toString())
         }
-
-
 
         return data
     }

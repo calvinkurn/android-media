@@ -10,7 +10,6 @@ class GetLoanProfileSubscriber(var presenter: InstantLoanLendingDataContractor.P
         Subscriber<Map<Type, RestResponse>>() {
 
     override fun onNext(typeRestResponseMap: Map<Type, RestResponse>?) {
-
         if (presenter.isViewAttached()) {
             val restResponse = typeRestResponseMap?.get(ResponseUserProfileStatus::class.java)
             val responseUserProfileStatus = restResponse!!.getData<ResponseUserProfileStatus>()

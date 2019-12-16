@@ -48,11 +48,10 @@ interface DanaInstanLoanContractor {
 
     interface Presenter : CustomerPresenter<View> {
 
-        fun isUserLoggedIn(): Boolean
-        fun initialize()
-
         fun getLoanProfileStatus()
-
         fun startDataCollection()
+
+        fun isViewAttached(): Boolean
+        fun getView(): View
     }
 }
