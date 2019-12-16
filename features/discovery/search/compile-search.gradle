@@ -33,4 +33,3 @@ include "tkpddesign"
 
 // search dependencies - module own gradle
 apply from: "../global_nav_widget/compile-globalnavwidget.gradle"
-apply from: "../productcard_options/compile-productcardoptions.gradle"
