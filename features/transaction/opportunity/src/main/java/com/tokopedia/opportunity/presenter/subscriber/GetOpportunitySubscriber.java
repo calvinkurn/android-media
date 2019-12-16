@@ -67,7 +67,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
         if (opportunityModel.isSuccess())
             viewListener.onSuccessGetOpportunity(mappingToViewModel(opportunityModel));
         else
-            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_unknown));
+            viewListener.onErrorGetOpportunity(viewListener.getString(com.tokopedia.core2.R.string.default_request_error_unknown));
 
     }
 

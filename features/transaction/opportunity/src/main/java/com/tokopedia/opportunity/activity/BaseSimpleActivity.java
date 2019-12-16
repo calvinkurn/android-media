@@ -16,8 +16,7 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
 
     @Override
     protected int getLayoutRes() {
-        return 0;
-//        return R.layout.activity_base_simple_seller;
+        return com.tokopedia.opportunity.R.layout.activity_base_simple_seller;
     }
 
     @Override
@@ -41,7 +40,7 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
     }
 
     protected int getParent_view() {
-        return R.id.parent_view;
+        return com.tokopedia.opportunity.R.id.parent_view;
     }
 
     protected Fragment getFragment() {

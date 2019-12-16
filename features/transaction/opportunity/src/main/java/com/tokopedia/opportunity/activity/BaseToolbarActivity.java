@@ -28,7 +28,7 @@ import com.tokopedia.opportunity.R;
 abstract class BaseToolbarActivity extends BaseActivity {
 
     private final static int TOOLBAR_ELEVATION = 10;
-    private final static int TEXT_COLOR_BACKGROUND_WHITE = R.color.black_70;
+    private final static int TEXT_COLOR_BACKGROUND_WHITE = com.tokopedia.design.R.color.black_70;
     protected Toolbar toolbar;
 
     protected abstract void setupFragment(Bundle savedInstanceState);
@@ -46,7 +46,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
         setTheme(getThemeActivity());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.green_600));
         }
         setupLayout(savedInstanceState);
         setupFragment(savedInstanceState);
@@ -86,14 +86,14 @@ abstract class BaseToolbarActivity extends BaseActivity {
         toolbar.setSubtitleTextColor(textColor);
         int height = dpToPx(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_height_material));
         int width = dpToPx(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material));
-        toolbar.setOverflowIcon(resize(ContextCompat.getDrawable(this, R.drawable.overflow_btn), width, height));
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.white)));
+        toolbar.setOverflowIcon(resize(ContextCompat.getDrawable(this, com.tokopedia.core2.R.drawable.overflow_btn), width, height));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, com.tokopedia.design.R.color.white)));
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
+        Drawable upArrow = ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_action_back);
         if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
+            upArrow.setColorFilter(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
     }
@@ -143,7 +143,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
         if (isToolbarWhite()) {
             MenuTintUtils.tintAllIcons(menu, TEXT_COLOR_BACKGROUND_WHITE);
         } else {
-            MenuTintUtils.tintAllIcons(menu, R.color.white);
+            MenuTintUtils.tintAllIcons(menu, com.tokopedia.design.R.color.white);
         }
     }
 

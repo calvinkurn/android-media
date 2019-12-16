@@ -62,7 +62,7 @@ public class DescriptionView extends BaseView<ProductDetailData, SnapShotFragmen
 
     @Override
     protected void setViewListener() {
-        ivToggle.setImageResource(R.drawable.chevron_down);
+        ivToggle.setImageResource(com.tokopedia.core2.R.drawable.chevron_down);
         tvDesc.setMaxLines(5);
         isExpand = false;
         ivToggle.setOnClickListener(new DescriptionView.ClickToggle());
@@ -70,14 +70,14 @@ public class DescriptionView extends BaseView<ProductDetailData, SnapShotFragmen
     }
 
     private void renderCollapse() {
-        ivToggle.setImageResource(R.drawable.chevron_down);
+        ivToggle.setImageResource(com.tokopedia.core2.R.drawable.chevron_down);
         tvDesc.setMaxLines(5);
         tvDesc.requestFocus();
         isExpand = false;
     }
 
     private void renderExpand() {
-        ivToggle.setImageResource(R.drawable.chevron_up);
+        ivToggle.setImageResource(com.tokopedia.core2.R.drawable.chevron_up);
         tvDesc.setMaxLines(Integer.MAX_VALUE);
         tvDesc.requestFocus();
         isExpand = true;

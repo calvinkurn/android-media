@@ -79,7 +79,7 @@ public class PictureView extends BaseView<ProductDetailData, SnapShotFragmentVie
         vpImage.setAdapter(imagePagerAdapter);
         List<ProductImage> productImageList = data.getProductImages();
         if (productImageList.isEmpty()) {
-            int resId = R.drawable.product_no_photo_default;
+            int resId = com.tokopedia.core2.R.drawable.product_no_photo_default;
             Resources res = getContext().getResources();
             Uri resUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                     + "://" + res.getResourcePackageName(resId)

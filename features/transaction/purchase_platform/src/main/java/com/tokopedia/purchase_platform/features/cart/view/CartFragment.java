@@ -230,6 +230,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         bundle.putString(CartFragment.class.getSimpleName(), args);
         CartFragment fragment = new CartFragment();
         fragment.setArguments(bundle);
+        String a = "asdf";
+        a.contains()
         return fragment;
     }
 
