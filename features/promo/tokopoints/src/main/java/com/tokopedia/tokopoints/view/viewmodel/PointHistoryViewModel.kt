@@ -20,10 +20,6 @@ import javax.inject.Inject
 class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistoryRepository) : BaseViewModel(Dispatchers.Main), AdapterCallback {
 
 
-
-
-
-
     val data = MutableLiveData<Resources<TokoPointEntity>>()
     val listLoading = MutableLiveData<Resources<PointHistoryBase>>()
 
@@ -47,10 +43,10 @@ class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistor
         }
     }
 
-     fun loadData(currentPageIndex: Int) {
-         launch {
-             mUserRepository.getPointList(currentPageIndex, listLoading)
-         }
+    fun loadData(currentPageIndex: Int) {
+        launch {
+            mUserRepository.getPointList(currentPageIndex, listLoading)
+        }
     }
 
     override fun onCleared() {
@@ -81,7 +77,8 @@ class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistor
     }
 
     override fun onError(pageNumber: Int) {
-       listLoading.value = ErrorMessage("n/a")
-
+        if (pageNumber == 1) {
+            listLoading.value = ErrorMessage("n/a")
+        }
     }
 }

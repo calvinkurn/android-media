@@ -32,7 +32,7 @@ class PointHistoryRepository @Inject constructor(private val mGetPointHistory: G
             }
 
             override fun onError(e: Throwable) {
-                liveData.postValue(ErrorMessage("unable to load data"))
+                liveData.postValue(ErrorMessage(e.toString()))
             }
 
             override fun onNext(response: GraphqlResponse) {
