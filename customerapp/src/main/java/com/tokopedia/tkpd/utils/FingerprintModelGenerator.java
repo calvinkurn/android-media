@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Base64;
-
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -15,14 +14,11 @@ import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.kotlin.util.DeviceChecker;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
 import timber.log.Timber;
 
 /**
@@ -139,6 +135,8 @@ public class FingerprintModelGenerator {
                 .carrier(carrier)
                 .deviceLat(new LocationCache(context).getLatitudeCache())
                 .deviceLng(new LocationCache(context).getLongitudeCache())
+                .availableProcessor(DeviceChecker.INSTANCE.getAvailableProcessor(context.getApplicationContext()))
+                .deviceMemoryClassCapacity(DeviceChecker.INSTANCE.getDeviceMemoryClassCapacity(context.getApplicationContext()))
                 .build();
 
         return new Gson().toJson(fp);
