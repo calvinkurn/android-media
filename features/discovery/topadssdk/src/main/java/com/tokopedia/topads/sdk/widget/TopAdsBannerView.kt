@@ -20,6 +20,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.base.Config
 import com.tokopedia.topads.sdk.base.adapter.Item
@@ -58,6 +59,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private val DIGITAL_TEMPLATE = 2
     private final val VARIANT_A = "Headline Ads A"
     private final val VARIANT_B = "Headline Ads B"
+    private final val AB_TEST_KEY = "Headline Ads New Design"
 
     @Inject
     lateinit var bannerPresenter: BannerAdsPresenter
@@ -80,7 +82,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         if (activityIsFinishing(context))
             return
         if (template == NO_TEMPLATE) {
-            var variant = VARIANT_B
+            var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_A)
             if(variant.equals(VARIANT_A)) {
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
