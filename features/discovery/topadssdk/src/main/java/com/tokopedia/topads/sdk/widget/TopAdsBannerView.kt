@@ -83,14 +83,14 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             return
         if (template == NO_TEMPLATE) {
             var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_A)
-            if(variant.equals(VARIANT_A)) {
-                View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
-                BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
-                BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
-            } else{
+            if(variant.equals(VARIANT_B)) {
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_b_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_product
                 BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b
+            } else{
+                View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
+                BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
+                BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
             }
 
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData.cpm.name)
