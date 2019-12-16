@@ -103,10 +103,11 @@ class ValidatorFragment: BaseDaggerFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareView()
+        requestCode(false)
 
         verifyButton.setOnClickListener {
             analytics.trackClickActivationButton()
-            validatorViewModel.otpValidateEmail(otpParams.otpType.toString(), inputVerifyCode.text.toString(), otpParams.email)
+            validateCode()
         }
 
         footer.setOnClickListener {
@@ -121,6 +122,7 @@ class ValidatorFragment: BaseDaggerFragment(){
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s?.length == 6) {
+                    validateCode()
                     verifyButton.buttonCompatType = ButtonCompat.PRIMARY
                 }else{
                     verifyButton.buttonCompatType = ButtonCompat.PRIMARY_DISABLED
@@ -131,7 +133,7 @@ class ValidatorFragment: BaseDaggerFragment(){
 
         inputVerifyCode.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEND) {
-                validatorViewModel.otpValidateEmail(otpParams.otpType.toString(), inputVerifyCode.text.toString(), otpParams.email)
+                validateCode()
                 true
             }else false
         }
@@ -140,9 +142,6 @@ class ValidatorFragment: BaseDaggerFragment(){
             inputVerifyCode.setText("")
             removeErrorOtp()
         }
-
-        validatorViewModel.otpRequestEmail(otpParams.otpType.toString(), otpParams.email, false)
-        showKeyboard()
     }
 
     private fun prepareView(){
@@ -157,6 +156,8 @@ class ValidatorFragment: BaseDaggerFragment(){
             if (modeListData.afterOtpListTextHtml.isNotEmpty()) {
                 setActivateTextFull(modeListData.afterOtpListTextHtml)
             }
+
+            inputVerifyCode.setLength(modeListData.otpDigit)
 
             val spannable = SpannableString(getString(R.string.validation_resend_email))
             spannable.setSpan(
@@ -173,6 +174,10 @@ class ValidatorFragment: BaseDaggerFragment(){
             )
             footer.setText(spannable, TextView.BufferType.SPANNABLE)
         }
+
+        inputVerifyCode.requestFocus()
+        inputVerifyCode.requestFocusFromTouch()
+        showKeyboard()
     }
 
     private fun initObserver(){
@@ -203,39 +208,37 @@ class ValidatorFragment: BaseDaggerFragment(){
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (resultCode) {
-            Activity.RESULT_OK -> {
-                when (requestCode){
-                    REQUEST_CHANGE_EMAIL_REGISTER -> {
-                        data?.extras?.let {
-                            otpParams.email = it.getString(EXTRA_EMAIL, "")
-                            setActivateText(otpParams.email)
-                        }
-                    }
-                }
-            }
-        }
+    private fun requestCode(isResend: Boolean) {
+        showLoading()
+        validatorViewModel.otpRequestEmail(otpParams.otpType.toString(), otpParams.email, isResend)
+    }
+
+    private fun validateCode() {
+        showLoading()
+        validatorViewModel.otpValidateEmail(otpParams.otpType.toString(), inputVerifyCode.text.toString(), otpParams.email)
     }
 
     private fun onSuccessOtpRequest(otpRequestData: OtpRequestData){
-
+        dismissLoading()
+        inputVerifyCode.requestFocus()
+        inputVerifyCode.requestFocusFromTouch()
     }
 
     private fun onErrorOtpRequest(throwable: Throwable){
+        dismissLoading()
         view?.let {
             val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
             NetworkErrorHelper.showEmptyState(context, it, error) {
-                validatorViewModel.otpRequestEmail(otpParams.otpType.toString(), otpParams.email, true)
+                requestCode(true)
             }
         }
     }
 
     private fun onSuccessOtpResendRequest(otpRequestData: OtpRequestData){
+        dismissLoading()
         activity?.let {
             analytics.trackSuccessClickOkResendButton()
             analytics.trackSuccessClickResendButton()
-            KeyboardHandler.DropKeyboard(it, inputVerifyCode)
             removeErrorOtp()
             dismissLoading()
             ToasterNormal.show(it, getString(R.string.success_resend_activation))
@@ -256,6 +259,7 @@ class ValidatorFragment: BaseDaggerFragment(){
     }
 
     private fun onSuccessOtpValidate(otpValidateData: OtpValidateData){
+        dismissLoading()
         analytics.trackSuccessClickActivationButton()
         activity?.let {
             if(otpValidateData.validateToken.isEmpty()){
@@ -273,10 +277,10 @@ class ValidatorFragment: BaseDaggerFragment(){
     }
 
     private fun onErrorOtpValidate(throwable: Throwable){
+        dismissLoading()
         activity?.let {
             throwable.message?.let { errorMessage ->
                 analytics.trackFailedClickActivationButton(errorMessage)
-                KeyboardHandler.DropKeyboard(it, inputVerifyCode)
                 dismissLoading()
                 if (errorMessage == "") {
                     NetworkErrorHelper.showSnackbar(it)
@@ -298,7 +302,7 @@ class ValidatorFragment: BaseDaggerFragment(){
                     .setMessage(MethodChecker.fromHtml(dialogMessage))
                     .setPositiveButton(android.R.string.yes) { dialog, which ->
                         analytics.trackClickOkResendButton()
-                        validatorViewModel.otpRequestEmail(otpParams.otpType.toString(), email, true)
+                        requestCode(true)
                     }
                     .setNegativeButton(R.string.cancel_dialog_change_email){ dialog, which ->
                         analytics.trackFailedClickResendButton(
@@ -306,25 +310,6 @@ class ValidatorFragment: BaseDaggerFragment(){
                         dialog.dismiss()
                     }
                     .show()
-        }
-    }
-
-    private fun setActivateText(email: String){
-        activity?.let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                activationText.text = Html.fromHtml(getString(R.string.validation_text).replace(
-                        getString(R.string.param_email_validation_text),
-                        email, false
-                ), Html.FROM_HTML_MODE_COMPACT)
-            } else {
-                activationText.text = Html.fromHtml(getString(R.string.validation_text).replace(
-                        getString(R.string.param_email_validation_text),
-                        email, false
-                ))
-            }
-
-            inputVerifyCode.requestFocus()
-            KeyboardHandler.DropKeyboard(it, inputVerifyCode)
         }
     }
 
@@ -337,9 +322,6 @@ class ValidatorFragment: BaseDaggerFragment(){
                     activationText.text = Html.fromHtml(text)
                 }
             }
-
-            inputVerifyCode.requestFocus()
-            KeyboardHandler.DropKeyboard(it, inputVerifyCode)
         }
     }
 
@@ -360,14 +342,10 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun showKeyboard() {
         val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.toggleSoftInputFromWindow(inputVerifyCode.windowToken, InputMethodManager.SHOW_FORCED, 0)
+        inputMethodManager.showSoftInput(inputVerifyCode, InputMethodManager.SHOW_FORCED)
     }
 
     companion object {
-
-        const val REQUEST_CHANGE_EMAIL_REGISTER = 200
-
-        const val EXTRA_EMAIL = "EXTRA_EMAIL"
 
         fun createInstance(otpParams: OtpParams, modeListData: ModeListData): Fragment {
             val bundle = Bundle()

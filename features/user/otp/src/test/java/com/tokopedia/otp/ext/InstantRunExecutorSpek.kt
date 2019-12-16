@@ -2,9 +2,9 @@ package com.tokopedia.otp.ext
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
-import org.jetbrains.spek.api.dsl.SpecBody
+import org.spekframework.spek2.dsl.GroupBody
 
-class InstantRunExecutorSpek(root: SpecBody) {
+class InstantRunExecutorSpek(root: GroupBody) {
     init {
         root.beforeGroup {
             ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {

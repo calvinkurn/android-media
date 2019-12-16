@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.otp.validator.data.ModeListData
 import com.tokopedia.otp.validator.data.OtpParams
 import com.tokopedia.otp.validator.domain.usecase.OtpModeListUseCase
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -23,17 +22,21 @@ class OtpModeListViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private val mutableOtpMethodListResponse = MutableLiveData<Result<MutableList<ModeListData>>>()
-    val otpMethodListResponse: LiveData<Result<MutableList<ModeListData>>>
-        get() = mutableOtpMethodListResponse
+    private val _modeListResponse = MutableLiveData<MutableList<ModeListData>>()
+    val modeListResponse: LiveData<MutableList<ModeListData>>
+        get() = _modeListResponse
+
+    private val _error = MutableLiveData<Throwable>()
+    val error: LiveData<Throwable>
+        get() = _error
 
     fun getMethodList(otpParams: OtpParams) {
         launchCatchError(block = {
             otpModeListUseCase.createParams(OtpModeListUseCase.createRequestParams(otpParams))
             val result = otpModeListUseCase.executeOnBackground()
-            mutableOtpMethodListResponse.postValue(Success(result.data.modeList))
+            _modeListResponse.postValue(result.data.modeList)
         }, onError = {
-            mutableOtpMethodListResponse.postValue(Fail(it))
+            _error.postValue(it)
         })
     }
 

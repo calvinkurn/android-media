@@ -1,7 +1,6 @@
 package com.tokopedia.otp.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.otp.ext.InstantRunExecutorSpek
 import com.tokopedia.otp.validator.data.OtpModeListPojo
 import com.tokopedia.otp.validator.domain.usecase.OtpModeListUseCase
 import io.mockk.mockk
@@ -17,8 +16,6 @@ import stubExecuteOnBackground
 @RunWith(JUnitPlatform::class)
 class OtpModeListUseCaseTest : Spek({
 
-    InstantRunExecutorSpek(this)
-
     given("otp mode list") {
         val multiRequestGraphqlUseCase by memoized { mockk<MultiRequestGraphqlUseCase>(relaxed = true) }
         val query = ""
@@ -31,7 +28,11 @@ class OtpModeListUseCaseTest : Spek({
 
             it("should be return otp mode response") {
                 runBlocking {
-                    assert(otpModeListUseCase.executeOnBackground() == otpModeListResponse)
+                    val value = multiRequestGraphqlUseCase
+                            .executeOnBackground()
+                            .getData<OtpModeListPojo>(OtpModeListPojo::class.java)
+
+                    assert(otpModeListResponse == value)
                 }
             }
         }

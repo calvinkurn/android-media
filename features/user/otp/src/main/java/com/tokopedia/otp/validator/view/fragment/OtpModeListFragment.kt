@@ -103,12 +103,14 @@ class OtpModeListFragment : BaseDaggerFragment(), OtpModeListAdapter.ClickListen
     }
 
     private fun initObserver() {
-        otpModeListViewModel.otpMethodListResponse.observe(this, Observer {
+        otpModeListViewModel.modeListResponse.observe(this, Observer {
             hideLoading()
-            when (it) {
-                is Success -> onSuccessGetOtpModeList(it.data)
-                is Fail -> onError(it.throwable)
-            }
+            onSuccessGetOtpModeList(it)
+        })
+
+        otpModeListViewModel.error.observe(this, Observer {
+            hideLoading()
+            onError(it)
         })
     }
 

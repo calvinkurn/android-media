@@ -44,7 +44,7 @@ class OtpModeListAdapter(
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         fun bind(modeList: ModeListData, listener: ClickListener?, position: Int) {
             ImageHandler.LoadImage(itemView.icon, modeList.otpListImgUrl)
-            itemView.method_text.text = MethodChecker.fromHtml(modeList.afterOtpListTextHtml)
+            itemView.method_text.text = MethodChecker.fromHtml(modeList.otpListText)
             itemView.setOnClickListener {
                 listener?.onModeListClick(modeList, position)
             }
