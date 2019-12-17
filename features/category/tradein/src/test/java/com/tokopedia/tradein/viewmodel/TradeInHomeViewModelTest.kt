@@ -82,9 +82,6 @@ class TradeInHomeViewModelTest {
         Dispatchers.resetMain()
     }
 
-
-
-
     /**************************** checkLogin() *******************************************/
 
     @Test
@@ -108,10 +105,6 @@ class TradeInHomeViewModelTest {
     }
     /**************************** checkLogin() *******************************************/
 
-
-
-
-
     /**************************** getRepo() *******************************************/
 
     @Test
@@ -120,12 +113,6 @@ class TradeInHomeViewModelTest {
         assertEquals(tradeInHomeViewModel.getRepo(), repository)
     }
     /**************************** getRepo() *******************************************/
-
-
-
-
-
-
 
     /**************************** checkDiagnosticsData() *******************************************/
     @Test
@@ -141,12 +128,6 @@ class TradeInHomeViewModelTest {
     }
 
     /**************************** checkDiagnosticsData() *******************************************/
-
-
-
-
-
-
 
     /**************************** RequestParamsTest() *******************************************/
 
@@ -183,12 +164,6 @@ class TradeInHomeViewModelTest {
 
     /**************************** RequestParamsTest() *******************************************/
 
-
-
-
-
-
-
     /**************************** processMessage() *******************************************/
 
     @Test
@@ -218,12 +193,6 @@ class TradeInHomeViewModelTest {
     }
 
     /**************************** processMessage() *******************************************/
-
-
-
-
-
-
 
    /**************************** setDiagnoseResult() *******************************************/
 
@@ -255,12 +224,6 @@ class TradeInHomeViewModelTest {
         assertEquals(tradeInHomeViewModel.homeResultData.value, null)
     }
     /**************************** setDiagnoseResult() *******************************************/
-
-
-
-
-
-
 
     /**************************** checkMoneyIn() *******************************************/
 
@@ -349,13 +312,6 @@ class TradeInHomeViewModelTest {
 
     /**************************** checkMoneyIn() *******************************************/
 
-
-
-
-
-
-
-
     /**************************** onError() *******************************************/
 
     @Test
@@ -368,12 +324,6 @@ class TradeInHomeViewModelTest {
     }
 
     /**************************** onError() *******************************************/
-
-
-
-
-
-
 
     /**************************** onFinished() *******************************************/
 
@@ -419,11 +369,6 @@ class TradeInHomeViewModelTest {
 
     /**************************** onFinished() *******************************************/
 
-
-
-
-
-
     /**************************** getMaxPrice() *******************************************/
 
     @Test
@@ -435,29 +380,6 @@ class TradeInHomeViewModelTest {
     }
 
     /**************************** getMaxPrice() *******************************************/
-
-
-
-
-
-    private fun createMockGraphqlSuccessResponse(): ValidateTradePDP {
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val jsonObject: JsonObject = CommonUtils.fromJson(
-                getJsonFromFile("resources/dummy_response_validate_tradein_pdp.json"),
-                JsonObject::class.java
-        )
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = ValidateTradePDP::class.java
-        val obj: Any = CommonUtils.fromJson(data, objectType)
-        result[objectType] = obj
-        return GraphqlResponse(result, errors, false).getData(ValidateTradePDP::class.java)
-    }
-    private fun getJsonFromFile(path: String): String {
-        val uri = ClassLoader.getSystemClassLoader().getResource(path)
-        val file = File(uri.path)
-        return String(file.readBytes())
-    }
 
 }
 
