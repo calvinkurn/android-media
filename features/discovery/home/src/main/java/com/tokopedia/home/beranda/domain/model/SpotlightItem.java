@@ -7,6 +7,15 @@ public class SpotlightItem {
     @SerializedName("id")
     @Expose
     private int id;
+    @Expose
+    @SerializedName("galaxy_attribution")
+    private String galaxyAttribution;
+    @Expose
+    @SerializedName("persona")
+    private String persona;
+    @Expose
+    @SerializedName("brand_id")
+    private String brandId;
     @SerializedName("title")
     @Expose
     private String title = "";
@@ -124,5 +133,29 @@ public class SpotlightItem {
 
     public void setApplink(String applink) {
         this.applink = applink;
+    }
+
+    public String getGalaxyAttribution() {
+        return galaxyAttribution;
+    }
+
+    public void setGalaxyAttribution(String galaxyAttribution) {
+        this.galaxyAttribution = galaxyAttribution;
+    }
+
+    public String getPersona() {
+        return persona;
+    }
+
+    public void setPersona(String persona) {
+        this.persona = persona;
+    }
+
+    public String getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(String brandId) {
+        this.brandId = brandId;
     }
 }

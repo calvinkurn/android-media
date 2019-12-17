@@ -44,6 +44,9 @@ object HomeQuery{
             }
             dynamicIcon {
               id
+              galaxy_attribution
+              persona
+              brand_id
               name
               url
               imageUrl
@@ -53,6 +56,9 @@ object HomeQuery{
           dynamicHomeChannel {
             channels {
               id
+              galaxy_attribution
+              persona
+              brand_id
               name
               layout
               type
@@ -96,6 +102,9 @@ object HomeQuery{
               }
               banner {
                 id
+                galaxy_attribution
+                persona
+                brand_id
                 title
                 description
                 url
@@ -116,6 +125,9 @@ object HomeQuery{
           spotlight {
             spotlights {
               id
+              galaxy_attribution
+              persona
+              brand_id
               title
               description
               background_image_url

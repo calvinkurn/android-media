@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.domain.gql.feed
 
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Banner(
@@ -19,5 +20,11 @@ data class Banner(
         @SerializedName("target")
         val target: String = "",
         @SerializedName("url")
-        val url: String = ""
+        val url: String = "",
+        @SerializedName("galaxy_attribution")
+        val galaxyAttribution: String = "",
+        @SerializedName("persona")
+        val persona: String = "",
+        @SerializedName("brand_id")
+        val brandId: String = ""
 )

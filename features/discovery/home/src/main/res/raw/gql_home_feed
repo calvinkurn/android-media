@@ -49,6 +49,9 @@ query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
       }
       banner {
             id
+            galaxy_attribution
+            persona
+            brand_id
             name
             image_url
             url

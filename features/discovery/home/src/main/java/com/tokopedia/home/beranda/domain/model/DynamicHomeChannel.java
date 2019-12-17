@@ -55,6 +55,18 @@ public class DynamicHomeChannel {
         private String id;
 
         @Expose
+        @SerializedName("galaxy_attribution")
+        private String galaxyAttribution;
+
+        @Expose
+        @SerializedName("persona")
+        private String persona;
+
+        @Expose
+        @SerializedName("brand_id")
+        private String brandId;
+
+        @Expose
         @SerializedName("layout")
         private String layout;
 
@@ -161,6 +173,30 @@ public class DynamicHomeChannel {
 
         public Boolean getShowPromoBadge() {
             return showPromoBadge;
+        }
+
+        public String getGalaxyAttribution() {
+            return galaxyAttribution;
+        }
+
+        public void setGalaxyAttribution(String galaxyAttribution) {
+            this.galaxyAttribution = galaxyAttribution;
+        }
+
+        public String getPersona() {
+            return persona;
+        }
+
+        public void setPersona(String persona) {
+            this.persona = persona;
+        }
+
+        public String getBrandId() {
+            return brandId;
+        }
+
+        public void setBrandId(String brandId) {
+            this.brandId = brandId;
         }
 
         public void setShowPromoBadge(Boolean showPromoBadge) {

@@ -57,6 +57,15 @@ data class DynamicHomeIcon (
 
             @Expose
             @SerializedName("bu_identifier")
-            val bu_identifier: String = ""
+            val bu_identifier: String = "",
+
+            @SerializedName("galaxy_attribution")
+            private var galaxyAttribution: String = "",
+
+            @SerializedName("persona")
+            private var persona: String = "",
+
+            @SerializedName("brand_id")
+            private var brandId: String = ""
     )
 }
