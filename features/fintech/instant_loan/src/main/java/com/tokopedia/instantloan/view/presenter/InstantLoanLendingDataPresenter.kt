@@ -14,7 +14,7 @@ constructor(private val mGetLendingDataUseCase: GetLendingDataUseCase,
     : BaseDaggerPresenter<InstantLoanLendingDataContractor.View>(), InstantLoanLendingDataContractor.Presenter {
 
 
-    var getLendingDataSubscriber = GetLendingDataSubscriber(this)
+    var getLendingDataSubscriber = GetLendingDataSubscriber(this.view)
     var getLoanProfileSubscriber = GetLoanProfileSubscriber(this)
 
     override fun detachView() {

@@ -8,6 +8,7 @@ interface OnlineLoanContractor {
 
     interface View : CustomerView {
         fun setFilterDataForOnlineLoan(gqlFilterData: GqlFilterData)
+        fun isViewAttached(): Boolean
     }
 
     interface Presenter : CustomerPresenter<View> {

@@ -1,20 +1,25 @@
 package com.tokopedia.instantloan.domain.subscriber
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.instantloan.data.model.response.GqlFilterData
 import com.tokopedia.instantloan.data.model.response.GqlFilterDataResponse
 import com.tokopedia.instantloan.view.contractor.OnlineLoanContractor
 import rx.Subscriber
 
-class GetFilterDataSubscriber(var presenter: OnlineLoanContractor.Presenter):
+class GetFilterDataSubscriber(var view: OnlineLoanContractor.View) :
         Subscriber<GraphqlResponse>() {
 
+    private lateinit var filterData: GqlFilterData
+    private lateinit var gqlFilterDataResponse: GqlFilterDataResponse
+
     override fun onNext(graphqlResponse: GraphqlResponse?) {
-        if (!presenter.isViewAttached()) {
+        if (!view.isViewAttached()) {
             return
         }
-        val gqlFilterDataResponse =
+        gqlFilterDataResponse =
                 graphqlResponse?.getData(GqlFilterDataResponse::class.java) as GqlFilterDataResponse
-        presenter.getView().setFilterDataForOnlineLoan(gqlFilterDataResponse.gqlFilterData)
+        filterData = gqlFilterDataResponse.gqlFilterData
+        view.setFilterDataForOnlineLoan(filterData)
     }
 
     override fun onCompleted() {

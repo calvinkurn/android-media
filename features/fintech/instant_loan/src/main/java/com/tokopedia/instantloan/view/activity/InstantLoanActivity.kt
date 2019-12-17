@@ -150,6 +150,10 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         return userSession.isLoggedIn
     }
 
+    override fun isViewAttached(): Boolean {
+        return mLendingDataPresenter.isViewAttached
+    }
+
     fun renderBannerList(banners: ArrayList<GqlLendingBannerData>) {
         mBannerPager = findViewById(com.tokopedia.instantloan.R.id.view_pager_banner)
 

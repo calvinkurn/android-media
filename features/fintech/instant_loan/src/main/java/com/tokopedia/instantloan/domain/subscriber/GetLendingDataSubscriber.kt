@@ -5,14 +5,14 @@ import com.tokopedia.instantloan.data.model.response.GqlLendingDataResponse
 import com.tokopedia.instantloan.view.contractor.InstantLoanLendingDataContractor
 import rx.Subscriber
 
-class GetLendingDataSubscriber(var presenter: InstantLoanLendingDataContractor.Presenter):
+class GetLendingDataSubscriber(var view: InstantLoanLendingDataContractor.View):
         Subscriber<GraphqlResponse>(){
 
     override fun onNext(graphqlResponse: GraphqlResponse?) {
-        if (presenter.isViewAttached()) {
+        if (view.isViewAttached()) {
             val gqlLendingDataResponse = graphqlResponse?.getData(GqlLendingDataResponse::class.java)
                     as GqlLendingDataResponse
-            presenter.getView().renderLendingData(gqlLendingDataResponse)
+            view.renderLendingData(gqlLendingDataResponse)
         }
     }
 

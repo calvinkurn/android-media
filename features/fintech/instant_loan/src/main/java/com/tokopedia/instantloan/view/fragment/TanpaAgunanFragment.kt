@@ -251,6 +251,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
     }
 
+    override fun isViewAttached(): Boolean {
+        return presenter.isViewAttached
+    }
+
     private fun prepareLoanPeriodTypeList() {
 
         loanPeriodTypeList = ArrayList()

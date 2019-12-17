@@ -6,7 +6,6 @@ data class GqlFilterDataResponse(
 
         @SerializedName("le_getfilter")
         var gqlFilterData: GqlFilterData
-
 )
 
 data class GqlFilterData(

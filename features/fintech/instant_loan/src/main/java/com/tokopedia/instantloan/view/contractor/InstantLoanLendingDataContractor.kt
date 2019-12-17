@@ -10,6 +10,7 @@ interface InstantLoanLendingDataContractor {
         fun renderLendingData(gqlLendingDataResponse: GqlLendingDataResponse)
         fun setUserOnGoingLoanStatus(status: Boolean, id: Int)
         fun IsUserLoggedIn(): Boolean
+        fun isViewAttached(): Boolean
     }
 
     interface Presenter : CustomerPresenter<View> {
