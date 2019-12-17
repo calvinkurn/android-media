@@ -552,7 +552,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         layoutVideoControl(container, videoControlComponentId)
         layoutLike(container, likeComponentId, videoControlComponentId)
         layoutChat(container, sendChatComponentId, likeComponentId)
-        layoutChatList(container, chatListComponentId, sendChatComponentId, likeComponentId)
+        layoutChatList(container, chatListComponentId, quickReplyComponentId, likeComponentId)
         layoutPinned(container, pinnedComponentId, chatListComponentId, likeComponentId)
         layoutStats(container, statsComponentId, pinnedComponentId)
         layoutPlayButton(container, playButtonComponentId)
