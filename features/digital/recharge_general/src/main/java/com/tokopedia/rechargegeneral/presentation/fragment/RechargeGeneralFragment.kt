@@ -50,7 +50,6 @@ import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGenera
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_digital_product.*
@@ -74,11 +73,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     lateinit var adapter: RechargeGeneralAdapter
 
     private var inputData: Array<Map<String, String>?>? = null
-    private var isLoadingRecent = false
-        set(value) {
-            field = value
-            if (value) loading_view.show() else loading_view.hide()
-        }
+    private var isLoading = false
+    set(value) {
+        field = value
+        if (value) loading_view.show() else loading_view.hide()
+    }
 
     private var menuId: Int = 0
     private var categoryId: Int = 0
@@ -87,7 +86,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var operatorCluster: String = ""
 
     private var favoriteNumbers: List<TopupBillsFavNumberItem> = listOf()
-    private var selectedFavoriteNumber: String = ""
+    private var clientNumber: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_digital_product, container, false)
@@ -110,7 +109,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
         arguments?.let {
             categoryId = it.getInt(EXTRA_PARAM_CATEGORY_ID, 0)
-            menuId = it.getInt(EXTRA_PARAM_MENU_ID)
+            menuId = it.getInt(EXTRA_PARAM_MENU_ID, 0)
+            operatorId = it.getInt(EXTRA_PARAM_OPERATOR_ID, 0)
+            productId = it.getString(EXTRA_PARAM_PRODUCT_ID, "")
         }
     }
 
@@ -126,14 +127,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     if (operatorId == 0) operatorId = getFirstOperatorId(it.data)
 
                     renderOperators(it.data)
-//                    if (isLoadingRecent) renderRecentTransactionOperator(it.data)
 //                    trackSearchResultCategories(it.data)
 
                     // For enquiry testing
 //                    sharedViewModel.recommendationItem.selectedId = TopupBillsRecommendation(operatorId = 18, productId = 291, clientNumber = "102111106111")
                 }
                 is Fail -> {
-                    isLoadingRecent = false
+                    isLoading = false
                     showGetListError(it.throwable)
                 }
             }
@@ -144,10 +144,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 is Success -> {
                     adapter.hideLoading()
                     renderInputAndProduct(it.data)
-//                    if (isLoadingRecent) renderRecentTransactionProduct(it.data)
                 }
                 is Fail -> {
-                    isLoadingRecent = false
+                    isLoading = false
                     showGetListError(it.throwable)
                 }
             }
@@ -158,9 +157,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 operatorId = it.operatorId
                 // TODO: Remove temporary enquiry params
                 productId = it.productId.toString()
-//                selectedFavoriteNumber = it.clientNumber
+//                clientNumber = it.clientNumber
 //                productId = "291"
-                selectedFavoriteNumber = "102111106111"
+                clientNumber = "102111106111"
                 renderOperators((viewModel.operatorCluster.value as Success).data)
             }
         })
@@ -218,6 +217,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun renderOperators(cluster: RechargeGeneralOperatorCluster) {
+        isLoading = true
         if (operatorId == 0) operatorId = getFirstOperatorId(cluster)
         if (operatorId > 0) {
             operatorCluster = getClusterNameOfOperatorId(cluster, operatorId)
@@ -307,9 +307,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     if (favoriteNumbers.isNotEmpty()) {
                         item.style = INPUT_TYPE_FAVORITE_NUMBER
                     }
-                    if (selectedFavoriteNumber.isNotEmpty()) {
-                        item.value = selectedFavoriteNumber
-                        selectedFavoriteNumber = ""
+                    if (clientNumber.isNotEmpty()) {
+                        item.value = clientNumber
+                        clientNumber = ""
                     }
                     itr.set(item)
                     break
@@ -332,6 +332,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
         val inputDataSize = productData.enquiryFields.size
         inputData = arrayOfNulls(inputDataSize)
+
+        isLoading = false
     }
 
     // Reset product id & input data
@@ -406,7 +408,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 startActivityForResult(
                         DigitalSearchNumberActivity.newInstance(this,
                                 ClientNumberType.TYPE_INPUT_NUMERIC,
-                                selectedFavoriteNumber,
+                                clientNumber,
                                 favoriteNumbers), REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         }
@@ -483,9 +485,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     return@forEachIndexed
                 }
             }
-            selectedFavoriteNumber = ""
+            clientNumber = ""
         } else { // Save selected number for later
-            selectedFavoriteNumber = number
+            clientNumber = number
         }
     }
 
@@ -559,7 +561,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
         favoriteNumbers = data.favNumberList
-        if (favoriteNumbers.isNotEmpty()) selectedFavoriteNumber = favoriteNumbers[0].clientNumber
+        if (favoriteNumbers.isNotEmpty() && clientNumber.isEmpty()) {
+            clientNumber = favoriteNumbers[0].clientNumber
+        }
     }
 
     override fun showEnquiryError(t: Throwable) {
@@ -668,11 +672,16 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
         val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
 
-        fun newInstance(categoryId: Int, menuId: Int): RechargeGeneralFragment {
+        fun newInstance(categoryId: Int,
+                        menuId: Int,
+                        operatorId: Int = 0,
+                        productId: String = ""): RechargeGeneralFragment {
             val fragment = RechargeGeneralFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
             bundle.putInt(EXTRA_PARAM_MENU_ID, menuId)
+            bundle.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
+            bundle.putString(EXTRA_PARAM_PRODUCT_ID, productId)
             fragment.arguments = bundle
             return fragment
         }

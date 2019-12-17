@@ -14,6 +14,7 @@
     <string name="path_home" translatable="false">/home</string>
     <string name="title_digital_subhomepage"><![CDATA[Top-up & Tagihan]]></string>
     <string name="path_voucher_game" translatable="false">/vouchergame</string>
+    <string name="path_general_template" translatable="false">/general</string>
 
     <string name="path_emoney_brizzi" translatable="false">/smartcard/emoneybrizzi</string>
     <string name="path_emoney" translatable="false">/smartcard/emoney</string>

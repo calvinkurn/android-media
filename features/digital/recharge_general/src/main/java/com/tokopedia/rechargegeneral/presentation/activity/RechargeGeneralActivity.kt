@@ -15,9 +15,11 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
-        val categoryId = bundle?.getInt(PARAM_CATEGORY_ID) ?: 0
-        val menuId = bundle?.getInt(PARAM_MENU_ID) ?: 0
-        return RechargeGeneralFragment.newInstance(categoryId, menuId)
+        val categoryId = bundle?.getString(PARAM_CATEGORY_ID)?.toIntOrNull() ?: 0
+        val menuId = bundle?.getString(PARAM_MENU_ID)?.toIntOrNull() ?: 0
+        val operatorId = bundle?.getString(PARAM_OPERATOR_ID)?.toIntOrNull() ?: 0
+        val productId = bundle?.getString(PARAM_PRODUCT_ID) ?: ""
+        return RechargeGeneralFragment.newInstance(categoryId, menuId, operatorId, productId)
     }
 
     override fun getComponent(): RechargeGeneralComponent {
@@ -30,11 +32,20 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
 
         val PARAM_CATEGORY_ID = "category_id"
         val PARAM_MENU_ID = "menu_id"
+        val PARAM_OPERATOR_ID = "operator_id"
+        val PARAM_PRODUCT_ID = "product_id"
+        val PARAM_CLIENT_NUMBER = "client_number"
 
-        fun newInstance(context: Context, categoryId: Int, menuId: Int): Intent {
+        fun newInstance(context: Context,
+                        categoryId: Int,
+                        menuId: Int,
+                        operatorId: Int = 0,
+                        productId: String = ""): Intent {
             val intent = Intent(context, RechargeGeneralActivity::class.java)
-            intent.putExtra(PARAM_CATEGORY_ID, categoryId)
-            intent.putExtra(PARAM_MENU_ID, menuId)
+            intent.putExtra(PARAM_CATEGORY_ID, categoryId.toString())
+            intent.putExtra(PARAM_MENU_ID, menuId.toString())
+            intent.putExtra(PARAM_OPERATOR_ID, operatorId.toString())
+            intent.putExtra(PARAM_PRODUCT_ID, productId)
             return intent
         }
     }

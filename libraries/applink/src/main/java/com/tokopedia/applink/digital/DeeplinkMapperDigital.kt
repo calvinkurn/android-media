@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_TELCO
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_GENERAL
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -61,7 +62,9 @@ object DeeplinkMapperDigital {
                     // TODO: Enable remote config
                     if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP))
                             ApplinkConsInternalDigital.VOUCHER_GAME else deeplink
-                    ApplinkConsInternalDigital.VOUCHER_GAME
+                }
+                TEMPLATE_ID_GENERAL -> {
+                    ApplinkConsInternalDigital.GENERAL_TEMPLATE
                 }
                 else -> deeplink
             }
