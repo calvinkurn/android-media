@@ -334,13 +334,17 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         powerMerchantTracking.sendScreenName(getScreenName());
     }
 
-    void onRefresh() {
+    public void onRefresh() {
         if (!swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(true);
         }
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
         footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
         sellerDashboardPresenter.refreshShopInfo();
+    }
+
+    public void onPushNotificationReceived() {
+        sellerDashboardPresenter.refreshNotificationOnly();
     }
 
     @Override
@@ -675,8 +679,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         setCounterIfNotEmpty(discussionLabelView, discussCount);
         setCounterIfNotEmpty(reviewLabelView, reviewCount);
-        onNotificationDataUpdatedListener.notificationDataUpdated();
 
+        //Notify DashboardActivity to update its drawer count
+        onNotificationDataUpdatedListener.notificationDataUpdated();
     }
 
     private void showSnackBarRetry(String message) {
