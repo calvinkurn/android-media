@@ -246,7 +246,7 @@ class ValidatorFragment: BaseDaggerFragment(){
 
                 override fun onFinish() {
                     isRunningTimer = false
-                    countDownText.hide()
+                    countDownText?.hide()
                     footer.show()
                 }
 
@@ -274,6 +274,7 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun onErrorOtpRequest(throwable: Throwable){
         dismissLoading()
+        inputVerifyCode.text.clear()
         view?.let {
             val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
             NetworkErrorHelper.showEmptyState(context, it, error) {
@@ -298,6 +299,9 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun onErrorOtpResendRequest(throwable: Throwable){
         dismissLoading()
+        inputVerifyCode.text.clear()
+        inputVerifyCode.requestFocus()
+        inputVerifyCode.requestFocusFromTouch()
         throwable.message?.let {
             analytics.trackFailedClickOkResendButton(it)
             analytics.trackFailedClickResendButton(it)
@@ -329,6 +333,8 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun onErrorOtpValidate(throwable: Throwable){
         dismissLoading()
+        inputVerifyCode.requestFocus()
+        inputVerifyCode.requestFocusFromTouch()
         activity?.let {
             throwable.message?.let { errorMessage ->
                 analytics.trackFailedClickActivationButton(errorMessage)
@@ -377,18 +383,18 @@ class ValidatorFragment: BaseDaggerFragment(){
     }
 
     private fun setRunningCountdownText(countdown: Int) {
-        countDownText.show()
+        countDownText?.show()
         footer.hide()
 
-        countDownText.setTextColor(MethodChecker.getColor(activity, R.color.font_black_disabled_38))
-        countDownText.isEnabled = false
+        countDownText?.setTextColor(MethodChecker.getColor(activity, R.color.font_black_disabled_38))
+        countDownText?.isEnabled = false
         val text = String.format("%s <b> %d %s</b> %s",
-                getString(R.string.please_wait_in),
+                activity?.getString(R.string.please_wait_in),
                 countdown,
-                getString(R.string.second),
-                getString(R.string.to_resend_otp))
+                activity?.getString(R.string.second),
+                activity?.getString(R.string.to_resend_otp))
 
-        countDownText.text = MethodChecker.fromHtml(text)
+        countDownText?.text = MethodChecker.fromHtml(text)
     }
 
     private fun isCountdownFinished(): Boolean {
@@ -421,7 +427,6 @@ class ValidatorFragment: BaseDaggerFragment(){
         const val COUNTDOWN_LENGTH = 30
         const val CACHE_VALIDATOR = "cacheValidator"
         const val HAS_TIMER = "hasTimer"
-        const val LIMIT_ERROR = 3
 
         fun createInstance(otpParams: OtpParams, modeListData: ModeListData): Fragment {
             val bundle = Bundle()
