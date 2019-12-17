@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.data.ticket
+package com.tokopedia.purchase_platform.common.data.model.request.helpticket
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

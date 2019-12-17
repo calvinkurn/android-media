@@ -1,5 +1,4 @@
-package com.tokopedia.transaction.common.sharedata
-
+package com.tokopedia.purchase_platform.common.sharedata
 
 const val RESULT_CODE_ERROR_TICKET = -5
 

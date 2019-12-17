@@ -1,10 +1,10 @@
-package com.tokopedia.transaction.common.usecase
+package com.tokopedia.purchase_platform.common.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketGqlResponse
-import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
-import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketText
+import com.tokopedia.purchase_platform.common.data.model.response.helpticket.SubmitHelpTicketGqlResponse
+import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketText
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
