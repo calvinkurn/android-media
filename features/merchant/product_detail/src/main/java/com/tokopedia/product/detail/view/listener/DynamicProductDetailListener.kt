@@ -38,15 +38,11 @@ interface DynamicProductDetailListener {
     fun onDiscussionClicked()
 
     /**
-     * ProductImageReviewViewHolder
+     * ProductReviewViewHolder
      */
     fun onSeeAllReviewClick()
     fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int)
     fun onReviewClick()
-
-    /**
-     * ProductMostHelpfulReviewViewHolder
-     */
     fun onImageHelpfulReviewClick(listOfImages: List<String>, position: Int, reviewId: String?)
 
     /**

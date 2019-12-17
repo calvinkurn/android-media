@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_24"
     android:visibility="gone"
-    android:background="@color/white"
+    android:background="@drawable/bg_bottom_shadow_top_line"
     tools:visibility="visible"
     android:id="@+id/base_info_and_description">
 

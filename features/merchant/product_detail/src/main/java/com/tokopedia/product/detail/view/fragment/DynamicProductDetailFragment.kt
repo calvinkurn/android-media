@@ -6,7 +6,6 @@ import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
@@ -26,7 +25,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.snackbar.Snackbar
@@ -134,7 +132,6 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
-import kotlinx.android.synthetic.main.partial_product_detail_header.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
@@ -174,8 +171,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     lateinit var dynamicProductDetailTracking: DynamicProductDetailTracking
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var tradeInParams: TradeInParams
-    private lateinit var tradeInBroadcastReceiver: TradeInBroadcastReceiver
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
@@ -204,6 +199,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private var trackerListName: String? = ""
     private var warehouseId: String? = null
     private var isTopdasLoaded: Boolean = false
+    private var deviceId: String = ""
 
     //View
     private lateinit var bottomSheet: ValuePropositionBottomSheet
@@ -240,8 +236,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         initBtnAction()
         initToolbar()
         initStickyLogin(view)
-        initTradein()
-
 
         if (isAffiliate) {
             actionButtonView.gone()
@@ -281,6 +275,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             isAffiliate = it.getBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, false)
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
         }
+        deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
         activity?.run {
             remoteConfig = FirebaseRemoteConfigImpl(this)
         }
@@ -292,13 +287,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         outState.putString(ProductDetailConstant.SAVED_NOTE, userInputNotes)
         outState.putInt(ProductDetailConstant.SAVED_QUANTITY, userInputQuantity)
         outState.putString(ProductDetailConstant.SAVED_VARIANT, userInputVariant)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        context?.let {
-            LocalBroadcastManager.getInstance(it).unregisterReceiver(tradeInBroadcastReceiver)
-        }
     }
 
     override fun onPause() {
@@ -388,10 +376,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     }
                     viewModel.getDynamicProductInfoP1?.let { productInfo ->
                         pdpHashMapUtil.updateDataP1(productInfo)
-                        if (productInfo.data.isTradeIn) {
-                            renderTradein(productInfo)
-                            tv_trade_in_pdp.tradeInReceiver.checkTradeIn(tradeInParams, false, getApplicationContext())
-                        }
                         // if when first time and the product is actually a variant product, then select the default variant
                         if (userInputVariant == null && productInfo.data.variant.isVariant && productInfo.data.variant.parentID != productId) {
                             userInputVariant = productId
@@ -424,6 +408,24 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     showToasterError(it.throwable.message ?: "")
                 }
             }
+        })
+
+        viewModel.tradeinResult.observe(this, Observer {
+            val tradeinResponse = it.validateTradeInPDP
+            if (!tradeinResponse.isEligible) {
+                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productTradeinMap)
+            } else {
+                pdpHashMapUtil.productTradeinMap?.run {
+                    pdpHashMapUtil.snapShotMap.shouldShowTradein = true
+                    description = if (tradeinResponse.usedPrice > 0) {
+                        getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+                    } else {
+                        getString(R.string.trade_in_exchange)
+                    }
+                }
+            }
+
+            trackProductView(tradeinResponse.isEligible)
         })
 
         viewModel.loadTopAdsProduct.observe(this, Observer {
@@ -477,7 +479,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             }
 
             if (delegateTradeInTracking) {
-                trackProductView(tradeInParams.isEligible == 1)
+                trackProductView(viewModel.tradeInParams.isEligible == 1)
                 delegateTradeInTracking = false
             }
 
@@ -492,11 +494,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 dynamicAdapter.removeDiscussionSection(pdpHashMapUtil.productDiscussionMap)
             }
 
-            if (it.imageReviews.isEmpty()) {
-                dynamicAdapter.removeImageReviewSection(pdpHashMapUtil.productImageReviewMap)
-            }
-
-            if (it.helpfulReviews.isEmpty()) {
+            if (it.helpfulReviews.isEmpty() && it.rating.totalRating == 0) {
                 dynamicAdapter.removeMostHelpfulReviewSection(pdpHashMapUtil.productMostHelpfulMap)
             }
 
@@ -861,7 +859,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
     /**
-     * ProductImageReviewViewHolder Listener
+     * ProductReviewViewHolder
      */
     override fun onSeeAllReviewClick() {
         context?.let {
@@ -900,9 +898,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         }
     }
 
-    /**
-     * ProductMostHelpfulReviewViewHolder
-     */
     override fun onImageHelpfulReviewClick(listOfImages: List<String>, position: Int, reviewId: String?) {
         productDetailTracking.eventClickReviewOnMostHelpfulReview(viewModel.getDynamicProductInfoP1?.basic?.getProductId()
                 ?: 0, reviewId)
@@ -1094,7 +1089,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     private fun onTradeinClicked() {
         goToNormalCheckout(TRADEIN_BUY)
-        if (tradeInParams.usedPrice > 0)
+        if (viewModel.tradeInParams.usedPrice > 0)
             productDetailTracking.trackTradeinAfterDiagnotics()
         else
             productDetailTracking.trackTradeinBeforeDiagnotics()
@@ -1346,7 +1341,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     private fun loadProductData(forceRefresh: Boolean = false) {
         if (productId != null || (productKey != null && shopDomain != null)) {
-            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh)
+            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId,
+                    deviceId = deviceId), forceRefresh)
         }
     }
 
@@ -1478,7 +1474,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
                 dynamicProductDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                        isElligible, tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment, deeplinkUrl)
+                        isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment, deeplinkUrl)
                 return
             }
         }
@@ -1497,24 +1493,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         bundleData.putBoolean(FtPDPInstallmentBottomSheet.KEY_PDP_IS_OFFICIAL, viewModel.shopInfo?.goldOS?.isOfficial == 1)
         pdpInstallmentBottomSheet.arguments = bundleData
         pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
-    }
-
-
-    private fun renderTradein(productInfoP1: DynamicProductInfoP1) {
-        tradeInParams = TradeInParams()
-        tradeInParams.categoryId = productInfoP1.basic.category.id.toIntOrZero()
-        tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
-        tradeInParams.userId = if (viewModel.userId.isNotEmpty())
-            viewModel.userId.toIntOrZero()
-        else
-            0
-        tradeInParams.setPrice(productInfoP1.data.price.value)
-        tradeInParams.productId = productInfoP1.basic.getProductId()
-        tradeInParams.shopId = productInfoP1.basic.getShopId()
-        tradeInParams.productName = productInfoP1.getProductName
-
-        tradeInParams.isPreorder = productInfoP1.data.preOrder.isPreOrderActive()
-        tradeInParams.isOnCampaign = productInfoP1.data.campaign.isActive
     }
 
     private fun initPerformanceMonitoring() {
@@ -1553,15 +1531,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOcsCheckoutType)
                     putExtra(ApplinkConst.Transaction.EXTRA_IS_LEASING, it.basic.isLeasing)
                 }
-                if (::tradeInParams.isInitialized) {
-                    intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
-                }
+                intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, viewModel.tradeInParams)
                 startActivityForResult(intent,
                         ProductDetailConstant.REQUEST_CODE_NORMAL_CHECKOUT)
             }
         }
     }
-
 
     private fun goToAtcExpress() {
         activity?.let {
@@ -1661,25 +1636,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private fun showToasterError(message: String) {
         context?.let {
             Toast.makeText(it, message, Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun initTradein() {
-        tradeInBroadcastReceiver = TradeInBroadcastReceiver()
-        tradeInBroadcastReceiver.setBroadcastListener { it, desc ->
-            if (it) {
-                if (tv_trade_in_promo != null) {
-                    pdpHashMapUtil.snapShotMap.shouldShowTradein = true
-                    pdpHashMapUtil.productTradeinMap?.run { description = desc }
-                    dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_TRADEIN)
-                }
-            } else {
-                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productTradeinMap)
-            }
-            trackProductView(it)
-        }
-        context?.let {
-            LocalBroadcastManager.getInstance(it).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
         }
     }
 

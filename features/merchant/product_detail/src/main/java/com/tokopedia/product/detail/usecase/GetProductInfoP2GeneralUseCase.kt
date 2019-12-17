@@ -220,9 +220,10 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         return productInfoP2
     }
 
-    fun ImageReviewGqlResponse.toImageReviewItemList(): List<ImageReviewItem> {
+    private fun ImageReviewGqlResponse.toImageReviewItemList(): List<ImageReviewItem> {
         val images = SparseArray<ImageReviewGqlResponse.Image>()
         val reviews = SparseArray<ImageReviewGqlResponse.Review>()
+        val hasNext = productReviewImageListQuery?.isHasNext ?: false
 
         productReviewImageListQuery?.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
         productReviewImageListQuery?.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
@@ -232,7 +233,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
             val review = reviews[it.reviewID]
             ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
                     review.reviewer?.fullName, image.uriThumbnail,
-                    image.uriLarge, review.rating)
+                    image.uriLarge, review.rating, hasNext, productReviewImageListQuery?.detail?.imageCount)
         } ?: listOf()
 
     }

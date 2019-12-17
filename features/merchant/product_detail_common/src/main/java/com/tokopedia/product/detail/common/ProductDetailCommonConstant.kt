@@ -4,6 +4,7 @@ import com.tokopedia.url.TokopediaUrl
 
 object ProductDetailCommonConstant{
     const val PARAM_PRODUCT_ID = "productID"
+    const val PARAMS = "params"
     const val PARAM_SHOP_ID = "shopID"
     const val PARAM_SHOP_DOMAIN = "shopDomain"
     const val PARAM_PRODUCT_KEY = "productKey"

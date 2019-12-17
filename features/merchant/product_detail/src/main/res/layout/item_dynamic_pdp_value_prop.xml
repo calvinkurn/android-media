@@ -5,10 +5,8 @@
     android:id="@+id/layout_value_proposition"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_5"
     android:paddingBottom="@dimen/dp_5"
+    android:background="@color/white"
     app:layout_constraintTop_toBottomOf="@+id/base_header"
     tools:visibility="visible">
 

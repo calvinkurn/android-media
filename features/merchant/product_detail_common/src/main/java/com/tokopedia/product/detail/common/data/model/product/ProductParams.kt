@@ -8,7 +8,8 @@ data class ProductParams(var productId: String? = null,
                          var productName: String? = null,
                          var productPrice: String? = null,
                          var productImage: String? = null,
-                         var warehouseId: String? = null) : Parcelable {
+                         var warehouseId: String? = null,
+                         var deviceId: String? = null) : Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),

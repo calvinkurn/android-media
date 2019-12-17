@@ -56,10 +56,6 @@ class DynamicProductDetailAdapter(
         clearElement(data)
     }
 
-    fun removeImageReviewSection(data: ProductImageReviewDataModel?) {
-        clearElement(data)
-    }
-
     fun removeMostHelpfulReviewSection(data: ProductMostHelpfulReviewDataModel?) {
         clearElement(data)
     }

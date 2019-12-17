@@ -31,9 +31,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productDiscussionMap: ProductDiscussionDataModel?
         get() = mapOfData[ProductDetailConstant.DISCUSSION] as? ProductDiscussionDataModel
 
-    val productImageReviewMap: ProductImageReviewDataModel?
-        get() = mapOfData[ProductDetailConstant.IMAGE_REVIEW] as? ProductImageReviewDataModel
-
     val productMostHelpfulMap: ProductMostHelpfulReviewDataModel?
         get() = mapOfData[ProductDetailConstant.MOST_HELPFUL_REVIEW] as? ProductMostHelpfulReviewDataModel
 
@@ -166,12 +163,10 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 latestTalk = it.latestTalk
             }
 
-            productImageReviewMap?.run {
-                productInfoP2General = it
-            }
-
             productMostHelpfulMap?.run {
                 listOfReviews = it.helpfulReviews
+                imageReviews = it.imageReviews
+                rating = it.rating
             }
 
             productMerchantVoucherMap?.run {
