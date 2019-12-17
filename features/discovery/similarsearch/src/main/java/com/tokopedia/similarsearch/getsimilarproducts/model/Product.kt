@@ -2,6 +2,9 @@ package com.tokopedia.similarsearch.getsimilarproducts.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.similarsearch.LABEL_GROUP_POSITION_CREDIBILITY
+import com.tokopedia.similarsearch.LABEL_GROUP_POSITION_OFFERS
+import com.tokopedia.similarsearch.LABEL_GROUP_POSITION_PROMO
 
 internal data class Product(
         @SerializedName("id")
@@ -35,6 +38,10 @@ internal data class Product(
         @SerializedName("badges")
         @Expose
         val badgeList: List<Badge> = listOf(),
+
+        @SerializedName("label_groups")
+        @Expose
+        val labelGroups: List<LabelGroups> = listOf(),
 
         @SerializedName("category_id")
         @Expose
@@ -74,8 +81,18 @@ internal data class Product(
 
         @SerializedName("min_order")
         @Expose
-        val minOrder: Int = 0
+        val minOrder: Int = 0,
+
+        @SerializedName("free_ongkir")
+        @Expose
+        val freeOngkir: FreeOngkirBadge = FreeOngkirBadge()
 ) {
 
         var position: Int = 0
+
+        fun getLabelPromo() = labelGroups.filter { it.position == LABEL_GROUP_POSITION_PROMO }.getOrNull(0)
+
+        fun getLabelCredibility() = labelGroups.filter { it.position == LABEL_GROUP_POSITION_CREDIBILITY }.getOrNull(0)
+
+        fun getLabelOffers() = labelGroups.filter { it.position == LABEL_GROUP_POSITION_OFFERS }.getOrNull(0)
 }

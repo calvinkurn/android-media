@@ -41,7 +41,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
 
         const val REQUEST_CODE_GO_TO_PRODUCT_DETAIL = 123
-        const val REQUEST_CODE_GO_TO_CHECKOUT = 124
     }
 
     private var similarSearchViewModel: SimilarSearchViewModel? = null

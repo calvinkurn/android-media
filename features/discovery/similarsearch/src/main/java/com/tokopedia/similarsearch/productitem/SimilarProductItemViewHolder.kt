@@ -2,6 +2,7 @@ package com.tokopedia.similarsearch.productitem
 
 import android.view.View
 import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.similarsearch.R
 import com.tokopedia.similarsearch.abstraction.BaseViewHolder
@@ -28,7 +29,11 @@ internal class SimilarProductItemViewHolder(
                 ratingCount = item.rating,
                 reviewCount = item.countReview,
                 isWishlisted = item.isWishlisted,
-                isWishlistVisible = true
+                isWishlistVisible = true,
+                labelOffers = createProductCardLabelOffers(item),
+                labelPromo = createProductCardLabelPromo(item),
+                labelCredibility = createProductCardLabelCredibility(item),
+                freeOngkir = ProductCardModel.FreeOngkir(item.freeOngkir.isActive, item.freeOngkir.imgUrl)
         )
 
         itemView.productCardView?.setProductModel(productCardModel)
@@ -61,6 +66,36 @@ internal class SimilarProductItemViewHolder(
         }
 
         return productCardModelShopBadgeList
+    }
+
+    private fun createProductCardLabelOffers(similarProductItem: Product): ProductCardModel.Label {
+        val labelOffers = similarProductItem.getLabelOffers()
+
+        if (labelOffers != null) {
+            return ProductCardModel.Label(labelOffers.title, labelOffers.type)
+        }
+
+        return ProductCardModel.Label()
+    }
+
+    private fun createProductCardLabelPromo(similarProductItem: Product): ProductCardModel.Label {
+        val labelPromo = similarProductItem.getLabelPromo()
+
+        if (labelPromo != null) {
+            return ProductCardModel.Label(labelPromo.title, labelPromo.type)
+        }
+
+        return ProductCardModel.Label()
+    }
+
+    private fun createProductCardLabelCredibility(similarProductItem: Product): ProductCardModel.Label {
+        val labelCredibility = similarProductItem.getLabelCredibility()
+
+        if (labelCredibility != null) {
+            return ProductCardModel.Label(labelCredibility.title, labelCredibility.type)
+        }
+
+        return ProductCardModel.Label()
     }
 
     override fun bind(payload: List<Any>) {
