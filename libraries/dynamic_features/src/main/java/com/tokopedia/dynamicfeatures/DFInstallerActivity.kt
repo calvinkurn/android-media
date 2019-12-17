@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -43,7 +44,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     private lateinit var manager: SplitInstallManager
 
     private lateinit var progressBar: ImageView
-    private lateinit var buttonDownload: Button
+    private lateinit var buttonDownload: UnifyButton
     private lateinit var imageView: ImageView
     private var isAutoDownload = false
     private var sessionId: Int? = null
