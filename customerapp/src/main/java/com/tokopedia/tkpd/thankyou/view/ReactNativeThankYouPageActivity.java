@@ -1,12 +1,10 @@
 package com.tokopedia.tkpd.thankyou.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.view.KeyEvent;
 
@@ -17,8 +15,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_wallet.balance.data.CacheUtil;
-import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
+import com.tokopedia.tkpd.utils.InAppReviewUtils;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
@@ -158,9 +155,15 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         FragmentManager manager = getSupportFragmentManager();
 
         if (isDigital() && manager != null) {
-            AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+            InAppReviewUtils.showInAppReview(this, new InAppReviewUtils.Callback() {
+                @Override
+                public void onFinish() {
+                    closeThankyouPage();
+                }
+            });
+            /*AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
             rating.setDialogDismissListener(this::closeThankyouPage);
-            rating.showDialog(manager, this);
+            rating.showDialog(manager, this);*/
         } else {
             closeThankyouPage();
         }

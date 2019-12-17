@@ -43,7 +43,6 @@ import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderV
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.digital.utils.InAppReviewUtils;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -337,17 +336,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                 case PaymentConstant.PAYMENT_SUCCESS:
                     if (getActivity() != null && getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
 
-                        InAppReviewUtils.showInAppReview(getActivity(), new InAppReviewUtils.Callback() {
-                            @Override
-                            public void onFinish() {
-                                if (getActivity() != null) {
-                                    getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
-                                    closeView();
-                                }
-                            }
-                        });
-
-                        /*FragmentManager manager = getActivity().getSupportFragmentManager();
+                        FragmentManager manager = getActivity().getSupportFragmentManager();
 
                         ((DigitalModuleRouter) getActivity().getApplicationContext())
                                 .showAppFeedbackRatingDialog(
@@ -359,7 +348,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                                                 closeView();
                                             }
                                         }
-                                );*/
+                                );
                     }
                     presenter.onPaymentSuccess(cartPassData.getCategoryId());
                     break;

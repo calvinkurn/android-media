@@ -1,4 +1,4 @@
-package com.tokopedia.digital.utils;
+package com.tokopedia.tkpd.utils;
 
 import android.app.Activity;
 
