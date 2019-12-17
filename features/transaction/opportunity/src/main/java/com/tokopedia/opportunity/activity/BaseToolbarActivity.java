@@ -74,7 +74,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
     }
 
     protected int getThemeActivity() {
-        return R.style.Theme_Tokopedia3;
+        return com.tokopedia.core2.R.style.Theme_Tokopedia3;
     }
 
     protected void setToolbarColorWhite() {
@@ -84,8 +84,8 @@ abstract class BaseToolbarActivity extends BaseActivity {
         int textColor = ContextCompat.getColor(this, TEXT_COLOR_BACKGROUND_WHITE);
         toolbar.setTitleTextColor(textColor);
         toolbar.setSubtitleTextColor(textColor);
-        int height = dpToPx(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_height_material));
-        int width = dpToPx(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material));
+        int height = dpToPx(getResources().getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_button_min_height_material));
+        int width = dpToPx(getResources().getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_button_min_width_material));
         toolbar.setOverflowIcon(resize(ContextCompat.getDrawable(this, com.tokopedia.core2.R.drawable.overflow_btn), width, height));
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, com.tokopedia.design.R.color.white)));
         getSupportActionBar().setHomeButtonEnabled(true);

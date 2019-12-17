@@ -13,9 +13,6 @@ import android.widget.ProgressBar;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -90,7 +87,7 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
         descriptionView = (DescriptionView) view.findViewById(R.id.view_desc);
         shopInfoView = (ShopInfoView) view.findViewById(R.id.view_shop_info);
         progressBar = (ProgressBar) view.findViewById(R.id.view_progress);
-        freeReturnView = (FreeReturnView) view.findViewById(R.id.view_free_return);
+        freeReturnView = (FreeReturnView) view.findViewById(R.id.view_free_return_opportunity);
         return view;
 
 

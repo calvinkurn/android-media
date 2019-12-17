@@ -22,7 +22,7 @@
             android:textStyle="bold" />
 
         <com.tokopedia.opportunity.customview.DescriptionTextView
-            android:id="@id/tv_desc"
+            android:id="@+id/tv_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoLink="all"
@@ -34,7 +34,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@id/iv_toggle"
+        android:id="@+id/iv_toggle"
         android:layout_width="@dimen/tab_height"
         android:layout_height="@dimen/tab_height"
         android:layout_gravity="center"

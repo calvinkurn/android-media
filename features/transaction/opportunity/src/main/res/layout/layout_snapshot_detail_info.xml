@@ -13,7 +13,7 @@
         android:paddingBottom="@dimen/dp_20">
 
         <TableRow
-            android:id="@id/tr_preorder"
+            android:id="@+id/tr_preorder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal">
@@ -29,7 +29,7 @@
                 android:textSize="@dimen/fonts" />
 
             <TextView
-                android:id="@id/tv_preorder"
+                android:id="@+id/tv_preorder"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight=".50"
@@ -56,7 +56,7 @@
                 android:textSize="@dimen/fonts" />
 
             <TextView
-                android:id="@id/tv_minimum"
+                android:id="@+id/tv_minimum"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
@@ -82,7 +82,7 @@
                 android:textSize="@dimen/fonts" />
 
             <TextView
-                android:id="@id/tv_weight"
+                android:id="@+id/tv_weight"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
@@ -108,7 +108,7 @@
                 android:textSize="@dimen/fonts" />
 
             <TextView
-                android:id="@id/tv_insurance"
+                android:id="@+id/tv_insurance"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
@@ -134,7 +134,7 @@
                 android:textSize="@dimen/fonts" />
 
             <TextView
-                android:id="@id/tv_condition"
+                android:id="@+id/tv_condition"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
