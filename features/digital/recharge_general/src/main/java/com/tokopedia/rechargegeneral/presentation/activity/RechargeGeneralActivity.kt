@@ -15,7 +15,7 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
-        val categoryId = bundle?.getString(PARAM_CATEGORY_ID) ?: ""
+        val categoryId = bundle?.getInt(PARAM_CATEGORY_ID) ?: 0
         val menuId = bundle?.getInt(PARAM_MENU_ID) ?: 0
         return RechargeGeneralFragment.newInstance(categoryId, menuId)
     }
@@ -31,7 +31,7 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
         val PARAM_CATEGORY_ID = "category_id"
         val PARAM_MENU_ID = "menu_id"
 
-        fun newInstance(context: Context, categoryId: String, menuId: Int): Intent {
+        fun newInstance(context: Context, categoryId: Int, menuId: Int): Intent {
             val intent = Intent(context, RechargeGeneralActivity::class.java)
             intent.putExtra(PARAM_CATEGORY_ID, categoryId)
             intent.putExtra(PARAM_MENU_ID, menuId)

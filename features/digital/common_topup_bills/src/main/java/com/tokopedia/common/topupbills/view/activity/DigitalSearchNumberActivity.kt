@@ -1,19 +1,19 @@
-package com.tokopedia.topupbills.telco.view.activity
+package com.tokopedia.common.topupbills.view.activity
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import com.tokopedia.topupbills.R
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment
+import com.tokopedia.common.topupbills.view.fragment.DigitalSearchNumberFragment
 import java.util.*
 
 /**
  * @author rizkyfadillah on 10/4/2017.
  */
 
-class DigitalSearchNumberActivity : BaseTelcoActivity(), DigitalSearchNumberFragment.OnClientNumberClickListener {
+class DigitalSearchNumberActivity : BaseSimpleActivity() {
 
     private lateinit var categoryId: String
     private lateinit var clientNumberType: String
@@ -32,21 +32,13 @@ class DigitalSearchNumberActivity : BaseTelcoActivity(), DigitalSearchNumberFrag
             this.numberList = extras.getParcelableArrayList(EXTRA_NUMBER_LIST)
         }
         super.onCreate(savedInstanceState)
-        updateTitle(getString(R.string.digital_title_fav_number))
+//        updateTitle(getString(R.string.digital_title_fav_number))
+        updateTitle("Teeeest")
     }
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {
         return DigitalSearchNumberFragment
                 .newInstance(clientNumberType, number, numberList)
-    }
-
-    override fun onClientNumberClicked(orderClientNumber: TopupBillsFavNumberItem,
-                                       inputNumberActionType: DigitalSearchNumberFragment.InputNumberActionType) {
-        val intent = Intent()
-        intent.putExtra(EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        intent.putExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType.ordinal)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
     }
 
     companion object {

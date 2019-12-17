@@ -33,6 +33,7 @@ class TopupBillsEnquiryData @JvmOverloads constructor(@NotNull context: Context,
         field = value
         with (rv_enquiry_data.adapter as TopupBillsEnquiryDataAdapter) {
             items = value.attributes.mainInfoList
+            setupDecoration(value.attributes.mainInfoList)
             notifyDataSetChanged()
         }
     }
@@ -47,12 +48,16 @@ class TopupBillsEnquiryData @JvmOverloads constructor(@NotNull context: Context,
 
         val enquiryDataItems = enquiryData.attributes.mainInfoList
         rv_enquiry_data.adapter = TopupBillsEnquiryDataAdapter(enquiryDataItems)
+        setupDecoration(enquiryDataItems)
+    }
+
+    private fun setupDecoration(data: List<TopupBillsEnquiryMainInfo>) {
         (rv_enquiry_data as VerticalRecyclerView).clearItemDecoration()
         rv_enquiry_data.addItemDecoration(object: RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
                 // Add offset to all items except the last one
-                if (parent.getChildAdapterPosition(view) < enquiryDataItems.size - 1) {
+                if (parent.getChildAdapterPosition(view) < data.size - 1) {
                     context.resources.getDimension(ITEM_DECORATOR_SIZE).toInt().let { dimen -> outRect.bottom = dimen }
                 }
             }
@@ -85,6 +90,6 @@ class TopupBillsEnquiryData @JvmOverloads constructor(@NotNull context: Context,
     }
 
     companion object {
-        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
+        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_4
     }
 }

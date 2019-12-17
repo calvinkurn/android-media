@@ -20,7 +20,7 @@ class RechargeGeneralProductItemData(
         @SerializedName("dataCollections")
         @Expose
         var dataCollections: List<CatalogProductData.DataCollection> = listOf(),
-        var value: String = ""
+        var selectedId: String = ""
 
 ) : Visitable<RechargeGeneralAdapterFactory> {
         override fun type(typeFactory: RechargeGeneralAdapterFactory) = typeFactory.type(this)

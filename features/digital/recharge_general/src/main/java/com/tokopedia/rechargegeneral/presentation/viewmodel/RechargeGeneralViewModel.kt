@@ -26,18 +26,18 @@ class RechargeGeneralViewModel  @Inject constructor(
 //    fun getOperatorCluster(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false, operatorId: Int? = null) {
 //        if (::operatorClusterQuery.isInitialized && ::productListQuery.isInitialized) {
 //            launch {
-//                operatorCluster.value = withContext(Dispatchers.Default) {
+//                operatorCluster.selectedId = withContext(Dispatchers.Default) {
 //                    getDigitalProductUseCase.getOperatorData(operatorClusterQuery, mapParams, isLoadFromCloud)
 //                }
 //
 //                    // Retrieve products based on operatorId (if available) or first operator in response
-//                    if (operatorCluster.value is Success) {
-//                        val selectedOperator: Int? = operatorId ?: getFirstOperatorId((operatorCluster.value as Success).data)
+//                    if (operatorCluster.selectedId is Success) {
+//                        val selectedOperator: Int? = operatorId ?: getFirstOperatorId((operatorCluster.selectedId as Success).data)
 //                        if (selectedOperator != null && mapParams.containsKey(PARAM_MENU_ID)) {
 //                            val productListParams = createParams(mapParams[PARAM_MENU_ID] as Int, selectedOperator)
-//                            productList.value = getDigitalProductUseCase.getProductList(productListQuery, productListParams, isLoadFromCloud)
+//                            productList.selectedId = getDigitalProductUseCase.getProductList(productListQuery, productListParams, isLoadFromCloud)
 //                        } else {
-//                            productList.value = Fail(MessageErrorException("No default operator provided"))
+//                            productList.selectedId = Fail(MessageErrorException("No default operator provided"))
 //                    }
 //                }
 //            }

@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.data
+package com.tokopedia.common.topupbills.data
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -6,7 +6,7 @@ import android.text.TextUtils
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class TelcoFavNumber(
+class TopupBillsFavNumberItem(
 
         @SerializedName("client_number")
         @Expose
@@ -46,12 +46,12 @@ class TelcoFavNumber(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<TelcoFavNumber> {
-        override fun createFromParcel(parcel: Parcel): TelcoFavNumber {
-            return TelcoFavNumber(parcel)
+    companion object CREATOR : Parcelable.Creator<TopupBillsFavNumberItem> {
+        override fun createFromParcel(parcel: Parcel): TopupBillsFavNumberItem {
+            return TopupBillsFavNumberItem(parcel)
         }
 
-        override fun newArray(size: Int): Array<TelcoFavNumber?> {
+        override fun newArray(size: Int): Array<TopupBillsFavNumberItem?> {
             return arrayOfNulls(size)
         }
     }

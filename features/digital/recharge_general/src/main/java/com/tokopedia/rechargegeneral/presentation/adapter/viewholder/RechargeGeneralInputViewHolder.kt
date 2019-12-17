@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
+import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment.Companion.INPUT_TYPE_FAVORITE_NUMBER
 import java.util.regex.Pattern
 
 class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListener) : AbstractViewHolder<RechargeGeneralProductInput>(view) {
@@ -14,7 +15,14 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
         inputView.resetState()
         inputView.setLabel(enquiryData.text)
         inputView.setHint("")
-        inputView.setInputType(enquiryData.style)
+        if (enquiryData.style == INPUT_TYPE_FAVORITE_NUMBER) {
+//        if (enquiryData.name == "client_number") {
+            inputView.isCustomInput = true
+        } else {
+            inputView.isCustomInput = false
+            inputView.setInputType(enquiryData.style)
+        }
+
         inputView.setActionListener(object : TopupBillsInputFieldWidget.ActionListener{
             override fun onFinishInput(input: String) {
                 if (input.isEmpty() || verifyField(enquiryData.validations, input)) {
@@ -25,8 +33,9 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
                 }
             }
 
+            // Setup favorite number input
             override fun onCustomInputClick() {
-
+                listener.onCustomInputClick(inputView, adapterPosition)
             }
         })
 

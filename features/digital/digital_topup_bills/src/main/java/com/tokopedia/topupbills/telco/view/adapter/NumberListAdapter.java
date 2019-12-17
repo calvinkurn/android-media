@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.topupbills.R;
-import com.tokopedia.topupbills.telco.data.TelcoFavNumber;
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem;
 
 import java.util.List;
 
@@ -17,15 +17,15 @@ import java.util.List;
 
 public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.ItemHolder> {
 
-    private List<TelcoFavNumber> clientNumbers;
+    private List<TopupBillsFavNumberItem> clientNumbers;
 
     private OnClientNumberClickListener callback;
 
     public interface OnClientNumberClickListener {
-        void onClientNumberClicked(TelcoFavNumber orderClientNumber);
+        void onClientNumberClicked(TopupBillsFavNumberItem orderClientNumber);
     }
 
-    public NumberListAdapter(OnClientNumberClickListener callback, List<TelcoFavNumber> clientNumbers) {
+    public NumberListAdapter(OnClientNumberClickListener callback, List<TopupBillsFavNumberItem> clientNumbers) {
         this.callback = callback;
         this.clientNumbers = clientNumbers;
     }
@@ -47,11 +47,11 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
         return clientNumbers.size();
     }
 
-    public void setNumbers(List<TelcoFavNumber> clientNumbers) {
+    public void setNumbers(List<TopupBillsFavNumberItem> clientNumbers) {
         this.clientNumbers = clientNumbers;
     }
 
-    public List<TelcoFavNumber> getClientNumbers() {
+    public List<TopupBillsFavNumberItem> getClientNumbers() {
         return clientNumbers;
     }
 
@@ -59,7 +59,7 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
         private TextView number;
         private TextView name;
 
-        private TelcoFavNumber orderClientNumber;
+        private TopupBillsFavNumberItem orderClientNumber;
 
         ItemHolder(View itemView) {
             super(itemView);
@@ -68,7 +68,7 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
             itemView.setOnClickListener(this);
         }
 
-        public void bind(TelcoFavNumber orderClientNumber) {
+        public void bind(TopupBillsFavNumberItem orderClientNumber) {
             this.orderClientNumber = orderClientNumber;
             number.setText(orderClientNumber.getClientNumber());
             if (orderClientNumber.getLabel() != null) {

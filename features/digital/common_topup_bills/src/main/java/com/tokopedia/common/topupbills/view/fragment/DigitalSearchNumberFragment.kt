@@ -1,40 +1,36 @@
-package com.tokopedia.topupbills.telco.view.fragment
+package com.tokopedia.common.topupbills.view.fragment
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.provider.ContactsContract
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.DigitalTopupAnalytics
-import com.tokopedia.topupbills.covertContactUriToContactData
+import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.topupbills.telco.view.adapter.NumberListAdapter
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
-import kotlinx.android.synthetic.main.fragment_search_number_telco.*
+import com.tokopedia.common.topupbills.view.activity.DigitalSearchNumberActivity
+import com.tokopedia.common.topupbills.view.adapter.NumberListAdapter
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
+import com.tokopedia.design.text.SearchInputView
+import kotlinx.android.synthetic.main.fragment_search_number.*
 import java.util.*
-import javax.inject.Inject
 
-class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnClientNumberClickListener {
+class DigitalSearchNumberFragment : BaseDaggerFragment(),
+        NumberListAdapter.OnClientNumberClickListener,
+        SearchInputView.Listener,
+        SearchInputView.FocusChangeListener,
+        SearchInputView.ResetListener {
 
     private lateinit var callback: OnClientNumberClickListener
     private lateinit var numberListAdapter: NumberListAdapter
@@ -44,17 +40,17 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     private var number: String = ""
     private lateinit var inputNumberActionType: InputNumberActionType
 
-    @Inject
-    lateinit var permissionCheckerHelper: PermissionCheckerHelper
-    @Inject
-    lateinit var topupAnalytics: DigitalTopupAnalytics
+//    @Inject
+//    lateinit var permissionCheckerHelper: PermissionCheckerHelper
+//    @Inject
+//    lateinit var topupAnalytics: DigitalTopupAnalytics
 
 
     override fun initInjector() {
-        activity?.let {
-            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
-            digitalTopupComponent.inject(this)
-        }
+//        activity?.let {
+//            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
+//            digitalTopupComponent.inject(this)
+//        }
     }
 
     override fun getScreenName(): String? {
@@ -67,15 +63,15 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
 
     fun setupArguments(arguments: Bundle?) {
         arguments?.run {
-            clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER)
-            number = arguments.getString(ARG_PARAM_EXTRA_NUMBER)
+            clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
+            number = arguments.getString(ARG_PARAM_EXTRA_NUMBER, "")
             clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val view = inflater.inflate(R.layout.fragment_search_number_telco, container, false)
+        val view = inflater.inflate(R.layout.fragment_search_number, container, false)
         return view
     }
 
@@ -83,7 +79,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         super.onViewCreated(view, savedInstanceState)
         initView()
         setViewListener()
-        editTextSearchNumber.requestFocus()
+        siv_search_number.searchTextView.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
     }
 
@@ -93,23 +89,16 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     }
 
     private fun initView() {
+//        btnContactPicker.setOnClickListener {
+//            inputNumberActionType = InputNumberActionType.CONTACT
+//            navigateContact()
+//        }
         setClientNumberInputType()
-
-        if (TextUtils.isEmpty(number)) {
-            btnClearNumber.visibility = View.GONE
-        }
-
-        btnClearNumber.setOnClickListener {
-            topupAnalytics.eventClearInputNumber()
-            editTextSearchNumber.setText("")
-        }
-        btnContactPicker.setOnClickListener {
-            inputNumberActionType = InputNumberActionType.CONTACT
-            navigateContact()
-        }
-
-        editTextSearchNumber.setText(number)
-        editTextSearchNumber.setSelection(number.length)
+        siv_search_number.searchTextView.setText(number)
+        siv_search_number.searchTextView.setSelection(number.length)
+        siv_search_number.setListener(this)
+        siv_search_number.setFocusChangeListener(this)
+        siv_search_number.setResetListener(this)
 
         numberListAdapter = NumberListAdapter(this, clientNumbers)
         rvNumberList.layoutManager = LinearLayoutManager(activity)
@@ -119,38 +108,15 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     private fun setClientNumberInputType() {
         if (clientNumberType.equals(ClientNumberType.TYPE_INPUT_TEL, ignoreCase = true) ||
                 clientNumberType.equals(ClientNumberType.TYPE_INPUT_NUMERIC, ignoreCase = true)) {
-            editTextSearchNumber.inputType = InputType.TYPE_CLASS_NUMBER
-            editTextSearchNumber.keyListener = DigitsKeyListener.getInstance("0123456789")
+            siv_search_number.searchTextView.inputType = InputType.TYPE_CLASS_NUMBER
+            siv_search_number.searchTextView.keyListener = DigitsKeyListener.getInstance("0123456789")
         } else {
-            editTextSearchNumber.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+            siv_search_number.searchTextView.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         }
     }
 
     private fun setViewListener() {
-        editTextSearchNumber.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length > 0) {
-                    btnClearNumber.visibility = View.VISIBLE
-                } else {
-                    btnClearNumber.visibility = View.GONE
-                }
-                filterData(s.toString())
-            }
-
-            override fun afterTextChanged(s: Editable) {
-
-            }
-        })
-
-        editTextSearchNumber.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) inputNumberActionType = InputNumberActionType.MANUAL
-        }
-
-        editTextSearchNumber.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, keyEvent ->
+        siv_search_number.searchTextView.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 var orderClientNumber = findNumber(textView.text.toString(), numberListAdapter.clientNumbers)
                 if (orderClientNumber != null && orderClientNumber.isFavorite) {
@@ -203,67 +169,90 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         return foundClientNumber
     }
 
+    override fun onSearchSubmitted(text: String?) {
+
+    }
+
+    override fun onSearchTextChanged(text: String?) {
+        text?.let { filterData(it) }
+    }
+
+    override fun onFocusChanged(hasFocus: Boolean) {
+        if (hasFocus) inputNumberActionType = InputNumberActionType.MANUAL
+    }
+
+    override fun onSearchReset() {
+//        topupAnalytics.eventClearInputNumber()
+    }
+
     override fun onClientNumberClicked(orderClientNumber: TopupBillsFavNumberItem) {
         if (!::inputNumberActionType.isInitialized || inputNumberActionType != InputNumberActionType.CONTACT) {
             val checkNumber = findNumber(orderClientNumber.clientNumber, numberListAdapter.clientNumbers)
-            if (checkNumber != null && checkNumber.isFavorite) {
-                inputNumberActionType = InputNumberActionType.FAVORITE
+            inputNumberActionType = if (checkNumber != null && checkNumber.isFavorite) {
+                InputNumberActionType.FAVORITE
             } else {
-                inputNumberActionType = InputNumberActionType.MANUAL
+                InputNumberActionType.MANUAL
             }
         }
-        callback.onClientNumberClicked(orderClientNumber, inputNumberActionType)
-    }
 
-    fun navigateContact() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            activity?.let {
-                permissionCheckerHelper.checkPermission(it,
-                        PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
-                        object : PermissionCheckerHelper.PermissionCheckListener {
-                            override fun onPermissionDenied(permissionText: String) {
-                                permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                            }
-
-                            override fun onNeverAskAgain(permissionText: String) {
-                                permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                            }
-
-                            override fun onPermissionGranted() {
-                                openContactPicker()
-                            }
-                        }, "")
-            }
-        } else {
-            openContactPicker()
+        val intent = Intent()
+        intent.putExtra(DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
+        intent.putExtra(DigitalSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType.ordinal)
+        activity?.run {
+            setResult(Activity.RESULT_OK, intent)
+            finish()
         }
     }
 
-    fun openContactPicker() {
-        val contactPickerIntent = Intent(
-                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
-        try {
-            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
-        } catch (e: ActivityNotFoundException) {
-            NetworkErrorHelper.showSnackbar(activity,
-                    getString(R.string.error_message_contact_not_found))
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        data?.let {
-            if (resultCode == Activity.RESULT_OK) {
-                if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
-                    activity?.let {
-                        val contactURI = data.data
-                        val contact = contactURI.covertContactUriToContactData(it.contentResolver)
-                        editTextSearchNumber.setText(contact.contactNumber)
-                    }
-                }
-            }
-        }
-    }
+//    fun navigateContact() {
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+//            activity?.let {
+//                permissionCheckerHelper.checkPermission(it,
+//                        PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
+//                        object : PermissionCheckerHelper.PermissionCheckListener {
+//                            override fun onPermissionDenied(permissionText: String) {
+//                                permissionCheckerHelper.onPermissionDenied(it, permissionText)
+//                            }
+//
+//                            override fun onNeverAskAgain(permissionText: String) {
+//                                permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+//                            }
+//
+//                            override fun onPermissionGranted() {
+//                                openContactPicker()
+//                            }
+//                        }, "")
+//            }
+//        } else {
+//            openContactPicker()
+//        }
+//    }
+//
+//    fun openContactPicker() {
+//        val contactPickerIntent = Intent(
+//                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+//        try {
+//            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
+//        } catch (e: ActivityNotFoundException) {
+//            NetworkErrorHelper.showSnackbar(activity,
+//                    getString(R.string.error_message_contact_not_found))
+//        }
+//    }
+//
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        data?.let {
+//            if (resultCode == Activity.RESULT_OK) {
+//                if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
+//                    activity?.let {
+//                        val contactURI = data.data
+//                        val contact = contactURI.covertContactUriToContactData(it.contentResolver)
+//                        editTextSearchNumber.setText(contact.contactNumber)
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     enum class InputNumberActionType {
         MANUAL, CONTACT, FAVORITE, LATEST_TRANSACTION, CONTACT_HOMEPAGE

@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
@@ -218,6 +219,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
     }
 
+    override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
+
+    }
+
     override fun showEnquiryError(t: Throwable) {
         toggleEnquiryLoadingBar(false)
         isEnquired = false
@@ -226,6 +231,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun showMenuDetailError(t: Throwable) {
+
+    }
+
+    override fun showFavoriteNumbersError(t: Throwable) {
 
     }
 

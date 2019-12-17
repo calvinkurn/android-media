@@ -22,7 +22,7 @@ class RechargeGeneralProductInput (
         val name: String = "",
         @SerializedName("style")
         @Expose
-        val style: String = "",
+        var style: String = "",
         @SerializedName("text")
         @Expose
         val text: String = "",

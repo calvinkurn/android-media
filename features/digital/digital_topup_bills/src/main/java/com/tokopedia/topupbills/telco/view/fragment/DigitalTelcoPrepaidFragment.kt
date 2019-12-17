@@ -14,6 +14,8 @@ import android.widget.RelativeLayout
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberData
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -56,7 +58,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var clientNumber = ""
 
-    private val favNumberList = mutableListOf<TelcoFavNumber>()
+    private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
     private var operatorData: TelcoCustomComponentData =
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
     private var selectedProductId = ""
@@ -159,7 +161,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 com.tokopedia.common.topupbills.R.raw.query_menu_detail),
                 this::onLoadingMenuDetail, this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
         catalogMenuDetailViewModel.getFavNumbersPrepaid(GraphqlHelper.loadRawString(resources,
-                R.raw.query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
+                com.tokopedia.common.topupbills.R.raw.query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
     }
 
     private fun getDataFromBundle(savedInstanceState: Bundle?) {
@@ -351,7 +353,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber, inputNumberActionTypeIndex: Int) {
+    override fun handleCallbackSearchNumber(orderClientNumber: TopupBillsFavNumberItem, inputNumberActionTypeIndex: Int) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
 
         if (orderClientNumber.productId.isNotEmpty() && orderClientNumber.categoryId.isNotEmpty()) {
@@ -381,7 +383,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun setFavNumbers(data: TelcoRechargeFavNumberData) {
+    override fun setFavNumbers(data: TopupBillsFavNumberData) {
         val favNumbers = data.favNumber.favNumberList
         favNumberList.addAll(favNumbers)
         if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {

@@ -2,6 +2,7 @@ package com.tokopedia.rechargegeneral.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.data.product.CatalogProductData
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductItemData
@@ -21,12 +22,15 @@ class RechargeGeneralProductSelectViewHolder(val view: View, val listener: OnInp
             }
 
             override fun onCustomInputClick() {
-                listener.onCustomInputClick(inputView, mapProducts(data.dataCollections), adapterPosition)
+                listener.onCustomInputClick(inputView, adapterPosition, mapProducts(data.dataCollections))
             }
         })
 
-        // Set recent item data
-        if (data.value.isNotEmpty()) inputView.setInputText(data.value)
+        // Set recent/applink item data
+        if (data.selectedId.isNotEmpty()) {
+            val product = getProductFromId(data.dataCollections, data.selectedId)
+            product?.let { inputView.setInputText(it.attributes.desc) }
+        }
     }
 
     private fun mapProducts(data: List<CatalogProductData.DataCollection>): List<RechargeGeneralProductSelectData> {
@@ -45,6 +49,15 @@ class RechargeGeneralProductSelectViewHolder(val view: View, val listener: OnInp
             }
         }
         return productList
+    }
+
+    private fun getProductFromId(data: List<CatalogProductData.DataCollection>, id: String): CatalogProduct? {
+        data.forEach { collection ->
+            collection.products.forEach { product ->
+                if (product.id == id) return product
+            }
+        }
+        return null
     }
 
 }

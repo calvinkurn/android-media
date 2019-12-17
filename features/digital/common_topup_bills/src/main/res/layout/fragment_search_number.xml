@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <com.tokopedia.common_digital.common.widget.DigitalSearchInputView
+        android:id="@+id/siv_search_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="#f3f4f5"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvNumberList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        tools:listitem="@layout/item_autocomplete_fav_num" />
+
+</LinearLayout>

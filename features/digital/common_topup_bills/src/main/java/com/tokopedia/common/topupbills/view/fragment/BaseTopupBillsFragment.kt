@@ -11,8 +11,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
@@ -54,6 +54,14 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
                 }
             }
         })
+        topupBillsViewModel.favNumberData.observe(this, Observer {
+            it.run {
+                when (it) {
+                    is Success -> processFavoriteNumbers(it.data)
+                    is Fail -> showFavoriteNumbersError(it.throwable)
+                }
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -79,13 +87,22 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
                 topupBillsViewModel.createMenuDetailParams(menuId))
     }
 
+    fun getFavoriteNumbers(categoryId: Int) {
+        topupBillsViewModel.getFavoriteNumbers(GraphqlHelper.loadRawString(resources, R.raw.query_fav_number_digital),
+                topupBillsViewModel.createFavoriteNumbersParams(categoryId))
+    }
+
     abstract fun processEnquiry(data: TopupBillsEnquiryData)
 
     abstract fun processMenuDetail(data: TopupBillsMenuDetail)
 
+    abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
+
     abstract fun showEnquiryError(t: Throwable)
 
     abstract fun showMenuDetailError(t: Throwable)
+
+    abstract fun showFavoriteNumbersError(t: Throwable)
 
     fun processToCart() {
         if (userSession.isLoggedIn) {

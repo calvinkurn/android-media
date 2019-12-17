@@ -2,10 +2,7 @@ package com.tokopedia.common.topupbills.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
-import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
-import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -28,6 +25,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     val enquiryData = MutableLiveData<Result<TopupBillsEnquiryData>>()
     val menuDetailData = MutableLiveData<Result<TopupBillsMenuDetail>>()
+    val favNumberData = MutableLiveData<Result<TopupBillsFavNumber>>()
 
     fun getEnquiry(rawQuery: String, mapParam: List<TopupBillsEnquiryQuery>) {
         val params = mapOf(PARAM_FIELDS to mapParam)
@@ -61,6 +59,19 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
+    fun getFavoriteNumbers(rawQuery: String, mapParam: Map<String, Any>) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsFavNumberData::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TopupBillsFavNumberData>()
+
+            favNumberData.value = Success(data.favNumber)
+        }) {
+            favNumberData.value = Fail(it)
+        }
+    }
+
     fun createEnquiryParams(operatorId: String, productId: String, inputData: Array<Map<String, String>>): List<TopupBillsEnquiryQuery> {
         val enquiryParams = mutableListOf<TopupBillsEnquiryQuery>()
         // Hardcode source type field, temporary?
@@ -80,10 +91,15 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         return mapOf(PARAM_MENU_ID to menuId)
     }
 
+    fun createFavoriteNumbersParams(categoryId: Int): Map<String, Any> {
+        return mapOf(PARAM_CATEGORY_ID to categoryId)
+    }
+
     companion object {
         const val PARAM_FIELDS = "fields"
 
         const val PARAM_MENU_ID = "menuID"
+        const val PARAM_CATEGORY_ID = "categoryID"
 
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"
