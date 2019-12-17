@@ -28,6 +28,11 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
         return inflater.inflate(R.layout.attachinvoice_fragment_attach_invoice, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.initializeArguments(arguments)
+    }
+
     override fun getScreenName(): String = screenName
 
     override fun initInjector() {
@@ -44,4 +49,11 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
         viewModel.loadInvoices(page)
     }
 
+    companion object {
+        fun createInstance(extra: Bundle?): AttachInvoiceFragment {
+            return AttachInvoiceFragment().apply {
+                arguments = extra
+            }
+        }
+    }
 }

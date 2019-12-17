@@ -850,7 +850,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickAttachInvoice(menu: AttachmentMenu) {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.ATTACH_INVOICE)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_INVOICE).apply {
+            putExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, messageId)
+        }
+        context?.startActivity(intent)
     }
 
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {

@@ -15,7 +15,7 @@ import com.tokopedia.attachinvoice.view.fragment.AttachInvoiceFragment
 class AttachInvoiceActivity : BaseSimpleActivity(), HasComponent<AttachInvoiceComponent> {
 
     override fun getNewFragment(): Fragment? {
-        return AttachInvoiceFragment()
+        return AttachInvoiceFragment.createInstance(intent.extras)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
