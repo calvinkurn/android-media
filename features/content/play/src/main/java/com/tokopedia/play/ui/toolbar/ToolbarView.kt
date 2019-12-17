@@ -61,7 +61,7 @@ class ToolbarView(
         tvChannelName.text = title
     }
 
-    fun setTitleToolbar(titleToolbar: TitleToolbar) {
+    fun setPartnerInfo(titleToolbar: TitleToolbar) {
         tvPartner.text = titleToolbar.partnerName
         tvFollow.text = if (titleToolbar.isAlreadyFavorite)
             container.context.resources.getString(R.string.play_following) else
@@ -78,6 +78,10 @@ class ToolbarView(
                 }
             }
         }
+
+        tvPartner.setOnClickListener {
+            listener.onPartnerNameClicked(this, titleToolbar.partnerId, titleToolbar.partnerType)
+        }
     }
 
     interface Listener {
@@ -85,5 +89,6 @@ class ToolbarView(
         fun onMoreButtonClicked(view: ToolbarView)
         fun onFollowButtonClicked(view: ToolbarView)
         fun onUnFollowButtonClicked(view: ToolbarView)
+        fun onPartnerNameClicked(view: ToolbarView, partnerId: Long, type: PartnerType)
     }
 }

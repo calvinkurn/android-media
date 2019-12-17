@@ -11,7 +11,7 @@ enum class PartnerType(val value: Int) {
     UNKNOWN(-1);
 
     companion object {
-        val values = values()
+        private val values = values()
 
         fun getTypeByValue(value: Int): PartnerType {
             values.forEach {

@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +31,7 @@ class ToolbarComponent(
                             is ScreenStateEvent.SetTitle ->
                                 uiView.setTitle(it.title)
                             is ScreenStateEvent.SetTitleToolbar ->
-                                uiView.setTitleToolbar(it.titleToolbar)
+                                uiView.setPartnerInfo(it.titleToolbar)
                             is ScreenStateEvent.VideoStreamChanged ->
                                 uiView.setLiveBadgeVisibility(it.videoStream.videoType.isLive)
                         }
@@ -65,9 +66,14 @@ class ToolbarComponent(
     }
 
     override fun onUnFollowButtonClicked(view: ToolbarView) {
-
         launch {
             bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.UnFollowButtonClicked)
+        }
+    }
+
+    override fun onPartnerNameClicked(view: ToolbarView, partnerId: Long, type: PartnerType) {
+        launch {
+            bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.PartnerNameClicked(partnerId, type))
         }
     }
 

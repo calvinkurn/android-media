@@ -12,11 +12,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
-import com.tokopedia.play.data.VideoStream
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
@@ -33,6 +34,7 @@ import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import com.tokopedia.play.ui.stats.StatsComponent
 import com.tokopedia.play.ui.toolbar.ToolbarComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.toolbar.model.TitleToolbar
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
@@ -188,7 +190,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.observableToolbarInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
-                    setToolbarTitle(it.data)
+                    setPartnerInfo(it.data)
                 }
                 is Fail -> {
                     showToast("don't forget to handle when get toolbar info return error ")
@@ -339,7 +341,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                             PlayToolbarInteractionEvent.FollowButtonClicked -> showToast("Follow Button Clicked")
                             PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
                             PlayToolbarInteractionEvent.UnFollowButtonClicked -> showToast("UnFollow Button Clicked")
-                            PlayToolbarInteractionEvent.MoreButtonClicked -> showToast("More Button Clicked")
+                            is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
                         }
                     }
         }
@@ -580,7 +582,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
 
-    private fun setToolbarTitle(titleToolbar: TitleToolbar) {
+    private fun setPartnerInfo(titleToolbar: TitleToolbar) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
@@ -647,5 +649,26 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             bottomSheet = PlayMoreActionBottomSheet.newInstance(requireContext(), this)
         }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun openPartnerPage(partnerId: Long, partnerType: PartnerType) {
+        if (partnerType == PartnerType.SHOP) openShopPage(partnerId)
+        else if (partnerType == PartnerType.INFLUENCER) openProfilePage(partnerId)
+    }
+
+    private fun openShopPage(partnerId: Long) {
+        RouteManager.route(
+                requireContext(),
+                ApplinkConst.SHOP,
+                partnerId.toString()
+        )
+    }
+
+    private fun openProfilePage(partnerId: Long) {
+        RouteManager.route(
+                requireContext(),
+                ApplinkConst.PROFILE,
+                partnerId.toString()
+        )
     }
 }
