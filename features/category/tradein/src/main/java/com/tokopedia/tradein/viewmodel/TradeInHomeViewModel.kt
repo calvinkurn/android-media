@@ -1,21 +1,21 @@
 package com.tokopedia.tradein.viewmodel
 
 import android.app.Application
+import android.content.Intent
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
-import android.content.Intent
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradePDP
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.R
-import com.tokopedia.tradein.model.*
+import com.tokopedia.tradein.model.DeviceAttr
+import com.tokopedia.tradein.model.DeviceDiagInput
+import com.tokopedia.tradein.model.DeviceDiagInputResponse
+import com.tokopedia.tradein.model.DeviceDiagnostics
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
 import com.tokopedia.tradein_common.Constants
@@ -25,7 +25,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.json.JSONException
 import org.json.JSONObject
-import rx.Subscriber
 import tradein_common.TradeInUtils
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -52,7 +51,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
     }
 
     fun checkLogin() {
-        repository?.let {
+        getRepo()?.let {
             if (!it.getUserLoginState()?.isLoggedIn)
                 askUserLogin.value = Constants.LOGIN_REQUIRED
             else {
@@ -61,85 +60,80 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         }
     }
 
-    fun processMessage(intent: Intent) {
-        val result = intent.getStringExtra("test-result")
-        val diagnostics = Gson().fromJson(result, DeviceDiagnostics::class.java)
+    fun getRepo() = repository
+
+    fun processMessage(intent: Intent, query : String) {
+        val diagnostics = getDiagnosticData(intent)
+        val variables = getProcessMessageRequestParam(diagnostics)
+        launchCatchError(block = {
+            val response = getRepo()?.getGQLData(query, DeviceDiagInputResponse::class.java, variables) as DeviceDiagInputResponse?
+            setDiagnoseResult(response, diagnostics)
+        }, onError = {
+            it.printStackTrace()
+            warningMessage.value = it.localizedMessage
+        })
+    }
+
+    fun setDiagnoseResult(response: DeviceDiagInputResponse?, diagnostics: DeviceDiagnostics) {
+        if (response != null && response.deviceDiagInputRepsponse != null) {
+            val result = HomeResult()
+            result.isSuccess = true
+            if (response.deviceDiagInputRepsponse.isEligible) {
+                result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
+            } else {
+                result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
+                result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
+                errorMessage.setValue(response.deviceDiagInputRepsponse.message)
+            }
+            homeResultData.value = result
+        }
+    }
+
+    fun getProcessMessageRequestParam(diagnostics: DeviceDiagnostics): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
         try {
-            val deviceDiagInput = DeviceDiagInput()
-            deviceDiagInput.uniqueCode = diagnostics.tradeInUniqueCode
+            val imei = ArrayList<String>()
+            imei.add(diagnostics.imei)
             val deviceAttr = DeviceAttr()
             deviceAttr.brand = diagnostics.brand
             deviceAttr.grade = diagnostics.grade
-            val imei = ArrayList<String>()
-            imei.add(diagnostics.imei)
             deviceAttr.imei = imei
             deviceAttr.model = diagnostics.model
             deviceAttr.modelId = diagnostics.modelId
             deviceAttr.ram = diagnostics.ram
             deviceAttr.storage = diagnostics.storage
+            val deviceDiagInput = DeviceDiagInput()
+            deviceDiagInput.uniqueCode = diagnostics.tradeInUniqueCode
             deviceDiagInput.deviceAttr = deviceAttr
             deviceDiagInput.deviceId = diagnostics.imei
-            tradeInParams.deviceId = diagnostics.imei
             deviceDiagInput.deviceReview = diagnostics.reviewDetails
             deviceDiagInput.newPrice = tradeInParams.newPrice
             deviceDiagInput.oldPrice = diagnostics.tradeInPrice
             deviceDiagInput.tradeInType = tradeInType
+            tradeInParams.deviceId = diagnostics.imei
             variables["params"] = deviceDiagInput
-            val gqlDeviceDiagInput = GraphqlUseCase()
-            gqlDeviceDiagInput.clearRequest()
-            gqlDeviceDiagInput.addRequest(GraphqlRequest(GraphqlHelper.loadRawString(applicationInstance.resources,
-                    R.raw.gql_insert_device_diag), DeviceDiagInputResponse::class.java, variables, false))
-            gqlDeviceDiagInput.execute(object : Subscriber<GraphqlResponse>() {
-                override fun onCompleted() {
-
-                }
-
-                override fun onError(e: Throwable) {
-                    e.printStackTrace()
-                }
-
-                override fun onNext(graphqlResponse: GraphqlResponse?) {
-                    if (graphqlResponse != null) {
-                        val deviceDiagInputResponse = graphqlResponse.getData<DeviceDiagInputResponse>(DeviceDiagInputResponse::class.java)
-                        if (deviceDiagInputResponse != null && deviceDiagInputResponse.deviceDiagInputRepsponse != null) {
-                            if (deviceDiagInputResponse.deviceDiagInputRepsponse.isEligible) {
-                                //                                finalPriceData = new MutableLiveData<>();
-                                //                                finalPriceData.setValue(inData);
-                                val result = HomeResult()
-                                result.isSuccess = true
-                                result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
-                                homeResultData.setValue(result)
-                            } else {
-                                val result = HomeResult()
-                                result.isSuccess = true
-                                result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
-                                result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
-                                homeResultData.value = result
-                                errorMessage.setValue(deviceDiagInputResponse.deviceDiagInputRepsponse.message)
-                            }
-                        }
-                    }
-
-                }
-            })
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        return variables
+    }
 
+    fun getDiagnosticData(intent: Intent): DeviceDiagnostics {
+        val result = intent.getStringExtra("test-result")
+        return Gson().fromJson(result, DeviceDiagnostics::class.java)
     }
 
     fun checkMoneyIn(modelId: Int, jsonObject: JSONObject) {
         progBarVisibility.value = true
         tradeInParams.deviceId = TradeInUtils.getDeviceId(applicationInstance)
-        tradeInParams.userId = repository.getUserLoginState().userId.toInt()
+        tradeInParams.userId = getRepo().getUserLoginState().userId.toInt()
         tradeInParams.tradeInType = 2
         tradeInParams.modelID = modelId
         val variables = HashMap<String, Any>()
         variables["params"] = tradeInParams
         launchCatchError(block = {
             val query = GraphqlHelper.loadRawString(applicationInstance.resources, com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
-            val response = repository?.getGQLData(query, ValidateTradePDP::class.java, variables) as ValidateTradePDP?
+            val response = getRepo()?.getGQLData(query, ValidateTradePDP::class.java, variables) as ValidateTradePDP?
             checkIfElligible(response, jsonObject)
         }, onError = {
             it.printStackTrace()

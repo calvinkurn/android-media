@@ -60,10 +60,14 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    testImplementation 'junit:junit:4.12'
 
     implementation project(rootProject.ext.features.commonTradein)
     implementation rootProject.ext.miscDependencies.rootbeer
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0")
 }
 
 project.ext {

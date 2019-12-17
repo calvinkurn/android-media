@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
@@ -62,7 +63,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            tradeInHomeViewModel.processMessage(intent);
+            tradeInHomeViewModel.processMessage(intent, GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_insert_device_diag));
         }
     };
 
