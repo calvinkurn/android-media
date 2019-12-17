@@ -84,6 +84,8 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
 
     public static final String EXTRA_TAB_ACTIVE = "tab_active";
+    public static final String EXTRA_TAB_STATUS = "tab_status";
+    public static final String STATUS_DELIVERED = "delivered";
 
     ViewPager mViewPager;
     DownloadResultReceiver mReceiver;
@@ -157,7 +159,8 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
         if (enable) {
             return RouteManager.getIntent(context, ApplinkConstInternalOrder.DELIVERED)
-                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
+                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING)
+                    .putExtra(EXTRA_TAB_STATUS, STATUS_DELIVERED);
         } else {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             return new Intent(context, CustomerAppSellerTransactionActivity.class)

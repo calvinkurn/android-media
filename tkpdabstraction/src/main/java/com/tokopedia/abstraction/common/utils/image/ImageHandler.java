@@ -1,6 +1,5 @@
 package com.tokopedia.abstraction.common.utils.image;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -189,8 +188,6 @@ public class ImageHandler {
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(imageview);
     }
-
-
 
     public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
         Glide.with(context)

@@ -44,7 +44,7 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
     }
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation

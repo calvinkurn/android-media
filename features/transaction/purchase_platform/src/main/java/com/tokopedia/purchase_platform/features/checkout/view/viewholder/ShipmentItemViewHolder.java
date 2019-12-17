@@ -192,7 +192,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout llShipmentInfoTicker;
     private TextView tvTickerInfo;
     private LinearLayout layoutWarningAndError;
-    private LinearLayout llCourierStateLoading;
     private LinearLayout llCourierRecommendationStateLoading;
     private LinearLayout llCourierRecommendationTradeInDropOffStateLoading;
     private TextView tvErrorShipmentItemTitle;
@@ -352,7 +351,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvTickerInfo = itemView.findViewById(R.id.tv_ticker_info);
         layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         llShipmentInfoTicker = itemView.findViewById(R.id.ll_shipment_info_ticker);
-        llCourierStateLoading = itemView.findViewById(R.id.ll_courier_state_loading);
         llCourierRecommendationStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_state_loading);
         llCourierRecommendationTradeInDropOffStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_Trade_in_drop_off_state_loading);
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);

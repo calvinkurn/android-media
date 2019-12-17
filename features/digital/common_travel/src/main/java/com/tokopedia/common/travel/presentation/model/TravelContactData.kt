@@ -10,19 +10,22 @@ import android.os.Parcelable
 class TravelContactData(var name: String = "",
                         var email: String = "",
                         var phone: String = "",
-                        var phoneCode: Int = 0) : Parcelable {
+                        var phoneCode: Int = 0,
+                        var phoneCountry: String = "") : Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readInt())
+            parcel.readInt(),
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
         parcel.writeString(email)
         parcel.writeString(phone)
         parcel.writeInt(phoneCode)
+        parcel.writeString(phoneCountry)
     }
 
     override fun describeContents(): Int {

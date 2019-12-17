@@ -569,8 +569,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
                 if (!insuranceCartShopsArrayList.isEmpty()) {
                     deleteMacroInsurance(insuranceCartShopsArrayList, false);
+                } else if (cartAdapter.isInsuranceSelected()) {
+                    cartPageAnalytics.sendEventPurchaseInsurance(userSession.getUserId(),
+                            cartAdapter.getSelectedInsuranceProductId(),
+                            cartAdapter.getSelectedInsuranceProductTitle());
                 }
-
                 dPresenter.processToUpdateCartData(getSelectedCartDataList());
             } else {
                 showToastMessageRed(message);
@@ -2527,6 +2530,26 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
+    public void sendEventDeleteInsurance(String insuranceTitle) {
+        cartPageAnalytics.sendEventDeleteInsurance(insuranceTitle);
+    }
+
+    @Override
+    public void sendEventInsuranceImpression(String title) {
+        cartPageAnalytics.sendEventInsuranceImpression(title);
+    }
+
+    @Override
+    public void sendEventInsuranceImpressionForShipment(String title) {
+
+    }
+
+    @Override
+    public void sendEventChangeInsuranceState(boolean isChecked, String insuranceTitle) {
+        cartPageAnalytics.sendEventChangeInsuranceState(isChecked, insuranceTitle);
+    }
+
+    @Override
     public void deleteMacroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList, boolean showConfirmationDialog) {
         if (showConfirmationDialog) {
             View view = getLayoutInflater().inflate(R.layout.remove_insurance_product, null, false);
@@ -2755,6 +2778,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onDeleteAllDisabledProduct() {
         List<CartItemData> allDisabledCartItemDataList = cartAdapter.getAllDisabledCartItemData();
+        List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
 
         DialogUnify dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size());
 
@@ -2770,7 +2794,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         dialog.setPrimaryCTAClickListener(() -> {
             if (allDisabledCartItemDataList.size() > 0) {
-                dPresenter.processDeleteCartItem(allDisabledCartItemDataList, allDisabledCartItemDataList, null, false, false);
+                dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, null, false, false);
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -2795,7 +2819,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             sendAnalyticsOnClickRemoveIconCartItem();
         }
         List<CartItemData> cartItemDatas = Collections.singletonList(cartItemData);
-        List<CartItemData> allCartItemDataList = cartAdapter.getAllDisabledCartItemData();
+        List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
 
         DialogUnify dialog = getDisabledItemDialogDeleteConfirmation();
 

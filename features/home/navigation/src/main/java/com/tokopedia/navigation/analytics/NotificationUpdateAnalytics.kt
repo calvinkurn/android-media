@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.track.TrackApp
@@ -22,6 +23,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
 
         val EVENT_ACTION_CLICK_NEWEST_INFO: String = "click on info terbaru"
         val EVENT_ACTION_CLICK_NOTIF_LIST: String = "click on notif list"
+        val EVENT_ACTION_CLICK_NOTIF_TAB: String = "click on transaction or update"
         val EVENT_ACTION_CLICK_FILTER_REQ: String = "click on filter request"
         val EVENT_ACTION_SCROLL_TO_BOTTOM: String = "scroll to bottom"
         val EVENT_ACTION_MARK_ALL_AS_READ: String = "mark all as read"
@@ -165,7 +167,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
     }
 
     // #NC6
-    fun trackAtcOnClick(product: ProductData) {
+    fun trackAtcOnClick(product: ProductData, atc: DataModel) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
                 EVENT_NAME, NAME_EVENT_ATC,
@@ -189,6 +191,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
                                     "shop_type", "",
                                     "shop_name", product.shop?.name,
                                     "category_id", "",
+                                    "dimension82", atc.cartId.toString(),
                                     "dimension45", ""
                                 )
                             )
@@ -265,6 +268,21 @@ class NotificationUpdateAnalytics @Inject constructor() {
         if (isNotAlreadyTracked) {
             trackProductCardImpression(notification, position)
         }
+    }
+
+    fun trackNotificationCenterTab(tabPosition: Int) {
+        val tab = mapOf(
+                0 to "transaction",
+                1 to "update"
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_NAME_CLICK_NOTIF_CENTER,
+                        EVENT_CATEGORY_NOTIF_CENTER,
+                        EVENT_ACTION_CLICK_NOTIF_TAB,
+                        "tab ${tab[tabPosition]}"
+                )
+        )
     }
 
     private fun trackProductCardImpression(notification: NotificationUpdateItemViewModel, position: Int) {

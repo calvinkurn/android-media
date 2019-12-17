@@ -87,6 +87,7 @@ public interface ApplinkConst {
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
+    String TOP_CHAT = "tokopedia://topchat";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
     String TOPCHAT_OLD = "tokopedia://topchatold";
     String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
@@ -202,6 +203,7 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
+    String SELLER_ORDER_DETAIL = "tokopedia://seller/order/{order_id}";
 
     String SALDO = "tokopedia://saldo";
     String SALDO_INTRO = "tokopedia://saldo-intro";
@@ -359,16 +361,7 @@ public interface ApplinkConst {
         String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
 
-        String PRODUCT_PREVIEW_ID = "product_preview_id";
-        String PRODUCT_PREVIEW_IMAGE_URL = "product_preview_image_url";
-        String PRODUCT_PREVIEW_NAME = "product_preview_name";
-        String PRODUCT_PREVIEW_PRICE = "product_preview_price";
-        String PRODUCT_PREVIEW_URL = "product_preview_url";
-        String PRODUCT_PREVIEW_COLOR_VARIANT = "product_preview_color";
-        String PRODUCT_PREVIEW_HEX_COLOR_VARIANT = "product_preview_hex_color";
-        String PRODUCT_PREVIEW_SIZE_VARIANT = "product_preview_size";
-        String PRODUCT_PREVIEW_FS_IS_ACTIVE = "product_preview_fs_is_active";
-        String PRODUCT_PREVIEW_FS_IMAGE_URL = "product_preview_fs_is_image_url";
+        String PRODUCT_PREVIEWS = "product_previews";
 
         String INVOICE_ID = "invoice_id";
         String INVOICE_CODE = "invoice_code";

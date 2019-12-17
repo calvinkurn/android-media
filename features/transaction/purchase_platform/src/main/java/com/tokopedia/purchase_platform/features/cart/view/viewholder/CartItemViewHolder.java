@@ -2,10 +2,6 @@ package com.tokopedia.purchase_platform.features.cart.view.viewholder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -22,17 +18,22 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProductData;
-import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.purchase_platform.R;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProductData;
 import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher;
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher;
 import com.tokopedia.purchase_platform.common.utils.QuantityWrapper;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapter;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -57,8 +58,6 @@ import static com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.T
  */
 public class CartItemViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_ITEM_CART = R.layout.holder_item_cart_new;
-    private static final int QTY_MIN = 1;
-    private static final int QTY_MAX = 10000;
     private static final int MAX_SHOWING_NOTES_CHAR = 20;
 
     private Context context;
@@ -330,9 +329,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderProductInfo(CartItemHolderData data, int parentPosition) {
-        if (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() == 0) {
-            cartItemHolderData.getCartItemData().getOriginData().setInvenageValue(QTY_MAX);
-        }
         this.tvProductName.setText(
                 Html.fromHtml(data.getCartItemData().getOriginData().getProductName())
         );
@@ -752,20 +748,18 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void checkQtyMustDisabled(CartItemHolderData cartItemHolderData, int qty) {
-        if ((qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) &&
-                (qty >= QTY_MAX || (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() != 0 &&
-                        qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue()))) {
+        if (qty <= cartItemHolderData.getCartItemData().getOriginData().getMinOrder() &&
+                        qty >= cartItemHolderData.getCartItemData().getOriginData().getMaxOrder()) {
             btnQtyMinus.setEnabled(false);
             btnQtyPlus.setEnabled(false);
             btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_checkout_disabled));
             btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_checkout_disabled));
-        } else if (qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) {
+        } else if (qty <= cartItemHolderData.getCartItemData().getOriginData().getMinOrder()) {
             btnQtyMinus.setEnabled(false);
             btnQtyPlus.setEnabled(true);
             btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_checkout_disabled));
             btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_checkout));
-        } else if (qty >= QTY_MAX || (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() != 0 &&
-                qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue())) {
+        } else if (qty >= cartItemHolderData.getCartItemData().getOriginData().getMaxOrder()) {
             btnQtyPlus.setEnabled(false);
             btnQtyMinus.setEnabled(true);
             btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_checkout_disabled));
@@ -779,25 +773,17 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void validateWithAvailableQuantity(CartItemHolderData data, int qty) {
-        if (data.getCartItemData().getOriginData().getInvenageValue() != 0 &&
-                qty > data.getCartItemData().getOriginData().getInvenageValue()) {
+        if (qty > data.getCartItemData().getOriginData().getMaxOrder()) {
             String errorMessage = data.getCartItemData().getMessageErrorData().getErrorProductMaxQuantity();
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
-            String numberAsString = numberFormat.format(data.getCartItemData().getOriginData().getInvenageValue());
+            String numberAsString = numberFormat.format(data.getCartItemData().getOriginData().getMaxOrder());
             String maxValue = numberAsString.replace(",", ".");
             tvErrorFormValidation.setText(errorMessage.replace("{{value}}", maxValue));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
-        } else if (qty < data.getCartItemData().getOriginData().getMinimalQtyOrder()) {
+        } else if (qty < data.getCartItemData().getOriginData().getMinOrder()) {
             String errorMessage = data.getCartItemData().getMessageErrorData().getErrorProductMinQuantity();
             tvErrorFormValidation.setText(errorMessage.replace("{{value}}",
-                    String.valueOf(data.getCartItemData().getOriginData().getMinimalQtyOrder())));
-            tvErrorFormValidation.setVisibility(View.VISIBLE);
-        } else if (qty > QTY_MAX) {
-            NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
-            String numberAsString = numberFormat.format(data.getCartItemData().getOriginData().getInvenageValue());
-            String maxValue = numberAsString.replace(",", ".");
-            String errorMessage = data.getCartItemData().getMessageErrorData().getErrorProductMaxQuantity();
-            tvErrorFormValidation.setText(errorMessage.replace("{{value}}", maxValue));
+                    String.valueOf(data.getCartItemData().getOriginData().getMinOrder())));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
         } else {
             tvErrorFormValidation.setVisibility(View.GONE);

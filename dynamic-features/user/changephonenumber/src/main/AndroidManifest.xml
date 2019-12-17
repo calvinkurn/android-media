@@ -3,7 +3,6 @@
     package="com.tokopedia.changephonenumber.customerapp">
 
     <dist:module
-        dist:instant="false"
         dist:onDemand="false"
         dist:title="@string/change_phone_number_app_module_name">
         <dist:fusing dist:include="true" />

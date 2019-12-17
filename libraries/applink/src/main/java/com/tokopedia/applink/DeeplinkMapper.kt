@@ -6,6 +6,7 @@ import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
+import com.tokopedia.applink.category.DeeplinkMapperMoneyIn.getRegisteredNavigationMoneyIn
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
@@ -17,8 +18,6 @@ import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.applink.category.DeeplinkMapperMoneyIn.getRegisteredNavigationMoneyIn
-import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -43,6 +42,8 @@ object DeeplinkMapper {
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
                 val query = Uri.parse(deeplink).query
                 var tempDeeplink = when {
+                    deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && isChatBotTrue(deeplink) ->
+                        getChatbotDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.HOTEL, true) -> deeplink
                     deeplink.startsWith(ApplinkConst.DIGITAL, true) ->
                         getRegisteredNavigationDigital(context, deeplink)
@@ -62,7 +63,7 @@ object DeeplinkMapper {
                         getCreateReviewInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(deeplink)
-                    deeplink.startsWith(ApplinkConst.CHAT_BOT,true) ->
+                    deeplink.startsWith(ApplinkConst.CHAT_BOT, true) ->
                         getChatbotDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.MONEYIN, true) ->
                         getRegisteredNavigationMoneyIn(deeplink)
@@ -71,7 +72,7 @@ object DeeplinkMapper {
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){
-                            getRegisteredCategoryNavigation(getSegments(deeplink))
+                            getRegisteredCategoryNavigation(getSegments(deeplink),deeplink)
                         } else if (query?.isNotEmpty() == true) {
                             val tempDL = if (deeplink.contains('?')) {
                                 deeplink.substring(0, deeplink.indexOf('?'))
@@ -89,6 +90,10 @@ object DeeplinkMapper {
             else -> deeplink
         }
         return mappedDeepLink
+    }
+
+    private fun isChatBotTrue(deeplink: String): Boolean {
+        return Uri.parse(deeplink).getQueryParameter("is_chat_bot")?.equals("true") == true
     }
 
     private fun createAppendDeeplinkWithQuery(deeplink: String, query: String?): String {
@@ -172,10 +177,12 @@ object DeeplinkMapper {
     }
 
     private fun getCreateReviewInternal(deeplink: String): String {
-        val segments = Uri.parse(deeplink).pathSegments
+        val parsedUri = Uri.parse(deeplink)
+        val segments = parsedUri.pathSegments
+        val rating = parsedUri.getQueryParameter("rating") ?: "5"
         val reputationId = segments[segments.size - 2]
         val productId = segments.last()
-        return UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId)
+        return UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId, rating)
     }
 
     /**

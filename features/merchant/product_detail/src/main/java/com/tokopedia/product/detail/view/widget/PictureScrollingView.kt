@@ -39,7 +39,7 @@ class PictureScrollingView @JvmOverloads constructor(
         View.inflate(context, R.layout.widget_picture_scrolling, this)
     }
 
-    fun renderData(media: List<ProductMediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, fragmentManager: FragmentManager,
+    fun renderData(media: List<ProductMediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String) -> Unit) fragmentManager: FragmentManager,
                    forceRefresh: Boolean = true) {
         val mediaList = if (media == null || media.isEmpty()) {
             val resId = R.drawable.product_no_photo_default
@@ -56,13 +56,15 @@ class PictureScrollingView @JvmOverloads constructor(
             pagerAdapter = VideoPicturePagerAdapter(context, mediaList, onPictureClickListener, fragmentManager)
             view_pager.adapter = pagerAdapter
 
-            view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                var lastPosition = 0
-                override fun onPageSelected(position: Int) {
-                    (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
-                    (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
-                    lastPosition = position
-                }
+        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            var lastPosition = 0
+            override fun onPageSelected(position: Int) {
+                val swipeDirection = if(lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
+                onSwipePictureListener.invoke(swipeDirection)
+                (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
+                (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
+                lastPosition = position
+            }
 
                 override fun onPageScrollStateChanged(b: Int) {
 
@@ -112,6 +114,7 @@ class PictureScrollingView @JvmOverloads constructor(
 
     companion object {
         private const val SHOP_STATUS_ACTIVE = 1
+        private const val SWIPE_RIGHT_DIRECTION = "right"
+        private const val SWIPE_LEFT_DIRECTION = "left"
     }
-
 }
