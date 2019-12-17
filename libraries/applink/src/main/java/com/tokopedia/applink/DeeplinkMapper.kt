@@ -43,6 +43,8 @@ object DeeplinkMapper {
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
                 val query = Uri.parse(deeplink).query
                 var tempDeeplink = when {
+                    deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && isChatBotTrue(deeplink) ->
+                        getChatbotDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.HOTEL, true) -> deeplink
                     deeplink.startsWith(ApplinkConst.DIGITAL, true) ->
                         getRegisteredNavigationDigital(context, deeplink)
@@ -64,7 +66,7 @@ object DeeplinkMapper {
                         getCreateReviewInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(deeplink)
-                    deeplink.startsWith(ApplinkConst.CHAT_BOT,true) ->
+                    deeplink.startsWith(ApplinkConst.CHAT_BOT, true) ->
                         getChatbotDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.MONEYIN, true) ->
                         getRegisteredNavigationMoneyIn(deeplink)
@@ -91,6 +93,10 @@ object DeeplinkMapper {
             else -> deeplink
         }
         return mappedDeepLink
+    }
+
+    private fun isChatBotTrue(deeplink: String): Boolean {
+        return Uri.parse(deeplink).getQueryParameter("is_chat_bot")?.equals("true") == true
     }
 
     private fun createAppendDeeplinkWithQuery(deeplink: String, query: String?): String {

@@ -803,7 +803,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         shopId, shopType, shopName, cartId,
                         trackerAttribution, trackerListName,
                         viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false,
-                        freeOngkir.isFreeOngkirActive)
+                        freeOngkir.isFreeOngkirActive,
+                        getPageReference(),
+                        getCustomEventLabel(),
+                        getCustomEventAction())
             }
             activity?.run {
                 if (isOcs) {

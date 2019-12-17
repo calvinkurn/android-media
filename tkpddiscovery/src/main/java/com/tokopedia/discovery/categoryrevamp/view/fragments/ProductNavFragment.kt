@@ -573,14 +573,14 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onWishlistButtonClicked(productItem: ProductsItem, position: Int) {
+        catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), productItem.wishlist, isUserLoggedIn(), productItem.isTopAds)
+
         if (userSession.isLoggedIn) {
             disableWishlistButton(productItem.id.toString())
             if (productItem.wishlist) {
-                removeWishlist(productItem.id.toString(), userSession.userId)
-                catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), false)
+                removeWishlist(productItem.id.toString(), userSession.userId, position)
             } else {
-                addWishlist(productItem.id.toString(), userSession.userId)
-                catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), true)
+                addWishlist(productItem.id.toString(), userSession.userId, position)
             }
         } else {
             launchLoginActivity()
@@ -748,5 +748,9 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
 
     private fun disableWishlistButton(productId: String) {
         productNavListAdapter?.setWishlistButtonEnabled(productId.toInt(), false)
+    }
+
+    private fun isUserLoggedIn(): Boolean {
+        return userSession.isLoggedIn
     }
 }
