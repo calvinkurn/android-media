@@ -55,11 +55,12 @@ class HomeDataMapper(
             ))
         }
 
-        list.add(PlayCardViewModel())
-
         if (homeData.dynamicHomeChannel != null && homeData.dynamicHomeChannel.channels != null && !homeData.dynamicHomeChannel.channels.isEmpty()) {
             var position = 1
             for (channel in homeData.dynamicHomeChannel.channels) {
+                if (position == 2 && !isCache){
+                    list.add(PlayCardViewModel().apply { url="https://www.vidio.com/videos/1559052/vjs_playlist.m3u8" ;thumbnailUrl = "https://cdn0-production-images-kly.akamaized.net/Y3MRGs3f3lKJj6OCxqfLK-jMfgU=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/thumbnails/2644554/original/016821600_1546994118-nba-i-cuplikan-pertandingan-lakers-107-vs-mavericks-97-ca246c.jpg" })
+                }
                 if (channel.layout != null) {
                     if (!isCache) {
                         position++
@@ -169,7 +170,7 @@ class HomeDataMapper(
                             HomePageTracking.eventEnhanceImpressionBannerGif(context, channel)
                         }
                         DynamicHomeChannel.Channels.LAYOUT_REVIEW -> if (!isCache) {
-                            list.add(mappingToReviewViewModel(channel))
+                            list.add(mappingToReviewViewModel())
                         }
                         DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> if (!isCache) {
                             val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
@@ -182,7 +183,7 @@ class HomeDataMapper(
         return HomeViewModel(homeData.homeFlag, list, isCache)
     }
 
-    private fun mappingToReviewViewModel(channel: DynamicHomeChannel.Channels): Visitable<*> {
+    private fun mappingToReviewViewModel(): Visitable<*> {
         return ReviewViewModel()
     }
 

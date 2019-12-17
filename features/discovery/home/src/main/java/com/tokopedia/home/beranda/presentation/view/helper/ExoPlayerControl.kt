@@ -7,7 +7,6 @@ interface ExoPlayerControl {
     fun createPlayer(isToPrepare: Boolean)
     fun preparePlayer()
     fun releasePlayer()
-    fun updateVideoUrls(vararg urls: String)
     fun playerPause()
     fun playerPlay()
     fun seekTo(windowIndex: Int, positionMs: Long)
@@ -19,6 +18,4 @@ interface ExoPlayerControl {
     fun onActivityPause()
     fun onActivityStop()
     fun onSaveInstanceState(outState: Bundle?)
-    fun playerBlock()
-    fun playerUnBlock()
 }
