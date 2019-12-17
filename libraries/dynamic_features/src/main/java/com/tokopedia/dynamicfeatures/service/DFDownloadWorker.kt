@@ -6,14 +6,19 @@ import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.dynamicfeatures.service.DFDownloadQueue.combineListAndPut
 import com.tokopedia.dynamicfeatures.service.DFServiceConstant.INITIAL_DELAY_DURATION_IN_SECOND
 import com.tokopedia.dynamicfeatures.service.DFServiceConstant.isServiceRunning
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import java.util.concurrent.TimeUnit
 
 class DFDownloadWorker(appContext: Context, workerParams: WorkerParameters)
     : CoroutineWorker(appContext, workerParams) {
 
     companion object {
-        const val WORKER_NAME = "DF Download Worker"
+        private const val WORKER_NAME = "DF Download Worker"
+        private const val REMOTE_CONFIG_ALLOW_RETRY = "android_retry_df_download_bg"
         fun start(context: Context, moduleListToDownload: List<String>? = null) {
+            if (!allowRetryFromConfig(context)) {
+                return
+            }
             combineListAndPut(context, moduleListToDownload)
             if (isServiceRunning) {
                 return
@@ -30,6 +35,11 @@ class DFDownloadWorker(appContext: Context, workerParams: WorkerParameters)
                 .build()
             WorkManager.getInstance(context.applicationContext).enqueueUniqueWork(WORKER_NAME, ExistingWorkPolicy.KEEP, uploadWorkRequest)
         }
+
+        fun allowRetryFromConfig(context: Context): Boolean {
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+            return firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_ALLOW_RETRY, false)
+        }
     }
 
     private fun setFlagServiceFalse() {
@@ -37,6 +47,9 @@ class DFDownloadWorker(appContext: Context, workerParams: WorkerParameters)
     }
 
     override suspend fun doWork(): Result {
+        if (!allowRetryFromConfig(applicationContext)) {
+            return Result.success()
+        }
         if (isServiceRunning) {
             return Result.success()
         }
