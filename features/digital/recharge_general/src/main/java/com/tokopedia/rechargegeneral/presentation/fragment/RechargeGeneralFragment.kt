@@ -71,13 +71,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     lateinit var sharedViewModel: SharedRechargeGeneralViewModel
 
     lateinit var adapter: RechargeGeneralAdapter
-
-    private var inputData: Array<Map<String, String>?>? = null
     private var isLoading = false
-    set(value) {
-        field = value
-        if (value) loading_view.show() else loading_view.hide()
-    }
+        set(value) {
+            field = value
+            if (value) loading_view.show() else loading_view.hide()
+        }
+
+    private var inputData: HashMap<String, String> = hashMapOf()
+    private var inputDataSize: Int = 0
 
     private var menuId: Int = 0
     private var categoryId: Int = 0
@@ -172,6 +173,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (savedInstanceState != null) {
+            categoryId = savedInstanceState.getInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
+            menuId = savedInstanceState.getInt(EXTRA_PARAM_MENU_ID, menuId)
+            operatorId = savedInstanceState.getInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
+            productId = savedInstanceState.getString(EXTRA_PARAM_PRODUCT_ID, productId)
+            inputData = savedInstanceState.getSerializable(EXTRA_PARAM_INPUT_DATA) as HashMap<String, String>
+        }
+
         rv_digital_product.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rv_digital_product.adapter = adapter
         while (rv_digital_product.itemDecorationCount > 0) rv_digital_product.removeItemDecorationAt(0)
@@ -214,6 +223,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        outState.putInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
+        outState.putInt(EXTRA_PARAM_MENU_ID, menuId)
+        outState.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
+        outState.putString(EXTRA_PARAM_PRODUCT_ID, productId)
+        outState.putSerializable(EXTRA_PARAM_INPUT_DATA, inputData)
     }
 
     private fun renderOperators(cluster: RechargeGeneralOperatorCluster) {
@@ -222,7 +236,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (operatorId > 0) {
             operatorCluster = getClusterNameOfOperatorId(cluster, operatorId)
             renderOperatorCluster(cluster)
-            renderOperatorList(cluster.operatorGroups.first { it.name == operatorCluster })
+            renderOperatorList(cluster.operatorGroups.first { it.name == operatorCluster }, cluster.text)
             getProductList(menuId, operatorId)
         }
     }
@@ -238,7 +252,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     if (operatorCluster != input) {
                         operatorCluster = input
                         cluster.operatorGroups.find { it.name == input }?.let {
-                            renderOperatorList(it)
+                            renderOperatorList(it, cluster.text)
                         }
                     }
                 }
@@ -255,14 +269,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun renderOperatorList(operatorGroup: RechargeGeneralOperatorCluster.CatalogOperatorGroup) {
-//        resetInputData()
-
+    private fun renderOperatorList(operatorGroup: RechargeGeneralOperatorCluster.CatalogOperatorGroup, label: String) {
         if (operatorGroup.operators.size == 1) {
             operator_select.hide()
             adapter.showLoading()
         } else if (operatorGroup.operators.size > 1) {
-            operator_select.setLabel(operatorGroup.name)
+            operator_select.setLabel(label)
             operator_select.setHint("")
             operator_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
                 override fun onFinishInput(input: String) {
@@ -303,7 +315,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             val itr = enquiryFields.listIterator()
             while (itr.hasNext()) {
                 val item = itr.next()
-                if (item.name == "client_number") {
+                if (item.name == PARAM_CLIENT_NUMBER) {
                     if (favoriteNumbers.isNotEmpty()) {
                         item.style = INPUT_TYPE_FAVORITE_NUMBER
                     }
@@ -311,9 +323,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         item.value = clientNumber
                         clientNumber = ""
                     }
-                    itr.set(item)
-                    break
+
                 }
+                if (inputData.containsKey(item.name)) {
+                    item.value = inputData[item.name]!!
+                }
+                itr.set(item)
             }
             dataList.addAll(enquiryFields)
         }
@@ -330,16 +345,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         adapter.renderList(dataList)
 //        trackSearchResultCategories(it.data)
 
-        val inputDataSize = productData.enquiryFields.size
-        inputData = arrayOfNulls(inputDataSize)
+        inputDataSize = productData.enquiryFields.size
 
         isLoading = false
     }
 
     // Reset product id & input data
     private fun resetInputData() {
-//        productId = null
-        inputData = null
+        inputData = hashMapOf()
         toggleEnquiryButton()
     }
 
@@ -479,7 +492,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun renderClientNumber(number: String) {
         if (adapter.data.isNotEmpty()) {
             adapter.data.forEachIndexed { index, productInput ->
-                if (productInput is RechargeGeneralProductInput && productInput.name == "client_number") {
+                if (productInput is RechargeGeneralProductInput && productInput.name == PARAM_CLIENT_NUMBER) {
                     productInput.value = number
                     adapter.notifyItemChanged(index)
                     return@forEachIndexed
@@ -511,8 +524,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         viewModel.getProductList(viewModel.createParams(menuId, operator))
     }
 
-    override fun onFinishInput(label: String, input: String, position: Int) {
-        updateInputData(label, input, position)
+    override fun onFinishInput(label: String, input: String) {
+        updateInputData(label, input)
     }
 
     override fun onCustomInputClick(field: TopupBillsInputFieldWidget, position: Int, data: List<RechargeGeneralProductSelectData>?) {
@@ -525,11 +538,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun updateInputData(label: String, input: String, position: Int) {
-        inputData?.apply {
-            this[position] = if (input.isEmpty()) null else mapOf(label to input)
-            toggleEnquiryButton()
-        }
+    private fun updateInputData(label: String, input: String) {
+        inputData[label] = input
+        toggleEnquiryButton()
     }
 
     private fun toggleEnquiryButton() {
@@ -537,14 +548,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun validateEnquiry(): Boolean {
-        return operatorId > 0
-                && inputData != null
-                && (inputData!!.isEmpty() || inputData!!.all { it != null })
+        return operatorId > 0 && inputData.size == inputDataSize
     }
 
     private fun enquire() {
         if (validateEnquiry()) {
-            getEnquiry(operatorId.toString(), productId, inputData!!.filterNotNull().toTypedArray())
+            getEnquiry(operatorId.toString(), productId, inputData)
             // TODO: Remove temporary enquiry params
 //            val enquiryData = Gson().fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_enquiry_data), TopupBillsEnquiryData::class.java)
 //            renderCheckoutView(enquiryData)
@@ -662,11 +671,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         const val EXTRA_PARAM_OPERATOR_ID = "EXTRA_PARAM_OPERATOR_ID"
         const val EXTRA_PARAM_PRODUCT_ID = "EXTRA_PARAM_PRODUCT_ID"
         const val EXTRA_PARAM_CLIENT_NUMBER = "EXTRA_PARAM_CLIENT_NUMBER"
+        const val EXTRA_PARAM_INPUT_DATA = "EXTRA_PARAM_INPUT_DATA"
 
         const val INPUT_TYPE_NUMERIC = "input_numeric"
         const val INPUT_TYPE_ALPHANUMERIC = "input_alphanumeric"
         const val INPUT_TYPE_FAVORITE_NUMBER = "input_favorite"
         const val INPUT_TYPE_ENQUIRY_INFO = "enquiry"
+
+        const val PARAM_CLIENT_NUMBER = "client_number"
 
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
 

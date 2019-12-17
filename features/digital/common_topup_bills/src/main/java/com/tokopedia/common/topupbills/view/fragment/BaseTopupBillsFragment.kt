@@ -77,7 +77,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         }
     }
 
-    fun getEnquiry(operatorId: String, productId: String, inputData: Array<Map<String, String>>) {
+    fun getEnquiry(operatorId: String, productId: String, inputData: Map<String, String>) {
         topupBillsViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_inquiry),
                 topupBillsViewModel.createEnquiryParams(operatorId, productId, inputData))
     }
