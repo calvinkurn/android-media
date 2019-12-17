@@ -262,6 +262,8 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                 it
             } else if (!isOfficialStore && it.name() == ProductDetailConstant.VALUE_PROP) {
                 it
+            } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO && !isUserSessionActive) {
+                it
             } else {
                 null
             }
