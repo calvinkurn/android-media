@@ -8,6 +8,8 @@ import com.tokopedia.rechargeocr.data.RechargeUploadImageResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.util.*
@@ -22,9 +24,11 @@ class RechargeUploadImageViewModel @Inject constructor(private val uploadImageUs
                             onSuccess: (RechargeUploadImageData) -> Unit,
                             onError: (Throwable) -> Unit) {
         launchCatchError(block = {
-            val uploadImageData = uploadImageUseCase.createObservable(createUploadParams(fileLocation))
-                    .toBlocking().first().dataResultImageUpload
-            onSuccess(uploadImageData.data)
+            val dataUploadImage = withContext(Dispatchers.IO) {
+                uploadImageUseCase.createObservable(createUploadParams(fileLocation))
+                        .toBlocking().first().dataResultImageUpload
+            }
+            onSuccess(dataUploadImage.data)
         }) {
             onError(it)
         }

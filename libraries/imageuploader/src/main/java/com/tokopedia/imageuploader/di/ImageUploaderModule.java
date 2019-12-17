@@ -6,7 +6,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -130,15 +129,6 @@ public class ImageUploaderModule {
                                                           @ImageUploaderQualifier NetworkRouter networkRouter,
                                                           @ImageUploaderQualifier UserSessionInterface userSessionInterface) {
         return new TkpdAuthInterceptor(context, networkRouter, userSessionInterface);
-    }
-
-    @ImageUploaderQualifier
-    @Provides
-    public AbstractionRouter provideAbstractionRouter(@ImageUploaderQualifier Context context) {
-        if (context instanceof AbstractionRouter) {
-            return ((AbstractionRouter) context);
-        }
-        throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
     }
 
     @ImageUploaderQualifier
