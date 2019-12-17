@@ -10,11 +10,11 @@ import kotlinx.android.synthetic.main.holder_item_cart_ticker_error.view.*
 /**
  * @author anggaprasetiyo on 13/03/18.
  */
-class CartTickerErrorViewHolder(itemView: View, private val actionListener: ActionListener) : RecyclerView.ViewHolder(itemView) {
+class CartTickerErrorViewHolder(itemView: View, private val actionListener: ActionListener?) : RecyclerView.ViewHolder(itemView) {
 
     fun bindData(data: CartItemTickerErrorHolderData, position: Int) {
         itemView.ticker_description.text = data.cartTickerErrorData?.errorInfo
-        itemView.ticker_action.setOnClickListener { v -> actionListener.onSeeErrorProductsClicked() }
+        itemView.ticker_action.setOnClickListener { v -> actionListener?.onSeeErrorProductsClicked() }
     }
 
     companion object {

@@ -10,7 +10,7 @@ import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledCart
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.holder_item_cart_error.view.*
 
-class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListener) : RecyclerView.ViewHolder(itemView) {
+class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListener?) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         val LAYOUT = R.layout.holder_item_cart_error
@@ -59,7 +59,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                 setHtmlDescription(descriptionText)
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        actionListener.onTobaccoLiteUrlClicked(data.nicotineLiteMessageData!!.url)
+                        actionListener?.onTobaccoLiteUrlClicked(data.nicotineLiteMessageData!!.url)
                     }
 
                     override fun onDismiss() {}
@@ -70,7 +70,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
                     requestLayout()
                 }
-                actionListener.onShowTickerTobacco()
+                actionListener?.onShowTickerTobacco()
             } else if (data.tickerMessage != null) {
                 setTextDescription(data.tickerMessage!!)
                 visibility = View.VISIBLE
@@ -87,7 +87,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     private fun renderDeleteButton(data: DisabledCartItemHolderData) {
         itemView.btn_delete_cart.setOnClickListener {
-            actionListener.onDeleteDisabledItem(data.data)
+            actionListener?.onDeleteDisabledItem(data.data)
         }
     }
 
@@ -100,9 +100,9 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
             }
             setOnClickListener {
                 if (data.isWishlisted) {
-                    actionListener.onRemoveDisabledItemFromWishlist(data.productId)
+                    actionListener?.onRemoveDisabledItemFromWishlist(data.productId)
                 } else {
-                    actionListener.onAddDisabledItemToWishlist(data.productId)
+                    actionListener?.onAddDisabledItemToWishlist(data.productId)
                 }
             }
         }
@@ -113,9 +113,9 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
             itemView.group_similar_product_on_cart_error.visibility = View.VISIBLE
             itemView.tv_similar_product_on_cart_error.text = data.similarProduct!!.text
             itemView.tv_similar_product_on_cart_error.setOnClickListener {
-                actionListener.onSimilarProductUrlClicked(data.similarProduct!!.url)
+                actionListener?.onSimilarProductUrlClicked(data.similarProduct!!.url)
             }
-            actionListener.onShowTickerOutOfStock(data.productId)
+            actionListener?.onShowTickerOutOfStock(data.productId)
         } else {
             itemView.group_similar_product_on_cart_error.visibility = View.GONE
         }

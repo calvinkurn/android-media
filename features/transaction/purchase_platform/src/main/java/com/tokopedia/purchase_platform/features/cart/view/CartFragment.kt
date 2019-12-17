@@ -629,8 +629,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         sendAnalyticsOnClickRemoveIconCartItem()
         val appliedPromoCodes = ArrayList<String>()
         val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentPosition)
-        if (!TextUtils.isEmpty(cartShopHolderData.shopGroupAvailableData.voucherOrdersItemData?.code)) {
-            appliedPromoCodes.add(cartShopHolderData.shopGroupAvailableData.voucherOrdersItemData?.code
+        if (!TextUtils.isEmpty(cartShopHolderData?.shopGroupAvailableData?.voucherOrdersItemData?.code)) {
+            appliedPromoCodes.add(cartShopHolderData?.shopGroupAvailableData?.voucherOrdersItemData?.code
                     ?: "")
         }
         val cartItemDatas = ArrayList(listOf(cartItemHolderData.cartItemData))
@@ -1547,23 +1547,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun goToCouponList() {
-        val promo = dPresenter.generateCheckPromoFirstStepParam(cartAdapter.promoStackingGlobalData)
         activity?.let {
-            val intent = getIntentToPromoList(promo, it)
-            startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE)
+            cartAdapter.promoStackingGlobalData?.apply {
+                val promo = dPresenter.generateCheckPromoFirstStepParam(this)
+                val intent = getIntentToPromoList(promo, it)
+                startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE)
+            }
         }
     }
 
     override fun goToDetailPromoStacking(promoStackingData: PromoStackingData) {
-        val promo = dPresenter.generateCheckPromoFirstStepParam(cartAdapter.promoStackingGlobalData)
-
         activity?.let {
-            if (promoStackingData.typePromo == PromoStackingData.TYPE_COUPON) {
-                val intent = getIntentToPromoDetail(promo, promoStackingData, it)
-                startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE)
-            } else {
-                val intent = getIntentToPromoList(promo, it)
-                startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE)
+            cartAdapter.promoStackingGlobalData?.apply {
+                val promo = dPresenter.generateCheckPromoFirstStepParam(this)
+                if (promoStackingData.typePromo == PromoStackingData.TYPE_COUPON) {
+                    val intent = getIntentToPromoDetail(promo, promoStackingData, it)
+                    startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE)
+                } else {
+                    val intent = getIntentToPromoList(promo, it)
+                    startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE)
+                }
             }
         }
     }
@@ -1883,7 +1886,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun showMerchantVoucherListBottomsheet(shopGroupAvailableData: ShopGroupAvailableData) {
-        val promo = dPresenter.generateCheckPromoFirstStepParam(cartAdapter.promoStackingGlobalData)
         if (fragmentManager != null) {
             var shopId = 0
             try {
@@ -1915,12 +1917,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                 }
 
-                val merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance(
-                        shopId, shopGroupAvailableData.cartString ?: "",
-                        promo, "cart", cartItemDataVoucherArrayList
-                )
-                merchantVoucherListBottomSheetFragment.actionListener = this@CartFragment
-                merchantVoucherListBottomSheetFragment.show(fragmentManager, "")
+                cartAdapter.promoStackingGlobalData?.let {
+                    val promo = dPresenter.generateCheckPromoFirstStepParam(it)
+                    val merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance(
+                            shopId, shopGroupAvailableData.cartString ?: "",
+                            promo, "cart", cartItemDataVoucherArrayList
+                    )
+                    merchantVoucherListBottomSheetFragment.actionListener = this@CartFragment
+                    merchantVoucherListBottomSheetFragment.show(fragmentManager, "")
+                }
             }
         }
     }
@@ -1943,7 +1948,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         try {
             val insuranceCartDigitalProductArrayList = ArrayList<InsuranceCartDigitalProduct>()
             for (insuranceCartShops in cartAdapter.insuranceCartShops) {
-                if (insuranceCartShops?.shopItemsList?.isNotEmpty() == true) {
+                if (insuranceCartShops.shopItemsList.isNotEmpty()) {
                     for (insuranceCartShopItem in insuranceCartShops.shopItemsList) {
                         if (insuranceCartShopItem.digitalProductList.isNotEmpty()) {
                             for (insuranceCartDigitalProduct in insuranceCartShopItem.digitalProductList) {
@@ -1997,8 +2002,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onSuccessCheckPromoFirstStep(responseGetPromoStackUiModel: ResponseGetPromoStackUiModel) {
         // Update global promo state
         if (responseGetPromoStackUiModel.data.codes.isNotEmpty()) {
-            val promoStackingGlobalData = cartAdapter.promoStackingGlobalData
-            promoMapper.convertPromoGlobalModel(responseGetPromoStackUiModel, promoStackingGlobalData)
+            cartAdapter.promoStackingGlobalData?.let {
+                promoMapper.convertPromoGlobalModel(responseGetPromoStackUiModel, it)
+            }
         }
 
         // Update merchant voucher state
@@ -2039,9 +2045,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (cartListData?.shopGroupAvailableDataList?.isEmpty() == true) {
                 cartAdapter.removePromoStackingVoucherData()
             } else {
-                val promoStackingData = cartAdapter.promoStackingGlobalData
-                resetPromoGlobal(promoStackingData)
-                cartAdapter.updateItemPromoStackVoucher(promoStackingData)
+                cartAdapter.promoStackingGlobalData?.let {
+                    resetPromoGlobal(it)
+                    cartAdapter.updateItemPromoStackVoucher(it)
+                }
             }
         } else {
             cartAdapter.getCartShopHolderDataByIndex(shopIndex)?.let {
@@ -2053,13 +2060,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onSuccessClearPromoStackAfterClash() {
         // Reset global promo
-        val promoStackingData = cartAdapter.promoStackingGlobalData
-        resetPromoGlobal(promoStackingData)
+        cartAdapter.promoStackingGlobalData?.let {
+            resetPromoGlobal(it)
+        }
 
         // Reset merchant promo
         val cartShopHolderDataList = cartAdapter.allCartShopHolderData
         for (cartShopHolderData in cartShopHolderDataList) {
-            cartShopHolderData?.let {
+            cartShopHolderData.let {
                 cartShopHolderData.shopGroupAvailableData.voucherOrdersItemData = null
             }
         }
@@ -2085,7 +2093,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onSubmitNewPromoAfterClash(oldPromoList: ArrayList<String>,
                                             newPromoList: ArrayList<ClashingVoucherOrderUiModel>,
                                             type: String) {
-        dPresenter.processCancelAutoApplyPromoStackAfterClash(cartAdapter.promoStackingGlobalData, oldPromoList, newPromoList, type)
+        cartAdapter.promoStackingGlobalData?.let {
+            dPresenter.processCancelAutoApplyPromoStackAfterClash(it, oldPromoList, newPromoList, type)
+        }
     }
 
     // get newly added cart id if open cart after ATC on PDP
