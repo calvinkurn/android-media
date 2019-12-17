@@ -2,7 +2,6 @@ package com.tokopedia.discovery.find.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.find.data.repository.FindNavRepository
@@ -14,9 +13,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class FindNavViewModel @Inject constructor() : ViewModel() {
+class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
     val mProductCount = MutableLiveData<String>()
@@ -25,14 +28,18 @@ class FindNavViewModel @Inject constructor() : ViewModel() {
     var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     var mRelatedLinkList = MutableLiveData<Result<List<RelatedLinkData>>>()
     private val findNavParamBuilder: FindNavParamBuilder by lazy { FindNavParamBuilder() }
+    private val jobs = SupervisorJob()
 
     @Inject
     lateinit var findNavRepository: FindNavRepository
 
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + jobs
+
     fun fetchProductList(start: Int, productId: String, rows: Int, uniqueId: String,
                          selectedSort: HashMap<String, String>, selectedFilter: HashMap<String, String>) {
         val reqParams = findNavParamBuilder.generateProductFilterParams(productId, start, rows, uniqueId, selectedSort, selectedFilter)
-        viewModelScope.launchCatchError(block = {
+        launchCatchError(block = {
             val productListResponse: ProductListResponse? = findNavRepository.getProductList(reqParams.paramsAllValueInString)
             productListResponse?.let { productResponse ->
                 (productResponse.searchProduct)?.let { searchProduct ->
@@ -58,7 +65,7 @@ class FindNavViewModel @Inject constructor() : ViewModel() {
 
     fun fetchQuickFilterList(productId: String) {
         val reqParams = findNavParamBuilder.generateQuickFilterParams(productId)
-        viewModelScope.launchCatchError(block = {
+        launchCatchError(block = {
             findNavRepository.getQuickFilterList(reqParams.paramsAllValueInString)?.let {
                 mQuickFilterModel.value = Success(it as List<Filter>)
             }
@@ -70,7 +77,7 @@ class FindNavViewModel @Inject constructor() : ViewModel() {
 
     fun fetchDynamicFilterList(productId: String) {
         val reqParams = findNavParamBuilder.generateDynamicFilterParams(productId)
-        viewModelScope.launchCatchError(block = {
+        launchCatchError(block = {
             findNavRepository.getDynamicFilterList(reqParams.paramsAllValueInString)?.let {
                 mDynamicFilterModel.value = Success(it)
             }
@@ -82,7 +89,7 @@ class FindNavViewModel @Inject constructor() : ViewModel() {
 
     fun fetchRelatedLinkList(productId: String) {
         val reqParams = findNavParamBuilder.generateRelatedLinkParams(productId)
-        viewModelScope.launchCatchError(block = {
+        launchCatchError(block = {
             findNavRepository.getRelatedLinkList(reqParams.paramsAllValueInString)?.let {
                 val relatedLinkList = ArrayList<RelatedLinkData>()
                 relatedLinkList.addAll(it.categoryTkpdFindRelated.relatedCategory)
@@ -93,5 +100,10 @@ class FindNavViewModel @Inject constructor() : ViewModel() {
             it.printStackTrace()
             mRelatedLinkList.value = Fail(it)
         })
+    }
+
+    override fun onCleared() {
+        jobs.cancel()
+        super.onCleared()
     }
 }

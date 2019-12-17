@@ -578,9 +578,9 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         if (userSession.isLoggedIn) {
             disableWishlistButton(productItem.id.toString())
             if (productItem.wishlist) {
-                removeWishlist(productItem.id.toString(), userSession.userId, position)
+                removeWishlist(productItem.id.toString(), userSession.userId)
             } else {
-                addWishlist(productItem.id.toString(), userSession.userId, position)
+                addWishlist(productItem.id.toString(), userSession.userId)
             }
         } else {
             launchLoginActivity()

@@ -49,7 +49,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_category_nav.*
 import kotlinx.android.synthetic.main.activity_category_nav.layout_no_data
-import kotlinx.android.synthetic.main.fragment_product_nav.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
 
@@ -294,7 +293,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private fun applyFilter(filterParameter: Map<String, String>?) {
 
-        if (filterParameter == null) return;
+        if (filterParameter == null) return
 
         val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
 
