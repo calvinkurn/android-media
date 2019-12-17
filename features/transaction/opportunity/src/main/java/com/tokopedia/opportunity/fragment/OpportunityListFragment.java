@@ -23,7 +23,6 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.activity.OpportunityDetailActivity;
 import com.tokopedia.opportunity.activity.OpportunityFilterActivity;
@@ -31,6 +30,7 @@ import com.tokopedia.opportunity.activity.OpportunitySortActivity;
 import com.tokopedia.opportunity.adapter.OpportunityListAdapter;
 import com.tokopedia.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.opportunity.common.showcase.ShowCaseDialogFactory;
+import com.tokopedia.opportunity.common.util.RefreshHandler;
 import com.tokopedia.opportunity.di.component.OpportunityComponent;
 import com.tokopedia.opportunity.di.module.OpportunityModule;
 import com.tokopedia.opportunity.domain.param.GetOpportunityListParam;
@@ -258,7 +258,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         opportunityList.setLayoutManager(layoutManager);
         opportunityList.setAdapter(adapter);
 
-        refreshHandler = new RefreshHandler(getActivity(), view, onRefresh());
+        refreshHandler = new RefreshHandler(view, onRefresh());
         headerInfo.setVisibility(View.VISIBLE);
     }
 
@@ -275,12 +275,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     }
 
     private RefreshHandler.OnRefreshHandlerListener onRefresh() {
-        return new RefreshHandler.OnRefreshHandlerListener() {
-            @Override
-            public void onRefresh(View view) {
-                resetOpportunityList();
-            }
-        };
+        return this::resetOpportunityList;
     }
 
     private void resetOpportunityList() {
