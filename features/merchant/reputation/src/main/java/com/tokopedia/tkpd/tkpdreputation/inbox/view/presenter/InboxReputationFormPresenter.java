@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewValidateUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
@@ -20,6 +19,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SkipReviewSubscri
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class InboxReputationFormPresenter
     private final GetSendReviewFormUseCase getSendReviewFormUseCase;
     private final SendReviewValidateUseCase sendReviewValidateUseCase;
     private final SkipReviewUseCase skipReviewUseCase;
-    private final SessionHandler sessionHandler;
+    private final UserSessionInterface userSession;
     private final EditReviewUseCase editReviewUseCase;
     private final EditReviewValidateUseCase editReviewValidateUseCase;
     private InboxReputationForm.View viewListener;
@@ -56,7 +56,7 @@ public class InboxReputationFormPresenter
                                  SkipReviewUseCase skipReviewUseCase,
                                  EditReviewUseCase editReviewUseCase,
                                  EditReviewValidateUseCase editReviewValidateUseCase,
-                                 SessionHandler sessionHandler) {
+                                 UserSessionInterface userSession) {
         this.sendReviewValidateUseCase = sendReviewValidateUseCase;
         this.sendReviewUseCase = sendReviewUseCase;
         this.setReviewFormCacheUseCase = setReviewFormCacheUseCase;
@@ -64,7 +64,7 @@ public class InboxReputationFormPresenter
         this.skipReviewUseCase = skipReviewUseCase;
         this.editReviewUseCase = editReviewUseCase;
         this.editReviewValidateUseCase = editReviewValidateUseCase;
-        this.sessionHandler = sessionHandler;
+        this.userSession = userSession;
     }
 
     @Override
@@ -180,7 +180,7 @@ public class InboxReputationFormPresenter
     public void skipReview(String reputationId, String shopId, String productId) {
         viewListener.showLoadingProgress();
         skipReviewUseCase.execute(SkipReviewUseCase.getParam(reputationId, shopId, productId,
-                sessionHandler.getLoginID()), new SkipReviewSubscriber(viewListener));
+                userSession.getUserId()), new SkipReviewSubscriber(viewListener));
     }
 
     @Override

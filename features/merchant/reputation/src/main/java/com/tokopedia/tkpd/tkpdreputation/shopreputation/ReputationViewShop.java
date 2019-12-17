@@ -40,7 +40,6 @@ import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.ToolTipUtils;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.ActReputationRetrofitInteractor;
@@ -49,6 +48,8 @@ import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.pojo.ActResult;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.view.viewmodel.ActReviewPass;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.view.viewmodel.ImageUpload;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -120,6 +121,7 @@ public class ReputationViewShop extends TActivity {
     private ProgressDialog progressDialog;
     private ImageUploadAdapter imageAdapter;
     private ActReputationRetrofitInteractor networkInteractor;
+    private UserSessionInterface userSession;
 
     private class ViewHolder {
         ImageView avatar;
@@ -175,6 +177,7 @@ public class ReputationViewShop extends TActivity {
         holder = new ViewHolder();
         holderComment = new ViewHolderComment();
         initView();
+        initVar();
         imageAdapter = ImageUploadAdapter.createAdapter(this);
         imageAdapter.setListener(onImageClickedListener());
         holder.imageHolder.setAdapter(imageAdapter);
@@ -253,6 +256,10 @@ public class ReputationViewShop extends TActivity {
         holderComment.postCommentBox = (EditText) findViewById(R.id.reply_box);
         holderComment.postCommentButton = (ImageButton) findViewById(R.id.send_button);
         holderComment.postCommentView = findViewById(R.id.reply_view);
+    }
+
+    private void initVar() {
+        userSession = new UserSession(getBaseContext());
     }
 
     private void setModelToView() {
@@ -473,7 +480,7 @@ public class ReputationViewShop extends TActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SessionHandler.isV4Login(ReputationViewShop.this)) {
+                if (userSession.isLoggedIn()) {
                     OnLikeConnection();
                 } else {
                     showLoginOption();
@@ -531,7 +538,7 @@ public class ReputationViewShop extends TActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SessionHandler.isV4Login(ReputationViewShop.this)) {
+                if (userSession.isLoggedIn()) {
                     OnDislikeConnection();
                 } else {
                     showLoginOption();
@@ -871,7 +878,7 @@ public class ReputationViewShop extends TActivity {
             holderComment.commentView.setVisibility(View.GONE);
         }
 
-        if (SessionHandler.isV4Login(getBaseContext()) && isProductOwner()) {
+        if (userSession.isLoggedIn() && isProductOwner()) {
             holder.overFlow.setVisibility(View.VISIBLE);
             holderComment.buttonOverflow.setVisibility(View.VISIBLE);
         } else {
@@ -888,8 +895,7 @@ public class ReputationViewShop extends TActivity {
     }
 
     private boolean isProductOwner() {
-        SessionHandler session = new SessionHandler(this);
-        return model.userIdResponder.equals(session.getLoginID());
+        return model.userIdResponder.equals(userSession.getUserId());
     }
 
     private boolean isResponded() {

@@ -8,11 +8,11 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewRequestModel;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.repository.ImageUploadRepository;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.model.UploadImageDomain;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,12 +45,15 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
     private static final String UPLOAD_ATTACHMENT = "/upload/attachment";
 
     private ImageUploadRepository imageUploadRepository;
+    private UserSessionInterface userSession;
 
     public UploadImageUseCase(ThreadExecutor threadExecutor,
                               PostExecutionThread postExecutionThread,
-                              ImageUploadRepository imageUploadRepository) {
+                              ImageUploadRepository imageUploadRepository,
+                              UserSessionInterface userSession) {
         super(threadExecutor, postExecutionThread);
         this.imageUploadRepository = imageUploadRepository;
+        this.userSession = userSession;
     }
 
     @Override
@@ -69,8 +72,7 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
 
     private Map<String, RequestBody> generateRequestBody(RequestParams requestParams) {
         Map<String, String> paramsMap = AuthUtil.generateParams(
-                requestParams.getString(PARAM_USER_ID,
-                        SessionHandler.getLoginID(MainApplication.getAppContext())),
+                requestParams.getString(PARAM_USER_ID, userSession.getUserId()),
                 requestParams.getString(PARAM_DEVICE_ID,
                         GCMHandler.getRegistrationId(MainApplication.getAppContext())),
                 new HashMap<String, String>()

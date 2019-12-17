@@ -313,11 +313,13 @@ public class ReputationModule {
     UploadImageUseCase
     provideUploadImageUseCase(ThreadExecutor threadExecutor,
                               PostExecutionThread postExecutionThread,
-                              ImageUploadRepository imageUploadRepository) {
+                              ImageUploadRepository imageUploadRepository,
+                              UserSessionInterface userSession) {
         return new UploadImageUseCase(
                 threadExecutor,
                 postExecutionThread,
-                imageUploadRepository);
+                imageUploadRepository,
+                userSession);
     }
 
     @ReputationScope

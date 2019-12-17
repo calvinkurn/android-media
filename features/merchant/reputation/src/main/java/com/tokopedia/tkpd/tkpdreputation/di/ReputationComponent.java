@@ -6,6 +6,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDeta
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFormFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationReportFragment;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.fragment.ReputationProductFragment;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductFragment;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 
@@ -32,4 +33,6 @@ public interface ReputationComponent {
     void inject(ReviewShopFragment shopReviewFragment);
 
     void inject(CreateReviewFragment createReviewFragment);
+
+    void inject(ReputationProductFragment reputationProductFragment);
 }

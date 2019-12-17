@@ -38,7 +38,6 @@ import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.StarGenerator;
 import com.tokopedia.core.util.ToolTipUtils;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -70,6 +69,8 @@ import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.adapter.ImageUpl
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.listener.ReputationProductFragmentView;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.presenter.ReputationProductViewFragmentPresenter;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.presenter.ReputationProductViewFragmentPresenterImpl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -109,6 +110,8 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
     private LikeDislikeUseCase likeDislikeUseCase;
     private PostReportUseCase postReportUseCase;
     private DeleteCommentUseCase deleteCommentUseCase;
+
+    private UserSessionInterface userSession;
 
     public static ReputationProductFragment createInstance(String ProductID, String ShopID, ReviewProductModel Model) {
         ReputationProductFragment fragment = new ReputationProductFragment();
@@ -232,6 +235,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         model = ((ReviewProductModel) getArguments().getParcelable("data"));
         shopID = getArguments().getString("shop_id");
         productID = getArguments().getString("product_id");
+        userSession = new UserSession(context);
     }
 
     @Override
@@ -352,7 +356,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
             holderComment.commentView.setVisibility(View.GONE);
         }
 
-        if (SessionHandler.isV4Login(getActivity()) && isProductOwner()) {
+        if (userSession.isLoggedIn() && isProductOwner()) {
             holder.overFlow.setVisibility(View.VISIBLE);
             holderComment.buttonOverflow.setVisibility(View.VISIBLE);
         } else {
@@ -376,9 +380,8 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
     }
 
     private boolean isProductOwner() {
-        SessionHandler session = new SessionHandler(getActivity());
         try {
-            return String.valueOf(model.getReviewProductOwner().getUserId()).equals(session.getLoginID());
+            return String.valueOf(model.getReviewProductOwner().getUserId()).equals(userSession.getUserId());
         } catch (Exception e) {
             return false;
         }
@@ -525,7 +528,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SessionHandler.isV4Login(getActivity())) {
+                if (userSession.isLoggedIn()) {
                     OnLikeConnection();
                 } else {
                     showLoginOption();
@@ -582,7 +585,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SessionHandler.isV4Login(getActivity())) {
+                if (userSession.isLoggedIn()) {
                     OnDislikeConnection();
                 } else {
                     showLoginOption();

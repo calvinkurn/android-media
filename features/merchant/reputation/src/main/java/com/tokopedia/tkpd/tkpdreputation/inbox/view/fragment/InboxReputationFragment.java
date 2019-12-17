@@ -8,12 +8,9 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
-import android.widget.LinearLayout;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
@@ -27,7 +24,6 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
@@ -77,9 +73,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Inject
     GlobalCacheManager cacheManager;
-
-    @Inject
-    SessionHandler sessionHandler;
 
     public static Fragment createInstance(int tab) {
         InboxReputationFragment fragment = new InboxReputationFragment();

@@ -27,6 +27,8 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.SectionsPagerAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +54,7 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
 
     private ViewPager viewPager;
     private TabLayout indicator;
+    private UserSessionInterface userSession;
 
     private boolean goToReputationHistory;
 
@@ -72,6 +75,7 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
         super.onCreate(savedInstanceState);
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+        userSession = new UserSession(this);
     }
 
     @Override
@@ -126,7 +130,7 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
                     .title_tab_my_review)));
         }
 
-        if (sessionHandler.isUserHasShop(this)) {
+        if (userSession.hasShop()) {
             indicator.addTab(indicator.newTab().setText(getString(R.string
                     .title_tab_buyer_review)));
         }
@@ -191,7 +195,7 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
             fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
-            if (sessionHandler.isUserHasShop(this)) {
+            if (userSession.hasShop()) {
                 fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
             }
         }
@@ -203,7 +207,9 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
     protected void setViewListener() { }
 
     @Override
-    protected void initVar() { }
+    protected void initVar() {
+
+    }
 
     @Override
     protected void setActionVar() { }

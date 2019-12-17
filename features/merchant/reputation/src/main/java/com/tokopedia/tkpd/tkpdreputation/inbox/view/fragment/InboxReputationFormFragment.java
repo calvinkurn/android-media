@@ -49,7 +49,6 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -70,6 +69,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageA
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
@@ -121,7 +121,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     InboxReputationFormPresenter presenter;
 
     @Inject
-    SessionHandler sessionHandler;
+    UserSessionInterface userSession;
 
     @Inject
     ReputationTracking reviewTracker;
@@ -463,7 +463,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     }
 
     private String getAnonymousName() {
-        String name = sessionHandler.getLoginName();
+        String name = userSession.getName();
         String first = name.substring(0, 1);
         String last = name.substring(name.length() - 1);
         return first + "***" + last;

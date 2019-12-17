@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.FavoriteShopUseCase;
@@ -15,6 +14,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetInboxReputatio
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.RefreshInboxReputationDetailSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.ReplyReviewSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SendSmileySubscriber;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -28,7 +28,7 @@ public class InboxReputationDetailPresenter
 
     private static final String SRC_INBOX_REPUTATION_DETAIL = "inbox_reputation_detail";
     private final GetInboxReputationDetailUseCase getInboxReputationDetailUseCase;
-    private final SessionHandler sessionHandler;
+    private final UserSessionInterface userSession;
     private final SendSmileyReputationUseCase sendSmileyReputationUseCase;
     private final FavoriteShopUseCase favoriteShopUseCase;
     private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
@@ -43,13 +43,13 @@ public class InboxReputationDetailPresenter
             DeleteReviewResponseUseCase deleteReviewResponseUseCase,
             SendReplyReviewUseCase sendReplyReviewUseCase,
             LikeDislikeReviewUseCase likeDislikeReviewUseCase,
-            SessionHandler sessionHandler) {
+            UserSessionInterface userSession) {
         this.getInboxReputationDetailUseCase = getInboxReputationDetailUseCase;
         this.sendSmileyReputationUseCase = sendSmileyReputationUseCase;
         this.favoriteShopUseCase = favoriteShopUseCase;
         this.deleteReviewResponseUseCase = deleteReviewResponseUseCase;
         this.sendReplyReviewUseCase = sendReplyReviewUseCase;
-        this.sessionHandler = sessionHandler;
+        this.userSession = userSession;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class InboxReputationDetailPresenter
         viewListener.showLoading();
         getInboxReputationDetailUseCase.execute(
                 GetInboxReputationDetailUseCase.getParam(reputationId,
-                        sessionHandler.getLoginID(),
+                        userSession.getUserId(),
                         tab),
                 new GetInboxReputationDetailSubscriber(viewListener));
     }
@@ -124,7 +124,7 @@ public class InboxReputationDetailPresenter
         viewListener.showRefresh();
         getInboxReputationDetailUseCase.execute(
                 GetInboxReputationDetailUseCase.getParam(reputationId,
-                        sessionHandler.getLoginID(),
+                        userSession.getUserId(),
                         tab),
                 new RefreshInboxReputationDetailSubscriber(viewListener));
     }
