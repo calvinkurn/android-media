@@ -35,6 +35,7 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 }
 
 project.ext {
