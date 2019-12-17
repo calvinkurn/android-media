@@ -417,7 +417,9 @@ open class DynamicPostViewHolder(v: View,
     private fun bindComment(comment: Comment) {
         itemView.commentText.text =
                 if (comment.value == 0) if(comment.fmt.isNotEmpty()) comment.fmt else getString(R.string.kol_action_comment)
-                else comment.fmt
+                else {
+                    if (comment.fmt.isNotEmpty()) comment.fmt else comment.value.toString()
+                }
     }
 
     private fun bindPostTag(postId: Int, postTag: PostTag, template: TemplateBody, feedType: String, authorType: String) {
