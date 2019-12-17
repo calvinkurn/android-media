@@ -22,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -95,11 +96,6 @@ class PlayViewModel @Inject constructor(
         playManager.resumeCurrentVideo()
     }
 
-//    fun initVideo() {
-//         startVideoWithUrlString("http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4",  false)
-////        startVideoWithUrlString("rtmp://fms.105.net/live/rmc1", true)
-//    }
-
     // TODO don't forget to destroy socket
     fun destroy() {
         playSocket.destroy()
@@ -109,8 +105,10 @@ class PlayViewModel @Inject constructor(
         playSocket.channelId = channelId
         playSocket.gcToken = gcToken
         playSocket.connect( onOpen ={
+            Timber.tag("PlaySocket").d("onOpen")
             // Todo, handle on open web socket
         }, onClose =  {
+            Timber.tag("PlaySocket").d("onClose")
             // Todo, handle on close web socket
         }, onMessageReceived =  { response ->
             launch {
@@ -145,6 +143,7 @@ class PlayViewModel @Inject constructor(
                 }
             }
         }, onError = {
+            Timber.tag("PlaySocket").e(it)
             // Todo, handle on error web socket
         })
     }
