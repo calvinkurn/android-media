@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.TopAdsViewHolder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -85,14 +84,6 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         return allowedViewTypes.contains(viewType);
     }
 
-    private boolean isAdsItem(RecyclerView parent, int viewPosition) {
-        final RecyclerView.Adapter adapter = parent.getAdapter();
-        if (viewPosition < 0 || viewPosition > adapter.getItemCount() - 1) {
-            return false;
-        }
-        final int viewType = adapter.getItemViewType(viewPosition);
-        return viewType == TopAdsViewHolder.LAYOUT;
-    }
 
     @Override
     public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
