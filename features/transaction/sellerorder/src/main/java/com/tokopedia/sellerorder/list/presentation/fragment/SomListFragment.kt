@@ -427,6 +427,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         onLoadMore = false
         isLoading = true
         somListItemAdapter.removeAll()
+        nextOrderId = 0
         loadOrderList(nextOrderId)
         if (isFilterApplied) filter_action_button?.rightIconDrawable = resources.getDrawable(R.drawable.ic_som_check)
         else filter_action_button?.rightIconDrawable = null
