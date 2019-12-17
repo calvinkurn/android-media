@@ -1,9 +1,10 @@
 package com.tokopedia.product.detail.usecase
 
+import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.data.model.TradeinParams
 import com.tokopedia.product.detail.data.model.TradeinResponse
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.usecase.RequestParams
@@ -14,7 +15,7 @@ class GetTradeinInfoUseCase @Inject constructor(private val rawQueries: Map<Stri
                                                 private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<TradeinResponse>() {
 
     companion object {
-        fun createParams(tradeinParams: TradeinParams): RequestParams =
+        fun createParams(tradeinParams: TradeInParams): RequestParams =
                 RequestParams.create().apply {
                     putObject(ProductDetailCommonConstant.PARAMS, tradeinParams)
                 }
@@ -30,10 +31,10 @@ class GetTradeinInfoUseCase @Inject constructor(private val rawQueries: Map<Stri
         gqlUseCase.addRequests(listOf(request))
 
         val gqlResponse = gqlUseCase.executeOnBackground()
-        val error = gqlResponse.getError(TradeinResponse::class.java) ?: listOf()
+        val error: List<GraphqlError>? = gqlResponse.getError(TradeinResponse::class.java)
         val data = gqlResponse.getData<TradeinResponse>(TradeinResponse::class.java)
 
-        if (data == null || error.isNotEmpty()) {
+        if (data == null || (error != null && error.isNotEmpty())) {
             return TradeinResponse()
         }
 

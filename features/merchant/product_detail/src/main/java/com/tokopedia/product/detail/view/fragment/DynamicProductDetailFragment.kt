@@ -6,7 +6,6 @@ import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
@@ -26,7 +25,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.snackbar.Snackbar
@@ -50,8 +48,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.common_tradein.customviews.TradeInTextView
-import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -132,7 +128,6 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
-import kotlinx.android.synthetic.main.partial_product_detail_header.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
@@ -172,7 +167,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     lateinit var dynamicProductDetailTracking: DynamicProductDetailTracking
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var tradeInBroadcastReceiver: TradeInBroadcastReceiver
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
@@ -236,8 +230,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         initBtnAction()
         initToolbar()
         initStickyLogin(view)
-        initTradein()
-
 
         if (isAffiliate) {
             actionButtonView.gone()
@@ -289,13 +281,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         outState.putString(ProductDetailConstant.SAVED_NOTE, userInputNotes)
         outState.putInt(ProductDetailConstant.SAVED_QUANTITY, userInputQuantity)
         outState.putString(ProductDetailConstant.SAVED_VARIANT, userInputVariant)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        context?.let {
-            LocalBroadcastManager.getInstance(it).unregisterReceiver(tradeInBroadcastReceiver)
-        }
     }
 
     override fun onPause() {
@@ -425,9 +410,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productTradeinMap)
             } else {
                 pdpHashMapUtil.productTradeinMap?.run {
-                    description = getString(R.string.tradein_template, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+                    pdpHashMapUtil.snapShotMap.shouldShowTradein = true
+                    description = if (tradeinResponse.usedPrice > 0) {
+                        getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+                    } else {
+                        getString(R.string.trade_in_exchange)
+                    }
                 }
             }
+
+            trackProductView(tradeinResponse.isEligible)
         })
 
         viewModel.loadTopAdsProduct.observe(this, Observer {
@@ -1634,25 +1626,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private fun showToasterError(message: String) {
         context?.let {
             Toast.makeText(it, message, Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun initTradein() {
-        tradeInBroadcastReceiver = TradeInBroadcastReceiver()
-        tradeInBroadcastReceiver.setBroadcastListener { it, desc ->
-            if (it) {
-                if (tv_trade_in_promo != null) {
-                    pdpHashMapUtil.snapShotMap.shouldShowTradein = true
-                    pdpHashMapUtil.productTradeinMap?.run { description = desc }
-                    dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_TRADEIN)
-                }
-            } else {
-                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productTradeinMap)
-            }
-            trackProductView(it)
-        }
-        context?.let {
-            LocalBroadcastManager.getInstance(it).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
         }
     }
 

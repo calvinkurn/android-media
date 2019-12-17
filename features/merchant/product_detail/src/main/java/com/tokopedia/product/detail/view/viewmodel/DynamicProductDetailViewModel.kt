@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -88,7 +89,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     var shopInfo: ShopInfo? = null
     var installmentData: FinancingDataResponse? = null
     private var shouldShowTradein = true
-    var tradeInParams: TradeinParams = TradeinParams()
+    var tradeInParams: TradeInParams = TradeInParams()
 
     private var submitTicketSubscription: Subscription? = null
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
@@ -150,10 +151,13 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             val initialLayoutData = productData.listOfLayout
             getDynamicProductInfoP1 = productData.layoutData
 
+            //Remove any unused component based on P1 / PdpLayout
             removeDynamicComponent(initialLayoutData)
 
             //Render initial data first
             productLayout.value = Success(initialLayoutData)
+
+            // Render tradein based on P1
             val tradeinParams = renderTradein(getDynamicProductInfoP1, deviceId)
             if (shouldShowTradein) {
                 getTradein(tradeinParams)
@@ -167,13 +171,20 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         }
     }
 
-    private suspend fun getTradein(tradeinParams: TradeinParams) {
+    private suspend fun getTradein(tradeinParams: TradeInParams) {
         getTradeinInfoUseCase.params = GetTradeinInfoUseCase.createParams(tradeinParams)
-        tradeinResult.value = getTradeinInfoUseCase.executeOnBackground()
+        getTradeinInfoUseCase.executeOnBackground().let {
+            val tradeInResponse = it.validateTradeInPDP
+            tradeInParams.isEligible = if (tradeInResponse.isEligible) 1 else 0
+            tradeInParams.usedPrice = tradeInResponse.usedPrice
+            tradeInParams.remainingPrice = tradeInResponse.remainingPrice
+            tradeInParams.isUseKyc = if (tradeInResponse.useKyc) 1 else 0
+
+            tradeinResult.value = getTradeinInfoUseCase.executeOnBackground()
+        }
     }
 
-    private fun renderTradein(productInfoP1: DynamicProductInfoP1?, deviceId: String?): TradeinParams {
-        tradeInParams = TradeinParams()
+    private fun renderTradein(productInfoP1: DynamicProductInfoP1?, deviceId: String?): TradeInParams {
         productInfoP1?.let {
             tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
             tradeInParams.deviceId = deviceId ?: ""
@@ -181,12 +192,12 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                 userId.toIntOrZero()
             else
                 0
-            tradeInParams.newPrice = it.data.price.value
+            tradeInParams.setPrice(it.data.price.value)
             tradeInParams.productId = it.basic.getProductId()
             tradeInParams.shopId = it.basic.getShopId()
             tradeInParams.productName = it.getProductName
 
-            tradeInParams.isPreOrder = it.data.preOrder.isPreOrderActive()
+            tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()
             tradeInParams.isOnCampaign = it.data.campaign.isActive
         }
 

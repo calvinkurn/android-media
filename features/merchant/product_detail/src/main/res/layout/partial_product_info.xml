@@ -41,7 +41,7 @@
     <View
         android:id="@+id/separator_desc"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_5"
+        android:layout_height="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_16"
         android:background="#f3f4f5"
         app:layout_constraintTop_toBottomOf="@+id/rv_info"

@@ -16,29 +16,29 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.utils.ImpresionTask
-import kotlinx.android.synthetic.main.partial_product_recom_1.view.*
+import kotlinx.android.synthetic.main.item_dynamic_recommendation.view.*
 
 class ProductRecommendationViewHolder(private val view: View,
                                       private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductRecommendationDataModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.partial_product_recom_1
+        val LAYOUT = R.layout.item_dynamic_recommendation
     }
 
     override fun bind(element: ProductRecommendationDataModel) {
-        view.product_recom_1.gone()
+        view.rvProductRecom.gone()
         view.visible()
-        view.loading_recom_1.visible()
+        view.loadingRecom.visible()
         element.recomWidgetData?.run {
-            view.loading_recom_1.gone()
-            view.title_recom_1.text = title
-            view.product_recom_1.show()
+            view.loadingRecom.gone()
+            view.titleRecom.text = title
+            view.rvProductRecom.show()
             if (seeMoreAppLink.isNotEmpty()) {
-                view.see_more_recom_1.show()
+                view.seeMoreRecom.show()
             } else {
-                view.see_more_recom_1.hide()
+                view.seeMoreRecom.hide()
             }
-            view.see_more_recom_1.setOnClickListener {
+            view.seeMoreRecom.setOnClickListener {
                 listener.onSeeAllRecomClicked(pageName, seeMoreAppLink)
             }
             initAdapter(this, element.cardModel)
@@ -46,7 +46,7 @@ class ProductRecommendationViewHolder(private val view: View,
     }
 
     private fun initAdapter(product: RecommendationWidget, cardModel: List<ProductCardModel>?) {
-        view.product_recom_1.initCarouselProductCardView(
+        view.rvProductRecom.initCarouselProductCardView(
                 parentView = view,
                 isScrollable = true,
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {

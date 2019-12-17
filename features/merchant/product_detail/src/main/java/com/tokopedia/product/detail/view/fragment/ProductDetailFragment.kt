@@ -6,7 +6,6 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
@@ -30,7 +29,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
@@ -51,6 +49,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -132,9 +131,6 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
-import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.common_tradein.customviews.TradeInTextView
-import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.dialog.UnifyDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
@@ -144,6 +140,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_product_detail.*
+import kotlinx.android.synthetic.main.fragment_product_detail.baseTradein
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_most_helpful_review_view.*
@@ -159,6 +156,7 @@ import kotlinx.android.synthetic.main.partial_product_recom_2.*
 import kotlinx.android.synthetic.main.partial_product_recom_3.*
 import kotlinx.android.synthetic.main.partial_product_recom_4.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
+import kotlinx.android.synthetic.main.partial_product_trade_in.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import javax.inject.Inject
@@ -221,7 +219,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var shopCod: Boolean = false
     private var shouldShowCod = false
     private lateinit var tradeInParams: TradeInParams
-    private lateinit var tradeInBroadcastReceiver: TradeInBroadcastReceiver
 
     var loadingProgressDialog: ProgressDialog? = null
     val errorBottomsheets: ErrorBottomsheets by lazy {
@@ -245,6 +242,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
 
     private var isWishlisted = false
+    private var deviceId: String = ""
 
     override val isUserSessionActive: Boolean
         get() = if (!::productInfoViewModel.isInitialized) false else productInfoViewModel.isUserSessionActive()
@@ -353,6 +351,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
             deeplinkUrl = it.getString(ARG_DEEPLINK_URL, "")
         }
+        deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
+
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             productInfoViewModel = viewModelProvider.get(ProductInfoViewModel::class.java)
@@ -378,6 +378,34 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 is Success -> onSuccessGetProductInfo(it.data)
                 is Fail -> onErrorGetProductInfo(it.throwable)
             }
+        })
+
+        productInfoViewModel.tradeinResult.observe(this, Observer {
+
+            val tradeInResponse = it.validateTradeInPDP
+            tradeInParams.isEligible = if (tradeInResponse.isEligible) 1 else 0
+            tradeInParams.usedPrice = tradeInResponse.usedPrice
+            tradeInParams.remainingPrice = tradeInResponse.remainingPrice
+            tradeInParams.isUseKyc = if (tradeInResponse.useKyc) 1 else 0
+
+            if (tradeInResponse.isEligible) {
+                if (tv_trade_in_promo != null) {
+                    tv_trade_in_promo.visible()
+                    tv_available_at?.visible()
+                }
+
+                tv_text_price.text = if (tradeInResponse.usedPrice > 0) {
+                    getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInResponse.usedPrice, true))
+                } else {
+                    getString(R.string.trade_in_exchange)
+                }
+
+                baseTradein.show()
+            } else {
+                baseTradein.hide()
+            }
+
+            trackProductView(tradeInResponse.isEligible)
         })
 
         productInfoViewModel.p2ShopDataResp.observe(this, Observer {
@@ -491,20 +519,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
         }
         et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
-
-        tradeInBroadcastReceiver = TradeInBroadcastReceiver()
-        tradeInBroadcastReceiver.setBroadcastListener { it , desc ->
-            if (it) {
-                if (tv_trade_in_promo != null) {
-                    tv_trade_in_promo.visible()
-                    tv_available_at?.visible()
-                }
-            }
-            trackProductView(it)
-        }
-        context?.let {
-            LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
-        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
@@ -676,7 +690,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             val size = Point()
             display.getSize(size)
             val screenHeight = size.y
-            nested_scroll.smoothScrollTo(0, tv_trade_in.bottom - (screenHeight / 2))
+            nested_scroll.smoothScrollTo(0, baseTradein.bottom - (screenHeight / 2))
         }
     }
 
@@ -1090,7 +1104,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             hideRecommendationView()
         }
         if (productId != null || (productKey != null && shopDomain != null)) {
-            productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), forceRefresh)
+            productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey, deviceId = deviceId), forceRefresh)
             // Add new Impression after refresh for lazy load
             addLoadMoreImpression()
         }
@@ -1705,8 +1719,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         else
             tradeInParams.isPreorder = false
         tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
-        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false, activity?.application)
-        tv_trade_in.setOnClickListener {
+        baseTradein.setOnClickListener {
             goToNormalCheckout(TRADEIN_BUY)
             tradeInParams?.let {
                 if (tradeInParams.usedPrice > 0)
@@ -2295,13 +2308,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         outState.putString(SAVED_NOTE, userInputNotes)
         outState.putInt(SAVED_QUANTITY, userInputQuantity)
         outState.putString(SAVED_VARIANT, userInputVariant)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        context?.let {
-            LocalBroadcastManager.getInstance(it).unregisterReceiver(tradeInBroadcastReceiver)
-        }
     }
 
     private fun updateStickyContent() {

@@ -65,6 +65,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 listener.onReviewClick()
             }
             review_count.text = context.getString(R.string.review_counter, rating.totalRating)
+            review_rating.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_rating_gold), null)
             review_rating.text = context.getString(R.string.counter_pattern_string, rating.ratingScore, 5)
 
             if (rating.totalRating > 0) container_image_review.visible() else container_image_review.gone()
