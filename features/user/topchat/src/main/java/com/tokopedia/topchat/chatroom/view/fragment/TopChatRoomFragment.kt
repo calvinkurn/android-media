@@ -850,7 +850,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {
         analytics.eventClickBannedProduct(viewModel)
         presenter.onClickBannedProduct(viewModel.liteUrl)
-        val asd= ItuUsecase()
     }
 
     override fun redirectToBrowser(url: String) {
