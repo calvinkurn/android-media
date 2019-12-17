@@ -13,7 +13,7 @@ data class ChannelInfoUiModel(
         val partner: PartnerUiModel,
         val totalView: String,
         val pinnedMessage: PinnedMessageUiModel?,
-        val quickReply: List<String>
+        val quickReply: QuickReplyUiModel
 )
 
 data class PartnerUiModel(

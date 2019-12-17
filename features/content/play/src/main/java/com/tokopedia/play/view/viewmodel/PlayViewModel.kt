@@ -170,7 +170,7 @@ class PlayViewModel @Inject constructor(
             ),
             videoStream = mapVideoStream(videoStream),
             pinnedMessage = mapPinnedMessage(channel.pinnedMessage),
-            quickReply = channel.quickReply,
+            quickReply = mapQuickReply(channel.quickReply),
             totalView = channel.totalViews
     )
 
@@ -187,5 +187,6 @@ class PlayViewModel @Inject constructor(
             isActive = videoStream.isActive
     )
 
-    private fun mapQuickReply(quickReply: QuickReply) = quickReply.data
+    private fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList)
+    private fun mapQuickReply(quickReply: QuickReply) = mapQuickReply(quickReply.data)
 }

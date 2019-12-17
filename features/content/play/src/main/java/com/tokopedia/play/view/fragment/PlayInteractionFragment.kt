@@ -38,6 +38,7 @@ import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
+import com.tokopedia.play.view.uimodel.QuickReplyUiModel
 import com.tokopedia.play.view.uimodel.VideoStreamUiModel
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -611,7 +612,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
 
-    private fun setQuickReply(quickReply: List<String>) {
+    private fun setQuickReply(quickReply: QuickReplyUiModel) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
