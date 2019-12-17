@@ -352,9 +352,9 @@ class ValidatorFragment: BaseDaggerFragment(){
     }
 
     private fun resendDialog(email: String) {
-        if (activity != null) {
-            val dialogMessage = getString(R.string.message_resend_email_to) + " <b>" + email + "</b>"
-            AlertDialog.Builder(activity!!)
+        val dialogMessage = getString(R.string.message_resend_email_to) + " <b>" + email + "</b>"
+        activity?.let {
+            AlertDialog.Builder(it)
                     .setTitle(R.string.resend_activation_email)
                     .setMessage(MethodChecker.fromHtml(dialogMessage))
                     .setPositiveButton(android.R.string.yes) { dialog, which ->
@@ -363,7 +363,7 @@ class ValidatorFragment: BaseDaggerFragment(){
                     }
                     .setNegativeButton(R.string.cancel_dialog_change_email){ dialog, which ->
                         analytics.trackFailedClickResendButton(
-                                activity!!.getString(R.string.change_email_error_condition))
+                                it.getString(R.string.change_email_error_condition))
                         dialog.dismiss()
                     }
                     .show()
