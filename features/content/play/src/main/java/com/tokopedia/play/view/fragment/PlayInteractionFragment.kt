@@ -39,6 +39,7 @@ import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.QuickReplyUiModel
+import com.tokopedia.play.view.uimodel.TotalViewUiModel
 import com.tokopedia.play.view.uimodel.VideoStreamUiModel
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -210,9 +211,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeTotalViews() {
-        playViewModel.observableTotalViewsSocket.observe(viewLifecycleOwner, Observer {
-            setTotalView(it.totalView)
-        })
+        playViewModel.observableTotalViewsSocket.observe(viewLifecycleOwner, Observer(::setTotalView))
     }
 
     private fun observeChatList() {
@@ -591,7 +590,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
 
-    private fun setTotalView(totalView: String) {
+    private fun setTotalView(totalView: TotalViewUiModel) {
        launch {
            EventBusFactory.get(viewLifecycleOwner)
                    .emit(

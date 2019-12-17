@@ -11,7 +11,7 @@ data class ChannelInfoUiModel(
         val description: String,
         val videoStream: VideoStreamUiModel,
         val partner: PartnerUiModel,
-        val totalView: String,
+        val totalView: TotalViewUiModel,
         val pinnedMessage: PinnedMessageUiModel?,
         val quickReply: QuickReplyUiModel
 )

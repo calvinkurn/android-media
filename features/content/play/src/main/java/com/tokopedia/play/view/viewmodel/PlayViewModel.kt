@@ -48,8 +48,8 @@ class PlayViewModel @Inject constructor(
     private val _observableChatListSocket = MutableLiveData<PlayChat>()
     val observableChatListSocket: LiveData<PlayChat> = _observableChatListSocket
 
-    private val _observableTotalViewsSocket = MutableLiveData<TotalView>()
-    val observableTotalViewsSocket: LiveData<TotalView> = _observableTotalViewsSocket
+    private val _observableTotalViewsSocket = MutableLiveData<TotalViewUiModel>()
+    val observableTotalViewsSocket: LiveData<TotalViewUiModel> = _observableTotalViewsSocket
 
     private val _observablePinnedMessageSocket = MutableLiveData<PinnedMessageUiModel>()
     val observablePinnedMessageSocket: LiveData<PinnedMessageUiModel> = _observablePinnedMessageSocket
@@ -123,7 +123,7 @@ class PlayViewModel @Inject constructor(
 
                     }
                     is TotalView -> {
-                        _observableTotalViewsSocket.value = result
+                        _observableTotalViewsSocket.value = mapTotalViews(result)
                     }
                     is PlayChat -> {
                         _observableChatListSocket.value = result
@@ -171,7 +171,7 @@ class PlayViewModel @Inject constructor(
             videoStream = mapVideoStream(videoStream),
             pinnedMessage = mapPinnedMessage(channel.pinnedMessage),
             quickReply = mapQuickReply(channel.quickReply),
-            totalView = channel.totalViews
+            totalView = mapTotalViews(channel.totalViews)
     )
 
     private fun mapPinnedMessage(pinnedMessage: PinnedMessage) = PinnedMessageUiModel(
@@ -189,4 +189,7 @@ class PlayViewModel @Inject constructor(
 
     private fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList)
     private fun mapQuickReply(quickReply: QuickReply) = mapQuickReply(quickReply.data)
+
+    private fun mapTotalViews(totalViewString: String) = TotalViewUiModel(totalViewString)
+    private fun mapTotalViews(totalView: TotalView) = mapTotalViews(totalView.totalView)
 }
