@@ -17,10 +17,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener
-import com.tokopedia.transaction.insurance.utils.*
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceProductApplicationDetails
+import com.tokopedia.purchase_platform.common.insurance.utils.*
 import java.util.*
 
 

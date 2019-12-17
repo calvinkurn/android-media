@@ -3,8 +3,6 @@ package com.tokopedia.filter.newdynamicfilter.adapter
 import android.view.View
 import android.widget.CheckBox
 
-import com.tokopedia.design.list.adapter.SectionDividedItemAdapter
-import com.tokopedia.design.list.adapter.SectionTitleDictionary
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.OptionWrapper

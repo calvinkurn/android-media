@@ -112,6 +112,8 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest;
+import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsMacroInsurance;
@@ -136,9 +138,6 @@ import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.Shipment
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.transaction.common.dialog.UnifyDialog;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
-import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -824,19 +823,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutCartErrorReporter(CheckoutData checkoutData) {
-        UnifyDialog createTicketDialog = new UnifyDialog(getActivity(), UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER);
+        DialogUnify createTicketDialog = new DialogUnify(getActivityContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         createTicketDialog.setTitle(checkoutData.getErrorReporter().getTexts().getSubmitTitle());
         createTicketDialog.setDescription(checkoutData.getErrorReporter().getTexts().getSubmitDescription());
-        createTicketDialog.setSecondary(checkoutData.getErrorReporter().getTexts().getCancelButton());
-        createTicketDialog.setSecondaryOnClickListener(v -> {
+        createTicketDialog.setSecondaryCTAText(checkoutData.getErrorReporter().getTexts().getCancelButton());
+        createTicketDialog.setSecondaryCTAClickListener(() -> {
             checkoutAnalyticsCourierSelection.eventClickCloseOnHelpPopUpInCheckout();
             createTicketDialog.dismiss();
+            return Unit.INSTANCE;
         });
-        createTicketDialog.setOk(checkoutData.getErrorReporter().getTexts().getSubmitButton());
-        createTicketDialog.setOkOnClickListener(v -> {
+        createTicketDialog.setPrimaryCTAText(checkoutData.getErrorReporter().getTexts().getSubmitButton());
+        createTicketDialog.setPrimaryCTAClickListener(() -> {
             checkoutAnalyticsCourierSelection.eventClickReportOnHelpPopUpInCheckout();
             createTicketDialog.dismiss();
             shipmentPresenter.processSubmitHelpTicket(checkoutData);
+            return Unit.INSTANCE;
         });
         createTicketDialog.show();
         checkoutAnalyticsCourierSelection.eventViewHelpPopUpAfterErrorInCheckout();
@@ -880,11 +881,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult) {
-        UnifyDialog successTicketDialog = new UnifyDialog(getActivity(), UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER);
+        DialogUnify successTicketDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
         successTicketDialog.setTitle(submitTicketResult.getTexts().getSubmitTitle());
         successTicketDialog.setDescription(submitTicketResult.getTexts().getSubmitDescription());
-        successTicketDialog.setOk(submitTicketResult.getTexts().getSuccessButton());
-        successTicketDialog.setOkOnClickListener(v -> getActivity().finish());
+        successTicketDialog.setPrimaryCTAText(submitTicketResult.getTexts().getSuccessButton());
+        successTicketDialog.setPrimaryCTAClickListener(() -> {
+            getActivity().finish();
+            return Unit.INSTANCE;
+        });
         successTicketDialog.show();
     }
 

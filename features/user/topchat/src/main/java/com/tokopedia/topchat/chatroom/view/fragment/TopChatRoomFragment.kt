@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -23,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
@@ -113,7 +113,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     val REQUEST_GO_TO_SETTING_CHAT = 114
     val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
 
-    var seenAttachedProduct = HashSet<Int>()
+    private var seenAttachedProduct = HashSet<Int>()
+    private var seenAttachedBannedProduct = HashSet<Int>()
 
     protected var remoteConfig: RemoteConfig? = null
 
@@ -227,9 +228,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onToolbarClicked(): () -> Unit {
         return {
-
-            analytics.trackHeaderClicked()
-
+            analytics.trackHeaderClicked(shopId)
             goToDetailOpponent()
         }
     }
@@ -625,39 +624,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
-        activity?.let {
-            val router = (it.application as TopChatRouter)
-            (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
-            var shopId = this.shopId
-            if (shopId == 0) {
-                shopId = element.shopId
-            }
-            presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(), shopId)
-        }
+        (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
+        val buyPageIntent = presenter.getBuyPageIntent(context, element)
+        startActivity(buyPageIntent)
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         (viewState as TopChatViewState).sendAnalyticsClickATC(element)
         val atcPageIntent = presenter.getAtcPageIntent(context, element)
         startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
-    }
-
-    private fun showSnackbarAddToCart(it: AddToCartDataModel) {
-        if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
-            ToasterNormal.make(view, it.data.message[0], ToasterNormal.LENGTH_LONG).show()
-        } else {
-            ToasterError.make(view, it.errorMessage[0], ToasterNormal.LENGTH_LONG).show()
-        }
-    }
-
-    private fun onSuccessBuyFromProdAttachment(): (addToCartResult: AddToCartDataModel) -> Unit {
-        return {
-            showSnackbarAddToCart(it)
-            if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
-                activity?.startActivity((activity!!.application as TopChatRouter)
-                        .getCartIntent(activity))
-            }
-        }
     }
 
     override fun onGoToShop() {
@@ -802,6 +777,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
+    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {
+        if (seenAttachedBannedProduct.add(viewModel.productId)) {
+            analytics.eventSeenBannedProductAttachment(viewModel)
+        }
+    }
+
     override fun onClickInvoiceThumbnail(url: String, id: String) {
         onGoToWebView(url, id)
     }
@@ -865,4 +846,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         pickImageToUpload()
     }
 
+    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {
+        analytics.eventClickBannedProduct(viewModel)
+        presenter.onClickBannedProduct(viewModel.liteUrl)
+    }
+
+    override fun redirectToBrowser(url: String) {
+        if (url.isEmpty()) return
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(intent)
+    }
 }
