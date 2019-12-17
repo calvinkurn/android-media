@@ -52,15 +52,14 @@ class PlayCardViewHolder(
     }
 
     fun createHelper() {
-        if(helper == null) {
-            helper = TokopediaPlayerHelper.Builder(videoPlayer.context, videoPlayer)
-                    .setAutoPlayOn(false)
-                    .setToPrepareOnResume(false)
-                    .setVideoUrls(mVideoUrl)
-                    .setThumbImageViewEnabled(this)
-                    .setRepeatModeOn(true)
-                    .create()
-        }
+        helper = TokopediaPlayerHelper.Builder(videoPlayer.context, videoPlayer)
+                .setAutoPlayOn(false)
+                .setToPrepareOnResume(false)
+                .setVideoUrls(mVideoUrl)
+                .setExoPlayerEventsListener(this)
+                .setThumbImageViewEnabled(this)
+                .setRepeatModeOn(true)
+                .create()
     }
 
     override fun onThumbImageViewReady(imageView: ImageView) {

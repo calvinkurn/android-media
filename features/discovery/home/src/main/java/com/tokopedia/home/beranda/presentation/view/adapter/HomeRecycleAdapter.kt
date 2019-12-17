@@ -90,7 +90,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
                     if(listPlay.isNotEmpty()) {
                         //find first index visible on screen
                         val firstIndexVisible = mLayoutManager?.findFirstVisibleItemPosition() ?: -1
-
+                        
                         // always play on first item
                         val plays = listPlay.toList().sortedBy { it.second }
                         val playData = plays.first()

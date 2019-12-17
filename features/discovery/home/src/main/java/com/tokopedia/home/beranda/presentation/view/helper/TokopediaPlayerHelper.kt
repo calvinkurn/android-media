@@ -24,6 +24,7 @@ import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.PlayerView.SHOW_BUFFERING_ALWAYS
 import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.upstream.cache.*
 import com.google.android.exoplayer2.util.Util
@@ -211,10 +212,6 @@ class TokopediaPlayerHelper(
         removeThumbImageView()
     }
 
-    private fun onPlayerLoadingChanged() {
-
-    }
-
     private fun onPlayerPaused() {
         setProgressVisible(false)
     }
@@ -225,11 +222,6 @@ class TokopediaPlayerHelper(
 
         fun setVideoUrls(vararg urls: String): Builder {
             mExoPlayerHelper.setVideoUrls(*urls)
-            return this
-        }
-
-        fun setTagUrl(tagUrl: String?): Builder {
-            mExoPlayerHelper.mTagUrl = tagUrl
             return this
         }
 
@@ -256,11 +248,6 @@ class TokopediaPlayerHelper(
 
         fun setThumbImageViewEnabled(exoThumbListener: ExoThumbListener?): Builder {
             mExoPlayerHelper.setExoThumbListener(exoThumbListener)
-            return this
-        }
-
-        fun enableCache(maxCacheSizeMb: Int): Builder {
-            mExoPlayerHelper.enableCache(maxCacheSizeMb.toLong())
             return this
         }
 
@@ -325,6 +312,7 @@ class TokopediaPlayerHelper(
         mPlayer?.repeatMode = if(isRepeatModeOn) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
         mPlayer?.playWhenReady = isAutoPlayOn
         mPlayer?.addListener(this)
+        exoPlayerView.setShowBuffering(SHOW_BUFFERING_ALWAYS)
 
         createMediaSource()
 
@@ -348,7 +336,7 @@ class TokopediaPlayerHelper(
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-        if (mExoPlayerListener == null || mPlayer == null) {
+        if (mPlayer == null) {
             return
         }
         when (playbackState) {
