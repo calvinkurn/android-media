@@ -3,7 +3,11 @@
     package="com.tokopedia.attachinvoice">
 
     <application>
-        <activity android:name=".view.activity.AttachInvoiceActivity">
+        <activity
+            android:name=".view.activity.AttachInvoiceActivity"
+            android:label="@string/attachinvoice_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 

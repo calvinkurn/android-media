@@ -1,1 +1,3 @@
-<resources></resources>
+<resources>
+    <string name="attachinvoice_title">Lampirkan Invoice</string>
+</resources>
