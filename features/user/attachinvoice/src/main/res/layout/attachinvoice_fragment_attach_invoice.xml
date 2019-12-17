@@ -44,7 +44,7 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/send_button_attach_product"
+            android:id="@+id/btnAttach"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"

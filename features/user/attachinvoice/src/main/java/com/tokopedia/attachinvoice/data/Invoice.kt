@@ -14,8 +14,8 @@ data class Invoice(
     val typeId: Int = 0
 ): Visitable<AttachInvoiceTypeFactory> {
 
-    override fun type(typeFactory: AttachInvoiceTypeFactory?): Int {
-        return -1
+    override fun type(typeFactory: AttachInvoiceTypeFactory): Int {
+        return typeFactory.type(this)
     }
 
 }

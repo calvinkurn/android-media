@@ -10,12 +10,14 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.attachinvoice.R
+import com.tokopedia.attachinvoice.data.Invoice
 import com.tokopedia.attachinvoice.di.AttachInvoiceComponent
 import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceTypeFactory
 import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceTypeFactoryImpl
 import com.tokopedia.attachinvoice.view.viewmodel.AttachInvoiceViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.attachinvoice_fragment_attach_invoice.*
 import javax.inject.Inject
 
 class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFactory>() {
@@ -37,10 +39,29 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     private fun setupObserver() {
         viewModel.invoices.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> renderList(result.data)
-                is Fail -> showGetListError(result.throwable)
+                is Success -> successLoadInvoices(result.data)
+                is Fail -> errorLoadInvoices(result.throwable)
             }
         })
+    }
+
+    private fun successLoadInvoices(data: List<Invoice>) {
+        renderList(data)
+    }
+
+    private fun errorLoadInvoices(throwable: Throwable) {
+        showGetListError(throwable)
+        if (isFirstPage()) {
+            disableAttachBtn()
+        }
+    }
+
+    private fun disableAttachBtn() {
+        btnAttach?.isEnabled = false
+    }
+
+    private fun isFirstPage(): Boolean {
+        return currentPage == 1
     }
 
     override fun getScreenName(): String = screenName
