@@ -280,7 +280,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             if (it.isChecked || tabActive.equals(it.key, true) || paramOrder.statusList == it.orderStatusIdList) {
                 currentIndex = index
-                filterItem.setColorBorder(R.color.tkpd_main_green)
+                filterItem.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green)
                 filterItem.isSelected = true
                 if (paramOrder.statusList.isEmpty()) {
                     if (tabStatus.equals(STATUS_DELIVERED, true)) {
@@ -293,7 +293,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     }
                 }
             }  /*else {
-                filterItem.setColorBorder(R.color.gray_background)
+                filterItem.setColorBorder(com.tokopedia.design.R.color.gray_background)
                 filterItem.isSelected = false
             }*/
             refreshHandler?.startRefresh()

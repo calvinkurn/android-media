@@ -25,4 +25,7 @@
 
     <string name="notif_settings_title">Pengaturan Notifikasi</string>
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
+
+    <!--Seller Order Management-->
+    <string name="som_title">Seller Order Management</string>
 </resources>
