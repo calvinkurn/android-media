@@ -39,6 +39,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.design.component.Tooltip
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import com.tokopedia.topads.auto.view.widget.ToasterAutoAds
@@ -661,7 +662,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     override fun onErrorGetTicker(e: Throwable) {}
 
     override fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
-        isAutoTopUpActive = (data.status.toIntOrNull() ?: 0) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
+        isAutoTopUpActive = (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
         text_view_deposit_desc.setDrawableRight(if (isAutoTopUpActive) R.drawable.ic_repeat_green else R.drawable.ic_repeat_grey)
         text_view_deposit_desc.setOnClickListener {
             Tooltip(it.context).apply {
