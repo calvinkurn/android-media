@@ -16,7 +16,7 @@ class RechargeGeneralProductSelectViewHolder(val view: View, val listener: OnInp
         inputView.isCustomInput = true
         inputView.setLabel(data.text)
         inputView.setHint("")
-        inputView.setActionListener(object : TopupBillsInputFieldWidget.ActionListener{
+        inputView.actionListener = object : TopupBillsInputFieldWidget.ActionListener{
             override fun onFinishInput(input: String) {
 
             }
@@ -24,7 +24,7 @@ class RechargeGeneralProductSelectViewHolder(val view: View, val listener: OnInp
             override fun onCustomInputClick() {
                 listener.onCustomInputClick(inputView, adapterPosition, mapProducts(data.dataCollections))
             }
-        })
+        }
 
         // Set recent/applink item data
         if (data.selectedId.isNotEmpty()) {

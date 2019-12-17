@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/input_field_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -18,6 +19,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/input_info"
+        android:layout_width="@dimen/dp_14"
+        android:layout_height="@dimen/dp_14"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/ac_input"
+        app:layout_constraintStart_toEndOf="@+id/input_label"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_info_black"
         tools:visibility="visible" />
 
     <com.tokopedia.design.text.BackEditText

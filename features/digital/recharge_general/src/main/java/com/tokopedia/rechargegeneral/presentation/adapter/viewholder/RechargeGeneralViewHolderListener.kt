@@ -8,4 +8,5 @@ interface OnInputListener {
     fun onCustomInputClick(field: TopupBillsInputFieldWidget,
                            position: Int,
                            data: List<RechargeGeneralProductSelectData>? = null)
+    fun onInfoClick(text: String)
 }

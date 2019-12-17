@@ -50,9 +50,11 @@ import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGenera
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_digital_product.*
+import kotlinx.android.synthetic.main.view_digital_product_input_info_bottom_sheet.view.*
 import javax.inject.Inject
 
 class RechargeGeneralFragment: BaseTopupBillsFragment(),
@@ -231,7 +233,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         } else if (cluster.operatorGroups.size > 1) {
             operator_cluster_select.setLabel(cluster.text)
             operator_cluster_select.setHint("")
-            operator_cluster_select.setActionListener(object : TopupBillsInputFieldWidget.ActionListener {
+            operator_cluster_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
                 override fun onFinishInput(input: String) {
                     if (operatorCluster != input) {
                         operatorCluster = input
@@ -245,7 +247,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     val dropdownData = cluster.operatorGroups.map { TopupBillsInputDropdownData(it.name) }
                     showOperatorSelectDropdown(operator_cluster_select, dropdownData, cluster.text)
                 }
-            })
+            }
             operator_cluster_select.show()
 
             // Set cluster name
@@ -262,7 +264,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         } else if (operatorGroup.operators.size > 1) {
             operator_select.setLabel(operatorGroup.name)
             operator_select.setHint("")
-            operator_select.setActionListener(object : TopupBillsInputFieldWidget.ActionListener {
+            operator_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
                 override fun onFinishInput(input: String) {
                     operatorGroup.operators.find { it.attributes.name == input }?.let {
                         if (operatorId != it.id) {
@@ -279,7 +281,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     val dropdownData = operatorGroup.operators.map { TopupBillsInputDropdownData(it.attributes.name) }
                     showOperatorSelectDropdown(operator_select, dropdownData)
                 }
-            })
+            }
             operator_select.show()
 
             // Set operator name
@@ -408,6 +410,27 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                                 favoriteNumbers), REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         }
+    }
+
+    override fun onInfoClick(text: String) {
+        showInfoBottomSheets(text)
+    }
+
+    private fun showInfoBottomSheets(helpText: String) {
+        val infoTextView = View.inflate(context,R.layout.view_digital_product_input_info_bottom_sheet, null)
+        with (infoTextView) {
+            info_text.text = helpText
+        }
+
+        val moreInfoBottomSheet = BottomSheetUnify()
+        moreInfoBottomSheet.setTitle("Info")
+        moreInfoBottomSheet.setFullPage(false)
+        moreInfoBottomSheet.setChild(infoTextView)
+        moreInfoBottomSheet.clearAction()
+        moreInfoBottomSheet.setCloseClickListener {
+            moreInfoBottomSheet.dismiss()
+        }
+        fragmentManager?.run { moreInfoBottomSheet.show(this,"E-gold more info bottom sheet") }
     }
 
     private fun renderFooter(data: TopupBillsMenuDetail) {

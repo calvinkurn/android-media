@@ -23,7 +23,7 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
             inputView.setInputType(enquiryData.style)
         }
 
-        inputView.setActionListener(object : TopupBillsInputFieldWidget.ActionListener{
+        inputView.actionListener = object : TopupBillsInputFieldWidget.ActionListener{
             override fun onFinishInput(input: String) {
                 if (input.isEmpty() || verifyField(enquiryData.validations, input)) {
                     inputView.hideErrorMessage()
@@ -37,7 +37,14 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
             override fun onCustomInputClick() {
                 listener.onCustomInputClick(inputView, adapterPosition)
             }
-        })
+        }
+        if (enquiryData.help.isNotEmpty()) {
+            inputView.infoListener = object : TopupBillsInputFieldWidget.InfoListener {
+                override fun onInfoClick() {
+                    listener.onInfoClick(enquiryData.help)
+                }
+            }
+        }
 
         // Set recent item data
         if (enquiryData.value.isNotEmpty()) inputView.setInputText(enquiryData.value)

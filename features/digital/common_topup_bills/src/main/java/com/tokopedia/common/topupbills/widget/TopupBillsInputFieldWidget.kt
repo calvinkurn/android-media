@@ -1,24 +1,20 @@
 package com.tokopedia.common.topupbills.widget
 
 import android.content.Context
-import android.os.Handler
+import android.graphics.Rect
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
+import android.view.TouchDelegate
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethod
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
 import org.jetbrains.annotations.NotNull
 
@@ -28,14 +24,20 @@ import org.jetbrains.annotations.NotNull
 class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Context,
                                                            attrs: AttributeSet? = null,
                                                            defStyleAttr: Int = 0,
-                                                           var listener: ActionListener? = null)
+                                                           var actionListener: ActionListener? = null)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     var isCustomInput = false
-        set(value) {
-            field = value
-            if (value) iv_input_dropdown.show() else iv_input_dropdown.hide()
-        }
+    set(value) {
+        field = value
+        if (value) iv_input_dropdown.show() else iv_input_dropdown.hide()
+    }
+
+    var infoListener: InfoListener? = null
+    set(value) {
+        field = value
+        if (value != null) input_info.show() else input_info.hide()
+    }
 
     init {
         View.inflate(context, getLayout(), this)
@@ -53,7 +55,7 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
 
         btn_clear_input.setOnClickListener {
             ac_input.setText("")
-            listener?.onFinishInput("")
+            actionListener?.onFinishInput("")
             error_label.visibility = View.GONE
         }
 
@@ -82,19 +84,35 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
 
         ac_input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                listener?.onFinishInput(getInputText())
+                actionListener?.onFinishInput(getInputText())
                 clearFocus()
             }
             false
         }
         ac_input.setKeyImeChangeListener { _, event ->
             if (event.keyCode == KeyEvent.KEYCODE_BACK) {
-                listener?.onFinishInput(getInputText())
+                actionListener?.onFinishInput(getInputText())
                 clearFocus()
             }
         }
         ac_input.setOnFocusChangeListener { _, b ->
             onFocusChangeDropdown(b)
+        }
+
+        input_info.setOnClickListener {
+            infoListener?.onInfoClick()
+        }
+        // Enlarge info button touch area with TouchDelegate
+        input_field_container.post {
+            val delegateArea = Rect()
+            input_info.getHitRect(delegateArea)
+
+            delegateArea.top -= INFO_TOUCH_AREA_SIZE_PX
+            delegateArea.left -= INFO_TOUCH_AREA_SIZE_PX
+            delegateArea.bottom += INFO_TOUCH_AREA_SIZE_PX
+            delegateArea.right += INFO_TOUCH_AREA_SIZE_PX
+
+            input_field_container.apply { touchDelegate = TouchDelegate(delegateArea, input_info) }
         }
     }
 
@@ -112,7 +130,7 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
 
     fun setInputText(input: String, triggerListener: Boolean = true) {
         ac_input.setText(input)
-        if (triggerListener) listener?.onFinishInput(input)
+        if (triggerListener) actionListener?.onFinishInput(input)
     }
 
     fun setErrorMessage(message: String) {
@@ -127,10 +145,6 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
 
     open fun getLayout(): Int {
         return R.layout.view_voucher_game_input_field
-    }
-
-    fun setActionListener(listener: ActionListener) {
-        this.listener = listener
     }
 
     fun setInputType(type: String) {
@@ -150,7 +164,7 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
     private fun onFocusChangeDropdown(hasFocus: Boolean) {
         if (hasFocus && isCustomInput) {
             ac_input.clearFocus()
-            listener?.onCustomInputClick()
+            actionListener?.onCustomInputClick()
         }
     }
 
@@ -159,8 +173,14 @@ class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Con
         fun onCustomInputClick()
     }
 
+    interface InfoListener {
+        fun onInfoClick()
+    }
+
     companion object {
         const val INPUT_NUMERIC = "input_numeric"
         const val INPUT_ALPHANUMERIC = "input_alphanumeric"
+
+        const val INFO_TOUCH_AREA_SIZE_PX = 20
     }
 }

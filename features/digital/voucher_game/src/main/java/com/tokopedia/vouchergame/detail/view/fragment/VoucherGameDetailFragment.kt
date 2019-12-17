@@ -274,7 +274,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
 
         // Enquire if all required fields are filled
-        field.setActionListener(object : TopupBillsInputFieldWidget.ActionListener {
+        field.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
             override fun onFinishInput(input: String) {
                 onReceiveInput(input)
             }
@@ -282,7 +282,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             override fun onCustomInputClick() {
                 if (field.isCustomInput && dropdownData.isNotEmpty()) { showInputDropdown(field, dropdownData) }
             }
-        })
+        }
     }
 
     private fun checkAutoFillInput() {
