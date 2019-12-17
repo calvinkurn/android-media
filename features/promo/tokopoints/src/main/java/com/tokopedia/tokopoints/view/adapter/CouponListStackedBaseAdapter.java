@@ -31,7 +31,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.library.baseadapter.BaseAdapter;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
+import com.tokopedia.tokopoints.view.coupondetail.CouponDetailActivity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.presenter.CouponListingStackedPresenter;
@@ -385,9 +385,9 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                         Bundle bundle = new Bundle();
                         bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
                         if (item.isNewCoupon()) {
-                            ((FragmentActivity) holder.imgBanner.getContext()).startActivityForResult(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), REQUEST_CODE_STACKED_ADAPTER);
+                            ((FragmentActivity) holder.imgBanner.getContext()).startActivityForResult(CouponDetailActivity.Companion.getCouponDetail(holder.imgBanner.getContext(), bundle), REQUEST_CODE_STACKED_ADAPTER);
                         } else {
-                            holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle));
+                            holder.imgBanner.getContext().startActivity(CouponDetailActivity.Companion.getCouponDetail(holder.imgBanner.getContext(), bundle));
                         }
                         sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
                     }

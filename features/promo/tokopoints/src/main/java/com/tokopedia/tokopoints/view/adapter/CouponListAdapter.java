@@ -1,6 +1,5 @@
 package com.tokopedia.tokopoints.view.adapter;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import androidx.annotation.NonNull;
@@ -17,19 +16,13 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
-import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
-import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
+import com.tokopedia.tokopoints.view.coupondetail.CouponDetailActivity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -139,7 +132,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             holder.imgBanner.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems.get(position).getCode());
-                holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
+                holder.imgBanner.getContext().startActivity(CouponDetailActivity.Companion.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
             });
 
 
