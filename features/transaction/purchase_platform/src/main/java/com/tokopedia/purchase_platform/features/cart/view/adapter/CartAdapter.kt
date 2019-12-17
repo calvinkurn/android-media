@@ -246,9 +246,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         get() {
             val cartShopHolderDataList = ArrayList<CartShopHolderData>()
             for (i in cartDataList.indices) {
-                val cartShopHolderData = getCartShopHolderDataByIndex(i)
-                if (cartShopHolderData != null) {
-                    cartShopHolderDataList.add(cartShopHolderData)
+                getCartShopHolderDataByIndex(i)?.let {
+                    cartShopHolderDataList.add(it)
                 }
             }
 
@@ -783,7 +782,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
         }
 
-        if (cartSectionHeaderHolderData != null) {
+        cartSectionHeaderHolderData?.let {
             cartDataList.add(++recommendationIndex, cartSectionHeaderHolderData)
         }
 
@@ -809,21 +808,19 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     if (any.isAllSelected) {
                         checkedCount += any.shopGroupAvailableData.cartItemDataList?.size ?: 0
                     } else if (any.isPartialSelected) {
-                        if (any.shopGroupAvailableData.cartItemDataList != null) {
-                            any.shopGroupAvailableData.cartItemDataList?.let {
-                                for (cartItemHolderData in it) {
-                                    if (cartItemHolderData.isSelected) {
-                                        checkedCount++
-                                        if (cartItemHolderData.getErrorFormItemValidationTypeValue() != CartItemHolderData.ERROR_EMPTY || cartItemHolderData.cartItemData.isError) {
-                                            canProcess = false
-                                            break
-                                        }
+                        any.shopGroupAvailableData.cartItemDataList?.let {
+                            for (cartItemHolderData in it) {
+                                if (cartItemHolderData.isSelected) {
+                                    checkedCount++
+                                    if (cartItemHolderData.getErrorFormItemValidationTypeValue() != CartItemHolderData.ERROR_EMPTY || cartItemHolderData.cartItemData.isError) {
+                                        canProcess = false
+                                        break
                                     }
                                 }
                             }
-                            if (!canProcess) {
-                                break
-                            }
+                        }
+                        if (!canProcess) {
+                            break
                         }
                     }
                 }
@@ -915,7 +912,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 for (data in wishlist) {
                     if (data.id == productId) {
                         data.isWishlist = isWishlist
-                        if (cartWishlistAdapter != null) {
+                        cartWishlistAdapter?.let {
                             cartWishlistAdapter?.notifyItemChanged(wishlist.indexOf(data))
                         }
                         break
@@ -933,7 +930,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 for (data in recentViews) {
                     if (data.id == productId) {
                         data.isWishlist = isWishlist
-                        if (cartRecentViewAdapter != null) {
+                        cartRecentViewAdapter?.let {
                             cartRecentViewAdapter?.notifyItemChanged(recentViews.indexOf(data))
                         }
                         break
