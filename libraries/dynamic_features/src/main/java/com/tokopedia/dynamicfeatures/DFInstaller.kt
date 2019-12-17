@@ -6,10 +6,7 @@ import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.dynamicfeatures.service.DFDownloadWorker
 import com.tokopedia.dynamicfeatures.track.DFTracking
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.lang.Exception
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
@@ -49,7 +46,7 @@ class DFInstaller {
                                          onSuccessInstall: (() -> Unit)? = null,
                                          onFailedInstall: (() -> Unit)? = null,
                                          isInitial: Boolean = true): Boolean {
-        val result = GlobalScope.async(Dispatchers.Default) {
+        val result = GlobalScope.async(Dispatchers.IO) {
             val applicationContext = context.applicationContext
             if (moduleNames.isEmpty()) {
                 return@async true
@@ -75,8 +72,8 @@ class DFInstaller {
             usableSpaceBeforeDownload = DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
 
             unregisterListener()
-
-            suspendCoroutine<Boolean> { continuation ->
+            // SplitInstallManager only allow the installation from Main Thread.
+            withContext(Dispatchers.Main) { suspendCoroutine<Boolean> { continuation ->
                 registerListener(context, moduleNameToDownload, onSuccessInstall, onFailedInstall, continuation, isInitial)
                 manager.startInstall(request).addOnSuccessListener {
                     if (it == 0) {
@@ -100,7 +97,7 @@ class DFInstaller {
                     }
                     continuation.resume(false)
                 }
-            }
+            } }
         }
         return result.await()
     }
