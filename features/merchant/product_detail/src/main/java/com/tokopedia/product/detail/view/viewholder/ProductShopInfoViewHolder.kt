@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopInfoDataModel
-import com.tokopedia.product.detail.view.fragment.partialview.PartialShopView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialDynamicShopInfoView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import kotlinx.android.synthetic.main.partial_product_shop_info.view.*
@@ -16,7 +16,7 @@ class ProductShopInfoViewHolder(itemView: View, private val listener: DynamicPro
     }
 
 
-    private val shopInfoView = PartialShopView.build(itemView.base_shop_view, listener.onViewClickListener)
+    private val shopInfoView = PartialDynamicShopInfoView(itemView.base_shop_view, listener.onViewClickListener)
 
     override fun bind(element: ProductShopInfoDataModel) {
         if (element.shopInfo != null) {

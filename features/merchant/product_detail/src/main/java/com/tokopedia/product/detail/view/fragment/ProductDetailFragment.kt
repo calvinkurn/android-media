@@ -1651,7 +1651,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         varPictureImage.renderData(mediaViewModel, this::onPictureProductClicked, childFragmentManager)
         productStatsView.renderData(data.stats.countView, data.stats.countReview, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
-        attributeInfoView.renderData(data.stats.countView , data.txStats)
+        attributeInfoView.renderData(data.stats.countView, data.txStats)
         txt_last_update.text = getString(R.string.template_last_update_price, data.basic.lastUpdatePrice)
         txt_last_update.visible()
 
@@ -1901,7 +1901,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun onReviewClicked() {
         productInfo?.run {
-            productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
+            productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
+                    ?: "")
             productDetailTracking.eventReviewClicked()
             productDetailTracking.sendMoEngageClickReview(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")

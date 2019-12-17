@@ -19,13 +19,13 @@ import com.tokopedia.product.detail.view.adapter.ProductInfoAdapter
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.SpaceItemDecoration
-import kotlinx.android.synthetic.main.partial_product_info.view.*
+import kotlinx.android.synthetic.main.item_dynamic_product_info.view.*
 
 class ProductInfoViewHolder(private val view: View,
                             private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductInfoDataModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.partial_product_info
+        val LAYOUT = R.layout.item_dynamic_product_info
         private const val MAX_CHAR = 300
         private const val NO_DESCRIPTION = "TIDAK ADA DESKRIPSI"
     }

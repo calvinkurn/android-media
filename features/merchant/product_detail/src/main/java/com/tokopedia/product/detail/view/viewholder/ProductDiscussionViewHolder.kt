@@ -12,7 +12,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionDataMo
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.util.thousandFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.partial_product_latest_talk.view.*
+import kotlinx.android.synthetic.main.item_dynamic_discussion.view.*
 
 class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductDiscussionDataModel>(view) {
 
