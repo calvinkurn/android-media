@@ -5,14 +5,13 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.imageuploader.data.GenerateHostRepositoryImpl;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.imageuploader.data.ProgressResponseBody;
@@ -24,15 +23,15 @@ import com.tokopedia.imageuploader.data.source.GenerateHostCloud;
 import com.tokopedia.imageuploader.data.source.GenerateHostDataSource;
 import com.tokopedia.imageuploader.data.source.UploadImageDataSourceCloud;
 import com.tokopedia.imageuploader.data.source.api.GenerateHostApi;
-import com.tokopedia.imageuploader.di.qualifier.ImageUploaderAuthInterceptorQualifier;
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderChuckQualifier;
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier;
 import com.tokopedia.imageuploader.domain.GenerateHostRepository;
 import com.tokopedia.imageuploader.domain.UploadImageRepository;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
@@ -128,8 +127,9 @@ public class ImageUploaderModule {
     @ImageUploaderQualifier
     @Provides
     public TkpdAuthInterceptor provideTkpdAuthInterceptor(@ImageUploaderQualifier Context context,
-                                                          @ImageUploaderQualifier AbstractionRouter abstractionRouter) {
-        return new TkpdAuthInterceptor(context, abstractionRouter);
+                                                          @ImageUploaderQualifier NetworkRouter networkRouter,
+                                                          @ImageUploaderQualifier UserSessionInterface userSessionInterface) {
+        return new TkpdAuthInterceptor(context, networkRouter, userSessionInterface);
     }
 
     @ImageUploaderQualifier
@@ -156,19 +156,7 @@ public class ImageUploaderModule {
     @ImageUploaderChuckQualifier
     @Provides
     public Interceptor provideInterceptor(@ImageUploaderQualifier Context context) {
-        if (context instanceof ImageUploaderRouter) {
-            return ((ImageUploaderRouter) context).getChuckInterceptor();
-        }
-        throw new RuntimeException("App should implement " + ImageUploaderRouter.class.getSimpleName());
-    }
-
-    @ImageUploaderAuthInterceptorQualifier
-    @Provides
-    public Interceptor provideAuthInterceptor(@ImageUploaderQualifier Context context) {
-        if (context instanceof ImageUploaderRouter) {
-            return ((ImageUploaderRouter) context).getAuthInterceptor();
-        }
-        throw new RuntimeException("App should implement " + ImageUploaderRouter.class.getSimpleName());
+        return new ChuckInterceptor(context);
     }
 
     @ImageUploaderQualifier
