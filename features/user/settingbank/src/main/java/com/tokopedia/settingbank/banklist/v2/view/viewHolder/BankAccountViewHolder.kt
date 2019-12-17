@@ -1,6 +1,7 @@
 package com.tokopedia.settingbank.banklist.v2.view.viewHolder
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.image.ImageLoader
@@ -10,8 +11,14 @@ import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.view.adapter.BankAccountClickListener
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerType
 
 class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+
+    private val PRIMARY_ACCOUNT = 1
+    private val DISABLE_IMAGE_ALPHA = 0.38F
+    private val ENABLE_IMAGE_ALPHA = 1F
+
 
     private val ticker: Ticker = view.findViewById(R.id.tickerBankAccount)
 
@@ -22,17 +29,17 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         this.listener = listener
         view.findViewById<TextView>(R.id.tvBankName).text = bankAccount.bankName ?: ""
         view.findViewById<TextView>(R.id.tvBankAccountNumber).text = bankAccount.accNumber ?: ""
-        view.findViewById<TextView>(R.id.tvBankAccountHolderName).text = bankAccount.accName?.let { "a.n $it" }
-                ?: ""
+        view.findViewById<TextView>(R.id.tvBankAccountHolderName).text = bankAccount.accName?.let { "a.n $it" } ?: ""
         bankAccount.bankImageUrl?.let {
             ImageLoader.LoadImage(view.findViewById(R.id.ivBankImage), bankAccount.bankImageUrl)
         }
         ticker.gone()
         setBankStatus(
-                isPrimary = (bankAccount.fsp == 1),
+                isPrimary = (bankAccount.fsp == PRIMARY_ACCOUNT),
                 status = bankAccount.statusFraud,
                 copyWriting = bankAccount.copyWriting
         )
+
         addClickListener()
     }
 
@@ -43,108 +50,119 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private fun setBankStatus(isPrimary: Boolean, status: Int, copyWriting: String?) {
-        if (isPrimary) {
-            hideShowPrimaryTag(isHide = false)
-            hideShowIsiData(isHide = true)
-            hideShowDeleteButton(isHide = true)
-            hideShowMakePrimary(isHide = true)
-            hideShowPendingAccountTag(isHide = true)
-        }
+        var tickerType = Ticker.TYPE_INFORMATION
         when (status) {
-            in 0..1 -> {
-                hideShowPrimaryTag(isHide = true)
-                hideShowMakePrimary(isHide = false)
-                hideShowIsiData(isHide = true)
-                hideShowDeleteButton(isHide = true)
-                hideShowPendingAccountTag(isHide = true)
-
+            in 0..1, 4 -> {
+                enableBankItem()
+                setAccountViewStatus(isPrimary = isPrimary, showMakePrimaryButton = !isPrimary,
+                        showIsiDataButton = false, showDeleteButton = !isPrimary,
+                        showPendingAccountButton = false)
             }
             2 -> {
-                copyWriting?.let {
-                    ticker.tickerType = Ticker.TYPE_ERROR
-                    ticker.visible()
-                    ticker.setTextDescription(copyWriting)
-                } ?: run {
-                    ticker.gone()
-
-                }
-                hideShowPrimaryTag(isHide = true)
-                hideShowMakePrimary(isHide = true)
-                hideShowIsiData(isHide = false)
-                hideShowDeleteButton(isHide = false)
-                hideShowPendingAccountTag(isHide = true)
+                disableBankItem()
+                tickerType = Ticker.TYPE_ERROR
+                setAccountViewStatus(isPrimary = false, showMakePrimaryButton = false,
+                        showIsiDataButton = true, showDeleteButton = true,
+                        showPendingAccountButton = false)
             }
             3 -> {
-                copyWriting?.let {
-                    ticker.tickerType = Ticker.TYPE_ERROR
-                    ticker.visible()
-                    ticker.setTextDescription(copyWriting)
-                } ?: run {
-                    ticker.gone()
-                }
-                hideShowPrimaryTag(isHide = true)
-                hideShowMakePrimary(isHide = true)
-                hideShowIsiData(isHide = true)
-                hideShowDeleteButton(isHide = false)
-                hideShowPendingAccountTag(isHide = true)
+                disableBankItem()
+                tickerType = Ticker.TYPE_ERROR
+                setAccountViewStatus(isPrimary = false, showMakePrimaryButton = false,
+                        showIsiDataButton = false, showDeleteButton = true,
+                        showPendingAccountButton = false)
 
             }
-            in 4..5 -> {
-                copyWriting?.let {
-                    ticker.tickerType = Ticker.TYPE_ERROR
-                    ticker.visible()
-                    ticker.setTextDescription(copyWriting)
-                } ?: run {
-                    ticker.gone()
-                }
-                hideShowPrimaryTag(isHide = true)
-                hideShowMakePrimary(isHide = true)
-                hideShowIsiData(isHide = true)
-                hideShowDeleteButton(isHide = false)
-                hideShowPendingAccountTag(isHide = true)
+            5 -> {
+                disableBankItem()
+                tickerType = Ticker.TYPE_INFORMATION
+                setAccountViewStatus(isPrimary = false, showMakePrimaryButton = false,
+                        showIsiDataButton = false, showDeleteButton = true,
+                        showPendingAccountButton = false)
             }
             6 -> {
-                hideShowPendingAccountTag(isHide = false)
-                hideShowPrimaryTag(isHide = true)
-                hideShowMakePrimary(isHide = true)
-                hideShowIsiData(isHide = true)
-                hideShowDeleteButton(isHide = false)
+                enableBankItem()
+                setAccountViewStatus(isPrimary = false, showMakePrimaryButton = false,
+                        showIsiDataButton = false, showDeleteButton = true,
+                        showPendingAccountButton = true)
             }
         }
+
+        setCopyWriting(copyWriting, tickerType)
     }
 
-    private fun hideShowDeleteButton(isHide: Boolean) {
-        when (isHide) {
-            true -> view.findViewById<TextView>(R.id.btnHapus).gone()
-            else -> view.findViewById<TextView>(R.id.btnHapus).visible()
+    private fun disableBankItem() {
+        view.findViewById<TextView>(R.id.tvBankName).isEnabled = false
+        view.findViewById<TextView>(R.id.tvBankAccountNumber).isEnabled = false
+        view.findViewById<TextView>(R.id.tvBankAccountHolderName).isEnabled = false
+        view.findViewById<ImageView>(R.id.ivBankImage).alpha = DISABLE_IMAGE_ALPHA
+    }
+
+    private fun enableBankItem() {
+        view.findViewById<TextView>(R.id.tvBankName).isEnabled = true
+        view.findViewById<TextView>(R.id.tvBankAccountNumber).isEnabled = true
+        view.findViewById<TextView>(R.id.tvBankAccountHolderName).isEnabled = true
+        view.findViewById<ImageView>(R.id.ivBankImage).alpha = ENABLE_IMAGE_ALPHA
+    }
+
+    private fun setCopyWriting(copyWriting: String?, @TickerType tickerType: Int) {
+        copyWriting?.let {
+            if (it.isEmpty()) {
+                ticker.gone()
+            } else {
+                ticker.tickerType = tickerType
+                ticker.visible()
+                ticker.setTextDescription(copyWriting)
+            }
+        } ?: run {
+            ticker.gone()
         }
     }
 
-    private fun hideShowPrimaryTag(isHide: Boolean) {
-        when (isHide) {
-            true -> view.findViewById<TextView>(R.id.tvAccountPrimaryTag).gone()
-            else -> view.findViewById<TextView>(R.id.tvAccountPrimaryTag).visible()
+    private fun setAccountViewStatus(isPrimary: Boolean,
+                                     showMakePrimaryButton: Boolean,
+                                     showIsiDataButton: Boolean,
+                                     showDeleteButton: Boolean,
+                                     showPendingAccountButton: Boolean) {
+        hideShowPrimaryTag(isPrimary)
+        hideShowMakePrimaryButton(showMakePrimaryButton)
+        hideShowIsiDataButton(showIsiDataButton)
+        hideShowDeleteButton(showDeleteButton)
+        hideShowPendingAccountTag(showPendingAccountButton)
+    }
+
+    private fun hideShowDeleteButton(isShow: Boolean) {
+        when (isShow) {
+            true -> view.findViewById<TextView>(R.id.btnHapus).visible()
+            else -> view.findViewById<TextView>(R.id.btnHapus).gone()
         }
     }
 
-    private fun hideShowMakePrimary(isHide: Boolean) {
-        when (isHide) {
-            true -> view.findViewById<TextView>(R.id.btnMakePrimary).gone()
-            else -> view.findViewById<TextView>(R.id.btnMakePrimary).visible()
+    private fun hideShowPrimaryTag(isShow: Boolean) {
+        when (isShow) {
+            true -> view.findViewById<TextView>(R.id.tvAccountPrimaryTag).visible()
+            else -> view.findViewById<TextView>(R.id.tvAccountPrimaryTag).gone()
         }
     }
 
-    private fun hideShowIsiData(isHide: Boolean) {
-        when (isHide) {
-            true -> view.findViewById<TextView>(R.id.btnIsiData).gone()
-            else -> view.findViewById<TextView>(R.id.btnIsiData).visible()
+    private fun hideShowMakePrimaryButton(isShow: Boolean) {
+        when (isShow) {
+            true -> view.findViewById<TextView>(R.id.btnMakePrimary).visible()
+            else -> view.findViewById<TextView>(R.id.btnMakePrimary).gone()
         }
     }
 
-    private fun hideShowPendingAccountTag(isHide: Boolean) {
-        when (isHide) {
-            true -> view.findViewById<TextView>(R.id.tvAccountPending).gone()
-            else -> view.findViewById<TextView>(R.id.tvAccountPending).visible()
+    private fun hideShowIsiDataButton(isShow: Boolean) {
+        when (isShow) {
+            true -> view.findViewById<TextView>(R.id.btnIsiData).visible()
+            else -> view.findViewById<TextView>(R.id.btnIsiData).gone()
+        }
+    }
+
+    private fun hideShowPendingAccountTag(isShow: Boolean) {
+        when (isShow) {
+            true -> view.findViewById<TextView>(R.id.tvAccountPending).visible()
+            else -> view.findViewById<TextView>(R.id.tvAccountPending).gone()
         }
     }
 

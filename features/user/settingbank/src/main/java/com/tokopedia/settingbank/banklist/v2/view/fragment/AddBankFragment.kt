@@ -333,8 +333,9 @@ class AddBankFragment : BaseDaggerFragment() {
         val inflater = activity!!.layoutInflater
         val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
         (dialogView.findViewById(R.id.heading) as TextView).text = getString(R.string.sbank_add_bank_account)
-        (dialogView.findViewById(R.id.description) as TextView).text = "Kamu akan menambahkan rekening ${bank?.abbreviation
-                ?: ""} ${addBankRequest.accountNo} a.n ${addBankRequest.accountName}."
+        val description = context?.resources?.getString(R.string.sbank_add_bank_confirm, bank.abbreviation,
+                addBankRequest.accountNo, addBankRequest.accountName)
+        (dialogView.findViewById(R.id.description) as TextView).text = description
         dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
             confirmationDialog.dismiss()
             openPinVerification()

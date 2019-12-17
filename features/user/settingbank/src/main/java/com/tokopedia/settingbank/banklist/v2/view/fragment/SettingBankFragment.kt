@@ -129,6 +129,10 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
             }
         })
 
+        settingBankViewModel.addNewBankAccountState.observe(this, Observer {
+            updateAddBankAccountBtnState(it)
+        })
+
         tNCViewModel.tncNoteTemplate.observe(this, Observer {
             populateTNCNote(it)
         })
@@ -146,8 +150,10 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         kycViewModel.kycInfoState.observe(this, Observer {
             handleKYCInfoResponse(it)
         })
+    }
 
-
+    private fun updateAddBankAccountBtnState(isEnable: Boolean) {
+        add_account_button.isEnabled = isEnable
     }
 
     private fun handleKYCInfoResponse(kycInfoState: KYCInfoState) {
@@ -361,10 +367,11 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         val dialogBuilder = AlertDialog.Builder(activity!!)
         val inflater = activity!!.layoutInflater
         val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
-        (dialogView.findViewById(R.id.heading) as TextView).text = "Hapus rekening ini?"
-        (dialogView.findViewById<View>(R.id.continue_btn) as TextView).text = "Hapus Rekening"
-        (dialogView.findViewById<View>(R.id.back_btn) as TextView).text = "Kembali"
-        (dialogView.findViewById(R.id.description) as TextView).text = "Kamu akan menghapus rekening ${bankAccount.bankName} ${bankAccount.accNumber} a.n ${bankAccount.accName}."
+        (dialogView.findViewById(R.id.heading) as TextView).text = context?.getString(R.string.sbank_delete_this_account)
+        (dialogView.findViewById<View>(R.id.continue_btn) as TextView).text = context?.getString(R.string.sbank_delete_account)
+        (dialogView.findViewById<View>(R.id.back_btn) as TextView).text = context?.getString(R.string.sbank_back)
+        (dialogView.findViewById(R.id.description) as TextView).text = context?.getString(R.string.sbank_delete_bank_confirm,
+                bankAccount.bankName, bankAccount.accNumber, bankAccount.accName)
         dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
             confirmationDialog?.dismiss()
             deleteBankAccount()

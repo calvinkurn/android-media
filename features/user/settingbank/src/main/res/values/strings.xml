@@ -78,6 +78,11 @@ mempermudah proses penarikan dana</string>
     <string name="sbank_pic_of_family_card">Foto Kartu Keluarga (KK)</string>
     <string name="sbank_saving_acc_document">Rekening Tabungan</string>
     <string name="sbank_catatan">"Catatan:"</string>
+    <string name="sbank_add_bank_confirm">Kamu akan menambahkan rekening %1$s %2$s a.n %3$s</string>
+    <string name="sbank_delete_bank_confirm">Kamu akan menghapus rekening %1$s %2$s a.n %3$s</string>
+    <string name="sbank_back">Kembali</string>
+    <string name="sbank_delete_account">Hapus Rekening</string>
+    <string name="sbank_delete_this_account">Hapus rekening ini?</string>
 
 
 </resources>

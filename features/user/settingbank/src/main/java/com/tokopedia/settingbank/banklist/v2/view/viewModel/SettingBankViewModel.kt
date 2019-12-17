@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.settingbank.banklist.v2.di.QUERY_GET_USER_BANK_ACCOUNTS
+import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccountListResponse
 import com.tokopedia.settingbank.banklist.v2.view.viewState.*
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,6 +21,8 @@ class SettingBankViewModel @Inject constructor(val graphqlRepository: GraphqlRep
 
     val getBankListState = MutableLiveData<GetBankAccountListState>()
 
+    val addNewBankAccountState = MutableLiveData<Boolean>()
+
     internal fun loadUserAddedBankList() {
         launchCatchError(block = {
             getBankListState.value = OnShowLoading(true)
@@ -29,13 +32,14 @@ class SettingBankViewModel @Inject constructor(val graphqlRepository: GraphqlRep
                 graphqlRepository.getReseponse(listOf(graphRequest))
             }
             getBankListState.value = OnShowLoading(false)
-            processUserBankData(data.getSuccessData())
+            processUserBankAccountData(data.getSuccessData())
         }) {
             it.printStackTrace()
         }
     }
 
-    private fun processUserBankData(bankAccountListResponse: BankAccountListResponse) {
+
+    private fun processUserBankAccountData(bankAccountListResponse: BankAccountListResponse) {
         bankAccountListResponse.getBankAccount.data.bankAccount?.let {
             val toastMessage = bankAccountListResponse.getBankAccount.data.userInfo.message
             if (it.isNotEmpty()) {
@@ -43,6 +47,33 @@ class SettingBankViewModel @Inject constructor(val graphqlRepository: GraphqlRep
             } else {
                 getBankListState.value = NoBankAccountAdded(toastMessage ?: "")
             }
+            updateNewBankAccountState(it)
+        }
+    }
+
+    private fun updateNewBankAccountState(bankAccountList: List<BankAccount>) {
+        if (bankAccountList.isNotEmpty()) {
+            launchCatchError(block = {
+                val isEnable = withContext(Dispatchers.IO) {
+                    var activeAccount = 0
+                    var pendingRejectedAccount = 0
+                    bankAccountList.forEach { account ->
+                        when (account.statusFraud) {
+                            in 0..1, 4 -> activeAccount++
+                            else -> pendingRejectedAccount++
+                        }
+                    }
+                    if (activeAccount >= 3) {
+                        return@withContext false
+                    } else return@withContext pendingRejectedAccount < 8
+                }
+                addNewBankAccountState.value = isEnable
+            }) {
+                addNewBankAccountState.value = false
+            }
+
+        } else {
+            addNewBankAccountState.value = true
         }
     }
 }
