@@ -196,7 +196,7 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
             moreInfoBottomSheet.setCloseClickListener {
                 moreInfoBottomSheet.dismiss()
             }
-            moreInfoBottomSheet.show(fragmentManager,"E-gold more info bottom sheet")
+            fragmentManager?.run { moreInfoBottomSheet.show(this,"E-gold more info bottom sheet") }
         }
     }
 
