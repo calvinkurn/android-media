@@ -88,12 +88,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 //        recyclerViewSimilarSearch?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
 //            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 //                Log.v("RecyclerView Scroll", "OnScroll dx: $dx, dy: $dy, vertical scroll offset: ${recyclerView.computeVerticalScrollOffset()}")
-//                if (dy > 0) {
-//                    originalProductView?.collapse(recyclerViewSimilarSearch?.computeVerticalScrollOffset() ?: 0)
-//                }
-//                else if (dy <= 0) {
-//                    originalProductView?.expand(recyclerViewSimilarSearch?.computeVerticalScrollOffset() ?: 0)
-//                }
+//                originalProductView?.resize(recyclerView.computeVerticalScrollOffset())
 //            }
 //        })
     }

@@ -1,9 +1,10 @@
 package com.tokopedia.similarsearch.originalproduct
 
+import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
@@ -11,6 +12,7 @@ import com.tokopedia.similarsearch.R
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.view.*
 import kotlinx.android.synthetic.main.similar_search_original_product_layout.view.*
+
 
 internal class OriginalProductView(
         private val originalProductViewListener: OriginalProductViewListener
@@ -30,6 +32,7 @@ internal class OriginalProductView(
         initReview(similarSearchOriginalProduct)
         initOnButtonBuyClicked()
         initOnButtonAddToCartClicked()
+//        initOriginalProductHeights()
     }
 
     private fun initCardViewOriginalProduct() {
@@ -172,4 +175,57 @@ internal class OriginalProductView(
 //
 //        hasFullyCollapsed = false
 //    }
+
+    private var maxHeight = 0
+    private var minHeight = 0
+    private var heightDistance = 0
+    private var currentHeight = 0
+    private var hasBeenMeasured = false
+
+    private fun initOriginalProductHeights() {
+        fragmentView.cardViewOriginalProductSimilarSearch?.post {
+            maxHeight = fragmentView.cardViewOriginalProductSimilarSearch?.measuredHeight ?: 0
+            minHeight = maxHeight - (fragmentView.buttonAddToCart?.measuredHeight ?: 0)
+            heightDistance = maxHeight - minHeight
+            currentHeight = maxHeight
+
+            hasBeenMeasured = true
+
+            fragmentView.cardViewOriginalProductSimilarSearch?.layoutParams?.height = currentHeight
+
+            fragmentView.recyclerViewSimilarSearch?.setPadding(0, currentHeight, 0, 0)
+            fragmentView.recyclerViewSimilarSearch?.requestLayout()
+        }
+    }
+
+    private var currentOffset = 0
+
+    fun resize(verticalScrollOffset: Int) {
+        if (!hasBeenMeasured) return
+
+        val dy = verticalScrollOffset - currentOffset
+        currentOffset = verticalScrollOffset
+
+        currentHeight -= dy
+        currentHeight = currentHeight.coerceAtLeast(minHeight)
+        currentHeight = currentHeight.coerceAtMost(maxHeight)
+
+        fragmentView.cardViewOriginalProductSimilarSearch?.layoutParams?.height = currentHeight
+        fragmentView.cardViewOriginalProductSimilarSearch?.requestLayout()
+
+        Log.v("ori prod view", "max height: $maxHeight, min height: $minHeight, current height: $currentHeight, dy: $dy")
+    }
+
+    private fun applyConstraintSet(apply: (constraintSet: ConstraintSet) -> Unit) {
+//        fragmentView.constraintLayoutOriginalProduct?.post {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(fragmentView.constraintLayoutOriginalProduct)
+            apply(constraintSet)
+            constraintSet.applyTo(fragmentView.constraintLayoutOriginalProduct)
+//        }
+    }
+
+    private fun Float.toDp(): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, fragmentView.resources.displayMetrics).toInt()
+    }
 }
