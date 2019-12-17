@@ -24,7 +24,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.attachinvoice.ItuUsecase
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
@@ -32,6 +32,7 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.InvoiceMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ProductMenu
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.TypingListener
@@ -831,7 +832,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun createAttachmentMenus(): List<AttachmentMenu> {
         return listOf(
                 ProductMenu(),
-                ImageMenu()
+                ImageMenu(),
+                InvoiceMenu()
         )
     }
 
@@ -845,6 +847,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         analytics.eventPickImage()
         analytics.trackChatMenuClicked(menu.label)
         pickImageToUpload()
+    }
+
+    override fun onClickAttachInvoice(menu: AttachmentMenu) {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.ATTACH_INVOICE)
     }
 
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {
