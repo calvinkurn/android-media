@@ -42,6 +42,11 @@ import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieCompositionFactory;
 import com.airbnb.lottie.LottieDrawable;
 import com.airbnb.lottie.LottieTask;
+import com.google.android.play.core.inappreview.InAppReviewInfo;
+import com.google.android.play.core.inappreview.InAppReviewManager;
+import com.google.android.play.core.inappreview.InAppReviewManagerFactory;
+import com.google.android.play.core.tasks.OnCompleteListener;
+import com.google.android.play.core.tasks.Task;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
@@ -423,12 +428,37 @@ public class MainParentActivity extends BaseActivity implements
             setOsIconProgress(OS_STATE_UNSELECTED);
         }
 
+        if (position == HOME_MENU) {
+            showInAppReview();
+        }
+
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
         return true;
+    }
+
+    private void showInAppReview() {
+        InAppReviewManager manager = InAppReviewManagerFactory.create(this);
+        manager.requestInAppReviewFlow().addOnCompleteListener(new OnCompleteListener<InAppReviewInfo>() {
+            @Override
+            public void onComplete(Task<InAppReviewInfo> request) {
+                if (request.isSuccessful()) {
+                    launchInAppReview(manager, request);
+                }
+            }
+        });
+    }
+
+    private void launchInAppReview(InAppReviewManager manager, Task<InAppReviewInfo> request) {
+        manager.launchInAppReviewFlow(this, request.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
+            @Override
+            public void onComplete(Task<Integer> task) {
+
+            }
+        });
     }
 
     private void checkAgeVerificationExtra(Intent intent) {
