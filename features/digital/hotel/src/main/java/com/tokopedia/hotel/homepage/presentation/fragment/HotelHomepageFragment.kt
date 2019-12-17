@@ -121,7 +121,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     } else {
                         hidePromoContainer()
                     }
-                    renderHotelPromo(it.data.banners)
                 }
             }
         })
