@@ -132,13 +132,17 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
             ImageHandler.loadImageFitCenter(context, background, model.backgroundImageUrl)
 
             container.setOnClickListener { view ->
-                eventClickSpotlight(view.context, model, position)
+                eventClickSpotlight(model, position)
                 listener.onSpotlightItemClicked(DynamicLinkHelper.getActionLink(model))
             }
         }
 
-        private fun eventClickSpotlight(context: Context, model: SpotlightItemViewModel, position: Int) {
-            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(context, model.getEnhanceClickSpotlightHomePage(position, model.channeldId))
+        private fun eventClickSpotlight(model: SpotlightItemViewModel, position: Int) {
+            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                    HomePageTracking.getEventEnhancedClickSpotlightHomePage(
+                            position, model
+                    )
+            )
         }
     }
 

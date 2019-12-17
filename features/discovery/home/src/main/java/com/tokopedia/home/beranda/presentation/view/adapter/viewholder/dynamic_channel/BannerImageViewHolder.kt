@@ -31,7 +31,7 @@ class BannerImageViewHolder(itemView: View,
         bannerImageView.loadGif(channel.banner.imageUrl)
         bannerImageView.setOnClickListener {
             RouteManager.route(it.context, channel.banner.applink)
-            HomePageTracking.eventEnhanceClickBannerGif(itemView.context, channel)
+            HomePageTracking.eventEnhanceClickBannerGif(channel)
         }
     }
 

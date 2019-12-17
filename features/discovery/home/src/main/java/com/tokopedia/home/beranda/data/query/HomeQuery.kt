@@ -20,6 +20,10 @@ object HomeQuery{
             meta { total_data }
             slides {
               id
+              galaxy_attribution
+              persona
+              brand_id
+              category_persona
               title
               image_url
               redirect_url
@@ -47,6 +51,7 @@ object HomeQuery{
               galaxy_attribution
               persona
               brand_id
+              category_persona
               name
               url
               imageUrl
@@ -59,6 +64,7 @@ object HomeQuery{
               galaxy_attribution
               persona
               brand_id
+              category_persona
               name
               layout
               type
@@ -128,6 +134,7 @@ object HomeQuery{
               galaxy_attribution
               persona
               brand_id
+              category_persona
               title
               description
               background_image_url

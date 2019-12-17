@@ -14,6 +14,9 @@ public class SpotlightItem {
     @SerializedName("persona")
     private String persona;
     @Expose
+    @SerializedName("category_persona")
+    private String categoryPersona;
+    @Expose
     @SerializedName("brand_id")
     private String brandId;
     @SerializedName("title")
@@ -157,5 +160,13 @@ public class SpotlightItem {
 
     public void setBrandId(String brandId) {
         this.brandId = brandId;
+    }
+
+    public String getCategoryPersona() {
+        return categoryPersona;
+    }
+
+    public void setCategoryPersona(String categoryPersona) {
+        this.categoryPersona = categoryPersona;
     }
 }

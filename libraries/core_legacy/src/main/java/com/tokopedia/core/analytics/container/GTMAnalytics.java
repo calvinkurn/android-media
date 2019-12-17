@@ -1158,7 +1158,11 @@ public class GTMAnalytics extends ContextAnalytics {
                         "promotions", null,
                         "ecommerce", null,
                         "currentSite", null,
-                        "channelId", null
+                        "channelId", null,
+                        "attribution", null,
+                        "affinityLabel", null,
+                        "categoryId", null,
+                        "shopId", null
                 )
         );
     }

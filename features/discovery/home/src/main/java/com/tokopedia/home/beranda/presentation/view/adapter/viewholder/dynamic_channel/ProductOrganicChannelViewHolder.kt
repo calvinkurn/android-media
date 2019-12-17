@@ -108,7 +108,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
                             attr = channels.getHomeAttribution(position + 1, channels.grids[position].id)
                         }
                         TYPE_CURATED -> {
-                            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(context,
+                            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                                     channels.getEnhanceClickDynamicChannelHomePage(grid, position + 1))
                             attr = channels.getHomeAttribution(position + 1, grid.attribution)
                         }

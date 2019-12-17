@@ -26,5 +26,7 @@ data class Banner(
         @SerializedName("persona")
         val persona: String = "",
         @SerializedName("brand_id")
-        val brandId: String = ""
+        val brandId: String = "",
+        @SerializedName("category_persona")
+        val categoryPersona: String = ""
 )
