@@ -21,6 +21,12 @@ public class MigratedUserSession {
         return sharedPrefs.getString(keyName, defValue);
     }
 
+    protected void cleanKey(String prefName, String keyName){
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.remove(keyName).apply();
+    }
+
     protected void nullString(String prefName, String keyName) {
         setString(prefName, keyName, null);
     }
@@ -39,10 +45,9 @@ public class MigratedUserSession {
 
         String oldValue = getString(oldprefName, oldKeyName, defValue);
 
-        if(!oldValue.equals(defValue)){
-            nullString(oldprefName, oldKeyName);
+        if(oldValue != null && !oldValue.equals(defValue)){
+            cleanKey(oldprefName, oldKeyName);
             setString(prefName, keyName, oldValue);
-
             return oldValue;
         }
 
@@ -70,7 +75,7 @@ public class MigratedUserSession {
         boolean oldValue = getBoolean(oldprefName, oldKeyName, defValue);
 
         if( oldValue != defValue){
-            nullString(oldprefName, oldKeyName);
+            cleanKey(oldprefName, oldKeyName);
             setBoolean(prefName, keyName, oldValue);
 
             return oldValue;
