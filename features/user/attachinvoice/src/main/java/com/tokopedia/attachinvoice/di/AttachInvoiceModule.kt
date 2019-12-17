@@ -1,6 +1,8 @@
 package com.tokopedia.attachinvoice.di
 
+import com.tokopedia.attachinvoice.data.GetInvoiceResponse
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Module
 import dagger.Provides
@@ -19,5 +21,11 @@ class AttachInvoiceModule {
     @AttachInvoiceScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @AttachInvoiceScope
+    @Provides
+    fun provideGqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<GetInvoiceResponse> {
+        return GraphqlUseCase(graphqlRepository)
+    }
 
 }
