@@ -99,6 +99,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.REPLACE_CUST_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.REPLACE_INVOICE_NO
@@ -127,7 +128,7 @@ import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping.view.*
  * Created by fwidjaja on 2019-09-30.
  */
 class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener,
-        SomBottomSheetCourierProblemsAdapter.ActionListener, SomDetailProductsCardAdapter.ActionListener  {
+        SomBottomSheetCourierProblemsAdapter.ActionListener  {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -495,6 +496,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
         val uriBuilder = Uri.Builder()
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, buttonResp.url)
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, PARAM_SELLER)
         routingAppLink += uriBuilder.toString()
         RouteManager.route(context, routingAppLink)
     }

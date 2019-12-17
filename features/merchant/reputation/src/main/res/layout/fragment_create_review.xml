@@ -100,25 +100,25 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/txt_input_review"
+                style="@style/TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_14"
-                android:layout_marginEnd="@dimen/dp_14"
                 android:layout_marginTop="@dimen/dp_26"
+                android:layout_marginEnd="@dimen/dp_14"
+                android:hint="@string/review_msg_placeholder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_review_desc"
-                style="@style/TextInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/txt_review_desc">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_text_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/review_msg_placeholder"
-                    android:inputType="textMultiLine|textCapSentences"
                     android:gravity="top|start"
+                    android:inputType="textMultiLine|textCapSentences"
                     android:maxLines="10" />
 
             </com.google.android.material.textfield.TextInputLayout>

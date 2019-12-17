@@ -169,7 +169,7 @@ public class PartialRegisterInputView extends BaseCustomView {
                         validateValue(s.toString());
                     }
 
-                    if (etInputEmailPhone.getText().toString().contains("@") && emailExtension != null) {
+                    if (etInputEmailPhone.isFocused() && etInputEmailPhone.getText().toString().contains("@") && emailExtension != null) {
                         showEmailExtension();
                         isExtensionSelected = false;
 
@@ -281,12 +281,6 @@ public class PartialRegisterInputView extends BaseCustomView {
                 hideEmailExtension();
             }
         });
-
-        etInputEmailPhone.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                hideEmailExtension();
-            }
-        });
     }
 
     private class ClickRegister implements OnClickListener {
@@ -322,8 +316,6 @@ public class PartialRegisterInputView extends BaseCustomView {
 
         etInputEmailPhone.setText(email);
         etInputEmailPhone.setEnabled(false);
-
-        hideEmailExtension();
     }
 
     public void showDefaultView() {
