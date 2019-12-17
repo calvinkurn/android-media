@@ -1,9 +1,6 @@
 package com.tokopedia.discovery.categoryrevamp.view.fragments
 
-
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -21,7 +18,6 @@ import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.tkpd.library.utils.URLParser
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -65,11 +61,12 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_product_nav.*
-import kotlinx.android.synthetic.main.layout_nav_banned_layout.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import rx.Subscriber
 import javax.inject.Inject
 
+private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
+private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
 open class ProductNavFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
@@ -79,48 +76,12 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         WishListActionListener,
         SelectedFilterListener {
 
-    var isSubCategoryAvailable = false
-
-    override fun getDepartMentId(): String {
-        return mDepartmentId
-    }
-
-    override fun onErrorAddWishList(errorMessage: String?, productId: String) {
-        enableWishlistButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
-    }
-
-    override fun onSuccessAddWishlist(productId: String) {
-        productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
-        enableWishlistButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
-    }
-
-
-    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
-        enableWishlistButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
-    }
-
-    override fun onSuccessRemoveWishlist(productId: String) {
-        productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
-        enableWishlistButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_remove_wishlist))
-
-    }
-
-    fun enableWishlistButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId?.toInt() ?: 0, true)
-    }
-
-    fun disableWishlistButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId?.toInt() ?: 0, false)
-    }
+    private var isSubCategoryAvailable = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var productNavViewModel: ProductNavViewModel
+    private lateinit var productNavViewModel: ProductNavViewModel
 
     @Inject
     lateinit var removeWishlistActionUseCase: RemoveWishListUseCase
@@ -143,34 +104,28 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
 
     private lateinit var categoryNavComponent: CategoryNavComponent
 
-    var productNavListAdapter: ProductNavListAdapter? = null
+    private var productNavListAdapter: ProductNavListAdapter? = null
 
     var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
 
-    var quickFilterList = ArrayList<Filter>()
-    var mDepartmentId: String = ""
-    var mDepartmentName: String = ""
+    private var quickFilterList = ArrayList<Filter>()
+    private var mDepartmentId: String = ""
+    private var mDepartmentName: String = ""
 
-    var pageCount = 0
-    var isPagingAllowed: Boolean = true
-    private var bannedData: Data? = null
+    private var pageCount = 0
+    private var isPagingAllowed: Boolean = true
+    private var productData: Data? = null
 
     private var selectedFilterAdapter: SelectedFilterAdapter? = null
 
-    var mSelectedFilter = HashMap<String, String>()
+    private var mSelectedFilter = HashMap<String, String>()
     var categoryUrl: String? = null
 
-    private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
-    private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
-    private val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
-    private val ADVERTISINGID = "ADVERTISINGID"
-    private val QUERY_APP_CLIENT_ID = "?appClientId="
-
     companion object {
-        private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
-        private val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
-        private val EXTRA_BANNED_DATA = "BANNED_DATA"
-        private val EXTRA_CATEGORY_URL = "CATEGORY_URL"
+        private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
+        private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+        private const val EXTRA_PRODUCT_DATA = "PRODUCT_DATA"
+        private const val EXTRA_CATEGORY_URL = "CATEGORY_URL"
 
         @JvmStatic
         fun newInstance(data: Data, categoryUrl: String?): Fragment {
@@ -181,7 +136,7 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
             } else {
                 bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, data.id.toString())
             }
-            bundle.putParcelable(EXTRA_BANNED_DATA, data)
+            bundle.putParcelable(EXTRA_PRODUCT_DATA, data)
             fragment.arguments = bundle
             return fragment
         }
@@ -202,9 +157,9 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            bannedData = it.getParcelable(EXTRA_BANNED_DATA) as Data?
-            mDepartmentId = bannedData?.id.toString()
-            mDepartmentName = bannedData?.name ?: ""
+            productData = it.getParcelable(EXTRA_PRODUCT_DATA) as Data?
+            mDepartmentId = productData?.id.toString()
+            mDepartmentName = productData?.name ?: ""
             if (it.containsKey(EXTRA_CATEGORY_URL)) {
                 categoryUrl = it.getString(EXTRA_CATEGORY_URL, "")
                 mSelectedFilter = URLParser(it.getString(EXTRA_CATEGORY_URL, "")).paramKeyValueMap
@@ -214,7 +169,6 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_product_nav, container, false)
     }
 
@@ -223,21 +177,17 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         super.onViewCreated(view, savedInstanceState)
         categoryNavComponent.inject(this)
         initView()
-        if (bannedData == null || bannedData?.isBanned == 0) {
-            setUpData()
-            observeData()
-            setUpAdapter()
-            setUpNavigation()
-            if (userVisibleHint) {
-                setUpVisibleFragmentListener()
-            }
-        } else {
-            showBannedDataScreen()
+        setUpData()
+        observeData()
+        setUpAdapter()
+        setUpNavigation()
+        if (userVisibleHint) {
+            setUpVisibleFragmentListener()
         }
         initSelectedFilterRecyclerView()
     }
 
-    protected fun initSelectedFilterRecyclerView() {
+    private fun initSelectedFilterRecyclerView() {
         selectedFilterAdapter = SelectedFilterAdapter(this)
         selectedFilterRecyclerView.adapter = selectedFilterAdapter
         val layoutManager = ChipsLayoutManager.newBuilder(context)
@@ -270,7 +220,7 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun getScreenName(): String {
-        return "category page - " + getDepartMentId();
+        return "category page - " + getDepartMentId()
     }
 
     override fun initInjector() {
@@ -290,7 +240,6 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     override fun onChangeSingleGrid() {
         product_recyclerview.requestLayout()
     }
-
 
     private fun setUpAdapter() {
         productTypeFactory = ProductTypeFactoryImpl(this)
@@ -380,7 +329,7 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
 
         productNavViewModel.mProductCount.observe(this, Observer {
             it?.let {
-                if(it.countText!=null)
+                if (it.countText != null)
                     setTotalSearchResultCount(it.countText)
                 setTotalSearchResultCountInteger(it.totalData)
                 if (!TextUtils.isEmpty(it.countText)) {
@@ -459,45 +408,8 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         }
     }
 
-    protected fun populateSelectedFilterToRecylerView(selectedFilterOptionList: List<Option>) {
+    private fun populateSelectedFilterToRecylerView(selectedFilterOptionList: List<Option>) {
         selectedFilterAdapter?.setOptionList(selectedFilterOptionList)
-    }
-
-    private fun showBannedDataScreen() {
-        layout_banned_screen.show()
-        swipe_refresh_layout.hide()
-        observeSeamlessLogin()
-        catAnalyticsInstance.eventBukaView(bannedData?.appRedirection.toString(), mDepartmentId)
-        if (bannedData != null && bannedData?.displayButton == true && CategoryNavActivity.isBannedNavigationEnabled(activity as Context)) {
-            category_btn_banned_navigation.show()
-            category_btn_banned_navigation.setOnClickListener() {
-                catAnalyticsInstance.eventBukaClick(bannedData?.appRedirection.toString(), mDepartmentId)
-                val localCacheHandler = LocalCacheHandler(activity, ADVERTISINGID)
-                val adsId = localCacheHandler.getString(KEY_ADVERTISINGID)
-                var url = Uri.parse(bannedData?.appRedirection).toString()
-                if (adsId != null && adsId.trim().isNotEmpty()) {
-                    url = url.plus(QUERY_APP_CLIENT_ID + adsId)
-                    productNavViewModel.openBrowserSeamlessly(url)
-                }
-            }
-        }
-        txt_header.text = bannedData?.bannedMsgHeader
-        txt_sub_header.text = bannedData?.bannedMessage
-
-    }
-
-    private fun observeSeamlessLogin() {
-        productNavViewModel.mSeamlessLogin.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    openUrlSeamlessly(it.data)
-                }
-
-                is Fail -> {
-                    onSeamlessError()
-                }
-            }
-        })
     }
 
     private fun initQuickFilter(list: ArrayList<Filter>) {
@@ -506,7 +418,6 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         quickfilter_recyclerview.adapter?.notifyDataSetChanged()
 
     }
-
 
     private fun createFilterParam(): RequestParams {
         val paramMap = RequestParams()
@@ -524,7 +435,6 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun initView() {
-        layout_banned_screen.visibility = View.GONE
         swipe_refresh_layout.visibility = View.VISIBLE
         userSession = UserSession(activity)
         gcmHandler = GCMHandler(activity)
@@ -550,10 +460,7 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun getProductListParamMap(start: Int): RequestParams {
-
         val param = RequestParams.create()
-
-
         val searchProductRequestParams = RequestParams.create()
         searchProductRequestParams.putString(CategoryNavConstants.START, (start * 10).toString())
         searchProductRequestParams.putString(CategoryNavConstants.SC, mDepartmentId)
@@ -570,7 +477,6 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         }
         searchProductRequestParams.putAllString(getSelectedSort())
         param.putString("product_params", createParametersForQuery(searchProductRequestParams.parameters))
-
 
         val topAdsRequestParam = RequestParams.create()
         topAdsRequestParam.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
@@ -589,11 +495,9 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         } else {
             topAdsRequestParam.putAllString(getSelectedFilter())
         }
-
         param.putString("top_params", createParametersForQuery(topAdsRequestParam.parameters))
         return param
     }
-
 
     private fun createParametersForQuery(parameters: Map<String, Any>): String {
         return ParamMapToUrl.generateUrlParamString(parameters)
@@ -619,9 +523,7 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         productNavListAdapter?.addShimmer()
         resetPage()
         fetchProductData(getProductListParamMap(getPage()))
-
         productNavViewModel.fetchQuickFilters(getQuickFilterParams())
-
     }
 
     override fun OnDefaultItemClicked() {
@@ -676,28 +578,27 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         if (userSession.isLoggedIn) {
             disableWishlistButton(productItem.id.toString())
             if (productItem.wishlist) {
-                removeWishlist(productItem.id.toString(), userSession.userId, position)
+                removeWishlist(productItem.id.toString(), userSession.userId)
             } else {
-                addWishlist(productItem.id.toString(), userSession.userId, position)
+                addWishlist(productItem.id.toString(), userSession.userId)
             }
         } else {
-            launchLoginActivity(productItem.id.toString())
+            launchLoginActivity()
         }
-
     }
 
-    private fun removeWishlist(productId: String, userId: String, adapterPosition: Int) {
+    private fun removeWishlist(productId: String, userId: String) {
         removeWishlistActionUseCase.createObservable(productId,
                 userId, this)
     }
 
-    private fun addWishlist(productId: String, userId: String, adapterPosition: Int) {
+    private fun addWishlist(productId: String, userId: String) {
         addWishlistActionUseCase.createObservable(productId, userId,
                 this)
 
     }
 
-    private fun launchLoginActivity(productId: String) {
+    private fun launchLoginActivity() {
         RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
@@ -784,7 +685,6 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         ImpresionTask().execute(url)
     }
 
-
     override fun onPause() {
         super.onPause()
         productNavListAdapter?.onPause()
@@ -793,13 +693,10 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     override fun onDestroyView() {
         product_recyclerview.adapter = null
         product_recyclerview.layoutManager = null
-
         subcategory_recyclerview.adapter = null
         subcategory_recyclerview.layoutManager = null
-
         quickfilter_recyclerview.adapter = null
         quickfilter_recyclerview.layoutManager = null
-
         productNavListAdapter = null
         subCategoryAdapter = null
         quickFilterAdapter = null
@@ -819,15 +716,38 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
                 resources.getString(R.string.empty_state_selected_filter_price_name))
     }
 
-    private fun openUrlSeamlessly(url: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        startActivity(browserIntent)
+    override fun getDepartMentId(): String {
+        return mDepartmentId
     }
 
-    private fun onSeamlessError() {
-        layout_banned_screen.show()
-        txt_header.text = getString(R.string.category_server_error_header)
-        txt_sub_header.text = getString(R.string.try_again)
+    override fun onErrorAddWishList(errorMessage: String?, productId: String) {
+        enableWishlistButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
+
+    override fun onSuccessAddWishlist(productId: String) {
+        productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
+        enableWishlistButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
+    }
+
+    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
+        enableWishlistButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
+
+    override fun onSuccessRemoveWishlist(productId: String) {
+        productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
+        enableWishlistButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_remove_wishlist))
+    }
+
+    private fun enableWishlistButton(productId: String) {
+        productNavListAdapter?.setWishlistButtonEnabled(productId.toInt(), true)
+    }
+
+    private fun disableWishlistButton(productId: String) {
+        productNavListAdapter?.setWishlistButtonEnabled(productId.toInt(), false)
     }
 
     private fun isUserLoggedIn(): Boolean {

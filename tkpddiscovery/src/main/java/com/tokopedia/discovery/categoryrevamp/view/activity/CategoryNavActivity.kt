@@ -27,6 +27,7 @@ import com.tokopedia.discovery.categoryrevamp.data.CategorySectionItem
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
+import com.tokopedia.discovery.categoryrevamp.view.fragments.BannedProductFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
@@ -47,13 +48,16 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_category_nav.*
-import kotlinx.android.synthetic.main.layout_nav_banned_layout.*
+import kotlinx.android.synthetic.main.activity_category_nav.layout_no_data
+import kotlinx.android.synthetic.main.fragment_product_nav.*
+import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
 
 
 class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         SearchNavigationView.SearchNavClickListener,
         BaseCategorySectionFragment.SortAppliedListener,
+        BannedProductFragment.OnBannedFragmentInteractionListener,
         BottomSheetListener {
 
     override fun onSortApplied(showTick: Boolean) {
@@ -229,7 +233,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                         } else {
                             showBottomNavigation()
                         }
-                        layout_banned_screen.hide()
                         if (it.data.isAdult == IS_ADULT) {
                             AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, departmentId)
                         }
@@ -250,9 +253,9 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private fun setErrorPage() {
         hideBottomNavigation()
-        layout_banned_screen.show()
-        txt_header.text = getString(R.string.category_server_error_header)
-        txt_sub_header.text = getString(R.string.try_again)
+        layout_no_data.show()
+        txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
+        txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
     }
 
     private fun getSubCategoryParam(): RequestParams {
@@ -347,17 +350,17 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun populateTab(searchSectionItemList: ArrayList<CategorySectionItem>, data: Data) {
-        initFragments()
         addFragmentsToList(searchSectionItemList, data)
-
     }
 
     private fun addFragmentsToList(searchSectionItemList: ArrayList<CategorySectionItem>, data: Data) {
-        searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(data, categoryUrl)))
-        searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
-    }
-
-    private fun initFragments() {
+        if (data.isBanned == IS_BANNED) {
+            searchSectionItemList.add(CategorySectionItem("Produk", BannedProductFragment.newInstance(data)))
+            searchSectionItemList.add(CategorySectionItem("Katalog", BannedProductFragment.newInstance(data)))
+        }else{
+            searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(data, categoryUrl)))
+            searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
+        }
     }
 
     private fun setActiveTab() {
@@ -395,13 +398,15 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     private fun onPageSelectedCalled(position: Int) {
         this.isForceSwipeToShop = false
         this.activeTabPosition = position
-        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
-        selectedFragment.resetSortTick()
-        val filterParameter = selectedFragment.getSelectedFilter()
-        if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {
-            searchNavContainer?.onFilterSelected(true)
-        } else {
-            searchNavContainer?.onFilterSelected(false)
+        if(categorySectionPagerAdapter?.getItem(pager.currentItem) is BaseCategorySectionFragment) {
+            val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
+            selectedFragment.resetSortTick()
+            val filterParameter = selectedFragment.getSelectedFilter()
+            if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {
+                searchNavContainer?.onFilterSelected(true)
+            } else {
+                searchNavContainer?.onFilterSelected(false)
+            }
         }
     }
 
@@ -475,4 +480,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         catAnalyticsInstance.eventFilterClicked(departmentId)
     }
 
+    override fun onButtonClicked(bannedProduct: Data) {
+        bannedProduct.name?.let { catAnalyticsInstance.eventBukaClick(bannedProduct.appRedirection.toString(), it) }
+    }
 }
