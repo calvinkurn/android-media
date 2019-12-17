@@ -52,7 +52,7 @@ public class SnapShotProduct extends BasePresenterActivity<SnapShotProductPresen
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_product_info_fragmented;
+        return R.layout.activity_product_info_fragmented_opportunity;
     }
 
     @Override

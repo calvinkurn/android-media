@@ -7,7 +7,7 @@ import com.tokopedia.showcase.ShowCaseDialog;
 public class ShowCaseDialogFactory {
     public static ShowCaseDialog createTkpdShowCase (){
         return new ShowCaseBuilder()
-                .customView(R.layout.item_show_case)
+                .customView(R.layout.item_show_case_opportunity)
                 .titleTextColorRes(com.tokopedia.design.R.color.white)
                 .spacingRes(com.tokopedia.core2.R.dimen.spacing_show_case)
                 .arrowWidth(com.tokopedia.core2.R.dimen.arrow_width_show_case)
