@@ -48,6 +48,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OPPORTUNITY
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
@@ -117,6 +118,7 @@ object DeeplinkDFMapper {
     private val DFM_PAYMENT_SETTING_SELLERAPP = "payment_setting_sellerapp"
     private val DFM_PRODUCT_MANAGE_CUSTOMER = "product_manage_customer"
     private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
+    private val DFM_OPPORTUNITY = "opportunity"
 
     @JvmField
     val DFM_ONBOARDING = "onboarding"
@@ -171,6 +173,7 @@ object DeeplinkDFMapper {
             add(DFP({it.startsWith(OVO_PAY_WITH_QR_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
             add(DFP({it.startsWith(OQR_PIN_URL_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
             add(DFP({ it.startsWith(DFM_PRODUCT_MANAGE_CUSTOMER) }, DFM_PRODUCT_MANAGE_CUSTOMER, R.string.title_applink_product_manage))
+            add(DFP({ it.startsWith(OPPORTUNITY) }, DFM_OPPORTUNITY, R.string.opportunity_title))
 
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING, R.string.payment_settings_title))
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_SETTING_NOTIF, R.string.notif_settings_title))

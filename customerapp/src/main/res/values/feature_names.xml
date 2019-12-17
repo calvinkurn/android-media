@@ -175,4 +175,7 @@
 
     <!-- Dynamic feature for manage product list-->
     <string name="title_product_manage">Daftar Produk</string>
+
+    <!-- Dynamic feature for opportunity-->
+    <string name="title_opportunity">Peluang</string>
 </resources>
