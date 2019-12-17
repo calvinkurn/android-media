@@ -17,6 +17,13 @@ class AttachInvoiceActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         useLightNotificationBar()
+        setupToolbar()
+    }
+
+    private fun setupToolbar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.elevation = 0f
+        }
     }
 
     private fun useLightNotificationBar() {

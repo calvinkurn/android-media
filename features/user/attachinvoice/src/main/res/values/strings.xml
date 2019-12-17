@@ -1,3 +1,4 @@
 <resources>
     <string name="attachinvoice_title">Lampirkan Invoice</string>
+    <string name="attachinvoice_button_attach">Lampirkan</string>
 </resources>
