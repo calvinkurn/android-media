@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.debugTrace
@@ -26,15 +28,15 @@ import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
 import com.tokopedia.product.detail.usecase.*
+import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
+import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
-import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketRequest
-import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
-import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -334,29 +336,38 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             productInfo: DynamicProductInfoP1?,
             userInputVariant: String?
     ) {
-        if (intent == null) return
+        if (intent == null || productId == null) return
         val variants = mapSelectedProductVariants(userInputVariant)
-        val productImageUrl = productInfo?.data?.getProductImageUrl()
-        val productName = productInfo?.getProductName
-        val productPrice = productInfo?.data?.price?.value?.getCurrencyFormatted()
-        val productUrl = productInfo?.basic?.url
-        val productFsIsActive = productInfo?.data?.getFsProductIsActive()
-        val productFsImageUrl = productInfo?.data?.getFsProductImageUrl()
-        val productColorVariant = variants?.get("colour")?.get("value")
-        val productColorHexVariant = variants?.get("colour")?.get("hex")
-        val productSizeVariant = variants?.get("size")?.get("value")
-        with(intent) {
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, productId)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, productUrl)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, productColorVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, productColorHexVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, productSizeVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IS_ACTIVE, productFsIsActive)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IMAGE_URL, productFsImageUrl)
-        }
+        val productImageUrl = productInfo?.data?.getProductImageUrl() ?: ""
+        val productName = productInfo?.getProductName ?: ""
+        val productPrice = productInfo?.data?.price?.value?.getCurrencyFormatted() ?: ""
+        val productUrl = productInfo?.basic?.url ?: ""
+        val productFsIsActive = productInfo?.data?.getFsProductIsActive() ?: false
+        val productFsImageUrl = productInfo?.data?.getFsProductImageUrl() ?: ""
+        val productColorVariant = variants?.get("colour")?.get("value") ?: ""
+        val productColorHexVariant = variants?.get("colour")?.get("hex") ?: ""
+        val productSizeVariant = variants?.get("size")?.get("value") ?: ""
+        val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
+        val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
+
+        val productPreviews = listOf(
+                ProductPreview(
+                        productId,
+                        productImageUrl,
+                        productName,
+                        productPrice,
+                        productColorVariantId,
+                        productColorVariant,
+                        productColorHexVariant,
+                        productSizeVariantId,
+                        productSizeVariant,
+                        productUrl,
+                        productFsIsActive,
+                        productFsImageUrl
+                )
+        )
+        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
     fun loadRecommendation() {

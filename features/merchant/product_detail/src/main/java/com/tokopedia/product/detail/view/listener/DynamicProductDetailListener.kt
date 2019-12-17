@@ -4,7 +4,6 @@ import android.app.Application
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.carouselproductcard.common.CarouselProductPool
-import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Video
@@ -24,6 +23,7 @@ interface DynamicProductDetailListener {
     fun getProductFragmentManager(): FragmentManager
     fun showAlertCampaignEnded()
     fun txtTradeinClicked(adapterPosition:Int)
+    fun onSwipePicture(swipeDirection: String)
 
     /**
      * ProductInfoViewHolder

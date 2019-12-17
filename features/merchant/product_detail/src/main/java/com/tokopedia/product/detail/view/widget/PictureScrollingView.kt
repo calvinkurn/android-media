@@ -39,7 +39,7 @@ class PictureScrollingView @JvmOverloads constructor(
         View.inflate(context, R.layout.widget_picture_scrolling, this)
     }
 
-    fun renderData(media: List<ProductMediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String) -> Unit) fragmentManager: FragmentManager,
+    fun renderData(media: List<ProductMediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String) -> Unit) ,fragmentManager: FragmentManager,
                    forceRefresh: Boolean = true) {
         val mediaList = if (media == null || media.isEmpty()) {
             val resId = R.drawable.product_no_photo_default

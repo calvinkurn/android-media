@@ -43,11 +43,6 @@ class ProductSnapshotViewHolder(private val view: View,
 
         renderWishlist(element.isAllowManage, element.isWishlisted)
 
-        element.media?.let {
-            view.view_picture_search_bar.renderData(it, listener::onImageClicked, listener.getProductFragmentManager(), element.shouldReinitVideoPicture)
-            element.shouldReinitVideoPicture = false
-        }
-
         renderCod(element.shouldShowCod)
         renderTradein(element.shouldShowTradein)
 
@@ -57,7 +52,7 @@ class ProductSnapshotViewHolder(private val view: View,
 
         view.fab_detail.setOnClickListener { listener.onFabWishlistClicked(it.isActivated) }
         element.media?.let {
-            view.view_picture_search_bar.renderData(it, listener::onImageClicked, listener.getProductFragmentManager(), element.shouldReinitVideoPicture)
+            view.view_picture_search_bar.renderData(it, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(), element.shouldReinitVideoPicture)
             element.shouldReinitVideoPicture = false
         }
 
