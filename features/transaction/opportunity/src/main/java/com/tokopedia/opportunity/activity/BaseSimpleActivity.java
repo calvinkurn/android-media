@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.opportunity.R;
 
 @Deprecated
 public abstract class BaseSimpleActivity extends BaseToolbarActivity {
@@ -16,7 +15,7 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
 
     @Override
     protected int getLayoutRes() {
-        return com.tokopedia.opportunity.R.layout.activity_base_simple_seller;
+        return com.tokopedia.opportunity.R.layout.activity_base_simple_opportunity;
     }
 
     @Override
