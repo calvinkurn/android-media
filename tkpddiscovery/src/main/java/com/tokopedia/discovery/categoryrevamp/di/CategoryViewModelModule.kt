@@ -37,8 +37,9 @@ abstract class CategoryViewModelModule {
     @IntoMap
     @CategoryNavScope
     @ViewModelKey(CategoryNavViewModel::class)
-    internal abstract fun categoryNavViewModel(viewModel: CategoryNavViewModel): ViewModel@Binds
+    internal abstract fun categoryNavViewModel(viewModel: CategoryNavViewModel): ViewModel
 
+    @Binds
     @IntoMap
     @CategoryNavScope
     @ViewModelKey(BannedProdNavViewModel::class)
