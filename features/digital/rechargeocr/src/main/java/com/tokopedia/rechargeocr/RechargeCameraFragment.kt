@@ -1,7 +1,6 @@
 package com.tokopedia.rechargeocr
 
 import android.app.Activity
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cameraview.CameraListener
 import com.tokopedia.cameraview.CameraUtils
@@ -18,8 +18,6 @@ import com.tokopedia.cameraview.CameraView
 import com.tokopedia.cameraview.PictureResult
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import com.tokopedia.rechargeocr.data.RechargeUploadImageData
-import com.tokopedia.rechargeocr.data.RechargeUploadImageResponse
 import com.tokopedia.rechargeocr.di.RechargeCameraInstance
 import com.tokopedia.rechargeocr.viewmodel.RechargeUploadImageViewModel
 import com.tokopedia.rechargeocr.widget.FocusCameraView
@@ -107,6 +105,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         cameraListener = object : CameraListener() {
 
             override fun onPictureTaken(result: PictureResult) {
+                showLoading()
                 activity?.let {
                     permissionCheckerHelper.checkPermission(it,
                             PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
@@ -164,20 +163,26 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             ImageHandler.loadImageFromFile(context, fullImagePreview, cameraResultFile)
             imagePath = cameraResultFile.absolutePath
             showImagePreview()
-            //TODO hit to backend to get url
             uploadImageviewModel.uploadImageRecharge(imagePath, this::onSuccessUploadImage,
-                    this::onErrorUploadImage)
+                    this::onError)
         } else {
             Toast.makeText(context, "Terjadi kesalahan, silahkan coba lagi", Toast
                     .LENGTH_LONG).show()
         }
     }
 
-    private fun onSuccessUploadImage(rechargeUploadImageData: RechargeUploadImageData) {
-        Toast.makeText(activity, rechargeUploadImageData.picSrc, Toast.LENGTH_SHORT).show()
+    private fun onSuccessUploadImage(imageUrl: String) {
+        uploadImageviewModel.getResultOcr(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_ocr),
+                imageUrl, this::onSuccessResultOcr, this::onError)
     }
 
-    private fun onErrorUploadImage(throwable: Throwable) {
+    private fun onSuccessResultOcr(resultImageOcr: String) {
+        hideLoading()
+        Toast.makeText(activity, resultImageOcr, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onError(throwable: Throwable) {
+        hideLoading()
         Toast.makeText(activity, throwable.message, Toast.LENGTH_SHORT).show()
     }
 
@@ -186,11 +191,19 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         showCameraView()
     }
 
+    private fun showLoading() {
+        loading.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        loading.visibility = View.GONE
+        recaptureBtn.visibility = View.VISIBLE
+    }
+
     private fun showCameraView() {
         cameraView.visibility = View.VISIBLE
         shutterBtn.visibility = View.VISIBLE
         startCamera()
-        loading.visibility = View.GONE
         fullImagePreview.visibility = View.GONE
         recaptureBtn.visibility = View.GONE
     }
@@ -199,16 +212,13 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         shutterBtn.visibility = View.GONE
         fullImagePreview.visibility = View.GONE
         recaptureBtn.visibility = View.GONE
-        loading.visibility = View.VISIBLE
     }
 
     private fun showImagePreview() {
         cameraView.visibility = View.GONE
         shutterBtn.visibility = View.GONE
-        loading.visibility = View.GONE
         destroyCamera()
         fullImagePreview.visibility = View.VISIBLE
-        recaptureBtn.visibility = View.VISIBLE
     }
 
     private fun startCamera() {
