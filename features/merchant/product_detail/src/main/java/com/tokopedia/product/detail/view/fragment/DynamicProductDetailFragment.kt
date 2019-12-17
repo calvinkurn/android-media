@@ -48,6 +48,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.carouselproductcard.common.CarouselProductPool
+import com.tokopedia.common_tradein.customviews.TradeInTextView
+import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -211,6 +215,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     val errorBottomsheets: ErrorBottomsheets by lazy {
         ErrorBottomsheets()
     }
+
+    val carouselProductPool = CarouselProductPool()
 
     //Performance Monitoring
     lateinit var performanceMonitoringP1: PerformanceMonitoring
@@ -706,9 +712,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         viewModel.moveToWarehouseResult.removeObservers(this)
         viewModel.moveToEtalaseResult.removeObservers(this)
         viewModel.clear()
+        carouselProductPool.release()
         super.onDestroy()
     }
-
 
     /**
      * ProductInfoViewHolder
@@ -825,6 +831,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 position, recomItem, viewModel.isUserSessionActive, pageName, title)
     }
 
+    override fun getPdpCarouselPool(): CarouselProductPool {
+        return carouselProductPool
+    }
+  
     override fun loadTopads() {
         if (::pdpHashMapUtil.isInitialized && pdpHashMapUtil.listProductRecomMap?.isNotEmpty() == true && !isTopdasLoaded) {
             isTopdasLoaded = true

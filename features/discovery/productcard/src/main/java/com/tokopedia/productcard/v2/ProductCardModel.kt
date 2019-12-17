@@ -20,6 +20,18 @@ data class ProductCardModel (
         val freeOngkir: FreeOngkir = FreeOngkir(),
         val isTopAds: Boolean = false
 ) {
+    override fun equals(other: Any?): Boolean {
+        if (other is ProductCardModel) {
+            if (productImageUrl == other.productImageUrl &&
+                    slashedPrice == other.slashedPrice &&
+                    formattedPrice == other.formattedPrice &&
+                    freeOngkir == other.freeOngkir &&
+                    ratingCount == other.ratingCount &&
+                    reviewCount == other.reviewCount &&
+                    isWishlisted == other.isWishlisted) return true
+        }
+        return false
+    }
 
     data class Label(
             val title: String = "",

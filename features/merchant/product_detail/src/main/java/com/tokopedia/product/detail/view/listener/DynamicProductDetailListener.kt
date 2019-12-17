@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.view.listener
 import android.app.Application
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.carouselproductcard.common.CarouselProductPool
+import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Video
@@ -67,6 +69,7 @@ interface DynamicProductDetailListener {
     fun onSeeAllRecomClicked(pageName: String, applink: String)
     fun eventRecommendationClick(recomItem: RecommendationItem, position: Int, pageName: String, title: String)
     fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String)
+    fun getPdpCarouselPool(): CarouselProductPool
 
     /**
      * ProductGeneralInfoViewHolder
