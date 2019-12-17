@@ -9,9 +9,11 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.component.ticker.TouchViewPager
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -23,8 +25,7 @@ import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPdpV
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.activity_image_preview_pdp.btnAddToWishlist
-import kotlinx.android.synthetic.main.activity_image_preview_pdp.progressBar
+import kotlinx.android.synthetic.main.activity_image_preview_pdp.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -112,6 +113,22 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
                 imagePreviewTracking.onAddWishlistNonLogin()
             }
         }
+
+        findViewById<TouchViewPager>(R.id.viewPager)?.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+            var lastPosition = 0
+            override fun onPageSelected(position: Int) {
+                val swipeDirection = if(lastPosition > position) IMAGE_SWIPE_DIRECTION_LEFT else IMAGE_SWIPE_DIRECTION_RIGHT
+                imagePreviewTracking.onImageSwipe(productId, swipeDirection)
+                lastPosition = position
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            }
+        })
 
         findViewById<ImageView>(R.id.ivClose)?.setOnClickListener {
             setResult()
@@ -221,6 +238,8 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
 
         private const val PRODUCT_ID = "productId"
         private const val IS_WISHLISTED = "isWishlisted"
+        private const val IMAGE_SWIPE_DIRECTION_LEFT = "left"
+        private const val IMAGE_SWIPE_DIRECTION_RIGHT = "right"
 
         private const val REQUEST_CODE_LOGIN = 561
         const val RESPONSE_CODE_IMAGE_RPEVIEW = "responseImagePreview"

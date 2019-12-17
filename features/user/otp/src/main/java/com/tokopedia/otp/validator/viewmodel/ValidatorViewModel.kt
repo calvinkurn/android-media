@@ -19,15 +19,10 @@ import javax.inject.Inject
  */
 
 class ValidatorViewModel @Inject constructor(
-        private val otpModeListUseCase: GraphqlUseCase<OtpModeListPojo>,
         private val otpRequestUseCase: GraphqlUseCase<OtpRequestPojo>,
         private val otpValidateUseCase: GraphqlUseCase<OtpValidatePojo>,
         private val rawQueries: Map<String, String>,
         dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
-
-    private val mutableOtpModeListResponse = MutableLiveData<Result<ModeListData>>()
-    val otpModeListResponse: LiveData<Result<ModeListData>>
-        get() = mutableOtpModeListResponse
 
     private val mutableOtpRequestResponse = MutableLiveData<Result<OtpRequestData>>()
     val otpRequestResponse: LiveData<Result<OtpRequestData>>
@@ -40,23 +35,6 @@ class ValidatorViewModel @Inject constructor(
     private val mutableOtpValidateResponse = MutableLiveData<Result<OtpValidateData>>()
     val otpValidateResponse: LiveData<Result<OtpValidateData>>
         get() = mutableOtpValidateResponse
-
-    fun otpModeListEmail(otpType: String, email: String){
-        rawQueries[ValidatorQueryConstant.QUERY_OTP_MODE_LIST]?.let { query ->
-            val params = mapOf(
-                    ValidatorQueryConstant.PARAM_OTP_TYPE to otpType,
-                    ValidatorQueryConstant.PARAM_EMAIL to email
-            )
-
-            otpModeListUseCase.setTypeClass(OtpModeListPojo::class.java)
-            otpModeListUseCase.setRequestParams(params)
-            otpModeListUseCase.setGraphqlQuery(query)
-            otpModeListUseCase.execute(
-                    onSuccessOtpModeList(),
-                    onErrorOtpModeList()
-            )
-        }
-    }
 
     fun otpRequestEmail(otpType: String, email: String, isResend: Boolean){
         rawQueries[ValidatorQueryConstant.QUERY_OTP_REQUEST]?.let { query ->
@@ -91,25 +69,6 @@ class ValidatorViewModel @Inject constructor(
                     onSuccessValidate(),
                     onErrorValidate()
             )
-        }
-    }
-
-    private fun onSuccessOtpModeList(): (OtpModeListPojo) -> Unit {
-        return {
-            when{
-                it.data.success && it.data.modeList.isNotEmpty() ->
-                    mutableOtpModeListResponse.value = Success(it.data.modeList[0])
-                it.data.errorMessage.isNotEmpty() ->
-                    mutableOtpModeListResponse.value = Fail(MessageErrorException(it.data.errorMessage))
-                else -> mutableOtpModeListResponse.value = Fail(RuntimeException())
-            }
-        }
-    }
-
-    private fun onErrorOtpModeList(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-            mutableOtpModeListResponse.value = Fail(it)
         }
     }
 
@@ -172,7 +131,6 @@ class ValidatorViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        otpModeListUseCase.cancelJobs()
         otpRequestUseCase.cancelJobs()
         otpValidateUseCase.cancelJobs()
     }
