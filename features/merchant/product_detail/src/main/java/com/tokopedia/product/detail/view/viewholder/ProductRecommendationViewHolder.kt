@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
-import com.tokopedia.carouselproductcard.common.CarouselProductPool
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -29,7 +28,7 @@ class ProductRecommendationViewHolder(private val view: View,
     }
 
     init {
-        view.product_recom_1.carouselProductPool = listener.getPdpCarouselPool()
+        view.rvProductRecom.carouselProductPool = listener.getPdpCarouselPool()
     }
 
     override fun bind(element: ProductRecommendationDataModel) {
@@ -97,7 +96,7 @@ class ProductRecommendationViewHolder(private val view: View,
     }
 
     override fun onViewRecycled() {
-        view.product_recom_1.onViewRecycled(carouselModelId?:"")
+        view.rvProductRecom.onViewRecycled(carouselModelId?:"")
         super.onViewRecycled()
     }
 }

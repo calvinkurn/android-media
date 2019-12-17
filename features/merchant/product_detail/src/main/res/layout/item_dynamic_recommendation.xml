@@ -58,8 +58,6 @@
             android:layout_marginTop="@dimen/dp_16"
             android:clipToPadding="false"
             android:descendantFocusability="blocksDescendants"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
             android:scrollbars="none"
             android:visibility="gone"
             tools:layoutManager="LinearLayoutManager"
