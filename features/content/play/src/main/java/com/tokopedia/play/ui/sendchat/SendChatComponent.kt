@@ -20,9 +20,11 @@ class SendChatComponent(
         private val coroutineScope: CoroutineScope
 ) : UIComponent<SendChatInteractionEvent>, SendChatView.Listener, CoroutineScope by coroutineScope {
 
-    private val uiView = initChatFormView(container, bus)
+    private val uiView = initChatFormView(container)
 
     init {
+        uiView.hide()
+
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
@@ -54,6 +56,6 @@ class SendChatComponent(
         }
     }
 
-    private fun initChatFormView(container: ViewGroup, bus: EventBusFactory): UIView =
+    private fun initChatFormView(container: ViewGroup): UIView =
             SendChatView(container, this)
 }

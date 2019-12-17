@@ -6,7 +6,8 @@ package com.tokopedia.play.view.type
 enum class PlayVideoType {
 
     Live,
-    VOD;
+    VOD,
+    Unknown;
 
     val isLive: Boolean
     get() = this == Live

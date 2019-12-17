@@ -23,6 +23,8 @@ class QuickReplyComponent(
     private val uiView = initView(container)
 
     init {
+        uiView.hide()
+
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {

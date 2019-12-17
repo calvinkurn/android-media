@@ -63,7 +63,7 @@ class PlayViewModel @Inject constructor(
 
     val observableVideoProperty: LiveData<VideoPropertyUiModel> = MediatorLiveData<VideoPropertyUiModel>().apply {
         addSource(observableVideoStream) { value = VideoPropertyUiModel(it.videoType, value?.state ?: TokopediaPlayVideoState.NotConfigured) }
-        addSource(playManager.getObservablePlayVideoState()) { value = VideoPropertyUiModel(value?.type ?: PlayVideoType.Live, it) }
+        addSource(playManager.getObservablePlayVideoState()) { value = VideoPropertyUiModel(value?.type ?: PlayVideoType.Unknown, it) }
     }
 
     fun getChannelInfo(channelId: String) {
