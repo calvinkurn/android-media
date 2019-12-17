@@ -380,23 +380,23 @@ class CreateReviewFragment : BaseDaggerFragment() {
             imgAnimationView.repeatCount = LottieDrawable.INFINITE
             when (index) {
                 1 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_1)
+                    imgAnimationView.setAnimationFromUrl("https://assets2.lottiefiles.com/datafiles/6P3h99aDI3vLr5VLRAapcVv3A5HWS9QLMIn4CU34/cloud/cloud.json")
                     imgAnimationView.playAnimation()
                 }
                 2 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_2)
+                    imgAnimationView.setAnimationFromUrl("https://assets2.lottiefiles.com/datafiles/6P3h99aDI3vLr5VLRAapcVv3A5HWS9QLMIn4CU34/cloud/cloud.json")
                     imgAnimationView.playAnimation()
                 }
                 3 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_3)
+                    imgAnimationView.setAnimationFromUrl("https://assets2.lottiefiles.com/datafiles/6P3h99aDI3vLr5VLRAapcVv3A5HWS9QLMIn4CU34/cloud/cloud.json")
                     imgAnimationView.playAnimation()
                 }
                 4 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_4)
+                    imgAnimationView.setAnimationFromUrl("https://assets2.lottiefiles.com/datafiles/6P3h99aDI3vLr5VLRAapcVv3A5HWS9QLMIn4CU34/cloud/cloud.json")
                     imgAnimationView.playAnimation()
                 }
                 5 -> {
-                    imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_5)
+                    imgAnimationView.setAnimationFromUrl("https://assets2.lottiefiles.com/datafiles/6P3h99aDI3vLr5VLRAapcVv3A5HWS9QLMIn4CU34/cloud/cloud.json")
                     imgAnimationView.playAnimation()
                 }
             }
