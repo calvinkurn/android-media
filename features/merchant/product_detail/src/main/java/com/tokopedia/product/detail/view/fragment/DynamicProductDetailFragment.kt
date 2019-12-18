@@ -253,6 +253,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         isTopdasLoaded = false
         actionButtonView.visibility = false
         updateStickyContent()
+        carouselProductPool.release()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

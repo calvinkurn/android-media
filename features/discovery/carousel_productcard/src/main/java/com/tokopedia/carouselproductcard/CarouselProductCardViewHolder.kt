@@ -17,13 +17,15 @@ internal class CarouselProductCardViewHolder(
         val LAYOUT = R.layout.carousel_product_card_item_layout
     }
 
-    fun bind(carouselProductCardModel: CarouselProductCardModel) {
+    fun bind(carouselProductCardModel: CarouselProductCardModel, productCardHeight: Int) {
         val productCardModel = carouselProductCardModel.productCardModel
-        val onItemClickListener = carouselProductCardModel.carouselProductCardListenerInfo.onItemClickListener
-        val onItemLongClickListener = carouselProductCardModel.carouselProductCardListenerInfo.onItemLongClickListener
-        val onItemImpressedListener = carouselProductCardModel.carouselProductCardListenerInfo.onItemImpressedListener
-        val onItemAddToCartListener = carouselProductCardModel.carouselProductCardListenerInfo.onItemAddToCartListener
-        val onWishlistClickListener = carouselProductCardModel.carouselProductCardListenerInfo.onWishlistItemClickListener
+        val onItemClickListener = carouselProductCardModel.getOnItemClickListener()
+        val onItemLongClickListener = carouselProductCardModel.getOnItemLongClickListener()
+        val onItemImpressedListener = carouselProductCardModel.getOnItemImpressedListener()
+        val onItemAddToCartListener = carouselProductCardModel.getOnItemAddToCartListener()
+        val onWishlistClickListener = carouselProductCardModel.getOnWishlistItemClickListener()
+
+        itemView.carouselProductCardItem?.setCardHeight(productCardHeight)
 
         itemView.carouselProductCardItem?.setProductModel(productCardModel)
 

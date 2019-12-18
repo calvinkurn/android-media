@@ -99,7 +99,8 @@ class CarouselProductCardView: BaseCustomView {
             setupCarouselProductCardRecyclerView(newCarouselAdapter)
             submitProductCardCarouselData(newCarouselAdapter, productCardModelList, carouselProductCardListenerInfo)
         } else {
-            carouselProductCardRecyclerView.adapter = knownAdapter
+            carouselProductCardRecyclerView.swapAdapter(knownAdapter, false)
+            knownAdapter?.notifyDataSetChanged()
             knownAdapter?.let {
                 submitProductCardCarouselData(knownAdapter, productCardModelList, carouselProductCardListenerInfo)
             }
@@ -133,7 +134,7 @@ class CarouselProductCardView: BaseCustomView {
     }
 
     private fun createProductCardCarouselAdapter(isScrollable: Boolean, productCardModelList: List<ProductCardModel>, carouselModelId: String?): CarouselProductCardAdapter {
-        val newCarouselAdapter = CarouselProductCardAdapter(isScrollable, getMaxProductCardContentHeight(productCardModelList))
+        val newCarouselAdapter = CarouselProductCardAdapter(getMaxProductCardContentHeight(productCardModelList))
 
         carouselModelId?.let { id ->
             carouselProductPool.carouselAdapters.put(id, newCarouselAdapter)
