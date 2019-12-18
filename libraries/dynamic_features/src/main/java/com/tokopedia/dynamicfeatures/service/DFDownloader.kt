@@ -23,12 +23,15 @@ object DFDownloader {
     const val DELIMITER = "#"
     const val DELIMITER_2 = ":"
     const val MAX_ATTEMPT_DOWNLOAD = 3
-    const val INITIAL_DELAY_DURATION_IN_MILLIS_MAX = 3600000L
+    const val DEFAULT_DELAY = 10L
     const val JOB_ID = 953
 
     var isServiceRunning = false
 
     private const val REMOTE_CONFIG_ALLOW_RETRY = "android_retry_df_download_bg"
+    private const val REMOTE_CONFIG_DELAY_IN_MINUTE = "android_retry_df_download_bg_delay"
+
+    private var defaultDelay = -1L
 
     @SuppressLint("NewApi")
     fun startSchedule(context: Context, moduleListToDownload: List<String>? = null, isImmediate:Boolean = false) {
@@ -60,7 +63,7 @@ object DFDownloader {
         val pendingIntent = PendingIntent.getBroadcast(context, 0,
             intent, PendingIntent.FLAG_UPDATE_CURRENT)
         if (isAlarmOn) {
-            val delay = INITIAL_DELAY_DURATION_IN_MILLIS_MAX
+            val delay = getDefaultDelayFromConfigInMillis(context)
             alarm.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), delay, pendingIntent)
         } else {
             alarm.cancel(pendingIntent)
@@ -79,7 +82,7 @@ object DFDownloader {
         val delay = if (isImmediate) {
             TimeUnit.SECONDS.toMillis(5)
         } else {
-            INITIAL_DELAY_DURATION_IN_MILLIS_MAX
+            getDefaultDelayFromConfigInMillis(context)
         }
         jobScheduler.schedule(
             JobInfo.Builder(JOB_ID,
@@ -98,6 +101,15 @@ object DFDownloader {
     private fun allowRetryFromConfig(context: Context): Boolean {
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
         return firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_ALLOW_RETRY, false)
+    }
+
+    private fun getDefaultDelayFromConfigInMillis(context: Context): Long {
+        return if (defaultDelay < 0) {
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+            TimeUnit.MINUTES.toMillis(firebaseRemoteConfig.getLong(REMOTE_CONFIG_DELAY_IN_MINUTE, DEFAULT_DELAY))
+        } else {
+            defaultDelay
+        }
     }
 
     suspend fun startJob(applicationContext: Context): Boolean {
@@ -137,8 +149,11 @@ object DFDownloader {
                 DFQueue.updateQueue(applicationContext, failedListAfterInstall, successfulListAfterInstall)
                 setServiceFlagFalse()
             }, isInitial = false)
+            // retrieve the list again, and start the service to download the next DF in queue
             val remainingList = DFQueue.getDFModuleList(applicationContext)
             if (result) {
+                // if previous download is success, will schedule to run immediately
+                // the chance of successfull download is bigger.
                 if (remainingList.isNotEmpty()) {
                     // this is to run immediately
                     startSchedule(applicationContext, isImmediate = true)
@@ -148,15 +163,12 @@ object DFDownloader {
                 if (remainingList.isEmpty()) {
                     return@withContext true
                 } else {
+                    //to sort the DF, so the most failed will be downloaded later.
                     val remainingListSorted = DFQueue.getDFModuleListSorted(applicationContext)
                     if (remainingListSorted[0].first != remainingList[0].first) {
-                        // this is to schedule immediate, because the list is now different with before
                         DFQueue.putDFModuleList(applicationContext, remainingListSorted)
-                        startSchedule(applicationContext, isImmediate = true)
-                    } else {
-                        // this is to run in schedule.
-                        startSchedule(applicationContext, isImmediate = false)
                     }
+                    startSchedule(applicationContext, isImmediate = false)
                     return@withContext false
                 }
             }
