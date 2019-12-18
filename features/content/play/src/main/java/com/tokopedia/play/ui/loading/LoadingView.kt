@@ -17,9 +17,10 @@ class LoadingView(
         container: ViewGroup
 ) : UIView(container) {
 
-    private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_loading, container, true)
-                    .findViewById(R.id.fl_loading)
+    init {
+        LayoutInflater.from(container.context).inflate(R.layout.view_loading_play, container, true)
+    }
+    private val view: View = container.findViewById(R.id.fl_loading_play_cuy)
 
     override val containerId: Int = view.id
 

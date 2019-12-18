@@ -2,6 +2,7 @@ package com.tokopedia.play.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -16,6 +17,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
+
 
 /**
  * Created by jegul on 29/11/19
@@ -88,5 +90,15 @@ class PlayFragment : BaseDaggerFragment() {
                 }
             }
         })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                activity?.supportFinishAfterTransition()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

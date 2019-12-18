@@ -240,7 +240,6 @@ class TokopediaPlayerHelper(
             return this
         }
 
-
         fun addSavedInstanceState(savedInstanceState: Bundle): Builder {
             mExoPlayerHelper.addSavedInstanceState(savedInstanceState)
             return this
@@ -275,16 +274,6 @@ class TokopediaPlayerHelper(
          */
         fun create(): TokopediaPlayerHelper {
             mExoPlayerHelper.createPlayer(false)
-            return mExoPlayerHelper
-        }
-
-        /**
-         * Note: If you added tagUrl ad would start playing automatic even if you had set setAutoPlayOn(false)
-         *
-         * @return ExoPlayerHelper instance
-         */
-        fun createAndPrepare(): TokopediaPlayerHelper {
-            mExoPlayerHelper.createPlayer(true)
             return mExoPlayerHelper
         }
     }

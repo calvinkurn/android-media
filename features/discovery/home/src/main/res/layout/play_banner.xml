@@ -35,7 +35,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description"/>
     <TextView
-        android:id="@+id/error_massage"
+        android:id="@+id/error_message"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:text="Error Massage"

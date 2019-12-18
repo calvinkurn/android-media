@@ -47,7 +47,7 @@ class PlayCardViewHolder(
             volumeAsset.setImageResource(if (helper?.isPlayerVideoMuted() == true) R.drawable.ic_volume_mute_white_24dp else R.drawable.ic_volume_up_white_24dp)
         }
         play.setOnClickListener {
-            helper?.playerPlay()
+            listener.onOpenPlayActivity(videoPlayer)
         }
     }
 
