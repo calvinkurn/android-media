@@ -16,14 +16,13 @@
             android:id="@+id/account_list_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_weight="1"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
             android:visibility="gone"
-            tools:visibility="visible"
             tools:listitem="@layout/item_bank_account"
-            />
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/add_account_button"

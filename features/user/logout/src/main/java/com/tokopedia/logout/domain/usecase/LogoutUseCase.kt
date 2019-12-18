@@ -1,6 +1,5 @@
 package com.tokopedia.logout.domain.usecase
 
-import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.logout.data.LogoutApi
 import com.tokopedia.logout.domain.mapper.LogoutMapper
 import com.tokopedia.logout.domain.model.LogoutDomain
@@ -8,7 +7,9 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSession
 import rx.Observable
+import java.security.NoSuchAlgorithmException
 import java.util.*
+import kotlin.experimental.and
 
 /**
  * @author by nisie on 5/30/18.
@@ -43,7 +44,7 @@ class LogoutUseCase(private val api: LogoutApi,
 
             val userId = userSession.userId
             val deviceId = userSession.deviceId
-            val hash = AuthUtil.md5("$userId~$deviceId")
+            val hash = md5("$userId~$deviceId")
 
             requestParams.putString(PARAM_USER_ID, userId)
             requestParams.putString(PARAM_DEVICE_ID, deviceId)
@@ -52,6 +53,22 @@ class LogoutUseCase(private val api: LogoutApi,
             requestParams.putString(PARAM_DEVICE_TIME, (Date().time / 1000).toString())
 
             return requestParams
+        }
+
+        private fun md5(s: String): String {
+            return try {
+                val digest = java.security.MessageDigest.getInstance("MD5")
+                digest.update(s.toByteArray())
+                val messageDigest = digest.digest()
+                val hexString = StringBuilder()
+                for (b in messageDigest) {
+                    hexString.append(String.format("%02x", (b and 0xff.toByte())))
+                }
+                hexString.toString()
+            } catch (e: NoSuchAlgorithmException) {
+                e.printStackTrace()
+                ""
+            }
         }
     }
 }
