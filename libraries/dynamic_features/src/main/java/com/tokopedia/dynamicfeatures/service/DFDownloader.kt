@@ -69,12 +69,13 @@ object DFDownloader {
             ?: return
         val bundle = PersistableBundle()
 
+        val delay = INITIAL_DELAY_DURATION_IN_MILLIS_MAX
         jobScheduler.schedule(
             JobInfo.Builder(JOB_ID,
                 ComponentName(context, DFDownloadJobService::class.java))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setMinimumLatency(INITIAL_DELAY_DURATION_IN_MILLIS_MAX / 4)
-                .setOverrideDeadline(INITIAL_DELAY_DURATION_IN_MILLIS_MAX)
+                .setMinimumLatency(delay / 4)
+                .setOverrideDeadline(delay)
                 .setExtras(bundle)
                 .build())
     }
