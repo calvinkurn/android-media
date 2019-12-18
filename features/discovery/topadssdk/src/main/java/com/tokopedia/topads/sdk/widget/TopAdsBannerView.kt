@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -109,12 +110,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 }
             }
             if (cpmData.cpm.cpmShop.isPowerMerchant) {
-                list.setBackgroundResource(R.drawable.bg_pm_gradient)
+                list.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
+            } else if (cpmData.cpm.cpmShop.isOfficial) {
+                list.background = ContextCompat.getDrawable(context, R.drawable.bg_os_gradient)
             } else {
-                list.setBackgroundResource(R.drawable.bg_rm_gradient)
-            }
-            if (cpmData.cpm.cpmShop.isOfficial) {
-                list.setBackgroundResource(R.drawable.bg_os_gradient)
+                list.background = ContextCompat.getDrawable(context, R.drawable.bg_rm_gradient)
             }
             template = SHOP_TEMPLATE
         }

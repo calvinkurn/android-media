@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="250dp"
+    android:layout_width="260dp"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
@@ -92,6 +92,7 @@
             android:textColor="@color/topads_price_color"
             app:typographyType="body_2"
             app:typographyWeight="bold"
+            android:layout_marginTop="@dimen/dp_2"
             app:layout_constraintStart_toEndOf="@+id/card_icon"
             app:layout_constraintTop_toBottomOf="@+id/discount_txt"
             tools:text="Rp 10.000" />

@@ -22,7 +22,7 @@
             android:id="@+id/shop_image"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
-            android:elevation="@dimen/dp_3"
+            android:elevation="@dimen/dp_2"
             android:layout_gravity="center"
             tools:src="@tools:sample/avatars" />
 
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
-            android:elevation="3dp"
+            android:elevation="2dp"
             android:padding="@dimen/dp_4"
             app:srcCompat="@drawable/ic_topads_small" />
     </FrameLayout>
