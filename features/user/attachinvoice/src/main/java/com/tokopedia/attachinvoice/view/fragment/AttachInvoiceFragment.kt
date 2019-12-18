@@ -15,9 +15,11 @@ import com.tokopedia.attachinvoice.di.AttachInvoiceComponent
 import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceTypeFactory
 import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceTypeFactoryImpl
 import com.tokopedia.attachinvoice.view.viewmodel.AttachInvoiceViewModel
+import com.tokopedia.attachinvoice.view.widget.AttachInvoiceItemDecoration
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.attachinvoice_fragment_attach_invoice.*
+import kotlinx.android.synthetic.main.attachinvoice_fragment_attach_invoice.view.*
 import javax.inject.Inject
 
 class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFactory>() {
@@ -32,7 +34,15 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.attachinvoice_fragment_attach_invoice, container, false).also {
             viewModel.initializeArguments(arguments)
+            setupRecyclerView(it)
             setupObserver()
+        }
+    }
+
+    private fun setupRecyclerView(view: View) {
+        view.recycler_view?.apply {
+            clearItemDecoration()
+            addItemDecoration(AttachInvoiceItemDecoration(context))
         }
     }
 

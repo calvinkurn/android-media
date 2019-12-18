@@ -14,6 +14,14 @@ data class Invoice(
     val typeId: Int = 0
 ): Visitable<AttachInvoiceTypeFactory> {
 
+    val thumbnailUrl get() = attributes.imageURL
+    val status get() = attributes.status
+    val statusId get() = attributes.statusId
+    val timeStamp get() = attributes.createTime
+    val invoiceCode get() = attributes.code
+    val productName get() = attributes.title
+    val productPrice get() = attributes.totalAmount
+
     override fun type(typeFactory: AttachInvoiceTypeFactory): Int {
         return typeFactory.type(this)
     }
