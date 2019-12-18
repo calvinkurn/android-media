@@ -81,7 +81,6 @@
         android:id="@+id/kunjungi_toko"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="Cek Sekarang"
         android:textColor="@color/tkpd_main_green"
