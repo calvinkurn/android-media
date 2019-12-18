@@ -26,7 +26,7 @@ class PlaySocket @Inject constructor(
 
     private var compositeSubscription: CompositeSubscription? = null
 
-    fun connect(onOpen: ()-> Unit, onClose: ()-> Unit, onMessageReceived: (WebSocketResponse)-> Unit, onError: ()-> Unit) {
+    fun connect(onOpen: () -> Unit, onClose: () -> Unit, onMessageReceived: (WebSocketResponse)-> Unit, onError: (error: Throwable) -> Unit) {
         val wsBaseUrl: String = localCacheHandler.
                 getString(KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES,
                         TokopediaUrl.getInstance().WS_GROUPCHAT)
@@ -52,7 +52,7 @@ class PlaySocket @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
-                onError()
+                onError(e)
             }
 
             override fun onReconnect() {

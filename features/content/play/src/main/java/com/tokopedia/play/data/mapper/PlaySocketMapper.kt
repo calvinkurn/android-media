@@ -17,23 +17,28 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
         if (webSocketResponse.type.isEmpty()) return null
 
         when(webSocketResponse.type) {
-            PlaySocketType.TOTAL_CLICK.value -> {
+            PlaySocketType.VideoStream.value -> {
+                //TODO("check as to why the vod -> live still return `is_live` = false")
+                return mapToVideoStream()
+            }
+            PlaySocketType.TotalClick.value -> {
                 return mapToTotalClick()
             }
-            PlaySocketType.TOTAL_VIEW.value -> {
+            PlaySocketType.TotalView.value -> {
                 return mapToTotalView()
             }
-            PlaySocketType.CHAT_PEOPLE.value -> {
+            PlaySocketType.ChatPeople.value -> {
                 return mapToIncomingChat()
             }
-            PlaySocketType.PINNED_MESSAGE.value -> {
+            PlaySocketType.PinnedMessage.value -> {
+                //TODO("check if the default behaviour is really to be called twice (one for remove, one for new)")
                 return mapToPinnedMessage()
             }
-            PlaySocketType.QUICK_REPLY.value -> {
+            PlaySocketType.QuickReply.value -> {
                 return mapToQuickReply()
             }
-            PlaySocketType.EVENT_BANNED.value,
-            PlaySocketType.EVENT_FREEZE.value -> {
+            PlaySocketType.EventBanned.value,
+            PlaySocketType.EventFreeze.value -> {
                 return mapToBannedFreeze()
             }
         }
@@ -49,18 +54,22 @@ class PlaySocketMapper(private val webSocketResponse: WebSocketResponse) {
     }
 
     private fun mapToIncomingChat(): PlayChat {
-        return  gson.fromJson(webSocketResponse.jsonObject, PlayChat::class.java)
+        return gson.fromJson(webSocketResponse.jsonObject, PlayChat::class.java)
     }
 
     private fun mapToPinnedMessage(): PinnedMessage {
-        return  gson.fromJson(webSocketResponse.jsonObject, PinnedMessage::class.java)
+        return gson.fromJson(webSocketResponse.jsonObject, PinnedMessage::class.java)
     }
 
     private fun mapToQuickReply(): QuickReply {
-        return  gson.fromJson(webSocketResponse.jsonObject, QuickReply::class.java)
+        return gson.fromJson(webSocketResponse.jsonObject, QuickReply::class.java)
     }
 
     private fun mapToBannedFreeze(): BannedFreeze {
-        return  gson.fromJson(webSocketResponse.jsonObject, BannedFreeze::class.java)
+        return gson.fromJson(webSocketResponse.jsonObject, BannedFreeze::class.java)
+    }
+
+    private fun mapToVideoStream(): VideoStream {
+        return gson.fromJson(webSocketResponse.jsonObject, VideoStream::class.java)
     }
 }

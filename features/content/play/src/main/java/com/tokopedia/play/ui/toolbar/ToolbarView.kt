@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
@@ -50,7 +51,7 @@ class ToolbarView(
     }
 
     override fun hide() {
-        view.show()
+        view.hide()
     }
 
     fun setLiveBadgeVisibility(isLive: Boolean) {
@@ -61,13 +62,13 @@ class ToolbarView(
         tvChannelName.text = title
     }
 
-    fun setTitleToolbar(titleToolbar: TitleToolbar) {
+    fun setPartnerInfo(titleToolbar: TitleToolbar) {
         tvPartner.text = titleToolbar.partnerName
         tvFollow.text = if (titleToolbar.isAlreadyFavorite)
-            container.context.resources.getString(R.string.play_following) else
-            container.context.resources.getString(R.string.play_follow)
+            view.context.getString(R.string.play_following) else
+            view.context.getString(R.string.play_follow)
 
-        if (titleToolbar.partnerType == PartnerType.ADMIN.value) {
+        if (titleToolbar.partnerType == PartnerType.ADMIN) {
             tvFollow.setOnClickListener {}
         } else {
             tvFollow.setOnClickListener {
@@ -78,6 +79,10 @@ class ToolbarView(
                 }
             }
         }
+
+        tvPartner.setOnClickListener {
+            listener.onPartnerNameClicked(this, titleToolbar.partnerId, titleToolbar.partnerType)
+        }
     }
 
     interface Listener {
@@ -85,5 +90,6 @@ class ToolbarView(
         fun onMoreButtonClicked(view: ToolbarView)
         fun onFollowButtonClicked(view: ToolbarView)
         fun onUnFollowButtonClicked(view: ToolbarView)
+        fun onPartnerNameClicked(view: ToolbarView, partnerId: Long, type: PartnerType)
     }
 }

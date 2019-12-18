@@ -12,12 +12,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
-import com.tokopedia.play.data.PinnedMessage
-import com.tokopedia.play.data.QuickReply
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
@@ -34,10 +34,15 @@ import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import com.tokopedia.play.ui.stats.StatsComponent
 import com.tokopedia.play.ui.toolbar.ToolbarComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.toolbar.model.TitleToolbar
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
+import com.tokopedia.play.view.uimodel.QuickReplyUiModel
+import com.tokopedia.play.view.uimodel.TotalViewUiModel
+import com.tokopedia.play.view.uimodel.VideoStreamUiModel
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -45,7 +50,6 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -128,24 +132,25 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         )
             }
         })
-        playViewModel.observableVideoState.observe(this, Observer {
+        playViewModel.observableVideoProperty.observe(this, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.VideoStateChanged(it)
+                                ScreenStateEvent.VideoPropertyChanged(it)
                         )
             }
         })
 
-        playViewModel.observeGetChannelInfo.observe(viewLifecycleOwner, Observer {
+        //TODO("propagate this to each of the observable")
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                  is Success -> {
-                     viewModel.getToolbarInfo(it.data.partnerType, it.data.partnerId)
+                     viewModel.getToolbarInfo(it.data.partner.partnerType, it.data.partner.partnerId)
                      setTitle(it.data.title)
-                     setTotalView(it.data.totalViews)
-                     setPinnedMessage(it.data.pinnedMessage)
-                     setQuickReply(QuickReply(it.data.quickReply))
+                     setTotalView(it.data.totalView)
+                     it.data.pinnedMessage?.let(::setPinnedMessage)
+                     setQuickReply(it.data.quickReply)
                  }
                 is Fail -> {
                     showToast("don't forget to handle when get channel info return error ")
@@ -153,43 +158,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             }
         })
 
-        viewModel.observableToolbarInfo.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Success -> {
-                    setToolbarTitle(it.data)
-                }
-                is Fail -> {
-                    showToast("don't forget to handle when get toolbar info return error ")
-                }
-            }
-        })
-
-        viewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is  Success -> {
-                    setTotalLikes(it.data.totalClick)
-                }
-                is Fail -> {
-                    showToast("don't forget to handle when get total likes return error ")
-                }
-            }
-        })
-
-        playViewModel.observableTotalViewsSocket.observe(viewLifecycleOwner, Observer {
-            launch {
-                setTotalView(it.totalView)
-            }
-        })
-
-        playViewModel.observableChatListSocket.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.IncomingChat(it)
-                        )
-            }
-        })
+        observeQuickReply()
+        observeVideoStream()
+        observeToolbarInfo()
+        observeTotalLikes()
+        observeTotalViews()
+        observeChatList()
+        observePinnedMessage()
     }
 
     override fun onDestroy() {
@@ -201,6 +176,62 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         view?.let { triggerImmersive(it, VISIBLE_ALPHA) }
         bottomSheet.dismiss()
     }
+
+    //region observe
+    private fun observeQuickReply() {
+        playViewModel.observableQuickReplySocket.observe(viewLifecycleOwner, Observer(::setQuickReply))
+    }
+
+    private fun observeVideoStream() {
+        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer(::setVideoStream))
+    }
+
+    private fun observeToolbarInfo() {
+        viewModel.observableToolbarInfo.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> {
+                    setPartnerInfo(it.data)
+                }
+                is Fail -> {
+                    showToast("don't forget to handle when get toolbar info return error ")
+                }
+            }
+        })
+    }
+
+    private fun observeTotalLikes() {
+        viewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is  Success -> {
+                    setTotalLikes(it.data.totalClick)
+                }
+                is Fail -> {
+                    showToast("don't forget to handle when get total likes return error ")
+                }
+            }
+        })
+    }
+
+    private fun observeTotalViews() {
+        playViewModel.observableTotalViewsSocket.observe(viewLifecycleOwner, Observer(::setTotalView))
+    }
+
+    private fun observeChatList() {
+        playViewModel.observableChatListSocket.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.IncomingChat(it)
+                        )
+            }
+        })
+    }
+
+    private fun observePinnedMessage() {
+        playViewModel.observablePinnedMessageSocket.observe(this, Observer(::setPinnedMessage))
+    }
+    //endregion
 
     private fun setupView(view: View) {
         view.setOnClickListener {
@@ -310,7 +341,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                             PlayToolbarInteractionEvent.FollowButtonClicked -> showToast("Follow Button Clicked")
                             PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
                             PlayToolbarInteractionEvent.UnFollowButtonClicked -> showToast("UnFollow Button Clicked")
-                            PlayToolbarInteractionEvent.MoreButtonClicked -> showToast("More Button Clicked")
+                            is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
                         }
                     }
         }
@@ -362,7 +393,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         return quickReplyComponent
     }
+    //endregion
 
+    //region layouting
     private fun layoutView(
             container: ViewGroup,
             @IdRes sendChatComponentId: Int,
@@ -521,7 +554,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         layoutVideoControl(container, videoControlComponentId)
         layoutLike(container, likeComponentId, videoControlComponentId)
         layoutChat(container, sendChatComponentId, likeComponentId)
-        layoutChatList(container, chatListComponentId, sendChatComponentId, likeComponentId)
+        layoutChatList(container, chatListComponentId, quickReplyComponentId, likeComponentId)
         layoutPinned(container, pinnedComponentId, chatListComponentId, likeComponentId)
         layoutStats(container, statsComponentId, pinnedComponentId)
         layoutPlayButton(container, playButtonComponentId)
@@ -535,6 +568,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
 
+    //region set data
     /**
      * Emit data to ui component
      */
@@ -548,7 +582,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
 
-    private fun setToolbarTitle(titleToolbar: TitleToolbar) {
+    private fun setPartnerInfo(titleToolbar: TitleToolbar) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
@@ -558,7 +592,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
 
-    private fun setTotalView(totalView: String) {
+    private fun setTotalView(totalView: TotalViewUiModel) {
        launch {
            EventBusFactory.get(viewLifecycleOwner)
                    .emit(
@@ -579,7 +613,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
 
-    private fun setQuickReply(quickReply: QuickReply) {
+    private fun setQuickReply(quickReply: QuickReplyUiModel) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
@@ -589,7 +623,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
 
-    private fun setPinnedMessage(pinnedMessage: PinnedMessage) {
+    private fun setPinnedMessage(pinnedMessage: PinnedMessageUiModel) {
         launch {
           EventBusFactory.get(viewLifecycleOwner)
                   .emit(
@@ -599,10 +633,42 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
 
+    private fun setVideoStream(videoStream: VideoStreamUiModel) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.VideoStreamChanged(videoStream)
+                    )
+        }
+    }
+    //endregion
+
     private fun showMoreActionBottomSheet() {
         if (!::bottomSheet.isInitialized) {
             bottomSheet = PlayMoreActionBottomSheet.newInstance(requireContext(), this)
         }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun openPartnerPage(partnerId: Long, partnerType: PartnerType) {
+        if (partnerType == PartnerType.SHOP) openShopPage(partnerId)
+        else if (partnerType == PartnerType.INFLUENCER) openProfilePage(partnerId)
+    }
+
+    private fun openShopPage(partnerId: Long) {
+        RouteManager.route(
+                requireContext(),
+                ApplinkConst.SHOP,
+                partnerId.toString()
+        )
+    }
+
+    private fun openProfilePage(partnerId: Long) {
+        RouteManager.route(
+                requireContext(),
+                ApplinkConst.PROFILE,
+                partnerId.toString()
+        )
     }
 }

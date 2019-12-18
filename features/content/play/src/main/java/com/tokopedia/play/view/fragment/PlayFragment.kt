@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -12,7 +12,6 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -60,6 +59,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupScreen(view)
 
         childFragmentManager.beginTransaction()
                 .replace(R.id.fl_video, PlayVideoFragment.newInstance())
@@ -68,20 +68,24 @@ class PlayFragment : BaseDaggerFragment() {
         childFragmentManager.beginTransaction()
                 .replace(R.id.fl_interaction, PlayInteractionFragment.newInstance(channelId))
                 .commit()
-
-        playViewModel.initVideo()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         playViewModel.getChannelInfo(channelId)
+    }
 
-        playViewModel.observeGetChannelInfo.observe(this, Observer {
-            when(it)  {
-                is Success -> {
-                    playViewModel.startWebSocket(channelId, it.data.gcToken)
-                }
-            }
-        })
+    private fun setupScreen(view: View) {
+        view.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            val interactionView = v.findViewById<View>(R.id.fl_interaction)
+            interactionView.setPadding(v.paddingLeft, insets.systemWindowInsetTop, v.paddingRight, insets.systemWindowInsetBottom)
+
+            insets
+        }
     }
 }

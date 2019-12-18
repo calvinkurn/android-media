@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
+import com.tokopedia.play.view.uimodel.TotalViewUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -27,8 +28,8 @@ class StatsView(container: ViewGroup) : UIView(container) {
         tvTotalLikes.text = "$totalLikes Likes"
     }
 
-    fun setTotalViews(totalView: String) {
-        tvTotalView.text = totalView
+    fun setTotalViews(totalView: TotalViewUiModel) {
+        tvTotalView.text = totalView.totalView
     }
 
     override fun show() {

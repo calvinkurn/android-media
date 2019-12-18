@@ -28,6 +28,7 @@
             android:paddingEnd="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/iv_back"
             app:layout_constraintStart_toEndOf="@id/iv_back"
             app:layout_constraintTop_toTopOf="@id/iv_back"
@@ -59,7 +60,6 @@
             android:ellipsize="end"
             android:lineHeight="@dimen/sp_20"
             android:maxLines="1"
-            android:text="@string/play_mock_stream_name"
             android:textColor="@color/Neutral_N0"
             app:layout_constraintBottom_toBottomOf="@id/fl_live_badge"
             app:layout_constraintEnd_toStartOf="@id/iv_more"
@@ -69,6 +69,7 @@
             app:layout_goneMarginStart="@dimen/dp_16"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
+            tools:text="@string/play_mock_stream_name"
             />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -88,7 +89,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
-            android:text="@string/play_mock_shop_name"
             android:textColor="@color/Neutral_N0"
             app:layout_constraintStart_toStartOf="@id/fl_live_badge"
             app:layout_constraintTop_toBottomOf="@id/tv_stream_name"
@@ -96,6 +96,7 @@
             app:layout_goneMarginStart="@dimen/dp_16"
             app:typographyType="body_3"
             app:typographyWeight="bold"
+            tools:text="@string/play_mock_shop_name"
             />
 
         <View
@@ -122,7 +123,7 @@
             app:layout_constraintTop_toTopOf="@id/v_separator"
             app:typographyType="heading_6"
             app:typographyWeight="bold"
-            android:text="@string/play_follow"
+            tools:text="@string/play_follow"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

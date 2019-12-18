@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayVODType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -23,13 +22,19 @@ class PinnedComponent(
     private val uiView = initView(container)
 
     init {
+        uiView.hide()
+
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.SetPinned -> uiView.setPinnedMessage(it.pinnedMessage)
-                            is ScreenStateEvent.SetVideo ->
-                                if (it.vodType is PlayVODType.Live) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.SetPinned -> {
+                                if (it.pinnedMessage.shouldRemove) uiView.hide()
+                                else {
+                                    uiView.show()
+                                    uiView.setPinnedMessage(it.pinnedMessage)
+                                }
+                            }
                         }
                     }
         }

@@ -6,7 +6,6 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayVODType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -21,15 +20,17 @@ class SendChatComponent(
         private val coroutineScope: CoroutineScope
 ) : UIComponent<SendChatInteractionEvent>, SendChatView.Listener, CoroutineScope by coroutineScope {
 
-    private val uiView = initChatFormView(container, bus)
+    private val uiView = initChatFormView(container)
 
     init {
+        uiView.hide()
+
         launch {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.SetVideo ->
-                                if (it.vodType is PlayVODType.Live) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.show() else uiView.hide()
                         }
                     }
         }
@@ -55,6 +56,6 @@ class SendChatComponent(
         }
     }
 
-    private fun initChatFormView(container: ViewGroup, bus: EventBusFactory): UIView =
+    private fun initChatFormView(container: ViewGroup): UIView =
             SendChatView(container, this)
 }

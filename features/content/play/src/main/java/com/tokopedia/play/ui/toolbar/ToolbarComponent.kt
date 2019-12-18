@@ -3,10 +3,9 @@ package com.tokopedia.play.ui.toolbar
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
-import com.tokopedia.play.domain.PostFollowShopUseCase
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayVODType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -28,14 +27,13 @@ class ToolbarComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.SetVideo ->
-                                uiView.setLiveBadgeVisibility(
-                                        (it.vodType is PlayVODType.Live)
-                                )
+                            is ScreenStateEvent.VideoPropertyChanged -> uiView.setLiveBadgeVisibility(it.videoProp.type.isLive)
                             is ScreenStateEvent.SetTitle ->
                                 uiView.setTitle(it.title)
                             is ScreenStateEvent.SetTitleToolbar ->
-                                uiView.setTitleToolbar(it.titleToolbar)
+                                uiView.setPartnerInfo(it.titleToolbar)
+                            is ScreenStateEvent.VideoStreamChanged ->
+                                uiView.setLiveBadgeVisibility(it.videoStream.videoType.isLive)
                         }
                     }
         }
@@ -68,9 +66,14 @@ class ToolbarComponent(
     }
 
     override fun onUnFollowButtonClicked(view: ToolbarView) {
-
         launch {
             bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.UnFollowButtonClicked)
+        }
+    }
+
+    override fun onPartnerNameClicked(view: ToolbarView, partnerId: Long, type: PartnerType) {
+        launch {
+            bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.PartnerNameClicked(partnerId, type))
         }
     }
 
