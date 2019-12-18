@@ -6,12 +6,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".view.activity.NotifCenterActivity"
-            android:label="@string/title_notif_center"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name=".presentation.activity.NotificationActivity"
             android:label="@string/notifications"
             android:screenOrientation="portrait"
