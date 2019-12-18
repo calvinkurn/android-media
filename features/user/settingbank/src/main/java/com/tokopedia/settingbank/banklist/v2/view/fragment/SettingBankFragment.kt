@@ -187,7 +187,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     private fun openCheckDataBottomSheet(kycInfo: KYCInfo) {
         if (!::confirmAccountBottomSheet.isInitialized) {
             activity?.let {
-                confirmAccountBottomSheet = AccountConfirmationBottomSheet(it, kycInfo)
+                confirmAccountBottomSheet = AccountConfirmationBottomSheet(it, kycInfo, bankSettingAnalytics)
             }
         }
         if (::confirmAccountBottomSheet.isInitialized)
