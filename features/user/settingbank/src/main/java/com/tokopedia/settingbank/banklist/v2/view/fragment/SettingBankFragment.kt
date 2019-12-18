@@ -134,7 +134,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         })
 
         tNCViewModel.tncNoteTemplate.observe(this, Observer {
-            populateTNCNote(it)
+            populateTNCNoteInAdapter(it)
         })
         tNCViewModel.tncPopUpTemplate.observe(this, Observer {
             openTNCBottomSheet(it)
@@ -266,7 +266,8 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         }
     }
 
-    private fun populateTNCNote(templateData: TemplateData) {
+    private fun populateTNCNoteInAdapter(templateData: TemplateData) {
+        tickerCatatan_1.setHtmlDescription(templateData.template)
         account_list_rv.post {
             bankAccountListAdapter.updateBankTNCNote(templateData)
         }

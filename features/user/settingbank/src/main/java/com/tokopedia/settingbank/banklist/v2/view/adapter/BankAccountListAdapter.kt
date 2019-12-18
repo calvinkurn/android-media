@@ -68,6 +68,3 @@ interface BankAccountClickListener {
     fun deleteBankAccount(bankAccount: BankAccount)
     fun onClickDataContent(bankAccount: BankAccount)
 }
-
-/*[{"data":{"GetBankAccount":{"status":"REQUEST_DENIED","header":{"processTime":0.000232408,"message":["Mohon maaf, silahkan coba beberapa saat lagi"],"reason":"","errorCode":"30003"},"data":{"bankAccounts":[],"userInfo":{"message":"","isVerified":false}}}}}]
-2019-11-26 22:23:13.200 10925-11115/com.tokopedia.tkpd D/OkHttp: <-- END HTTP (257-byte body)*/
