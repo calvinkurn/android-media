@@ -40,13 +40,13 @@ class PinnedView(
     }
 
     fun setPinnedMessage(pinnedMessage: PinnedMessageUiModel) {
-        val spannableString = SpannableString("${pinnedMessage.title} ${pinnedMessage.message}")
+        val spannableString = SpannableString("${pinnedMessage.partnerName} ${pinnedMessage.title}")
         spannableString.setSpan(
                 ForegroundColorSpan(
                         MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Green_G300)
                 ),
-                spannableString.indexOf(pinnedMessage.title),
-                pinnedMessage.title.length,
+                spannableString.indexOf(pinnedMessage.partnerName),
+                pinnedMessage.partnerName.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         tvPinnedMessage.text = spannableString

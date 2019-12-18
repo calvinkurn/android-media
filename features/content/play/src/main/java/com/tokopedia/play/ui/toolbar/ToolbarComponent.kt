@@ -28,10 +28,10 @@ class ToolbarComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.VideoPropertyChanged -> uiView.setLiveBadgeVisibility(it.videoProp.type.isLive)
-                            is ScreenStateEvent.SetTitle ->
+                            is ScreenStateEvent.SetChannelTitle ->
                                 uiView.setTitle(it.title)
-                            is ScreenStateEvent.SetTitleToolbar ->
-                                uiView.setPartnerInfo(it.titleToolbar)
+                            is ScreenStateEvent.SetPartnerInfo ->
+                                uiView.setPartnerInfo(it.partnerInfo)
                             is ScreenStateEvent.VideoStreamChanged ->
                                 uiView.setLiveBadgeVisibility(it.videoStream.videoType.isLive)
                         }
