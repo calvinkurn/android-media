@@ -17,7 +17,6 @@ import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sellerorder.list.presentation.activity.SomListActivity
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.network.LogoutPojo
-import com.tokopedia.travel.homepage.presentation.activity.TravelHomepageActivity
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.main_testapp.*
 import rx.Observable
