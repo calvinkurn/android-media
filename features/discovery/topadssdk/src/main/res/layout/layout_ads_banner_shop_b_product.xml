@@ -17,8 +17,8 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_icon"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:cardCornerRadius="8dp"
@@ -43,11 +43,11 @@
             android:ellipsize="end"
             android:lines="2"
             android:maxLines="2"
-            android:textStyle="normal"
+            android:textColor="@color/topads_product_name"
+            app:typographyType="heading_5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/card_icon"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_5"
             tools:text="Inspiring the Builders of Tomorrow Builders Tomorrow Builders" />
 
         <com.tokopedia.unifycomponents.Label
@@ -75,6 +75,7 @@
             app:layout_constraintStart_toEndOf="@+id/discount_txt"
             app:layout_constraintTop_toTopOf="@+id/discount_txt"
             app:typographyType="small"
+            android:textColor="@color/topads_shalshed_price_color"
             tools:text="1000.000"
             tools:visibility="visible" />
 
@@ -88,9 +89,9 @@
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
             android:paddingBottom="@dimen/dp_2"
-            android:textColor="@color/orange_100"
-            android:textSize="@dimen/text_size_small"
-            android:textStyle="normal"
+            android:textColor="@color/topads_price_color"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             app:layout_constraintStart_toEndOf="@+id/card_icon"
             app:layout_constraintTop_toBottomOf="@+id/discount_txt"
             tools:text="Rp 10.000" />

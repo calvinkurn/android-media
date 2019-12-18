@@ -7,16 +7,32 @@
     android:layout_height="wrap_content"
     android:minWidth="220dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/shop_image"
+    <FrameLayout
+        android:layout_width="wrap_content"
         android:layout_width="@dimen/dp_36"
+        android:layout_height="wrap_content"
         android:layout_height="@dimen/dp_36"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/shop_image"
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
+            android:elevation="@dimen/dp_3"
+            android:layout_gravity="center"
+            tools:src="@tools:sample/avatars" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:src="@drawable/ic_topads_small" />
+
+    </FrameLayout>
 
     <ImageView
         android:id="@+id/shop_badge"
@@ -43,11 +59,11 @@
         android:maxLines="1"
         android:singleLine="true"
         android:textColor="@color/black_70"
-        app:typographyType="body_2"
         app:layout_constraintBottom_toBottomOf="@+id/shop_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/shop_badge"
         app:layout_constraintTop_toTopOf="@+id/shop_image"
+        app:typographyType="small"
         tools:text="Lego Official Store" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -59,10 +75,10 @@
         android:layout_marginTop="8dp"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_14"
-        app:typographyType="body_2"
         app:layout_constraintEnd_toEndOf="@+id/shop_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shop_image"
+        app:typographyType="body_3"
         tools:text="Promo handphone discount 50%" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -73,16 +89,16 @@
         android:layout_marginBottom="8dp"
         android:text="Cek Sekarang"
         android:textColor="@color/tkpd_main_green"
-        app:typographyType="heading_6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/description"
-        app:layout_constraintTop_toBottomOf="@+id/description" />
+        app:layout_constraintTop_toBottomOf="@+id/description"
+        app:typographyType="heading_6" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/topads_ic_right"
         app:layout_constraintBottom_toBottomOf="@+id/kunjungi_toko"
         app:layout_constraintStart_toEndOf="@+id/kunjungi_toko"
-        app:layout_constraintTop_toTopOf="@+id/kunjungi_toko" />
+        app:layout_constraintTop_toTopOf="@+id/kunjungi_toko"
+        app:srcCompat="@drawable/topads_ic_right" />
 </androidx.constraintlayout.widget.ConstraintLayout>
