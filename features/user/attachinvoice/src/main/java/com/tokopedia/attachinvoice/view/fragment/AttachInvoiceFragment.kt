@@ -1,10 +1,11 @@
 package com.tokopedia.attachinvoice.view.fragment
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -33,7 +34,20 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(AttachInvoiceViewModel::class.java) }
+
     private lateinit var adapter: AttachInvoiceAdapter
+    private var listener: Listener? = null
+
+    interface Listener {
+        fun onClickAttachInvoice(intent: Intent)
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is Listener) {
+            listener = context
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.attachinvoice_fragment_attach_invoice, container, false).also {
@@ -69,7 +83,8 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     private fun enableAttachButton(invoice: Invoice) {
         btnAttach?.isEnabled = true
         btnAttach.setOnClickListener {
-            Toast.makeText(context, invoice.invoiceCode, Toast.LENGTH_SHORT).show()
+            val intent = viewModel.getInvoicePreviewIntent(invoice)
+            listener?.onClickAttachInvoice(intent)
         }
     }
 

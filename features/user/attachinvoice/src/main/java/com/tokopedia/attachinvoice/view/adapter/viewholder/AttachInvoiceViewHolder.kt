@@ -59,7 +59,7 @@ class AttachInvoiceViewHolder(itemView: View?, val listener: Listener) : Abstrac
     }
 
     private fun bindInvoiceCode(element: Invoice) {
-        itemView.tpCode?.text = element.invoiceCode
+        itemView.tpCode?.text = element.code
     }
 
     private fun bindProductName(element: Invoice) {

@@ -114,6 +114,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     val REQUEST_GO_TO_SETTING_TEMPLATE = 113
     val REQUEST_GO_TO_SETTING_CHAT = 114
     val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
+    val REQUEST_ATTACH_INVOICE = 116
 
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
@@ -507,7 +508,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             }
 
             TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {
-                if (resultCode != Activity.RESULT_OK || data == null) {
+                if (resultCode != RESULT_OK || data == null) {
                     return
                 }
                 processImagePathToUpload(data)?.let { model ->
@@ -528,7 +529,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             REQUEST_GO_TO_SETTING_CHAT -> onReturnFromChatSetting(resultCode, data)
 
             REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
+
+            REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
         }
+    }
+
+    private fun onAttachInvoiceSelected(data: Intent?, resultCode: Int) {
+        if (data == null || resultCode != RESULT_OK) return
+        presenter.initInvoicePreview(data.extras)
+        presenter.initAttachmentPreview()
     }
 
     private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
@@ -563,7 +572,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     it.getStringExtra(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_BLOCKED_UNTIL)
             )
 
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 getViewState().onCheckChatBlocked(opponentRole, opponentName,
                         blockedStatus, onUnblockChatClicked())
             }
@@ -573,7 +582,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     private fun onReturnFromShopPage(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && data != null) {
+        if (resultCode == RESULT_OK && data != null) {
             getViewState().isShopFollowed = data.getBooleanExtra(TopChatRouter
                     .EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP, false)
         }
@@ -853,7 +862,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_INVOICE).apply {
             putExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, messageId)
         }
-        context?.startActivity(intent)
+        startActivityForResult(intent, REQUEST_ATTACH_INVOICE)
     }
 
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {

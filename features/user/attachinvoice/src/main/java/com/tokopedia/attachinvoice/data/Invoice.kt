@@ -14,11 +14,13 @@ data class Invoice(
     val typeId: Int = 0
 ): Visitable<AttachInvoiceTypeFactory> {
 
+    val url get() = attributes.hrefURL
+    val id get() = attributes.id
     val thumbnailUrl get() = attributes.imageURL
     val status get() = attributes.status
     val statusId get() = attributes.statusId
     val timeStamp get() = attributes.createTime
-    val invoiceCode get() = attributes.code
+    val code get() = attributes.code
     val productName get() = attributes.title
     val productPrice get() = attributes.totalAmount
 

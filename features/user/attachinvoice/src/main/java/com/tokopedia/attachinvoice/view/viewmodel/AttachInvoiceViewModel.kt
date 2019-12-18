@@ -1,5 +1,6 @@
 package com.tokopedia.attachinvoice.view.viewmodel
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -42,6 +43,20 @@ class AttachInvoiceViewModel @Inject constructor(
     fun initializeArguments(arguments: Bundle?) {
         if (arguments == null) return
         messageId = arguments.getString(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, "")
+    }
+
+    fun getInvoicePreviewIntent(invoice: Invoice): Intent {
+        return Intent().apply {
+            putExtra(ApplinkConst.Chat.INVOICE_ID, invoice.id.toString())
+            putExtra(ApplinkConst.Chat.INVOICE_CODE, invoice.code)
+            putExtra(ApplinkConst.Chat.INVOICE_TITLE, invoice.productName)
+            putExtra(ApplinkConst.Chat.INVOICE_DATE, invoice.timeStamp)
+            putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, invoice.thumbnailUrl)
+            putExtra(ApplinkConst.Chat.INVOICE_URL, invoice.url)
+            putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, invoice.statusId.toString())
+            putExtra(ApplinkConst.Chat.INVOICE_STATUS, invoice.status)
+            putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, invoice.productPrice)
+        }
     }
 
 }
