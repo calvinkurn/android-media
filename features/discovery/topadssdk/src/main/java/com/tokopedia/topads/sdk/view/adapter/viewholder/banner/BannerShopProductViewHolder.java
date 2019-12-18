@@ -84,7 +84,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
             newLabelTxt.setVisibility(View.GONE);
         }
         discountTxt.setText(element.getProduct().getProductCashbackRate());
-        if (element.getProduct().isProductCashback()) {
+        if (element.getProduct().isProductCashback() && !element.getProduct().getProductCashbackRate().isEmpty()) {
             discountTxt.setVisibility(View.VISIBLE);
         } else {
             discountTxt.setVisibility(View.GONE);
