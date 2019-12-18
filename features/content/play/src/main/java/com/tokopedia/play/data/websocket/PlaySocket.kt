@@ -1,13 +1,13 @@
 package com.tokopedia.play.data.websocket
 
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.play.KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES
-import com.tokopedia.play.PLAY_WEB_SOCKET_GROUP_CHAT
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.play.*
+import com.tokopedia.play.data.Channel
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.RxWebSocket
-import com.tokopedia.websocket.WebSocketResponse
-import com.tokopedia.websocket.WebSocketSubscriber
+import com.tokopedia.websocket.*
 import okhttp3.WebSocket
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
@@ -23,8 +23,10 @@ class PlaySocket @Inject constructor(
 
     var channelId: String = ""
     var gcToken: String = ""
+    var settings: Channel.Settings = Channel.Settings(DEFAULT_PING, 0, DEFAULT_MAX_RETRIES, DEFAULT_DELAY)
 
     private var compositeSubscription: CompositeSubscription? = null
+    private var rxWebSocketUtil: RxWebSocketUtil? = null
 
     fun connect(onOpen: () -> Unit, onClose: () -> Unit, onMessageReceived: (WebSocketResponse)-> Unit, onError: (error: Throwable) -> Unit) {
         val wsBaseUrl: String = localCacheHandler.
@@ -55,14 +57,31 @@ class PlaySocket @Inject constructor(
                 onError(e)
             }
 
-            override fun onReconnect() {
-                super.onReconnect()
-
-            }
+            override fun onReconnect() { }
         }
 
-        val webSocketSubscription = RxWebSocket[wsConnectUrl, userSessionInterface.accessToken]?.subscribe(webSocketSubscriber)
+        rxWebSocketUtil = RxWebSocketUtil.getInstance(null, settings.minReconnectDelay, settings.maxRetries, settings.pingInterval)
+
+        val webSocketSubscription = rxWebSocketUtil?.
+                getWebSocketInfo(wsConnectUrl, userSessionInterface.accessToken)?.
+                subscribe(webSocketSubscriber)
+
         compositeSubscription?.add(webSocketSubscription)
+    }
+
+    fun send(message: String, onSuccess: () -> Unit) {
+        val param = JsonObject()
+        param.addProperty(PARAM_SEND_CHANNEL_ID, channelId.toIntOrZero())
+        param.addProperty(PARAM_SEND_MESSAGE, message)
+
+        val bundle = JsonObject()
+        bundle.addProperty(PARAM_SEND_TYPE, PARAM_SEND_TYPE_SEND)
+        bundle.add(PARAM_SEND_DATA, param)
+
+        try {
+            rxWebSocketUtil?.send(bundle.toString())
+            onSuccess()
+        } catch (throwable: WebSocketException) { }
     }
 
     fun destroy() {

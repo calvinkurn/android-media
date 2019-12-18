@@ -50,9 +50,9 @@ class SendChatComponent(
         }
     }
 
-    override fun onSendChatClicked(view: SendChatView) {
+    override fun onSendChatClicked(view: SendChatView, message: String) {
         launch {
-            bus.emit(SendChatInteractionEvent::class.java, SendChatInteractionEvent.SendClicked)
+            bus.emit(SendChatInteractionEvent::class.java, SendChatInteractionEvent.SendClicked(message))
         }
     }
 

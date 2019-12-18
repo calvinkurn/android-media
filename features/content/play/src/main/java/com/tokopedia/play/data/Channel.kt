@@ -109,7 +109,7 @@ data class Channel(
 
     data class Settings(
             @SerializedName("ping_interval")
-            val pingInterval: Int = 0,
+            val pingInterval: Long = 0,
             @SerializedName("max_chars")
             val maxChars: Int = 0,
             @SerializedName("max_retries")
