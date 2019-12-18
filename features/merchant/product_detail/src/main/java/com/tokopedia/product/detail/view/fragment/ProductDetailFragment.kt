@@ -1846,9 +1846,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onDiscussionClicked() {
-
-        productDetailTracking.eventTalkClicked()
-
         activity?.let {
             val intent = RouteManager.getIntent(it,
                     ApplinkConst.PRODUCT_TALK, productInfo?.basic?.id.toString())
@@ -1866,7 +1863,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onReviewClicked() {
         productInfo?.run {
             productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
-            productDetailTracking.eventReviewClicked()
             productDetailTracking.sendMoEngageClickReview(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")
             context?.let {
