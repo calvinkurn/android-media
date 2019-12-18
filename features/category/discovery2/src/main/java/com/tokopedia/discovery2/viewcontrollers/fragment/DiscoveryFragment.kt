@@ -13,9 +13,8 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryVisitable
-import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactoryImpl
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_discovery.*
 import kotlinx.android.synthetic.main.fragment_discovery.view.*
 
 class DiscoveryFragment : Fragment() {
@@ -74,8 +73,7 @@ class DiscoveryFragment : Fragment() {
 
 
         view.discovery_recyclerView.layoutManager = LinearLayoutManager(activity)
-        val discoveryHomeFactory = DiscoveryHomeFactoryImpl()
-        val discoveryRecycleAdapter = DiscoveryRecycleAdapter(discoveryHomeFactory)
+        val discoveryRecycleAdapter = DiscoveryRecycleAdapter()
         view.discovery_recyclerView.adapter = discoveryRecycleAdapter
         discoveryRecycleAdapter.setDataList(dataList)
 
