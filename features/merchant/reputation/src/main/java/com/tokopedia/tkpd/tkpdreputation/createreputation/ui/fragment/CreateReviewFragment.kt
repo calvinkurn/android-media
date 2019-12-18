@@ -71,6 +71,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
         private const val IMAGE_REVIEW_GREEN_BG = "https://ecs7.tokopedia.net/android/others/3reviewbg.png"
         private const val IMAGE_REVIEW_YELLOW_BG = "https://ecs7.tokopedia.net/android/others/4_5reviewbg.png"
         private const val IMAGE_BG_TRANSITION = 250
+        private const val LOTTIE_ANIM_1 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_1.json"
+        private const val LOTTIE_ANIM_2 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_2.json"
+        private const val LOTTIE_ANIM_3 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_3.json"
+        private const val LOTTIE_ANIM_4 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_4.json"
+        private const val LOTTIE_ANIM_5 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
 
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
@@ -380,23 +385,23 @@ class CreateReviewFragment : BaseDaggerFragment() {
             imgAnimationView.repeatCount = LottieDrawable.INFINITE
             when (index) {
                 1 -> {
-                    imgAnimationView.setAnimationFromUrl("https://assets2.lottiefiles.com/datafiles/6P3h99aDI3vLr5VLRAapcVv3A5HWS9QLMIn4CU34/cloud/cloud.json")
+                    imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_1)
                     imgAnimationView.playAnimation()
                 }
                 2 -> {
-                    imgAnimationView.setAnimationFromUrl("https://assets2.lottiefiles.com/datafiles/6P3h99aDI3vLr5VLRAapcVv3A5HWS9QLMIn4CU34/cloud/cloud.json")
+                    imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_2)
                     imgAnimationView.playAnimation()
                 }
                 3 -> {
-                    imgAnimationView.setAnimationFromUrl("https://assets2.lottiefiles.com/datafiles/6P3h99aDI3vLr5VLRAapcVv3A5HWS9QLMIn4CU34/cloud/cloud.json")
+                    imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_3)
                     imgAnimationView.playAnimation()
                 }
                 4 -> {
-                    imgAnimationView.setAnimationFromUrl("https://assets2.lottiefiles.com/datafiles/6P3h99aDI3vLr5VLRAapcVv3A5HWS9QLMIn4CU34/cloud/cloud.json")
+                    imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_4)
                     imgAnimationView.playAnimation()
                 }
                 5 -> {
-                    imgAnimationView.setAnimationFromUrl("https://assets2.lottiefiles.com/datafiles/6P3h99aDI3vLr5VLRAapcVv3A5HWS9QLMIn4CU34/cloud/cloud.json")
+                    imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_5)
                     imgAnimationView.playAnimation()
                 }
             }
