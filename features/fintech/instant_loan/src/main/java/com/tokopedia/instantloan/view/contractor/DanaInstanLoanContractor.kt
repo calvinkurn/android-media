@@ -17,7 +17,7 @@ interface DanaInstanLoanContractor {
 
         fun onSuccessLoanProfileStatus(status: UserProfileLoanEntity)
 
-        fun setUserOnGoingLoanStatus(status: Boolean, loanId: Int)
+        fun setUserOnGoingLoanStatus(loanId: Int)
 
         fun onErrorLoanProfileStatus(onErrorLoanProfileStatus: String)
 

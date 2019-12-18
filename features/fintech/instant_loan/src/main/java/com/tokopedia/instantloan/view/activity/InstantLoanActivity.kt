@@ -564,8 +564,8 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         instantLoanAnalytics.eventInstantLoanPermissionStatus(eventLabel.toString())
     }
 
-    override fun setUserOnGoingLoanStatus(status: Boolean, loanId: Int) {
-        this.onGoingLoanStatus = status
+    override fun setUserOnGoingLoanStatus(loanId: Int) {
+        this.onGoingLoanStatus = loanId != 0
         this.onGoingLoanId = loanId
         onCreateOptionsMenu(menu)
     }

@@ -15,9 +15,7 @@ class GetDanaInstanLoanProfileSubscriber(var presenter: DanaInstanLoanContractor
         val restResponse = typeRestResponseMap?.get(ResponseUserProfileStatus::class.java)
         val responseUserProfileStatus = restResponse!!.getData<ResponseUserProfileStatus>()
         presenter.getView().onSuccessLoanProfileStatus(responseUserProfileStatus?.userProfileLoanEntity!!)
-        presenter.getView().setUserOnGoingLoanStatus(
-                responseUserProfileStatus.userProfileLoanEntity!!.onGoingLoanId != 0,
-                responseUserProfileStatus.userProfileLoanEntity!!.onGoingLoanId)
+        presenter.getView().setUserOnGoingLoanStatus(responseUserProfileStatus.userProfileLoanEntity!!.onGoingLoanId)
 
     }
 

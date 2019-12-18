@@ -15,7 +15,7 @@ constructor(private val mGetLendingDataUseCase: GetLendingDataUseCase,
 
 
     var getLendingDataSubscriber = GetLendingDataSubscriber(this.view)
-    var getLoanProfileSubscriber = GetLoanProfileSubscriber(this)
+    var getLoanProfileSubscriber = GetLoanProfileSubscriber(this.view)
 
     override fun detachView() {
         super.detachView()

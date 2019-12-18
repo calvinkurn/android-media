@@ -6,16 +6,14 @@ import com.tokopedia.instantloan.view.contractor.InstantLoanLendingDataContracto
 import rx.Subscriber
 import java.lang.reflect.Type
 
-class GetLoanProfileSubscriber(var presenter: InstantLoanLendingDataContractor.Presenter) :
+class GetLoanProfileSubscriber(var loanLendingDataView: InstantLoanLendingDataContractor.View) :
         Subscriber<Map<Type, RestResponse>>() {
 
     override fun onNext(typeRestResponseMap: Map<Type, RestResponse>?) {
-        if (presenter.isViewAttached()) {
+        if (loanLendingDataView.isViewAttached()) {
             val restResponse = typeRestResponseMap?.get(ResponseUserProfileStatus::class.java)
             val responseUserProfileStatus = restResponse!!.getData<ResponseUserProfileStatus>()
-            presenter.getView().setUserOnGoingLoanStatus(
-                    responseUserProfileStatus.userProfileLoanEntity!!.onGoingLoanId != 0,
-                    responseUserProfileStatus.userProfileLoanEntity!!.onGoingLoanId)
+            loanLendingDataView.setUserOnGoingLoanStatus(responseUserProfileStatus.userProfileLoanEntity!!.onGoingLoanId)
         }
     }
 
