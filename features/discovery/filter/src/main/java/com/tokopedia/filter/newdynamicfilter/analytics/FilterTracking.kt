@@ -117,6 +117,26 @@ object FilterTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
     }
 
+    @JvmStatic
+    fun eventClickPricePills(pmin: Int,
+                             pmax: Int,
+                             position: Int,
+                             isActive: Boolean) {
+
+        val trackingMap = TrackAppUtils.gtmData(
+                FilterEventTracking.Event.CLICK_FILTER,
+                FilterEventTracking.Category.FILTER_JOURNEY,
+                generateEventActionClickPricePills(pmin, pmax, position + 1),
+                isActive.toString()
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
+    }
+
+    private fun generateEventActionClickPricePills(pmin: Int, pmax: Int, position: Int): String {
+        return String.format("click - Price Pills: %d&%d - %d - outside lihat semua", pmin, pmax, position)
+    }
+
     private fun generateFilterEventLabel(selectedFilter: Map<String, String>?): String {
         if (selectedFilter == null) {
             return ""

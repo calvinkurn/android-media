@@ -76,7 +76,7 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.networkDependencies.glide

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.topchat.chatsetting.analytic.ChatSettingAnalytic
 import com.tokopedia.topchat.chatsetting.data.ChatSetting
 import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactory
@@ -22,6 +23,9 @@ import javax.inject.Inject
 
 class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactory>(),
         LifecycleOwner, ChatSettingViewHolder.ChatSettingListener {
+
+    @Inject
+    lateinit var analytic: ChatSettingAnalytic
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -78,7 +82,7 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
 
     override fun onItemClicked(t: Visitable<*>?) {}
 
-    override fun loadData(page: Int) { }
+    override fun loadData(page: Int) {}
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
@@ -86,6 +90,10 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
 
     override fun isTabSeller(): Boolean {
         return viewModel.isSeller
+    }
+
+    override fun eventClickChatSetting(element: ChatSetting) {
+        analytic.eventClickChatSetting(element)
     }
 
     companion object {

@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.TransactionItemNotification
 import com.tokopedia.navigation.domain.pojo.ProductData
@@ -50,7 +51,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationTrans
     private fun assignClickListenerAtc(element: TransactionItemNotification) {
         val product = element.getAtcProduct() ?: return
         btnCart.setOnClickListener {
-            listener.getAnalytic().trackAtcOnClick(product)
+            listener.getAnalytic().trackAtcOnClick(product, DataModel())
             listener.addProductToCart(product, onSuccessAddToCart())
             listener.itemClicked(element, adapterPosition)
             element.isRead = true
