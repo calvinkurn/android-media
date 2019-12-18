@@ -515,7 +515,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     private fun openImagePreview(imageList: MutableList<String>, index: Int, imageViewTransitionFrom: ImageView?) {
-        ImagePreviewSlider.getInstance().start(context, hotelName, imageList, thumbnailImageList, index, imageViewTransitionFrom)
+        ImagePreviewSlider.instance.start(context, hotelName, imageList, thumbnailImageList, index, imageViewTransitionFrom)
     }
 
     override fun onErrorRetryClicked() {

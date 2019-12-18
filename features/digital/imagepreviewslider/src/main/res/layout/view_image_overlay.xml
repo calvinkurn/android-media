@@ -14,9 +14,9 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_18"
+        android:background="@drawable/ic_system_action_back_grayscale_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/ic_system_action_back_grayscale_24"
         app:srcCompat="@drawable/ic_system_action_back_white_24" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -28,15 +28,16 @@
         android:layout_marginTop="@dimen/dp_18"
         android:layout_marginEnd="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
-        android:singleLine="true"
         android:ellipsize="end"
-        app:typographyType="heading_2"
+        android:singleLine="true"
+        android:textColor="@color/Neutral_N0"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_arrow_back"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_2" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/image_index"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,15 +50,14 @@
         android:paddingEnd="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_8"
-        android:text="1/6"
-        android:textColor="#FFFFFF"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintBottom_toTopOf="@+id/rv_image_list_flight"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textColor="@color/Neutral_N0"
+        app:layout_constraintBottom_toTopOf="@+id/rv_image_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_2" />
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_image_list_flight"
+        android:id="@+id/rv_image_list"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_90"
         android:alpha="0.7"

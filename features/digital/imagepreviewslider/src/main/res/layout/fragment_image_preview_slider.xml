@@ -20,7 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/black"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="@color/Neutral_N0"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -37,7 +38,7 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/image_index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,7 +49,7 @@
             android:paddingTop="@dimen/dp_8"
             android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_8"
-            app:fontSize="title"
+            app:typographyType="body_1"
             app:layout_constraintBottom_toTopOf="@+id/image_list_container"
             app:layout_constraintStart_toStartOf="parent"
             app:textViewTheme="darkPrimary"

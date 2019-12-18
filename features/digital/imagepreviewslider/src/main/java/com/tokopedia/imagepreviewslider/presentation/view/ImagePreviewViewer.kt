@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stfalcon.imageviewer.StfalconImageViewer
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
-import com.tokopedia.imagepreviewslider.R
 import com.tokopedia.imagepreviewslider.presentation.adapter.ImagePreviewSliderAdapter
 import com.tokopedia.imagepreviewslider.presentation.listener.ImageSliderListener
 import com.tokopedia.imagepreviewslider.presentation.util.ReflectionPosition
@@ -24,31 +23,21 @@ class ImagePreviewViewer {
 
     private lateinit var imageSliderListener: ImageSliderListener
 
-    private lateinit var rvImageListFlight: RecyclerView
+    private lateinit var rvImageList: RecyclerView
 
     private lateinit var imagePreviewSliderAdapter: ImagePreviewSliderAdapter
 
-    private lateinit var imageFlightPreviewLayoutManager: LinearLayoutManager
+    private lateinit var imagePreviewLayoutManager: LinearLayoutManager
 
     private lateinit var overlayView: ImageOverlayView
 
+
     companion object {
         @JvmStatic
-        private var instance: ImagePreviewViewer? = null
-
-        @Synchronized
-        private fun createInstance() {
-            if (instance == null) {
-                instance = ImagePreviewViewer()
-            }
-        }
-
-        internal fun getInstance(): ImagePreviewViewer {
-            if (instance == null) createInstance()
-            return instance!!
-        }
+        val instance by lazy { ImagePreviewViewer() }
     }
-    fun startImageFlightPreviewViewer(title: String = "", imageViewTransitionFrom: ImageView?, imageList: List<String>?, context: Context?, index: Int) {
+
+    fun startImagePreviewViewer(title: String = "", imageViewTransitionFrom: ImageView?, imageList: List<String>?, context: Context?, index: Int) {
         imageSliderListener = object : ImageSliderListener {
             override fun onImageClicked(position: Int) {
                 ReflectionPosition(viewer, position)
@@ -70,45 +59,42 @@ class ImagePreviewViewer {
             val overlayTitle = tv_title_overlay
             overlayTitle.text = title
 
-            rvImageListFlight = rv_image_list_flight
-            rvImageListFlight.apply {
+            rvImageList = rv_image_list
+            rvImageList.apply {
                 setHasFixedSize(true)
-                imageFlightPreviewLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                layoutManager = imageFlightPreviewLayoutManager
-                imagePreviewSliderAdapter = ImagePreviewSliderAdapter(imageList?.toMutableList() ?: mutableListOf(),
+                imagePreviewLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = imagePreviewLayoutManager
+                imagePreviewSliderAdapter = ImagePreviewSliderAdapter(imageList?.toMutableList()
+                        ?: mutableListOf(),
                         index, imageSliderListener)
                 adapter = imagePreviewSliderAdapter
 
                 val dividerItemDecoration = SpaceItemDecoration(20, LinearLayoutManager.HORIZONTAL)
                 addItemDecoration(dividerItemDecoration)
             }
-            (rvImageListFlight.adapter as ImagePreviewSliderAdapter).setSelectedImage(index)
+            (rvImageList.adapter as ImagePreviewSliderAdapter).setSelectedImage(index)
             updateImageIndexPosition(index, imageList)
         }
     }
 
     private fun startViewer(imageList: List<String>?, imageViewTransitionFrom: ImageView?, context: Context?, index: Int) {
 
-        viewer = StfalconImageViewer.Builder<String>(context, imageList, ::loadTheImage)
+        viewer = StfalconImageViewer.Builder<String>(context, imageList, ::loadImages)
                 .withBackgroundColor(Color.BLACK)
                 .withStartPosition(index)
                 .withTransitionFrom(imageViewTransitionFrom)
                 .withImageChangeListener {
                     overlayView.updateImageIndexPosition(it, imageList)
-                    imageFlightPreviewLayoutManager.smoothScrollToPosition(rvImageListFlight, RecyclerView.State(), it)
+                    imagePreviewLayoutManager.smoothScrollToPosition(rvImageList, RecyclerView.State(), it)
                     imagePreviewSliderAdapter.setSelectedImage(it)
                 }
                 .withOverlayView(overlayView)
                 .show()
     }
 
-    private fun loadTheImage(imageView: ImageView?, imageList: String?) {
-        try {
-            imageView?.let {
-                it.loadImage(imageList ?: "", com.tokopedia.design.R.drawable.ic_loading_image)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+    private fun loadImages(imageView: ImageView?, imageList: String?) {
+        imageView?.let {
+            it.loadImage(imageList ?: "", com.tokopedia.design.R.drawable.ic_loading_image)
         }
     }
 }

@@ -91,7 +91,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
             room_image_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
                     listener.onPhotoClickListener(room)
-                    ImagePreviewSlider.getInstance().start(context, room.roomInfo.name, imageUrls, imageUrls, position, itemView.image_banner)
+                    ImagePreviewSlider.instance.start(context, room.roomInfo.name, imageUrls, imageUrls, position, itemView.image_banner)
                 }
             }
             room_image_view_pager.buildView()

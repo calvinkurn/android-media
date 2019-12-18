@@ -14,18 +14,7 @@ class ImagePreviewSlider {
 
     companion object {
         @JvmStatic
-        private var instance: ImagePreviewSlider? = null
-        @Synchronized
-        private fun createInstance() {
-            if (instance == null) {
-                instance = ImagePreviewSlider()
-            }
-        }
-
-        fun getInstance(): ImagePreviewSlider {
-            if (instance == null) createInstance()
-            return instance!!
-        }
+        val instance by lazy { ImagePreviewSlider() }
     }
 
     fun start(context: Context?, title: String = "", imageUrls: List<String>,
@@ -36,7 +25,7 @@ class ImagePreviewSlider {
                     startActivity(ImagePreviewSliderActivity.getCallingIntent(it, title, imageUrls, imageThumbnailUrls, imagePosition))
                 }
             } else {
-                ImagePreviewViewer.getInstance().startImageFlightPreviewViewer(title, imageViewTransitionFrom, imageUrls, it, imagePosition)
+                ImagePreviewViewer.instance.startImagePreviewViewer(title, imageViewTransitionFrom, imageUrls, it, imagePosition)
             }
         }
     }
