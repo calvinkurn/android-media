@@ -35,14 +35,10 @@ import com.tokopedia.play.ui.stats.StatsComponent
 import com.tokopedia.play.ui.toolbar.ToolbarComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.ui.toolbar.model.TitleToolbar
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
-import com.tokopedia.play.view.uimodel.QuickReplyUiModel
-import com.tokopedia.play.view.uimodel.TotalViewUiModel
-import com.tokopedia.play.view.uimodel.VideoStreamUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -146,11 +142,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                  is Success -> {
-                     viewModel.getToolbarInfo(it.data.partner.partnerType, it.data.partner.partnerId)
-                     setTitle(it.data.title)
-                     setTotalView(it.data.totalView)
-                     it.data.pinnedMessage?.let(::setPinnedMessage)
-                     setQuickReply(it.data.quickReply)
+                     setChannelTitle(it.data.title)
                  }
                 is Fail -> {
                     showToast("don't forget to handle when get channel info return error ")
@@ -187,16 +179,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeToolbarInfo() {
-        viewModel.observableToolbarInfo.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Success -> {
-                    setPartnerInfo(it.data)
-                }
-                is Fail -> {
-                    showToast("don't forget to handle when get toolbar info return error ")
-                }
-            }
-        })
+        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, Observer(::setPartnerInfo))
     }
 
     private fun observeTotalLikes() {
@@ -572,22 +555,22 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     /**
      * Emit data to ui component
      */
-    private fun setTitle(title: String) {
+    private fun setChannelTitle(title: String) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.SetTitle(title)
+                            ScreenStateEvent.SetChannelTitle(title)
                     )
         }
     }
 
-    private fun setPartnerInfo(titleToolbar: TitleToolbar) {
+    private fun setPartnerInfo(partnerInfo: PartnerInfoUiModel) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.SetTitleToolbar(titleToolbar)
+                            ScreenStateEvent.SetPartnerInfo(partnerInfo)
                     )
         }
     }

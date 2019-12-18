@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.ui.toolbar.model.TitleToolbar
+import com.tokopedia.play.view.uimodel.PartnerInfoUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -62,17 +62,17 @@ class ToolbarView(
         tvChannelName.text = title
     }
 
-    fun setPartnerInfo(titleToolbar: TitleToolbar) {
-        tvPartner.text = titleToolbar.partnerName
-        tvFollow.text = if (titleToolbar.isAlreadyFavorite)
+    fun setPartnerInfo(partnerInfo: PartnerInfoUiModel) {
+        tvPartner.text = partnerInfo.name
+        tvFollow.text = if (partnerInfo.isFollowed)
             view.context.getString(R.string.play_following) else
             view.context.getString(R.string.play_follow)
 
-        if (titleToolbar.partnerType == PartnerType.ADMIN) {
+        if (partnerInfo.type == PartnerType.ADMIN) {
             tvFollow.setOnClickListener {}
         } else {
             tvFollow.setOnClickListener {
-                if (titleToolbar.isAlreadyFavorite) {
+                if (partnerInfo.isFollowed) {
                     listener.onUnFollowButtonClicked(this)
                 } else {
                     listener.onFollowButtonClicked(this)
@@ -81,7 +81,7 @@ class ToolbarView(
         }
 
         tvPartner.setOnClickListener {
-            listener.onPartnerNameClicked(this, titleToolbar.partnerId, titleToolbar.partnerType)
+            listener.onPartnerNameClicked(this, partnerInfo.id, partnerInfo.type)
         }
     }
 
