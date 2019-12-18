@@ -385,24 +385,34 @@ class CreateReviewFragment : BaseDaggerFragment() {
             imgAnimationView.repeatCount = LottieDrawable.INFINITE
             when (index) {
                 1 -> {
-                    imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_1)
-                    imgAnimationView.playAnimation()
+                    try {
+                        imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_1)
+                        imgAnimationView.playAnimation()
+                    }catch (e : Exception){}
                 }
                 2 -> {
-                    imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_2)
-                    imgAnimationView.playAnimation()
+                    try{
+                        imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_2)
+                        imgAnimationView.playAnimation()
+                    }catch (e : Exception){}
                 }
                 3 -> {
-                    imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_3)
-                    imgAnimationView.playAnimation()
+                    try{
+                        imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_3)
+                        imgAnimationView.playAnimation()
+                    }catch (e : Exception){}
                 }
                 4 -> {
-                    imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_4)
-                    imgAnimationView.playAnimation()
+                    try{
+                        imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_4)
+                        imgAnimationView.playAnimation()
+                    }catch (e : Exception){}
                 }
                 5 -> {
-                    imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_5)
-                    imgAnimationView.playAnimation()
+                    try{
+                        imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_5)
+                        imgAnimationView.playAnimation()
+                    }catch (e : Exception){}
                 }
             }
         }
