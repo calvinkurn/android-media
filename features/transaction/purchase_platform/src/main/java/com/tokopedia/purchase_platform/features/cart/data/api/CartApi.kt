@@ -11,9 +11,6 @@ import rx.Observable
 
 interface CartApi {
 
-    @GET(CartApiUrl.PATH_SHOP_GROUP_LIST)
-    fun getShopGroupList(@QueryMap params: Map<String, String>): Observable<Response<CartResponse>>
-
     @FormUrlEncoded
     @POST(CartApiUrl.PATH_REMOVE_FROM_CART)
     fun postDeleteCart(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
