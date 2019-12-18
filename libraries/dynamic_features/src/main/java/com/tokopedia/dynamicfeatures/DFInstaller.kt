@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import com.tokopedia.dynamicfeatures.service.DFDownloadWorker
+import com.tokopedia.dynamicfeatures.service.DFDownloader
 import com.tokopedia.dynamicfeatures.track.DFTracking
 import kotlinx.coroutines.*
 import java.lang.Exception
@@ -46,13 +46,13 @@ class DFInstaller {
                                          onSuccessInstall: (() -> Unit)? = null,
                                          onFailedInstall: (() -> Unit)? = null,
                                          isInitial: Boolean = true): Boolean {
-        val result = GlobalScope.async(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
             val applicationContext = context.applicationContext
             if (moduleNames.isEmpty()) {
-                return@async true
+                return@withContext true
             }
             initManager(applicationContext)
-            val manager = manager ?: return@async false
+            val manager = manager ?: return@withContext false
 
             moduleSize = 0
 
@@ -66,7 +66,7 @@ class DFInstaller {
                 }
             }
 
-            if (moduleNameToDownload.isEmpty()) return@async true
+            if (moduleNameToDownload.isEmpty()) return@withContext true
             val request = requestBuilder.build()
 
             usableSpaceBeforeDownload = DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
@@ -93,13 +93,12 @@ class DFInstaller {
                     onFailedInstall?.invoke()
                     unregisterListener()
                     if (isInitial) {
-                        DFDownloadWorker.start(context.applicationContext, moduleNameToDownload)
+                        DFDownloader.startSchedule(context.applicationContext, moduleNameToDownload)
                     }
                     continuation.resume(false)
                 }
             } }
         }
-        return result.await()
     }
 
     fun installOnBackground(context: Context, moduleNames: List<String>,
@@ -212,7 +211,7 @@ private class SplitInstallListener(val dfInstaller: DFInstaller,
                 onFailedInstall?.invoke()
                 dfInstaller.unregisterListener()
                 if (isInitial) {
-                    DFDownloadWorker.start(context.applicationContext, moduleNameToDownload)
+                    DFDownloader.startSchedule(context.applicationContext, moduleNameToDownload)
                 }
                 continuation.resume(false)
             }

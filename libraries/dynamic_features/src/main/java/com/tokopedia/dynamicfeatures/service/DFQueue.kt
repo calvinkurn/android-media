@@ -2,13 +2,13 @@ package com.tokopedia.dynamicfeatures.service
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.tokopedia.dynamicfeatures.service.DFServiceConstant.DELIMITER
-import com.tokopedia.dynamicfeatures.service.DFServiceConstant.DELIMITER_2
-import com.tokopedia.dynamicfeatures.service.DFServiceConstant.KEY_SHARED_PREF_MODULE
-import com.tokopedia.dynamicfeatures.service.DFServiceConstant.MAX_ATTEMPT_DOWNLOAD
-import com.tokopedia.dynamicfeatures.service.DFServiceConstant.SHARED_PREF_NAME
+import com.tokopedia.dynamicfeatures.service.DFDownloader.DELIMITER
+import com.tokopedia.dynamicfeatures.service.DFDownloader.DELIMITER_2
+import com.tokopedia.dynamicfeatures.service.DFDownloader.KEY_SHARED_PREF_MODULE
+import com.tokopedia.dynamicfeatures.service.DFDownloader.MAX_ATTEMPT_DOWNLOAD
+import com.tokopedia.dynamicfeatures.service.DFDownloader.SHARED_PREF_NAME
 
-object DFDownloadQueue {
+object DFQueue {
     lateinit var sharedPreferences: SharedPreferences
 
     private fun getSharedPref(context: Context): SharedPreferences {
@@ -114,7 +114,7 @@ object DFDownloadQueue {
                 val indexAppendFind = moduleListToAppendList.indexOf(item.first)
                 if (indexAppendFind > -1) {
                     moduleListToAppend?.get(indexAppendFind)?.let {
-                        if (it.second <= MAX_ATTEMPT_DOWNLOAD) {
+                        if (it.second < MAX_ATTEMPT_DOWNLOAD) {
                             finalList.add(it)
                         }
                     }
@@ -150,7 +150,7 @@ object DFDownloadQueue {
     ): List<Pair<String, Int>> {
         val list = moduleListToDownload?.map { Pair(it, 1) }?.toMutableList() ?: mutableListOf()
         queueList.forEach {
-            if (it.second <= MAX_ATTEMPT_DOWNLOAD) {
+            if (it.second < MAX_ATTEMPT_DOWNLOAD) {
                 if (moduleListToDownload?.contains(it.first) != true) {
                     list.add(Pair(it.first, it.second))
                 }
