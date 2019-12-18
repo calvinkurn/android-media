@@ -36,11 +36,14 @@ import com.tokopedia.play.ui.toolbar.ToolbarComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
+import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play.view.wrapper.InteractionEvent
+import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
@@ -57,6 +60,8 @@ import kotlin.coroutines.CoroutineContext
 class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreActionBottomSheet.Listener {
 
     companion object {
+
+        private const val REQUEST_CODE_LOGIN = 55
 
         private const val INVISIBLE_ALPHA = 0f
         private const val VISIBLE_ALPHA = 1f
@@ -157,6 +162,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeTotalViews()
         observeChatList()
         observePinnedMessage()
+
+        observeLoggedInInteractionEvent()
     }
 
     override fun onDestroy() {
@@ -213,6 +220,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observePinnedMessage() {
         playViewModel.observablePinnedMessageSocket.observe(this, Observer(::setPinnedMessage))
+    }
+
+    private fun observeLoggedInInteractionEvent() {
+        viewModel.observableLoggedInInteractionEvent.observe(this, EventObserver(::handleLoginInteractionEvent))
     }
     //endregion
 
@@ -288,7 +299,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             likeComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            LikeInteractionEvent.LikeClicked -> showToast("TotalLike Clicked")
+                            LikeInteractionEvent.LikeClicked -> doLike()
                         }
                     }
         }
@@ -653,5 +664,28 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 ApplinkConst.PROFILE,
                 partnerId.toString()
         )
+    }
+
+    private fun doLike() {
+        viewModel.doInteractionEvent(InteractionEvent.Like)
+    }
+
+    private fun handleLoginInteractionEvent(loginInteractionEvent: LoginStateEvent) {
+        when (loginInteractionEvent) {
+            is LoginStateEvent.InteractionAllowed -> handleInteractionEvent(loginInteractionEvent.event)
+            is LoginStateEvent.NeedLoggedIn -> openLoginPage()
+        }
+    }
+
+    private fun handleInteractionEvent(event: InteractionEvent) {
+        when (event) {
+            InteractionEvent.SendChat -> {} //open keyboard
+            InteractionEvent.Like -> showToast("Like Clicked") //do like post
+        }
+    }
+
+    private fun openLoginPage() {
+        val loginIntent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        startActivityForResult(loginIntent, REQUEST_CODE_LOGIN)
     }
 }
