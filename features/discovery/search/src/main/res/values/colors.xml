@@ -25,4 +25,6 @@
 
     <color name="free_ongkir_promo_show_case_background">#ae31353b</color>
     <color name="free_ongkir_promo_show_case_title_color">#f531353b</color>
+
+    <color name="cart_count_color">#ef144a</color>
 </resources>
