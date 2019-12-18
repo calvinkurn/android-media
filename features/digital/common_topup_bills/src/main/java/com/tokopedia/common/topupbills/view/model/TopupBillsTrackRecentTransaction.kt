@@ -1,10 +1,10 @@
-package com.tokopedia.topupbills.telco.view.model
+package com.tokopedia.common.topupbills.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 
-class DigitalTrackRecentTransactionTelco constructor(
+class TopupBillsTrackRecentTransaction constructor(
         val itemRecent: TopupBillsRecommendation,
         val categoryId: Int,
         val position: Int) : Parcelable {
@@ -24,18 +24,18 @@ class DigitalTrackRecentTransactionTelco constructor(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<DigitalTrackRecentTransactionTelco> {
-        override fun createFromParcel(parcel: Parcel): DigitalTrackRecentTransactionTelco {
-            return DigitalTrackRecentTransactionTelco(parcel)
+    companion object CREATOR : Parcelable.Creator<TopupBillsTrackRecentTransaction> {
+        override fun createFromParcel(parcel: Parcel): TopupBillsTrackRecentTransaction {
+            return TopupBillsTrackRecentTransaction(parcel)
         }
 
-        override fun newArray(size: Int): Array<DigitalTrackRecentTransactionTelco?> {
+        override fun newArray(size: Int): Array<TopupBillsTrackRecentTransaction?> {
             return arrayOfNulls(size)
         }
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other == null || other !is DigitalTrackRecentTransactionTelco) return false
+        if (other == null || other !is TopupBillsTrackRecentTransaction) return false
         return this.itemRecent.clientNumber == other.itemRecent.clientNumber
     }
 

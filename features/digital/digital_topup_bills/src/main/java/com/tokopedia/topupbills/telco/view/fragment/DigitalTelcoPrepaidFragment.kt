@@ -31,10 +31,10 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
-import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment.InputNumberActionType
-import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
+import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
@@ -307,17 +307,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun renderViewPager(operatorId: String) {
-        val listProductTab = mutableListOf<DigitalTabTelcoItem>()
-        listProductTab.add(DigitalTabTelcoItem(DigitalTelcoProductFragment.newInstance(
+        val listProductTab = mutableListOf<TopupBillsTabItem>()
+        listProductTab.add(TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(
                 TelcoComponentType.PRODUCT_PULSA, TelcoComponentName.PRODUCT_PULSA, operatorId, selectedOperatorName,
                 TelcoProductType.PRODUCT_GRID, selectedProductId), TelcoComponentName.PRODUCT_PULSA))
-        listProductTab.add(DigitalTabTelcoItem(DigitalTelcoProductFragment.newInstance(
+        listProductTab.add(TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(
                 TelcoComponentType.PRODUCT_PAKET_DATA, TelcoComponentName.PRODUCT_PAKET_DATA, operatorId, selectedOperatorName,
                 TelcoProductType.PRODUCT_LIST, selectedProductId), TelcoComponentName.PRODUCT_PAKET_DATA))
-        listProductTab.add(DigitalTabTelcoItem(DigitalTelcoProductFragment.newInstance(
+        listProductTab.add(TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(
                 TelcoComponentType.PRODUCT_ROAMING, TelcoComponentName.PRODUCT_ROAMING, operatorId, selectedOperatorName,
                 TelcoProductType.PRODUCT_LIST, selectedProductId), TelcoComponentName.PRODUCT_ROAMING))
-        val pagerAdapter = DigitalTelcoProductTabAdapter(listProductTab, childFragmentManager)
+        val pagerAdapter = TopupBillsProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
         viewPager.offscreenPageLimit = 3
         tabLayout.setupWithViewPager(viewPager)

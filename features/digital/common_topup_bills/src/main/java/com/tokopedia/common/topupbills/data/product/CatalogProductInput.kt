@@ -1,12 +1,12 @@
-package com.tokopedia.vouchergame.detail.data
+package com.tokopedia.common.topupbills.data.product
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
- * Created by resakemal on 12/08/19.
+ * Created by resakemal on 26/11/19.
  */
-class VoucherGameEnquiryFields(
+class CatalogProductInput (
 
         @SerializedName("id")
         @Expose

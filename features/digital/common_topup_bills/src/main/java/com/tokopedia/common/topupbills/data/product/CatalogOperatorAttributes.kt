@@ -1,12 +1,14 @@
-package com.tokopedia.vouchergame.list.view.model
+package com.tokopedia.common.topupbills.data.product
 
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 
-class VoucherGameOperatorAttributes(
+/**
+ * Created by resakemal on 28/11/19.
+ */
+class CatalogOperatorAttributes(
         @SerializedName("name")
         @Expose
         val name: String = "",
@@ -59,12 +61,12 @@ class VoucherGameOperatorAttributes(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<VoucherGameOperatorAttributes> {
-        override fun createFromParcel(parcel: Parcel): VoucherGameOperatorAttributes {
-            return VoucherGameOperatorAttributes(parcel)
+    companion object CREATOR : Parcelable.Creator<CatalogOperatorAttributes> {
+        override fun createFromParcel(parcel: Parcel): CatalogOperatorAttributes {
+            return CatalogOperatorAttributes(parcel)
         }
 
-        override fun newArray(size: Int): Array<VoucherGameOperatorAttributes?> {
+        override fun newArray(size: Int): Array<CatalogOperatorAttributes?> {
             return arrayOfNulls(size)
         }
     }

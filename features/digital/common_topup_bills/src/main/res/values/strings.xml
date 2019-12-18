@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">common_topup_bills</string>
+
+    <string name="text_copy_promo_code">Salin</string>
+    <string name="text_has_copied_promo_code">Disalin</string>
+    <string name="title_promo">Promo</string>
+    <string name="title_reccent_transaction_widget">Transaksi Terakhir</string>
 </resources>

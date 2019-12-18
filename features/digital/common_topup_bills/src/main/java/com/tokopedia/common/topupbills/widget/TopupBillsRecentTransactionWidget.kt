@@ -1,39 +1,39 @@
-package com.tokopedia.topupbills.telco.view.widget
+package com.tokopedia.common.topupbills.widget
 
 import android.content.Context
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
-import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.topupbills.telco.view.adapter.DigitalRecentNumbersAdapter
-import com.tokopedia.topupbills.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
-import com.tokopedia.topupbills.telco.view.model.DigitalTrackRecentTransactionTelco
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
+import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
+import com.tokopedia.design.base.BaseCustomView
 import org.jetbrains.annotations.NotNull
 
 /**
  * Created by nabillasabbaha on 25/04/19.
  */
-class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                               defStyleAttr: Int = 0)
+class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
+                                                                  defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val recyclerView: RecyclerView
     private val titleWidget: TextView
-    private val digitalRecentNumbersAdapter: DigitalRecentNumbersAdapter
+    private val topupBillsRecentNumbersAdapter: TopupBillsRecentNumbersAdapter
     private val recentNumbers = mutableListOf<TopupBillsRecommendation>()
     private lateinit var listener: ActionListener
-    private val digitalTrackRecentPrev = mutableListOf<DigitalTrackRecentTransactionTelco>()
+    private val digitalTrackRecentPrev = mutableListOf<TopupBillsTrackRecentTransaction>()
 
     init {
         val view = View.inflate(context, R.layout.view_digital_component_list, this)
         recyclerView = view.findViewById(R.id.recycler_view)
         titleWidget = view.findViewById(R.id.title_component)
 
-        digitalRecentNumbersAdapter = DigitalRecentNumbersAdapter(recentNumbers)
-        recyclerView.adapter = digitalRecentNumbersAdapter
+        topupBillsRecentNumbersAdapter = TopupBillsRecentNumbersAdapter(recentNumbers)
+        recyclerView.adapter = topupBillsRecentNumbersAdapter
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
@@ -44,14 +44,14 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
     fun setRecentNumbers(recentNumbers: List<TopupBillsRecommendation>) {
         titleWidget.visibility = View.VISIBLE
         titleWidget.text = context.getString(R.string.title_reccent_transaction_widget)
-        digitalRecentNumbersAdapter.setListener(object : DigitalRecentNumbersAdapter.ActionListener {
+        topupBillsRecentNumbersAdapter.setListener(object : TopupBillsRecentNumbersAdapter.ActionListener {
             override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int) {
                 listener.onClickRecentNumber(topupBillsRecommendation, topupBillsRecommendation.categoryId,
                         position)
             }
         })
         this.recentNumbers.addAll(recentNumbers)
-        digitalRecentNumbersAdapter.notifyDataSetChanged()
+        topupBillsRecentNumbersAdapter.notifyDataSetChanged()
 
         getVisibleRecentItemsToUsersTracking(recentNumbers)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -69,10 +69,10 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
         val lastPos = (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
 
 
-        val digitalTrackRecentList = mutableListOf<DigitalTrackRecentTransactionTelco>()
+        val digitalTrackRecentList = mutableListOf<TopupBillsTrackRecentTransaction>()
         for (i in firstPos..lastPos) {
             if (firstPos >= 0 && lastPos <= recentNumbers.size - 1) {
-                digitalTrackRecentList.add(DigitalTrackRecentTransactionTelco(recentNumbers[i],
+                digitalTrackRecentList.add(TopupBillsTrackRecentTransaction(recentNumbers[i],
                         recentNumbers[i].categoryId, i))
             }
         }
@@ -88,6 +88,6 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
 
     interface ActionListener {
         fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int, position: Int)
-        fun onTrackImpressionRecentList(digitalTrackRecentList: List<DigitalTrackRecentTransactionTelco>)
+        fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>)
     }
 }

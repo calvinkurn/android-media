@@ -26,7 +26,7 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
                 if (promo != null) {
                     product_promo_price.visibility = View.VISIBLE
                     product_promo_price.text = price
-                    product_price.text = promo.newPrice
+                    product_price.text = promo?.newPrice
                 } else {
                     product_promo_price.visibility = View.INVISIBLE
                     product_price.text = price
