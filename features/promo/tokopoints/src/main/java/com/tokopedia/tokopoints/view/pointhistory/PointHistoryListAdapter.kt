@@ -9,7 +9,6 @@ import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.PointHistoryBase
 import com.tokopedia.tokopoints.view.model.PointHistoryItem
-import com.tokopedia.tokopoints.view.viewmodel.PointHistoryViewModel
 import kotlinx.android.synthetic.main.tp_item_point_history.view.*
 
 import javax.inject.Inject

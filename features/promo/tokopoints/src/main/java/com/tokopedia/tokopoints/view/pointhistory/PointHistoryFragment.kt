@@ -22,7 +22,6 @@ import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
 import com.tokopedia.tokopoints.view.contract.PointHistoryContract
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.tokopoints.view.viewmodel.PointHistoryViewModel
 import kotlinx.android.synthetic.main.layout_tp_server_error.view.*
 import kotlinx.android.synthetic.main.tp_content_point_history.view.*
 import kotlinx.android.synthetic.main.tp_content_point_history_header.view.*
