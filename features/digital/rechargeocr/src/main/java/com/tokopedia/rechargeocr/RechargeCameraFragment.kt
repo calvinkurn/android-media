@@ -1,6 +1,7 @@
 package com.tokopedia.rechargeocr
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -178,7 +179,13 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     private fun onSuccessResultOcr(resultImageOcr: String) {
         hideLoading()
-        Toast.makeText(activity, resultImageOcr, Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, "success get data", Toast.LENGTH_SHORT).show()
+        activity?.let {
+            val intentReturn = Intent()
+            intentReturn.putExtra(EXTRA_NUMBER_FROM_CAMERA_OCR, resultImageOcr)
+            it.setResult(Activity.RESULT_OK, intentReturn)
+            it.finish()
+        }
     }
 
     private fun onError(throwable: Throwable) {
@@ -258,6 +265,9 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     }
 
     companion object {
+
+        //TODO get this data from DigitalExtraParam
+        val EXTRA_NUMBER_FROM_CAMERA_OCR = "EXTRA_NUMBER_FROM_CAMERA_OCR"
 
         fun newInstance(): Fragment {
             return RechargeCameraFragment()

@@ -16,6 +16,7 @@ object ApplinkConsInternalDigital {
     const val CART_DIGITAL = "${INTERNAL_DIGITAL}/cart"
     const val TELCO_DIGITAL = "${INTERNAL_DIGITAL}/telco"
     const val VOUCHER_GAME = "${INTERNAL_DIGITAL}/vouchergame"
+    const val CAMERA_OCR = "${INTERNAL_DIGITAL}/ocr"
 
     const val SMARTCARD = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/smartcard?$PARAM_SMARTCARD={type}"
     const val SMARTCARD_WITH_BRIZZI = "$INTERNAL_DIGITAL/smartcard/emoneybrizzi?$PARAM_SMARTCARD={type}"

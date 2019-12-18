@@ -12,17 +12,17 @@
         android:screenOrientation="portrait"
         android:theme="@style/Theme.White">
 
-<!--        <intent-filter android:autoVerify="true">-->
-<!--            <action android:name="android.intent.action.VIEW" />-->
+        <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
 
-<!--            <category android:name="android.intent.category.DEFAULT" />-->
-<!--            <category android:name="android.intent.category.BROWSABLE" />-->
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
 
-<!--            <data-->
-<!--                android:host="@string/host_digital"-->
-<!--                android:path="@string/path_emoney_brizzi"-->
-<!--                android:scheme="@string/internal_scheme" />-->
-<!--        </intent-filter>-->
+            <data
+                android:host="@string/host_digital"
+                android:path="@string/path_camera_ocr"
+                android:scheme="@string/internal_scheme" />
+        </intent-filter>
     </activity>
 
     </application>

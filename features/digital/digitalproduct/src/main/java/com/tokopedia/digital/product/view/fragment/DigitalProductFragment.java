@@ -160,6 +160,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private static final int REQUEST_CODE_CONTACT_PICKER = 1005;
     private static final int REQUEST_CODE_CART_DIGITAL = 1006;
     private static final int REQUEST_CODE_CHECK_SALDO_EMONEY = 1007;
+    private static final int REQUEST_CODE_CAMERA_OCR = 1008;
 
     private NestedScrollView mainHolderContainer;
     private ProgressBar pbMainLoading;
@@ -822,6 +823,12 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onButtonCameraPickerClicked() {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CAMERA_OCR);
+        startActivityForResult(intent, REQUEST_CODE_CAMERA_OCR);
+    }
+
+    @Override
     public void onProductDetailLinkClicked(String url) {
         RouteManager.route(getContext(), url);
     }
@@ -980,6 +987,12 @@ public class DigitalProductFragment extends BaseDaggerFragment
                         presenter.processGetCategoryAndBannerData(
                                 categoryId, operatorId, productId, clientNumber);
                     }
+                }
+                break;
+            case REQUEST_CODE_CAMERA_OCR:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    String clientNumber = data.getStringExtra(DigitalExtraParam.EXTRA_NUMBER_FROM_CAMERA_OCR);
+                    digitalProductView.renderClientNumber(clientNumber);
                 }
                 break;
         }
