@@ -10,7 +10,7 @@ import java.util.*
  */
 
 data class CartItemHolderData(
-        var cartItemData: CartItemData,
+        var cartItemData: CartItemData?,
         var errorFormItemValidationType: Int = 0,
         var errorFormItemValidationMessage: String? = null,
         var isEditableRemark: Boolean = false,
@@ -47,18 +47,18 @@ data class CartItemHolderData(
     }
 
     fun getErrorFormItemValidationTypeValue(): Int {
-        if (cartItemData.updatedData?.remark?.length ?: 0 > cartItemData.updatedData?.maxCharRemark ?: 0) {
-            this.errorFormItemValidationMessage = cartItemData.messageErrorData?.errorFieldMaxChar
-                    ?.replace("{{value}}", cartItemData.updatedData?.maxCharRemark.toString())
+        if (cartItemData?.updatedData?.remark?.length ?: 0 > cartItemData?.updatedData?.maxCharRemark ?: 0) {
+            this.errorFormItemValidationMessage = cartItemData?.messageErrorData?.errorFieldMaxChar
+                    ?.replace("{{value}}", cartItemData?.updatedData?.maxCharRemark.toString())
             return ERROR_FIELD_MAX_CHAR
-        } else if (cartItemData.updatedData?.quantity ?: 0 > cartItemData.originData?.maxOrder ?: 0) {
-            val formattedMaxCharRemark = String.format(Locale.US, "%,d", cartItemData.originData?.maxOrder).replace(',', '.')
-            this.errorFormItemValidationMessage = cartItemData.messageErrorData?.errorProductMaxQuantity
+        } else if (cartItemData?.updatedData?.quantity ?: 0 > cartItemData?.originData?.maxOrder ?: 0) {
+            val formattedMaxCharRemark = String.format(Locale.US, "%,d", cartItemData?.originData?.maxOrder).replace(',', '.')
+            this.errorFormItemValidationMessage = cartItemData?.messageErrorData?.errorProductMaxQuantity
                     ?.replace("{{value}}", formattedMaxCharRemark)
             return ERROR_PRODUCT_MAX_QUANTITY
-        } else if (cartItemData.updatedData?.quantity ?: 0 < cartItemData.originData?.minOrder ?: 0) {
-            this.errorFormItemValidationMessage = cartItemData.messageErrorData?.errorProductMinQuantity
-                    ?.replace("{{value}}", cartItemData.originData?.minOrder.toString())
+        } else if (cartItemData?.updatedData?.quantity ?: 0 < cartItemData?.originData?.minOrder ?: 0) {
+            this.errorFormItemValidationMessage = cartItemData?.messageErrorData?.errorProductMinQuantity
+                    ?.replace("{{value}}", cartItemData?.originData?.minOrder.toString())
             return ERROR_PRODUCT_MIN_QUANTITY
         } else {
             this.errorFormItemValidationMessage = ""

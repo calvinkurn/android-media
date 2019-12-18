@@ -389,7 +389,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
                     val cartItemDataList = shopGroupAvailableData.cartItemDataList
                     cartItemDataList?.let {
                         for (cartItemHolderData in cartItemDataList) {
-                            val originData = cartItemHolderData.cartItemData.originData
+                            val originData = cartItemHolderData.cartItemData?.originData
                             if (originData?.productId.equals(trackingDetail.productId.toString(), ignoreCase = true)) {
                                 originData?.promoCodes = trackingDetail.promoCodesTracking
                                 originData?.promoDetails = trackingDetail.promoDetailsTracking

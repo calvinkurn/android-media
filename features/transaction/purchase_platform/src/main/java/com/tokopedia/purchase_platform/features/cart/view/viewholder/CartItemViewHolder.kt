@@ -219,10 +219,10 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderSelection(data: CartItemHolderData, parentPosition: Int) {
-        cbSelectItem.isEnabled = !data.cartItemData.isError
-        cbSelectItem.isChecked = !data.cartItemData.isError && data.isSelected
+        cbSelectItem.isEnabled = data.cartItemData?.isError == false
+        cbSelectItem.isChecked = data.cartItemData?.isError == false && data.isSelected
         cbSelectItem.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (!data.cartItemData.isError) {
+            if (data.cartItemData?.isError == false) {
                 data.isSelected = isChecked
                 if (adapterPosition != RecyclerView.NO_POSITION) {
                     actionListener?.onCartItemCheckChanged(adapterPosition, parentPosition, data.isSelected)
@@ -235,8 +235,8 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderWarningAndError(data: CartItemHolderData) {
         // Initial action state
         rendercartItemActionOnNormalProduct()
-        if (data.cartItemData.isParentHasErrorOrWarning) {
-            if (!data.cartItemData.isDisableAllProducts || data.cartItemData.isError || data.cartItemData.isWarning) {
+        if (data.cartItemData?.isParentHasErrorOrWarning == true) {
+            if (data.cartItemData?.isDisableAllProducts == false || data.cartItemData?.isError == true || data.cartItemData?.isWarning == true) {
                 renderErrorItemHeader(data)
                 renderWarningItemHeader(data)
                 setWarningAndErrorVisibility(data)
@@ -244,7 +244,7 @@ class CartItemViewHolder constructor(itemView: View,
                 disableView(data)
             }
         } else {
-            if (!data.cartItemData.isSingleChild) {
+            if (data.cartItemData?.isSingleChild == false) {
                 renderErrorItemHeader(data)
                 renderWarningItemHeader(data)
                 setWarningAndErrorVisibility(data)
@@ -255,7 +255,7 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun setWarningAndErrorVisibility(data: CartItemHolderData) {
-        if ((!TextUtils.isEmpty(data.cartItemData.errorMessageTitle) || !TextUtils.isEmpty(data.cartItemData.warningMessageTitle)) && (data.cartItemData.isError || data.cartItemData.isWarning)) {
+        if ((!TextUtils.isEmpty(data.cartItemData?.errorMessageTitle) || !TextUtils.isEmpty(data.cartItemData?.warningMessageTitle)) && (data.cartItemData?.isError == true || data.cartItemData?.isWarning == true)) {
             llWarningAndError.visibility = View.VISIBLE
         } else {
             llWarningAndError.visibility = View.GONE
@@ -263,7 +263,7 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun disableView(data: CartItemHolderData) {
-        if (data.cartItemData.isError) {
+        if (data.cartItemData?.isError == true) {
             flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_disabled_item)
         } else {
             flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_enabled_item)
@@ -272,17 +272,17 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductInfo(data: CartItemHolderData, parentPosition: Int) {
-        this.tvProductName.text = Html.fromHtml(data.cartItemData.originData?.productName)
-        if (data.cartItemData.originData?.wholesalePriceFormatted != null) {
-            this.tvProductPrice.text = data.cartItemData.originData?.wholesalePriceFormatted
+        this.tvProductName.text = Html.fromHtml(data.cartItemData?.originData?.productName)
+        if (data.cartItemData?.originData?.wholesalePriceFormatted != null) {
+            this.tvProductPrice.text = data.cartItemData?.originData?.wholesalePriceFormatted
         } else {
             this.tvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    data.cartItemData.originData?.pricePlan ?: 0.toDouble(), false)
+                    data.cartItemData?.originData?.pricePlan ?: 0.toDouble(), false)
         }
 
         ImageHandler.loadImageRounded2(
                 this.itemView.context, this.ivProductImage,
-                data.cartItemData.originData?.productImage
+                data.cartItemData?.originData?.productImage
         )
 
         this.ivProductImage.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
@@ -312,17 +312,17 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductPropertiesCashback(data: CartItemHolderData) {
-        this.tvInfoCashBack.visibility = if (data.cartItemData.originData?.isCashBack == true) View.VISIBLE else View.GONE
-        this.tvInfoCashBack.text = data.cartItemData.originData?.cashBackInfo
+        this.tvInfoCashBack.visibility = if (data.cartItemData?.originData?.isCashBack == true) View.VISIBLE else View.GONE
+        this.tvInfoCashBack.text = data.cartItemData?.originData?.cashBackInfo
     }
 
     private fun renderProductPropertiesCod(data: CartItemHolderData) {
-        this.tvCodBadge.visibility = if (data.cartItemData.originData?.isCod == true) View.VISIBLE else View.GONE
+        this.tvCodBadge.visibility = if (data.cartItemData?.originData?.isCod == true) View.VISIBLE else View.GONE
     }
 
     private fun renderProductPropertiesPreOrder(data: CartItemHolderData) {
-        if (data.cartItemData.originData?.isPreOrder == true) {
-            this.tvInfoPreOrder.text = data.cartItemData.originData?.preOrderInfo
+        if (data.cartItemData?.originData?.isPreOrder == true) {
+            this.tvInfoPreOrder.text = data.cartItemData?.originData?.preOrderInfo
             this.tvInfoPreOrder.visibility = View.VISIBLE
         } else {
             this.tvInfoPreOrder.visibility = View.GONE
@@ -330,11 +330,11 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductPropertiesFreereturn(data: CartItemHolderData) {
-        if (data.cartItemData.originData?.isFreeReturn == true) {
+        if (data.cartItemData?.originData?.isFreeReturn == true) {
             this.ivIconFreeReturn.visibility = View.VISIBLE
             ImageHandler.loadImageRounded2(
                     this.itemView.context, this.ivIconFreeReturn,
-                    data.cartItemData.originData?.freeReturnLogo
+                    data.cartItemData?.originData?.freeReturnLogo
             )
         } else {
             this.ivIconFreeReturn.visibility = View.GONE
@@ -342,10 +342,10 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductPropertiesLayout(data: CartItemHolderData) {
-        if (data.cartItemData.originData?.isCashBack == true ||
-                data.cartItemData.originData?.isPreOrder == true ||
-                data.cartItemData.originData?.isFreeReturn == true ||
-                data.cartItemData.originData?.isCod == true) {
+        if (data.cartItemData?.originData?.isCashBack == true ||
+                data.cartItemData?.originData?.isPreOrder == true ||
+                data.cartItemData?.originData?.isFreeReturn == true ||
+                data.cartItemData?.originData?.isCod == true) {
             productProperties.visibility = View.VISIBLE
         } else {
             productProperties.visibility = View.GONE
@@ -353,10 +353,10 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductPropertiesFreeShipping(data: CartItemHolderData) {
-        if (data.cartItemData.originData?.isFreeShipping == true &&
-                !TextUtils.isEmpty(data.cartItemData.originData?.freeShippingBadgeUrl)) {
+        if (data.cartItemData?.originData?.isFreeShipping == true &&
+                !TextUtils.isEmpty(data.cartItemData?.originData?.freeShippingBadgeUrl)) {
             ImageHandler.loadImageWithoutPlaceholderAndError(
-                    imgFreeShipping, data.cartItemData.originData?.freeShippingBadgeUrl
+                    imgFreeShipping, data.cartItemData?.originData?.freeShippingBadgeUrl
             )
             imgFreeShipping.visibility = View.VISIBLE
         } else {
@@ -365,29 +365,29 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductPropertiesPriceChanges(data: CartItemHolderData) {
-        val priceChangesText = data.cartItemData.originData?.priceChangesDesc
-        val priceChangesState = data.cartItemData.originData?.priceChangesState ?: 0
+        val priceChangesText = data.cartItemData?.originData?.priceChangesDesc
+        val priceChangesState = data.cartItemData?.originData?.priceChangesState ?: 0
         if (priceChangesText?.isEmpty() == true || priceChangesState >= 0) {
             tvPriceChanges.visibility = View.GONE
         } else {
             tvPriceChanges.visibility = View.VISIBLE
             tvPriceChanges.text = priceChangesText
-            actionListener?.onCartItemShowTickerPriceDecrease(data.cartItemData.originData?.productId)
+            actionListener?.onCartItemShowTickerPriceDecrease(data.cartItemData?.originData?.productId)
         }
     }
 
     private fun renderProductPropertiesInvenage(data: CartItemHolderData) {
-        if (data.cartItemData.originData?.productInvenageByUserText?.isNotEmpty() == true) {
+        if (data.cartItemData?.originData?.productInvenageByUserText?.isNotEmpty() == true) {
             this.rlInvenageText.visibility = View.VISIBLE
-            val completeText = data.cartItemData.originData?.productInvenageByUserText
-            val totalInOtherCart = data.cartItemData.originData?.productInvenageByUserInCart
-            val totalRemainingStock = data.cartItemData.originData?.productInvenageByUserLastStockLessThan
+            val completeText = data.cartItemData?.originData?.productInvenageByUserText
+            val totalInOtherCart = data.cartItemData?.originData?.productInvenageByUserInCart
+            val totalRemainingStock = data.cartItemData?.originData?.productInvenageByUserLastStockLessThan
             val invenageText = completeText?.replace(context?.getString(R.string.product_invenage_remaining_stock)
                     ?: "", "" + totalRemainingStock)
                     ?.replace(context?.getString(R.string.product_invenage_in_other_cart)
                             ?: "", "" + totalInOtherCart)
             this.tvInvenageText.text = Html.fromHtml(invenageText)
-            actionListener?.onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(data.cartItemData.originData?.productId)
+            actionListener?.onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(data.cartItemData?.originData?.productId)
         } else {
             this.rlInvenageText.visibility = View.GONE
         }
@@ -395,13 +395,13 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderRemark(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
         this.tvLabelRemarkOption.setOnClickListener {
-            if (!data.cartItemData.isError) {
+            if (data.cartItemData?.isError == false) {
                 actionListener?.onCartItemLabelInputRemarkClicked()
                 if (tvLabelRemarkOption.text == tvLabelRemarkOption.context.getString(
                                 R.string.label_button_change_note)) {
-                    var remark = data.cartItemData.updatedData?.remark
+                    var remark = data.cartItemData?.updatedData?.remark
                     remark += " "
-                    data.cartItemData.updatedData?.remark = remark
+                    data.cartItemData?.updatedData?.remark = remark
                 }
                 data.isStateRemarkExpanded = true
                 if (adapterPosition != RecyclerView.NO_POSITION) {
@@ -410,17 +410,17 @@ class CartItemViewHolder constructor(itemView: View,
             }
         }
 
-        if (!StringUtils.isBlank(data.cartItemData.updatedData?.remark)) {
+        if (!StringUtils.isBlank(data.cartItemData?.updatedData?.remark)) {
             data.isStateRemarkExpanded = true
         }
 
         if (data.isStateRemarkExpanded) {
             // Has a notes from pdp or not at all but click add notes button
-            if (StringUtils.isBlank(data.cartItemData.originData?.originalRemark) || data.cartItemData.updatedData?.remark != data.cartItemData.originData?.originalRemark) {
+            if (StringUtils.isBlank(data.cartItemData?.originData?.originalRemark) || data.cartItemData?.updatedData?.remark != data.cartItemData?.originData?.originalRemark) {
                 // Notes is empty after click add notes button or has value after use click change notes button
                 this.tvLabelFormRemark.visibility = View.VISIBLE
                 this.tvRemark.visibility = View.GONE
-                this.etRemark.setText(Utils.getHtmlFormat(data.cartItemData.updatedData?.remark))
+                this.etRemark.setText(Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark))
                 this.etRemark.visibility = View.VISIBLE
                 this.etRemark.setSelection(etRemark.length())
                 this.tvLabelRemarkOption.visibility = View.GONE
@@ -430,12 +430,12 @@ class CartItemViewHolder constructor(itemView: View,
                 // Has notes from pdp
                 this.tvLabelFormRemark.visibility = View.GONE
                 this.etRemark.visibility = View.GONE
-                this.tvRemark.text = Utils.getHtmlFormat(data.cartItemData.updatedData?.remark)
+                this.tvRemark.text = Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark)
                 this.tvRemark.visibility = View.VISIBLE
                 this.tvLabelRemarkOption.visibility = View.VISIBLE
                 this.tvNoteCharCounter.visibility = View.GONE
                 this.tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_change_note)
-                if (data.cartItemData.updatedData?.remark?.length ?: 0 >= MAX_SHOWING_NOTES_CHAR) {
+                if (data.cartItemData?.updatedData?.remark?.length ?: 0 >= MAX_SHOWING_NOTES_CHAR) {
                     this.tvEllipsize.visibility = View.VISIBLE
                 } else {
                     this.tvEllipsize.visibility = View.GONE
@@ -453,19 +453,19 @@ class CartItemViewHolder constructor(itemView: View,
             this.tvEllipsize.visibility = View.GONE
         }
 
-        this.etRemark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData.updatedData?.maxCharRemark
+        this.etRemark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData?.updatedData?.maxCharRemark
                 ?: 0))
         this.etRemark.addTextChangedListener(NoteTextWatcher(noteTextwatcherListener))
     }
 
     private fun renderQuantity(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
-        val quantity = data.cartItemData.updatedData?.quantity.toString()
-        this.etQty.setText(data.cartItemData.updatedData?.quantity.toString())
+        val quantity = data.cartItemData?.updatedData?.quantity.toString()
+        this.etQty.setText(data.cartItemData?.updatedData?.quantity.toString())
         if (quantity.isNotEmpty()) {
             this.etQty.setSelection(quantity.length)
         }
         this.etQty.setOnClickListener { v ->
-            if (!data.cartItemData.isError) {
+            if (data.cartItemData?.isError == false) {
                 val qtyStr = (v as AppCompatEditText).text?.toString()
                 actionListener?.onCartItemQuantityInputFormClicked(
                         if (!TextUtils.isEmpty(qtyStr)) qtyStr else ""
@@ -474,7 +474,7 @@ class CartItemViewHolder constructor(itemView: View,
         }
 
         this.btnQtyPlus.setOnClickListener {
-            if (!data.cartItemData.isError) {
+            if (data.cartItemData?.isError == false) {
                 try {
                     if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
                         actionListener?.onCartItemQuantityPlusButtonClicked(data, adapterPosition, parentPosition)
@@ -489,7 +489,7 @@ class CartItemViewHolder constructor(itemView: View,
         }
 
         this.btnQtyMinus.setOnClickListener {
-            if (!data.cartItemData.isError) {
+            if (data.cartItemData?.isError == false) {
                 try {
                     if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
                         actionListener?.onCartItemQuantityMinusButtonClicked(data, adapterPosition, parentPosition)
@@ -507,12 +507,12 @@ class CartItemViewHolder constructor(itemView: View,
             checkQtyMustDisabled(cartItemHolderData!!, Integer.parseInt(etQty.text.toString()))
         }
         this.etQty.addTextChangedListener(QuantityTextWatcher(quantityTextwatcherListener))
-        this.etQty.isEnabled = !data.cartItemData.isError
+        this.etQty.isEnabled = data.cartItemData?.isError == false
     }
 
     private fun handleRefreshType(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, parentPosition: Int) {
-        if (data.cartItemData.originData?.wholesalePriceData != null && data.cartItemData.originData?.wholesalePriceData?.size ?: 0 > 0) {
-            if (data.cartItemData.originData?.isPreOrder == true) {
+        if (data.cartItemData?.originData?.wholesalePriceData != null && data.cartItemData?.originData?.wholesalePriceData?.size ?: 0 > 0) {
+            if (data.cartItemData?.originData?.isPreOrder == true) {
                 viewHolderListener?.onNeedToRefreshAllShop()
             } else {
                 viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
@@ -523,15 +523,15 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderWishlist(data: CartItemHolderData) {
-        if (data.cartItemData.originData?.isWishlisted == true) {
+        if (data.cartItemData?.originData?.isWishlisted == true) {
             imgWishlist.setImageResource(R.drawable.ic_wishlist_checkout_on)
         } else {
             imgWishlist.setImageResource(R.drawable.ic_wishlist_checkout_off)
         }
 
         imgWishlist.setOnClickListener {
-            val checked = data.cartItemData.originData?.isWishlisted ?: false
-            actionListener?.onWishlistCheckChanged(data.cartItemData.originData?.productId, !checked)
+            val checked = data.cartItemData?.originData?.isWishlisted ?: false
+            actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, !checked)
         }
     }
 
@@ -547,8 +547,8 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderErrorFormItemValidation(data: CartItemHolderData) {
         val noteCounter = String.format(tvNoteCharCounter.context.getString(R.string.note_counter_format),
-                data.cartItemData.updatedData?.remark?.length,
-                data.cartItemData.updatedData?.maxCharRemark)
+                data.cartItemData?.updatedData?.remark?.length,
+                data.cartItemData?.updatedData?.maxCharRemark)
         tvNoteCharCounter.text = noteCounter
         if (data.getErrorFormItemValidationTypeValue() == CartItemHolderData.ERROR_EMPTY) {
             this.tvErrorFormValidation.text = ""
@@ -569,7 +569,7 @@ class CartItemViewHolder constructor(itemView: View,
                 this.tvErrorFormValidation.visibility = View.VISIBLE
                 this.tvErrorFormRemarkValidation.visibility = View.GONE
                 this.tvErrorFormRemarkValidation.text = ""
-                if (data.cartItemData.originData?.originalRemark != data.cartItemData.updatedData?.remark) {
+                if (data.cartItemData?.originData?.originalRemark != data.cartItemData?.updatedData?.remark) {
                     this.tvNoteCharCounter.visibility = View.VISIBLE
                 } else {
                     this.tvNoteCharCounter.visibility = View.GONE
@@ -580,20 +580,20 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderErrorItemHeader(data: CartItemHolderData) {
-        if (data.cartItemData.isError) {
+        if (data.cartItemData?.isError == true) {
             renderCartItemActionOnErrorProduct()
             flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_disabled_item)
 
-            val similarProductData = data.cartItemData.similarProductData
+            val similarProductData = data.cartItemData?.similarProductData
 
-            if (!TextUtils.isEmpty(data.cartItemData.errorMessageTitle)) {
-                val errorDescription = data.cartItemData.errorMessageDescription
+            if (!TextUtils.isEmpty(data.cartItemData?.errorMessageTitle)) {
+                val errorDescription = data.cartItemData?.errorMessageDescription
                 if (!TextUtils.isEmpty(errorDescription)) {
-                    tickerError.tickerTitle = data.cartItemData.errorMessageTitle
+                    tickerError.tickerTitle = data.cartItemData?.errorMessageTitle
                     tickerError.setTextDescription(errorDescription ?: "")
                 } else {
                     tickerError.tickerTitle = null
-                    tickerError.setTextDescription(data.cartItemData.errorMessageTitle ?: "")
+                    tickerError.setTextDescription(data.cartItemData?.errorMessageTitle ?: "")
                 }
             }
 
@@ -602,7 +602,7 @@ class CartItemViewHolder constructor(itemView: View,
                 vDeviderOnCartError.visibility = View.VISIBLE
                 tvSimilarProductOnCartError.text = similarProductData.text
                 tvSimilarProductOnCartError.setOnClickListener { view -> actionListener?.onCartItemSimilarProductUrlClicked(similarProductData.url) }
-                actionListener?.onCartItemShowTickerOutOfStock(data.cartItemData.originData?.productId)
+                actionListener?.onCartItemShowTickerOutOfStock(data.cartItemData?.originData?.productId)
             }
             tickerError.tickerType = Ticker.TYPE_ERROR
             tickerError.tickerShape = Ticker.SHAPE_LOOSE
@@ -622,14 +622,14 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderWarningItemHeader(data: CartItemHolderData) {
-        if (data.cartItemData.isWarning) {
-            val warningDescription = data.cartItemData.warningMessageDescription
+        if (data.cartItemData?.isWarning == true) {
+            val warningDescription = data.cartItemData?.warningMessageDescription
             if (!TextUtils.isEmpty(warningDescription)) {
-                tickerWarning.tickerTitle = data.cartItemData.warningMessageTitle
+                tickerWarning.tickerTitle = data.cartItemData?.warningMessageTitle
                 tickerWarning.setTextDescription(warningDescription ?: "")
             } else {
                 tickerWarning.tickerTitle = null
-                tickerWarning.setTextDescription(data.cartItemData.warningMessageTitle ?: "")
+                tickerWarning.setTextDescription(data.cartItemData?.warningMessageTitle ?: "")
             }
             tickerWarning.tickerType = Ticker.TYPE_WARNING
             tickerWarning.tickerShape = Ticker.SHAPE_LOOSE
@@ -648,17 +648,17 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun checkQtyMustDisabled(cartItemHolderData: CartItemHolderData, qty: Int) {
-        if (qty <= cartItemHolderData.cartItemData.originData?.minOrder ?: 0 && qty >= cartItemHolderData.cartItemData.originData?.maxOrder ?: 0) {
+        if (qty <= cartItemHolderData.cartItemData?.originData?.minOrder ?: 0 && qty >= cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0) {
             btnQtyMinus.isEnabled = false
             btnQtyPlus.isEnabled = false
             btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(btnQtyMinus.context, R.drawable.bg_button_counter_minus_checkout_disabled))
             btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.context, R.drawable.bg_button_counter_plus_checkout_disabled))
-        } else if (qty <= cartItemHolderData.cartItemData.originData?.minOrder ?: 0) {
+        } else if (qty <= cartItemHolderData.cartItemData?.originData?.minOrder ?: 0) {
             btnQtyMinus.isEnabled = false
             btnQtyPlus.isEnabled = true
             btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(btnQtyMinus.context, R.drawable.bg_button_counter_minus_checkout_disabled))
             btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.context, R.drawable.bg_button_counter_plus_checkout))
-        } else if (qty >= cartItemHolderData.cartItemData.originData?.maxOrder ?: 0) {
+        } else if (qty >= cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0) {
             btnQtyPlus.isEnabled = false
             btnQtyMinus.isEnabled = true
             btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.context, R.drawable.bg_button_counter_plus_checkout_disabled))
@@ -672,17 +672,17 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun validateWithAvailableQuantity(data: CartItemHolderData, qty: Int) {
-        if (qty > data.cartItemData.originData?.maxOrder ?: 0) {
-            val errorMessage = data.cartItemData.messageErrorData?.errorProductMaxQuantity
+        if (qty > data.cartItemData?.originData?.maxOrder ?: 0) {
+            val errorMessage = data.cartItemData?.messageErrorData?.errorProductMaxQuantity
             val numberFormat = NumberFormat.getNumberInstance(Locale.US)
-            val numberAsString = numberFormat.format(data.cartItemData.originData?.maxOrder?.toLong())
+            val numberAsString = numberFormat.format(data.cartItemData?.originData?.maxOrder?.toLong())
             val maxValue = numberAsString.replace(",", ".")
             tvErrorFormValidation.text = errorMessage?.replace("{{value}}", maxValue)
             tvErrorFormValidation.visibility = View.VISIBLE
-        } else if (qty < data.cartItemData.originData?.minOrder ?: 0) {
-            val errorMessage = data.cartItemData.messageErrorData?.errorProductMinQuantity
+        } else if (qty < data.cartItemData?.originData?.minOrder ?: 0) {
+            val errorMessage = data.cartItemData?.messageErrorData?.errorProductMinQuantity
             tvErrorFormValidation.text = errorMessage?.replace("{{value}}",
-                    data.cartItemData.originData?.minOrder.toString())
+                    data.cartItemData?.originData?.minOrder.toString())
             tvErrorFormValidation.visibility = View.VISIBLE
         } else {
             tvErrorFormValidation.visibility = View.GONE
@@ -738,7 +738,7 @@ class CartItemViewHolder constructor(itemView: View,
             }
 
             checkQtyMustDisabled(cartItemHolderData!!, qty)
-            cartItemHolderData!!.cartItemData.updatedData!!.quantity = qty
+            cartItemHolderData!!.cartItemData!!.updatedData!!.quantity = qty
             validateWithAvailableQuantity(cartItemHolderData!!, qty)
             if (needToUpdateView) {
                 handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)

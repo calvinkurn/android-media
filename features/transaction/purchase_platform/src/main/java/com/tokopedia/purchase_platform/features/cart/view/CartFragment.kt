@@ -633,7 +633,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             appliedPromoCodes.add(cartShopHolderData?.shopGroupAvailableData?.voucherOrdersItemData?.code
                     ?: "")
         }
-        val cartItemDatas = ArrayList(listOf(cartItemHolderData.cartItemData))
+        val cartItemDatas = mutableListOf<CartItemData>()
+        cartItemHolderData.cartItemData?.let {
+            cartItemDatas.add(it)
+        }
         val allCartItemDataList = cartAdapter.allCartItemData
 
         val dialog: DialogUnify?
@@ -645,7 +648,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (removeMacroInsurance) {
             dialog = getInsuranceDialogDeleteConfirmation()
             dialog?.setPrimaryCTAClickListener {
-                if (cartItemDatas.size > 0) {
+                if (cartItemDatas.isNotEmpty()) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, true, removeMacroInsurance)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
                             dPresenter.generateCartDataAnalytics(
@@ -703,9 +706,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
-        sendAnalyticsOnClickProductNameCartItem(cartItemHolderData.cartItemData.originData?.productName
+        sendAnalyticsOnClickProductNameCartItem(cartItemHolderData.cartItemData?.originData?.productName
                 ?: "")
-        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, cartItemHolderData.cartItemData.originData?.productId), NAVIGATION_PDP)
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, cartItemHolderData.cartItemData?.originData?.productId), NAVIGATION_PDP)
     }
 
     override fun onClickShopNow() {
@@ -1903,9 +1906,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     if (cartItemHolderData.isSelected) {
                         try {
                             val cartItemDataVoucher = CartItemDataVoucher().apply {
-                                productId = Integer.parseInt(cartItemHolderData.cartItemData.originData?.productId
+                                productId = Integer.parseInt(cartItemHolderData.cartItemData?.originData?.productId
                                         ?: "0")
-                                productName = cartItemHolderData.cartItemData.originData?.productName
+                                productName = cartItemHolderData.cartItemData?.originData?.productName
                                         ?: ""
                             }
                             cartItemDataVoucherArrayList.add(cartItemDataVoucher)
@@ -2008,7 +2011,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         // Update merchant voucher state
-        cartAdapter.allShopGroupDataList?.let {
+        cartAdapter.allShopGroupDataList.let {
             for (cartShopHolderData in it) {
                 for (voucherOrdersItemUiModel in responseGetPromoStackUiModel.data.voucherOrders) {
                     if (voucherOrdersItemUiModel.uniqueId == cartShopHolderData.shopGroupAvailableData.cartString) {
@@ -2026,9 +2029,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         val cartItemHolderDataList = cartShopHolderData.shopGroupAvailableData.cartItemDataList
                         cartItemHolderDataList?.let {
                             for (cartItemHolderData in cartItemHolderDataList) {
-                                if (trackingDetailUiModel.productId.toString().equals(cartItemHolderData.cartItemData.originData?.productId, ignoreCase = true)) {
-                                    cartItemHolderData.cartItemData.originData?.promoCodes = trackingDetailUiModel.promoCodesTracking
-                                    cartItemHolderData.cartItemData.originData?.promoDetails = trackingDetailUiModel.promoDetailsTracking
+                                if (trackingDetailUiModel.productId.toString().equals(cartItemHolderData.cartItemData?.originData?.productId, ignoreCase = true)) {
+                                    cartItemHolderData.cartItemData?.originData?.promoCodes = trackingDetailUiModel.promoCodesTracking
+                                    cartItemHolderData.cartItemData?.originData?.promoDetails = trackingDetailUiModel.promoDetailsTracking
                                 }
                             }
                         }
@@ -2229,9 +2232,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList)
             recommendationList = cartRecommendationItemHolderDataList
 
-            sendAnalyticsOnViewProductRecommendation(
-                    dPresenter.generateRecommendationDataAnalytics(recommendationList, FLAG_IS_CART_EMPTY)
-            )
+            recommendationList?.let {
+                sendAnalyticsOnViewProductRecommendation(
+                        dPresenter.generateRecommendationDataAnalytics(it, FLAG_IS_CART_EMPTY)
+                )
+            }
         }
     }
 

@@ -26,7 +26,7 @@ interface ICartListPresenter {
 
     fun getCartListData(): CartListData?
 
-    fun setCartListData(cartlistData: CartListData)
+    fun setCartListData(cartListData: CartListData)
 
     fun attachView(view: ICartListView)
 
@@ -34,7 +34,7 @@ interface ICartListPresenter {
 
     fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean)
 
-    fun processDeleteCartItem(allCartItemData: List<CartItemData>, removedCartItems: List<CartItemData>, appliedPromocodeList: ArrayList<String>?, addWishList: Boolean, removeInsurance: Boolean)
+    fun processDeleteCartItem(allCartItemData: List<CartItemData>, removedCartItems: List<CartItemData>, appliedPromoCodeList: ArrayList<String>?, addWishList: Boolean, removeInsurance: Boolean)
 
     fun processToUpdateCartData(cartItemDataList: List<CartItemData>)
 
@@ -50,11 +50,11 @@ interface ICartListPresenter {
 
     fun processCancelAutoApplyPromoStackAfterClash(promoStackingGlobalData: PromoStackingData, oldPromoList: ArrayList<String>, newPromoList: ArrayList<ClashingVoucherOrderUiModel>, type: String)
 
-    fun processApplyPromoStackAfterClash(promoStackingData: PromoStackingData, newPromoList: ArrayList<ClashingVoucherOrderUiModel>, type: String)
+    fun processApplyPromoStackAfterClash(promoStackingGlobalData: PromoStackingData, newPromoList: ArrayList<ClashingVoucherOrderUiModel>, type: String)
 
     fun generateCartDataAnalytics(cartItemDataList: List<CartItemData>, enhancedECommerceAction: String): Map<String, Any>
 
-    fun generateRecommendationDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>?, isEmptyCart: Boolean): Map<String, Any>
+    fun generateRecommendationDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
 
     fun generateRecommendationDataOnClickAnalytics(recommendationItem: RecommendationItem, isEmptyCart: Boolean, position: Int): Map<String, Any>
 
@@ -76,6 +76,8 @@ interface ICartListPresenter {
 
     fun setHasPerformChecklistChange()
 
+    fun getHasPerformChecklistChange(): Boolean
+
     fun dataHasChanged(): Boolean
 
     fun processGetRecentViewData()
@@ -94,11 +96,11 @@ interface ICartListPresenter {
 
     fun getInsuranceTechCart()
 
-    fun processDeleteCartInsurance(insuranceCartShops: ArrayList<InsuranceCartDigitalProduct>, showToaster: Boolean)
+    fun processDeleteCartInsurance(insuranceCartShopsArrayList: ArrayList<InsuranceCartDigitalProduct>, showToaster: Boolean)
 
-    fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops, list: ArrayList<UpdateInsuranceProductApplicationDetails>)
+    fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops, updateInsuranceProductApplicationDetailsArrayList: ArrayList<UpdateInsuranceProductApplicationDetails>)
 
-    fun setAllInsuranceProductsChecked(insuranceCartShops: ArrayList<InsuranceCartShops>, isChecked: Boolean)
+    fun setAllInsuranceProductsChecked(insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>, isChecked: Boolean)
 
     fun generateCheckoutDataAnalytics(cartItemDataList: List<CartItemData>, step: String): Map<String, Any>
 

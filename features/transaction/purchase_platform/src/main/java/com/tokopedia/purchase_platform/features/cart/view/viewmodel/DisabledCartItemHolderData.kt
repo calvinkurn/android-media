@@ -16,5 +16,5 @@ data class DisabledCartItemHolderData(
         var similarProduct: SimilarProductData? = null,
         var nicotineLiteMessageData: NicotineLiteMessageData? = null,
         var showDivider: Boolean = true,
-        var data: CartItemData = CartItemData()
+        var data: CartItemData? = CartItemData()
 )

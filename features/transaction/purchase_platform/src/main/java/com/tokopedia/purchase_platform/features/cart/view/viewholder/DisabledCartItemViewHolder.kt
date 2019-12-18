@@ -87,7 +87,9 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     private fun renderDeleteButton(data: DisabledCartItemHolderData) {
         itemView.btn_delete_cart.setOnClickListener {
-            actionListener?.onDeleteDisabledItem(data.data)
+            data.data?.let {
+                actionListener?.onDeleteDisabledItem(it)
+            }
         }
     }
 

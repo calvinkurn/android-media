@@ -1,18 +1,15 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
-import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
-import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.graphql.data.model.GraphqlResponse
-
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
+import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import rx.Subscriber
 
 /**
  * Created by Irfan Khoirul on 21/09/18.
  */
 
-class GetRecentViewSubscriber(private val view: ICartListView?,
-                              private val presenter: ICartListPresenter) : Subscriber<GraphqlResponse>() {
+class GetRecentViewSubscriber(private val view: ICartListView?) : Subscriber<GraphqlResponse>() {
 
     override fun onCompleted() {
 
