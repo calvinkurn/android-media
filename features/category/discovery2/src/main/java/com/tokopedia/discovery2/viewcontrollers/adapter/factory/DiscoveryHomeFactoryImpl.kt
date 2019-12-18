@@ -1,21 +1,42 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.factory
 
 import android.view.View
-import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentOneDataModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryVisitable
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.ComponentOneViewHolder
+import kotlin.reflect.KFunction
 
-class DiscoveryHomeFactoryImpl : DiscoveryHomeFactory {
+class DiscoveryHomeFactoryImpl{
 
-    override fun type(componentOneDataModel: ComponentOneDataModel): Int {
-        return ComponentOneViewHolder.LAYOUT
-    }
+    companion object {
+        val componentIdMap = mutableMapOf<String, Int>()
+        val componentMapper = mutableMapOf<Int, ComponentHelpersHolder<*, *>>()
 
-    override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
-        return when (viewType) {
-            ComponentOneViewHolder.LAYOUT -> ComponentOneViewHolder(view)
-            else -> throw RuntimeException("Layout Not Found")
+
+        init {
+            intialize(ComponentsList.Banner, ::ComponentOneDataModel,::ComponentOneViewHolder)
         }
+
+
+        fun <T : DiscoveryVisitable,E : AbstractViewHolder<T>>intialize(component:ComponentsList,dataModel: ()->T,viewModel: KFunction<E>) {
+            componentIdMap[component.nam] = component.id;
+            componentMapper[component.id] = ComponentHelpersHolder(dataModel,viewModel);
+        }
+
+        fun getComponentId(viewType: String): Int? {
+            return componentIdMap.get(viewType)
+        }
+
+        fun createDataModel(viewType: Int): DiscoveryVisitable? {
+            return componentMapper[viewType]?.getDataModel()
+        }
+
+        fun createViewHolder(viewType: Int, view: View): AbstractViewHolder<*>? {
+            return componentMapper[viewType]?.getViewHolder(view)
+        }
+
     }
+
+    enum class ComponentType ()
 }

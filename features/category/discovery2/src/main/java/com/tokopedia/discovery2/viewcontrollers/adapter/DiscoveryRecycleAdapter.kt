@@ -15,7 +15,7 @@ class DiscoveryRecycleAdapter(private var discoveryHomeFactory: DiscoveryHomeFac
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<DiscoveryVisitable> {
         val itemViewType: View =
                 LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        return discoveryHomeFactory.createViewHolder(itemViewType, viewType) as AbstractViewHolder<DiscoveryVisitable>
+        return DiscoveryHomeFactoryImpl.createViewHolder(viewType,itemViewType) as AbstractViewHolder<DiscoveryVisitable>
     }
 
     override fun getItemCount(): Int {
@@ -27,7 +27,12 @@ class DiscoveryRecycleAdapter(private var discoveryHomeFactory: DiscoveryHomeFac
     }
 
     override fun getItemViewType(position: Int): Int {
-        return componentList[position].type(discoveryHomeFactory)
+        val id = DiscoveryHomeFactoryImpl.getComponentId(componentList[position].type())
+        return if (id == null) {
+            -1
+        }else {
+            id
+        }
     }
 
     fun setDataList(dataList: List<DiscoveryVisitable>) {
