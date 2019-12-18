@@ -26,31 +26,42 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/find_bread_crumb"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/dp_12"
-                    android:textColor="@color/green_300"
-                    app:typographyType="body_1"
-                    app:typographyWeight="reguler" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="@dimen/dp_12">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/quickfilter_recyclerview"
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/home_bread_crumb"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:itemCount="5"
-                        tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                        tools:orientation="horizontal"
-                        tools:scrollbars="horizontal" />
+                        android:text="@string/title_tokopedia"
+                        android:textColor="@color/green_300"
+                        app:typographyType="body_1"
+                        app:typographyWeight="reguler" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/find_bread_crumb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:textColor="@color/green_300"
+                        app:typographyType="body_1"
+                        app:typographyWeight="reguler" />
 
                 </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/quickfilter_recyclerview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_12"
+                    tools:itemCount="5"
+                    tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                    tools:orientation="horizontal"
+                    tools:scrollbars="horizontal" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/product_recyclerview"

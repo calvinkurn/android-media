@@ -280,7 +280,6 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
         quickFilterList.clear()
         quickFilterList.addAll(list)
         quickfilter_recyclerview.adapter?.notifyDataSetChanged()
-
     }
 
     private fun init() {
@@ -291,7 +290,10 @@ class FindNavFragment : BaseCategorySectionFragment(), ProductCardListener,
     }
 
     private fun setUpBreadCrumb() {
-        val breadCrumb = "Tokopedia > $findNavScreenName"
+        home_bread_crumb.setOnClickListener {
+            RouteManager.route(activity, ApplinkConst.HOME)
+        }
+        val breadCrumb = ">  $findNavScreenName"
         find_bread_crumb.text = breadCrumb
     }
 
