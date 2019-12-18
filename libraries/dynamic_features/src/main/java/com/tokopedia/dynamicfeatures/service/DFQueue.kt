@@ -40,6 +40,14 @@ object DFQueue {
         }
     }
 
+    fun getDFModuleListSorted(context: Context): List<Pair<String, Int>> {
+        try {
+            return getDFModuleList(context).sortedBy{ it.second }
+        } catch (e: Exception) {
+            return listOf()
+        }
+    }
+
     /**
      * replace the current queue
      * Basically this is put the sharedPreference value from the given input.
@@ -75,7 +83,7 @@ object DFQueue {
 
     fun removeModuleFromQueue(
         context: Context,
-        moduleListToRemove: List<Pair<String, Int>>?
+        moduleListToRemove: List<String>?
     ) {
         updateQueue(context, null, moduleListToRemove)
     }
@@ -96,17 +104,16 @@ object DFQueue {
     fun updateQueue(
         context: Context,
         moduleListToAppend: List<Pair<String, Int>>?,
-        moduleListToRemove: List<Pair<String, Int>>?
+        moduleListToRemove: List<String>? = null
     ) {
         try {
             val sp = getSharedPref(context)
             val currentList = getDFModuleList(context).toMutableList()
             val moduleListToAppendList = moduleListToAppend?.map { it.first } ?: listOf()
-            val moduleListToRemoveList = moduleListToRemove?.map { it.first } ?: listOf()
             val finalList = mutableListOf<Pair<String, Int>>()
 
             for ((index, item) in currentList.withIndex()) {
-                val indexRemoveFind = moduleListToRemoveList.indexOf(item.first)
+                val indexRemoveFind = moduleListToRemove?.indexOf(item.first) ?: -1
                 if (indexRemoveFind > -1) {
                     // not adding to final list, so just continue
                     continue
@@ -137,9 +144,9 @@ object DFQueue {
     fun combineListAndPut(context: Context, moduleListToDownload: List<String>?) {
         val queueList = getDFModuleList(context)
         val list = if (queueList.isEmpty()) {
-            moduleListToDownload?.map { Pair(it, 1) } ?: emptyList()
+            moduleListToDownload?.distinct()?.map { Pair(it, 1) } ?: emptyList()
         } else {
-            combineList(moduleListToDownload, queueList)
+            combineList(moduleListToDownload?.distinct(), queueList)
         }
         putDFModuleList(context, list)
     }
