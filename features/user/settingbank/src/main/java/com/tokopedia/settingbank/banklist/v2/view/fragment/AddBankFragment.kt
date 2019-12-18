@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.banklist.v2.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.AddBankRequest
 import com.tokopedia.settingbank.banklist.v2.domain.AddBankResponse
@@ -45,6 +46,9 @@ class AddBankFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var bankSettingAnalytics: BankSettingAnalytics
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -125,7 +129,9 @@ class AddBankFragment : BaseDaggerFragment() {
                 is OnNetworkError -> {
 
                 }
-                is OnAccountCheckSuccess -> onAccountCheckSuccess(it.accountHolderName)
+                is OnAccountCheckSuccess -> {
+                    onAccountCheckSuccess(it.accountHolderName)
+                }
                 is OnErrorInAccountNumber -> {
                     setAccountNumberError(it.errorMessage)
                 }
@@ -192,14 +198,17 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun onClickAddBankAccount() {
         val request = builder.build()
-        if (!request.isManual) {
-            openPinVerification()
-        } else {
+        if (request.isManual) {
+            bankSettingAnalytics.eventOnManualNameSimpanClick()
             accountHolderNameViewModel.onValidateAccountName(etManualAccountHolderName.text.toString())
+        } else {
+            bankSettingAnalytics.eventOnAutoNameSimpanClick()
+            openPinVerification()
         }
     }
 
     private fun checkAccountNumber() {
+        bankSettingAnalytics.eventOnPericsaButtonClick()
         checkAccountNumberViewModel.checkAccountNumber(bank.bankID, etBankAccountNumber.text.toString())
     }
 
@@ -245,6 +254,7 @@ class AddBankFragment : BaseDaggerFragment() {
                 builder.isManual(true)
                 openManualNameEntryView()
             } else {
+                builder.isManual(false)
                 builder.accountName(accountHolderName, false)
                 tvAccountHolderName.text = accountHolderName
                 wrapperManualAccountHolderName.gone()
@@ -293,6 +303,7 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun loadTncForAddBank() {
+        bankSettingAnalytics.eventOnTermsAndConditionClick()
         tNCViewModel.loadTNCPopUpTemplate()
     }
 
@@ -332,11 +343,12 @@ class AddBankFragment : BaseDaggerFragment() {
         val dialogBuilder = AlertDialog.Builder(activity!!)
         val inflater = activity!!.layoutInflater
         val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
-        (dialogView.findViewById(R.id.heading) as TextView).text = getString(R.string.sbank_add_bank_account)
+        (dialogView.findViewById(R.id.heading) as TextView).text = getString(R.string.sbank_confirm_add_bank_account)
         val description = context?.resources?.getString(R.string.sbank_add_bank_confirm, bank.abbreviation,
                 addBankRequest.accountNo, addBankRequest.accountName)
         (dialogView.findViewById(R.id.description) as TextView).text = description
         dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
+            bankSettingAnalytics.eventDialogConfirmAddAccountClick()
             confirmationDialog.dismiss()
             openPinVerification()
         }

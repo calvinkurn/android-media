@@ -16,6 +16,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.banklist.v2.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.AddBankRequest
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
@@ -38,16 +39,20 @@ const val ARG_KYC_NAME = "arg_kyc_name"
 
 class AccountConfirmFragment : BaseDaggerFragment() {
 
-
     override fun getScreenName(): String? = null
 
     private val REQUEST_CODE_IMAGE: Int = 101
 
-    private val DOC_TYPE_IMAGE = 1
-    private val DOC_TYPE_NAME = 3
+    private val DOC_TYPE_COMPANY = 1
+    private val DOC_TYPE_FAMILY = 2
+    private val DOC_TYPE_OTHER = 3
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var bankSettingAnalytics: BankSettingAnalytics
+
+
     private lateinit var uploadDocumentViewModel: UploadDocumentViewModel
 
 
@@ -140,6 +145,11 @@ class AccountConfirmFragment : BaseDaggerFragment() {
     }
 
     private fun uploadDocument() {
+        when (accountConfirmationType) {
+            AccountConfirmationType.OTHER -> bankSettingAnalytics.eventConfirmAccountNameClick()
+            AccountConfirmationType.FAMILY -> bankSettingAnalytics.eventFamilyDocumentSubmitClick()
+            AccountConfirmationType.COMPANY -> bankSettingAnalytics.eventCompanyDocumentSubmitClick()
+        }
         val uploadDocumentPojo = getUploadDocumentPojo()
         uploadDocumentPojo?.let {
             uploadDocumentViewModel.uploadDocument(it)
@@ -233,8 +243,12 @@ class AccountConfirmFragment : BaseDaggerFragment() {
     }
 
     private fun getUploadDocumentPojo(): UploadDocumentPojo? {
-        val docType = if (accountConfirmationType == AccountConfirmationType.OTHER) DOC_TYPE_NAME else DOC_TYPE_IMAGE
-        if (docType == DOC_TYPE_IMAGE && selectedFilePath == null) {
+        val docType = when (accountConfirmationType) {
+            AccountConfirmationType.OTHER -> DOC_TYPE_OTHER
+            AccountConfirmationType.FAMILY -> DOC_TYPE_FAMILY
+            AccountConfirmationType.COMPANY -> DOC_TYPE_COMPANY
+        }
+        if ((docType == DOC_TYPE_FAMILY || docType == DOC_TYPE_COMPANY) && selectedFilePath == null) {
             showErrorOnUI("Silakan pilih foto dokumen", null)
             return null
         }

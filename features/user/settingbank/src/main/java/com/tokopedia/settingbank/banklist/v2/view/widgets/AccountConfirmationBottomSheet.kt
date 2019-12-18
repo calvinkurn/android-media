@@ -7,12 +7,15 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.banklist.v2.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.domain.KYCInfo
 import com.tokopedia.settingbank.banklist.v2.util.AccountConfirmationType
-import com.tokopedia.settingbank.banklist.v2.view.activity.AccountConfirmActivity
+import com.tokopedia.settingbank.banklist.v2.view.activity.AccountDocumentActivity
 
-class AccountConfirmationBottomSheet(val context: Context, val kycInfo: KYCInfo) : CloseableBottomSheetDialog.CloseClickedListener {
+class AccountConfirmationBottomSheet(val context: Context,
+                                     val kycInfo: KYCInfo,
+                                     val settingAnalytics: BankSettingAnalytics) : CloseableBottomSheetDialog.CloseClickedListener {
 
     override fun onCloseDialog() {
     }
@@ -51,7 +54,8 @@ class AccountConfirmationBottomSheet(val context: Context, val kycInfo: KYCInfo)
     }
 
     private fun openConfirmBankAccountActivity(accountType: Int) {
-        context.startActivity(AccountConfirmActivity.createIntent(context, bankAccount, accountType, kycInfo.fullName))
+        settingAnalytics.eventRekeningConfirmationClick()
+        context.startActivity(AccountDocumentActivity.createIntent(context, bankAccount, accountType, kycInfo.fullName))
         this.dialog.dismiss()
     }
 

@@ -46,6 +46,8 @@ class BankAccountListAdapter(var bankList: ArrayList<BankAccount>) : RecyclerVie
         notifyDataSetChanged()
     }
 
+    fun getBankAccountListSize(): Int = bankList.size
+
     override fun getItemCount(): Int {
         return templateData?.let { bankList.size + 1 } ?: bankList.size
     }

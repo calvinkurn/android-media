@@ -11,6 +11,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.settingbank.banklist.v2.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.banklist.v2.data.SettingBankApi
 import com.tokopedia.settingbank.banklist.v2.data.SettingBankUrl
 import com.tokopedia.settingbank.banklist.v2.view.adapter.BankAccountListAdapter
@@ -40,6 +41,11 @@ class SettingBankModule {
     @SettingBankScope
     @Provides
     fun provideBankAccountAdapter(): BankAccountListAdapter = BankAccountListAdapter(arrayListOf())
+
+    @SettingBankScope
+    @Provides
+    fun provideBankSettingAnalytics(): BankSettingAnalytics = BankSettingAnalytics()
+
     @SettingBankScope
     @Provides
     fun provideBankAdapter(): BankListAdapter = BankListAdapter(arrayListOf())

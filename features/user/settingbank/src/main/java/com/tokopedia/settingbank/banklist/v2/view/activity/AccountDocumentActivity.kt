@@ -15,7 +15,7 @@ import com.tokopedia.settingbank.banklist.v2.view.fragment.ARG_BANK_ACCOUNT_DATA
 import com.tokopedia.settingbank.banklist.v2.view.fragment.ARG_KYC_NAME
 import com.tokopedia.settingbank.banklist.v2.view.fragment.AccountConfirmFragment
 
-class AccountConfirmActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent> {
+class AccountDocumentActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent> {
 
     override fun getComponent(): SettingBankComponent = DaggerSettingBankComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication)
@@ -33,7 +33,7 @@ class AccountConfirmActivity : BaseSimpleActivity(), HasComponent<SettingBankCom
 
     companion object {
         fun createIntent(context: Context, bankAccount: BankAccount, accountType: Int, kycName: String?): Intent {
-            return Intent(context, AccountConfirmActivity::class.java).apply {
+            return Intent(context, AccountDocumentActivity::class.java).apply {
                 putExtra(ARG_BANK_ACCOUNT_DATA, bankAccount)
                 putExtra(ARG_ACCOUNT_TYPE, accountType)
                 kycName?.let {

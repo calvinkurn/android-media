@@ -39,7 +39,7 @@
         android:background="@drawable/sbank_bg_button_green"
         android:enabled="false"
         android:gravity="center"
-        android:text="@string/add_bank_account"
+        android:text="@string/sbank_no_bank_add_bank_account"
         android:textColor="@color/sbank_btn_text_color"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -40,7 +40,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".banklist.v2.view.activity.AccountConfirmActivity"
+            android:name=".banklist.v2.view.activity.AccountDocumentActivity"
             android:screenOrientation="portrait"
             android:label="@string/sbank_confirm_bank_account"
             android:theme="@style/Theme.White">

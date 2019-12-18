@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.banklist.v2.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.domain.KYCInfo
@@ -34,6 +35,9 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var bankSettingAnalytics: BankSettingAnalytics
 
     private lateinit var tNCViewModel: SettingBankTNCViewModel
     private lateinit var settingBankViewModel: SettingBankViewModel
@@ -85,7 +89,14 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         startObservingViewModels()
         loadUserBankAccountList()
         add_account_button.visible()
-        add_account_button.setOnClickListener { openAddBankAccountPage() }
+        add_account_button.setOnClickListener {
+            when (bankAccountListAdapter.getBankAccountListSize()) {
+                0 -> bankSettingAnalytics.eventOnAddBankClick()
+                else ->
+                    bankSettingAnalytics.eventOnAddAnotherBankClick()
+            }
+            openAddBankAccountPage()
+        }
     }
 
     private fun initBankAccountRecyclerView() {
@@ -261,6 +272,9 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun populateBankList(bankList: List<BankAccount>, toastMessage: String) {
         showBankAccountDisplayState()
+        if (bankList.isNotEmpty()) {
+            add_account_button.text = context?.getString(R.string.sbank_add_bank_account)
+        }
         account_list_rv.post {
             bankAccountListAdapter.updateItem(bankList as ArrayList<BankAccount>)
         }
@@ -274,15 +288,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun showNoBankAccountAddedState(toastMessage: String) {
         showNoBankAccountState()
-    }
-
-    override fun onDestroy() {
-        settingBankViewModel.getBankListState.removeObservers(this)
-        tNCViewModel.tncPopUpTemplate.removeObservers(this)
-        tNCViewModel.tncNoteTemplate.removeObservers(this)
-        makeAccountPrimaryViewModel.makeAccountPrimaryState.removeObservers(this)
-        deleteBankAccountViewModel.deleteAccountState.removeObservers(this)
-        super.onDestroy()
     }
 
     private fun showLoadingState(show: Boolean) {
@@ -326,7 +331,10 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.menu_info -> loadTermsAndCondition()
+            R.id.menu_info -> {
+                bankSettingAnalytics.eventOnToolbarTNCClick()
+                loadTermsAndCondition()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -344,15 +352,18 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     override fun onMakeAccountPrimary(bankAccount: BankAccount) {
+        bankSettingAnalytics.eventMakeAccountPrimaryClick()
         makePrimaryBankAccount = bankAccount
         makeAccountPrimary()
     }
 
     override fun deleteBankAccount(bankAccount: BankAccount) {
+        bankSettingAnalytics.eventDeleteAccountClick()
         openDeleteConfirmationPopUp(bankAccount)
     }
 
     override fun onClickDataContent(bankAccount: BankAccount) {
+        bankSettingAnalytics.eventIsiDataClick()
         getKYCInfoForUser(bankAccount)
     }
 
@@ -373,6 +384,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         (dialogView.findViewById(R.id.description) as TextView).text = context?.getString(R.string.sbank_delete_bank_confirm,
                 bankAccount.bankName, bankAccount.accNumber, bankAccount.accName)
         dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
+            bankSettingAnalytics.eventDialogConfirmDeleteAccountClick()
             confirmationDialog?.dismiss()
             deleteBankAccount()
         }

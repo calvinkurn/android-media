@@ -68,7 +68,7 @@ mempermudah proses penarikan dana</string>
     <string name="sbank_attach_image_company">Foto Buku Tabungan</string>
     <string name="sbank_attach_image_constraints">Ukuran file maks. 2MB (.png, .jpg, .jpeg)</string>
     <string name="sbank_select_bank">Silakan pilih Bank</string>
-    <string name="sbank_add_bank_account">Tambah Rekening Bank</string>
+    <string name="sbank_confirm_add_bank_account">Tambah Rekening Bank</string>
     <string name="sbank_name_matched_with_other">Apakah nama di rekening sesuai dengan nama di atas?</string>
     <string name="sbank_full_name">Nama Lengkap</string>
     <string name="sbank_yes_name_matched">Ya, Nama Sudah Sesuai</string>
@@ -83,6 +83,12 @@ mempermudah proses penarikan dana</string>
     <string name="sbank_back">Kembali</string>
     <string name="sbank_delete_account">Hapus Rekening</string>
     <string name="sbank_delete_this_account">Hapus rekening ini?</string>
+    <string name="sbank_add_bank_account">Tambah Rekening Lain</string>
+    <string name="sbank_no_bank_add_bank_account">Tambah Rekening</string>
+
+
+
+
 
 
 </resources>
