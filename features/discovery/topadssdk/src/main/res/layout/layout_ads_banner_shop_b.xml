@@ -48,7 +48,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shop_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginLeft="4dp"
@@ -57,6 +57,7 @@
         android:singleLine="true"
         android:textColor="@color/black_70"
         app:layout_constraintBottom_toBottomOf="@+id/shop_image_container"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/shop_badge"
         app:layout_constraintTop_toTopOf="@+id/shop_image_container"
         app:typographyType="small"
