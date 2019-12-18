@@ -6,5 +6,7 @@
     <string name="title_promo">Promo</string>
     <string name="title_promo_code">Kode Promo: </string>
     <string name="title_reccent_transaction_widget">Transaksi Terakhir</string>
+
     <string name="digital_title_fav_number">Nomor Favorit</string>
+    <string name="digital_voucher_code_already_copied">Kode voucher telah tersalin</string>
 </resources>
