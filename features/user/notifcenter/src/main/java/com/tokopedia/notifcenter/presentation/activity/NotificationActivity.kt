@@ -11,12 +11,14 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.viewpager.widget.PagerAdapter
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkItem
@@ -327,13 +329,13 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         }
     }
 
-//    object DeeplinkIntent {
-//        @DeepLink(ApplinkConst.NOTIFICATION)
-//        @JvmStatic
-//        fun createIntent(context: Context, extras: Bundle) = Companion.start(context)
-//
-//        @DeepLink(ApplinkConst.BUYER_INFO)
-//        @JvmStatic
-//        fun createIntentUpdate(context: Context, extras: Bundle) = Companion.createIntentUpdate(context)
-//    }
+    object DeeplinkIntent {
+        @DeepLink(ApplinkConst.NOTIFICATION)
+        @JvmStatic
+        fun createIntent(context: Context, extras: Bundle) = Companion.start(context)
+
+        @DeepLink(ApplinkConst.BUYER_INFO)
+        @JvmStatic
+        fun createIntentUpdate(context: Context, extras: Bundle) = Companion.createIntentUpdate(context)
+    }
 }
