@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -74,6 +75,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     private static final String ARGS_FILTER_DATA = "ARGS_FILTER_DATA";
     private static final String ARGS_PARAM = "ARGS_PARAM";
 
+    private static final String ARGS_SAVE_INSTANCE_ID = "ARGS_SAVE_INSTANCE_ID";
+
     RecyclerView opportunityList;
     TextView headerInfo;
     SearchView searchView;
@@ -105,12 +108,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_QUERY, query);
         fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    public static OpportunityListFragment createInstance(Bundle extras) {
-        OpportunityListFragment fragment = new OpportunityListFragment();
-        fragment.setArguments(extras);
         return fragment;
     }
 
@@ -171,16 +168,14 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null
-                && savedInstanceState.getParcelable(ARGS_FILTER_DATA) != null) {
-            filterData = savedInstanceState.getParcelable(ARGS_FILTER_DATA);
+                && savedInstanceState.getString(ARGS_SAVE_INSTANCE_ID) != null) {
+            String id = savedInstanceState.getString(ARGS_SAVE_INSTANCE_ID);
+            SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(context, id);
+            filterData = cacheManager.get(ARGS_FILTER_DATA, OpportunityFilterViewModel.class);
+            opportunityParam = cacheManager.get(ARGS_PARAM, GetOpportunityListParam.class);
+
         } else {
             filterData = new OpportunityFilterViewModel();
-        }
-
-        if (savedInstanceState != null
-                && savedInstanceState.getParcelable(ARGS_PARAM) != null)
-            opportunityParam = savedInstanceState.getParcelable(ARGS_PARAM);
-        else {
             opportunityParam = new GetOpportunityListParam();
             if (getArguments() != null) {
                 if (getArguments().containsKey(EXTRA_QUERY)) {
@@ -188,7 +183,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                 }
             }
         }
-
     }
 
     @Override
@@ -624,8 +618,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(ARGS_FILTER_DATA, filterData);
-        outState.putParcelable(ARGS_PARAM, opportunityParam);
+        SaveInstanceCacheManager saveInstanceCacheManager = new SaveInstanceCacheManager(context, true);
+        saveInstanceCacheManager.put(ARGS_FILTER_DATA, filterData);
+        saveInstanceCacheManager.put(ARGS_PARAM, opportunityParam);
+        outState.putString(ARGS_SAVE_INSTANCE_ID, saveInstanceCacheManager.getId());
     }
 
     @Override
