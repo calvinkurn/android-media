@@ -2,10 +2,19 @@ package com.tokopedia.rechargegeneral.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.rechargegeneral.domain.GetProductUseCase
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductData
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,7 +22,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RechargeGeneralViewModel  @Inject constructor(
-        private val getProductUseCase: GetProductUseCase,
+        private val graphqlRepository: GraphqlRepository,
         dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
@@ -23,43 +32,34 @@ class RechargeGeneralViewModel  @Inject constructor(
     lateinit var operatorClusterQuery: String
     lateinit var productListQuery: String
 
-//    fun getOperatorCluster(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false, operatorId: Int? = null) {
-//        if (::operatorClusterQuery.isInitialized && ::productListQuery.isInitialized) {
-//            launch {
-//                operatorCluster.selectedId = withContext(Dispatchers.Default) {
-//                    getDigitalProductUseCase.getOperatorData(operatorClusterQuery, mapParams, isLoadFromCloud)
-//                }
-//
-//                    // Retrieve products based on operatorId (if available) or first operator in response
-//                    if (operatorCluster.selectedId is Success) {
-//                        val selectedOperator: Int? = operatorId ?: getFirstOperatorId((operatorCluster.selectedId as Success).data)
-//                        if (selectedOperator != null && mapParams.containsKey(PARAM_MENU_ID)) {
-//                            val productListParams = createParams(mapParams[PARAM_MENU_ID] as Int, selectedOperator)
-//                            productList.selectedId = getDigitalProductUseCase.getProductList(productListQuery, productListParams, isLoadFromCloud)
-//                        } else {
-//                            productList.selectedId = Fail(MessageErrorException("No default operator provided"))
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     fun getOperatorCluster(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         if (::operatorClusterQuery.isInitialized) {
-            launch {
-                withContext(Dispatchers.Default) {
-                    operatorCluster.postValue(getProductUseCase.getOperatorData(operatorClusterQuery, mapParams, isLoadFromCloud))
-                }
+            launchCatchError(block = {
+                val data = withContext(Dispatchers.Default) {
+                    val graphqlRequest = GraphqlRequest(operatorClusterQuery, RechargeGeneralOperatorCluster.Response::class.java, mapParams)
+                    val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+                    graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
+
+                operatorCluster.value = Success(data.response)
+            }) {
+                operatorCluster.value = Fail(it)
             }
         }
     }
 
     fun getProductList(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         if (::productListQuery.isInitialized) {
-            launch {
-                withContext(Dispatchers.Default) {
-                    productList.postValue(getProductUseCase.getProductList(productListQuery, mapParams, isLoadFromCloud))
-                }
+            launchCatchError(block = {
+                val data = withContext(Dispatchers.Default) {
+                    val graphqlRequest = GraphqlRequest(productListQuery, RechargeGeneralProductData.Response::class.java, mapParams)
+                    val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+                    graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                }.getSuccessData<RechargeGeneralProductData.Response>()
+
+                productList.value = Success(data.response)
+            }) {
+                productList.value = Fail(it)
             }
         }
     }

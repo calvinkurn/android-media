@@ -12,7 +12,7 @@ import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 
 @RechargeGeneralScope
-@Component(modules = [RechargeGeneralModule::class, RechargeGeneralViewModelModule::class], dependencies = [CommonTopupBillsComponent::class])
+@Component(modules = [RechargeGeneralViewModelModule::class], dependencies = [CommonTopupBillsComponent::class])
 interface RechargeGeneralComponent {
 
     @ApplicationContext

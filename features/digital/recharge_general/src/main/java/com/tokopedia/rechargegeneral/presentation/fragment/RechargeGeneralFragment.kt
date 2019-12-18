@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
@@ -204,15 +205,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
                 val favNumber = data?.getStringExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
                 favNumber?.let { renderClientNumber(favNumber) }
-//                val productList = viewModel.productList.selectedId
-//                if (productList is Success && productList.data.enquiryFields.isNotEmpty()) {
-//                    val favNumberInputIndex = getFavoriteNumberInputIndex(productList.data.enquiryFields)
-//                    if (favNumberInputIndex > -1) {
-//                        val inputView = (rv_digital_product.findViewHolderForAdapterPosition(favNumberInputIndex)
-//                                as RechargeGeneralInputViewHolder).itemView as TopupBillsInputFieldWidget
-//                        // TODO: Set input
-//                    }
-//                }
             }
         }
     }
@@ -403,6 +395,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     // Show label & store id for enquiry
                     field.setInputText(item.title, false)
                     productId = item.id
+                    toggleEnquiryButton()
                 }
             })
             dropdownView.dropdownData = data
@@ -502,6 +495,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun showGetListError(e: Throwable) {
         operator_cluster_select.hide()
         operator_select.hide()
+        enquiry_button.hide()
         adapter.showGetListError(e)
     }
 
@@ -509,6 +503,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         getMenuDetail(menuId)
         getFavoriteNumbers(categoryId)
         getOperatorCluster(menuId)
+        enquiry_button.show()
     }
 
     private fun getOperatorCluster(menuId: Int) {
@@ -543,7 +538,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun validateEnquiry(): Boolean {
-        return operatorId > 0 && inputData.size == inputDataSize
+        return operatorId > 0 && productId.isNotEmpty() && inputData.size == inputDataSize
     }
 
     private fun enquire() {
@@ -551,7 +546,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             getEnquiry(operatorId.toString(), productId, inputData)
             // TODO: Remove temporary enquiry params
 //            val enquiryData = Gson().fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_enquiry_data), TopupBillsEnquiryData::class.java)
-//            renderCheckoutView(enquiryData)
         }
     }
 
@@ -572,11 +566,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun showEnquiryError(t: Throwable) {
-//        showGetListError(t)
+        NetworkErrorHelper.showRedSnackbar(activity, t.message)
     }
 
     override fun showMenuDetailError(t: Throwable) {
-//        showGetListError(t)
+        showGetListError(t)
     }
 
     override fun showFavoriteNumbersError(t: Throwable) {
