@@ -15,7 +15,7 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.tokopedia.play_common.type.Http
 import com.tokopedia.play_common.type.Rtmp
-import com.tokopedia.play_common.type.TokopediaPlayVideoType
+import com.tokopedia.play_common.type.PlayVideoProtocol
 import com.tokopedia.play_common.type.getVideoTypeByUri
 
 /**
@@ -65,7 +65,7 @@ class TokopediaPlayService : Service() {
 
     //region public method
     fun playVideoWithUri(uri: Uri) {
-        val videoType = TokopediaPlayVideoType.getVideoTypeByUri(uri)
+        val videoType = PlayVideoProtocol.getVideoTypeByUri(uri)
         val mediaSource = getMediaSourceByVideoType(videoType)
         videoPlayer.prepare(mediaSource, true, true)
     }
@@ -74,14 +74,14 @@ class TokopediaPlayService : Service() {
     //endregion
 
     //region private method
-    private fun getMediaSourceByVideoType(type: TokopediaPlayVideoType): MediaSource {
+    private fun getMediaSourceByVideoType(protocol: PlayVideoProtocol): MediaSource {
         return ProgressiveMediaSource.Factory(
-                getExoDataSourceFactoryByVideoType(type)
-        ).createMediaSource(type.uri)
+                getExoDataSourceFactoryByVideoType(protocol)
+        ).createMediaSource(protocol.uri)
     }
 
-    private fun getExoDataSourceFactoryByVideoType(type: TokopediaPlayVideoType): DataSource.Factory {
-        return when (type) {
+    private fun getExoDataSourceFactoryByVideoType(protocol: PlayVideoProtocol): DataSource.Factory {
+        return when (protocol) {
             is Http -> DefaultHttpDataSourceFactory(EXOPLAYER_AGENT)
             is Rtmp -> RtmpDataSourceFactory()
         }

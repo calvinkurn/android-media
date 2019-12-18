@@ -12,6 +12,7 @@ import com.tokopedia.play.component.UIView
 import com.tokopedia.play.data.QuickReply
 import com.tokopedia.play.ui.quickreply.adapter.QuickReplyAdapter
 import com.tokopedia.play.ui.quickreply.itemdecoration.QuickReplyItemDecoration
+import com.tokopedia.play.view.uimodel.QuickReplyUiModel
 
 /**
  * Created by jegul on 13/12/19
@@ -47,8 +48,8 @@ class QuickReplyView(
         view.hide()
     }
 
-    fun setQuickReply(quickReply: QuickReply) {
-        quickReplyAdapter.setQuickReply(quickReply)
+    fun setQuickReply(quickReply: QuickReplyUiModel) {
+        quickReplyAdapter.setQuickReply(quickReply.quickReplyList)
     }
 
     interface Listener {

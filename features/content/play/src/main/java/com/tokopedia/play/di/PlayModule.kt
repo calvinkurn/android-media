@@ -9,6 +9,8 @@ import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.data.network.PlayApi
+import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.DefaultCoroutineDispatcherProvider
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.util.PlayLifecycleObserver
 import com.tokopedia.url.TokopediaUrl
@@ -67,8 +69,7 @@ class PlayModule {
 
     @PlayScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
+    fun providerDispatcherProvider(): CoroutineDispatcherProvider = DefaultCoroutineDispatcherProvider()
 
     @PlayScope
     @Provides

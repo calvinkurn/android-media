@@ -14,6 +14,7 @@ import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.loading.LoadingComponent
 import com.tokopedia.play.ui.video.VideoComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
@@ -80,12 +81,12 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                         )
             }
         })
-        playViewModel.observableVideoState.observe(this, Observer {
-            if (it is TokopediaPlayVideoState.Error)
+        playViewModel.observableVideoProperty.observe(this, Observer {
+            if (it.state is TokopediaPlayVideoState.Error)
                 view?.let { fragmentView ->
                     Toaster.make(
                             fragmentView,
-                            it.error.localizedMessage,
+                            it.state.error.localizedMessage,
                             type = Toaster.TYPE_ERROR,
                             actionText = getString(R.string.play_try_again),
                             clickListener = View.OnClickListener {
@@ -93,7 +94,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                             }
                     )
                 }
-            else delegateVideoState(it)
+            else delegateVideoProperty(it)
         })
     }
 
@@ -102,12 +103,12 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         LoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
     }
 
-    private fun delegateVideoState(state: TokopediaPlayVideoState) {
+    private fun delegateVideoProperty(prop: VideoPropertyUiModel) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.VideoStateChanged(state)
+                            ScreenStateEvent.VideoPropertyChanged(prop)
                     )
         }
     }

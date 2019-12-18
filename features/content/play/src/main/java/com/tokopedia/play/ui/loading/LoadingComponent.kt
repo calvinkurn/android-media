@@ -27,7 +27,7 @@ class LoadingComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.VideoStateChanged -> handleVideoStateChanged(it.state)
+                            is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.state)
                         }
                     }
         }

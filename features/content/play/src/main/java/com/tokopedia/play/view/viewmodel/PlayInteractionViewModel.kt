@@ -12,6 +12,7 @@ import com.tokopedia.play.domain.PostFollowShopUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.toolbar.model.TitleToolbar
+import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,8 +28,8 @@ class PlayInteractionViewModel @Inject constructor(
         private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val postLikeUseCase: PostLikeUseCase,
         private val postFollowShopUseCase: PostFollowShopUseCase,
-        dispatchers: CoroutineDispatcher
-) : BaseViewModel(dispatchers), CoroutineScope {
+        dispatchers: CoroutineDispatcherProvider
+) : BaseViewModel(dispatchers.main), CoroutineScope {
 
     private val job = SupervisorJob()
 
@@ -41,10 +42,10 @@ class PlayInteractionViewModel @Inject constructor(
     private val _observableTotalLikes = MutableLiveData<Result<TotalLike>>()
     val observableTotalLikes: LiveData<Result<TotalLike>> = _observableTotalLikes
 
-    private fun getShopInfo(shopId: String, partnerType: String)  {
+    private fun getShopInfo(shopId: Long, partnerType: PartnerType)  {
         launchCatchError(block = {
             val response = withContext(Dispatchers.IO) {
-                getShopInfoUseCase.params = GetShopInfoUseCase.createParam(shopId)
+                getShopInfoUseCase.params = GetShopInfoUseCase.createParam(shopId.toString())
                 getShopInfoUseCase.executeOnBackground()
             }
 
@@ -59,8 +60,8 @@ class PlayInteractionViewModel @Inject constructor(
         }
     }
 
-    fun getToolbarInfo(partnerType: String, partnerId: String) {
-        if (partnerType == PartnerType.ADMIN.value) {
+    fun getToolbarInfo(partnerType: PartnerType, partnerId: Long) {
+        if (partnerType == PartnerType.ADMIN) {
             val titleToolbar = TitleToolbar(
                     partnerId,
                     PARTNER_NAME_ADMIN,
@@ -69,7 +70,8 @@ class PlayInteractionViewModel @Inject constructor(
             _observableToolbarInfo.value = Success(titleToolbar)
             return
         }
-        if (partnerId == PartnerType.INFLUENCER.value) {
+
+        if (partnerType == PartnerType.INFLUENCER) {
             val titleToolbar = TitleToolbar(
                     partnerId,
                     "",
@@ -79,7 +81,7 @@ class PlayInteractionViewModel @Inject constructor(
             return
         }
 
-        if (partnerType == PartnerType.SHOP.value)
+        if (partnerType == PartnerType.SHOP)
             getShopInfo(partnerId, partnerType)
     }
 
