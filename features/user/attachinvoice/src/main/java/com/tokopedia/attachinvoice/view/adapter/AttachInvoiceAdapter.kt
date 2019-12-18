@@ -22,14 +22,14 @@ class AttachInvoiceAdapter(private val baseListAdapterTypeFactory: AttachInvoice
     }
 
     override fun checkCurrentItem(element: Invoice, position: Int) {
-        selectedInvoice.value = element
+        selectedInvoice.postValue(element)
         selectedInvoicePosition = position
     }
 
     override fun uncheckPreviousItem() {
         if (selectedInvoice.value == null || selectedInvoicePosition == RecyclerView.NO_POSITION) return
         notifyItemChanged(selectedInvoicePosition, AttachInvoiceViewHolder.PAYLOAD_UNCHECK)
-        selectedInvoice.value = null
+        selectedInvoice.postValue(null)
         selectedInvoicePosition = RecyclerView.NO_POSITION
     }
 
