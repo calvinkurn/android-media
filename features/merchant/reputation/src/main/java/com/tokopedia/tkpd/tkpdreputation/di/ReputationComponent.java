@@ -34,5 +34,4 @@ public interface ReputationComponent {
 
     void inject(CreateReviewFragment createReviewFragment);
 
-    void inject(ReputationProductFragment reputationProductFragment);
 }

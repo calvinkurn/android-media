@@ -177,7 +177,7 @@ public class ReputationViewShop extends TActivity {
         holder = new ViewHolder();
         holderComment = new ViewHolderComment();
         initView();
-        initVar();
+        initialVar();
         imageAdapter = ImageUploadAdapter.createAdapter(this);
         imageAdapter.setListener(onImageClickedListener());
         holder.imageHolder.setAdapter(imageAdapter);
@@ -258,8 +258,8 @@ public class ReputationViewShop extends TActivity {
         holderComment.postCommentView = findViewById(R.id.reply_view);
     }
 
-    private void initVar() {
-        userSession = new UserSession(getBaseContext());
+    private void initialVar() {
+        userSession = new UserSession(this);
     }
 
     private void setModelToView() {
