@@ -108,16 +108,13 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     }
                 }
             }
-
-            if(variant.equals(VARIANT_B)) {
-                if (cpmData.cpm.cpmShop.isPowerMerchant) {
-                    list.setBackgroundResource(R.drawable.bg_pm_gradient)
-                } else {
-                    list.setBackgroundResource(R.drawable.bg_rm_gradient)
-                }
-                if (cpmData.cpm.cpmShop.isOfficial) {
-                    list.setBackgroundResource(R.drawable.bg_os_gradient)
-                }
+            if (cpmData.cpm.cpmShop.isPowerMerchant) {
+                list.setBackgroundResource(R.drawable.bg_pm_gradient)
+            } else {
+                list.setBackgroundResource(R.drawable.bg_rm_gradient)
+            }
+            if (cpmData.cpm.cpmShop.isOfficial) {
+                list.setBackgroundResource(R.drawable.bg_os_gradient)
             }
             template = SHOP_TEMPLATE
         }
