@@ -13,7 +13,7 @@ import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.view.fragment.ARG_ACCOUNT_TYPE
 import com.tokopedia.settingbank.banklist.v2.view.fragment.ARG_BANK_ACCOUNT_DATA
 import com.tokopedia.settingbank.banklist.v2.view.fragment.ARG_KYC_NAME
-import com.tokopedia.settingbank.banklist.v2.view.fragment.AccountConfirmFragment
+import com.tokopedia.settingbank.banklist.v2.view.fragment.AccountDocumentFragment
 
 class AccountDocumentActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent> {
 
@@ -26,7 +26,7 @@ class AccountDocumentActivity : BaseSimpleActivity(), HasComponent<SettingBankCo
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
-        return AccountConfirmFragment().apply {
+        return AccountDocumentFragment().apply {
             arguments = bundle
         }
     }
@@ -44,7 +44,7 @@ class AccountDocumentActivity : BaseSimpleActivity(), HasComponent<SettingBankCo
     }
 
     override fun getTagFragment(): String {
-        return AccountConfirmFragment::class.java.name
+        return AccountDocumentFragment::class.java.name
     }
 
 }

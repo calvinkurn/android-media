@@ -37,7 +37,7 @@ const val ARG_ACCOUNT_TYPE = "arg_account_type"
 const val ARG_KYC_NAME = "arg_kyc_name"
 
 
-class AccountConfirmFragment : BaseDaggerFragment() {
+class AccountDocumentFragment : BaseDaggerFragment() {
 
     override fun getScreenName(): String? = null
 
