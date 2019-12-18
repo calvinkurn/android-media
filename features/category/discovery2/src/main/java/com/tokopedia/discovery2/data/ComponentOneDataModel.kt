@@ -6,11 +6,11 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFac
 
 class ComponentOneDataModel : DiscoveryVisitable {
 
+    // To be Removed
+    override fun type(): String {
+        return ""
+    }
 
     val name: String? = "Discovery Component One Data Model"
-
-    override fun type(discoveryHomeFactory: DiscoveryHomeFactory): Int {
-        return discoveryHomeFactory.type(this)
-    }
 
 }
