@@ -267,7 +267,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     private fun populateTNCNoteInAdapter(templateData: TemplateData) {
-        tickerCatatan_1.setHtmlDescription(templateData.template)
         account_list_rv.post {
             bankAccountListAdapter.updateBankTNCNote(templateData)
         }
