@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -24,7 +25,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common.topupbills.view.activity.DigitalSearchNumberActivity
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
@@ -122,11 +123,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         viewModel.operatorCluster.observe(this, Observer {
             when(it) {
                 is Success -> {
-//                    (activity as BaseSimpleActivity).updateTitle("")
-
-                    // Set default operator id
-                    if (operatorId == 0) operatorId = getFirstOperatorId(it.data)
-
                     renderOperators(it.data)
 //                    trackSearchResultCategories(it.data)
 
@@ -206,7 +202,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
-                val favNumber = data?.getStringExtra(DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
+                val favNumber = data?.getStringExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
                 favNumber?.let { renderClientNumber(favNumber) }
 //                val productList = viewModel.productList.selectedId
 //                if (productList is Success && productList.data.enquiryFields.isNotEmpty()) {
@@ -419,7 +415,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (favoriteNumbers.isNotEmpty()) {
             activity?.run {
                 startActivityForResult(
-                        DigitalSearchNumberActivity.newInstance(this,
+                        TopupBillsSearchNumberActivity.newInstance(this,
                                 ClientNumberType.TYPE_INPUT_NUMERIC,
                                 clientNumber,
                                 favoriteNumbers), REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
@@ -490,17 +486,16 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun renderClientNumber(number: String) {
+        clientNumber = number
         if (adapter.data.isNotEmpty()) {
             adapter.data.forEachIndexed { index, productInput ->
                 if (productInput is RechargeGeneralProductInput && productInput.name == PARAM_CLIENT_NUMBER) {
                     productInput.value = number
+                    productInput.style = INPUT_TYPE_FAVORITE_NUMBER
                     adapter.notifyItemChanged(index)
                     return@forEachIndexed
                 }
             }
-            clientNumber = ""
-        } else { // Save selected number for later
-            clientNumber = number
         }
     }
 
@@ -565,13 +560,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
+        (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         renderFooter(data)
     }
 
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
         favoriteNumbers = data.favNumberList
         if (favoriteNumbers.isNotEmpty() && clientNumber.isEmpty()) {
-            clientNumber = favoriteNumbers[0].clientNumber
+            renderClientNumber(favoriteNumbers[0].clientNumber)
         }
     }
 

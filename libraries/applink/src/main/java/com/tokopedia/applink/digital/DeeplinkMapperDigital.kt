@@ -59,7 +59,6 @@ object DeeplinkMapperDigital {
         var newDeeplink = uri.getQueryParameter(TEMPLATE_PARAM)?.let {
             when (it) {
                 TEMPLATE_ID_VOUCHER -> {
-                    // TODO: Enable remote config
                     if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP))
                             ApplinkConsInternalDigital.VOUCHER_GAME else deeplink
                 }

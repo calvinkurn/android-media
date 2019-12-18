@@ -14,19 +14,21 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.view.activity.DigitalSearchNumberActivity
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.NumberListAdapter
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.design.text.SearchInputView
-import kotlinx.android.synthetic.main.fragment_search_number.*
+import kotlinx.android.synthetic.main.view_digital_component_list.*
 import java.util.*
 
-class DigitalSearchNumberFragment : BaseDaggerFragment(),
+open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         NumberListAdapter.OnClientNumberClickListener,
         SearchInputView.Listener,
         SearchInputView.FocusChangeListener,
@@ -37,8 +39,11 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(),
     private lateinit var clientNumbers: List<TopupBillsFavNumberItem>
     private lateinit var clientNumberType: String
 
+    protected lateinit var searchInputNumber: SearchInputView
+    protected lateinit var favNumberRecyclerView: RecyclerView
+
     private var number: String = ""
-    private lateinit var inputNumberActionType: InputNumberActionType
+    protected lateinit var inputNumberActionType: InputNumberActionType
 
 //    @Inject
 //    lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -54,7 +59,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(),
     }
 
     override fun getScreenName(): String? {
-        return DigitalSearchNumberFragment::class.java.simpleName
+        return TopupBillsSearchNumberFragment::class.java.simpleName
     }
 
     override fun onAttachActivity(context: Context) {
@@ -72,6 +77,8 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(),
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_search_number, container, false)
+        searchInputNumber = view.findViewById(R.id.siv_search_number)
+        favNumberRecyclerView = view.findViewById(R.id.rvNumberList)
         return view
     }
 
@@ -79,7 +86,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         initView()
         setViewListener()
-        siv_search_number.searchTextView.requestFocus()
+        searchInputNumber.searchTextView.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
     }
 
@@ -88,35 +95,34 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(),
         setupArguments(arguments)
     }
 
-    private fun initView() {
-//        btnContactPicker.setOnClickListener {
-//            inputNumberActionType = InputNumberActionType.CONTACT
-//            navigateContact()
-//        }
+    open fun initView() {
         setClientNumberInputType()
-        siv_search_number.searchTextView.setText(number)
-        siv_search_number.searchTextView.setSelection(number.length)
-        siv_search_number.setListener(this)
-        siv_search_number.setFocusChangeListener(this)
-        siv_search_number.setResetListener(this)
+        searchInputNumber.searchTextView.setText(number)
+        searchInputNumber.searchTextView.setSelection(number.length)
+        searchInputNumber.setListener(this)
+        searchInputNumber.setFocusChangeListener(this)
+        searchInputNumber.setResetListener(this)
 
         numberListAdapter = NumberListAdapter(this, clientNumbers)
-        rvNumberList.layoutManager = LinearLayoutManager(activity)
-        rvNumberList.adapter = numberListAdapter
+        favNumberRecyclerView.layoutManager = LinearLayoutManager(activity)
+        favNumberRecyclerView.adapter = numberListAdapter
+
+        while (favNumberRecyclerView.itemDecorationCount > 0) favNumberRecyclerView.removeItemDecorationAt(0)
+        favNumberRecyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
     }
 
     private fun setClientNumberInputType() {
         if (clientNumberType.equals(ClientNumberType.TYPE_INPUT_TEL, ignoreCase = true) ||
                 clientNumberType.equals(ClientNumberType.TYPE_INPUT_NUMERIC, ignoreCase = true)) {
-            siv_search_number.searchTextView.inputType = InputType.TYPE_CLASS_NUMBER
-            siv_search_number.searchTextView.keyListener = DigitsKeyListener.getInstance("0123456789")
+            searchInputNumber.searchTextView.inputType = InputType.TYPE_CLASS_NUMBER
+            searchInputNumber.searchTextView.keyListener = DigitsKeyListener.getInstance("0123456789")
         } else {
-            siv_search_number.searchTextView.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+            searchInputNumber.searchTextView.inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         }
     }
 
     private fun setViewListener() {
-        siv_search_number.searchTextView.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, keyEvent ->
+        searchInputNumber.searchTextView.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 var orderClientNumber = findNumber(textView.text.toString(), numberListAdapter.clientNumbers)
                 if (orderClientNumber != null && orderClientNumber.isFavorite) {
@@ -196,8 +202,8 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(),
         }
 
         val intent = Intent()
-        intent.putExtra(DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        intent.putExtra(DigitalSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType.ordinal)
+        intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
+        intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType.ordinal)
         activity?.run {
             setResult(Activity.RESULT_OK, intent)
             finish()
@@ -260,15 +266,15 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(),
 
     companion object {
 
-        private val ARG_PARAM_EXTRA_NUMBER_LIST = "ARG_PARAM_EXTRA_NUMBER_LIST"
-        private val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
-        private val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
+        const val ARG_PARAM_EXTRA_NUMBER_LIST = "ARG_PARAM_EXTRA_NUMBER_LIST"
+        const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
+        const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
 
-        private val REQUEST_CODE_CONTACT_PICKER = 75
+        const val REQUEST_CODE_CONTACT_PICKER = 75
 
         fun newInstance(clientNumberType: String, number: String,
                         numberList: List<TopupBillsFavNumberItem>): Fragment {
-            val fragment = DigitalSearchNumberFragment()
+            val fragment = TopupBillsSearchNumberFragment()
             val bundle = Bundle()
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
             bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
