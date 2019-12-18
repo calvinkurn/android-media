@@ -19,13 +19,13 @@ class DiscoveryHomeFactory {
         }
 
 
-        private fun <T : DiscoveryVisitable, E : AbstractViewHolder<T>> intializeComponent(component: ComponentsList, dataModel: () -> T, viewModel: KFunction<E>) {
+        private fun <GENERIC_DATA_MODEL : DiscoveryVisitable, GENERIC_VIEW_HOLDER : AbstractViewHolder<GENERIC_DATA_MODEL>> intializeComponent(component: ComponentsList, dataModel: () -> GENERIC_DATA_MODEL, viewModel: KFunction<GENERIC_VIEW_HOLDER>) {
             componentIdMap[component.nam] = component.id;
             componentMapper[component.id] = ComponentHelpersHolder(dataModel, viewModel);
         }
 
         fun getComponentId(viewType: String): Int? {
-            return componentIdMap.get(viewType)
+            return componentIdMap[viewType]
         }
 
         fun createDataModel(viewType: Int): DiscoveryVisitable? {
