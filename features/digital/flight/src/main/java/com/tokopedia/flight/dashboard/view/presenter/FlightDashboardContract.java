@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;

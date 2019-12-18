@@ -1,8 +1,9 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.common.travel.constant.TravelType;
@@ -13,8 +14,6 @@ import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -675,8 +674,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             public void onNext(GraphqlResponse response) {
                 if (isViewAttached()) {
                     TravelCollectiveBannerModel.Response bannerResponse = response.getData(TravelCollectiveBannerModel.Response.class);
-                    if (bannerResponse.getResponse().getBanners().size() > 0) getView().renderBannerView(bannerResponse.getResponse().getBanners());
-                    else getView().hideBannerView();
+                    if (bannerResponse.getResponse().getBanners().size() > 0) {
+                        getView().renderBannerView(bannerResponse.getResponse().getBanners());
+                    } else {
+                        getView().hideBannerView();
+                    }
                 }
             }
         });

@@ -11,12 +11,10 @@
     android:visibility="gone"
     tools:visibility="visible">
 
-    <com.tokopedia.banner.BannerView
+    <com.tokopedia.banner.Banner
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_20"
-        android:paddingTop="@dimen/dp_20"
         android:visibility="gone" />
 
 </LinearLayout>

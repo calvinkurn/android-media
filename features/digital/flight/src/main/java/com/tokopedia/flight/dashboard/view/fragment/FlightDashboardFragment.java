@@ -3,7 +3,6 @@ package com.tokopedia.flight.dashboard.view.fragment;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -28,10 +27,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.Banner;
-import com.tokopedia.banner.BannerView;
+import com.tokopedia.banner.Indicator;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
@@ -41,7 +39,6 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
-import com.tokopedia.flight.banner.view.adapter.FlightBannerPagerAdapter;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
@@ -55,7 +52,6 @@ import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
-import com.tokopedia.flight.review.domain.verifybooking.model.response.Route;
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -109,7 +105,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     NestedScrollView formContainerLayout;
     View returnDateSeparatorView;
     View bannerLayout;
-    BannerView bannerView;
+    Banner bannerView;
     TickerView tickerView;
     List<TravelCollectiveBannerModel.Banner> bannerList;
 
@@ -268,26 +264,17 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             }
         });
 
-        bannerView.setOnPromoScrolledListener(new BannerView.OnPromoScrolledListener() {
-            @Override
-            public void onPromoScrolled(int position) {
-                if (getBannerData(position) != null) {
-                    presenter.actionOnPromoScrolled(position, getBannerData(position));
-                }
+        bannerView.setBannerSeeAllTextColor(getResources().getColor(com.tokopedia.unifycomponents.R.color.Green_G500));
+        bannerView.setBannerIndicator(Indicator.GREEN);
+        bannerView.setOnPromoScrolledListener(position -> {
+            if (getBannerData(position) != null) {
+                presenter.actionOnPromoScrolled(position, getBannerData(position));
             }
         });
-        bannerView.setOnPromoClickListener(new BannerView.OnPromoClickListener() {
-            @Override
-            public void onPromoClick(int position) {
-                bannerClickAction(position);
-            }
-        });
-        bannerView.setOnPromoAllClickListener(new BannerView.OnPromoAllClickListener() {
-            @Override
-            public void onPromoAllClick() {
-                bannerAllClickAction();
-            }
-        });
+
+        bannerView.setOnPromoClickListener(this::bannerClickAction);
+
+        bannerView.setOnPromoAllClickListener(this::bannerAllClickAction);
 
         return view;
     }
@@ -610,7 +597,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         }
         bannerView.setPromoList(promoUrls);
         bannerView.buildView();
-        bannerView.setPagerAdapter(new FlightBannerPagerAdapter(promoUrls, bannerView.getOnPromoClickListener()));
         KeyboardHandler.hideSoftKeyboard(getActivity());
         KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
@@ -705,10 +691,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             TravelCollectiveBannerModel.Banner banner = getBannerData(position);
             if (getContext() != null) {
                 presenter.onBannerItemClick(position, banner);
-                if (RouteManager.isSupportApplink(getContext(), banner.getAttribute().getAppUrl())) RouteManager.route(getContext(), banner.getAttribute().getAppUrl());
-                else if (!DeeplinkMapper.getRegisteredNavigation(getContext(), banner.getAttribute().getAppUrl()).isEmpty())
-                    RouteManager.route(getContext(), DeeplinkMapper.getRegisteredNavigation(getContext(), banner.getAttribute().getAppUrl()));
-                else if (!banner.getAttribute().getWebUrl().isEmpty()) RouteManager.route(getContext(), banner.getAttribute().getWebUrl());
+                RouteManager.route(getContext(), banner.getAttribute().getAppUrl());
             }
         }
     }

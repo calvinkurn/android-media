@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;

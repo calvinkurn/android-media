@@ -237,9 +237,7 @@
                 android:id="@+id/banner_hotel_homepage_promo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false">
-
-            </com.tokopedia.banner.Banner>
+                android:clipToPadding="false"/>
 
         </LinearLayout>
 
