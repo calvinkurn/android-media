@@ -2,13 +2,9 @@ package com.tokopedia.otp.validator.view.fragment
 
 import android.app.Activity
 import android.content.Context
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
 import android.text.*
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
@@ -19,15 +15,16 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
 import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
@@ -38,6 +35,8 @@ import com.tokopedia.otp.validator.data.OtpValidateData
 import com.tokopedia.otp.validator.di.ValidatorComponent
 import com.tokopedia.otp.validator.viewmodel.ValidatorViewModel
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -59,7 +58,7 @@ class ValidatorFragment: BaseDaggerFragment(){
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val validatorViewModel by lazy { viewModelProvider.get(ValidatorViewModel::class.java) }
 
-    private lateinit var verifyButton: ButtonCompat
+    private lateinit var verifyButton: UnifyButton
     private lateinit var inputVerifyCode: PinInputEditText
     private lateinit var footer: TextView
     private lateinit var errorImage: ImageView
@@ -125,11 +124,7 @@ class ValidatorFragment: BaseDaggerFragment(){
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s?.length == 6) {
-                    verifyButton.buttonCompatType = ButtonCompat.PRIMARY
-                }else{
-                    verifyButton.buttonCompatType = ButtonCompat.PRIMARY_DISABLED
-                }
+                verifyButton.isEnabled = s?.length == 6
             }
 
         })
@@ -258,7 +253,14 @@ class ValidatorFragment: BaseDaggerFragment(){
             analytics.trackSuccessClickResendButton()
             removeErrorOtp()
             dismissLoading()
-            ToasterNormal.show(it, getString(R.string.success_resend_activation))
+            view?.let { v ->
+                Toaster.make(
+                        v,
+                        getString(R.string.success_resend_activation),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_NORMAL
+                )
+            }
         }
     }
 

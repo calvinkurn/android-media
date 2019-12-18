@@ -14,9 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
@@ -30,6 +28,7 @@ import com.tokopedia.settingbank.banklist.view.presenter.SettingBankPresenter
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
 import com.tokopedia.settingbank.banklist.di.DaggerSettingBankComponent
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_setting_bank.*
 import javax.inject.Inject
 
@@ -48,7 +47,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     lateinit var presenter: SettingBankPresenter
 
     lateinit var adapter: BankAccountAdapter
-    lateinit var alertDialog: Dialog
+    private var alertDialog: DialogUnify? = null
     lateinit var linearLayoutManager: LinearLayoutManager
     lateinit var analyticTracker: SettingBankAnalytics
 
@@ -122,6 +121,10 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
                 }
             }
         })
+
+        activity?.let {
+            alertDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        }
     }
 
     private fun getBankList() {
@@ -158,8 +161,9 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         if (errorMessage.isEmpty()) {
             errorMessage = activity!!.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
         }
-        ToasterError.make(view, errorMessage, BaseToaster.LENGTH_LONG)
-                .show()
+        view?.let {
+            Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     override fun onEmptyList(enableAddButton: Boolean, reason: String) {
@@ -176,23 +180,20 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
             val element = adapter.getList()!![adapterPosition] as BankAccountViewModel
             analyticTracker.trackSetDefaultAccount()
 
-            if (!::alertDialog.isInitialized) {
-                alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+            alertDialog?.apply {
+                setTitle(getString(R.string.make_main_account_prompt_title))
+                setDescription(composeMakeMainDescription(element))
+                setSecondaryCTAText(getString(R.string.cancel))
+                setPrimaryCTAText(getString(R.string.yes))
+                setSecondaryCTAClickListener { dismiss() }
+                setPrimaryCTAClickListener {
+                    analyticTracker.trackConfirmYesSetDefaultAccount()
+                    presenter.setMainAccount(adapterPosition, element)
+                    dismiss()
+                }
+
+                show()
             }
-
-            alertDialog.setTitle(getString(R.string.make_main_account_prompt_title))
-            alertDialog.setDesc(composeMakeMainDescription(element))
-            alertDialog.setBtnCancel(getString(R.string.cancel))
-            alertDialog.setBtnOk(getString(R.string.yes))
-            alertDialog.setOnCancelClickListener { alertDialog.dismiss() }
-            alertDialog.setOnOkClickListener {
-                analyticTracker.trackConfirmYesSetDefaultAccount()
-
-                presenter.setMainAccount(adapterPosition, element)
-                alertDialog.dismiss()
-            }
-
-            alertDialog.show()
         }
 
     }
@@ -260,22 +261,19 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
             analyticTracker.trackDeleteBankAccount()
 
-            if (!::alertDialog.isInitialized) {
-                alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+            alertDialog?.apply {
+                setTitle(getString(R.string.delete_bank_account_prompt_title))
+                setDescription(composeDeleteDescription(element))
+                setSecondaryCTAText(getString(R.string.cancel))
+                setPrimaryCTAText(getString(R.string.yes_delete))
+                setSecondaryCTAClickListener { dismiss() }
+                setPrimaryCTAClickListener {
+                    analyticTracker.trackConfirmYesDeleteBankAccount()
+                    presenter.deleteAccount(adapterPosition, element)
+                    dismiss()
+                }
+                show()
             }
-
-            alertDialog.setTitle(getString(R.string.delete_bank_account_prompt_title))
-            alertDialog.setDesc(composeDeleteDescription(element))
-            alertDialog.setBtnCancel(getString(R.string.cancel))
-            alertDialog.setBtnOk(getString(R.string.yes_delete))
-            alertDialog.setOnCancelClickListener { alertDialog.dismiss() }
-            alertDialog.setOnOkClickListener {
-                analyticTracker.trackConfirmYesDeleteBankAccount()
-                presenter.deleteAccount(adapterPosition, element)
-                alertDialog.dismiss()
-            }
-
-            alertDialog.show()
         }
     }
 

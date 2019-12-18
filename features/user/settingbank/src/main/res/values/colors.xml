@@ -8,4 +8,8 @@
     <color name="shadow_color_3">#15CCCCCC</color>
     <color name="shadow_color_4">#20CCCCCC</color>
     <color name="shadow_color_5">#25CCCCCC</color>
+
+
+    <color name="settingbank_medium_green">#42b549</color>
+    <color name="settingbank_black_38">#60000000</color>
 </resources>
