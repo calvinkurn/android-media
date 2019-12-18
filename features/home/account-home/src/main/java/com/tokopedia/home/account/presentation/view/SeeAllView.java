@@ -21,6 +21,7 @@ import java.util.List;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.RC_GIFTCARD_ENABLE;
+import static com.tokopedia.home.account.AccountConstants.RC_LOCALSERVICE_ENABLE;
 
 /**
  * @author by alvinatin on 01/08/18.
@@ -197,6 +198,20 @@ public class SeeAllView extends BottomSheets {
                 getContext().getString(R.string.title_menu_transaction)
         );
         list.add(gridItem);
+
+        if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(RC_LOCALSERVICE_ENABLE, false)) {
+            gridItem = new MenuGridItemViewModel(
+                    R.drawable.ic_local_service_order,
+                    getContext().getString(R.string.title_menu_localservice),
+                    String.format("%s?url=%s",
+                            ApplinkConst.WEBVIEW,
+                            AccountHomeUrl.LOCALSERVICE_TX_URL),
+                    0,
+                    PEMBELI,
+                    getContext().getString(R.string.title_menu_transaction)
+            );
+            list.add(gridItem);
+        }
 
         return list;
     }

@@ -40,6 +40,7 @@ public class AccountHomeUrl {
     public static String TOKOCARD_URL = "tokoswipe/";
 
     public static String EMAS_TX_URL = WEB_DOMAIN + "emas/daftar-transaksi/";
+    public static String LOCALSERVICE_TX_URL = WEB_DOMAIN + "order-list?tab=LSPINT";
 
     public static String BASE_MOBILE_URL = TokopediaUrl.Companion.getInstance().getMOBILEWEB();
     public final static String URL_TOKOPEDIA_CORNER = BASE_MOBILE_URL + "tokopedia-corner";
