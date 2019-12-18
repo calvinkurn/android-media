@@ -363,6 +363,16 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     }
 
     @Override
+    public void addRetryMessage(String message) {
+        adapter.addRetryMessage(message);
+    }
+
+    @Override
+    public void removeRetryMessage() {
+        adapter.removeRetryMessage();
+    }
+
+    @Override
     public void addEmptyView() {
         adapter.setIsDataEmpty(true);
     }
