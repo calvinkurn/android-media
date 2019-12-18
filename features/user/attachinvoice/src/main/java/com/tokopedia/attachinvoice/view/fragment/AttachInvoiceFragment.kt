@@ -18,15 +18,18 @@ import com.tokopedia.attachinvoice.di.AttachInvoiceComponent
 import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceAdapter
 import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceTypeFactory
 import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceTypeFactoryImpl
+import com.tokopedia.attachinvoice.view.adapter.viewholder.EmptyAttachInvoiceViewHolder
 import com.tokopedia.attachinvoice.view.viewmodel.AttachInvoiceViewModel
 import com.tokopedia.attachinvoice.view.widget.AttachInvoiceItemDecoration
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.attachinvoice_fragment_attach_invoice.*
 import kotlinx.android.synthetic.main.attachinvoice_fragment_attach_invoice.view.*
 import javax.inject.Inject
 
-class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFactory>() {
+class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFactory>(),
+        EmptyAttachInvoiceViewHolder.Listener {
 
     private val screenName = "attach-invoice"
 
@@ -114,7 +117,7 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     }
 
     override fun getAdapterTypeFactory(): AttachInvoiceTypeFactory {
-        return AttachInvoiceTypeFactoryImpl()
+        return AttachInvoiceTypeFactoryImpl(this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {}
@@ -126,6 +129,11 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AttachInvoiceTypeFactory> {
         adapter = AttachInvoiceAdapter(adapterTypeFactory)
         return adapter
+    }
+
+    override fun hideAttachButton() {
+        flAttach?.hide()
+        attachShadow?.hide()
     }
 
     companion object {
