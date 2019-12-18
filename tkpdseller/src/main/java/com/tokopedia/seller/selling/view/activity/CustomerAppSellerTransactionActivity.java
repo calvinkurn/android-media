@@ -50,6 +50,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
 import com.tokopedia.seller.selling.presenter.ShippingView;
+import com.tokopedia.seller.selling.view.fragment.FragmentOpportunity;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingDelivered;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipped;
@@ -319,7 +320,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     private void initVariable() {
         CONTENT = new String[]{
-//                getString(com.tokopedia.core2.R.string.title_opportunity_list),
+                getString(com.tokopedia.core2.R.string.title_opportunity_list),
                 getString(com.tokopedia.core2.R.string.title_tab_new_order),
                 getString(R.string.title_seller_tx_ready_to_ship),
                 getString(R.string.title_seller_tx_shipped),
@@ -332,7 +333,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         if (getIntent().hasExtra(EXTRA_QUERY)) {
             query = getIntent().getStringExtra(EXTRA_QUERY);
         }
-//        fragmentList.add(OpportunityListFragment.newInstance(query));
+        fragmentList.add(FragmentOpportunity.newInstance());
         fragmentList.add(FragmentSellingNewOrder.createInstance());
         fragmentList.add(FragmentSellingShipping.createInstance());
         fragmentList.add(FragmentSellingShipped.newInstance());
