@@ -3,6 +3,7 @@
     package="com.tokopedia.opportunity.customerapp">
 
     <dist:module
+        dist:instant="false"
         dist:onDemand="true"
         dist:title="@string/title_opportunity">
         <dist:fusing dist:include="true" />
