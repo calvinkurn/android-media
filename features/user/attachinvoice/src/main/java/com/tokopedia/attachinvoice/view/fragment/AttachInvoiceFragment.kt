@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.attachinvoice.R
 import com.tokopedia.attachinvoice.data.Invoice
 import com.tokopedia.attachinvoice.di.AttachInvoiceComponent
+import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceAdapter
 import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceTypeFactory
 import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceTypeFactoryImpl
 import com.tokopedia.attachinvoice.view.viewmodel.AttachInvoiceViewModel
@@ -30,6 +33,7 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(AttachInvoiceViewModel::class.java) }
+    private lateinit var adapter: AttachInvoiceAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.attachinvoice_fragment_attach_invoice, container, false).also {
@@ -53,6 +57,20 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
                 is Fail -> errorLoadInvoices(result.throwable)
             }
         })
+        adapter.selectedInvoice.observe(viewLifecycleOwner, Observer { invoice ->
+            if (invoice != null) {
+                enableAttachButton(invoice)
+            } else {
+                disableAttachButton()
+            }
+        })
+    }
+
+    private fun enableAttachButton(invoice: Invoice) {
+        btnAttach?.isEnabled = true
+        btnAttach.setOnClickListener {
+            Toast.makeText(context, invoice.invoiceCode, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun successLoadInvoices(data: List<Invoice>) {
@@ -62,11 +80,11 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     private fun errorLoadInvoices(throwable: Throwable) {
         showGetListError(throwable)
         if (isFirstPage()) {
-            disableAttachBtn()
+            disableAttachButton()
         }
     }
 
-    private fun disableAttachBtn() {
+    private fun disableAttachButton() {
         btnAttach?.isEnabled = false
     }
 
@@ -88,6 +106,11 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
 
     override fun loadData(page: Int) {
         viewModel.loadInvoices(page)
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AttachInvoiceTypeFactory> {
+        adapter = AttachInvoiceAdapter(adapterTypeFactory)
+        return adapter
     }
 
     companion object {

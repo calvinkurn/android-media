@@ -1,6 +1,8 @@
 package com.tokopedia.attachinvoice.view.adapter.viewholder
 
+import android.graphics.Color
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.attachinvoice.R
@@ -10,7 +12,12 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.item_attachinvoice.view.*
 
-class AttachInvoiceViewHolder(itemView: View?) : AbstractViewHolder<Invoice>(itemView) {
+class AttachInvoiceViewHolder(itemView: View?, val listener: Listener) : AbstractViewHolder<Invoice>(itemView) {
+
+    interface Listener {
+        fun checkCurrentItem(element: Invoice, position: Int)
+        fun uncheckPreviousItem()
+    }
 
     override fun bind(element: Invoice?) {
         if (element == null) return
@@ -20,6 +27,16 @@ class AttachInvoiceViewHolder(itemView: View?) : AbstractViewHolder<Invoice>(ite
         bindInvoiceCode(element)
         bindProductName(element)
         bindProductPrice(element)
+        bindClick(element)
+    }
+
+    override fun bind(element: Invoice?, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty()) {
+            val payload = payloads[0]
+            if (payload == PAYLOAD_UNCHECK) stateUnchecked()
+        } else {
+            super.bind(element, payloads)
+        }
     }
 
     private fun bindThumbnail(element: Invoice) {
@@ -53,6 +70,36 @@ class AttachInvoiceViewHolder(itemView: View?) : AbstractViewHolder<Invoice>(ite
         itemView.tpPrice?.text = element.productPrice
     }
 
+    private fun bindClick(element: Invoice) {
+        itemView.clContainer?.setOnClickListener {
+            toggle(element)
+        }
+    }
+
+    private fun toggle(element: Invoice) {
+        itemView.rbSelect?.apply {
+            val checkState = !isChecked
+            isChecked = checkState
+            if (isChecked) {
+                listener.uncheckPreviousItem()
+                listener.checkCurrentItem(element, adapterPosition)
+                stateChecked()
+            } else {
+                listener.uncheckPreviousItem()
+            }
+        }
+    }
+
+    private fun stateChecked() {
+        val color = ContextCompat.getColor(itemView.context, R.color.Green_G100)
+        itemView.clContainer?.setBackgroundColor(color)
+    }
+
+    private fun stateUnchecked() {
+        itemView.clContainer?.setBackgroundColor(Color.TRANSPARENT)
+        itemView.rbSelect?.isChecked = false
+    }
+
     private fun getLabelType(statusId: Int?): Int {
         if (statusId == null) return Label.GENERAL_DARK_GREY
         return when (OrderStatusCode.MAP[statusId]) {
@@ -64,5 +111,7 @@ class AttachInvoiceViewHolder(itemView: View?) : AbstractViewHolder<Invoice>(ite
 
     companion object {
         val LAYOUT = R.layout.item_attachinvoice
+
+        const val PAYLOAD_UNCHECK = "uncheck"
     }
 }

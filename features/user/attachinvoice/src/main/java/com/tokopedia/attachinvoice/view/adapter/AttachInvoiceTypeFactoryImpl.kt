@@ -13,10 +13,15 @@ class AttachInvoiceTypeFactoryImpl : BaseAdapterTypeFactory(), AttachInvoiceType
         return AttachInvoiceViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(
+            parent: View?,
+            type: Int,
+            invoiceViewHolder: AttachInvoiceViewHolder.Listener
+    ): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            AttachInvoiceViewHolder.LAYOUT -> AttachInvoiceViewHolder(parent)
-            else -> super.createViewHolder(parent, type)
+            AttachInvoiceViewHolder.LAYOUT -> AttachInvoiceViewHolder(parent, invoiceViewHolder)
+            else -> createViewHolder(parent, type)
         }
     }
+
 }
