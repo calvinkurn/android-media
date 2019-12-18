@@ -30,7 +30,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
-            android:src="@drawable/ic_topads_small" />
+            android:elevation="3dp"
+            android:padding="@dimen/dp_4"
+            app:srcCompat="@drawable/ic_topads_small" />
     </FrameLayout>
 
     <ImageView
