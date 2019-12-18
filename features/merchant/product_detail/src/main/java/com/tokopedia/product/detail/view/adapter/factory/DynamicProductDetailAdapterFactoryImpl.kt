@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -56,6 +57,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductSeparatorViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: LoadingModel?): Int {
+        return ProductShimmeringViewHolder.LAYOUT
+    }
+
     override fun type(data: ProductValuePropositionDataModel): Int {
         return ProductValuePropositionViewHolder.LAYOUT
     }
@@ -75,6 +80,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener)
             ProductSeparatorViewHolder.LAYOUT -> ProductSeparatorViewHolder(view)
             ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view, listener)
+            ProductShimmeringViewHolder.LAYOUT -> ProductShimmeringViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

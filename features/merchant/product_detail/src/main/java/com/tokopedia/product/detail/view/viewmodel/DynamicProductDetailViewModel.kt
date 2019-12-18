@@ -57,7 +57,6 @@ import javax.inject.Named
 class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                                                         private val dispatcher: CoroutineDispatcher,
                                                         private val stickyLoginUseCase: StickyLoginUseCase,
-                                                        private val getProductInfoP1UseCase: GetProductInfoP1UseCase,
                                                         private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
                                                         private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
                                                         private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
@@ -107,7 +106,6 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     override fun clear() {
         super.clear()
         stickyLoginUseCase.cancelJobs()
-        getProductInfoP1UseCase.cancelJobs()
         getPdpLayoutUseCase.cancelJobs()
         getProductInfoP2ShopUseCase.cancelJobs()
         getProductInfoP2LoginUseCase.cancelJobs()
@@ -149,7 +147,8 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     fun getProductP1(productParams: ProductParams, forceRefresh: Boolean = false) {
         launchCatchError(block = {
             shouldShowTradein = true
-            val productData = getPdpLayout(productParams.productId ?: "", forceRefresh)
+            val productData = getPdpLayout(productParams.productId ?: "", productParams.shopDomain
+                    ?: "", productParams.productName ?: "", forceRefresh)
             val initialLayoutData = productData.listOfLayout
             getDynamicProductInfoP1 = productData.layoutData
 
@@ -495,14 +494,14 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                                           warehouseId: String,
                                           forceRefresh: Boolean = false): Deferred<ProductInfoP2ShopData> {
         return async {
-            getProductInfoP2ShopUseCase.createRequestParams(shopId, productId, warehouseId, forceRefresh)
+            getProductInfoP2ShopUseCase.requestParams = GetProductInfoP2ShopUseCase.createParams(shopId, productId, warehouseId, forceRefresh)
             getProductInfoP2ShopUseCase.executeOnBackground()
         }
     }
 
     private fun getProductInfoP2LoginAsync(shopId: Int, productId: Int): Deferred<ProductInfoP2Login> {
         return async {
-            getProductInfoP2LoginUseCase.createRequestParams(shopId, productId)
+            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId)
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
     }
@@ -512,7 +511,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                                              userId: Int, minOrder: Int,
                                              forceRefresh: Boolean = false): Deferred<ProductInfoP2General> {
         return async {
-            getProductInfoP2GeneralUseCase.createRequestParams(shopId, productId, productPrice, condition, productTitle, categoryId, catalogId, userId, forceRefresh, minOrder)
+            getProductInfoP2GeneralUseCase.requestParams = GetProductInfoP2GeneralUseCase.createParams(shopId, productId, productPrice, condition, productTitle, categoryId, catalogId, userId, forceRefresh, minOrder)
             getProductInfoP2GeneralUseCase.executeOnBackground()
         }
     }
@@ -523,8 +522,10 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         return getProductInfoP3UseCase.executeOnBackground()
     }
 
-    private suspend fun getPdpLayout(productId: String, forceRefresh: Boolean): ProductDetailDataModel {
-        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, isUserSessionActive, isUserHasShop)
+    private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, forceRefresh: Boolean): ProductDetailDataModel {
+        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey)
+        getPdpLayoutUseCase.isUserActive = isUserSessionActive
+        getPdpLayoutUseCase.isUserHasShop = isUserHasShop
         getPdpLayoutUseCase.forceRefresh = forceRefresh
         return getPdpLayoutUseCase.executeOnBackground()
     }

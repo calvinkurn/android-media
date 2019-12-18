@@ -11,26 +11,33 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCodStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Map<String, String>,
                                                       private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2ShopData>() {
 
-    var shopId: Int = 0
-    var productId: String = ""
-    var warehouseId: String = ""
-    var forceRefresh = false
+    companion object {
+        fun createParams(shopId: Int, productId: String, warehouseId: String, forceRefresh: Boolean): RequestParams {
+            val requestParams = RequestParams()
+            requestParams.putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
+            requestParams.putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+            requestParams.putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, warehouseId)
+            requestParams.putBoolean(ProductDetailCommonConstant.FORCE_REFRESH, forceRefresh)
 
-    fun createRequestParams(shopId: Int, productId: String, warehouseId: String, forceRefresh: Boolean = false) {
-        this.shopId = shopId
-        this.productId = productId
-        this.warehouseId = warehouseId
-        this.forceRefresh = forceRefresh
+            return requestParams
+        }
     }
+
+    var requestParams: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ProductInfoP2ShopData {
         val p2Shop = ProductInfoP2ShopData()
+        val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
+        val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
+        val warehouseId = requestParams.getString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, "")
+        val forceRefresh = requestParams.getBoolean(ProductDetailCommonConstant.FORCE_REFRESH, false)
 
         val shopParams = mapOf(ProductDetailCommonConstant.PARAM_SHOP_IDS to listOf(shopId),
                 ProductDetailCommonConstant.PARAM_SHOP_FIELDS to ProductDetailCommonConstant.DEFAULT_SHOP_FIELDS)

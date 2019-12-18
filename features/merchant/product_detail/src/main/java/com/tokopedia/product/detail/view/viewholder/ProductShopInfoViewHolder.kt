@@ -15,7 +15,6 @@ class ProductShopInfoViewHolder(itemView: View, private val listener: DynamicPro
         val LAYOUT = R.layout.item_dynamic_pdp_shop_info
     }
 
-
     private val shopInfoView = PartialDynamicShopInfoView(itemView.base_shop_view, listener.onViewClickListener)
 
     override fun bind(element: ProductShopInfoDataModel) {

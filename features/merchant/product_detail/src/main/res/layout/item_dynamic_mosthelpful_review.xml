@@ -32,17 +32,18 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_desc_review_pdp"
         tools:visibility="visible" />
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/most_helpful_title_pdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/title_most_helpful_review"
-        app:fontSize="title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:textViewTheme="lightPrimary"
-        app:weight="medium" />
+        android:textColor="@color/charcoal_grey_88"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_thumb_like_pdp"

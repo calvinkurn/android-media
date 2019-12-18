@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
@@ -19,14 +21,16 @@ class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String
                                               private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductDetailDataModel>() {
 
     companion object {
-        fun createParams(productId: String, isUserActive: Boolean, isUserHasShop: Boolean): RequestParams =
+        fun createParams(productId: String, shopDomain: String, productKey: String): RequestParams =
                 RequestParams.create().apply {
-                    putString("productID", productId)
-                    putBoolean("isUserActive", isUserActive)
-                    putBoolean("isUserHasShop", isUserHasShop)
+                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+                    putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
+                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
                 }
     }
 
+    var isUserActive = false
+    var isUserHasShop = false
     var requestParams = RequestParams.EMPTY
     var forceRefresh = false
     val request by lazy {
@@ -39,11 +43,11 @@ class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
 
         val gqlResponse = gqlUseCase.executeOnBackground()
-        val error = gqlResponse.getError(ProductDetailLayout::class.java) ?: listOf()
+        val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
         val data = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java)
         if (data == null) {
             throw RuntimeException()
-        } else if (error.isNotEmpty()) {
+        } else if (error != null && error.isNotEmpty()) {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
 
@@ -52,7 +56,7 @@ class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String
 
     private fun mapIntoModel(data: ProductDetailLayout): ProductDetailDataModel {
         val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.data.components)
-        if (requestParams.getBoolean("isUserActive", false) && !requestParams.getBoolean("isUserHasShop", false)) {
+        if (isUserActive && !isUserHasShop) {
             initialLayoutData.add(ProductOpenShopDataModel())
         }
         initialLayoutData.add(ProductLastSeenDataModel())

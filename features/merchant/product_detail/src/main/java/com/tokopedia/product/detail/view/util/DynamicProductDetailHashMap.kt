@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
-import com.tokopedia.abstraction.common.utils.KMNumbers
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -13,6 +13,8 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DynamicProductDetailHashMap(private val context: Context, private val mapOfData: Map<String, DynamicPDPDataModel>) {
 
@@ -84,7 +86,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 media = it.data.media.map { media ->
                     ProductMediaDataModel(media.type, media.uRL300, media.uRLOriginal, media.uRLThumbnail, media.description, media.videoURLAndroid, media.isAutoplay)
                 }
-                isWishlisted = it.data.isWishlist
             }
 
             valuePropositionDataModel?.run {
@@ -107,7 +108,9 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             productLastSeenMap?.run {
-                lastSeen = KMNumbers.formatRupiahString(it.data.price.value.toLong())
+                val date = Date(data.data.price.lastUpdateUnix.toLong() * 1000)
+                val dateString = date.toFormattedString("dd-mm-yyyy , hh:mm")
+                lastSeen = "$dateString WIB"
             }
         }
     }

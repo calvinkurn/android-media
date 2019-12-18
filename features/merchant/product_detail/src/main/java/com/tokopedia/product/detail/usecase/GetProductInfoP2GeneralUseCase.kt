@@ -30,41 +30,50 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries: Map<String, String>,
                                                          private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2General>() {
-    var shopId: Int = 0
-    var productId: Int = 0
-    var userId: Int = 0
-    var categoryId: Int = 0
-    var minOrder: Int = 0
-    var productPrice: Int = 0
-    var condition: String = ""
-    var productTitle: String = ""
-    var catalogId: String = ""
-    var forceRefresh = false
 
-
-    fun createRequestParams(shopId: Int, productId: Int, productPrice: Int,
-                            condition: String, productTitle: String, categoryId: Int, catalogId: String,
-                            userId: Int,
-                            forceRefresh: Boolean, minOrder: Int) {
-        this.shopId = shopId
-        this.productId = productId
-        this.productPrice = productPrice
-        this.condition = condition
-        this.productTitle = productTitle
-        this.categoryId = categoryId
-        this.userId = userId
-        this.catalogId = catalogId
-        this.minOrder = minOrder
-        this.forceRefresh = forceRefresh
+    companion object {
+        fun createParams(shopId: Int, productId: Int, productPrice: Int,
+                         condition: String, productTitle: String, categoryId: Int, catalogId: String,
+                         userId: Int,
+                         forceRefresh: Boolean, minOrder: Int): RequestParams =
+                RequestParams.create().apply {
+                    putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
+                    putInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+                    putInt(ProductDetailCommonConstant.PARAM_PRICE, productPrice)
+                    putString(ProductDetailCommonConstant.PARAM_CONDITION, condition)
+                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_TITLE, productTitle)
+                    putInt(ProductDetailCommonConstant.PARAM_CATEGORY_ID, categoryId)
+                    putString(ProductDetailCommonConstant.PARAM_CATALOG_ID, catalogId)
+                    putInt(ProductDetailCommonConstant.PARAM_USER_ID, userId)
+                    putBoolean(ProductDetailCommonConstant.FORCE_REFRESH, forceRefresh)
+                    putInt(ProductDetailCommonConstant.PARAM_MIN_ORDER, minOrder)
+                }
     }
+
+    var requestParams: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ProductInfoP2General {
         val productInfoP2 = ProductInfoP2General()
+
+        val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
+        val productId = requestParams.getInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, 0)
+        val productPrice = requestParams.getInt(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE, 0)
+        val condition = requestParams.getString(ProductDetailCommonConstant.PARAM_CONDITION, "")
+        val productTitle = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_TITLE, "")
+        val categoryId = requestParams.getInt(ProductDetailCommonConstant.PARAM_CATEGORY_ID, 0)
+        val catalogId = requestParams.getString(ProductDetailCommonConstant.PARAM_CATALOG_ID, "")
+        val userId = requestParams.getInt(ProductDetailCommonConstant.PARAM_USER_ID, 0)
+        val forceRefresh = requestParams.getBoolean(ProductDetailCommonConstant.FORCE_REFRESH, false)
+        val minOrder = requestParams.getInt(ProductDetailCommonConstant.PARAM_MIN_ORDER, 0)
+
+        requestParams.parameters.clear()
+
         val paramsVariant = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString())
         val variantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT],
                 ProductDetailVariantResponse::class.java, paramsVariant)

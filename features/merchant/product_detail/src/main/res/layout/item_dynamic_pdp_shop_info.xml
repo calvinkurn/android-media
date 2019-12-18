@@ -11,10 +11,8 @@
     android:paddingTop="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_22"
-    android:visibility="gone"
-    tools:visibility="visible">
-
+    android:paddingBottom="@dimen/dp_16"
+    android:visibility="visible">
 
     <ImageView
         android:id="@+id/shop_ava"
@@ -151,10 +149,9 @@
         android:id="@+id/send_msg_shop"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_4"
-        android:layout_marginBottom="@dimen/dp_8"
         android:background="@drawable/bg_button_white_border"
         android:drawablePadding="@dimen/dp_8"
         android:gravity="center"

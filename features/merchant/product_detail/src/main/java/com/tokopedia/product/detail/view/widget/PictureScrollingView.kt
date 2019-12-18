@@ -56,15 +56,15 @@ class PictureScrollingView @JvmOverloads constructor(
             pagerAdapter = VideoPicturePagerAdapter(context, mediaList, onPictureClickListener, fragmentManager)
             view_pager.adapter = pagerAdapter
 
-        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            var lastPosition = 0
-            override fun onPageSelected(position: Int) {
-                val swipeDirection = if(lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
-                onSwipePictureListener.invoke(swipeDirection)
-                (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
-                (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
-                lastPosition = position
-            }
+            view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                var lastPosition = 0
+                override fun onPageSelected(position: Int) {
+                    val swipeDirection = if (lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
+                    onSwipePictureListener.invoke(swipeDirection)
+                    (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
+                    (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
+                    lastPosition = position
+                }
 
                 override fun onPageScrollStateChanged(b: Int) {
 

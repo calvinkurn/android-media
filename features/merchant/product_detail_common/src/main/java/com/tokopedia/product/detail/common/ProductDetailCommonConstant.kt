@@ -12,6 +12,12 @@ object ProductDetailCommonConstant{
     const val PARAM_CATALOG_ID = "catalogId"
     const val PARAM_PRODUCT_PRICE = "price"
     const val PARAM_PRODUCT_QUANTITY = "quantity"
+    const val PARAM_PRICE = "price"
+    const val PARAM_CATEGORY_ID = "categoryId"
+    const val PARAM_USER_ID = "userId"
+    const val PARAM_MIN_ORDER = "minOrder"
+    const val PARAM_WAREHOUSE_ID = "wareHouseId"
+    const val FORCE_REFRESH = "forceRefresh"
 
     const val PARAM_SHOP_IDS = "shopIds"
     const val PARAM_SHOP_FIELDS = "fields"

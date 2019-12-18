@@ -7,25 +7,34 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: Map<String, String>,
                                                        private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2Login>() {
 
-    var shopId: Int = 0
-    var productId: Int = 0
-
-    fun createRequestParams(shopId: Int, productId: Int) {
-        this.shopId = shopId
-        this.productId = productId
+    companion object {
+        fun createParams(shopId: Int, productId: Int): RequestParams = RequestParams.create().apply {
+            putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
+            putInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+        }
     }
+
+    var requestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ProductInfoP2Login {
         val p2Login = ProductInfoP2Login()
+        val productId = requestParams.getInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, 0)
+        val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
+
+        val isWishlistedParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString())
+        val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
+                ProductInfo.WishlistStatus::class.java, isWishlistedParams)
 
         val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE],
                 GetCheckoutTypeResponse::class.java)
@@ -38,10 +47,16 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
-        val requests = mutableListOf(getCheckoutTypeRequest, affiliateRequest)
+        val requests = mutableListOf(isWishlistedRequest,getCheckoutTypeRequest, affiliateRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
+
+            if (gqlResponse.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
+                p2Login.isWishlisted = gqlResponse.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java)
+                        .isWishlisted == true
+            else
+                p2Login.isWishlisted = true
 
             if (gqlResponse.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
                 p2Login.pdpAffiliate = gqlResponse

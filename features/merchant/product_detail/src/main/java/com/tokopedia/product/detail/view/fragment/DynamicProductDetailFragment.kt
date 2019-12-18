@@ -441,6 +441,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 performanceMonitoringP2Login.stopTrace()
 
             it.pdpAffiliate?.let { renderAffiliate(it) }
+            pdpHashMapUtil.snapShotMap.apply {
+                isWishlisted = it.isWishlisted
+            }
+
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
         })
 
@@ -832,7 +836,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     override fun getPdpCarouselPool(): CarouselProductPool {
         return carouselProductPool
     }
-  
+
     override fun loadTopads() {
         if (::pdpHashMapUtil.isInitialized && pdpHashMapUtil.listProductRecomMap?.isNotEmpty() == true && !isTopdasLoaded) {
             isTopdasLoaded = true
@@ -1499,7 +1503,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             val bundleData = Bundle()
 
             bundleData.putString(FtPDPInstallmentBottomSheet.KEY_PDP_FINANCING_DATA, cacheManager.id!!)
-            bundleData.putFloat(FtPDPInstallmentBottomSheet.KEY_PDP_PRODUCT_PRICE, productInfo?.data?.price?.value?.toFloat() ?: 0f)
+            bundleData.putFloat(FtPDPInstallmentBottomSheet.KEY_PDP_PRODUCT_PRICE, productInfo?.data?.price?.value?.toFloat()
+                    ?: 0f)
             bundleData.putBoolean(FtPDPInstallmentBottomSheet.KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
 
             pdpInstallmentBottomSheet.arguments = bundleData
@@ -1710,16 +1715,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
     private fun updateStickyContent() {
-        viewModel.getStickyLoginContent(
-                onSuccess = {
-                    this.tickerDetail = it
-                    updateStickyState()
-                    updateActionButtonShadow()
-                },
-                onError = {
-                    stickyLoginView.visibility = View.GONE
-                }
-        )
+        if (!viewModel.isUserSessionActive) {
+            viewModel.getStickyLoginContent(
+                    onSuccess = {
+                        this.tickerDetail = it
+                        updateStickyState()
+                        updateActionButtonShadow()
+                    },
+                    onError = {
+                        stickyLoginView.visibility = View.GONE
+                    }
+            )
+        }
     }
 
     private fun initBtnAction() {

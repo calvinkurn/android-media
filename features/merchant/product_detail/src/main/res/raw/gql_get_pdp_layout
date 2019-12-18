@@ -1,5 +1,5 @@
-query pdpGetLayout($productID: String) {
-  pdpGetLayout(productID:$productID) {
+query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
+  pdpGetLayout(productID:$productID, shopDomain:$shopDomain,productKey:$productKey) {
     name
     basicInfo {
       productID
@@ -129,7 +129,6 @@ query pdpGetLayout($productID: String) {
           isTradeIn
           isOS
           isPowerMerchant
-          isWishlist
           isCOD
         }
         ...on pdpDataProductInfo {
