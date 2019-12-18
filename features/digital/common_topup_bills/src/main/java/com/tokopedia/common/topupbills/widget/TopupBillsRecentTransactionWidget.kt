@@ -11,6 +11,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -41,9 +43,14 @@ class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull conte
         this.listener = listener
     }
 
-    fun setRecentNumbers(recentNumbers: List<TopupBillsRecommendation>) {
-        titleWidget.visibility = View.VISIBLE
-        titleWidget.text = context.getString(R.string.title_reccent_transaction_widget)
+    fun setRecentNumbers(recentNumbers: List<TopupBillsRecommendation>, showTitle: Boolean = false) {
+        if (showTitle) {
+            titleWidget.show()
+            titleWidget.text = context.getString(R.string.title_reccent_transaction_widget)
+        } else {
+            titleWidget.hide()
+        }
+
         topupBillsRecentNumbersAdapter.setListener(object : TopupBillsRecentNumbersAdapter.ActionListener {
             override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int) {
                 listener.onClickRecentNumber(topupBillsRecommendation, topupBillsRecommendation.categoryId,
@@ -84,6 +91,10 @@ class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull conte
             digitalTrackRecentPrev.clear()
             digitalTrackRecentPrev.addAll(digitalTrackRecentList)
         }
+    }
+
+    fun toggleTitleVisibility(value: Boolean) {
+        if (value) titleWidget.show() else titleWidget.hide()
     }
 
     interface ActionListener {

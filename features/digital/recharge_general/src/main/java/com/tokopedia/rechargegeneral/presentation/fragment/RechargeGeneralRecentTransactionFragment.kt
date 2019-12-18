@@ -46,8 +46,9 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
         }
 
         with(recent_transaction_widget) {
+            toggleTitleVisibility(false)
             setListener(this@RechargeGeneralRecentTransactionFragment)
-            if (::recommendationList.isInitialized && recommendationList.isNotEmpty()) setRecentNumbers(recommendationList)
+            if (::recommendationList.isInitialized && recommendationList.isNotEmpty()) setRecentNumbers(recommendationList, false)
         }
     }
 

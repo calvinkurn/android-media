@@ -11,6 +11,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -37,9 +39,13 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
         this.listener = listener
     }
 
-    fun setPromoList(promoList: List<TopupBillsPromo>) {
-        titleWidget.visibility = View.VISIBLE
-        titleWidget.text = context.getString(R.string.title_promo)
+    fun setPromoList(promoList: List<TopupBillsPromo>, showTitle: Boolean = true) {
+        if (showTitle) {
+            titleWidget.show()
+            titleWidget.text = context.getString(R.string.title_promo)
+        } else {
+            titleWidget.hide()
+        }
 
         topupBillsPromoListAdapter = TopupBillsPromoListAdapter(promoList)
         recyclerView.adapter = topupBillsPromoListAdapter
