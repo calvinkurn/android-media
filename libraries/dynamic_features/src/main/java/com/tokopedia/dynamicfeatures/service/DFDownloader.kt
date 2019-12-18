@@ -110,15 +110,16 @@ object DFDownloader {
             }
             isServiceRunning = true
 
-            val moduleToDownloadPairList = DFQueue.getDFModuleList(applicationContext)
-            val moduleToDownloadList = moduleToDownloadPairList.map { it.first }
-            if (moduleToDownloadList.isEmpty()) {
+            // only download the first module in the list
+            val moduleToDownloadPair = DFQueue.getDFModuleList(applicationContext).firstOrNull()
+            val moduleToDownload = moduleToDownloadPair?.first ?: ""
+            if (moduleToDownload.isEmpty()) {
                 DFQueue.clear(applicationContext)
                 setServiceFlagFalse()
                 return@withContext true
             }
-            val result = DFInstaller().installOnBackgroundDefer(applicationContext, moduleToDownloadList, onSuccessInstall = {
-                DFQueue.removeModuleFromQueue(applicationContext, moduleToDownloadPairList.map { it.first })
+            val result = DFInstaller().installOnBackgroundDefer(applicationContext, listOf(moduleToDownload), onSuccessInstall = {
+                DFQueue.removeModuleFromQueue(applicationContext, listOf(moduleToDownload))
                 setServiceFlagFalse()
             }, onFailedInstall = {
                 // loop all combined list
@@ -127,14 +128,11 @@ object DFDownloader {
                 val successfulListAfterInstall = mutableListOf<String>()
                 val failedListAfterInstall = mutableListOf<Pair<String, Int>>()
 
-                for (moduleNamePair in moduleToDownloadPairList) {
-                    if (DFInstaller.manager?.installedModules?.contains(moduleNamePair.first) != true) {
-                        // the reason all failed is because this module is failed
-                        failedListAfterInstall.add(Pair(moduleNamePair.first, moduleNamePair.second + 1))
-                        break
-                    } else {
-                        successfulListAfterInstall.add(moduleNamePair.first)
-                    }
+                if (DFInstaller.manager?.installedModules?.contains(moduleToDownload) != true) {
+                    // the reason all failed is because this module is failed
+                    failedListAfterInstall.add(Pair(moduleToDownload, (moduleToDownloadPair?.second ?: 0) + 1))
+                } else {
+                    successfulListAfterInstall.add(moduleToDownload)
                 }
                 DFQueue.updateQueue(applicationContext, failedListAfterInstall, successfulListAfterInstall)
                 setServiceFlagFalse()
@@ -151,7 +149,7 @@ object DFDownloader {
                     return@withContext true
                 } else {
                     val remainingListSorted = DFQueue.getDFModuleListSorted(applicationContext)
-                    if (remainingListSorted[0].first == remainingList[0].first) {
+                    if (remainingListSorted[0].first != remainingList[0].first) {
                         // this is to schedule immediate, because the list is now different with before
                         DFQueue.putDFModuleList(applicationContext, remainingListSorted)
                         startSchedule(applicationContext, isImmediate = true)
