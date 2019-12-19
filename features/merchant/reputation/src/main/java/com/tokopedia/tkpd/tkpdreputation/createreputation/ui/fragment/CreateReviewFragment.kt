@@ -386,19 +386,19 @@ class CreateReviewFragment : BaseDaggerFragment() {
             imgAnimationView.repeatCount = LottieDrawable.INFINITE
             when (index) {
                 1 -> {
-                    setLottieAnimationFromUrl(LOTTIE_ANIM_1);
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_1)
                 }
                 2 -> {
-                    setLottieAnimationFromUrl(LOTTIE_ANIM_2);
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_2)
                 }
                 3 -> {
-                    setLottieAnimationFromUrl(LOTTIE_ANIM_3);
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_3)
                 }
                 4 -> {
-                    setLottieAnimationFromUrl(LOTTIE_ANIM_4);
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_4)
                 }
                 5 -> {
-                    setLottieAnimationFromUrl(LOTTIE_ANIM_5);
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_5)
                 }
             }
         }
@@ -413,7 +413,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
         lottieCompositionLottieTask.addListener(object : LottieListener<LottieComposition>() {
             fun onResult(result: LottieComposition) {
-                Log.e("CreateReviewFragment setLottieAnimationFromUrl", "Success "+animationUrl)
+                Log.e("CreateReviewFragment setLottieAnimationFromUrl", "Success ".plus(animationUrl))
                 imgAnimationView.setComposition(result)
                 imgAnimationView.playAnimation()
             }
@@ -421,7 +421,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
         lottieCompositionLottieTask.addFailureListener(object : LottieListener<Throwable>() {
             fun onResult(result: Throwable) {
-                Log.e("CreateReviewFragment setLottieAnimationFromUrl", result?result.message)
+                Log.e("CreateReviewFragment setLottieAnimationFromUrl", result.message)
             }
         })
     }
