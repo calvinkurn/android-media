@@ -7,13 +7,13 @@ import com.tokopedia.notifcenter.domain.pojo.Paging
 import com.tokopedia.notifcenter.domain.pojo.UserInfo
 import java.util.*
 
-open class NotificationUpdateViewModel() : Parcelable {
+open class NotificationViewBean() : Parcelable {
 
     var paging: Paging = Paging()
-    var list: List<NotificationUpdateItemViewModel> = arrayListOf()
+    var list: List<NotificationItemViewBean> = arrayListOf()
     var userInfo: UserInfo = UserInfo()
 
-    constructor(paging: Paging, list: List<NotificationUpdateItemViewModel>, userInfo: UserInfo) : this() {
+    constructor(paging: Paging, list: List<NotificationItemViewBean>, userInfo: UserInfo) : this() {
         this.paging = paging
         this.list = list
         this.userInfo = userInfo
@@ -32,12 +32,12 @@ open class NotificationUpdateViewModel() : Parcelable {
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<NotificationUpdateViewModel> {
-        override fun createFromParcel(parcel: Parcel): NotificationUpdateViewModel {
-            return NotificationUpdateViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<NotificationViewBean> {
+        override fun createFromParcel(parcel: Parcel): NotificationViewBean {
+            return NotificationViewBean(parcel)
         }
 
-        override fun newArray(size: Int): Array<NotificationUpdateViewModel?> {
+        override fun newArray(size: Int): Array<NotificationViewBean?> {
             return arrayOfNulls(size)
         }
     }

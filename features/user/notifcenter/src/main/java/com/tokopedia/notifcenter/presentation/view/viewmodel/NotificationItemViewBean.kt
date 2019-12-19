@@ -4,9 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.domain.pojo.ProductData
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationUpdateTypeFactory
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.base.BaseNotificationTypeFactory
 
-open class NotificationUpdateItemViewModel(
+open class NotificationItemViewBean(
         var notificationId: String = "",
         var isRead: Boolean = false,
         var iconUrl: String? = "",
@@ -23,23 +23,23 @@ open class NotificationUpdateItemViewModel(
         var totalProduct: Int = 0,
         var btnText: String = "",
         var products: List<ProductData> = emptyList()
-) : Visitable<NotificationUpdateTypeFactory>, Parcelable {
+) : Parcelable, Visitable<BaseNotificationTypeFactory> {
 
-    override fun type(typeFactory: NotificationUpdateTypeFactory): Int {
+    override fun type(typeFactory: BaseNotificationTypeFactory): Int {
         return typeFactory.type(this)
     }
 
     constructor(`in`: Parcel) : this() {
-        notificationId = `in`.readString()
+        notificationId = `in`.readString()?: ""
         isRead = `in`.readInt() != 0
         iconUrl = `in`.readString()
-        contentUrl = `in`.readString()
-        time = `in`.readString()
+        contentUrl = `in`.readString()?: ""
+        time = `in`.readString()?: ""
         label = `in`.readInt()
-        title = `in`.readString()
-        body = `in`.readString()
-        templateKey = `in`.readString()
-        appLink = `in`.readString()
+        title = `in`.readString()?: ""
+        body = `in`.readString()?: ""
+        templateKey = `in`.readString()?: ""
+        appLink = `in`.readString()?: ""
         hasShop = `in`.readInt() != 0
         typeLink = `in`.readInt()
         totalProduct = `in`.readInt()
@@ -106,12 +106,12 @@ open class NotificationUpdateItemViewModel(
         const val SOURCE = "notifcenter"
 
         @JvmField
-        val CREATOR: Parcelable.Creator<NotificationUpdateItemViewModel> = object : Parcelable.Creator<NotificationUpdateItemViewModel> {
-            override fun createFromParcel(`in`: Parcel): NotificationUpdateItemViewModel {
-                return NotificationUpdateItemViewModel(`in`)
+        val CREATOR: Parcelable.Creator<NotificationItemViewBean> = object : Parcelable.Creator<NotificationItemViewBean> {
+            override fun createFromParcel(`in`: Parcel): NotificationItemViewBean {
+                return NotificationItemViewBean(`in`)
             }
 
-            override fun newArray(size: Int): Array<NotificationUpdateItemViewModel?> {
+            override fun newArray(size: Int): Array<NotificationItemViewBean?> {
                 return arrayOfNulls(size)
             }
         }

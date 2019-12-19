@@ -3,9 +3,9 @@ package com.tokopedia.notifcenter.presentation.view.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationUpdateFilterSectionTypeFactory
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactory
 
-class NotificationUpdateFilterSectionItemViewModel(
+class NotificationUpdateFilterSectionViewBean(
         var text: String = "",
         var id: String = "",
         var key: String = "",
@@ -13,9 +13,9 @@ class NotificationUpdateFilterSectionItemViewModel(
 ) : Visitable<NotificationUpdateFilterSectionTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
+            parcel.readString()?: "",
+            parcel.readString()?: "",
+            parcel.readString()?: "",
             parcel.readInt() != 0
     )
 
@@ -34,12 +34,12 @@ class NotificationUpdateFilterSectionItemViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<NotificationUpdateFilterSectionItemViewModel> {
-        override fun createFromParcel(parcel: Parcel): NotificationUpdateFilterSectionItemViewModel {
-            return NotificationUpdateFilterSectionItemViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<NotificationUpdateFilterSectionViewBean> {
+        override fun createFromParcel(parcel: Parcel): NotificationUpdateFilterSectionViewBean {
+            return NotificationUpdateFilterSectionViewBean(parcel)
         }
 
-        override fun newArray(size: Int): Array<NotificationUpdateFilterSectionItemViewModel?> {
+        override fun newArray(size: Int): Array<NotificationUpdateFilterSectionViewBean?> {
             return arrayOfNulls(size)
         }
     }

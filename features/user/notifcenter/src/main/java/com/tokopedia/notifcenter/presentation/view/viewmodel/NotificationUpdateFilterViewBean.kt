@@ -3,12 +3,12 @@ package com.tokopedia.notifcenter.presentation.view.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationUpdateFilterTypeFactory
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterTypeFactory
 
-open class NotificationUpdateFilterItemViewModel(
+open class NotificationUpdateFilterViewBean(
         var filterType: String = "",
         var title: String = "",
-        var list: List<NotificationUpdateFilterSectionItemViewModel> = arrayListOf()
+        var list: List<NotificationUpdateFilterSectionViewBean> = arrayListOf()
 ) : Visitable<NotificationUpdateFilterTypeFactory>, Parcelable {
 
     enum class FilterType(val type: String) {
@@ -21,9 +21,9 @@ open class NotificationUpdateFilterItemViewModel(
     }
 
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.createTypedArrayList(NotificationUpdateFilterSectionItemViewModel.CREATOR))
+            parcel.readString()?: "",
+            parcel.readString()?: "",
+            parcel.createTypedArrayList(NotificationUpdateFilterSectionViewBean.CREATOR)?: listOf())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(filterType)
@@ -35,12 +35,12 @@ open class NotificationUpdateFilterItemViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<NotificationUpdateFilterItemViewModel> {
-        override fun createFromParcel(parcel: Parcel): NotificationUpdateFilterItemViewModel {
-            return NotificationUpdateFilterItemViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<NotificationUpdateFilterViewBean> {
+        override fun createFromParcel(parcel: Parcel): NotificationUpdateFilterViewBean {
+            return NotificationUpdateFilterViewBean(parcel)
         }
 
-        override fun newArray(size: Int): Array<NotificationUpdateFilterItemViewModel?> {
+        override fun newArray(size: Int): Array<NotificationUpdateFilterViewBean?> {
             return arrayOfNulls(size)
         }
     }
