@@ -8,6 +8,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:layout_width="match_parent"
+        app:corners="80"
         android:layout_height="@dimen/dp_180"
         android:layout_marginTop="@dimen/dp_5"
         android:layout_marginRight="@dimen/dp_10"
@@ -59,12 +60,14 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_90"
             android:layout_weight="1"
+            app:corners="80"
             android:layout_marginRight="@dimen/dp_2"
             android:layout_marginBottom="@dimen/dp_2" />
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_90"
             android:layout_marginLeft="@dimen/dp_2"
+            app:corners="80"
             android:layout_weight="1"
             android:layout_marginBottom="@dimen/dp_2" />
     </LinearLayout>
