@@ -31,6 +31,7 @@ class SendChatComponent(
                         when (it) {
                             is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.ComposeChat -> uiView.focusChatForm()
                         }
                     }
         }
@@ -56,6 +57,6 @@ class SendChatComponent(
         }
     }
 
-    private fun initChatFormView(container: ViewGroup): UIView =
+    private fun initChatFormView(container: ViewGroup) =
             SendChatView(container, this)
 }
