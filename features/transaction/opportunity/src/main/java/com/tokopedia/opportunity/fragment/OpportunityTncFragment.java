@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
@@ -30,6 +29,7 @@ import com.tokopedia.opportunity.presenter.OpportunityPresenter;
 import com.tokopedia.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.webview.BaseWebViewFragment;
 
 import javax.inject.Inject;
 
@@ -41,7 +41,6 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
 
     TkpdProgressDialog progressDialog;
     private View btnTakeOpportunity;
-    private UserSessionInterface userSession;
 
     private OpportunityComponent opportunityComponent;
 
@@ -60,7 +59,6 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.opportunityItemViewModel = listener.getItemViewModel();
-        userSession = new UserSession(getActivity());
 
         opportunityComponent.inject(this);
         presenter.attachView(this);
@@ -80,6 +78,16 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
         });
         btnTakeOpportunity.setVisibility(View.GONE);
         return view;
+    }
+
+    @Override
+    public int setProgressBar() {
+        return R.id.progressbar_opportunity;
+    }
+
+    @Override
+    public int setWebView() {
+        return R.id.webview_opportunity;
     }
 
     @Override
@@ -111,18 +119,6 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
         if(opportunityItemViewModel == null)
             return null;
         return opportunityItemViewModel.getReplacementTnc();
-    }
-
-    @Nullable
-    @Override
-    protected String getUserIdForHeader() {
-        return userSession.getUserId();
-    }
-
-    @Nullable
-    @Override
-    protected String getAccessToken() {
-        return userSession.getAccessToken();
     }
 
     @Override

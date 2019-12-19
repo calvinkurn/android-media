@@ -79,7 +79,7 @@ public class SnapShotProduct extends BasePresenterActivity<SnapShotProductPresen
     public void inflateFragment(Fragment fragment, String tag) {
         if (getFragmentManager().findFragmentByTag(tag) == null) {
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.add(com.tokopedia.core.R.id.container, fragment, tag);
+            fragmentTransaction.add(R.id.container_snapshot, fragment, tag);
             fragmentTransaction.commit();
         }
     }
