@@ -5,17 +5,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.domain.model.EmptyState
+import com.tokopedia.notifcenter.data.viewbean.NotificationEmptyStateViewBean
 
-class EmptyDataStateViewHolder(view: View): AbstractViewHolder<EmptyState>(view) {
+class EmptyDataStateViewHolder(view: View): AbstractViewHolder<NotificationEmptyStateViewBean>(view) {
 
     private val imgState = view.findViewById<ImageView>(R.id.img_state)
     private val txtMessage = view.findViewById<TextView>(R.id.txt_message)
 
-    override fun bind(element: EmptyState) {
-        txtMessage.text = element.title
+    override fun bind(element: NotificationEmptyStateViewBean) {
+        txtMessage.text = getString(element.title)
         imgState.setImageResource(element.icon)
     }
 

@@ -15,9 +15,9 @@ import com.tokopedia.notifcenter.domain.MarkReadNotificationUpdateItemUseCase
 import com.tokopedia.notifcenter.domain.NotificationFilterUseCase
 import com.tokopedia.notifcenter.domain.NotificationInfoTransactionUseCase
 import com.tokopedia.notifcenter.domain.NotificationTransactionUseCase
-import com.tokopedia.notifcenter.domain.model.NotificationFilterSectionWrapper
-import com.tokopedia.notifcenter.presentation.view.subscriber.NotificationUpdateActionSubscriber
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationFilterSectionViewBean
+import com.tokopedia.notifcenter.presentation.subscriber.NotificationUpdateActionSubscriber
+import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -34,7 +34,7 @@ interface NotificationTransactionContract {
     fun getNotificationFilter()
 }
 
-typealias FilterWrapper = NotificationFilterSectionWrapper
+typealias FilterWrapper = NotificationFilterSectionViewBean
 
 class NotificationTransactionViewModel @Inject constructor(
         private val notificationInfoTransactionUseCase: NotificationInfoTransactionUseCase,
@@ -46,14 +46,14 @@ class NotificationTransactionViewModel @Inject constructor(
         dispatcher: DispatcherProvider
 ): BaseViewModel(dispatcher.io()), NotificationTransactionContract {
 
-    private val _notification = MediatorLiveData<NotificationViewBean>()
-    val notification: LiveData<NotificationViewBean> get() = _notification
+    private val _notification = MediatorLiveData<NotificationViewData>()
+    val notification: LiveData<NotificationViewData> get() = _notification
 
     private val _infoNotification = MediatorLiveData<NotificationEntity>()
     val infoNotification: LiveData<NotificationEntity> get() = _infoNotification
 
-    private val _filterNotification = MediatorLiveData<NotificationFilterSectionWrapper>()
-    val filterNotification: LiveData<NotificationFilterSectionWrapper> get() = _filterNotification
+    private val _filterNotification = MediatorLiveData<NotificationFilterSectionViewBean>()
+    val filterNotification: LiveData<NotificationFilterSectionViewBean> get() = _filterNotification
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage

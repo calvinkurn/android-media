@@ -19,9 +19,9 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.listener.NotificationItemListener
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean.Companion.BUYER_TYPE
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean.Companion.SELLER_TYPE
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean.Companion.BUYER_TYPE
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean.Companion.SELLER_TYPE
 
 
 /**

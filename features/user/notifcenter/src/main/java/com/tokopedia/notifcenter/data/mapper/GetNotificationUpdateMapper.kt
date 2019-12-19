@@ -1,9 +1,9 @@
 package com.tokopedia.notifcenter.data.mapper
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.notifcenter.domain.pojo.NotificationCenterDetail
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationViewBean
+import com.tokopedia.notifcenter.data.entity.NotificationCenterDetail
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.model.NotificationViewData
 import javax.inject.Inject
 
 /**
@@ -11,7 +11,7 @@ import javax.inject.Inject
  */
 open class GetNotificationUpdateMapper @Inject constructor(){
 
-    open fun map(pojo: NotificationCenterDetail) : NotificationViewBean {
+    open fun map(pojo: NotificationCenterDetail) : NotificationViewData {
         val item = pojo.pojo
         val list = arrayListOf<NotificationItemViewBean>()
         for (notificationUpdateItem in item.list) {
@@ -35,10 +35,10 @@ open class GetNotificationUpdateMapper @Inject constructor(){
             )
             list.add(datum)
         }
-        return NotificationViewBean(item.paging, list, item.userInfo)
+        return NotificationViewData(item.paging, list, item.userInfo)
     }
 
-    fun mapToNotifTransaction(pojo: NotificationCenterDetail) : NotificationViewBean {
+    fun mapToNotifTransaction(pojo: NotificationCenterDetail) : NotificationViewData {
         val item = pojo.pojo
         val list = arrayListOf<NotificationItemViewBean>()
         for (notificationUpdateItem in item.list) {
@@ -62,7 +62,7 @@ open class GetNotificationUpdateMapper @Inject constructor(){
             )
             list.add(datum)
         }
-        return NotificationViewBean(item.paging, list, item.userInfo)
+        return NotificationViewData(item.paging, list, item.userInfo)
     }
 
     private fun convertReadStatus(readStatus: Long): Boolean {

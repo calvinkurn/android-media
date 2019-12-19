@@ -12,14 +12,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.GlobalNavConstant.*
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.domain.model.DrawerNotification
-import com.tokopedia.notifcenter.domain.model.PurchaseNotification
+import com.tokopedia.notifcenter.data.model.DrawerNotification
+import com.tokopedia.notifcenter.data.viewbean.PurchaseNotificationViewBean
 import com.tokopedia.notifcenter.listener.TransactionMenuListener
 
 class PurchaseViewHolder(
         val view: View,
         val listener: TransactionMenuListener
-): AbstractViewHolder<PurchaseNotification>(view) {
+): AbstractViewHolder<PurchaseNotificationViewBean>(view) {
 
     private val context = view.context
 
@@ -46,7 +46,7 @@ class PurchaseViewHolder(
     private val imgGoodsSent = view.findViewById<ImageView>(R.id.img_goods_sent)
     private val imgGoodsReceive = view.findViewById<ImageView>(R.id.img_goods_receive)
 
-    override fun bind(element: PurchaseNotification) {
+    override fun bind(element: PurchaseNotificationViewBean) {
         if (element.id == PEMBELIAN) {
             txtTitle.text = element.title
             hasViewOther(element)

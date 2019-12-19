@@ -1,10 +1,10 @@
 package com.tokopedia.notifcenter.data.mapper
 
-import com.tokopedia.notifcenter.domain.model.NotificationFilterSection
-import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateFilter
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterViewBean
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterViewBean.FilterType
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterSectionViewBean
+import com.tokopedia.notifcenter.data.model.NotificationFilterSection
+import com.tokopedia.notifcenter.data.entity.NotificationUpdateFilter
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean.FilterType
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterSectionViewBean
 import javax.inject.Inject
 
 /**

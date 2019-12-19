@@ -4,15 +4,15 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.notifcenter.GlobalNavConstant.*
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.domain.model.DrawerNotification
-import com.tokopedia.notifcenter.domain.model.PurchaseNotification
-import com.tokopedia.notifcenter.domain.model.SaleNotification
+import com.tokopedia.notifcenter.data.model.DrawerNotification
+import com.tokopedia.notifcenter.data.viewbean.PurchaseNotificationViewBean
+import com.tokopedia.notifcenter.data.viewbean.SaleNotificationViewBean
 
-fun Fragment.buyerMenu(): List<PurchaseNotification> {
-    val menus = mutableListOf<PurchaseNotification>()
+fun Fragment.buyerMenu(): List<PurchaseNotificationViewBean> {
+    val menus = mutableListOf<PurchaseNotificationViewBean>()
 
     //menu
-    val item = PurchaseNotification()
+    val item = PurchaseNotificationViewBean()
     item.id = PEMBELIAN
     item.title = getString(R.string.pembelian)
 
@@ -42,11 +42,11 @@ fun Fragment.buyerMenu(): List<PurchaseNotification> {
     return menus
 }
 
-fun Fragment.sellerMenu(): List<SaleNotification> {
-    val menus = mutableListOf<SaleNotification>()
+fun Fragment.sellerMenu(): List<SaleNotificationViewBean> {
+    val menus = mutableListOf<SaleNotificationViewBean>()
 
     //menu
-    val item = SaleNotification()
+    val item = SaleNotificationViewBean()
     item.id = PENJUALAN
     item.title = getString(R.string.penjualan)
 

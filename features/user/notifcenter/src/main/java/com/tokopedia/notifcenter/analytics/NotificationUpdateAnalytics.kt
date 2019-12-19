@@ -1,8 +1,8 @@
 package com.tokopedia.notifcenter.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.notifcenter.domain.pojo.ProductData
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject

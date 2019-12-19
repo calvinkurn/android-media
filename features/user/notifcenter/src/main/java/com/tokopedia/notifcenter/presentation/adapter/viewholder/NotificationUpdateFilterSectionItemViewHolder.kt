@@ -6,7 +6,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterSectionViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterSectionViewBean
 
 
 /**

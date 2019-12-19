@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.domain.model.NotificationFilterSection
-import com.tokopedia.notifcenter.domain.model.NotificationFilterSectionWrapper
+import com.tokopedia.notifcenter.data.model.NotificationFilterSection
+import com.tokopedia.notifcenter.data.viewbean.NotificationFilterSectionViewBean
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -18,12 +18,12 @@ class NotificationFilterViewHolder(
         val view: View,
         val listener: NotifFilterListener,
         val userSession: UserSessionInterface
-): AbstractViewHolder<NotificationFilterSectionWrapper>(view), NotificationUpdateFilterAdapter.FilterAdapterListener {
+): AbstractViewHolder<NotificationFilterSectionViewBean>(view), NotificationUpdateFilterAdapter.FilterAdapterListener {
 
     private val lstFilter = view.findViewById<RecyclerView>(R.id.filter_list)
     private var filterAdapter: NotificationUpdateFilterAdapter?= null
 
-    override fun bind(element: NotificationFilterSectionWrapper) {
+    override fun bind(element: NotificationFilterSectionViewBean) {
         if (userSession.hasShop() && listener.isHasNotification()) {
             lstFilter.show()
         }

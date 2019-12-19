@@ -2,8 +2,8 @@ package com.tokopedia.notifcenter.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.notifcenter.domain.pojo.NotifCenterSendNotifData
-import com.tokopedia.notifcenter.domain.pojo.SendNotification
+import com.tokopedia.notifcenter.data.entity.NotifCenterSendNotifData
+import com.tokopedia.notifcenter.data.entity.SendNotification
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject

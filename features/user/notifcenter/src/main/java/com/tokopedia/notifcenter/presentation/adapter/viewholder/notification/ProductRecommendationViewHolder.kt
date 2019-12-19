@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.domain.pojo.ProductData
+import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 
 class ProductRecommendationViewHolder(

@@ -9,7 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateFilter
+import com.tokopedia.notifcenter.data.entity.NotificationUpdateFilter
 import rx.Subscriber
 import javax.inject.Inject
 

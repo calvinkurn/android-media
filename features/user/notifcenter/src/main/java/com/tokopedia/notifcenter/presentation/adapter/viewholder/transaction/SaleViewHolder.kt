@@ -11,14 +11,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.GlobalNavConstant.*
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.domain.model.DrawerNotification
-import com.tokopedia.notifcenter.domain.model.SaleNotification
+import com.tokopedia.notifcenter.data.model.DrawerNotification
+import com.tokopedia.notifcenter.data.viewbean.SaleNotificationViewBean
 import com.tokopedia.notifcenter.listener.TransactionMenuListener
 
 class SaleViewHolder(
         view: View,
         val listener: TransactionMenuListener
-): AbstractViewHolder<SaleNotification>(view) {
+): AbstractViewHolder<SaleNotificationViewBean>(view) {
 
     private val context = view.context
 
@@ -41,7 +41,7 @@ class SaleViewHolder(
     private val imgGoodsSent = view.findViewById<ImageView>(R.id.img_goods_sent)
     private val imgGoodsReceive = view.findViewById<ImageView>(R.id.img_goods_receive)
 
-    override fun bind(element: SaleNotification) {
+    override fun bind(element: SaleNotificationViewBean) {
         if (element.id == PENJUALAN) {
             txtTitle.text = element.title
             initListChildItem(element)

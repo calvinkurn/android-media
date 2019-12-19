@@ -2,8 +2,7 @@ package com.tokopedia.notifcenter.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
-import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateFilter
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.notifcenter.data.entity.NotificationUpdateFilter
 import javax.inject.Inject
 import javax.inject.Named
 

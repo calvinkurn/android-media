@@ -10,9 +10,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.domain.pojo.ProductData
+import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.listener.NotificationItemListener
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.widget.CampaignLayout
 import com.tokopedia.notifcenter.widget.ProductVariantLayout
 

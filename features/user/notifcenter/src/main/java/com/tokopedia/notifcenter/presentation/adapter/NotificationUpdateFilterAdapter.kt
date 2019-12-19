@@ -9,8 +9,8 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.NotificationUpdateFilterSectionItemViewHolder
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterSectionViewBean
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterSectionViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*

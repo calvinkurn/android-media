@@ -8,16 +8,16 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateFilterMapper
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
+import com.tokopedia.notifcenter.data.entity.NotificationUpdateTotalUnread
+import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.presentation.contract.NotificationUpdateContract
+import com.tokopedia.notifcenter.presentation.subscriber.GetNotificationTotalUnreadSubscriber
+import com.tokopedia.notifcenter.presentation.subscriber.GetNotificationUpdateFilterSubscriber
+import com.tokopedia.notifcenter.presentation.subscriber.GetNotificationUpdateSubscriber
+import com.tokopedia.notifcenter.presentation.subscriber.NotificationUpdateActionSubscriber
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.domain.*
-import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateTotalUnread
-import com.tokopedia.notifcenter.domain.pojo.ProductData
-import com.tokopedia.notifcenter.presentation.view.contract.NotificationUpdateContract
-import com.tokopedia.notifcenter.presentation.view.subscriber.GetNotificationTotalUnreadSubscriber
-import com.tokopedia.notifcenter.presentation.view.subscriber.GetNotificationUpdateFilterSubscriber
-import com.tokopedia.notifcenter.presentation.view.subscriber.GetNotificationUpdateSubscriber
-import com.tokopedia.notifcenter.presentation.view.subscriber.NotificationUpdateActionSubscriber
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterViewBean
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationViewBean
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -47,7 +47,7 @@ class NotificationUpdatePresenter @Inject constructor(
         variables.clear()
     }
 
-    override fun loadData(lastNotifId: String, onSuccessInitiateData: (NotificationViewBean) -> Unit, onErrorInitiateData: (Throwable) -> Unit) {
+    override fun loadData(lastNotifId: String, onSuccessInitiateData: (NotificationViewData) -> Unit, onErrorInitiateData: (Throwable) -> Unit) {
         getNotificationUpdateUseCase.execute(
                 GetNotificationUpdateUseCase.getRequestParams(1, variables, lastNotifId),
                 GetNotificationUpdateSubscriber(getNotificationUpdateMapper, onSuccessInitiateData, onErrorInitiateData)

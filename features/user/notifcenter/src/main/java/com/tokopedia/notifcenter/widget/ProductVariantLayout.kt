@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.domain.pojo.Variant
+import com.tokopedia.notifcenter.data.entity.Variant
 
 class ProductVariantLayout @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

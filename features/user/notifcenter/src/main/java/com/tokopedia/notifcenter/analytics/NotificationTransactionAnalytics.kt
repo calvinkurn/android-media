@@ -1,6 +1,6 @@
 package com.tokopedia.notifcenter.analytics
 
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject

@@ -2,12 +2,12 @@ package com.tokopedia.notifcenter.presentation.presenter
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.notifcenter.data.entity.NotifCenterSendNotifData
+import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
 import com.tokopedia.notifcenter.domain.*
-import com.tokopedia.notifcenter.domain.pojo.NotifCenterSendNotifData
-import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateUnread
-import com.tokopedia.notifcenter.presentation.view.contract.NotificationActivityContract
-import com.tokopedia.notifcenter.presentation.view.subscriber.GetNotificationUpdateUnreadSubscriber
-import com.tokopedia.notifcenter.presentation.view.subscriber.NotificationUpdateActionSubscriber
+import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
+import com.tokopedia.notifcenter.presentation.subscriber.GetNotificationUpdateUnreadSubscriber
+import com.tokopedia.notifcenter.presentation.subscriber.NotificationUpdateActionSubscriber
 import javax.inject.Inject
 
 class NotificationActivityPresenter @Inject constructor(

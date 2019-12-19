@@ -1,8 +1,8 @@
 package com.tokopedia.notifcenter.listener
 
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
-import com.tokopedia.notifcenter.domain.pojo.ProductData
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 
 interface NotificationItemListener {
     fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int)
