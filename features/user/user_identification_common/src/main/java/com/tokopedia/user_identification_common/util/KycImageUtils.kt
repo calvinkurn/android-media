@@ -12,9 +12,7 @@ import java.io.ByteArrayOutputStream
 class KycImageUtils {
     companion object {
 
-        const val MSG_FAIL_RESIZE_IMG = "Gagal memproses gambar"
-        const val CODE_FAIL_RESIZE_IMG = 101
-
+        const val MSG_FAIL_RESIZE_IMG = "Gagal memproses gambar. Silahkan foto ulang."
         fun resizeImage(imagePath: String, maxWidth: Int, maxHeight: Int): String {
             try {
                 var image = BitmapFactory.decodeFile(imagePath)
