@@ -14,7 +14,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.list.R;
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.user.session.UserSession;
@@ -35,8 +35,14 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
         inflateView(com.tokopedia.core2.R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(com.tokopedia.design.R.id.container, new ProductManageSellerFragment(), TAG).commit();
+                    .replace(com.tokopedia.core2.R.id.container, new ProductManageSellerFragment(), TAG).commit();
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+        SplitCompat.installActivity(this);
     }
 
     @Override

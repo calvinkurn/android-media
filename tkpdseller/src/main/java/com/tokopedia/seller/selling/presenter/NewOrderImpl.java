@@ -272,10 +272,23 @@ public class NewOrderImpl extends NewOrder {
                 if (listDatas.size() == 0) {
                     view.hideFab();
                     view.addRetry();
+                    view.removeRetryMessage();
                 } else {
                     NetworkErrorHelper.showSnackbar((Activity) context);
                 }
 
+            }
+
+            @Override
+            public void onErrorWithMessage(String message) {
+                finishConnection();
+                if (listDatas.size() == 0) {
+                    view.hideFab();
+                    view.addRetry();
+                    view.addRetryMessage(message);
+                } else {
+                    NetworkErrorHelper.showSnackbar((Activity) context);
+                }
             }
 
             @Override

@@ -2,14 +2,12 @@ package com.tokopedia.dynamicfeatures
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.common.ConnectionResult
@@ -24,7 +22,6 @@ import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.coroutines.*
-import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 
@@ -178,6 +175,9 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            SplitInstallHelper.updateAppInfo(this)
+        }
         successInstall = manager.installedModules.contains(moduleName)
         progressBar.visibility = View.INVISIBLE
         if (launch && successInstall) {
