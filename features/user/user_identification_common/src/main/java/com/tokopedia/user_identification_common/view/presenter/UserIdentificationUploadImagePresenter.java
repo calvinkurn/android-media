@@ -214,12 +214,12 @@ public class UserIdentificationUploadImagePresenter extends
 
     @Override
     public void checkKtp(String image) {
-        String resizedImg = "";
+        String resizedImg = KycImageUtils.Companion.resizeImage(image, GetKtpStatusUseCase.MAX_WIDTH, GetKtpStatusUseCase.MAX_HEIGHT);
         if(!resizedImg.isEmpty()) {
             cekKtpStatusUseCase.execute(cekKtpStatusUseCase.getRequestParam(image),
                     new GetKtpStatusSubscriber(getView().getKtpStatusListener()));
         }else{
-            getView().onErrorUpload(KycImageUtils.MSG_FAIL_RESIZE_IMG);
+            getView().onImageEmpty(KycImageUtils.MSG_FAIL_RESIZE_IMG);
         }
     }
 
