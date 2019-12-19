@@ -9,10 +9,10 @@ internal class RechargeUploadImageViewModelTest: Spek ({
 
     InstantTaskExecutorRuleSpek(this)
 
-    Feature("upload image OCR") {
+    Feature("upload image use image uploader") {
 
-        Scenario("handle upload image") {
-            Given("") {
+        Scenario("successfully get url image from image uploader") {
+            Given("url string file location") {
 
             }
 

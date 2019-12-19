@@ -1,5 +1,6 @@
 package com.tokopedia.rechargeocr.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -22,26 +23,30 @@ import kotlin.collections.HashMap
 class RechargeUploadImageViewModel @Inject constructor(private val uploadImageUseCase: UploadImageUseCase<RechargeUploadImageResponse>,
                                                        private val graphqlRepository: GraphqlRepository,
                                                        private val userSession: UserSessionInterface,
-                                                       private val dispatcher: CoroutineDispatcher)
+                                                       private val dispatcher: CoroutineDispatcher = Dispatchers.IO)
     : BaseViewModel(dispatcher) {
 
-    fun uploadImageRecharge(fileLocation: String?,
-                            onSuccess: (String) -> Unit,
-                            onError: (Throwable) -> Unit) {
+    val urlImage = MutableLiveData<String>()
+
+    fun uploadImageRecharge(fileLocation: String?) {
         launchCatchError(block = {
-            val dataUploadImage = withContext(Dispatchers.IO) {
-                uploadImageUseCase.createObservable(createUploadParams(fileLocation))
-                        .toBlocking().first().dataResultImageUpload
-            }
+            val dataUploadImage = getUrlUploadImage(fileLocation)
             dataUploadImage.data.picSrc?.let {
                 var url = it
                 if (it.contains(DEFAULT_RESOLUTION)) {
                     url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_500)
-                    onSuccess(url)
                 }
+                urlImage.value = url
             }
         }) {
-            onError(it)
+            urlImage.value = ""
+        }
+    }
+
+    suspend fun getUrlUploadImage(fileLocation: String?): RechargeUploadImageResponse {
+        return withContext(dispatcher) {
+            uploadImageUseCase.createObservable(createUploadParams(fileLocation))
+                    .toBlocking().first().dataResultImageUpload
         }
     }
 
@@ -49,7 +54,7 @@ class RechargeUploadImageViewModel @Inject constructor(private val uploadImageUs
                      onSuccessOcr: (String) -> Unit,
                      onError: (Throwable) -> Unit) {
         launchCatchError(block = {
-            val dataOcr = withContext(Dispatchers.IO) {
+            val dataOcr = withContext(dispatcher) {
                 val mapParam = mutableMapOf<String, Any>()
                 mapParam[PARAM_IMAGE_OCR] = imageSrc
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeOcrResponse::class.java, mapParam)

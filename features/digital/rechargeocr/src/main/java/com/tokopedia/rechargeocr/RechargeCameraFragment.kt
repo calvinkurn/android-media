@@ -164,8 +164,9 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             ImageHandler.loadImageFromFile(context, fullImagePreview, cameraResultFile)
             imagePath = cameraResultFile.absolutePath
             showImagePreview()
-            uploadImageviewModel.uploadImageRecharge(imagePath, this::onSuccessUploadImage,
-                    this::onError)
+            uploadImageviewModel.uploadImageRecharge(imagePath)
+//                    , this::onSuccessUploadImage,
+//                    this::onError)
         } else {
             Toast.makeText(context, "Terjadi kesalahan, silahkan coba lagi", Toast
                     .LENGTH_LONG).show()

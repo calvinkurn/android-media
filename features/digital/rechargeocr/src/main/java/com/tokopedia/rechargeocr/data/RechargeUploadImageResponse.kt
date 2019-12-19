@@ -3,23 +3,21 @@ package com.tokopedia.rechargeocr.data
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class RechargeUploadImageResponse {
+class  RechargeUploadImageResponse(
     @SerializedName("data")
     @Expose
-    val data: RechargeUploadImageData = RechargeUploadImageData()
-}
+    val data: RechargeUploadImageData = RechargeUploadImageData())
 
-class RechargeUploadImageData {
+class RechargeUploadImageData(
     @SerializedName("pic_obj")
     @Expose
-    val picObj: String? = ""
+    val picObj: String? = "",
     @SerializedName("pic_src")
     @Expose
-    val picSrc: String? = ""
+    var picSrc: String? = "",
     @SerializedName("server_id")
     @Expose
-    val serverId: String? = ""
+    val serverId: String? = "",
     @SerializedName("success")
     @Expose
-    val success: String? = ""
-}
+    val success: String? = "")
