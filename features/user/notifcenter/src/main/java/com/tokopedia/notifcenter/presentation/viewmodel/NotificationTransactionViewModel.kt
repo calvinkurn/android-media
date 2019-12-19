@@ -16,8 +16,8 @@ import com.tokopedia.notifcenter.domain.NotificationFilterUseCase
 import com.tokopedia.notifcenter.domain.NotificationInfoTransactionUseCase
 import com.tokopedia.notifcenter.domain.NotificationTransactionUseCase
 import com.tokopedia.notifcenter.domain.model.NotificationFilterSectionWrapper
-import com.tokopedia.notifcenter.domain.model.TransactionNotification
 import com.tokopedia.notifcenter.presentation.view.subscriber.NotificationUpdateActionSubscriber
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationViewBean
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -25,7 +25,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 interface NotificationTransactionContract {
-    fun getTransactionNotification(lastNotificationId: String)
+    fun getNotificationViewBean(lastNotificationId: String)
     fun updateNotificationFilter(filter: HashMap<String, Int>)
     fun markReadNotification(notificationId: String)
     fun onErrorMessage(throwable: Throwable)
@@ -46,8 +46,8 @@ class NotificationTransactionViewModel @Inject constructor(
         dispatcher: DispatcherProvider
 ): BaseViewModel(dispatcher.io()), NotificationTransactionContract {
 
-    private val _notification = MediatorLiveData<TransactionNotification>()
-    val notification: LiveData<TransactionNotification> get() = _notification
+    private val _notification = MediatorLiveData<NotificationViewBean>()
+    val notification: LiveData<NotificationViewBean> get() = _notification
 
     private val _infoNotification = MediatorLiveData<NotificationEntity>()
     val infoNotification: LiveData<NotificationEntity> get() = _infoNotification
@@ -75,7 +75,7 @@ class NotificationTransactionViewModel @Inject constructor(
         }
 
         _notification.addSource(_filterNotification) {
-            getTransactionNotification(_lastNotificationId.value?: "")
+            getNotificationViewBean(_lastNotificationId.value?: "")
         }
     }
 
@@ -91,7 +91,7 @@ class NotificationTransactionViewModel @Inject constructor(
         })
     }
 
-    override fun getTransactionNotification(lastNotificationId: String) {
+    override fun getNotificationViewBean(lastNotificationId: String) {
         val params = NotificationTransactionUseCase.params(
                 FIRST_INITIAL_PAGE,
                 variables,
