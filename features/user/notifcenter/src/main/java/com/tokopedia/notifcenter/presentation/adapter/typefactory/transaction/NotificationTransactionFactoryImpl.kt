@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.adapter.typefactory
+package com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -6,13 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.domain.model.*
 import com.tokopedia.notifcenter.listener.TransactionMenuListener
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.*
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.*
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationTransactionItemListener
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateItemViewModel
+import com.tokopedia.notifcenter.listener.NotificationItemListener
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
 import com.tokopedia.user.session.UserSessionInterface
 
 class NotificationTransactionFactoryImpl(
-        private var notificationUpdateListener: NotificationTransactionItemListener,
+        private var notificationUpdateListener: NotificationItemListener,
         private val notificationFilterListener: NotificationFilterViewHolder.NotifFilterListener,
         private val transactionMenuListener: TransactionMenuListener,
         private val userSession: UserSessionInterface
@@ -22,19 +23,19 @@ class NotificationTransactionFactoryImpl(
 
     override fun type(saleNotification: SaleNotification): Int = SaleViewHolder.LAYOUT
 
-    override fun type(notification: TransactionItemNotification): Int {
-        return when (notification.typeLink) {
-            NotificationUpdateItemViewModel.TYPE_BANNER_1X1 -> {
-                val imageUrl = notification.contentUrl
+    override fun type(viewItem: NotificationItemViewBean): Int {
+        return when (viewItem.typeLink) {
+            NotificationItemViewBean.TYPE_BANNER_1X1 -> {
+                val imageUrl = viewItem.contentUrl
                 if (imageUrl.isEmpty()) {
                     TextNotificationViewHolder.LAYOUT
                 } else {
                     SmallBannerNotificationViewHolder.LAYOUT
                 }
             }
-            NotificationUpdateItemViewModel.TYPE_BANNER_2X1 -> BigBannerNotificationViewHolder.LAYOUT
-            NotificationUpdateItemViewModel.TYPE_RECOMMENDATION -> ProductRecomNotificationViewHolder.LAYOUT
-            NotificationUpdateItemViewModel.TYPE_WISHLIST -> WishListNotificationViewHolder.LAYOUT
+            NotificationItemViewBean.TYPE_BANNER_2X1 -> BigBannerNotificationViewHolder.LAYOUT
+            NotificationItemViewBean.TYPE_RECOMMENDATION -> ProductRecomNotificationViewHolder.LAYOUT
+            NotificationItemViewBean.TYPE_WISHLIST -> WishListNotificationViewHolder.LAYOUT
             else -> TextNotificationViewHolder.LAYOUT
         }
     }
@@ -44,7 +45,7 @@ class NotificationTransactionFactoryImpl(
     }
 
     override fun type(empty: EmptyState): Int {
-        return EmptyDataViewHolder.LAYOUT
+        return EmptyDataStateViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -57,7 +58,7 @@ class NotificationTransactionFactoryImpl(
             ProductRecomNotificationViewHolder.LAYOUT -> ProductRecomNotificationViewHolder(parent, notificationUpdateListener)
             WishListNotificationViewHolder.LAYOUT -> WishListNotificationViewHolder(parent, notificationUpdateListener)
             NotificationFilterViewHolder.LAYOUT -> NotificationFilterViewHolder(parent, notificationFilterListener, userSession)
-            EmptyDataViewHolder.LAYOUT -> EmptyDataViewHolder(parent)
+            EmptyDataStateViewHolder.LAYOUT -> EmptyDataStateViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
