@@ -4,12 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:padding="@dimen/dp_5"
     android:orientation="vertical">
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/loader_img_main"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_350"
+        android:layout_height="@dimen/dp_300"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
