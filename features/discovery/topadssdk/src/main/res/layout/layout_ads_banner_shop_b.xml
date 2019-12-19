@@ -95,6 +95,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
         app:layout_constraintBottom_toBottomOf="@+id/kunjungi_toko"
         app:layout_constraintStart_toEndOf="@+id/kunjungi_toko"
         app:layout_constraintTop_toTopOf="@+id/kunjungi_toko"
