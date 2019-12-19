@@ -155,8 +155,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     lateinit var prefs: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.product.manage.list.R.layout.fragment_product_manage, container, false)
+        return inflater.inflate(getLayoutRes(), container, false)
     }
+
+    open fun getLayoutRes(): Int = R.layout.fragment_product_manage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -169,22 +171,22 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (GlobalConfig.isCustomerApp()) {
-            inflater.inflate(com.tokopedia.product.manage.list.R.menu.menu_product_manage_dark, menu)
+            inflater.inflate(R.menu.menu_product_manage_dark, menu)
         } else {
-            inflater.inflate(com.tokopedia.product.manage.list.R.menu.menu_product_manage, menu)
+            inflater.inflate(R.menu.menu_product_manage, menu)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val itemId = item.itemId
-        if (itemId == com.tokopedia.seller.R.id.add_product_menu) {
-            item.subMenu.findItem(com.tokopedia.seller.R.id.label_view_add_image).setOnMenuItemClickListener { item ->
+        if (itemId == R.id.add_product_menu) {
+            item.subMenu.findItem(R.id.label_view_add_image).setOnMenuItemClickListener { item ->
                 startActivity(ProductAddNameCategoryActivity.createInstance(activity))
                 ProductManageTracking.eventProductManageTopNav(item.title.toString())
                 true
             }
-            item.subMenu.findItem(com.tokopedia.seller.R.id.label_view_import_from_instagram).setOnMenuItemClickListener { item ->
+            item.subMenu.findItem(R.id.label_view_import_from_instagram).setOnMenuItemClickListener { item ->
                 val intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(context)
                 startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE)
                 ProductManageTracking.eventProductManageTopNav(item.title.toString())
