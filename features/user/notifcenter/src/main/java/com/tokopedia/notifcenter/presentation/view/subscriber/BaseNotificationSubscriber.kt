@@ -3,11 +3,10 @@ package com.tokopedia.notifcenter.presentation.view.subscriber
 import android.util.Log
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateTotalUnread
 import rx.Subscriber
 import java.lang.reflect.Type
 
-abstract class BaseNotificationSubscriber() : Subscriber<GraphqlResponse>() {
+abstract class BaseNotificationSubscriber : Subscriber<GraphqlResponse>() {
 
     fun handleError(graphqlResponse: GraphqlResponse,
                     type: Type, routingOnNext: (GraphqlResponse) -> Unit,
