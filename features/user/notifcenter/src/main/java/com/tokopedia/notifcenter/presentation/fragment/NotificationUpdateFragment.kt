@@ -32,19 +32,19 @@ import com.tokopedia.notifcenter.domain.model.EmptyUpdateState
 import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.notifcenter.domain.pojo.ProductData
 import com.tokopedia.notifcenter.listener.NotificationActivityListener
+import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationUpdateFilterSectionTypeFactoryImpl
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationUpdateTypeFactoryImpl
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notificationupdate.NotificationUpdateItemViewHolder
-import com.tokopedia.notifcenter.presentation.di.notification.DaggerNotificationUpdateComponent
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.update.NotificationUpdateTypeFactoryImpl
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
+import com.tokopedia.notifcenter.presentation.di.DaggerNotificationUpdateComponent
 import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationActivityContract
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationUpdateContract
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationUpdateItemListener
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateItemViewModel
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateViewModel
+import com.tokopedia.notifcenter.presentation.view.contract.NotificationActivityContract
+import com.tokopedia.notifcenter.presentation.view.contract.NotificationUpdateContract
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationViewBean
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
@@ -53,10 +53,13 @@ import javax.inject.Inject
 /**
  * @author : Steven 10/04/19
  */
-class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
-        , NotificationUpdateContract.View, NotificationUpdateItemListener,
+class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
+        BaseAdapterTypeFactory>(),
+        NotificationUpdateContract.View,
+        NotificationItemListener,
         NotificationUpdateFilterAdapter.FilterAdapterListener,
-        NotificationActivityListener, NotificationUpdateLongerTextFragment.LongerContentListener {
+        NotificationActivityListener,
+        NotificationUpdateLongerTextFragment.LongerContentListener {
 
     private var cursor = ""
     private var lastItem = 0
@@ -232,7 +235,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    private fun onSuccessInitiateData(): (NotificationUpdateViewModel) -> Unit {
+    private fun onSuccessInitiateData(): (NotificationViewBean) -> Unit {
         return {
             hideLoading()
             _adapter.removeEmptyState()
@@ -264,7 +267,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    private fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterItemViewModel>) -> Unit {
+    private fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
         return {
             filterAdapter?.updateData(it)
         }
@@ -280,11 +283,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    override fun itemClicked(viewModel: NotificationUpdateItemViewModel, adapterPosition: Int) {
-        adapter.notifyItemChanged(adapterPosition, NotificationUpdateItemViewHolder.PAYLOAD_CHANGE_BACKGROUND)
-        analytics.trackClickNotifList(viewModel)
-        presenter.markReadNotif(viewModel.notificationId)
-        val needToResetCounter = !viewModel.isRead
+    override fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int) {
+        adapter.notifyItemChanged(adapterPosition, BaseNotificationItemViewHolder.PAYLOAD_CHANGE_BACKGROUND)
+        analytics.trackClickNotifList(notification)
+        presenter.markReadNotif(notification.notificationId)
+        val needToResetCounter = !notification.isRead
         if (needToResetCounter) {
             updateMarkAllReadCounter()
             notifyBottomActionView()
@@ -364,7 +367,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    override fun showTextLonger(element: NotificationUpdateItemViewModel) {
+    override fun showTextLonger(element: NotificationItemViewBean) {
         val bundle = Bundle()
 
         bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
@@ -386,7 +389,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    override fun trackNotificationImpression(element: NotificationUpdateItemViewModel) {
+    override fun trackNotificationImpression(element: NotificationItemViewBean) {
         analytics.saveNotificationImpression(element)
     }
 
@@ -395,12 +398,12 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     companion object {
-        val PARAM_CONTENT_TITLE = "content title"
-        val PARAM_CONTENT_TEXT = "content text"
-        val PARAM_CONTENT_IMAGE = "content image"
-        val PARAM_CONTENT_IMAGE_TYPE = "content image type"
-        val PARAM_CTA_APPLINK = "cta applink"
-        val PARAM_BUTTON_TEXT = "button text"
-        val PARAM_TEMPLATE_KEY = "template key"
+        const val PARAM_CONTENT_TITLE = "content title"
+        const val PARAM_CONTENT_TEXT = "content text"
+        const val PARAM_CONTENT_IMAGE = "content image"
+        const val PARAM_CONTENT_IMAGE_TYPE = "content image type"
+        const val PARAM_CTA_APPLINK = "cta applink"
+        const val PARAM_BUTTON_TEXT = "button text"
+        const val PARAM_TEMPLATE_KEY = "template key"
     }
 }

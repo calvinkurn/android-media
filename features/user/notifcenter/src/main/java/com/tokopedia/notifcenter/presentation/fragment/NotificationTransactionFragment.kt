@@ -2,7 +2,6 @@ package com.tokopedia.notifcenter.presentation.fragment
 
 import android.os.Bundle
 import android.os.Handler
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,17 +24,17 @@ import com.tokopedia.notifcenter.data.consts.buyerMenu
 import com.tokopedia.notifcenter.data.consts.sellerMenu
 import com.tokopedia.notifcenter.data.mapper.NotificationMapper
 import com.tokopedia.notifcenter.domain.model.EmptyState
-import com.tokopedia.notifcenter.domain.model.TransactionItemNotification
-import com.tokopedia.notifcenter.domain.model.TransactionNotification
 import com.tokopedia.notifcenter.domain.pojo.ProductData
+import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.listener.TransactionMenuListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationTransactionAdapter
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationTransactionFactory
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationTransactionFactoryImpl
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactory
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactoryImpl
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.NotificationFilterViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.NotificationTransactionItemViewHolder
-import com.tokopedia.notifcenter.presentation.di.notification.DaggerNotificationTransactionComponent
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationTransactionItemListener
+import com.tokopedia.notifcenter.presentation.di.DaggerNotificationTransactionComponent
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationViewBean
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationTransactionViewModel
 import com.tokopedia.notifcenter.util.endLess
 import com.tokopedia.notifcenter.util.viewModelProvider
@@ -44,7 +43,7 @@ import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
 
 class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-        NotificationTransactionItemListener,
+        NotificationItemListener,
         NotificationFilterViewHolder.NotifFilterListener,
         TransactionMenuListener {
 
@@ -96,7 +95,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
             }
         })
         viewModel.lastNotificationId.observe(this, Observer {
-            viewModel.getTransactionNotification(it)
+            viewModel.getNotificationViewBean(it)
         })
 
         swipeRefresh.setOnRefreshListener {
@@ -160,7 +159,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         }
     }
 
-    private fun onSuccessNotificationData(notification: TransactionNotification) {
+    private fun onSuccessNotificationData(notification: NotificationViewBean) {
         hideLoading()
 
         val pagination = notification.paging.hasNext
@@ -176,8 +175,8 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         }
     }
 
-    override fun itemClicked(notification: TransactionItemNotification, adapterPosition: Int) {
-        val payloadBackground = NotificationTransactionItemViewHolder.PAYLOAD_CHANGE_BACKGROUND
+    override fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int) {
+        val payloadBackground = BaseNotificationItemViewHolder.PAYLOAD_CHANGE_BACKGROUND
         adapter.notifyItemChanged(adapterPosition, payloadBackground)
         viewModel.markReadNotification(notification.notificationId)
 
@@ -202,7 +201,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         return NotificationUpdateAnalytics()
     }
 
-    override fun showTextLonger(element: TransactionItemNotification) {
+    override fun showTextLonger(element: NotificationItemViewBean) {
         val bundle = Bundle()
         bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
         bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
@@ -262,7 +261,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         analytics.sendTrackTransactionTab(parent, child)
     }
 
-    override fun trackNotificationImpression(element: TransactionItemNotification) {
+    override fun trackNotificationImpression(element: NotificationItemViewBean) {
         analytics.saveNotificationImpression(element)
     }
 
