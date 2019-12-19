@@ -14,6 +14,7 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCas
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetOfficialStoreRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -37,7 +38,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val getOfficialStoreBenefitUseCase: GetOfficialStoreBenefitUseCase,
         private val getOfficialStoreFeaturedShopUseCase: GetOfficialStoreFeaturedUseCase,
         private val getOfficialStoreDynamicChannelUseCase: GetOfficialStoreDynamicChannelUseCase,
-        private val getRecommendationUseCase: GetOfficialStoreRecommendationUseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
         private val userSessionInterface: UserSessionInterface,
         private val addWishListUseCase: AddWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
