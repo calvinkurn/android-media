@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction
+package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification
 
 import android.graphics.Typeface.BOLD
 import android.graphics.drawable.GradientDrawable
@@ -18,17 +18,19 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
-import com.tokopedia.notifcenter.domain.model.TransactionItemNotification
-import com.tokopedia.notifcenter.domain.model.TransactionItemNotification.Companion.BUYER_TYPE
-import com.tokopedia.notifcenter.domain.model.TransactionItemNotification.Companion.SELLER_TYPE
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationTransactionItemListener
+import com.tokopedia.notifcenter.listener.NotificationItemListener
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean.Companion.BUYER_TYPE
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean.Companion.SELLER_TYPE
 
 
 /**
  * @author : Steven 10/04/19
  */
-abstract class NotificationTransactionItemViewHolder(itemView: View, var listener: NotificationTransactionItemListener)
-    : AbstractViewHolder<TransactionItemNotification>(itemView) {
+abstract class BaseNotificationItemViewHolder(
+        itemView: View,
+        var listener: NotificationItemListener
+) : AbstractViewHolder<NotificationItemViewBean>(itemView) {
 
     protected val container: ConstraintLayout = itemView.findViewById(R.id.container)
     protected val icon: ImageView = itemView.findViewById(R.id.icon)
@@ -39,7 +41,7 @@ abstract class NotificationTransactionItemViewHolder(itemView: View, var listene
     protected val title: TextView = itemView.findViewById(R.id.title)
     protected val body: TextView = itemView.findViewById(R.id.body)
 
-    override fun bind(element: TransactionItemNotification) {
+    override fun bind(element: NotificationItemViewBean) {
         bindNotificationBackgroundColor(element)
         bindNotificationHeader(element)
         bindNotificationContent(element)
@@ -48,18 +50,18 @@ abstract class NotificationTransactionItemViewHolder(itemView: View, var listene
         trackImpression(element)
     }
 
-    private fun trackImpression(element: TransactionItemNotification) {
+    private fun trackImpression(element: NotificationItemViewBean) {
         listener.trackNotificationImpression(element)
     }
 
-    override fun bind(element: TransactionItemNotification?, payloads: MutableList<Any>) {
+    override fun bind(element: NotificationItemViewBean?, payloads: MutableList<Any>) {
         if (element == null || payloads.isEmpty()) return
         when (payloads.first()) {
             PAYLOAD_CHANGE_BACKGROUND -> bindNotificationBackgroundColor(element)
         }
     }
 
-    protected open fun bindNotificationBackgroundColor(element: TransactionItemNotification) {
+    protected open fun bindNotificationBackgroundColor(element: NotificationItemViewBean) {
         val color: Int = if (element.isRead) {
             MethodChecker.getColor(container.context, R.color.white)
         } else {
@@ -68,14 +70,14 @@ abstract class NotificationTransactionItemViewHolder(itemView: View, var listene
         container.setBackgroundColor(color)
     }
 
-    protected open fun bindNotificationHeader(element: TransactionItemNotification) {
+    protected open fun bindNotificationHeader(element: NotificationItemViewBean) {
         time.text = element.time
         type.text = element.sectionTitle
         convertTypeUser(element)
         ImageHandler.loadImage2(icon, element.iconUrl, R.drawable.ic_loading_toped_new)
     }
 
-    protected open fun bindNotificationContent(element: TransactionItemNotification) {
+    protected open fun bindNotificationContent(element: NotificationItemViewBean) {
         title.text = element.title
         if (element.body.length > MAX_CONTENT_LENGTH) {
             var shorten = element.body.take(MAX_CONTENT_LENGTH)
@@ -104,9 +106,9 @@ abstract class NotificationTransactionItemViewHolder(itemView: View, var listene
         }
     }
 
-    abstract fun bindNotificationPayload(element: TransactionItemNotification)
+    abstract fun bindNotificationPayload(element: NotificationItemViewBean)
 
-    protected open fun bindOnNotificationClick(element: TransactionItemNotification) {
+    protected open fun bindOnNotificationClick(element: NotificationItemViewBean) {
         container.setOnClickListener {
             listener.itemClicked(element, adapterPosition)
             element.isRead = true
@@ -118,7 +120,7 @@ abstract class NotificationTransactionItemViewHolder(itemView: View, var listene
         }
     }
 
-    private fun convertTypeUser(element: TransactionItemNotification) {
+    private fun convertTypeUser(element: NotificationItemViewBean) {
         label.hide()
         val labelIndex = element.label
 
