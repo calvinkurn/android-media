@@ -21,7 +21,6 @@ import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_G
 import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_MOBILE;
 import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_NAME;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE;
-import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_ID;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_NAME;
@@ -40,7 +39,6 @@ public class HomeAnalytics {
         value.put(USER_ATTRIBUTE_USER_EMAIL, profileData.getProfile() == null ? "" : profileData.getProfile().getEmail());
         value.put(USER_ATTRIBUTE_USER_MOBILE, TrackingUtils.normalizePhoneNumber(profileData.getProfile() == null || profileData.getProfile().getPhone() == null ? "" : profileData.getProfile().getPhone()));
         value.put(USER_ATTRIBUTE_USER_BDAY, DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MM_YYYY, TrackingUtils.extractFirstSegment(context, profileData.getProfile().getBday() != null ? profileData.getProfile().getBday() : "", "T")));
-        value.put(IS_GOLD_MERCHANT, false);
         value.put(SHOP_ID, profileData.getUserShopInfo() != null ? profileData.getUserShopInfo().getInfo().getShopId() : "");
         value.put(SHOP_NAME, profileData.getUserShopInfo() != null ? profileData.getUserShopInfo().getInfo().getShopName() : "");
         value.put(TOTAL_SOLD_ITEM, profileData.getUserShopInfo() != null ? profileData.getUserShopInfo().getStats().getShopItemSold() : "0");
