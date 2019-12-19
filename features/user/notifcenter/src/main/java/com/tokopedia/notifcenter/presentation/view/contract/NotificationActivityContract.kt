@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.view.listener
+package com.tokopedia.notifcenter.presentation.view.contract
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
@@ -7,7 +7,6 @@ import com.tokopedia.notifcenter.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateUnread
 
 interface NotificationActivityContract {
-
     interface View : CustomerView {
         fun resetCounterNotificationUpdate()
         fun goToUpdateTab()
