@@ -128,7 +128,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     private fun setupGeneralView() {
 
         ImageHandler.loadImageAndCache(imgVerify, IMAGE_URL)
-
+        textInputOtp?.setLength(viewModel.numberOtpDigit)
         textInputOtp?.setOnClickListener {
             showKeyboard(true)
         }
@@ -153,7 +153,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         })
 
         textInputOtp?.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE && textInputOtp?.length() == MAX_OTP_LENGTH) {
+            if (actionId == EditorInfo.IME_ACTION_DONE && textInputOtp?.length() == viewModel.numberOtpDigit) {
                 verifyOtp()
                 true
             }
@@ -458,7 +458,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
         private const val COUNTDOWN_LENGTH = 30
         private const val INTERVAL = 1000
-        private const val MAX_OTP_LENGTH = 6
 
         private const val CACHE_OTP = "CACHE_OTP"
         private const val HAS_TIMER = "has_timer"
