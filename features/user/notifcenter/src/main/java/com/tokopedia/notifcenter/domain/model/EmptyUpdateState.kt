@@ -1,7 +1,7 @@
 package com.tokopedia.notifcenter.domain.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationUpdateTypeFactory
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.update.NotificationUpdateTypeFactory
 
 class EmptyUpdateState(
         val icon: Int,
