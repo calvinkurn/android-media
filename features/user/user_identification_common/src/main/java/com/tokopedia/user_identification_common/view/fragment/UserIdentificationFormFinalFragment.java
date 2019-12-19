@@ -358,10 +358,10 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onImageEmpty(String error) {
+    public void onImageEmpty() {
         hideLoading();
         if(getActivity() != null) {
-            ((UserIdentificationFormActivity) getActivity()).showErrorWithoutAction(error);
+            ((UserIdentificationFormActivity) getActivity()).showErrorWithoutAction(getResources().getString(R.string.kyc_error_compress_image));
         }
     }
 

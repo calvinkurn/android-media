@@ -219,7 +219,7 @@ public class UserIdentificationUploadImagePresenter extends
             cekKtpStatusUseCase.execute(cekKtpStatusUseCase.getRequestParam(image),
                     new GetKtpStatusSubscriber(getView().getKtpStatusListener()));
         }else{
-            getView().onImageEmpty(KycImageUtils.MSG_FAIL_RESIZE_IMG);
+            getView().onImageEmpty();
         }
     }
 
