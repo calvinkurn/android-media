@@ -13,7 +13,7 @@ ext {
     supportLibraryVersion = '1.1.0'
     supportLegacyLibraryVersion = '1.0.0'
     materialVersion = '1.0.0'
-    constraintLayoutVersion = '2.0.0-beta3'
+    constraintLayoutVersion = '2.0.0-beta4'
 
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '10.1.0'
