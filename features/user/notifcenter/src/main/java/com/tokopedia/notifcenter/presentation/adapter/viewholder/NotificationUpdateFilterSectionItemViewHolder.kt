@@ -6,7 +6,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterSectionItemViewModel
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterSectionViewBean
 
 
 /**
@@ -14,16 +14,16 @@ import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateF
  */
 class NotificationUpdateFilterSectionItemViewHolder(
         itemView: View,
-        val itemSectionListener: FilterSectionListener
-) : AbstractViewHolder<NotificationUpdateFilterSectionItemViewModel>(itemView) {
+        private val itemSectionListener: FilterSectionListener
+) : AbstractViewHolder<NotificationUpdateFilterSectionViewBean>(itemView) {
 
     private val category: TextView = itemView.findViewById(R.id.chips_item)
 
     interface FilterSectionListener {
-        fun onFilterClicked(element: NotificationUpdateFilterSectionItemViewModel)
+        fun onFilterClicked(element: NotificationUpdateFilterSectionViewBean)
     }
 
-    override fun bind(element: NotificationUpdateFilterSectionItemViewModel?, payloads: MutableList<Any>) {
+    override fun bind(element: NotificationUpdateFilterSectionViewBean?, payloads: MutableList<Any>) {
         if (element == null || payloads.isEmpty()) return
         val payload = payloads[0]
         when (payload) {
@@ -32,16 +32,16 @@ class NotificationUpdateFilterSectionItemViewHolder(
         }
     }
 
-    private fun selectChip(element: NotificationUpdateFilterSectionItemViewModel) {
+    private fun selectChip(element: NotificationUpdateFilterSectionViewBean) {
         setChipBackground(element)
     }
 
-    private fun deselectChip(element: NotificationUpdateFilterSectionItemViewModel) {
+    private fun deselectChip(element: NotificationUpdateFilterSectionViewBean) {
         element.selected = false
         setChipBackground(element)
     }
 
-    private fun setChipBackground(element: NotificationUpdateFilterSectionItemViewModel) {
+    private fun setChipBackground(element: NotificationUpdateFilterSectionViewBean) {
         if(element.selected) {
             category.background = MethodChecker.getDrawable(category.context, R.drawable.bg_item_filter_pressed)
         } else {
@@ -49,7 +49,7 @@ class NotificationUpdateFilterSectionItemViewHolder(
         }
     }
 
-    override fun bind(element: NotificationUpdateFilterSectionItemViewModel) {
+    override fun bind(element: NotificationUpdateFilterSectionViewBean) {
         category.text = element.text
         setChipBackground(element)
         category.setOnClickListener {

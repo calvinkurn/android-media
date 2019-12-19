@@ -11,8 +11,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.domain.pojo.ProductData
-import com.tokopedia.notifcenter.presentation.adapter.NotifcenterProductRecommendationAdapter
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateItemViewModel
+import com.tokopedia.notifcenter.presentation.adapter.NotifCenterProductRecomAdapter
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
 
 class ProductRecommendationMoreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -31,7 +31,7 @@ class ProductRecommendationMoreViewHolder(itemView: View) : RecyclerView.ViewHol
                     itemView.context,
                     ApplinkConst.RECOMMENDATION_PAGE,
                     productData.productId,
-                    NotificationUpdateItemViewModel.SOURCE
+                    NotificationItemViewBean.SOURCE
             )
         }
     }
@@ -41,7 +41,7 @@ class ProductRecommendationMoreViewHolder(itemView: View) : RecyclerView.ViewHol
     }
 
     private fun getShowedProductCount(products: List<ProductData>): Int {
-        val showCount = NotifcenterProductRecommendationAdapter.MAX_ITEM - 1
+        val showCount = NotifCenterProductRecomAdapter.MAX_ITEM - 1
         return if (products.size >= showCount) {
             showCount
         } else {
