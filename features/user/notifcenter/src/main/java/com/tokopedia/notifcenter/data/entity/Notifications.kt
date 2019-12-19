@@ -1,6 +1,5 @@
 package com.tokopedia.notifcenter.data.entity
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Notifications(
