@@ -6,18 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationUpdateFilterSectionTypeFactory
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationUpdateFilterSectionTypeFactoryImpl
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactory
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.NotificationUpdateFilterSectionItemViewHolder
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterSectionItemViewModel
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterSectionViewBean
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterViewBean
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.arrayListOf
-import kotlin.collections.toList
 
 /**
  * @author : Steven 11/04/19
@@ -27,13 +24,14 @@ class NotificationUpdateFilterAdapter(
         private val notificationUpdateTypeFactory: NotificationUpdateFilterSectionTypeFactoryImpl,
         private val listener: FilterAdapterListener,
         private val userSession: UserSessionInterface
-) : BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(notificationUpdateTypeFactory),
+) : BaseListAdapter<Visitable<*>,
+        BaseAdapterTypeFactory>(notificationUpdateTypeFactory),
         NotificationUpdateFilterSectionItemViewHolder.FilterSectionListener,
         ChipFilterItemDivider.ChipFilterListener {
 
     private val filterTypePosition = HashMap<String, Int>()
     private val filterTypeId = HashMap<String, Int>()
-    private var data: ArrayList<NotificationUpdateFilterItemViewModel> = arrayListOf()
+    private var data: ArrayList<NotificationUpdateFilterViewBean> = arrayListOf()
 
     interface FilterAdapterListener {
         fun updateFilter(filter: HashMap<String, Int>)
@@ -51,18 +49,18 @@ class NotificationUpdateFilterAdapter(
         notifyItemRangeInserted(position, visitables.size)
     }
 
-    fun updateData(data: ArrayList<NotificationUpdateFilterItemViewModel>) {
+    fun updateData(data: ArrayList<NotificationUpdateFilterViewBean>) {
         val filteredData = filterData(data)
         val flatViewModel = flattenFilterViewModel(filteredData)
         mapFilterData(filteredData)
         addElement(flatViewModel)
     }
 
-    private fun filterData(data: ArrayList<NotificationUpdateFilterItemViewModel>): ArrayList<NotificationUpdateFilterItemViewModel> {
+    private fun filterData(data: ArrayList<NotificationUpdateFilterViewBean>): ArrayList<NotificationUpdateFilterViewBean> {
         if (userSession.hasShop()) return data
-        val itemToRemove = arrayListOf<NotificationUpdateFilterItemViewModel>()
+        val itemToRemove = arrayListOf<NotificationUpdateFilterViewBean>()
         for (filter in data) {
-            if (filter.filterType == NotificationUpdateFilterItemViewModel.FilterType.TYPE_ID.type) {
+            if (filter.filterType == NotificationUpdateFilterViewBean.FilterType.TYPE_ID.type) {
                 itemToRemove.add(filter)
             }
         }
@@ -70,7 +68,7 @@ class NotificationUpdateFilterAdapter(
         return data
     }
 
-    override fun onFilterClicked(element: NotificationUpdateFilterSectionItemViewModel) {
+    override fun onFilterClicked(element: NotificationUpdateFilterSectionViewBean) {
         var counter = 0
         for (filter in data) {
             val filterType = filter.filterType
@@ -113,26 +111,26 @@ class NotificationUpdateFilterAdapter(
             if (visitables.size <= filterPosition) continue
 
             val data = visitables[filterPosition]
-                    as? NotificationUpdateFilterSectionItemViewModel
+                    as? NotificationUpdateFilterSectionViewBean
                     ?: continue
 
             when (filterType) {
-                NotificationUpdateFilterItemViewModel.FilterType.TYPE_ID.type -> typeName = data.text
-                NotificationUpdateFilterItemViewModel.FilterType.TAG_ID.type -> tagName = data.text
+                NotificationUpdateFilterViewBean.FilterType.TYPE_ID.type -> typeName = data.text
+                NotificationUpdateFilterViewBean.FilterType.TAG_ID.type -> tagName = data.text
             }
         }
 
         return String.format("%s - %s", typeName, tagName)
     }
 
-    private fun mapFilterData(data: ArrayList<NotificationUpdateFilterItemViewModel>) {
+    private fun mapFilterData(data: ArrayList<NotificationUpdateFilterViewBean>) {
         this.data = data
         for (filterType in data) {
             filterTypePosition[filterType.filterType] = NONE_SELECTED_POSITION
         }
     }
 
-    private fun flattenFilterViewModel(types: ArrayList<NotificationUpdateFilterItemViewModel>)
+    private fun flattenFilterViewModel(types: ArrayList<NotificationUpdateFilterViewBean>)
             : List<Visitable<NotificationUpdateFilterSectionTypeFactory>> {
         val visitable = arrayListOf<Visitable<NotificationUpdateFilterSectionTypeFactory>>()
         for (type in types) {

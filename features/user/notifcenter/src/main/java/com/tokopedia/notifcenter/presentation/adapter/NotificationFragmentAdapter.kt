@@ -8,7 +8,7 @@ import java.util.*
 /**
  * @author : Steven 09/04/19
  */
-class NotificationFragmentAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm){
+class NotificationFragmentAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 
     private var itemList: MutableList<NotificationFragmentItem> = ArrayList()
 

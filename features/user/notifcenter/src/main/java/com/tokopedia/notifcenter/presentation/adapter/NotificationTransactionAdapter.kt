@@ -3,10 +3,14 @@ package com.tokopedia.notifcenter.presentation.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.notifcenter.GlobalNavConstant.*
-import com.tokopedia.notifcenter.domain.model.*
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationTransactionFactoryImpl
 import com.tokopedia.navigation_common.model.NotificationsModel
+import com.tokopedia.notifcenter.GlobalNavConstant.*
+import com.tokopedia.notifcenter.domain.model.DrawerNotification
+import com.tokopedia.notifcenter.domain.model.EmptyState
+import com.tokopedia.notifcenter.domain.model.PurchaseNotification
+import com.tokopedia.notifcenter.domain.model.SaleNotification
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactoryImpl
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
 
 class NotificationTransactionAdapter(
         notificationFactory: NotificationTransactionFactoryImpl
@@ -58,7 +62,7 @@ class NotificationTransactionAdapter(
     }
 
     fun removeItem() {
-        visitables.removeAll { it is TransactionItemNotification }
+        visitables.removeAll { it is NotificationItemViewBean }
         notifyDataSetChanged()
     }
 

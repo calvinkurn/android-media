@@ -4,11 +4,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.notifcenter.domain.pojo.ProductData
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ProductRecommendationMoreViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.ProductRecommendationViewHolder
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationTransactionItemListener
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.ProductRecommendationViewHolder
+import com.tokopedia.notifcenter.listener.NotificationItemListener
 
-class NotifCenterProductRecomAdapter(val listener: NotificationTransactionItemListener)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NotifCenterProductRecomAdapter(
+        val listener: NotificationItemListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var products: List<ProductData> = emptyList()
     private var totalProduct = products.size
