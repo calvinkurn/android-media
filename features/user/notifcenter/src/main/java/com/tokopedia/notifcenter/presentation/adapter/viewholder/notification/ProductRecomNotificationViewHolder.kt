@@ -8,7 +8,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.presentation.adapter.NotifCenterProductRecomAdapter
-import com.tokopedia.notifcenter.presentation.adapter.NotifcenterProductRecommendationAdapter
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
 import com.tokopedia.notifcenter.widget.ProductRecomNotificationItemDecoration
@@ -60,8 +59,8 @@ class ProductRecomNotificationViewHolder(
     private fun getLastShowedProductId(element: NotificationItemViewBean): String {
         val products = element.products
         val lastItemPosition = products.size - 1
-        val lastMaxSeenPosition = NotifcenterProductRecommendationAdapter.MAX_ITEM - 1
-        val lastPosition = if (products.size >= NotifcenterProductRecommendationAdapter.MAX_ITEM) {
+        val lastMaxSeenPosition = NotifCenterProductRecomAdapter.MAX_ITEM - 1
+        val lastPosition = if (products.size >= NotifCenterProductRecomAdapter.MAX_ITEM) {
             lastMaxSeenPosition
         } else {
             lastItemPosition
