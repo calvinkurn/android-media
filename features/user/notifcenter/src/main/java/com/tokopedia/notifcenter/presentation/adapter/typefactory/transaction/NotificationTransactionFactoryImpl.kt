@@ -4,12 +4,17 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.notifcenter.domain.model.*
+import com.tokopedia.notifcenter.data.viewbean.NotificationFilterSectionViewBean
+import com.tokopedia.notifcenter.data.viewbean.PurchaseNotificationViewBean
+import com.tokopedia.notifcenter.data.viewbean.SaleNotificationViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationEmptyStateViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.listener.TransactionMenuListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.*
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.*
-import com.tokopedia.notifcenter.listener.NotificationItemListener
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.NotificationFilterViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.PurchaseViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.SaleViewHolder
 import com.tokopedia.user.session.UserSessionInterface
 
 class NotificationTransactionFactoryImpl(
@@ -19,9 +24,9 @@ class NotificationTransactionFactoryImpl(
         private val userSession: UserSessionInterface
 ): BaseAdapterTypeFactory(), NotificationTransactionFactory {
 
-    override fun type(purchaseNotification: PurchaseNotification): Int = PurchaseViewHolder.LAYOUT
+    override fun type(purchaseNotification: PurchaseNotificationViewBean): Int = PurchaseViewHolder.LAYOUT
 
-    override fun type(saleNotification: SaleNotification): Int = SaleViewHolder.LAYOUT
+    override fun type(saleNotification: SaleNotificationViewBean): Int = SaleViewHolder.LAYOUT
 
     override fun type(viewItem: NotificationItemViewBean): Int {
         return when (viewItem.typeLink) {
@@ -40,11 +45,11 @@ class NotificationTransactionFactoryImpl(
         }
     }
 
-    override fun type(filter: NotificationFilterSectionWrapper): Int {
+    override fun type(filter: NotificationFilterSectionViewBean): Int {
         return NotificationFilterViewHolder.LAYOUT
     }
 
-    override fun type(empty: EmptyState): Int {
+    override fun type(emptyState: NotificationEmptyStateViewBean): Int {
         return EmptyDataStateViewHolder.LAYOUT
     }
 

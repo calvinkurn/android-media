@@ -28,9 +28,9 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
-import com.tokopedia.notifcenter.domain.model.EmptyUpdateState
-import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateTotalUnread
-import com.tokopedia.notifcenter.domain.pojo.ProductData
+import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
+import com.tokopedia.notifcenter.data.entity.NotificationUpdateTotalUnread
+import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.listener.NotificationActivityListener
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateAdapter
@@ -38,13 +38,13 @@ import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAd
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.update.NotificationUpdateTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
-import com.tokopedia.notifcenter.presentation.di.DaggerNotificationUpdateComponent
+import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
 import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
-import com.tokopedia.notifcenter.presentation.view.contract.NotificationActivityContract
-import com.tokopedia.notifcenter.presentation.view.contract.NotificationUpdateContract
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterViewBean
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationViewBean
+import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
+import com.tokopedia.notifcenter.presentation.contract.NotificationUpdateContract
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
@@ -235,18 +235,14 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    private fun onSuccessInitiateData(): (NotificationViewBean) -> Unit {
+    private fun onSuccessInitiateData(): (NotificationViewData) -> Unit {
         return {
             hideLoading()
             _adapter.removeEmptyState()
 
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
-                val emptyState = EmptyUpdateState(
-                        R.drawable.bg_empty_state_common,
-                        getString(R.string.no_notification_update_yet)
-                )
-                _adapter.addElement(emptyState)
+                _adapter.addElement(EmptyDataStateProvider.emptyData())
             } else {
                 val canLoadMore = it.paging.hasNext
                 if (canLoadMore && !it.list.isEmpty()) {

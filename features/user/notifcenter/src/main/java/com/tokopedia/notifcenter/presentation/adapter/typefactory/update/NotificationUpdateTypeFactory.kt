@@ -2,7 +2,6 @@ package com.tokopedia.notifcenter.presentation.adapter.typefactory.update
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.notifcenter.domain.model.EmptyUpdateState
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.base.BaseNotificationTypeFactory
 
 /**
@@ -10,5 +9,4 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.base.BaseNotif
  */
 interface NotificationUpdateTypeFactory : BaseNotificationTypeFactory {
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
-    fun type(emptyState: EmptyUpdateState): Int
 }

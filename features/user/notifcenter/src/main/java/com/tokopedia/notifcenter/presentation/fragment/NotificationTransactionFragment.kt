@@ -20,11 +20,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationTransactionAnalytics
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
+import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.consts.buyerMenu
 import com.tokopedia.notifcenter.data.consts.sellerMenu
 import com.tokopedia.notifcenter.data.mapper.NotificationMapper
-import com.tokopedia.notifcenter.domain.model.EmptyState
-import com.tokopedia.notifcenter.domain.pojo.ProductData
+import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.listener.TransactionMenuListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationTransactionAdapter
@@ -32,9 +32,9 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.No
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.NotificationFilterViewHolder
-import com.tokopedia.notifcenter.presentation.di.DaggerNotificationTransactionComponent
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationViewBean
+import com.tokopedia.notifcenter.di.DaggerNotificationTransactionComponent
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationTransactionViewModel
 import com.tokopedia.notifcenter.util.endLess
 import com.tokopedia.notifcenter.util.viewModelProvider
@@ -86,10 +86,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
             _adapter.removeEmptyState()
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
-                val emptyString = EmptyState(
-                        R.drawable.bg_empty_state_notification,
-                        getString(R.string.notification_empty_message))
-                _adapter.addElement(emptyString)
+                _adapter.addElement(EmptyDataStateProvider.emptyData())
             }  else {
                 onSuccessNotificationData(it)
             }
@@ -159,7 +156,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         }
     }
 
-    private fun onSuccessNotificationData(notification: NotificationViewBean) {
+    private fun onSuccessNotificationData(notification: NotificationViewData) {
         hideLoading()
 
         val pagination = notification.paging.hasNext
@@ -186,7 +183,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
     override fun updateFilter(filter: HashMap<String, Int>) {
         //preventing bounce notification
-        _adapter.addElement(EmptyState(0, ""))
+        _adapter.addElement(EmptyDataStateProvider.clearEmptyData())
 
         viewModel.updateNotificationFilter(filter)
         cursor = ""

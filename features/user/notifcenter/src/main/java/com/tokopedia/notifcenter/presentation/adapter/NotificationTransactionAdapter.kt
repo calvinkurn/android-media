@@ -5,12 +5,12 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.navigation_common.model.NotificationsModel
 import com.tokopedia.notifcenter.GlobalNavConstant.*
-import com.tokopedia.notifcenter.domain.model.DrawerNotification
-import com.tokopedia.notifcenter.domain.model.EmptyState
-import com.tokopedia.notifcenter.domain.model.PurchaseNotification
-import com.tokopedia.notifcenter.domain.model.SaleNotification
+import com.tokopedia.notifcenter.data.model.DrawerNotification
+import com.tokopedia.notifcenter.data.viewbean.NotificationEmptyStateViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.viewbean.PurchaseNotificationViewBean
+import com.tokopedia.notifcenter.data.viewbean.SaleNotificationViewBean
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactoryImpl
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
 
 class NotificationTransactionAdapter(
         notificationFactory: NotificationTransactionFactoryImpl
@@ -19,14 +19,14 @@ class NotificationTransactionAdapter(
     fun updateValue(notificationData: NotificationsModel) {
         data.forEach {
             when (it) {
-                is PurchaseNotification -> {
+                is PurchaseNotificationViewBean -> {
                     it.childs.forEach { child ->
                         if (it.id == PEMBELIAN) {
                             purchaseCounterBadge(notificationData, child)
                         }
                     }
                 }
-                is SaleNotification -> {
+                is SaleNotificationViewBean -> {
                     it.childs.forEach { child ->
                         if (it.id == PENJUALAN) {
                             saleCounterBadge(notificationData, child)
@@ -67,7 +67,7 @@ class NotificationTransactionAdapter(
     }
 
     fun removeEmptyState() {
-        visitables.removeAll { it is EmptyState }
+        visitables.removeAll { it is NotificationEmptyStateViewBean }
         notifyDataSetChanged()
     }
 

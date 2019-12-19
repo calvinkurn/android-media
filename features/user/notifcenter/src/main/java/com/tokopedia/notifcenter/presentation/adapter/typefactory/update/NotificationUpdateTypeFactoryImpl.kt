@@ -3,11 +3,10 @@ package com.tokopedia.notifcenter.presentation.adapter.typefactory.update
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.notifcenter.domain.model.EmptyUpdateState
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.*
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.update.EmptyStateViewHolder
+import com.tokopedia.notifcenter.data.viewbean.NotificationEmptyStateViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.*
 
 /**
  * @author : Steven 10/04/19
@@ -33,8 +32,8 @@ class NotificationUpdateTypeFactoryImpl(
         }
     }
 
-    override fun type(emptyState: EmptyUpdateState): Int {
-        return EmptyStateViewHolder.LAYOUT
+    override fun type(emptyState: NotificationEmptyStateViewBean): Int {
+        return EmptyDataStateViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
@@ -44,7 +43,7 @@ class NotificationUpdateTypeFactoryImpl(
             BigBannerNotificationViewHolder.LAYOUT -> BigBannerNotificationViewHolder(view, notificationUpdateListener)
             ProductRecomNotificationViewHolder.LAYOUT -> ProductRecomNotificationViewHolder(view, notificationUpdateListener)
             WishListNotificationViewHolder.LAYOUT -> WishListNotificationViewHolder(view, notificationUpdateListener)
-            EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(view)
+            EmptyDataStateViewHolder.LAYOUT -> EmptyDataStateViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }
     }
