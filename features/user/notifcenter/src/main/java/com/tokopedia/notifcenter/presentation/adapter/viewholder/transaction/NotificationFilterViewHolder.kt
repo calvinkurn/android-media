@@ -1,7 +1,6 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction
 
 import android.view.View
-import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -10,8 +9,8 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.domain.model.NotificationFilterSection
 import com.tokopedia.notifcenter.domain.model.NotificationFilterSectionWrapper
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationUpdateFilterSectionTypeFactoryImpl
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterViewBean
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -51,10 +50,10 @@ class NotificationFilterViewHolder(
     companion object {
         @LayoutRes val LAYOUT = R.layout.item_notification_filter
 
-        fun map(elements: List<NotificationFilterSection>): ArrayList<NotificationUpdateFilterItemViewModel> {
-            val filterItem = arrayListOf<NotificationUpdateFilterItemViewModel>()
+        fun map(elements: List<NotificationFilterSection>): ArrayList<NotificationUpdateFilterViewBean> {
+            val filterItem = arrayListOf<NotificationUpdateFilterViewBean>()
             elements.forEach { notificationFilterSection ->
-                filterItem.add(NotificationUpdateFilterItemViewModel(
+                filterItem.add(NotificationUpdateFilterViewBean(
                         notificationFilterSection.filterType,
                         notificationFilterSection.title,
                         notificationFilterSection.list))
