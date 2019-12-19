@@ -1,10 +1,10 @@
-package com.tokopedia.notifcenter.presentation.adapter.typefactory
+package com.tokopedia.notifcenter.presentation.adapter.typefactory.filter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.NotificationUpdateFilterSectionItemViewHolder
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterSectionItemViewModel
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterSectionViewBean
 
 /**
  * @author : Steven 10/04/19
@@ -12,7 +12,7 @@ import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateF
 class NotificationUpdateFilterSectionTypeFactoryImpl : BaseAdapterTypeFactory(),
         NotificationUpdateFilterSectionTypeFactory {
 
-    override fun type(viewModel: NotificationUpdateFilterSectionItemViewModel): Int {
+    override fun type(viewItem: NotificationUpdateFilterSectionViewBean): Int {
         return NotificationUpdateFilterSectionItemViewHolder.LAYOUT
     }
 
