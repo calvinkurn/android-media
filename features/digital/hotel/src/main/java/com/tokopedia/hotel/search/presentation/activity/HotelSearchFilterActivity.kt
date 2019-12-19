@@ -43,7 +43,7 @@ class HotelSearchFilterActivity : BaseSimpleActivity() {
         updateTitle(getString(com.tokopedia.design.R.string.label_filter))
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         outState?.putString(ARG_SAVED_TAG, currentTag)
     }

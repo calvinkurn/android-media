@@ -48,7 +48,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         fun trackOnClickCtaButton(templateKey: String)
     }
 
-    override fun onAttach(context: Context) {
+    override fun onAttach(context: Context?) {
         super.onAttach(context)
         val parent = parentFragment
         if (parent is LongerContentListener) {

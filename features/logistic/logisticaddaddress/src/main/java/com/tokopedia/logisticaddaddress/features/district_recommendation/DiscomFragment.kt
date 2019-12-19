@@ -46,7 +46,7 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
         presenter.attach(this)
     }
 
-    override fun onAttach(context: Context) {
+    override fun onAttach(context: Context?) {
         super.onAttach(context)
         if (context is ActionListener) {
             analytics = context

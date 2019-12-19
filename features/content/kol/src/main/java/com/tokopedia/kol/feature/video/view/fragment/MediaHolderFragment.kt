@@ -67,7 +67,7 @@ class MediaHolderFragment : BaseDaggerFragment() {
 
     override fun initInjector() {}
 
-    override fun onAttach(context: Context) {
+    override fun onAttach(context: Context?) {
         super.onAttach(context)
         if (context is OnControllerTouch){
             onControllerTouch = context

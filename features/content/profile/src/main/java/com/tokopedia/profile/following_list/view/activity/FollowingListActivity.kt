@@ -46,7 +46,7 @@ class FollowingListActivity : BaseTabActivity(), FollowingListEmptyListener {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         outState?.putString(EXTRA_PARAM_USER_ID, userId)
     }

@@ -83,7 +83,7 @@ class TopAdsKeywordNewChooseGroupActivity : BaseStepperActivity(), HasComponent<
         return TopAdsComponentInstance.getComponent(application)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         outState?.putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
         outState?.putInt(SAVED_POSITION, currentPosition)

@@ -56,7 +56,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
         setHasOptionsMenu(true)
     }
 
-    override fun onAttach(context: Context) {
+    override fun onAttach(context: Context?) {
         super.onAttach(context)
         context?.let { GraphqlClient.init(it) }
     }

@@ -94,7 +94,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         initSwipeToRefresh()
     }
 
-    override fun onAttach(context: Context) {
+    override fun onAttach(context: Context?) {
         super.onAttach(context)
 
         if (context is CategoryNavigationListener) {

@@ -172,7 +172,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onAttach(context: Context) {
+    override fun onAttach(context: Context?) {
         super.onAttach(context)
         fragmentListener = context as CheckoutVariantFragmentListener
     }
