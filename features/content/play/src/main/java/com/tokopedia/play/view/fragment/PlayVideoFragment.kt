@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.di.DaggerPlayComponent
-import com.tokopedia.play.ui.loading.LoadingComponent
+import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.video.VideoComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
@@ -100,7 +100,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun initComponents(container: ViewGroup) {
         VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
-        LoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        VideoLoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
     }
 
     private fun delegateVideoProperty(prop: VideoPropertyUiModel) {
