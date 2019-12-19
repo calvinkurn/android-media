@@ -32,6 +32,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -43,6 +44,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.DeviceChecker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.tkpd.tkpdreputation.R
@@ -83,6 +85,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
         private const val LOTTIE_ANIM_5 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
 
 
+        private const val IMAGE_PEDIE_1 = "https://ecs7.tokopedia.net/android/pedie/1star.png"
+        private const val IMAGE_PEDIE_2 = "https://ecs7.tokopedia.net/android/pedie/2star.png"
+        private const val IMAGE_PEDIE_3 = "https://ecs7.tokopedia.net/android/pedie/3star.png"
+        private const val IMAGE_PEDIE_4 = "https://ecs7.tokopedia.net/android/pedie/4star.png"
+        private const val IMAGE_PEDIE_5 = "https://ecs7.tokopedia.net/android/pedie/5star.png"
+
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
@@ -102,6 +110,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this::addImageClick)
     }
+    private var isLowDevice = false
     private var selectedImage: ArrayList<String> = arrayListOf()
 
     private var isImageAdded: Boolean = false
@@ -179,6 +188,8 @@ class CreateReviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         reviewUserName = createReviewViewModel.userSessionInterface.name
+        isLowDevice = DeviceChecker.isLowPerformingDevice(context)
+
         getReviewData()
         anonymous_text.text = generateAnonymousText()
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
@@ -195,7 +206,13 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 )
                 reviewClickAt = position
                 shouldPlayAnimation = true
-                playAnimation()
+                context?.let {
+                    if (isLowDevice) {
+                        generatePeddieImageByIndex()
+                    } else {
+                        playAnimation()
+                    }
+                }
                 generateReviewBackground(position)
             }
         })
@@ -383,6 +400,22 @@ class CreateReviewFragment : BaseDaggerFragment() {
             transitionDrawable.startTransition(IMAGE_BG_TRANSITION)
             currentBackground = drawable
         }
+    }
+
+    private fun generatePeddieImageByIndex() {
+        val url = when (animatedReviewPicker.getReviewClickAt()) {
+            1 -> IMAGE_PEDIE_1
+            2 -> IMAGE_PEDIE_2
+            3 -> IMAGE_PEDIE_3
+            4 -> IMAGE_PEDIE_4
+            5 -> IMAGE_PEDIE_5
+            else -> IMAGE_PEDIE_5
+        }
+        showImage(url)
+    }
+
+    private fun showImage(url: String) {
+        ImageHandler.loadImageWithoutPlaceholder(img_animation_review, url)
     }
 
     private fun generateAnimationByIndex(index: Int) {

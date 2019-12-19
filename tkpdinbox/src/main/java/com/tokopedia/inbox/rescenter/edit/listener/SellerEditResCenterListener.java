@@ -7,7 +7,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.inbox.rescenter.edit.customview.EditAttachmentSellerView;
 import com.tokopedia.inbox.rescenter.edit.customview.EditSolutionSellerView;
-import com.tokopedia.inbox.rescenter.edit.customview.EditSummaryResCenterView;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
 import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.edit.presenter.SellerEditResCenterPresenter;
@@ -49,7 +48,6 @@ public interface SellerEditResCenterListener {
 
     void showErrorMessage(String string);
 
-    EditSummaryResCenterView getSummaryView();
 
     EditSolutionSellerView getEditSolutionSellerView();
 

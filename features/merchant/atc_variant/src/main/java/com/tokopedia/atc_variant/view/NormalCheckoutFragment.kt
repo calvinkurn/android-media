@@ -64,9 +64,9 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.track.TrackApp
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
-import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
+import com.tokopedia.purchase_platform.common.sharedata.RESULT_CODE_ERROR_TICKET
+import com.tokopedia.purchase_platform.common.sharedata.RESULT_TICKET_DATA
+import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import javax.inject.Inject
