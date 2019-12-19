@@ -2,14 +2,12 @@ package com.tokopedia.notifcenter.domain.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.NotificationTransactionFactory
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterSectionItemViewModel
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterSectionViewBean
 
 class NotificationFilterSection(
         var filterType: String = "",
         var title: String = "",
-        var list: List<NotificationUpdateFilterSectionItemViewModel> = arrayListOf()
+        var list: List<NotificationUpdateFilterSectionViewBean> = listOf()
 ): Parcelable {
 
     enum class FilterType(val type: String) {
@@ -18,9 +16,9 @@ class NotificationFilterSection(
     }
 
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.createTypedArrayList(NotificationUpdateFilterSectionItemViewModel.CREATOR))
+            parcel.readString()?: "",
+            parcel.readString()?: "",
+            parcel.createTypedArrayList(NotificationUpdateFilterSectionViewBean.CREATOR)?: listOf())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(filterType)
