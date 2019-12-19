@@ -77,6 +77,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         private const val LOTTIE_ANIM_4 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_4.json"
         private const val LOTTIE_ANIM_5 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
 
+
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
@@ -385,37 +386,44 @@ class CreateReviewFragment : BaseDaggerFragment() {
             imgAnimationView.repeatCount = LottieDrawable.INFINITE
             when (index) {
                 1 -> {
-                    try {
-                        imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_1)
-                        imgAnimationView.playAnimation()
-                    }catch (e : Exception){}
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_1);
                 }
                 2 -> {
-                    try{
-                        imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_2)
-                        imgAnimationView.playAnimation()
-                    }catch (e : Exception){}
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_2);
                 }
                 3 -> {
-                    try{
-                        imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_3)
-                        imgAnimationView.playAnimation()
-                    }catch (e : Exception){}
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_3);
                 }
                 4 -> {
-                    try{
-                        imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_4)
-                        imgAnimationView.playAnimation()
-                    }catch (e : Exception){}
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_4);
                 }
                 5 -> {
-                    try{
-                        imgAnimationView.setAnimationFromUrl(LOTTIE_ANIM_5)
-                        imgAnimationView.playAnimation()
-                    }catch (e : Exception){}
+                    setLottieAnimationFromUrl(LOTTIE_ANIM_5);
                 }
             }
         }
+    }
+
+    /**
+     * Fetch the animation from http URL and play the animation
+     */
+    private fun setLottieAnimationFromUrl(animationUrl: String) {
+        val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(this, animationUrl)
+
+
+        lottieCompositionLottieTask.addListener(object : LottieListener<LottieComposition>() {
+            fun onResult(result: LottieComposition) {
+                Log.e("CreateReviewFragment setLottieAnimationFromUrl", "Success "+animationUrl)
+                imgAnimationView.setComposition(result)
+                imgAnimationView.playAnimation()
+            }
+        })
+
+        lottieCompositionLottieTask.addFailureListener(object : LottieListener<Throwable>() {
+            fun onResult(result: Throwable) {
+                Log.e("CreateReviewFragment setLottieAnimationFromUrl", result?result.message)
+            }
+        })
     }
 
     private fun renderBackgroundTransition(url: String) {
