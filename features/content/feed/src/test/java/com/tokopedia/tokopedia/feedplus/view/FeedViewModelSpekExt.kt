@@ -4,25 +4,22 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
-import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase.Companion.createRequestParams
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.interest_pick_common.data.DataItem
-import com.tokopedia.interest_pick_common.data.OnboardingData
 import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
 import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCase
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase
@@ -176,4 +173,22 @@ fun SendVoteUseCase.doVoteWithSample(model: VoteStatisticDomainModel) {
     coEvery {
         createObservable(any()).toBlocking().single()
     } returns model
+}
+
+fun AddToCartUseCase.doAtcWithSample(success: Int) {
+    coEvery{
+        createObservable(any()).toBlocking().single()
+    } returns AddToCartDataModel(data = DataModel(success = success))
+}
+
+fun ToggleFavouriteShopUseCase.doToggleFavoriteShopWithSample(isSuccess: Boolean) {
+    coEvery {
+        createObservable(any()).toBlocking().first()
+    } returns isSuccess
+}
+
+fun TrackAffiliateClickUseCase.doTrackAffiliateWithSample(isSuccess: Boolean) {
+    coEvery {
+        createObservable(any()).toBlocking().first()
+    } returns isSuccess
 }

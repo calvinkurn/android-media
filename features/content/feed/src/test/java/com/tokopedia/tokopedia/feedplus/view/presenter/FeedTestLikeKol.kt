@@ -1,24 +1,18 @@
 package com.tokopedia.tokopedia.feedplus.view.presenter
 
-import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
-import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.tokopedia.feedplus.InstantTaskExecutorRuleSpek
-import com.tokopedia.tokopedia.feedplus.view.*
-import com.tokopedia.topads.sdk.domain.model.Data
+import com.tokopedia.tokopedia.feedplus.view.createFeedTestInstance
+import com.tokopedia.tokopedia.feedplus.view.createFeedViewModel
+import com.tokopedia.tokopedia.feedplus.view.doLikeKolWithSample
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import org.junit.Assert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import rx.Subscriber
 
 /**
  * @author by yoasfs on 2019-12-17

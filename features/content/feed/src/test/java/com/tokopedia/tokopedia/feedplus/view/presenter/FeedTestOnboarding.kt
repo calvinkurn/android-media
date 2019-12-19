@@ -10,7 +10,6 @@ import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewMod
 import com.tokopedia.tokopedia.feedplus.InstantTaskExecutorRuleSpek
 import com.tokopedia.tokopedia.feedplus.view.createFeedTestInstance
 import com.tokopedia.tokopedia.feedplus.view.createFeedViewModel
-import com.tokopedia.tokopedia.feedplus.view.getFeedFirstDataWithSample
 import com.tokopedia.tokopedia.feedplus.view.getInterestPickDataWithSample
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
