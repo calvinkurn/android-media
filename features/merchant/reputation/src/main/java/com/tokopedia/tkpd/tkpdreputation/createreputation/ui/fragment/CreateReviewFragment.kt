@@ -26,6 +26,7 @@ import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieListener
 import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieTask
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
