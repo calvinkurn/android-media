@@ -1,23 +1,21 @@
 package com.tokopedia.notifcenter.data.mapper
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.notifcenter.domain.model.TransactionItemNotification
-import com.tokopedia.notifcenter.domain.model.TransactionNotification
 import com.tokopedia.notifcenter.domain.pojo.NotificationCenterDetail
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateItemViewModel
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateViewModel
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationViewBean
 import javax.inject.Inject
 
 /**
  * @author : Steven 11/04/19
  */
-class GetNotificationUpdateMapper @Inject constructor(){
+open class GetNotificationUpdateMapper @Inject constructor(){
 
-    open fun map(pojo: NotificationCenterDetail) : NotificationUpdateViewModel {
-        var item = pojo.pojo
-        var list = arrayListOf<NotificationUpdateItemViewModel>()
+    open fun map(pojo: NotificationCenterDetail) : NotificationViewBean {
+        val item = pojo.pojo
+        val list = arrayListOf<NotificationItemViewBean>()
         for (notificationUpdateItem in item.list) {
-            var datum = NotificationUpdateItemViewModel(
+            val datum = NotificationItemViewBean(
                     notificationId = notificationUpdateItem.notifId,
                     iconUrl = notificationUpdateItem.sectionIcon,
                     contentUrl = notificationUpdateItem.dataNotification.infoThumbnailUrl,
@@ -37,14 +35,14 @@ class GetNotificationUpdateMapper @Inject constructor(){
             )
             list.add(datum)
         }
-        return NotificationUpdateViewModel(item.paging, list, item.userInfo)
+        return NotificationViewBean(item.paging, list, item.userInfo)
     }
 
-    fun mapToNotifTransaction(pojo: NotificationCenterDetail) : TransactionNotification {
-        var item = pojo.pojo
-        var list = arrayListOf<TransactionItemNotification>()
+    fun mapToNotifTransaction(pojo: NotificationCenterDetail) : NotificationViewBean {
+        val item = pojo.pojo
+        val list = arrayListOf<NotificationItemViewBean>()
         for (notificationUpdateItem in item.list) {
-            var datum = TransactionItemNotification(
+            val datum = NotificationItemViewBean(
                     notificationId = notificationUpdateItem.notifId,
                     iconUrl = notificationUpdateItem.sectionIcon,
                     contentUrl = notificationUpdateItem.dataNotification.infoThumbnailUrl,
@@ -64,7 +62,7 @@ class GetNotificationUpdateMapper @Inject constructor(){
             )
             list.add(datum)
         }
-        return TransactionNotification(item.paging, list, item.userInfo)
+        return NotificationViewBean(item.paging, list, item.userInfo)
     }
 
     private fun convertReadStatus(readStatus: Long): Boolean {
