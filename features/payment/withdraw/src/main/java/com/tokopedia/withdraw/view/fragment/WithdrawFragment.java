@@ -745,8 +745,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 ((TextView) premiumAccountView.findViewById(R.id.tv_rekeningTitle))
                         .setText(getString(R.string.swd_rekening_premium));
 
-                if (rekeningAccountStatus == REKENING_ACCOUNT_NOT_JOINED || rekeningAccountStatus == REKENING_ACCOUNT_PendingOut
-                        || rekeningAccountStatus == REKENING_ACCOUNT_InProgressOut || rekeningAccountStatus == REKENING_ACCOUNT_ApprovedOut
+                if (rekeningAccountStatus == REKENING_ACCOUNT_NOT_JOINED
+                        || rekeningAccountStatus == REKENING_ACCOUNT_ApprovedOut
                         || rekeningAccountStatus == REKENING_ACCOUNT_Rejected) {
                     setProgramStatus(getString(R.string.swd_earn_point_on_withdraw),
                             getString(R.string.bri_cek));
