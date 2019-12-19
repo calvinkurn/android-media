@@ -121,7 +121,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         viewModel.officialStoreCategoriesResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    // removeLoading()
+                    removeLoading()
                     populateCategoriesData(it.data)
                 }
                 is Fail -> {

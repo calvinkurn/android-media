@@ -175,7 +175,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreBannersResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    // removeLoading()
+                    removeLoading()
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                     setLoadMoreListener()
