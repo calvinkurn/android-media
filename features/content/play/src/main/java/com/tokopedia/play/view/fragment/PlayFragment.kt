@@ -27,7 +27,7 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
-    // TODO available channelId: 1543, 1591, 1387
+    // TODO available channelId: 1543 > VOD, 1591, 1387
     private var channelId = ""
 
     @Inject
@@ -49,7 +49,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID)?:"1387" // TODO remove default value, handle channel_id not found
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID)?:"1865" // TODO remove default value, handle channel_id not found
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -8,5 +8,5 @@ import com.tokopedia.play.component.ComponentEvent
 sealed class SendChatInteractionEvent : ComponentEvent {
 
     object FormClicked : SendChatInteractionEvent()
-    object SendClicked : SendChatInteractionEvent()
+    data class SendClicked(val message: String) : SendChatInteractionEvent()
 }

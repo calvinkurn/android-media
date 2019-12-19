@@ -23,7 +23,9 @@ import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -36,6 +38,7 @@ class PlayViewModel @Inject constructor(
         private val getVideoStreamUseCase: GetVideoStreamUseCase,
         private val getShopInfoUseCase: GetShopInfoUseCase,
         private val playSocket: PlaySocket,
+        private val userSessionInterface: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
 ) : BaseViewModel(dispatchers.main) {
 
@@ -103,7 +106,7 @@ class PlayViewModel @Inject constructor(
              * If Live => start web socket
              */
             getPartnerInfo(PartnerType.getTypeByValue(channel.partnerType), channel.partnerId)
-            if (videoStream.isLive) startWebSocket(channelId, channel.gcToken)
+            if (videoStream.isLive) startWebSocket(channelId, channel.gcToken, channel.settings)
             playVideoStream(videoStream)
 
             val completeInfoUiModel = createCompleteInfoModel(channel, videoStream)
@@ -122,6 +125,18 @@ class PlayViewModel @Inject constructor(
     // TODO don't forget to destroy socket
     fun destroy() {
         playSocket.destroy()
+    }
+
+    fun sendChat(message: String) {
+        if (userSessionInterface.isLoggedIn) {
+            playSocket.send(message, onSuccess = {
+                _observableChatListSocket.value = PlayChat("", "", message,
+                        PlayChat.UserData(userSessionInterface.userId, userSessionInterface.name, userSessionInterface.profilePicture))
+            })
+        } else {
+            // TODO route to login activity
+        }
+
     }
 
     private fun getPartnerInfo(partnerType: PartnerType, partnerId: Long) {
@@ -159,9 +174,10 @@ class PlayViewModel @Inject constructor(
 
     })
 
-    private fun startWebSocket(channelId: String, gcToken: String) {
+    private fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
         playSocket.channelId = channelId
         playSocket.gcToken = gcToken
+        playSocket.settings = settings
         playSocket.connect(onOpen = {
             Timber.tag("PlaySocket").d("onOpen")
             // Todo, handle on open web socket
