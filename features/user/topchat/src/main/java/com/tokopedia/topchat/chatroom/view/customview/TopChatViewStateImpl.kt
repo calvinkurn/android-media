@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.customview
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.NonNull
@@ -56,7 +57,7 @@ class TopChatViewStateImpl(
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
-    private var attachmentPreviewContainer: ConstraintLayout = view.findViewById(R.id.cl_attachment_preview)
+    private var attachmentPreviewContainer: FrameLayout = view.findViewById(R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(R.id.rv_attachment_preview)
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
