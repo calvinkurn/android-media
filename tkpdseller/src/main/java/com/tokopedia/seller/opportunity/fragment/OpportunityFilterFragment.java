@@ -9,7 +9,6 @@ import androidx.appcompat.widget.SearchView;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.widgets.FilterView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterAdapter;

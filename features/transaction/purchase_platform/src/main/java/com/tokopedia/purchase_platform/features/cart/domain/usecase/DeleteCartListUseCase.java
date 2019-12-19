@@ -1,12 +1,12 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository;
-import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
+import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers;
+import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository;
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
+import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
 
@@ -15,12 +15,10 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
-import static com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART;
-
 /**
  * @author anggaprasetiyo on 30/04/18.
  */
-public class DeleteCartListUseCase extends UseCase<DeleteAndRefreshCartListData> {
+public class DeleteCartListUseCase {
     public static final String PARAM_IS_DELETE_ALL_DATA
             = "PARAM_IS_DELETE_ALL_DATA";
     public static final String PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART
@@ -31,16 +29,18 @@ public class DeleteCartListUseCase extends UseCase<DeleteAndRefreshCartListData>
     private final ICartRepository cartRepository;
     private final ICartMapper cartMapper;
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
+    private final ExecutorSchedulers schedulers;
 
     @Inject
     public DeleteCartListUseCase(ICartRepository cartRepository, ICartMapper cartMapper,
-                                 ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
+                                 ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
+                                 ExecutorSchedulers schedulers) {
         this.cartRepository = cartRepository;
         this.cartMapper = cartMapper;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
+        this.schedulers = schedulers;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public Observable<DeleteAndRefreshCartListData> createObservable(RequestParams requestParams) {
 
@@ -64,6 +64,8 @@ public class DeleteCartListUseCase extends UseCase<DeleteAndRefreshCartListData>
                     clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), toBeDeletedPromoCode);
                     return clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
                             .map(graphqlResponse -> deleteAndRefreshCartListData);
-                });
+                })
+                .subscribeOn(schedulers.getIo())
+                .observeOn(schedulers.getMain());
     }
 }

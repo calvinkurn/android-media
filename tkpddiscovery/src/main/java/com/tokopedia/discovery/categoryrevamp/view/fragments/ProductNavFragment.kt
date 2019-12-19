@@ -49,7 +49,6 @@ import com.tokopedia.discovery.categoryrevamp.view.interfaces.SelectedFilterList
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.SubCategoryListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
@@ -678,15 +677,14 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onWishlistButtonClicked(productItem: ProductsItem, position: Int) {
+        catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), productItem.wishlist, isUserLoggedIn(), productItem.isTopAds)
 
         if (userSession.isLoggedIn) {
             disableWishlistButton(productItem.id.toString())
             if (productItem.wishlist) {
                 removeWishlist(productItem.id.toString(), userSession.userId, position)
-                catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), false)
             } else {
                 addWishlist(productItem.id.toString(), userSession.userId, position)
-                catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), true)
             }
         } else {
             launchLoginActivity(productItem.id.toString())
@@ -836,5 +834,9 @@ open class ProductNavFragment : BaseCategorySectionFragment(),
         layout_banned_screen.show()
         txt_header.text = getString(R.string.category_server_error_header)
         txt_sub_header.text = getString(R.string.try_again)
+    }
+
+    private fun isUserLoggedIn(): Boolean {
+        return userSession.isLoggedIn
     }
 }

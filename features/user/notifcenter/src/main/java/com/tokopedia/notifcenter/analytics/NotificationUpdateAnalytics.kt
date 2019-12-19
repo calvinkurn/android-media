@@ -1,6 +1,7 @@
 package com.tokopedia.notifcenter.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
@@ -166,7 +167,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
     }
 
     // #NC6
-    fun trackAtcOnClick(product: ProductData) {
+    fun trackAtcOnClick(product: ProductData, atc: DataModel) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
                 EVENT_NAME, NAME_EVENT_ATC,
@@ -190,6 +191,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
                                     "shop_type", "",
                                     "shop_name", product.shop?.name,
                                     "category_id", "",
+                                    "dimension82", atc.cartId.toString(),
                                     "dimension45", ""
                                 )
                             )

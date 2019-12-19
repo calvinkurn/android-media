@@ -82,13 +82,11 @@ public class CurationAdapter extends
 
         TextView itemTitle;
         RecyclerView recycler_view_list;
-        TextView viewAll;
 
         ItemRowHolder(View view) {
             super(view);
             this.itemTitle = (TextView) view.findViewById(R.id.itemTitle);
             this.recycler_view_list = (RecyclerView) view.findViewById(R.id.recycler_view_list);
-            this.viewAll = (TextView) view.findViewById(R.id.view_all);
         }
 
     }
