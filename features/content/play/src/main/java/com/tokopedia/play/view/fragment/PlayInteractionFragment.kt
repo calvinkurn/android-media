@@ -283,10 +283,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             sendChatComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            SendChatInteractionEvent.FormClicked -> showToast("Chat Form Clicked")
-                            is SendChatInteractionEvent.SendClicked ->  {
-                                playViewModel.sendChat("${it.message} from Pixel 2 API 29")
-                            }
+                            SendChatInteractionEvent.FormClicked -> doClickChatBox()
+                            is SendChatInteractionEvent.SendClicked -> doSendChat("${it.message} from Pixel 2 API 29")
                         }
                     }
         }
@@ -382,9 +380,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             quickReplyComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            is QuickReplyInteractionEvent.ReplyClicked -> {
-                                playViewModel.sendChat(it.replyString)
-                            }
+                            is QuickReplyInteractionEvent.ReplyClicked -> doSendChat(it.replyString)
                         }
                     }
         }
@@ -674,6 +670,14 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.doInteractionEvent(InteractionEvent.Like)
     }
 
+    private fun doClickChatBox() {
+        viewModel.doInteractionEvent(InteractionEvent.SendChat)
+    }
+
+    private fun doSendChat(message: String) {
+        playViewModel.sendChat(message)
+    }
+
     private fun handleLoginInteractionEvent(loginInteractionEvent: LoginStateEvent) {
         when (loginInteractionEvent) {
             is LoginStateEvent.InteractionAllowed -> handleInteractionEvent(loginInteractionEvent.event)
@@ -683,8 +687,18 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
-            InteractionEvent.SendChat -> {} //open keyboard
+            InteractionEvent.SendChat -> sendEventComposeChat()
             InteractionEvent.Like -> showToast("Like Clicked") //do like post
+        }
+    }
+
+    private fun sendEventComposeChat() {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.ComposeChat
+                    )
         }
     }
 
