@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.attachinvoice.R
+import com.tokopedia.attachinvoice.analytic.AttachInvoiceAnalytic
 import com.tokopedia.attachinvoice.data.Invoice
 import com.tokopedia.attachinvoice.di.AttachInvoiceComponent
 import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceAdapter
@@ -35,6 +36,10 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var analytic: AttachInvoiceAnalytic
+
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(AttachInvoiceViewModel::class.java) }
 
@@ -86,6 +91,7 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     private fun enableAttachButton(invoice: Invoice) {
         btnAttach?.isEnabled = true
         btnAttach.setOnClickListener {
+            analytic.trackOnAttachInvoice(invoice)
             val intent = viewModel.getInvoicePreviewIntent(invoice)
             listener?.onClickAttachInvoice(intent)
         }
