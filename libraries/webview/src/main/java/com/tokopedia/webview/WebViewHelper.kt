@@ -59,7 +59,7 @@ object WebViewHelper {
      @JvmStatic
     fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
         Log.d("WebviewHelper before URL" , url)
-        var returnURl = "";
+        var returnURl = url
 
 
         if (url != null && isPassingGAClientIdEnable(context)) {
