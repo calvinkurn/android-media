@@ -4,8 +4,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateTotalUnread
 
 class GetNotificationTotalUnreadSubscriber(
-        private val onSuccessInitiateData: (NotificationUpdateTotalUnread) -> Unit={},
-        private val onErrorInitiateData: ((Throwable) -> Unit)? ={}
+        private val onSuccessInitiateData: (NotificationUpdateTotalUnread) -> Unit = {},
+        private val onErrorInitiateData: ((Throwable) -> Unit)?= {}
 ) : BaseNotificationSubscriber() {
 
     override fun onCompleted() {
@@ -16,10 +16,8 @@ class GetNotificationTotalUnreadSubscriber(
     }
 
     override fun onNext(graphqlResponse: GraphqlResponse) {
-        handleError(graphqlResponse, NotificationUpdateTotalUnread::class.java,
-                routingOnNext(graphqlResponse))
+        handleError(graphqlResponse, NotificationUpdateTotalUnread::class.java, routingOnNext(graphqlResponse))
     }
-
 
     private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit {
         return {

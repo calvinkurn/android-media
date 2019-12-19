@@ -8,27 +8,21 @@ class NotificationUpdateActionSubscriber(
         private val onErrorDoAction: ((String) -> Unit)? ={}
 ) : BaseNotificationSubscriber() {
 
-    override fun onCompleted() {
-    }
+    override fun onCompleted() {}
 
-    override fun onError(e: Throwable) {
-
-    }
+    override fun onError(e: Throwable) {}
 
     override fun onNext(graphqlResponse: GraphqlResponse) {
-        handleError(graphqlResponse, NotificationUpdateActionResponse::class.java,
-                routingOnNext(graphqlResponse))
+        handleError(graphqlResponse, NotificationUpdateActionResponse::class.java, routingOnNext(graphqlResponse))
     }
-
 
     private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit {
         return {
-            val pojo = graphqlResponse.getData<NotificationUpdateActionResponse>(NotificationUpdateActionResponse::class.java)
-
-            if(pojo.messageError.isNullOrBlank()){
+            val dataBean = graphqlResponse.getData<NotificationUpdateActionResponse>(NotificationUpdateActionResponse::class.java)
+            if(dataBean.messageError.isNullOrBlank()){
                 onSuccessDoAction?.invoke()
             } else {
-                onErrorDoAction?.invoke(pojo.messageError)
+                onErrorDoAction?.invoke(dataBean.messageError)
             }
         }
     }
