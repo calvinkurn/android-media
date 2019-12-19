@@ -8,9 +8,13 @@ ext {
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.3.50"
 
-    lifeCycleVersion = "2.0.0-rc01"
+    lifeCycleVersion = "2.1.0"
 
-    supportLibraryVersion = '1.0.0'
+    supportLibraryVersion = '1.1.0'
+    supportLegacyLibraryVersion = '1.0.0'
+    materialVersion = '1.0.0'
+    constraintLayoutVersion = '2.0.0-beta4'
+
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '10.1.0'
     coroutineVersion = '1.3.2'
@@ -116,13 +120,13 @@ ext {
 
     supportLibDependencies = [
             recyclerViewV7      : "androidx.recyclerview:recyclerview:${supportLibraryVersion}",
-            supportV4           : "androidx.legacy:legacy-support-v4:${supportLibraryVersion}",
+            supportV4           : "androidx.legacy:legacy-support-v4:${supportLegacyLibraryVersion}",
             appCompactV7        : "androidx.appcompat:appcompat:${supportLibraryVersion}",
-            supportV13          : "androidx.legacy:legacy-support-v13:${supportLibraryVersion}",
-            design              : "com.google.android.material:material:${supportLibraryVersion}",
-            cardViewV7          : "androidx.cardview:cardview:${supportLibraryVersion}",
+            supportV13          : "androidx.legacy:legacy-support-v13:${supportLegacyLibraryVersion}",
+            design              : "com.google.android.material:material:${materialVersion}",
+            cardViewV7          : "androidx.cardview:cardview:${supportLegacyLibraryVersion}",
             exifinterface       : "androidx.exifinterface:exifinterface:${supportLibraryVersion}",
-            constraintLayout    : "androidx.constraintlayout:constraintlayout:1.1.2",
+            constraintLayout    : "androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}",
             preferenceV7        : "androidx.preference:preference:${supportLibraryVersion}",
             kotlinSupport       : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}",
             kotlinSupportJdk7   : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
@@ -234,6 +238,8 @@ ext {
             lifeCycleExtentions   : "androidx.lifecycle:lifecycle-extensions:$lifeCycleVersion",
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
             liveData              : "androidx.lifecycle:lifecycle-livedata:$lifeCycleVersion",
+            archCoreRuntime       : "androidx.arch.core:core-runtime:$lifeCycleVersion",
+            archCoreCommon        : "androidx.arch.core:core-common:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
             laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.4",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
