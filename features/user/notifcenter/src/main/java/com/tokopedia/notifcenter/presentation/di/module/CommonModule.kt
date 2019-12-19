@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.di.notification.module
+package com.tokopedia.notifcenter.presentation.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

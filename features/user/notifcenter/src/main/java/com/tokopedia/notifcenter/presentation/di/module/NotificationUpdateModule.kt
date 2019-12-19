@@ -1,13 +1,11 @@
-package com.tokopedia.notifcenter.presentation.di.notification.module
+package com.tokopedia.notifcenter.presentation.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.notifcenter.util.NotifPreference
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.presentation.di.notification.scope.NotificationUpdateScope
+import com.tokopedia.notifcenter.presentation.di.scope.NotificationUpdateScope
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named

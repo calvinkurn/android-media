@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.di.notification.module
+package com.tokopedia.notifcenter.presentation.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -31,7 +31,7 @@ import javax.inject.Named
 
     @Provides
     @Named(NotificationQueriesConstant.TRANSACTION_NOTIFICATION)
-    fun provideTransactionNotification(@ApplicationContext context: Context): String =
+    fun provideNotificationViewBean(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_notification_update)
 
     @Provides

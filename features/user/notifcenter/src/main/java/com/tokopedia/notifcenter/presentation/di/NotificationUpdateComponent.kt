@@ -1,11 +1,11 @@
-package com.tokopedia.notifcenter.presentation.di.notification
+package com.tokopedia.notifcenter.presentation.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
-import com.tokopedia.notifcenter.presentation.di.notification.module.CommonModule
-import com.tokopedia.notifcenter.presentation.di.notification.module.NotificationQueryModule
-import com.tokopedia.notifcenter.presentation.di.notification.module.NotificationUpdateModule
-import com.tokopedia.notifcenter.presentation.di.notification.scope.NotificationUpdateScope
+import com.tokopedia.notifcenter.presentation.di.module.CommonModule
+import com.tokopedia.notifcenter.presentation.di.module.NotificationQueryModule
+import com.tokopedia.notifcenter.presentation.di.module.NotificationUpdateModule
+import com.tokopedia.notifcenter.presentation.di.scope.NotificationUpdateScope
 import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateFragment
 import dagger.Component
 

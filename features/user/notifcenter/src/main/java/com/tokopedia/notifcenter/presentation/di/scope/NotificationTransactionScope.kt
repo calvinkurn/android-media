@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.di.notification.scope
+package com.tokopedia.notifcenter.presentation.di.scope
 
 import javax.inject.Scope
 

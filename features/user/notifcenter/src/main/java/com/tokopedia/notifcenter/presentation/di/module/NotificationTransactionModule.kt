@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.di.notification.module
+package com.tokopedia.notifcenter.presentation.di.module
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -9,7 +9,7 @@ import com.tokopedia.notifcenter.domain.NotificationInfoTransactionUseCase
 import com.tokopedia.notifcenter.domain.NotificationTransactionUseCase
 import com.tokopedia.notifcenter.domain.pojo.NotificationCenterDetail
 import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateFilter
-import com.tokopedia.notifcenter.presentation.di.notification.scope.NotificationTransactionScope
+import com.tokopedia.notifcenter.presentation.di.scope.NotificationTransactionScope
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
