@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.pushnotif.db.model.ReviewNotificationModel
 import com.tokopedia.pushnotif.factory.ReviewNotificationFactory
@@ -25,6 +26,11 @@ class ReviewNotificationBroadcastReceiver : BroadcastReceiver() {
                     ReviewNotificationModel::class.java)
                     ?: ReviewNotificationModel()
             val applink = reviewModel.getApplinkWithRating(reviewPosition.toString())
+
+            val createReviewRoute = RouteManager.getIntent(context, applink)
+            createReviewRoute.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            createReviewRoute.putExtra(REVIEW_CLICK_AT, reviewPosition)
+            createReviewRoute.putExtra(REVIEW_NOTIFICATION_ID, intent?.getIntExtra(REVIEW_NOTIFICATION_ID, 0))
 
             val createReviewPendingIntent = PendingIntentUtil.createPendingIntent(it, applink, reviewModel.notificationType, reviewModel.notificationId)
 

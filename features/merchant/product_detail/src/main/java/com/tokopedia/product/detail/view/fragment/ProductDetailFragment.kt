@@ -59,6 +59,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSlider
@@ -118,6 +119,9 @@ import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Co
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA_CACHE_ID
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_SELECTED_WAREHOUSE
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
+import com.tokopedia.purchase_platform.common.sharedata.RESULT_CODE_ERROR_TICKET
+import com.tokopedia.purchase_platform.common.sharedata.RESULT_TICKET_DATA
+import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -134,10 +138,6 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
-import com.tokopedia.transaction.common.dialog.UnifyDialog
-import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
-import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
-import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -1123,22 +1123,22 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 if (resultCode == RESULT_CODE_ERROR_TICKET && data != null) {
                     activity?.also { activity ->
                         val result = data.getParcelableExtra<AddToCartDataModel>(RESULT_TICKET_DATA)
-                        val createTicketDialog = UnifyDialog(activity, UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER)
+                        val createTicketDialog = DialogUnify(activity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                         createTicketDialog.apply {
                             setTitle(result.errorReporter.texts.submitTitle)
                             setDescription(result.errorReporter.texts.submitDescription)
-                            setSecondary(result.errorReporter.texts.cancelButton)
-                            setSecondaryOnClickListener(View.OnClickListener {
+                            setSecondaryCTAText(result.errorReporter.texts.cancelButton)
+                            setSecondaryCTAClickListener {
                                 this.dismiss()
                                 productDetailTracking.eventClickCloseOnHelpPopUpAtc()
-                            })
-                            setOk(result.errorReporter.texts.submitButton)
-                            setOkOnClickListener(View.OnClickListener {
+                            }
+                            setPrimaryCTAText(result.errorReporter.texts.submitButton)
+                            setPrimaryCTAClickListener {
                                 this.dismiss()
                                 productDetailTracking.eventClickReportOnHelpPopUpAtc()
                                 showProgressDialog()
                                 productInfoViewModel.hitSubmitTicket(result, this@ProductDetailFragment::onErrorSubmitHelpTicket, this@ProductDetailFragment::onSuccessSubmitHelpTicket)
-                            })
+                            }
                             show()
                         }
                         productDetailTracking.eventViewHelpPopUpWhenAtc()
@@ -1240,14 +1240,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         hideProgressDialog()
         if (result.status) {
             activity?.also {
-                val successTicketDialog = UnifyDialog(it, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
+                val successTicketDialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
                 successTicketDialog.apply {
                     setTitle(result.texts.submitTitle)
                     setDescription(result.texts.submitDescription)
-                    setOk(result.texts.successButton)
-                    setOkOnClickListener(View.OnClickListener {
+                    setPrimaryCTAText(result.texts.successButton)
+                    setPrimaryCTAClickListener {
                         this.dismiss()
-                    })
+                    }
                     show()
                 }
             }
@@ -1611,7 +1611,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         shouldShowCod = data.shouldShowCod
         isLeasing = data.basic.isLeasing
         headerView.renderData(data)
-        varPictureImage.renderData(data.media, this::onPictureProductClicked, childFragmentManager)
+        varPictureImage.renderData(data.media, this::onPictureProductClicked, this::onSwipePicture, childFragmentManager)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data)
@@ -1846,9 +1846,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onDiscussionClicked() {
-
-        productDetailTracking.eventTalkClicked()
-
         activity?.let {
             val intent = RouteManager.getIntent(it,
                     ApplinkConst.PRODUCT_TALK, productInfo?.basic?.id.toString())
@@ -1866,7 +1863,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onReviewClicked() {
         productInfo?.run {
             productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
-            productDetailTracking.eventReviewClicked()
             productDetailTracking.sendMoEngageClickReview(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")
             context?.let {
@@ -1902,11 +1898,16 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
      * go to preview image activity to show larger image of Product
      */
     private fun onPictureProductClicked(position: Int) {
+        productDetailTracking.eventProductImageClicked(productId)
         activity?.let {
             val intent = ImagePreviewPdpActivity.createIntent(it, productId
                     ?: "", isWishlisted, getImageURIPaths(), null, position)
             startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW)
         }
+    }
+
+    private fun onSwipePicture(swipeDirection: String) {
+        productDetailTracking.eventProductImageOnSwipe(productId, swipeDirection)
     }
 
     private fun getImageURIPaths(): ArrayList<String> {

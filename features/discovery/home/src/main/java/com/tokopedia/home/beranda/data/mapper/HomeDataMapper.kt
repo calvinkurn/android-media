@@ -153,7 +153,7 @@ class HomeDataMapper(
                                     isCache))
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size, channel)
-                            HomePageTracking.eventEnhanceImpressionBanner(context, channel)
+                            if(!isCache) HomePageTracking.eventEnhanceImpressionBanner(context, channel)
                         }
                         DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> {
                             list.add(mappingDynamicChannel(
@@ -163,7 +163,7 @@ class HomeDataMapper(
                                     false,
                                     isCache
                             ))
-                            HomePageTracking.eventEnhanceImpressionBannerGif(context, channel)
+                            if(!isCache) HomePageTracking.eventEnhanceImpressionBannerGif(context, channel)
                         }
                         DynamicHomeChannel.Channels.LAYOUT_REVIEW -> if (!isCache) {
                             list.add(mappingToReviewViewModel(channel))

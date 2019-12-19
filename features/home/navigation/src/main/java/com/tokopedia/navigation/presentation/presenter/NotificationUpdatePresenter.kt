@@ -66,7 +66,9 @@ class NotificationUpdatePresenter @Inject constructor(
 
     override fun markReadNotif(notifId: String) {
         markReadNotificationUpdateItemUseCase.execute(
-                MarkReadNotificationUpdateItemUseCase.getRequestParams(notifId),
+                MarkReadNotificationUpdateItemUseCase.getRequestParams(
+                        notifId,
+                        TYPE_OF_NOTIF_UPDATE),
                 NotificationUpdateActionSubscriber())
     }
 
@@ -81,7 +83,7 @@ class NotificationUpdatePresenter @Inject constructor(
 
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
         val requestParams = getCartRequestParams(product)
-        val atcSubscriber = getAtcSubscriber(onSuccessAddToCart)
+        val atcSubscriber = getAtcSubscriber(product, onSuccessAddToCart)
         addToCartUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -89,14 +91,15 @@ class NotificationUpdatePresenter @Inject constructor(
                 .subscribe(atcSubscriber)
     }
 
-    private fun getAtcSubscriber(onSuccessAddToCart: () -> Unit): Subscriber<AddToCartDataModel> {
+    private fun getAtcSubscriber(product: ProductData, onSuccessAddToCart: () -> Unit): Subscriber<AddToCartDataModel> {
         return object : Subscriber<AddToCartDataModel>() {
             override fun onNext(data: AddToCartDataModel) {
                 val isAtcSuccess = data.status.equals(AddToCartDataModel.STATUS_OK, true)
                         && data.data.success == 1
                 if (isAtcSuccess) {
-                    val message = data.data.message[0]
+                    val message = data.data.message.first()
                     view.showMessageAtcSuccess(message)
+                    view.onTrackerAddToCart(product, data.data)
                     onSuccessAddToCart()
                 } else {
                     val errorException = MessageErrorException(data.errorMessage[0])
@@ -124,5 +127,9 @@ class NotificationUpdatePresenter @Inject constructor(
        return RequestParams.create().apply {
            putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
        }
+    }
+
+    companion object {
+        private const val TYPE_OF_NOTIF_UPDATE = 1
     }
 }

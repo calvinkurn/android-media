@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.categoryrevamp.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.*
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
@@ -121,8 +120,8 @@ class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCateg
         return mDynamicFilterModel
     }
 
-    fun openBrowserSeamlessly(bannedData: Data) {
-        seamlessLoginUsecase?.generateSeamlessUrl(Uri.parse(bannedData.appRedirection).toString(), seamlessLoginSubscriber)
+    fun openBrowserSeamlessly(url: String) {
+        seamlessLoginUsecase?.generateSeamlessUrl(url, seamlessLoginSubscriber)
     }
 
     val seamlessLoginSubscriber: SeamlessLoginSubscriber? = object : SeamlessLoginSubscriber {

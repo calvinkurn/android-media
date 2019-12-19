@@ -1,17 +1,17 @@
 package com.tokopedia.hotel.search.presentation.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -38,7 +38,6 @@ import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
@@ -242,7 +241,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             context?.run {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this,
                         checkIn, checkOut, property.id, room, guest.adult,
-                        searchDestinationType, searchDestinationName),
+                        searchDestinationType, searchDestinationName, property.isDirectPayment),
                         REQUEST_CODE_DETAIL_HOTEL)
             }
         }

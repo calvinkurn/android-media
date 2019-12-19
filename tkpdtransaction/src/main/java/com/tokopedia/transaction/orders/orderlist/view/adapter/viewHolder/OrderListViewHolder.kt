@@ -122,7 +122,8 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                     setConditionalInfoBottom(it.successConditionalText, it.successCondInfoVisibility, it.color)
                 }
                 is SetFailStatusBgColor -> {
-                    status?.setBackgroundColor(android.graphics.Color.parseColor(it.statusColor))
+                    if(it.statusColor.isNotEmpty())
+                        status?.setBackgroundColor(android.graphics.Color.parseColor(it.statusColor))
                 }
                 is SetStatus -> {
                     status?.text = it.statusText
@@ -178,8 +179,10 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             val shape = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
                 cornerRadius = cornerRadiusValue
-                setColor(android.graphics.Color.parseColor(color?.background()))
-                setStroke(1, android.graphics.Color.parseColor(color?.border()))
+                if(color?.background()?.isNotEmpty() == true)
+                    setColor(android.graphics.Color.parseColor(color.background()))
+                if(color?.border()?.isNotEmpty() == true)
+                    setStroke(1, android.graphics.Color.parseColor(color?.border()))
             }
             conditionalInfoText?.background = shape
             conditionalInfoText?.setPadding(padding16, padding16, padding16, padding16)
@@ -195,8 +198,14 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             val shape = GradientDrawable().apply {
                 this.shape = GradientDrawable.RECTANGLE
                 cornerRadius = cornerRadiusValue
-                setColor(android.graphics.Color.parseColor(color?.background()))
-                setStroke(1, android.graphics.Color.parseColor(color?.border()))
+                color?.let {
+                    if (!it.background().isNullOrEmpty()) {
+                        setColor(android.graphics.Color.parseColor(it.background()))
+                    }
+                    if (!it.border().isNullOrEmpty()) {
+                        setStroke(1, android.graphics.Color.parseColor(it.border()))
+                    }
+                }
             }
             conditionalInfoTextBottom?.background = shape
             conditionalInfoTextBottom?.setPadding(padding16, padding16, padding16, padding16)
