@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.adapter.viewholder.notificationupdate
+package com.tokopedia.notifcenter.presentation.adapter.viewholder.update
 
 import android.view.View
 import android.widget.ImageView
