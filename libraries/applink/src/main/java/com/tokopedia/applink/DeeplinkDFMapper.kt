@@ -3,7 +3,6 @@ package com.tokopedia.applink
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
@@ -115,8 +114,6 @@ object DeeplinkDFMapper {
     private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
     private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val DFM_SELLER_TOPADS_DASHBOARD = "seller_topads_dashboard"
-    private val DFM_PAYMENT_SETTING_SELLERAPP = "payment_setting_sellerapp"
-    private val DFM_SELLER_REPORT_PRODUCT = "seller_report_product"
 
     @JvmField
     val DFM_ONBOARDING = "onboarding"
@@ -186,10 +183,8 @@ object DeeplinkDFMapper {
     private val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title))
-            add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING_SELLERAPP, R.string.payment_settings_title))
             add(DFP({ it.startsWith(TOPADS_DASHBOARD_SELLER) ||
                 it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
-            add(DFP({ it.startsWith(REPORT_PRODUCT) }, DFM_SELLER_REPORT_PRODUCT, R.string.applink_report_title))
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DFM_PRODUCT_MANAGE_SELLER, R.string.title_applink_product_manage))
         }
     }
@@ -250,14 +245,8 @@ object DeeplinkDFMapper {
                                             imageUrl: String? = ""): String? {
         getSplitManager(context)?.let {
             if (it.installedModules.contains(moduleId)) {
-                if (!GlobalConfig.DEBUG) {
-                    Crashlytics.logException(Exception("Open module " + moduleId));
-                }
                 return null
             } else {
-                if (!GlobalConfig.DEBUG) {
-                    Crashlytics.logException(Exception("Install module " + moduleId));
-                }
                 return UriUtil.buildUri(
                         DYNAMIC_FEATURE_INSTALL,
                         moduleId,
