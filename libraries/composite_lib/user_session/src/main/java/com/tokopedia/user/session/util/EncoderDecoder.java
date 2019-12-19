@@ -8,8 +8,7 @@ public class EncoderDecoder {
 	
 	public static String Encrypt(String text, String initialVector) {
 		byte[] raw = new byte[] {'g','g','g','g','t','t','t','t','t','u','j','k','r','r','r','r'};   
-        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");   
-    	//String initialVector = "abcdefgh";
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
     	String encode_result = null;
     	IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
     	try {
@@ -26,8 +25,7 @@ public class EncoderDecoder {
 	}
 	
 	public static String Encrypt(String text, String initialVector, byte[] raw) {
-        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");   
-    	//String initialVector = "abcdefgh";
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
     	String encode_result = null;
     	IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
     	try {
@@ -54,8 +52,6 @@ public class EncoderDecoder {
 	    	cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivs);
 	    	byte[] decryptedData = cipher.doFinal(data);     
 	    	decode_result = new String(decryptedData);
-	    	//decode_result = Base64_.encodeToString(encryptedData, 0);
-	    	//decode_result.replace("\n", "");
     	}
     	catch (Exception e) {
     		e.printStackTrace();  		
@@ -75,8 +71,6 @@ public class EncoderDecoder {
 			cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivs);
 			byte[] decryptedData = cipher.doFinal(data);
 			decode_result = new String(decryptedData);
-			//decode_result = Base64_.encodeToString(encryptedData, 0);
-			//decode_result.replace("\n", "");
 		}
 		catch (Exception e) {
 			e.printStackTrace();

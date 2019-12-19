@@ -46,7 +46,7 @@ public class Constants {
     public static final String TWITTER_ACCESS_TOKEN_SECRET = "+BzMOCWtW/3LukYlUMUk0pvZqO2Hh2u6zWRLJUYFOfk\u003d\n";
     public static final String TWITTER_SHOULD_POST = "DIXOrnkbhOPC7He30QzwRSV9Ef10PieWt04nIe8tct8\u003d\n";
 
-    public static final String[] KEYS = {
+    public static final String[] ENCRYPTED_KEYS = {
             ACCESS_TOKEN, TOKEN_TYPE, REFRESH_TOKEN, LOGIN_ID, IS_LOGIN,
             LOGIN_SESSION, SHOP_ID, GC_TOKEN, IS_GOLD_MERCHANT, FULL_NAME,
             PROFILE_PICTURE, TEMP_EMAIL, TEMP_PHONE_NUMBER,
