@@ -61,7 +61,6 @@ class SomFilterFragment : BaseDaggerFragment() {
     private var courierList: List<SomListAllFilter.Data.ShippingList> = listOf()
     private var statusList: List<SomListAllFilter.Data.OrderFilterSomSingle.StatusList> = listOf()
     private var currentFilterParams: SomListOrderParam? = SomListOrderParam()
-
     private val somFilterViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomFilterViewModel::class.java]
     }
@@ -304,24 +303,16 @@ class SomFilterFragment : BaseDaggerFragment() {
     private fun renderStatusList() {
         listStatusRadioBtn.clear()
         var statusTextFilled = false
-        var intervalDays = -90
         statusList.forEach { status ->
             listStatusRadioBtn.add(SomSubFilter(status.id, status.text, status.key, status.type, FILTER_TYPE_RADIO, status.orderStatusIdList))
             if (status.orderStatusIdList == currentFilterParams?.statusList && !status.type.equals(FILTER_TYPE_SEPARATOR, true)) {
                 label_substatus.text = status.text
                 statusTextFilled = true
-
-                if (!status.key.equals(STATUS_ALL_ORDER, true)) intervalDays = -60
             }
         }
         if (!statusTextFilled) {
             label_substatus.setText(R.string.subtitle_status)
         }
-        // TODO : should be flag first timer!!
-        // currentFilterParams?.startDate = getCalculatedFormattedDate("dd/MM/yyyy", intervalDays)
-
-        println("++ currentFilterParams.startDate = ${currentFilterParams?.startDate}")
-        println("++ currentFilterParams.endDate = ${currentFilterParams?.endDate}")
 
         rl_status?.isClickable = true
         rl_status?.setOnClickListener {
@@ -346,21 +337,19 @@ class SomFilterFragment : BaseDaggerFragment() {
     }
 
     fun onResetClicked() {
-        resetStartEndDate()
+        resetFilters()
         renderCourierList()
-        renderOrderType()
-        renderStatusList()
         SomAnalytics.eventClickResetButtonOnFilterPage()
     }
 
     @SuppressLint("SetTextI18n")
-    private fun resetStartEndDate() {
+    private fun resetFilters() {
         val resetStartDate = getCalculatedFormattedDate("dd/MM/yyyy", -90)
         val resetEndDate = Date().toFormattedString("dd/MM/yyyy")
         currentFilterParams = SomListOrderParam(
                 startDate = resetStartDate,
-                endDate = resetEndDate
-        )
+                endDate = resetEndDate,
+                statusList = statusList.first().orderStatusIdList)
 
         // start date
         val splitStartDate = resetStartDate.split('/')
@@ -375,5 +364,6 @@ class SomFilterFragment : BaseDaggerFragment() {
         if (endDateStr.length == 1) endDateStr = "0$endDateStr"
 
         et_end_date.setText("$endDateStr ${convertMonth((splitEndDate[1].toInt()-1))} ${splitEndDate[2]}")
+        label_substatus.text = statusList.first().text
     }
 }

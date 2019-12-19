@@ -25,7 +25,6 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.data.preview.ProductPreview
-import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
@@ -36,6 +35,10 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
+import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
@@ -85,7 +88,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var getShopFollowingUseCase: GetShopFollowingUseCase,
         private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
         private var addToCartUseCase: AddToCartUseCase,
-        private var compressImageUseCase: CompressImageUseCase)
+        private var compressImageUseCase: CompressImageUseCase,
+        private var seamlessLoginUsecase: SeamlessLoginUsecase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     override fun clearText() {
@@ -443,51 +447,6 @@ class TopChatRoomPresenter @Inject constructor(
         RxWebSocket.send(messageText, listInterceptor)
     }
 
-    override fun addProductToCart(
-            router: TopChatRouter,
-            element: ProductAttachmentViewModel,
-            onError: (Throwable) -> Unit,
-            onSuccess: (addToCartResult: AddToCartDataModel) -> Unit,
-            shopId: Int
-    ) {
-        val minOrder = if (element.minOrder <= 0) { 1 } else { element.minOrder }
-
-        addToCardSubscriber = addToCartSubscriber(onError, onSuccess)
-
-        val addToCartRequestParams = AddToCartRequestParams()
-        addToCartRequestParams.productId = Integer.parseInt(element.productId.toString()).toLong()
-        addToCartRequestParams.shopId = shopId
-        addToCartRequestParams.quantity = minOrder
-        addToCartRequestParams.notes = ""
-
-        val requestParams = RequestParams.create()
-        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
-        addToCartUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(addToCardSubscriber)
-    }
-
-    private fun addToCartSubscriber(
-            onError: (Throwable) -> Unit,
-            onSuccess: (addToCartResult: AddToCartDataModel) -> Unit
-    ): Subscriber<AddToCartDataModel> {
-        return object : Subscriber<AddToCartDataModel>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                onError(e)
-            }
-
-            override fun onNext(addToCartResult: AddToCartDataModel) {
-                onSuccess(addToCartResult)
-            }
-        }
-    }
-
     override fun sendAttachmentsAndMessage(
             messageId: String,
             sendMessage: String,
@@ -639,8 +598,29 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent {
-        val quantity = "1"
-        val atcAndBuyAction = "1"
+        val quantity = element.minOrder
+        val atcOnly = ATC_ONLY
+        val needRefresh = true
+        val shopName = view?.getShopName()
+        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.shopId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
+            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcOnly)
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName)
+            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
+            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
+            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
+        }
+    }
+
+    override fun getBuyPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent {
+        val quantity = element.minOrder
+        val atcAndBuyAction = ATC_AND_BUY
         val needRefresh = true
         val shopName = view?.getShopName()
         return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
@@ -653,9 +633,12 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
             putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
             putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
-            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, element.category)
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, element.productName)
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.priceInt.toFloat())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
         }
     }
 
@@ -674,4 +657,22 @@ class TopChatRoomPresenter @Inject constructor(
         }
         initAttachmentPreview()
     }
+
+    override fun onClickBannedProduct(liteUrl: String) {
+        val seamlessLoginSubscriber = createSeamlessLoginSubscriber(liteUrl)
+        seamlessLoginUsecase.generateSeamlessUrl(liteUrl, seamlessLoginSubscriber)
+    }
+
+    private fun createSeamlessLoginSubscriber(liteUrl: String): SeamlessLoginSubscriber {
+        return object : SeamlessLoginSubscriber {
+            override fun onUrlGenerated(url: String) {
+                view.redirectToBrowser(url)
+            }
+
+            override fun onError(msg: String) {
+                view.redirectToBrowser(liteUrl)
+            }
+        }
+    }
+
 }

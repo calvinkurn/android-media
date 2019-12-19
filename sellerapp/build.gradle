@@ -402,7 +402,7 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation rootProject.ext.viewDependencies.appIntro
+    
 
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'

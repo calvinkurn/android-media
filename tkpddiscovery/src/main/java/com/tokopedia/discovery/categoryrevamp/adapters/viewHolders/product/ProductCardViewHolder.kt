@@ -52,6 +52,11 @@ abstract class ProductCardViewHolder(itemView: View,
         )
         initProductCardContainer(productItem)
         finishBindViewHolder()
+        getProductCardView()?.setButtonWishlistOnClickListener{
+            if (productItem.isWishListEnabled) {
+                productListener.onWishlistButtonClicked(productItem,adapterPosition)
+            }
+        }
     }
 
     protected abstract fun getProductCardView(): ProductCardView?
