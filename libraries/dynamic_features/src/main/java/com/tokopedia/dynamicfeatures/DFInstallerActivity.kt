@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -333,7 +334,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         val bytesDownloaded = state.bytesDownloaded().toInt()
         val progressText = String.format("%.2f KB / %.2f KB",
             (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
-        Timber.i(progressText)
+        Log.i(TAG_LOG,  progressText)
         button_download.visibility = View.INVISIBLE
     }
 
