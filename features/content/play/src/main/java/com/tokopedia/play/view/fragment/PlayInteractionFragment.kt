@@ -284,7 +284,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             SendChatInteractionEvent.FormClicked -> showToast("Chat Form Clicked")
-                            SendChatInteractionEvent.SendClicked -> showToast("Chat Send Clicked")
+                            is SendChatInteractionEvent.SendClicked ->  {
+                                playViewModel.sendChat("${it.message} from Pixel 2 API 29")
+                            }
                         }
                     }
         }
@@ -380,7 +382,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             quickReplyComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            is QuickReplyInteractionEvent.ReplyClicked -> showToast("Sending Chat: ${it.replyString}")
+                            is QuickReplyInteractionEvent.ReplyClicked -> {
+                                playViewModel.sendChat(it.replyString)
+                            }
                         }
                     }
         }
