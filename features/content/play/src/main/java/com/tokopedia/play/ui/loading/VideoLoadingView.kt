@@ -13,12 +13,12 @@ import com.tokopedia.play.component.UIView
 /**
  * Created by jegul on 09/12/19
  */
-class LoadingView(
+class VideoLoadingView(
         container: ViewGroup
 ) : UIView(container) {
 
     private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_loading, container, true)
+            LayoutInflater.from(container.context).inflate(R.layout.view_video_loading, container, true)
                     .findViewById(R.id.fl_loading)
 
     override val containerId: Int = view.id

@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 /**
  * Created by jegul on 09/12/19
  */
-class LoadingComponent(
+class VideoLoadingComponent(
         container: ViewGroup,
         bus: EventBusFactory,
         coroutineScope: CoroutineScope
@@ -42,7 +42,7 @@ class LoadingComponent(
     }
 
     private fun initView(container: ViewGroup) =
-            LoadingView(container)
+            VideoLoadingView(container)
 
     private fun handleVideoStateChanged(state: TokopediaPlayVideoState) {
         when (state) {

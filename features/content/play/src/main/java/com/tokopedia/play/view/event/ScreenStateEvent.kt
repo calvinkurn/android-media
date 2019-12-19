@@ -18,6 +18,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetPinned(val pinnedMessage: PinnedMessageUiModel) : ScreenStateEvent()
     data class SetQuickReply(val quickReply: QuickReplyUiModel) : ScreenStateEvent()
     data class IncomingChat(val chat: PlayChat) : ScreenStateEvent()
+    object ComposeChat : ScreenStateEvent()
     data class VideoPropertyChanged(val videoProp: VideoPropertyUiModel) : ScreenStateEvent()
     data class VideoStreamChanged(val videoStream: VideoStreamUiModel) : ScreenStateEvent()
 }

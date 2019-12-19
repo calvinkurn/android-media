@@ -31,6 +31,7 @@ class SendChatComponent(
                         when (it) {
                             is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.videoType.isLive) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.ComposeChat -> uiView.focusChatForm()
                         }
                     }
         }
@@ -50,12 +51,12 @@ class SendChatComponent(
         }
     }
 
-    override fun onSendChatClicked(view: SendChatView) {
+    override fun onSendChatClicked(view: SendChatView, message: String) {
         launch {
-            bus.emit(SendChatInteractionEvent::class.java, SendChatInteractionEvent.SendClicked)
+            bus.emit(SendChatInteractionEvent::class.java, SendChatInteractionEvent.SendClicked(message))
         }
     }
 
-    private fun initChatFormView(container: ViewGroup): UIView =
+    private fun initChatFormView(container: ViewGroup) =
             SendChatView(container, this)
 }

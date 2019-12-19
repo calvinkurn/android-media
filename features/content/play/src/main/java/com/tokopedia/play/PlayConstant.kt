@@ -22,3 +22,9 @@ const val PLAY_GET_TOTAL_LIKES = "${PLAY_GET_CHANNEL_INFO_V3}/lope_lope"
 const val PLAY_POST_LIKE = "${PLAY_GET_CHANNEL_INFO_V3}/click_lope_lope"
 
 const val PARTNER_NAME_ADMIN = "Admin"
+
+const val PARAM_SEND_TYPE = "type"
+const val PARAM_SEND_DATA = "data"
+const val PARAM_SEND_TYPE_SEND = "SEND_MESG"
+const val PARAM_SEND_CHANNEL_ID = "channel_id"
+const val PARAM_SEND_MESSAGE = "message"
