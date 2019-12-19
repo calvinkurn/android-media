@@ -14,9 +14,9 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.ScrollView
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -112,10 +112,9 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupGeneralView()
-        setData()
         updateViewFromServer()
         requestOtp()
-        showKeyboard()
+        showKeyboard(false)
     }
 
     private fun updateViewFromServer() {
@@ -126,18 +125,14 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         presenter.requestOTP(viewModel)
     }
 
-    private fun setData() {
-        val imageId = viewModel.iconResId
-        if (!TextUtils.isEmpty(viewModel.imageUrl)) {
-            ImageHandler.LoadImage(imgVerify, viewModel.imageUrl)
-        } else if (imageId != 0)
-            ImageHandler.loadImageWithId(imgVerify, imageId)
-        else {
-            imgVerify.visibility = View.GONE
-        }
-    }
-
     private fun setupGeneralView() {
+
+        ImageHandler.loadImageAndCache(imgVerify, IMAGE_URL)
+
+        textInputOtp?.setOnClickListener {
+            showKeyboard(true)
+        }
+
         textInputOtp?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
@@ -288,28 +283,21 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         textInputOtp?.text?.clear()
         textInputOtp?.isError = true
         textErrorVerify?.visibility = View.VISIBLE
+        textErrorVerify?.text = errorMessage.substring(0, errorMessage.indexOf("("))
 
-        if (errorMessage.contains(PIN_ERR_MSG) && errorMessage.isNotEmpty()) {
-            textErrorVerify?.text = errorMessage.substring(0, errorMessage.indexOf("("))
-
-            if (errorMessage.contains(LIMIT_ERR_MSG)) {
-                buttonVerify?.visibility = View.VISIBLE
-                buttonVerify?.setText(R.string.other_method)
-                buttonVerify?.setOnClickListener { onOtherMethodClick() }
-            }
+        if (errorMessage.contains(LIMIT_ERR_MSG)) {
+            buttonVerify?.visibility = View.VISIBLE
+            buttonVerify?.setText(R.string.other_method)
+            buttonVerify?.setOnClickListener { onOtherMethodClick() }
         }
     }
 
     override fun onErrorVerifyOtpCode(errorMessage: String) {
-        if (errorMessage.contains(VERIFICATION_CODE) || errorMessage.contains(PIN_ERR_MSG)) {
-            setErrorView(errorMessage)
-        } else {
-            onErrorVerifyLogin(errorMessage)
-        }
+        setErrorView(errorMessage)
     }
 
     override fun onErrorVerifyLogin(errorMessage: String) {
-        view?.let { Toaster.showError(it, errorMessage, Snackbar.LENGTH_LONG) }
+        setErrorView(errorMessage)
     }
 
     override fun onErrorVerifyOtpCode(resId: Int) {
@@ -448,19 +436,20 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         presenter.detachView()
     }
 
-    fun setData(bundle: Bundle) {
-        viewModel = parseViewModel(bundle)
-    }
-
     override fun onSuccessGetModelFromServer(methodItem: MethodItem) {
         this.viewModel.imageUrl = methodItem.imageUrl
         this.viewModel.message = methodItem.verificationText
-        setData()
     }
 
-    private fun showKeyboard() {
-        val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.toggleSoftInputFromWindow(textInputOtp.windowToken, InputMethodManager.SHOW_FORCED, 0)
+    private fun showKeyboard(isClicked: Boolean) {
+        if (!isClicked) {
+            val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.toggleSoftInputFromWindow(textInputOtp.windowToken, InputMethodManager.SHOW_FORCED, 0)
+        }
+
+        scrollView.postDelayed({
+            scrollView.fullScroll(ScrollView.FOCUS_DOWN)
+        }, 500)
     }
   
     companion object {
@@ -469,7 +458,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
         private const val COUNTDOWN_LENGTH = 30
         private const val INTERVAL = 1000
-        private const val MAX_OTP_LENGTH = 6
+        private const val MAX_OTP_LENGTH = 4
 
         private const val CACHE_OTP = "CACHE_OTP"
         private const val HAS_TIMER = "has_timer"
@@ -478,6 +467,8 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
         private const val VERIFICATION_CODE = "Kode verifikasi"
         private const val PIN_ERR_MSG = "PIN"
+
+        private const val IMAGE_URL = "https://ecs7.tokopedia.net/android/others/otp_miscall_verification.png"
 
         fun createInstance(passModel: VerificationViewModel): Fragment {
             val fragment = VerificationOtpMiscallFragment()
