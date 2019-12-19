@@ -17,10 +17,12 @@ class AttachInvoiceViewHolder(itemView: View?, val listener: Listener) : Abstrac
     interface Listener {
         fun checkCurrentItem(element: Invoice, position: Int)
         fun uncheckPreviousItem()
+        fun isChecked(element: Invoice): Boolean
     }
 
     override fun bind(element: Invoice?) {
         if (element == null) return
+        bindState(element)
         bindThumbnail(element)
         bindLabelInvoiceStatus(element)
         bindTimeStamp(element)
@@ -28,6 +30,14 @@ class AttachInvoiceViewHolder(itemView: View?, val listener: Listener) : Abstrac
         bindProductName(element)
         bindProductPrice(element)
         bindClick(element)
+    }
+
+    private fun bindState(element: Invoice) {
+        if (listener.isChecked(element)) {
+            stateChecked()
+        } else {
+            stateUnchecked()
+        }
     }
 
     override fun bind(element: Invoice?, payloads: MutableList<Any>) {
@@ -93,11 +103,13 @@ class AttachInvoiceViewHolder(itemView: View?, val listener: Listener) : Abstrac
     private fun stateChecked() {
         val color = ContextCompat.getColor(itemView.context, R.color.Green_G100)
         itemView.clContainer?.setBackgroundColor(color)
+        itemView.rbSelect?.isChecked = true
     }
 
     private fun stateUnchecked() {
         itemView.clContainer?.setBackgroundColor(Color.TRANSPARENT)
         itemView.rbSelect?.isChecked = false
+
     }
 
     private fun getLabelType(statusId: Int?): Int {
@@ -107,6 +119,11 @@ class AttachInvoiceViewHolder(itemView: View?, val listener: Listener) : Abstrac
             OrderStatusCode.COLOR_GREEN -> Label.GENERAL_LIGHT_GREEN
             else -> Label.GENERAL_DARK_GREY
         }
+    }
+
+    override fun onViewRecycled() {
+        stateUnchecked()
+        super.onViewRecycled()
     }
 
     companion object {

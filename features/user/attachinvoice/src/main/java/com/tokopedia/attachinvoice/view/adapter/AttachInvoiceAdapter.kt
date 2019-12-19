@@ -33,4 +33,8 @@ class AttachInvoiceAdapter(private val baseListAdapterTypeFactory: AttachInvoice
         selectedInvoicePosition = RecyclerView.NO_POSITION
     }
 
+    override fun isChecked(element: Invoice): Boolean {
+        return selectedInvoice.value == element
+    }
+
 }
