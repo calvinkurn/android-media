@@ -8,7 +8,6 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -115,6 +114,10 @@ class TopChatViewStateImpl(
 
     private fun setChatTemplatesBottomPadding(bottomPadding: Int) {
         if (!templateRecyclerView.isVisible) return
+        addBottomPaddingTemplateChat(bottomPadding)
+    }
+
+    private fun addBottomPaddingTemplateChat(bottomPadding: Int) {
         templateRecyclerView.post {
             with(templateRecyclerView) {
                 setPadding(
@@ -391,6 +394,9 @@ class TopChatViewStateImpl(
         listTemplate?.let {
             templateAdapter.list = listTemplate
             templateRecyclerView.showWithCondition(templateAdapter.hasTemplateChat())
+            if (attachmentPreviewContainer.isVisible) {
+                addBottomPaddingTemplateChat(8.toPx())
+            }
         }
     }
 
