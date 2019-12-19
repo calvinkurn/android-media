@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.Banner;
 import com.tokopedia.banner.Indicator;
@@ -691,7 +692,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             TravelCollectiveBannerModel.Banner banner = getBannerData(position);
             if (getContext() != null) {
                 presenter.onBannerItemClick(position, banner);
-                RouteManager.route(getContext(), banner.getAttribute().getAppUrl());
+                if (RouteManager.isSupportApplink(getContext(), banner.getAttribute().getAppUrl())) RouteManager.route(getContext(), banner.getAttribute().getAppUrl());
+                else if (!DeeplinkMapper.getRegisteredNavigation(getContext(), banner.getAttribute().getAppUrl()).isEmpty())
+                    RouteManager.route(getContext(), DeeplinkMapper.getRegisteredNavigation(getContext(), banner.getAttribute().getAppUrl()));
+                else if (!banner.getAttribute().getWebUrl().isEmpty()) RouteManager.route(getContext(), banner.getAttribute().getWebUrl());
             }
         }
     }
