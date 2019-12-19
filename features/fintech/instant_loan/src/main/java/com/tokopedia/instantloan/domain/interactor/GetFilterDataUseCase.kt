@@ -1,8 +1,5 @@
 package com.tokopedia.instantloan.domain.interactor
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -14,10 +11,10 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class GetFilterDataUseCase @Inject constructor(@ApplicationContext context: Context) {
+class GetFilterDataUseCase @Inject constructor() {
 
     private val graphqlUseCase = GraphqlUseCase()
-    private val mContext = context
+    private var queryString = ""
 
     fun unsubscribe() {
         graphqlUseCase.unsubscribe()
@@ -30,8 +27,7 @@ class GetFilterDataUseCase @Inject constructor(@ApplicationContext context: Cont
         graphqlUseCase.clearRequest()
 
         val usableRequestMap = HashMap<String, Any>()
-        val graphqlRequestForUsable = GraphqlRequest(
-                GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.instantloan.R.raw.query_filter_data),
+        val graphqlRequestForUsable = GraphqlRequest(queryString,
                 GqlFilterDataResponse::class.java, usableRequestMap, false)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
                 .setExpiryTime(cacheDuration).setSessionIncluded(false).build()
@@ -39,5 +35,9 @@ class GetFilterDataUseCase @Inject constructor(@ApplicationContext context: Cont
         graphqlUseCase.addRequest(graphqlRequestForUsable)
         graphqlUseCase.execute(subscriber)
 
+    }
+
+    fun setQuery(query: String) {
+        this.queryString = query
     }
 }

@@ -21,6 +21,7 @@ constructor(val mGetFilterDataUseCase: GetFilterDataUseCase) :
     }
 
     override fun detachView() {
+        mGetFilterDataUseCase.setQuery(view.getFilterDataQuery())
         mGetFilterDataUseCase.unsubscribe()
         super.detachView()
     }

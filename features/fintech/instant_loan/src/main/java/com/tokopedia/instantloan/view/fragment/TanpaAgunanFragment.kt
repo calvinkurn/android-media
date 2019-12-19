@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.instantloan.InstantLoanComponentInstance
@@ -249,6 +250,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         widgetAddRemove.setText(loanAmountList.first().label)
         widgetAddRemove.setLoanValue(loanAmountList.first().value.toLong())
 
+    }
+
+    override fun getFilterDataQuery(): String {
+        return GraphqlHelper.loadRawString(resources, com.tokopedia.instantloan.R.raw.query_filter_data)
     }
 
     override fun isViewAttached(): Boolean {
