@@ -224,7 +224,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (cluster.operatorGroups.size == 1) {
             operator_cluster_select.hide()
         } else if (cluster.operatorGroups.size > 1) {
-            operator_cluster_select.setLabel(cluster.text)
+            // TODO: Get operator cluster label from backend
+            operator_cluster_select.setLabel("Pilih Operator Cluster")
+//            operator_cluster_select.setLabel(cluster.text)
             operator_cluster_select.setHint("")
             operator_cluster_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
                 override fun onFinishInput(input: String) {
@@ -459,6 +461,15 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 //                topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
                     }
                 })
+
+                // Hide widget title
+                listProductTab.forEach {
+                    if (it.fragment is RechargeGeneralRecentTransactionFragment) {
+                        (it.fragment as RechargeGeneralRecentTransactionFragment).toggleTitleVisibility(false)
+                    } else if (it.fragment is RechargeGeneralPromoListFragment) {
+                        (it.fragment as RechargeGeneralPromoListFragment).toggleTitleVisibility(false)
+                    }
+                }
             }
             product_view_pager.show()
         } else {

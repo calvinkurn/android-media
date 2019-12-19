@@ -87,6 +87,10 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
         }
     }
 
+    fun toggleTitleVisibility(value: Boolean) {
+        promo_list_widget.toggleTitleVisibility(value)
+    }
+
     override fun getScreenName(): String {
         return ""
     }
