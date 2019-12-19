@@ -143,7 +143,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             }
 
             override fun afterTextChanged(s: Editable) {
-                if (textInputOtp?.text?.length == MAX_OTP_LENGTH) {
+                if (textInputOtp?.text?.length == viewModel.numberOtpDigit) {
                     enableVerifyButton()
                     verifyOtp()
                 } else {
@@ -458,7 +458,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
         private const val COUNTDOWN_LENGTH = 30
         private const val INTERVAL = 1000
-        private const val MAX_OTP_LENGTH = 4
+        private const val MAX_OTP_LENGTH = 6
 
         private const val CACHE_OTP = "CACHE_OTP"
         private const val HAS_TIMER = "has_timer"
