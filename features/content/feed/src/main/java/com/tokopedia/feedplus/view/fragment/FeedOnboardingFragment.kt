@@ -156,7 +156,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     }
 
     private fun loadData() {
-        feedPresenter.getOnboardingData("",  true)
+        feedPresenter.getOnboardingData("")
         showLoading()
     }
 

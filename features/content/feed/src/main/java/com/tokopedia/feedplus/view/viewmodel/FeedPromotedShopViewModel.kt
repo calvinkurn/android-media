@@ -8,5 +8,6 @@ import com.tokopedia.topads.sdk.domain.model.Data
 data class FeedPromotedShopViewModel(
         var promotedShopViewModel: Data = Data(),
         var adapterPosition: Int = 0,
-        var resultString: String = ""
+        var resultString: String = "",
+        var isSuccess: Boolean = false
 )

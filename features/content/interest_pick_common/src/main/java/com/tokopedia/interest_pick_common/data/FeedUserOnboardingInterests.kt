@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName
 
 data class FeedUserOnboardingInterests(
 
-        @SerializedName("data")
+		@SerializedName("data")
 	@Expose
-	val data: List<DataItem> = ArrayList(),
+	var data: MutableList<DataItem> = mutableListOf(),
 
-        @SerializedName("meta")
+		@SerializedName("meta")
 	@Expose
 	val meta: Meta = Meta()
 )

@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -125,6 +126,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
+import java.lang.RuntimeException
 import java.util.*
 import javax.inject.Inject
 
@@ -317,7 +319,22 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             doFavoriteShopResp.observe(lifecycleOwner, Observer {
                 when (it) {
-                    is Success -> onSuccessFavoriteUnfavoriteShop(it.data)
+                    is Success -> {
+                        val stringBuilder = StringBuilder()
+                        val data = it.data
+                        if (data.isSuccess) {
+                            stringBuilder.append(MethodChecker.fromHtml(data.promotedShopViewModel.shop.name)).append(" ")
+                            if (data.promotedShopViewModel.isFavorit) {
+                                stringBuilder.append(getString(R.string.shop_success_unfollow))
+                            } else {
+                                stringBuilder.append(getString(R.string.shop_success_follow))
+                            }
+                        } else {
+                            stringBuilder.append(getString(R.string.msg_network_error))
+                        }
+                        data.resultString = stringBuilder.toString()
+                        onSuccessFavoriteUnfavoriteShop(data)
+                    }
                     is Fail -> onErrorFavoriteUnfavoriteShop(it.throwable)
                 }
             })
@@ -329,6 +346,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         if (data.isSuccess) {
                             onSuccessFollowUnfollowKol(data.rowNumber)
                         } else {
+                            data.errorMessage = getString(R.string.default_request_error_unknown)
                             onErrorFollowUnfollowKol(data)
                         }
                     }
@@ -348,6 +366,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         if (data.isSuccess) {
                             onSuccessLikeDislikeKolPost(data.rowNumber)
                         } else {
+                            data.errorMessage = getString(R.string.default_request_error_unknown)
                             onErrorLikeDislikeKolPost(data.errorMessage)
                         }
                     }
@@ -367,6 +386,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         if (data.isSuccess) {
                             onSuccessFollowKolFromRecommendation(data)
                         } else {
+                            data.errorMessage = getString(R.string.default_request_error_unknown)
                             onErrorFollowUnfollowKol(data)
                         }
                     }
@@ -386,6 +406,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         if (data.isSuccess) {
                             onSuccessDeletePost(data.rowNumber)
                         } else {
+                            data.errorMessage = getString(R.string.default_request_error_unknown)
                             onErrorDeletePost(data)
                         }
                     }
@@ -432,6 +453,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         if (data.isSuccess) {
                             onSuccessToggleFavoriteShop(data.rowNumber, data.adapterPosition)
                         } else {
+                            data.errorMessage = ErrorHandler.getErrorMessage(context, RuntimeException())
                             onErrorToggleFavoriteShop(data)
                         }
                     }
@@ -566,7 +588,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onRefresh() {
         newFeed.visibility = View.GONE
-        presenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, true)
+        presenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
         afterRefresh = true
     }
 
@@ -745,7 +767,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         activity?.let {
             if (isVisibleToUser && isAdded) {
                 if (!isLoadedOnce) {
-                    presenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, false)
+                    presenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
                     isLoadedOnce = !isLoadedOnce
                 }
 
