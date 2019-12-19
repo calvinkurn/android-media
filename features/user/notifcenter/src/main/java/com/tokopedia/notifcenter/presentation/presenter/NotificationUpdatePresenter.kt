@@ -5,19 +5,19 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateFilterMapper
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
 import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.notifcenter.domain.pojo.ProductData
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationUpdateContract
+import com.tokopedia.notifcenter.presentation.view.contract.NotificationUpdateContract
 import com.tokopedia.notifcenter.presentation.view.subscriber.GetNotificationTotalUnreadSubscriber
 import com.tokopedia.notifcenter.presentation.view.subscriber.GetNotificationUpdateFilterSubscriber
 import com.tokopedia.notifcenter.presentation.view.subscriber.GetNotificationUpdateSubscriber
 import com.tokopedia.notifcenter.presentation.view.subscriber.NotificationUpdateActionSubscriber
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateViewModel
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationViewBean
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -34,9 +34,7 @@ class NotificationUpdatePresenter @Inject constructor(
         private var getNotificationUpdateMapper : GetNotificationUpdateMapper,
         private var getNotificationUpdateFilterMapper : GetNotificationUpdateFilterMapper,
         private var addToCartUseCase: AddToCartUseCase
-)
-    : BaseDaggerPresenter<NotificationUpdateContract.View>(),
-        NotificationUpdateContract.Presenter {
+) : BaseDaggerPresenter<NotificationUpdateContract.View>(), NotificationUpdateContract.Presenter {
 
     var variables: HashMap<String, Any> = HashMap()
 
@@ -49,14 +47,14 @@ class NotificationUpdatePresenter @Inject constructor(
         variables.clear()
     }
 
-    override fun loadData(lastNotifId: String, onSuccessInitiateData: (NotificationUpdateViewModel) -> Unit, onErrorInitiateData: (Throwable) -> Unit) {
+    override fun loadData(lastNotifId: String, onSuccessInitiateData: (NotificationViewBean) -> Unit, onErrorInitiateData: (Throwable) -> Unit) {
         getNotificationUpdateUseCase.execute(
                 GetNotificationUpdateUseCase.getRequestParams(1, variables, lastNotifId),
                 GetNotificationUpdateSubscriber(getNotificationUpdateMapper, onSuccessInitiateData, onErrorInitiateData)
         )
     }
 
-    override fun getFilter(onSuccessGetFilter: (ArrayList<NotificationUpdateFilterItemViewModel>) -> Unit) {
+    override fun getFilter(onSuccessGetFilter: (ArrayList<NotificationUpdateFilterViewBean>) -> Unit) {
         getNotificationUpdateFilterUseCase.execute(GetNotificationUpdateFilterSubscriber(getNotificationUpdateFilterMapper, onSuccessGetFilter))
     }
 

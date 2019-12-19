@@ -1,16 +1,11 @@
 package com.tokopedia.notifcenter.presentation.presenter
 
 import android.content.Context
-import android.util.Log
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.notifcenter.domain.ClearCounterNotificationUpdateUseCase
-import com.tokopedia.notifcenter.domain.GetIsTabUpdateUseCase
-import com.tokopedia.notifcenter.domain.GetNotificationTotalUnreadUseCase
-import com.tokopedia.notifcenter.domain.GetNotificationUpdateUnreadUseCase
-import com.tokopedia.notifcenter.domain.SendNotificationUseCase
+import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.notifcenter.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateUnread
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationActivityContract
+import com.tokopedia.notifcenter.presentation.view.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.view.subscriber.GetNotificationUpdateUnreadSubscriber
 import com.tokopedia.notifcenter.presentation.view.subscriber.NotificationUpdateActionSubscriber
 import javax.inject.Inject
@@ -20,9 +15,8 @@ class NotificationActivityPresenter @Inject constructor(
         private var getNotificationUpdateUnreadUseCase: GetNotificationUpdateUnreadUseCase,
         private var clearCounterNotificationUpdateUseCase: ClearCounterNotificationUpdateUseCase,
         private var getIsTabUpdateUseCase: GetIsTabUpdateUseCase,
-        private var sendNotificationUseCase: SendNotificationUseCase)
-    : BaseDaggerPresenter<NotificationActivityContract.View>()
-        , NotificationActivityContract.Presenter {
+        private var sendNotificationUseCase: SendNotificationUseCase
+) : BaseDaggerPresenter<NotificationActivityContract.View>(), NotificationActivityContract.Presenter {
 
     override fun getUpdateUnreadCounter(onSuccess: (NotificationUpdateUnread) -> Unit) {
         getNotificationUpdateUnreadUseCase.execute(GetNotificationUpdateUnreadSubscriber(onSuccess))
