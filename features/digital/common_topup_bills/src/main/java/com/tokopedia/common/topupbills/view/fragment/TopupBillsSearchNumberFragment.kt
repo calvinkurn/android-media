@@ -52,10 +52,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
 
 
     override fun initInjector() {
-//        activity?.let {
-//            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
-//            digitalTopupComponent.inject(this)
-//        }
+
     }
 
     override fun getScreenName(): String? {
@@ -209,56 +206,6 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
             finish()
         }
     }
-
-//    fun navigateContact() {
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-//            activity?.let {
-//                permissionCheckerHelper.checkPermission(it,
-//                        PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
-//                        object : PermissionCheckerHelper.PermissionCheckListener {
-//                            override fun onPermissionDenied(permissionText: String) {
-//                                permissionCheckerHelper.onPermissionDenied(it, permissionText)
-//                            }
-//
-//                            override fun onNeverAskAgain(permissionText: String) {
-//                                permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-//                            }
-//
-//                            override fun onPermissionGranted() {
-//                                openContactPicker()
-//                            }
-//                        }, "")
-//            }
-//        } else {
-//            openContactPicker()
-//        }
-//    }
-//
-//    fun openContactPicker() {
-//        val contactPickerIntent = Intent(
-//                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
-//        try {
-//            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
-//        } catch (e: ActivityNotFoundException) {
-//            NetworkErrorHelper.showSnackbar(activity,
-//                    getString(R.string.error_message_contact_not_found))
-//        }
-//    }
-//
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        data?.let {
-//            if (resultCode == Activity.RESULT_OK) {
-//                if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
-//                    activity?.let {
-//                        val contactURI = data.data
-//                        val contact = contactURI.covertContactUriToContactData(it.contentResolver)
-//                        editTextSearchNumber.setText(contact.contactNumber)
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     enum class InputNumberActionType {
         MANUAL, CONTACT, FAVORITE, LATEST_TRANSACTION, CONTACT_HOMEPAGE

@@ -23,9 +23,9 @@ import org.jetbrains.annotations.NotNull
 /**
  * Created by resakemal on 12/12/19.
  */
-class TopupBillsEnquiryData @JvmOverloads constructor(@NotNull context: Context,
-                                                      attrs: AttributeSet? = null,
-                                                      defStyleAttr: Int = 0)
+class TopupBillsEnquiryDataWidget @JvmOverloads constructor(@NotNull context: Context,
+                                                            attrs: AttributeSet? = null,
+                                                            defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     var enquiryData: TopupBillsEnquiry = TopupBillsEnquiry()

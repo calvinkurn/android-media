@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.common.topupbills.widget.TopupBillsEnquiryData
+    <com.tokopedia.common.topupbills.widget.TopupBillsEnquiryDataWidget
         android:id="@+id/enquiry_data_view"
         android:layout_width="match_parent"
         android:layout_alignParentTop="true"

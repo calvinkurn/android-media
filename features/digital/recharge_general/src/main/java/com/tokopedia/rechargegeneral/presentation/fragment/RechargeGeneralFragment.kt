@@ -31,8 +31,8 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
-import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownBottomSheet
-import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownBottomSheet.Companion.SHOW_KEYBOARD_DELAY
+import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
@@ -73,11 +73,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     lateinit var sharedViewModel: SharedRechargeGeneralViewModel
 
     lateinit var adapter: RechargeGeneralAdapter
-    private var isLoading = false
-        set(value) {
-            field = value
-            if (value) loading_view.show() else loading_view.hide()
-        }
 
     private var inputData: HashMap<String, String> = hashMapOf()
     private var inputDataSize: Int = 0
@@ -131,7 +126,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 //                    sharedViewModel.recommendationItem.selectedId = TopupBillsRecommendation(operatorId = 18, productId = 291, clientNumber = "102111106111")
                 }
                 is Fail -> {
-                    isLoading = false
                     showGetListError(it.throwable)
                 }
             }
@@ -144,7 +138,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     renderInputAndProduct(it.data)
                 }
                 is Fail -> {
-                    isLoading = false
                     showGetListError(it.throwable)
                 }
             }
@@ -194,7 +187,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         enquiry_button.setOnClickListener {
             enquire()
         }
-        loading_view.hide()
 
         loadData()
     }
@@ -219,7 +211,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun renderOperators(cluster: RechargeGeneralOperatorCluster) {
-        isLoading = true
         if (operatorId == 0) operatorId = getFirstOperatorId(cluster)
         if (operatorId > 0) {
             operatorCluster = getClusterNameOfOperatorId(cluster, operatorId)
@@ -327,15 +318,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             if (productId.isNotEmpty()) productSelectData.selectedId = productId
             dataList.add(productSelectData)
         } else {
-            productId = productData.product.dataCollections[0].products[0].id
+            productId = productData.product.dataCollections.getOrNull(0)?.products?.getOrNull(0)?.id ?: ""
         }
 
         adapter.renderList(dataList)
 //        trackSearchResultCategories(it.data)
 
         inputDataSize = productData.enquiryFields.size
-
-        isLoading = false
     }
 
     // Reset product id & input data
@@ -356,7 +345,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 dropdownBottomSheet.dismiss()
             }
 
-            val dropdownView = TopupBillsInputDropdownBottomSheet(context, listener = object: TopupBillsInputDropdownBottomSheet.OnClickListener{
+            val dropdownView = TopupBillsInputDropdownWidget(context, listener = object: TopupBillsInputDropdownWidget.OnClickListener{
                 override fun onItemClicked(item: TopupBillsInputDropdownData) {
                     dropdownBottomSheet.dismiss()
                     field.setInputText(item.label)
@@ -545,7 +534,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (validateEnquiry()) {
             getEnquiry(operatorId.toString(), productId, inputData)
             // TODO: Remove temporary enquiry params
-//            val enquiryData = Gson().fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_enquiry_data), TopupBillsEnquiryData::class.java)
+//            val enquiryData = Gson().fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_enquiry_data), TopupBillsEnquiryDataWidget::class.java)
         }
     }
 

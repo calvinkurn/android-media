@@ -22,11 +22,11 @@ import org.jetbrains.annotations.NotNull
 /**
  * Created by resakemal on 11/11/19.
  */
-class TopupBillsInputDropdownBottomSheet @JvmOverloads constructor(@NotNull context: Context,
-                                                                   attrs: AttributeSet? = null,
-                                                                   defStyleAttr: Int = 0,
-                                                                   var listener: OnClickListener? = null,
-                                                                   val selected: String = "")
+class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: Context,
+                                                              attrs: AttributeSet? = null,
+                                                              defStyleAttr: Int = 0,
+                                                              var listener: OnClickListener? = null,
+                                                              val selected: String = "")
     : BaseCustomView(context, attrs, defStyleAttr), SearchInputView.Listener {
 
     private var initialData: List<TopupBillsInputDropdownData> = listOf()

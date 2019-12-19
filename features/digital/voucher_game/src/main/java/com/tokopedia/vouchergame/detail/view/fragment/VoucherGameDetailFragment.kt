@@ -35,8 +35,8 @@ import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownBottomSheet
-import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownBottomSheet.Companion.SHOW_KEYBOARD_DELAY
+import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
@@ -340,7 +340,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                 dropdownBottomSheet.dismiss()
             }
 
-            val dropdownView = TopupBillsInputDropdownBottomSheet(context, listener = object : TopupBillsInputDropdownBottomSheet.OnClickListener{
+            val dropdownView = TopupBillsInputDropdownWidget(context, listener = object : TopupBillsInputDropdownWidget.OnClickListener{
                 override fun onItemClicked(item: TopupBillsInputDropdownData) {
                     field.setInputText(item.label)
                 }
