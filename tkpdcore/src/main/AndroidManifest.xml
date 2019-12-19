@@ -190,10 +190,6 @@
         <activity
             android:name="com.tokopedia.core.manage.general.ManageWebViewActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.seller.opportunity.snapshot.SnapShotProduct"
-            android:label="@string/title_activity_snapshot"
-            android:screenOrientation="portrait" />
 
         <!-- ======================================================= -->
         <!-- RECEIVERS REGISTRY -->

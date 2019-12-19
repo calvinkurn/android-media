@@ -22,6 +22,10 @@
             android:label="@string/take_opportunity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".snapshot.SnapShotProduct"
+            android:label="@string/title_activity_snapshot"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.OpportunityListActivity"
             android:label="@string/title_opportunity_detail"
             android:launchMode="singleTask"
