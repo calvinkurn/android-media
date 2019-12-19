@@ -28,11 +28,11 @@ import com.tokopedia.notifcenter.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.notifcenter.domain.pojo.NotificationUpdateUnread
 import com.tokopedia.notifcenter.listener.NotificationActivityListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationFragmentAdapter
-import com.tokopedia.notifcenter.presentation.di.notification.DaggerNotificationUpdateComponent
+import com.tokopedia.notifcenter.presentation.di.DaggerNotificationUpdateComponent
 import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFragment
 import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.notifcenter.presentation.presenter.NotificationActivityPresenter
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationActivityContract
+import com.tokopedia.notifcenter.presentation.view.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.util.CacheManager
 import com.tokopedia.notifcenter.util.NotifPreference
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -42,7 +42,9 @@ import javax.inject.Inject
  * Created by meta on 20/06/18.
  */
 
-class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, NotificationActivityContract.View,
+class NotificationActivity : BaseTabActivity(),
+        HasComponent<BaseAppComponent>,
+        NotificationActivityContract.View,
         NotificationUpdateFragment.NotificationUpdateListener {
 
     @Inject lateinit var presenter: NotificationActivityPresenter
