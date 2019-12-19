@@ -60,33 +60,31 @@ object WebViewHelper {
      @JvmStatic
      fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
         Log.d("WebviewHelper before URL" , url)
-        var url: String? = url ?: return ""
+        var returnURl = "";
 
 
-        if (isPassingGAClientIdEnable(context)) {
+        if (url != null && isPassingGAClientIdEnable(context)) {
             try {
-                val decodedUrl = URLDecoder.decode(url!!, "UTF-8")
-
                 //parse url
-                val uri = Uri.parse(decodedUrl)
+                val uri = Uri.parse(url)
 
 
                 //logic to append GA clientID in web URL to track app to web sessions
-                if (uri != null  && !decodedUrl.contains(PARAM_APPCLIENT_ID)) {
+                if (uri != null  && !url.contains(PARAM_APPCLIENT_ID)) {
                     val clientID = TrackApp.getInstance().getGTM().getCachedClientIDString();
 
-                    if (clientID != null && decodedUrl.contains("js.tokopedia.com")) {
-                        var tokopediaUrl = uri!!.getQueryParameter("url")
-                        if (tokopediaUrl != null) {
-                            val tokopediaUri = Uri.parse(tokopediaUrl)
-                            tokopediaUrl = tokopediaUri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString()
-                            //tokopediaUrl = URLEncoder.encode(tokopediaUrl!!, "UTF-8")
+                    if (clientID != null && url.contains("js.tokopedia.com")) {
+                        var tokopediaEncodedUrl = uri!!.getQueryParameter("url")
 
-                            url = replaceUriParameter(uri!!, "url", tokopediaUrl)
+                        if (tokopediaEncodedUrl != null) {
+                            var tokopediaDecodedUrl = URLDecoder.decode(tokopediaEncodedUrl!!, "UTF-8")
+                            val tokopediaUri = Uri.parse(tokopediaDecodedUrl)
+                            tokopediaDecodedUrl = tokopediaUri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString()
 
+                            returnURl = replaceUriParameter(uri!!, "url", tokopediaDecodedUrl)
                         }
                     } else if (clientID != null && url != null && url.contains(HOST_TOKOPEDIA)) {
-                        url = uri!!.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString()
+                        returnURl = uri!!.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString()
                     }
                 }
             } catch (ex: Exception) {
@@ -95,8 +93,8 @@ object WebViewHelper {
 
         }
 
-        Log.d("WebviewHelper updated URL" , url)
-        return url
+        Log.d("WebviewHelper updated URL" , returnURl)
+        return returnURl
     }
 
 

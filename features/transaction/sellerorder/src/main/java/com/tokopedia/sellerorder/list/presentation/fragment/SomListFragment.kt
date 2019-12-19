@@ -362,6 +362,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             somListItemAdapter.somItemList = orderList.orders.toMutableList()
         } else {
             somListItemAdapter.addItems(orderList.orders)
+            scrollListener.updateStateAfterGetData()
         }
         somListItemAdapter.notifyDataSetChanged()
     }
@@ -492,7 +493,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onListItemClicked(orderId: String) {
-        eventClickOrder()
+        eventClickOrder(tabActive)
         Intent(activity, SomDetailActivity::class.java).apply {
             putExtra(PARAM_ORDER_ID, orderId)
             startActivityForResult(this, FLAG_DETAIL)

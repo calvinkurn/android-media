@@ -29,8 +29,7 @@
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:padding="@dimen/dp_6"
-                    android:layout_weight="1"
-                    tools:src="@drawable/emoney"/>
+                    android:layout_weight="1"/>
 
                 <View
                     android:layout_width="1dp"

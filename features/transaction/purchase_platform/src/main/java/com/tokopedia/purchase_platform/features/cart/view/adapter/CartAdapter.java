@@ -65,7 +65,8 @@ import javax.inject.Inject;
 
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.transaction.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CART;
+import static com.tokopedia.purchase_platform.common.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CART;
+
 
 /**
  * @author anggaprasetiyo on 18/01/18.
