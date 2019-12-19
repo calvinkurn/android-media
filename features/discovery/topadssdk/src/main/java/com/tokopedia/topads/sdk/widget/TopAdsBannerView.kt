@@ -109,7 +109,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     }
                 }
             }
-            if (cpmData.cpm.cpmShop.isPowerMerchant) {
+            if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
                 list.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
             } else if (cpmData.cpm.cpmShop.isOfficial) {
                 list.background = ContextCompat.getDrawable(context, R.drawable.bg_os_gradient)
