@@ -2,13 +2,13 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
+import com.tokopedia.product.detail.view.adapter.ProductGeneralItemAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_general_info.view.*
 
@@ -19,40 +19,38 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
     }
 
     override fun bind(element: ProductGeneralInfoDataModel) {
-        showLoading()
-        element.data?.run {
-            view.pdp_info_title.text = MethodChecker.fromHtml(title)
-            if (element.description.isNotEmpty()) {
-                hideLoading()
-                view.pdp_info_desc.text = MethodChecker.fromHtml(element.description)
-                view.setOnClickListener {
-                    listener.onInfoClicked(element.name)
-                }
-            } else {
-                view.pdp_info_desc.text = ""
-                view.setOnClickListener {
-                    listener.onInfoClicked(element.name)
-                }
-            }
+        hideLoading()
+        element.data.run {
+            view.rv_general_info.adapter = ProductGeneralItemAdapter(this)
+        }
 
-            if (element.isApplink) {
-                view.pdp_arrow_right.visible()
-            } else {
-                view.pdp_arrow_right.gone()
-            }
+        view.pdp_info_title.text = MethodChecker.fromHtml(element.title)
+        view.setOnClickListener {
+            listener.onInfoClicked(element.name)
+        }
+
+        if (element.isApplink) {
+            view.pdp_arrow_right.show()
+        } else {
+            view.pdp_arrow_right.hide()
+        }
+
+        if (element.parentIcon.isNotEmpty()) {
+            view.pdp_icon.show()
+            ImageHandler.loadImage(view.context, view.pdp_icon, element.parentIcon, R.drawable.ic_loading_image)
+        } else {
+            view.pdp_icon.hide()
         }
     }
 
     private fun hideLoading() {
         view.pdp_info_title.show()
-        view.pdp_info_desc.show()
         view.titleShimmering.hide()
         view.descShimmering.hide()
     }
 
     private fun showLoading() {
         view.pdp_info_title.hide()
-        view.pdp_info_desc.hide()
         view.titleShimmering.show()
         view.descShimmering.show()
     }

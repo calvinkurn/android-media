@@ -79,8 +79,8 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val getShopInfo: ProductShopInfoDataModel
         get() = shopInfoMap ?: ProductShopInfoDataModel()
 
-    fun updateDataP1(data: DynamicProductInfoP1?) {
-        data?.let {
+    fun updateDataP1(dataP1: DynamicProductInfoP1?) {
+        dataP1?.let {
             snapShotMap.run {
                 dynamicProductInfoP1 = it
                 media = it.data.media.map { media ->
@@ -104,25 +104,25 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
             productWholesaleInfoMap?.run {
                 val minPrice = it.data.wholesale?.minBy { it.price.value }?.price?.value ?: return
-                description = context.getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
+                data.first().subtitle = context.getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
             }
 
             productLastSeenMap?.run {
-                val date = Date(data.data.price.lastUpdateUnix.toLong() * 1000)
+                val date = Date(it.data.price.lastUpdateUnix.toLong() * 1000)
                 val dateString = date.toFormattedString("dd-mm-yyyy , hh:mm")
                 lastSeen = "$dateString WIB"
             }
         }
     }
 
-    fun updateDataP2Shop(data: ProductInfoP2ShopData?) {
-        data?.let {
+    fun updateDataP2Shop(dataP2: ProductInfoP2ShopData?) {
+        dataP2?.let {
             shopInfoMap?.run {
                 shopInfo = it.shopInfo
             }
 
             productFullfilmentMap?.run {
-                description = context.getString(R.string.multiorigin_desc)
+                data.first().subtitle = context.getString(R.string.multiorigin_desc)
             }
 
             snapShotMap.run {
@@ -139,8 +139,8 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         }
     }
 
-    fun updateDataP2General(data: ProductInfoP2General?) {
-        data?.let {
+    fun updateDataP2General(dataP2General: ProductInfoP2General?) {
+        dataP2General?.let {
             shopInfoMap?.run {
                 shopFeature = it.shopFeature
                 shopBadge = it.shopBadge
@@ -150,11 +150,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             orderPriorityMap?.run {
-                description = it.shopCommitment.staticMessages.pdpMessage
+                data.first().subtitle = it.shopCommitment.staticMessages.pdpMessage
             }
 
             productProtectionMap?.run {
-                description = it.productPurchaseProtectionInfo.ppItemDetailPage!!.subTitlePDP ?: ""
+                data.first().subtitle = it.productPurchaseProtectionInfo.ppItemDetailPage!!.subTitlePDP
+                        ?: ""
             }
 
             socialProofMap?.run {
@@ -202,7 +203,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
     fun updateVariantInfo(productVariant: ProductVariant, selectedOptionString: String) {
         productVariantInfoMap?.run {
-            description =
+            data.first().subtitle =
                     if (selectedOptionString.isEmpty()) {
                         "Pilih " +
                                 productVariant.variant.map { it.name }.joinToStringWithLast(separator = ", ",

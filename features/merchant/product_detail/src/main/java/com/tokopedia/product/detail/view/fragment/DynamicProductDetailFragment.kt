@@ -416,7 +416,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             } else {
                 pdpHashMapUtil.productTradeinMap?.run {
                     pdpHashMapUtil.snapShotMap.shouldShowTradein = true
-                    description = if (tradeinResponse.usedPrice > 0) {
+                    data.first().subtitle = if (tradeinResponse.usedPrice > 0) {
                         getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
                     } else {
                         getString(R.string.trade_in_exchange)
@@ -512,7 +512,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             it.productFinancingRecommendationData.let { financingData ->
                 if (financingData.response.data.partnerCode.isNotBlank()) {
                     pdpHashMapUtil.productInstallmentInfoMap?.run {
-                        description = String.format(getString(R.string.new_installment_template),
+                        data.first().subtitle = String.format(getString(R.string.new_installment_template),
                                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
                                         (if (viewModel.getDynamicProductInfoP1?.data?.isOS == true) financingData.response.data.osMonthlyPrice
                                         else financingData.response.data.monthlyPrice).roundToLong(), false))
@@ -540,7 +540,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 performanceMonitoringFull.stopTrace()
 
             pdpHashMapUtil.productShipingInfoMap?.run {
-                description = " ${getString(R.string.shipping_pattern_string, it.ratesModel?.services?.size
+                data.first().subtitle = " ${getString(R.string.shipping_pattern_string, it.ratesModel?.services?.size
                         ?: 0)}${getString(R.string.ongkir_pattern_string, it.rateEstSummarizeText?.minPrice, "<b>${it.rateEstSummarizeText?.destination}</b>")}"
                 dynamicAdapter.notifyShipingInfo(this)
             }

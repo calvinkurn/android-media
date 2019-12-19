@@ -78,6 +78,7 @@ class PictureScrollingView @JvmOverloads constructor(
             indicator_picture.setViewPager(view_pager)
             indicator_picture.notifyDataSetChanged()
         }
+        pagerAdapter.notifyDataSetChanged()
     }
 
     fun renderShopStatus(shopInfo: ShopInfo.StatusInfo, productStatus: String, productStatusTitle: String = "",

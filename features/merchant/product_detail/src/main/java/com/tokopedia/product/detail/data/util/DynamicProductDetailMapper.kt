@@ -30,9 +30,12 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.INFO -> {
                     val contentData = component.componentData.firstOrNull()
-                    listOfComponent.add(ProductGeneralInfoDataModel(ProductGeneralInfoData(contentData?.applink
-                            ?: "", contentData?.title ?: "", contentData?.content
-                            ?: listOf()), type = component.type, name = component.componentName))
+                    val content = if (contentData?.content?.isEmpty() == true) listOf(Content()) else contentData?.content
+                    listOfComponent.add(ProductGeneralInfoDataModel(component.componentName, component.type, contentData?.applink
+                            ?: "", contentData?.title ?: "",
+                            contentData?.isApplink ?: true, contentData?.icon
+                            ?: "", content ?: listOf(Content()))
+                    )
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
                     listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))

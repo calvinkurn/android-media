@@ -9,11 +9,7 @@ data class Content(
         @SerializedName("title")
         val title: String = "",
         @SerializedName("subtitle")
-        val subtitle: String = "",
-        @SerializedName("type")
-        val componentType: String = "",
-        @SerializedName("rating")
-        val componentRating: String = "",
+        var subtitle: String = "",
         @SerializedName("applink")
         val applink: String = ""
 )

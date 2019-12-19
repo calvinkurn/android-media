@@ -13,6 +13,10 @@ data class ComponentData(
         val row: String = "",
         @SerializedName("title")
         val title: String = "",
+        @SerializedName("isApplink")
+        val isApplink: Boolean = true,
+        @SerializedName("icon")
+        val icon: String = "",
 
         // Snapshot data
         @SerializedName("campaign")
