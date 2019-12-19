@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/selectable_background_tokopedia"
     android:orientation="vertical"
     android:paddingTop="@dimen/padding_16"
     android:paddingBottom="@dimen/padding_16">
@@ -11,7 +12,6 @@
         android:id="@+id/header_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/selectable_background_tokopedia"
         app:lv_show_arrow="true" />
 
     <LinearLayout
@@ -23,7 +23,7 @@
         android:orientation="vertical"
         android:paddingBottom="@dimen/dp_10">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

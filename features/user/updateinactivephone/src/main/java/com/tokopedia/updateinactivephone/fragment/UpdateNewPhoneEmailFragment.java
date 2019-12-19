@@ -3,8 +3,8 @@ package com.tokopedia.updateinactivephone.fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -77,9 +77,6 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
             oldPhoneNumber = bundle.getString(OLD_PHONE);
         }
 
-        View dashLineView = view.findViewById(R.id.dash_line);
-        dashLineView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        TextView oldPhoneTextView = view.findViewById(R.id.old_phone_text_view);
         emailErrorTextView = view.findViewById(R.id.email_error);
         phoneErrorTextView = view.findViewById(R.id.phone_error);
 
@@ -89,9 +86,6 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
 
         emailHintTextView = view.findViewById(R.id.email_hint_text_view);
         phoneHintTextView = view.findViewById(R.id.phone_hint_text_view);
-
-        oldPhoneTextView.setText(oldPhoneNumber);
-
 
         newEmailEditText.addTextChangedListener(new TextWatcher() {
             @Override

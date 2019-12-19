@@ -4,7 +4,7 @@ import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.user_identification_common.KYCConstant;
-import com.tokopedia.user_identification_common.pojo.KycUserProjectInfoPojo;
+import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import rx.Subscriber;
 public class GetUserProjectInfoSubcriber extends Subscriber<GraphqlResponse> {
 
     public interface GetUserProjectInfoListener {
-        void isAllowToRegister(boolean allow);
+        void isUserBlacklist(boolean isBlacklist);
         void onErrorGetUserProjectInfo(Throwable throwable);
         void onErrorGetUserProjectInfoWithErrorCode(String errorCode);
     }
@@ -52,7 +52,11 @@ public class GetUserProjectInfoSubcriber extends Subscriber<GraphqlResponse> {
 
     private void routingOnNext(KycUserProjectInfoPojo pojo) {
         if (pojo.getKycProjectInfo() != null) {
-            listener.isAllowToRegister(pojo.getKycProjectInfo().isAllowToRegister());
+            if (pojo.getKycProjectInfo().getStatus() == KYCConstant.STATUS_BLACKLISTED) {
+                listener.isUserBlacklist(true);
+            } else {
+                listener.isUserBlacklist(false);
+            }
         } else {
             listener.onErrorGetUserProjectInfoWithErrorCode(KYCConstant.ERROR_MESSAGE_EMPTY);
         }

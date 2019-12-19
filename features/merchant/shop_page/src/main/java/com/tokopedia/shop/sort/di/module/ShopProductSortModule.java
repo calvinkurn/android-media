@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.shop.sort.data.repository.ShopProductSortRepositoryImpl;
@@ -26,6 +27,11 @@ import retrofit2.Retrofit;
 @ShopProductSortScope
 @Module
 public class ShopProductSortModule {
+
+    @Provides
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter)context;
+    }
 
     @Provides
     public OkHttpClient provideOkHttpClient(ShopAuthInterceptor shopAuthInterceptor,

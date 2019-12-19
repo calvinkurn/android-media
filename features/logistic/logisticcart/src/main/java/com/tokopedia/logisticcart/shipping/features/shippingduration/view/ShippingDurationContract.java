@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
@@ -41,7 +42,10 @@ public interface ShippingDurationContract {
 
     interface Presenter extends CustomerPresenter<View> {
         void loadCourierRecommendation(ShipmentDetailData shipmentDetailData, int selectedServiceId,
-                                       List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner, boolean isLeasing, String pslCode);
+                                       List<ShopShipment> shopShipmentList, int codHistory,
+                                       boolean isCorner, boolean isLeasing, String pslCode,
+                                       List<Product> products, String cartString, boolean isTradeInDropOff,
+                                       RecipientAddressModel recipientAddressModel);
 
         void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner, boolean isLeasing);
 

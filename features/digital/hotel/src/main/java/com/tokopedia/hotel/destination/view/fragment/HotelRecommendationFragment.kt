@@ -1,16 +1,16 @@
 package com.tokopedia.hotel.destination.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -139,7 +139,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        destinationViewModel.popularSearch.observe(this, android.arch.lifecycle.Observer {
+        destinationViewModel.popularSearch.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     showOnlyList(false)
@@ -154,7 +154,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
             }
         })
 
-        destinationViewModel.recentSearch.observe(this, android.arch.lifecycle.Observer {
+        destinationViewModel.recentSearch.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     showOnlyList(false)
@@ -168,7 +168,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
             }
         })
 
-        destinationViewModel.longLat.observe(this, android.arch.lifecycle.Observer {
+        destinationViewModel.longLat.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onClickCurrentLocation(lang = it.data.first, lat = it.data.second)
                 is Fail -> checkGPS()

@@ -1,10 +1,10 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -132,7 +132,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     fun getCatalogMenuDetail() {
         catalogMenuDetailViewModel.getCatalogMenuDetailPostpaid(GraphqlHelper.loadRawString(resources,
-                R.raw.query_menu_detail), this::onLoadingMenuDetail,
+                com.tokopedia.common.topupbills.R.raw.query_menu_detail), this::onLoadingMenuDetail,
                 this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
         catalogMenuDetailViewModel.getFavNumbersPostpaid(GraphqlHelper.loadRawString(resources,
                 R.raw.query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
@@ -211,7 +211,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             mapParam.put(KEY_CLIENT_NUMBER, postpaidClientNumberWidget.getInputNumber())
             mapParam.put(KEY_PRODUCT_ID, operatorSelected.operator.attributes.defaultProductId.toString())
 
-            enquiryViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_enquiry_digital),
+            enquiryViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_enquiry_digital),
                     mapParam, this::onSuccessEnquiry, this::onErrorEnquiry)
         }
     }

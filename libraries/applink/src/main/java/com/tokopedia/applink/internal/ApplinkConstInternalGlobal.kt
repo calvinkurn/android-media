@@ -29,6 +29,18 @@ object ApplinkConstInternalGlobal {
     val PARAM_EMAIL = "email"
     @JvmField
     val PARAM_SOURCE = "source"
+    @JvmField
+    val PARAM_NAME = "name"
+    @JvmField
+    val PARAM_PASS = "pass"
+    @JvmField
+    val PARAM_TOKEN = "token"
+    @JvmField
+    val PARAM_ACTION = "action"
+    @JvmField
+    val PARAM_IS_SMART_LOGIN = "isSmartLogin"
+    @JvmField
+    val PARAM_IS_PENDING = "isPending"
 
     //VerificationActivity Param
     @JvmField
@@ -41,6 +53,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_REQUEST_OTP_MODE = "request_otp_mode"
     @JvmField
     val PARAM_OTP_CODE = "otp_code"
+    @JvmField
+    val PARAM_IS_FROM_LOGIN = "is_from_login"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -85,17 +99,38 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
 
+    @JvmField
+    val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
+
     // UserIdentificationInfoActivity
     // tokopedia-android-internal://global/user-identification-info
     @JvmField
-    val USER_IDENTIFICATION_INFO = "$INTERNAL_GLOBAL/user-identification-info"
+    val USER_IDENTIFICATION_INFO = "$USER_IDENTIFICATION_INFO_BASE?projectId={projectId}"
+
     @JvmField
     val PARAM_SOURCE_KYC_SELLER = "seller"
+
+    @JvmField
+    val USER_IDENTIFICATION_FORM_BASE = "$INTERNAL_GLOBAL/user-identification-form"
+
+    // UserIdentificationFormActivity
+    // tokopedia-android-internal://global/user-identification-form
+    @JvmField
+    val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}"
+    @JvmField
+    val PARAM_PROJECT_ID = "projectId"
 
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender
     @JvmField
     val CHANGE_GENDER = "$INTERNAL_GLOBAL/change-gender"
+
+    // ChangeNameActivity
+    // tokopedia-android-internal://global/change-name
+    @JvmField
+    val CHANGE_NAME = "$INTERNAL_GLOBAL/change-name?oldName={oldName}"
+    @JvmField
+    val PARAM_FULL_NAME = "oldName"
 
     // AddEmailActivity
     // tokopedia-android-internal://global/add-email
@@ -122,21 +157,40 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
 
+    // PinCompleteActivity
+    // tokopedia-android-internal://global/add-pin-complete
+    @JvmField
+    val ADD_PIN_COMPLETE = "$INTERNAL_GLOBAL/add-pin-complete"
+
     // VerificationActivity
     // tokopedia-android-internal://global/cotp
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
+
+    // ValidatorActivity
+    // tokopedia-android-internal://global/otp-validator
+    @JvmField
+    val OTP_VALIDATOR = "$INTERNAL_GLOBAL/otp-validator"
 
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     @JvmField
     val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
 
+    // ChangePinActivity
+    // tokopedia-android-internal://global/change-pin
+    @JvmField
+    val CHANGE_PIN = "$INTERNAL_GLOBAL/change-pin"
+
     // WebViewActivity (Web View in library)
     // Solution for sellerapp that does not have AppLinkWebsiteActivity
     // Activity can have title by putting "title=.."
     @JvmField
     val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
+
+
+    @JvmField
+    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-profile-phone-verification
@@ -147,6 +201,43 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/setting-bank
     @JvmField
     val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
+
+    // InstantLoanActivity
+    // tokopedia-android-internal://global/loan
+    @JvmField
+    val GLOBAL_INTERNAL_INSTANT_LOAN = "$INTERNAL_GLOBAL/instant-loan"
+
+    // InstantLoanActivity with specific tab
+    // tokopedia-android-internal://global/loan/category/{tab_name}
+    @JvmField
+    val GLOBAL_INTERNAL_INSTANT_LOAN_TAB = "$INTERNAL_GLOBAL/loan/category/instan/"
+
+    @JvmField
+    val GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB = "$INTERNAL_GLOBAL/loan/category/pinjamanonline/"
+
+    @JvmField
+    val GLOBAL_INTERNAL_DIGITAL_DEAL = "$INTERNAL_GLOBAL/deals"
+
+    @JvmField
+    val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE = "$INTERNAL_GLOBAL/deals-slug/"
+
+    @JvmField
+    val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG = "$GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE{slug}/"
+
+    @JvmField
+    val GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY = "$INTERNAL_GLOBAL/deals/category/page"
+
+    @JvmField
+    val GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS_BASE = "$INTERNAL_GLOBAL/deals-allbrands/"
+
+    @JvmField
+    val GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS = "$GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS_BASE{isVoucher}/"
+
+    @JvmField
+    val GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL_BASE = "$INTERNAL_GLOBAL/deals-brand/"
+
+    @JvmField
+    val GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL = "$GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL_BASE{slug}/"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-bank
@@ -162,6 +253,35 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/saldo-intro
     @JvmField
     val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
+
+    // ChangeEmailActivity
+    // tokopedia-android-internal://global/change-email-register
+    @JvmField
+    val CHANGE_EMAIL_REGISTER = "$INTERNAL_GLOBAL/change-email-register"
+
+    // RegisterEmailActivity
+    // tokopedia-android-internal://global/email-register
+    @JvmField
+    val EMAIL_REGISTER = "$INTERNAL_GLOBAL/email-register"
+    // ChatbotActivity
+    // tokopedia-android-internal://global/chatbot
+    @JvmField
+    val CHAT_BOT = "$INTERNAL_GLOBAL/chatbot"
+
+    // PaymentQRSummaryActivity
+    // tokopedia-android-internal://global/ovo-pay-with-qr
+    @JvmField
+    val OVO_PAY_WITH_QR_ENTRY = "$INTERNAL_GLOBAL/ovo-pay-with-qr"
+
+    // QrOvoPayTxDetailActivity
+    // tokopedia-android-internal://global/ovoqrthanks/
+    @JvmField
+    val OQR_PIN_URL_ENTRY = "$INTERNAL_GLOBAL/ovoqrthanks/"
+
+    // QrOvoPayTxDetailActivity
+    // tokopedia-android-internal://global/ovoqrthanks/{transfer_id}
+    @JvmField
+    val OQR_PIN_URL_ENTRY_PATTERN = "$INTERNAL_GLOBAL/ovoqrthanks/{transfer_id}/"
 
 
     @JvmField
@@ -190,4 +310,23 @@ object ApplinkConstInternalGlobal {
         "dfauto={isAutoDownload}&" +
         "dfimage={imageUrl}"
 
+    @JvmField
+    val LOGOUT = "$INTERNAL_GLOBAL/logout"
+
+    // AdvancedSettingActivity
+    // tokopedia-android-internal://global/advanced-setting
+    @JvmField
+    val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
+
+    // PushNotificationCheckerActivity
+    // tokopedia-android-internal://global/push-notification-troubleshooter
+    @JvmField
+    val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
+
+    // Phone Number Verification Activity
+    // tokopedia-android-internal://global/setting-referral-phone-verification
+    @JvmField
+    val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
+    @JvmField
+    val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
 }

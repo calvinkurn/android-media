@@ -1,6 +1,6 @@
 package com.tokopedia.loyalty.view.adapter;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,6 +86,8 @@ public class PromoListAdapter extends RecyclerView.Adapter {
             itemViewHolder.btnCopyCodePromo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    actionListener.cachePromoCode(promoData.getPromoCode());
                     actionListener.onItemPromoCodeCopyClipboardClicked(promoData.getPromoCode(),
                             promoData.getTitle());
                 }
@@ -94,12 +96,14 @@ public class PromoListAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View view) {
                     actionListener.onItemPromoClicked(promoData, position);
+                    actionListener.cachePromoCode(promoData.getPromoCode());
                 }
             });
             itemViewHolder.llPromoInfoLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     actionListener.onItemPromoClicked(promoData, position);
+                    actionListener.cachePromoCode(promoData.getPromoCode());
                 }
             });
         }
@@ -191,5 +195,8 @@ public class PromoListAdapter extends RecyclerView.Adapter {
         void onItemPromoClicked(PromoData promoData, int position);
 
         void onItemPromoCodeTooltipClicked();
+
+        void cachePromoCode(String promoCode);
+
     }
 }

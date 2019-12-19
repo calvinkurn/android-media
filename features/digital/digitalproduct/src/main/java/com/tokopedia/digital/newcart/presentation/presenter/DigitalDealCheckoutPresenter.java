@@ -1,6 +1,6 @@
 package com.tokopedia.digital.newcart.presentation.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
@@ -8,9 +8,10 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUs
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
+import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
+import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
@@ -39,20 +40,20 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     @Inject
     public DigitalDealCheckoutPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                         DigitalAnalytics digitalAnalytics,
+                                        RechargeAnalytics rechargeAnalytics,
                                         DigitalModuleRouter digitalModuleRouter,
                                         ICartDigitalInteractor cartDigitalInteractor,
                                         UserSession userSession,
                                         DigitalCheckoutUseCase digitalCheckoutUseCase,
-                                        DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-                                        RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase) {
+                                        DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
         super(digitalAddToCartUseCase,
                 digitalAnalytics,
+                rechargeAnalytics,
                 digitalModuleRouter,
                 cartDigitalInteractor,
                 userSession,
                 digitalCheckoutUseCase,
-                digitalInstantCheckoutUseCase,
-                rechargePushEventRecommendationUseCase);
+                digitalInstantCheckoutUseCase);
         this.digitalAnalytics = digitalAnalytics;
         this.userSession = userSession;
     }

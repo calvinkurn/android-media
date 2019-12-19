@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.feeddetail;
 
 import android.graphics.Typeface;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -20,7 +20,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
-import com.tokopedia.kol.common.util.TimeConverter;
+import com.tokopedia.kolcommon.util.TimeConverter;
 
 /**
  * @author by nisie on 5/19/17.

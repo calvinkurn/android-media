@@ -34,7 +34,9 @@ class GetFeedShopFirstUseCase
         fun createRequestParams(userId: String, sourceId: String = "", isPullToRefresh: Boolean)
                 : RequestParams {
             val requestParams = GetDynamicFeedUseCase.createRequestParams(
-                    userId, "", GetDynamicFeedUseCase.SOURCE_SHOP, sourceId)
+                    userId= userId, cursor = "",
+                    source = GetDynamicFeedUseCase.FeedV2Source.Shop, sourceId = sourceId
+            )
             requestParams.putString(GetWhitelistUseCase.WHITELIST_SHOP, sourceId)
             requestParams.putBoolean(IS_PULL_TO_REFRESH, isPullToRefresh)
             return requestParams

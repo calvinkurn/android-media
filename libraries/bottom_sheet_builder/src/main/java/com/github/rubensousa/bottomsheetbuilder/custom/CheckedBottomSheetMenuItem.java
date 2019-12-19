@@ -1,7 +1,7 @@
 package com.github.rubensousa.bottomsheetbuilder.custom;
 
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
 import android.view.MenuItem;
 
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetMenuItem;

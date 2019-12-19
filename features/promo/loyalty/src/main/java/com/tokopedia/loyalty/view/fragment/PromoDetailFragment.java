@@ -4,10 +4,10 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -251,6 +251,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
     @Override
     public void onItemPromoCodeCopyClipboardClicked(String promoName, String promoCode) {
+        promoDetailPresenter.cachePromoCodeData(promoCode, getResources());
         this.promoDetailAnalytics.userClickCopyIcon(promoName);
         String message = getString(R.string.voucher_code_copy_to_clipboard);
 
@@ -323,7 +324,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                 if (getActivity().getApplication() instanceof LoyaltyModuleRouter) {
                     LoyaltyModuleRouter loyaltyModuleRouter = (LoyaltyModuleRouter) getActivity().getApplication();
 
-                    if (!TextUtils.isEmpty(appLink) && RouteManager.isSupportApplink(getActivity(),appLink)) {
+                    if (!TextUtils.isEmpty(appLink) && RouteManager.isSupportApplink(getActivity(), appLink)) {
                         RouteManager.route(getActivity(), appLink);
                     } else {
                         loyaltyModuleRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);

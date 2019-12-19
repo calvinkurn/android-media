@@ -10,14 +10,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -31,9 +34,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
@@ -148,12 +149,12 @@ public class BuildAndShowNotification {
                                                   final NotificationCompat.Builder mBuilder,
                                                   final NotificationConfiguration configuration) {
         Glide
-                .with(mBuilder.mContext)
-                .load(applinkNotificationPass.getImageUrl())
+                .with(mContext)
                 .asBitmap()
-                .into(new SimpleTarget<Bitmap>(60, 60) {
+                .load(applinkNotificationPass.getImageUrl())
+                .into(new CustomTarget<Bitmap>(60, 60) {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         mBuilder.setLargeIcon(
                                 ImageHandler.getRoundedCornerBitmap(resource, 60)
                         );
@@ -168,7 +169,7 @@ public class BuildAndShowNotification {
                     }
 
                     @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
                         mBuilder.setLargeIcon(
                                 BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
                         );
@@ -181,8 +182,12 @@ public class BuildAndShowNotification {
                         }
                         mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
                     }
-                });
 
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
+                });
     }
 
     public void buildAndShowNotification(NotificationPass notificationPass, Bundle data, NotificationConfiguration configuration) {
@@ -469,12 +474,14 @@ public class BuildAndShowNotification {
 
     private Bitmap getBitmap(String url) {
         try {
-            return Glide.with(mContext).load(url)
+            return Glide.with(mContext)
                     .asBitmap()
-                    .into(60, 60)
+                    .load(url)
+                    .submit(60, 60)
                     .get(3, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e ) {
-            return BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

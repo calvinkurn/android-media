@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.data;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;

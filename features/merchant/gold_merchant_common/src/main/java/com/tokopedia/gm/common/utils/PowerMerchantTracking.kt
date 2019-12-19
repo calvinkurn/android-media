@@ -96,4 +96,90 @@ class PowerMerchantTracking @Inject constructor() {
                 GMParamTracker.ACTION_CLICK_INCREASE_SHOP_PERFORMANCE,
                 "")
     }
+
+    fun eventPMCancellationQuestionnaireClickSendAnswer() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+                GMParamTracker.Category.PM_QUESTIONNAIRE,
+                GMParamTracker.Action.CLICK_FEATURES,
+                GMParamTracker.Label.SEND_ANSWER
+        )
+    }
+
+    fun eventPMCancellationClickBackButtonFirstPage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+                GMParamTracker.Category.PM_QUESTIONNAIRE,
+                GMParamTracker.Action.CLICK_RATING,
+                GMParamTracker.Label.BACK_BUTTON
+        )
+    }
+
+    fun eventPMCancellationClickBackButtonMiddlePage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+                GMParamTracker.Category.PM_QUESTIONNAIRE,
+                GMParamTracker.Action.CLICK_CANCELLATION_REASON,
+                GMParamTracker.Label.BACK_BUTTON
+        )
+    }
+
+    fun eventPMCancellationClickBackButtonLastPage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+                GMParamTracker.Category.PM_QUESTIONNAIRE,
+                GMParamTracker.Action.CLICK_FEATURES,
+                GMParamTracker.Label.BACK_BUTTON
+        )
+    }
+
+    fun eventPMCancellationClickNextQuestionButtonFirstPage(rating: Int) {
+        val label = "${GMParamTracker.Label.NEXT}, $rating"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+                GMParamTracker.Category.PM_QUESTIONNAIRE,
+                GMParamTracker.Action.CLICK_RATING,
+                label
+        )
+    }
+
+    fun eventPMCancellationClickNextQuestionButtonMiddlePage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+                GMParamTracker.Category.PM_QUESTIONNAIRE,
+                GMParamTracker.Action.CLICK_CANCELLATION_REASON,
+                GMParamTracker.Label.NEXT)
+    }
+
+    fun eventPMCancellationClickOptionBackButtonFirstPage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+                GMParamTracker.Category.PM_QUESTIONNAIRE,
+                GMParamTracker.Action.CLICK_RATING,
+                GMParamTracker.Label.OPTION_BACK_BUTTON
+        )
+    }
+
+    fun eventPMCancellationClickOptionBackButtonMiddlePage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+                GMParamTracker.Category.PM_QUESTIONNAIRE,
+                GMParamTracker.Action.CLICK_CANCELLATION_REASON,
+                GMParamTracker.Label.OPTION_BACK_BUTTON
+        )
+    }
+
+    fun eventPMCancellationClickOptionBackButtonLastPage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+                GMParamTracker.Category.PM_QUESTIONNAIRE,
+                GMParamTracker.Action.CLICK_FEATURES,
+                GMParamTracker.Label.OPTION_BACK_BUTTON
+        )
+    }
+
+    fun sendScreenName(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
 }

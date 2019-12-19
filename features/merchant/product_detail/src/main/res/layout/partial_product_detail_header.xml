@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_header"
@@ -36,89 +36,86 @@
 
     </FrameLayout>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/discount_timer_holder"
+    <ImageView
+        android:id="@+id/img_free_ongkir"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:visibility="gone"
+        android:scaleType="fitStart"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_price_pdp"
+        app:layout_constraintLeft_toRightOf="@+id/text_cashback"
+        app:layout_constraintTop_toTopOf="@+id/tv_price_pdp"
+        android:layout_marginStart="@dimen/dp_10" />
+
+    <LinearLayout
+        android:id="@+id/layout_official_store"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:background="@color/grey_background"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_available_at"
-        tools:visibility="visible">
+        android:layout_marginTop="@dimen/dp_10"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="@+id/product_name"
+        app:layout_constraintStart_toStartOf="@+id/product_name"
+        app:layout_constraintTop_toBottomOf="@+id/tv_price_pdp">
 
         <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/text_title_discount_timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_red_round_bottom_right"
-            android:drawablePadding="@dimen/dp_4"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:maxLines="1"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_8"
-            android:singleLine="true"
-            android:text="@string/label_flash_sale"
-            app:drawableLeftCompat="@drawable/ic_flash_sale"
-            app:fontSize="small"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:textViewTheme="darkPrimary"
-            app:weight="medium" />
-
-        <com.tokopedia.design.countdown.CountDownView
-            android:id="@+id/count_down"
+            android:id="@+id/label_official_store"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            app:coundDownBackgroud="@android:color/transparent"
-            app:countDownSparatorColor="@color/background_error"
-            app:countDownTxtColor="@color/background_error"
-            app:layout_constraintBottom_toBottomOf="@+id/text_title_discount_timer"
-            app:layout_constraintLeft_toRightOf="@+id/text_title_discount_timer"
-            app:layout_constraintStart_toEndOf="@+id/text_title_discount_timer"
-            app:layout_constraintTop_toTopOf="@+id/text_title_discount_timer" />
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/sale_text_stock_available"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:lineSpacingExtra="@dimen/sp_10"
-            android:maxLines="1"
-            android:singleLine="true"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
             android:visibility="gone"
-            app:fontSize="small"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_title_discount_timer"
-            app:textViewTheme="lightPrimary"
-            app:weight="medium"
-            tools:text="Stok tersedia (>100)"
+            app:fontSize="micro"
+            tools:text="Produk dari Brand Resmi"
             tools:visibility="visible" />
 
-    </android.support.constraint.ConstraintLayout>
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/label_prescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/bg_rounded_pink"
+            android:paddingLeft="@dimen/dp_4"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingRight="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_2"
+            android:text="@string/label_prescription"
+            android:textColor="@color/Red_R400"
+            android:visibility="gone"
+            app:fontSize="micro"
+            tools:textSize="@dimen/sp_10"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_guarantee"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_6"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/product_name"
+        app:layout_constraintTop_toBottomOf="@id/layout_official_store">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_guarantee" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:text="Garansi harga termurah"
+            app:fontSize="micro" />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/tv_trade_in_promo"
@@ -162,6 +159,107 @@
         app:layout_constraintVertical_bias="0"
         tools:visibility="visible" />
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@color/grey_300"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_guarantee"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/discount_timer_holder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="@color/grey_background"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_available_at"
+        tools:visibility="visible">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/text_title_discount_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_red_round_bottom_right"
+            android:drawablePadding="@dimen/dp_4"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_8"
+            android:singleLine="true"
+            android:text="@string/label_flash_sale"
+            app:drawableLeftCompat="@drawable/ic_flash_sale"
+            app:fontSize="small"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textViewTheme="darkPrimary"
+            app:weight="medium" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/sale_text_stock_available"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="@dimen/sp_10"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:visibility="gone"
+            app:fontSize="small"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_title_discount_timer"
+            app:textViewTheme="lightPrimary"
+            app:weight="medium"
+            tools:text="Stok tersedia (>100)"
+            tools:visibility="visible" />
+
+        <com.tokopedia.design.countdown.CountDownView
+            android:id="@+id/count_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            app:coundDownBackgroud="@android:color/transparent"
+            app:countDownSparatorColor="@color/background_error"
+            app:countDownTxtColor="@color/background_error"
+            app:layout_constraintBottom_toBottomOf="@+id/text_title_discount_timer"
+            app:layout_constraintLeft_toRightOf="@+id/text_title_discount_timer"
+            app:layout_constraintStart_toEndOf="@+id/text_title_discount_timer"
+            app:layout_constraintTop_toTopOf="@+id/text_title_discount_timer" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/product_name"
@@ -259,90 +357,6 @@
         tools:text="Cashback 3%"
         tools:visibility="visible" />
 
-    <LinearLayout
-        android:id="@+id/layout_official_store"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="@+id/product_name"
-        app:layout_constraintStart_toStartOf="@+id/product_name"
-        app:layout_constraintTop_toBottomOf="@+id/tv_price_pdp">
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/label_official_store"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
-            android:visibility="gone"
-            app:fontSize="micro"
-            tools:text="Produk dari Brand Resmi"
-            tools:visibility="visible" />
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/label_prescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/bg_rounded_pink"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingTop="@dimen/dp_2"
-            android:paddingRight="@dimen/dp_4"
-            android:paddingBottom="@dimen/dp_2"
-            android:text="@string/label_prescription"
-            android:textColor="@color/Red_R400"
-            android:visibility="gone"
-            app:fontSize="micro"
-            tools:textSize="@dimen/sp_10"
-            tools:visibility="visible" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_guarantee"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_6"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/product_name"
-        app:layout_constraintTop_toBottomOf="@id/layout_official_store">
-
-        <android.support.v7.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_guarantee" />
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/dp_6"
-            android:text="Garansi harga termurah"
-            app:fontSize="micro" />
-
-    </LinearLayout>
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:background="@color/grey_300"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_guarantee"
-        tools:visibility="visible" />
-
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/text_stock_available"
         android:layout_width="wrap_content"
@@ -358,4 +372,5 @@
         tools:text="Stok tersedia ( >100 )"
         tools:visibility="visible" />
 
-</android.support.constraint.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

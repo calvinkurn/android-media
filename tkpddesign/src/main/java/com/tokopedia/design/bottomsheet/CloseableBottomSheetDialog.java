@@ -2,8 +2,8 @@ package com.tokopedia.design.bottomsheet;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetDialog;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +23,7 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
     Context context;
     private CloseClickedListener closeListener;
     private boolean isRounded;
+    private boolean isRoundedAndCloseable = false;
 
     public interface CloseClickedListener {
         void onCloseDialog();
@@ -73,6 +74,15 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
         return closeableBottomSheetDialog;
     }
 
+    public static CloseableBottomSheetDialog createInstanceCloseableRounded(Context context,
+                                                                            CloseClickedListener closeListener) {
+        final CloseableBottomSheetDialog closeableBottomSheetDialog = new CloseableBottomSheetDialog
+                (context, R.style.TransparentBottomSheetDialogTheme);
+        closeableBottomSheetDialog.isRoundedAndCloseable = true;
+        closeableBottomSheetDialog.setListener(closeListener);
+        return closeableBottomSheetDialog;
+    }
+
     public static CloseableBottomSheetDialog createInstance(Context context,
                                                             CloseClickedListener closeListener,
                                                             BackHardwareClickedListener backHardwareClickedListener) {
@@ -116,9 +126,38 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
     private View inflateCustomView(View view, String title, boolean isCloseable) {
         if(isRounded){
             return inflateRoundedHeader(view, isCloseable);
+        } else if (isRoundedAndCloseable) {
+            return inflateRoundedCloseableHeader(view, title, isCloseable);
         } else {
             return inflateCloseableHeader(view, title, isCloseable);
         }
+    }
+
+    private View inflateRoundedCloseableHeader(View view, String title, boolean isCloseable) {
+        View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
+                .rounded_closeable_bottom_sheet, null);
+        FrameLayout frameLayout = contentView.findViewById(R.id.container);
+        frameLayout.addView(view);
+        ImageView closeButton = contentView.findViewById(R.id.close_button_rounded);
+        TextView headerTitle = contentView.findViewById(R.id.title_closeable_rounded);
+
+        if (!isCloseable) {
+            closeButton.setVisibility(View.GONE);
+            contentView.findViewById(R.id.view_separator).setVisibility(View.GONE);
+            contentView.findViewById(R.id.title_closeable).setVisibility(View.GONE);
+        } else {
+            closeButton.setOnClickListener(v -> {
+                dismiss();
+                closeListener.onCloseDialog();
+            });
+        }
+
+        if (!TextUtils.isEmpty(title)) {
+            headerTitle.setVisibility(View.VISIBLE);
+            headerTitle.setText(title);
+        }
+
+        return contentView;
     }
 
     private View inflateCloseableHeader(View view, String title, boolean isCloseable) {

@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.style.ForegroundColorSpan;
@@ -18,16 +16,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
 import com.tokopedia.topads.sdk.di.TopAdsComponent;
+import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
@@ -190,15 +193,23 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     private void setHeadlineDigitalData(Context context, Cpm cpm) {
         try {
-            Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    if (iconImg != null && resource != null) {
-                        iconImg.setImageBitmap(resource);
-                        new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
-                    }
-                }
-            });
+            Glide.with(context)
+                    .asBitmap()
+                    .load(cpm.getCpmImage().getFullEcs())
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            if (iconImg != null) {
+                                iconImg.setImageBitmap(resource);
+                                new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
+                            }
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                        }
+                    });
             nameTxt.setText(escapeHTML(cpm.getName() == null ? "" : cpm.getName()));
             descriptionTxt.setText(escapeHTML(cpm.getDecription() == null ? "" : cpm.getDecription()));
             ctaTxt.setText(cpm.getCta() == null ? "" : cpm.getCta());

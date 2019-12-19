@@ -1,11 +1,11 @@
 package com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Embedded;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.annotation.NonNull;
 import android.view.View;
 
 import com.google.gson.annotations.Expose;
@@ -23,6 +23,12 @@ public class CMInApp {
     @SerializedName("notificationId")
     public long id;
 
+//    @Ignore
+    @ColumnInfo(name = "campaignId")
+    @Expose
+    @SerializedName("campaignId")
+    public String campaignId;
+
     @ColumnInfo(name = "freq")
     @Expose
     @SerializedName(value = "freq")
@@ -32,6 +38,18 @@ public class CMInApp {
     @SerializedName("notificationType")
     @Expose
     public String type;
+
+//    @Ignore
+    @ColumnInfo(name = "campaignUserToken")
+    @SerializedName("campaignUserToken")
+    @Expose
+    public String campaignUserToken;
+
+//    @Ignore
+    @ColumnInfo(name = "parentId")
+    @SerializedName("parentId")
+    @Expose
+    public String parentId;
 
     @ColumnInfo(name = "e")
     @SerializedName("e")
@@ -47,7 +65,6 @@ public class CMInApp {
     @SerializedName("s")
     @Expose
     public String screen;
-
     @SerializedName("d")
     @ColumnInfo(name = "d")
     @Expose
@@ -172,5 +189,62 @@ public class CMInApp {
 
     public void setEndTime(long endTime) {
         this.endTime = endTime;
+    }
+
+
+    public String getCampaignUserToken() {
+        return campaignUserToken;
+    }
+
+    public void setCampaignUserToken(String campaignUserToken) {
+        this.campaignUserToken = campaignUserToken;
+    }
+
+    public String getCampaignId() {
+        return campaignId;
+    }
+
+    public void setCampaignId(String campaignId) {
+        this.campaignId = campaignId;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public long getCurrentTime() {
+        return currentTime;
+    }
+
+    public void setCurrentTime(long currentTime) {
+        this.currentTime = currentTime;
+    }
+
+    public long getBufTime() {
+        return bufTime;
+    }
+
+    public void setBufTime(long bufTime) {
+        this.bufTime = bufTime;
+    }
+
+    public boolean isShown() {
+        return isShown;
+    }
+
+    public void setShown(boolean shown) {
+        isShown = shown;
+    }
+
+    public long getLastShownTime() {
+        return lastShownTime;
+    }
+
+    public void setLastShownTime(long lastShownTime) {
+        this.lastShownTime = lastShownTime;
     }
 }

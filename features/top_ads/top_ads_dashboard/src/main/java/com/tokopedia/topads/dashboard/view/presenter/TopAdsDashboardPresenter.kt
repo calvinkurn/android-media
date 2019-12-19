@@ -32,6 +32,7 @@ import com.tokopedia.usecase.coroutines.Success
 
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -72,12 +73,14 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
         }
 
     fun getPopulateDashboardData(rawQuery: String) {
+        val shopId: Int = userSession.shopId.toIntOrNull() ?: 0
         topAdsGetPopulateDataAdUseCase.execute(TopAdsGetPopulateDataAdUseCase
-                .createRequestParams(rawQuery, Integer.parseInt(userSession.shopId)),
+                .createRequestParams(rawQuery, shopId),
                 object : Subscriber<DashboardPopulateResponse>() {
                     override fun onCompleted() {}
 
                     override fun onError(e: Throwable) {
+                        Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_POPULATED_DATA#%s", e.localizedMessage)
                         view?.onErrorPopulateData(e)
                     }
 
@@ -107,7 +110,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
-                e.printStackTrace()
+                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_SHOP_INFO#%s", e.localizedMessage)
                 view?.onErrorGetShopInfo(e)
             }
 
@@ -183,6 +186,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
+                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", e.localizedMessage)
                 view?.onErrorGetStatisticsInfo(e)
             }
 
@@ -204,6 +208,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
+                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_TICKER#%s", e.localizedMessage)
                 view?.onErrorGetTicker(e)
             }
 
@@ -230,13 +235,13 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
         val graphqlUseCase = GraphqlUseCase()
         val shopId: String = userSession.shopId
         val variables = mapOf<String, Any>(TopAdsDashboardConstant.SHOP_ID to shopId)
-        val graphqlRequest = GraphqlRequest(rawQuery, AutoTopUpData.Response::class.java, variables)
+        val graphqlRequest = GraphqlRequest(rawQuery, AutoTopUpData.Response::class.java, variables, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {}
-
             override fun onError(e: Throwable) {
+                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_AUTO_TOPADS_STATUS#%s", e.localizedMessage)
                 view?.onErrorGetAutoTopUpStatus(e)
             }
 

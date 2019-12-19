@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -48,7 +48,7 @@ class CommissionDetailHeaderViewHolder(v: View) : AbstractViewHolder<CommissionD
                 if (element.isActive)
                     R.color.color_ongoing_text
                 else
-                    R.color.font_black_secondary_54))
+                    com.tokopedia.design.R.color.font_black_secondary_54))
         statusTv.setText(statusTv.getContext().getString(
                 if (element.isActive)
                     R.string.text_af_ongoing

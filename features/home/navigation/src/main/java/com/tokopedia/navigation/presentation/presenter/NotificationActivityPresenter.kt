@@ -46,4 +46,13 @@ class NotificationActivityPresenter @Inject constructor(
     override fun sendNotif(onSuccessSendNotif: (NotifCenterSendNotifData) -> Unit, onErrorSendNotif: (Throwable) -> Unit){
         sendNotificationUseCase.executeCoroutines(onSuccessSendNotif, onErrorSendNotif)
     }
+
+    override fun detachView() {
+        super.detachView()
+        sendNotificationUseCase.cancelJobs()
+        getNotificationTotalUnreadUseCase.unsubscribe()
+        getNotificationUpdateUnreadUseCase.unsubsribe()
+        clearCounterNotificationUpdateUseCase.unsubscribe()
+        getIsTabUpdateUseCase.cancelJobs()
+    }
 }

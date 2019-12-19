@@ -6,7 +6,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.component.TextViewCompat;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultViewModel;
 
@@ -16,7 +15,7 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultVi
 
 public class FlightSearchSeeAllViewHolder extends AbstractViewHolder<FlightSearchSeeAllResultViewModel> {
 
-    public static final int LAYOUT = R.layout.item_flight_search_selengkapnya;
+    public static final int LAYOUT = com.tokopedia.flight.R.layout.item_flight_search_selengkapnya;
 
     private ButtonCompat btnShowAllResult;
     private TextViewCompat tvFlightSearchDesc;
@@ -24,8 +23,8 @@ public class FlightSearchSeeAllViewHolder extends AbstractViewHolder<FlightSearc
     public FlightSearchSeeAllViewHolder(View itemView, FlightSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener) {
         super(itemView);
 
-        tvFlightSearchDesc = itemView.findViewById(R.id.tv_flight_search_selengkapnya_desc);
-        btnShowAllResult = itemView.findViewById(R.id.btn_show_all_result);
+        tvFlightSearchDesc = itemView.findViewById(com.tokopedia.flight.R.id.tv_flight_search_selengkapnya_desc);
+        btnShowAllResult = itemView.findViewById(com.tokopedia.flight.R.id.btn_show_all_result);
         btnShowAllResult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,7 +36,7 @@ public class FlightSearchSeeAllViewHolder extends AbstractViewHolder<FlightSearc
     @Override
     public void bind(FlightSearchSeeAllResultViewModel element) {
         tvFlightSearchDesc.setText(Html.fromHtml(getString(
-                R.string.flight_search_selengkapnya_desc, element.getNewPrice()))
+                com.tokopedia.flight.R.string.flight_search_selengkapnya_desc, element.getNewPrice()))
         );
     }
 }

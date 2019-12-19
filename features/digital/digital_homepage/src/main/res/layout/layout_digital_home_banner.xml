@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/banner_shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_30"
                 android:layout_gravity="bottom"
-                android:background="@drawable/background_banner_image_mask"
+                android:background="@drawable/layer_background_banner_image_mask"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
         </FrameLayout>
@@ -61,7 +61,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/container_background" />
 
-        <android.support.constraint.Guideline
+        <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -81,5 +81,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

@@ -1,15 +1,15 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter
 
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager

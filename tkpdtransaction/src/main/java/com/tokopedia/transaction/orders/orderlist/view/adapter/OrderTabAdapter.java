@@ -2,9 +2,9 @@ package com.tokopedia.transaction.orders.orderlist.view.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;

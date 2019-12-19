@@ -9,7 +9,7 @@
     android:paddingStart="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_16">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_close_default" />
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/scroll_main"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -57,11 +57,10 @@
                     android:id="@+id/content_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/dp_96"
                     tools:text="@tools:sample/lorem/random" />
             </LinearLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/content_title"
@@ -81,7 +80,7 @@
             app:typographyType="heading_3"
             tools:text="This is Really Long Tittle That Make The Screen Go Wide" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <FrameLayout
@@ -89,8 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/white"
-        android:paddingTop="@dimen/dp_8">
+        android:background="@color/white">
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/cta_button"
             android:layout_width="match_parent"

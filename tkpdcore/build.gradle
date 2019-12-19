@@ -45,8 +45,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.permissionchecker)
-    implementation project(rootProject.ext.features.transactionanalytics)
-    implementation project(rootProject.ext.features.transactiondata)
+    implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.libraries.analytics)
@@ -54,6 +53,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.webview)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
@@ -92,14 +92,10 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
-    implementation (rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-firebase'
-    }
-    implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
-        exclude group: 'com.android.support'
-    }
+    implementation(rootProject.ext.analyticsDependencies.moengage)
+    implementation rootProject.ext.analyticsDependencies.moengageAmp
+
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation rootProject.ext.viewDependencies.appIntro
     implementation (rootProject.ext.viewDependencies.ahBottomNavigation) {
         exclude group: 'com.android.support', module: 'design'
@@ -132,14 +128,14 @@ dependencies {
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.core'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="tkpdcore-release"
 }
 
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.core'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="tkpdcore-release"
 }
 

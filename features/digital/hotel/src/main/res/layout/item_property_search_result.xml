@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardView"
@@ -14,11 +14,11 @@
     app:cardElevation="@dimen/dp_3"
     app:cardPreventCornerOverlap="false">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image"
             android:layout_width="112dp"
             android:layout_height="0dp"
@@ -162,6 +162,17 @@
             app:layout_constraintStart_toEndOf="@+id/rating_counter"
             tools:text="Mengesankan" />
 
+        <View
+            android:id="@+id/container_pay_at_hotel_shadow"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_16"
+            app:layout_constraintStart_toStartOf="@+id/container_pay_at_hotel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rating_counter"
+            android:layout_marginTop="@dimen/dp_16"
+            android:visibility="gone"
+            />
+
         <LinearLayout
             android:id="@+id/container_price_origin"
             android:layout_width="wrap_content"
@@ -173,7 +184,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/title"
             app:layout_constraintRight_toRightOf="@+id/title"
             app:layout_constraintStart_toStartOf="@+id/title"
-            app:layout_constraintTop_toBottomOf="@+id/rate">
+            app:layout_constraintTop_toBottomOf="@+id/container_pay_at_hotel_shadow">
 
 
             <com.tokopedia.design.component.TextViewCompat
@@ -258,9 +269,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/include_tax"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_4"
@@ -282,6 +293,6 @@
         </LinearLayout>
 
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

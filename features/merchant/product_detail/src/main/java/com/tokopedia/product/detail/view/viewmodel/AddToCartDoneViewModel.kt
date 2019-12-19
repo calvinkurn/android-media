@@ -1,18 +1,22 @@
 package com.tokopedia.product.detail.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -28,10 +32,11 @@ class AddToCartDoneViewModel @Inject constructor(
         private val rawQueries: Map<String, String>,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
         @Named("Main")
         val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher
 ) {
-    val recommendationProduct = MutableLiveData<RequestDataState<List<RecommendationWidget>>>()
+    val recommendationProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
 
     companion object {
         object TopAdsDisplay {
@@ -49,44 +54,31 @@ class AddToCartDoneViewModel @Inject constructor(
     }
 
     fun getRecommendationProduct(productId: String) {
-        launch {
-            val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
-                    (recommendationProduct.value as? Loaded)?.data as? Success == null) {
-                recommendationProduct.value = Loading
-                loadRecommendationProduct(productId)
-            } else null
-
-            topAdsProductDef?.await()?.let {
-                val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data
-                        ?: return@launch)
-                recommendationProduct.value = Loaded(Success(recommendationWidget))
+        launchCatchError(block = {
+            val recommendationWidget = withContext(Dispatchers.IO) {
+                if (GlobalConfig.isCustomerApp())
+                    loadRecommendationProduct(productId)
+                else listOf()
             }
+            recommendationProduct.value = Success(recommendationWidget)
+
+        }) {
+            recommendationProduct.value = Fail(it)
         }
     }
 
-    private fun loadRecommendationProduct(productId: String) = async(Dispatchers.IO) {
-        val topadsParams = generateRecommendationProductParams(productId)
-        val topAdsRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT],
-                RecomendationEntity::class.java, topadsParams)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+    private fun loadRecommendationProduct(productId: String): List<RecommendationWidget> {
         try {
-            Loaded(Success(graphqlRepository.getReseponse(listOf(topAdsRequest), cacheStrategy)
-                    .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data
-                    ?: emptyList()))
-        } catch (t: Throwable) {
-            Loaded(Fail(t))
+            val data = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                    pageNumber = TopAdsDisplay.DEFAULT_PAGE_NUMBER,
+                    pageName = TopAdsDisplay.DEFAULT_PAGE_NAME,
+                    productIds = arrayListOf(productId)
+            )).toBlocking()
+            return data.first()?: emptyList()
+        } catch (e: Throwable) {
+            e.debugTrace()
+            throw e
         }
-    }
-
-    private fun generateRecommendationProductParams(productId: String): Map<String, Any> {
-        return mapOf(
-                TopAdsDisplay.KEY_USER_ID to (userSessionInterface.userId.toIntOrNull() ?: 0),
-                TopAdsDisplay.KEY_PAGE_NAME to TopAdsDisplay.DEFAULT_PAGE_NAME,
-                TopAdsDisplay.KEY_PAGE_NUMBER to TopAdsDisplay.DEFAULT_PAGE_NUMBER,
-                TopAdsDisplay.KEY_XDEVICE to TopAdsDisplay.DEFAULT_DEVICE,
-                TopAdsDisplay.KEY_XSOURCE to TopAdsDisplay.DEFAULT_SRC_PAGE,
-                TopAdsDisplay.KEY_PRODUCT_ID to productId
-        )
     }
 
     fun addWishList(

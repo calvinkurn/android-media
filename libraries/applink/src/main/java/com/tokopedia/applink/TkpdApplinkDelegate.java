@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.core.app.TaskStackBuilder;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -19,6 +19,7 @@ import com.airbnb.deeplinkdispatch.Parser;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -142,9 +143,10 @@ public class TkpdApplinkDelegate implements ApplinkDelegate {
                 if (newIntent.getData() == null) {
                     newIntent.setData(sourceIntent.getData());
                 }
-                for (String key : parameters.keySet()) {
-                    if (newIntent.hasExtra(key)) {
-                        parameters.remove(key);
+                for (Iterator<String> iterator = parameters.keySet().iterator(); iterator.hasNext();) {
+                    String key = iterator.next();
+                    if (!newIntent.hasExtra(key)) {
+                        iterator.remove();
                     }
                 }
                 newIntent.putExtras(parameters);

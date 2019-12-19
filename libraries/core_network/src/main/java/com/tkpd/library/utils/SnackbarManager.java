@@ -1,10 +1,10 @@
 package com.tkpd.library.utils;
 
 import android.app.Activity;
-import android.support.annotation.ColorRes;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.ColorRes;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -28,7 +28,7 @@ public class SnackbarManager {
         else
             Kirisame.print("Queue " + text);
 
-        Button snackBarAction = (Button) snack.getView().findViewById(android.support.design.R.id.snackbar_action);
+        Button snackBarAction = (Button) snack.getView().findViewById(com.google.android.material.R.id.snackbar_action);
         if (activity != null) {
             snackBarAction.setTextColor(ContextCompat.getColor(activity, R.color.tkpd_main_green));
             snack.getView().setBackgroundColor(ContextCompat.getColor(activity, R.color.black_70));
@@ -52,7 +52,7 @@ public class SnackbarManager {
         else
             GeneralUtils.dumper("Queue " + text);
 
-        Button snackBarAction = (Button) snack.getView().findViewById(android.support.design.R.id.snackbar_action);
+        Button snackBarAction = (Button) snack.getView().findViewById(com.google.android.material.R.id.snackbar_action);
         snackBarAction.setTextColor(ContextCompat.getColor(coordinatorLayout.getContext(), actionColorRes));
         snackBarAction.setAllCaps(false);
 

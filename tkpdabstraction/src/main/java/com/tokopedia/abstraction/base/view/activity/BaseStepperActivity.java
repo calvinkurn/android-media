@@ -1,10 +1,11 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.abstraction.R;
@@ -31,7 +32,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
             currentPosition = savedInstanceState.getInt(CURRENT_POSITION_EXTRA);
         }
         super.onCreate(savedInstanceState);
-        progressStepper = (RoundCornerProgressBar) findViewById(R.id.stepper_progress);
+        progressStepper = (RoundCornerProgressBar) findViewById(getProgressBar());
         progressStepper.setMax(getListFragment().size());
         progressStepper.setProgress(currentPosition);
         updateToolbarTitle();
@@ -41,12 +42,18 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     protected void setupFragment(Bundle savedinstancestate) {
         if (getListFragment().size() >= currentPosition) {
             Fragment fragment = getListFragment().get(currentPosition - 1);
-            Bundle bundle = new Bundle();
+            Bundle fragmentArguments = fragment.getArguments();
+            Bundle bundle;
+            if( null == fragmentArguments){
+                bundle = new Bundle();
+            }else {
+                bundle = fragmentArguments;
+            }
             bundle.putParcelable(STEPPER_MODEL_EXTRA, stepperModel);
             fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
+                    .replace(getParentView(), fragment, fragment.getClass().getSimpleName())
                     .commit();
         }
     }
@@ -117,8 +124,21 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     public void updateToolbarTitle() {
         getSupportActionBar().setTitle(getString(R.string.top_ads_label_stepper, currentPosition, getListFragment().size()));
     }
+    public int getParentView() { return com.tokopedia.abstraction.R.id.parent_view; }
+
+    public int getProgressBar(){
+        return R.id.stepper_progress;
+    }
 
     public void updateToolbarTitle(String title) {
         getSupportActionBar().setTitle(title);
+    }
+
+    public void setMaxProgressStepper(float maxProgress) {
+        progressStepper.setMax(maxProgress);
+    }
+
+    public void refreshCurrentProgressStepper(){
+        progressStepper.setProgress(currentPosition);
     }
 }

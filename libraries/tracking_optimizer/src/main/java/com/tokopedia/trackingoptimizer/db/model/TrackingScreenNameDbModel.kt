@@ -1,7 +1,7 @@
 package com.tokopedia.trackingoptimizer.db.model
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.tokopedia.trackingoptimizer.db.model.TrackingScreenNameDbModel.Companion.TRACKING_SCREEN_NAME_TABLE_NAME
 
 /**

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/dp_250"
@@ -15,7 +15,7 @@
         android:orientation="horizontal"
         android:padding="@dimen/dp_6">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardUseCompatPadding="true">
@@ -26,7 +26,7 @@
                 android:layout_height="@dimen/dp_48"
                 android:adjustViewBounds="true" />
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,4 +64,4 @@
 
     </LinearLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

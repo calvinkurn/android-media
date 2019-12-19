@@ -1,15 +1,15 @@
 package com.tokopedia.hotel.orderdetail.presentation.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.Intent.ACTION_DIAL
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.support.annotation.StringRes
-import android.support.v7.widget.LinearLayoutManager
+import androidx.annotation.StringRes
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
@@ -26,7 +26,10 @@ import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.travel.data.entity.TravelCrossSelling
+import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.common.travel.utils.TextHtmlUtils
+import com.tokopedia.common.travel.utils.TrackingCrossSellUtil
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
@@ -45,6 +48,11 @@ import com.tokopedia.hotel.orderdetail.presentation.adapter.TitleTextAdapter
 import com.tokopedia.hotel.orderdetail.presentation.viewmodel.HotelOrderDetailViewModel
 import com.tokopedia.hotel.orderdetail.presentation.widget.HotelContactPhoneBottomSheet
 import com.tokopedia.hotel.orderdetail.presentation.widget.HotelRefundBottomSheet
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -69,6 +77,11 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
+    @Inject
+    lateinit var trackingCrossSellUtil: TrackingCrossSellUtil
+
+    lateinit var remoteConfig: RemoteConfig
+
     private var orderId: String = ""
     private var orderCategory: String = ""
 
@@ -88,6 +101,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             orderId = it.getString(KEY_ORDER_ID, "")
             orderCategory = it.getString(KEY_ORDER_CATEGORY, "")
         }
+
+        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -110,6 +125,13 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     showErrorState(it.throwable)
                     loadingState.visibility = View.GONE
                 }
+            }
+        })
+
+        orderDetailViewModel.crossSellData.observe(this, Observer {
+            when (it) {
+                is Success -> renderCrossSelling(it.data)
+                is Fail -> { }
             }
         })
     }
@@ -135,9 +157,19 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
     private fun getOrderDetailData() {
         if (userSessionInterface.isLoggedIn) {
-            orderDetailViewModel.getOrderDetail(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                    orderId, orderCategory)
+            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) {
+                orderDetailViewModel.getOrderDetail(
+                        GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                        GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_cross_selling),
+                        orderId, orderCategory)
+            } else {
+                orderDetailViewModel.getOrderDetail(
+                        GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                        null,
+                        orderId, orderCategory)
+            }
+
+
         } else RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
@@ -208,6 +240,21 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             }
         } else evoucher_layout.visibility = View.GONE
 
+    }
+
+    private fun renderCrossSelling(crossSelling: TravelCrossSelling) {
+        if (crossSelling.items.isNotEmpty()) {
+            trackingCrossSellUtil.crossSellImpression(crossSelling.items)
+            cross_sell_widget.show()
+            cross_sell_widget.buildView(crossSelling)
+            cross_sell_widget.setListener(object: TravelCrossSellAdapter.OnItemClickListener{
+                override fun onItemClickListener(item: TravelCrossSelling.Item, position: Int) {
+                    trackingCrossSellUtil.crossSellClick(item, position)
+                    RouteManager.route(context, item.uri)
+                }
+
+            })
+        } else cross_sell_widget.hide()
     }
 
     private fun goToEvoucherPage() {

@@ -1,29 +1,28 @@
 package com.tokopedia.feedplus.view.presenter
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
-import com.tokopedia.feedplus.FeedPlusConstant.NON_LOGIN_USER_ID
+import com.tokopedia.feedcomponent.view.subscriber.TrackPostClickSubscriber
+import com.tokopedia.feedplus.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
-import java.util.ArrayList
 import javax.inject.Inject
 
 /**
  * @author by yoasfs on 2019-08-06
  */
-class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInterface,
-                                               val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-                                               val likeKolPostUseCase: LikeKolPostUseCase):
+class DynamicFeedPresenter @Inject constructor(private val userSession: UserSessionInterface,
+                                               private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
+                                               private val likeKolPostUseCase: LikeKolPostUseCase,
+                                               private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase):
         BaseDaggerPresenter<DynamicFeedContract.View>(),
         DynamicFeedContract.Presenter {
 
@@ -37,11 +36,15 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
                 .setSessionIncluded(true)
                 .build())
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_TRENDING),
+                GetDynamicFeedUseCase.createRequestParams(
+                        userId = getUserId(),
+                        cursor = cursor,
+                        source = GetDynamicFeedUseCase.FeedV2Source.Trending
+                ),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
-                            view.onSuccessGetFeed(t.postList, t.cursor)
+                            view.onSuccessGetFeedFirstPage(t.postList, t.cursor)
                         }
                     }
 
@@ -62,7 +65,10 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
 
     override fun getFeed() {
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_TRENDING),
+                GetDynamicFeedUseCase.createRequestParams(
+                        userId = getUserId(),
+                        cursor = cursor,
+                        source = GetDynamicFeedUseCase.FeedV2Source.Trending),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
@@ -87,7 +93,7 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
 
     override fun likeKol(id: Int, rowNumber: Int, columnNumber: Int) {
         likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
                 object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {
                         t?.let {
@@ -106,7 +112,7 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
     }
 
     override fun unlikeKol(id: Int, rowNumber: Int, columnNumber: Int) {
-        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
+        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {
                         t?.let {
@@ -124,10 +130,10 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
         )
     }
 
-    override fun trackPostClick(uniqueTrackingId: String, redirectLink: String) {
-    }
-
-    override fun trackPostClickUrl(url: String) {
+    override fun trackAffiliate(url: String) {
+        trackAffiliateClickUseCase.execute(
+                TrackAffiliateClickUseCase.createRequestParams(url),
+                TrackPostClickSubscriber())
     }
 
     override fun attachView(view: DynamicFeedContract.View?) {
@@ -141,6 +147,6 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
     }
 
     private fun getUserId(): String {
-        return if (userSession.isLoggedIn()) userSession.getUserId() else NON_LOGIN_USER_ID
+        return if (userSession.isLoggedIn) userSession.userId else NON_LOGIN_USER_ID
     }
 }

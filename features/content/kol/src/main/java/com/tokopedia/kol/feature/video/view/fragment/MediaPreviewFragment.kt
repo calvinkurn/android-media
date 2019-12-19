@@ -1,15 +1,15 @@
 package com.tokopedia.kol.feature.video.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -32,7 +32,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.KolComponent
-import com.tokopedia.kol.common.util.TimeConverter
+import com.tokopedia.kolcommon.util.TimeConverter
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.adapter.MediaPagerAdapter
@@ -243,10 +243,10 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                     buttonTagAction?.buttonType = UnifyButton.Type.TRANSACTION
                     if (ctaBtn == null || ctaBtn.text.isBlank()){
                         buttonTagAction?.isEnabled = false
-                        buttonTagAction?.text = getString(R.string.empty_product)
+                        buttonTagAction?.text = getString(com.tokopedia.feedcomponent.R.string.empty_product)
                     } else {
                         buttonTagAction?.isEnabled = true
-                        buttonTagAction?.text = getString(R.string.string_posttag_buy)
+                        buttonTagAction?.text = getString(com.tokopedia.feedcomponent.R.string.string_posttag_buy)
                     }
                     buttonTagAction?.setOnClickListener {
                         feedAnalyticTracker.eventMediaDetailClickBuy(
@@ -262,8 +262,8 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                     action_favorite.visible()
                     context?.let {
                         action_favorite.setImageDrawable(ContextCompat.getDrawable(it,
-                                if (tags.items[0].isWishlisted) R.drawable.ic_wishlist_checked
-                                else R.drawable.ic_wishlist_unchecked))
+                                if (tags.items[0].isWishlisted) com.tokopedia.design.R.drawable.ic_wishlist_checked
+                                else com.tokopedia.design.R.drawable.ic_wishlist_unchecked))
                     }
                     action_favorite.setOnClickListener {
                         val product = tags.items[0]
@@ -271,7 +271,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                     }
                 }
 
-                tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(R.dimen.dp_8))
+                tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(com.tokopedia.design.R.dimen.dp_8))
                 tag_picture.visible()
                 buttonTagAction?.visible()
             }
@@ -320,7 +320,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             authorImage.setOnClickListener{onHeaderClicked(header)}
         }
         authorBadge.shouldShowWithAction(templateHeader.avatarBadge && header.avatarBadgeImage.isNotBlank()){
-            authorBadge.loadImage(header.avatarBadgeImage, R.drawable.error_drawable)
+            authorBadge.loadImage(header.avatarBadgeImage, com.tokopedia.design.R.drawable.error_drawable)
         }
         authorTitle.shouldShowWithAction(templateHeader.avatarTitle && header.avatarTitle.isNotBlank()){
             authorTitle.text = header.avatarTitle
@@ -339,9 +339,9 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     private fun bindFooter(footer: PostDetailFooterModel, template: TemplateFooter?) {
         groupLike.shouldShowWithAction(template?.like == true){
             label_like.text = if (footer.totalLike > 0) footer.totalLike.toString()
-                else getString(R.string.kol_action_like)
+                else getString(com.tokopedia.feedcomponent.R.string.kol_action_like)
             val color = context?.let { ContextCompat.getColor(it,
-                    if (footer.isLiked) R.color.Green_G500 else R.color.white ) }
+                    if (footer.isLiked) R.color.Green_G500 else com.tokopedia.design.R.color.white ) }
             color?.let {
                 icon_thumb.setColorFilter(it, PorterDuff.Mode.MULTIPLY)
                 label_like.setTextColor(it)
@@ -354,7 +354,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
         groupComment.shouldShowWithAction(template?.comment == true){
             label_comment.text = if (footer.totalComment > 0) footer.totalComment.toString()
-                else getString(R.string.kol_action_comment)
+                else getString(com.tokopedia.feedcomponent.R.string.kol_action_comment)
         }
 
         icon_comment.setOnClickListener { doComment() }
@@ -409,7 +409,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     private fun showToastError(message: String){
         view?.let { v ->  Toaster.showErrorWithAction(v, message,
-                Snackbar.LENGTH_LONG, getString(R.string.title_ok), View.OnClickListener {  })}
+                Snackbar.LENGTH_LONG, getString(com.tokopedia.abstraction.R.string.title_ok), View.OnClickListener {  })}
     }
 
     fun showDetail(visible: Boolean) {

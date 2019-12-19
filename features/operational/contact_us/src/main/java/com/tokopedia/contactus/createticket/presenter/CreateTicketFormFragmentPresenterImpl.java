@@ -3,7 +3,7 @@ package com.tokopedia.contactus.createticket.presenter;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core2.R;
+import com.tokopedia.contactus.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -68,7 +68,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
                 @Override
                 public void onNullData() {
                     viewListener.finishLoading();
-                    viewListener.showError(viewListener.getString(R.string.default_request_error_null_data));
+                    viewListener.showError(viewListener.getString(com.tokopedia.abstraction.R.string.default_request_error_null_data));
 
                 }
             });
@@ -106,15 +106,15 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
 
         if (!SessionHandler.isV4Login(viewListener.getActivity())) {
             if (viewListener.getName().getText().toString().trim().length() == 0) {
-                viewListener.showErrorValidation(viewListener.getName(), viewListener.getString(R.string.error_field_required));
+                viewListener.showErrorValidation(viewListener.getName(), viewListener.getString(R.string.contactus_error_field_required));
                 return false;
             }
 
             if (viewListener.getEmail().getText().toString().trim().length() == 0) {
-                viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.error_field_required));
+                viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.contactus_error_field_required));
                 return false;
             } else if (!CommonUtils.EmailValidation(viewListener.getEmail().getText().toString())) {
-                viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.error_invalid_email));
+                viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.contactus_error_invalid_email));
                 return false;
             }
         }
@@ -183,7 +183,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
                     @Override
                     public void onNullData() {
                         viewListener.finishLoading();
-                        viewListener.showErrorEmptyState(viewListener.getString(R.string.default_request_error_null_data),
+                        viewListener.showErrorEmptyState(viewListener.getString(com.tokopedia.abstraction.R.string.default_request_error_null_data),
                                 new NetworkErrorHelper.RetryClickedListener() {
                                     @Override
                                     public void onRetryClicked() {

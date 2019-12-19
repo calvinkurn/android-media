@@ -4,8 +4,8 @@ package com.tokopedia.contactus.home.view.fragment;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.CardView;
+import androidx.viewpager.widget.ViewPager;
+import androidx.cardview.widget.CardView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +20,7 @@ import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
@@ -42,7 +43,8 @@ import com.tokopedia.core.util.SessionHandler;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
-
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.ApplinkConst.*;
 import javax.inject.Inject;
 
 
@@ -163,7 +165,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     public void addPopularArticleDivider() {
         View divider = new View(getContext());
         Resources resources = getActivity().getResources();
-        divider.setBackgroundColor(resources.getColor(R.color.grey_200));
+        divider.setBackgroundColor(resources.getColor(com.tokopedia.design.R.color.grey_200));
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) resources.getDimension(R.dimen.divider_height_thin));
         linearlayoutPopularArticle.addView(divider, layoutParams);
     }
@@ -228,13 +230,14 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
             e.printStackTrace();
             encodedUrl = ContactUsURL.NAVIGATE_NEXT_URL;
         }
-        startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), encodedUrl, "Hubungi Kami"));
+        startActivity(RouteManager.getIntent(getContext(), encodedUrl));
+//        startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), encodedUrl, "Hubungi Kami"));
     }
 
     public void onBtnChatClicked() {
         ContactUsTracking.eventChatBotOkClick();
-        startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext()))
-                .getChatBotIntent(getContext(), msgId));
+        startActivity(RouteManager.getIntent(getContext(), ApplinkConst.CHATBOT
+                .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), msgId)));
     }
 
     @Override

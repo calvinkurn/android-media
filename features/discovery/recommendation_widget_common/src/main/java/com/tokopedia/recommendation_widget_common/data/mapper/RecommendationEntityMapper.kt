@@ -3,6 +3,7 @@ package com.tokopedia.recommendation_widget_common.data.mapper
 import com.tokopedia.kotlin.util.throwIfNull
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import rx.functions.Func1
 
@@ -12,12 +13,17 @@ import rx.functions.Func1
 
 class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationData>,
         List<RecommendationWidget>> {
+
     override fun call(recommendations: List<RecomendationEntity.RecomendationData>): List<RecommendationWidget> {
         throwIfNull(recommendations, RecommendationEntityMapper::class.java)
         return mappingToRecommendationModel(recommendations)
     }
 
     companion object {
+        private const val LABEL_POSITION_OFFERS = "offers"
+        private const val LABEL_POSITION_PROMO = "promo"
+        private const val LABEL_POSITION_CREDIBILITY = "credibility"
+
         fun mappingToRecommendationModel(recommendations: List<RecomendationEntity.RecomendationData>): List<RecommendationWidget> {
             val recommendationWidgetList = arrayListOf<RecommendationWidget>()
 
@@ -28,7 +34,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
             return recommendationWidgetList
         }
 
-        private fun convertToRecommendationWidget(recomendationData: RecomendationEntity.RecomendationData): RecommendationWidget {
+        fun convertToRecommendationWidget(recomendationData: RecomendationEntity.RecomendationData): RecommendationWidget {
             val recommendationItemList = arrayListOf<RecommendationItem>()
             recommendationItemList.addAll(
                     recomendationData.recommendation?.mapIndexed { index, recommendation ->
@@ -61,6 +67,30 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                 pageName: String,
                 position: Int,
                 layoutType: String): RecommendationItem {
+
+            val labelCredibility = RecommendationLabel()
+            val labelPromo = RecommendationLabel()
+            val labelOffers = RecommendationLabel()
+
+            data.labelGroups?.let {
+                for (label: RecomendationEntity.Recommendation.LabelGroup in it){
+                    when(label.position){
+                        LABEL_POSITION_CREDIBILITY -> {
+                            labelCredibility.title = label.title?:""
+                            labelCredibility.title = label.type?:""
+                        }
+                        LABEL_POSITION_PROMO -> {
+                            labelPromo.title = label.title?:""
+                            labelPromo.title = label.type?:""
+                        }
+                        LABEL_POSITION_OFFERS -> {
+                            labelOffers.title = label.title?:""
+                            labelOffers.title = label.type?:""
+                        }
+                    }
+                }
+            }
+
             return RecommendationItem(
                     data.id,
                     data.name ?: "",
@@ -83,6 +113,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.slashedPrice?:"",
                     data.slashedPriceInt,
                     data.discountPercentage,
+                    if (isLabelDiscountVisible(data)) "${data.discountPercentage}%" else "",
                     position,
                     data.shop?.id ?: -1,
                     "",
@@ -94,11 +125,19 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.minOrder ?: 1,
                     data.shop?.city ?: "",
                     data.badges?.map { it.imageUrl } ?: emptyList(),
-                    layoutType
-
+                    layoutType,
+                    data.freeOngkirInformation?.isActive?:false,
+                    data.freeOngkirInformation?.imageUrl?:"",
+                    labelPromo,
+                    labelOffers,
+                    labelCredibility,
+                    data.shop?.isGold ?: false
             )
 
         }
 
+        private fun isLabelDiscountVisible(productItem: RecomendationEntity.Recommendation): Boolean {
+            return productItem.discountPercentage > 0
+        }
     }
 }

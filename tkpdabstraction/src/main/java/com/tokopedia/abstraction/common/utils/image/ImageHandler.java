@@ -22,9 +22,6 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.TypedValue;
@@ -34,18 +31,24 @@ import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +56,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
 import java.util.ArrayList;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 
 public class ImageHandler {
@@ -169,7 +176,7 @@ public class ImageHandler {
                 .load(url)
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imageview);
     }
 
@@ -179,7 +186,7 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(imageview);
     }
 
@@ -191,9 +198,9 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(colorDrawable)
                 .error(colorDrawable)
-                .crossFade()
+                .transition(withCrossFade())
                 .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imageview);
     }
 
@@ -239,10 +246,10 @@ public class ImageHandler {
         }
     }
 
-    public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
+    public static void loadImageWithTarget(Context context, String url, CustomTarget<Bitmap> simpleTarget) {
         Glide.with(context)
-                .load(url)
                 .asBitmap()
+                .load(url)
                 .fitCenter()
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
@@ -250,10 +257,10 @@ public class ImageHandler {
                 .into(simpleTarget);
     }
 
-    public static void loadImageWithTargetCenterCrop(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
+    public static void loadImageWithTargetCenterCrop(Context context, String url, CustomTarget<Bitmap> simpleTarget) {
         Glide.with(context)
-                .load(url)
                 .asBitmap()
+                .load(url)
                 .fitCenter()
                 .centerCrop()
                 .dontAnimate()
@@ -283,27 +290,31 @@ public class ImageHandler {
     public static void loadImageAndCache(ImageView imageview, String url) {
         Glide.with(imageview.getContext())
                 .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .dontAnimate()
                 .into(imageview);
     }
 
-    public static void loadImageWithSignature(ImageView imageview, String url, StringSignature stringSignature) {
+    public static void loadImageWithSignature(ImageView imageview, String url, ObjectKey signature) {
         Glide.with(imageview.getContext())
                 .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .dontAnimate()
-                .signature(stringSignature)
+                .signature(signature)
                 .into(imageview);
     }
 
-    public static void downloadOriginalSizeImageWithSignature(Context context, String url, StringSignature stringSignature,
-                                                              RequestListener<String, GlideDrawable> backgroundImgRequestListener) {
+    public static void downloadOriginalSizeImageWithSignature(
+            Context context,
+            String url,
+            ObjectKey stringSignature,
+            RequestListener<Drawable> backgroundImgRequestListener
+    ) {
         Glide.with(context)
                 .load(url)
                 .signature(stringSignature)
                 .listener(backgroundImgRequestListener)
-                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+                .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
     }
 
     public static void loadImageCover2(ImageView imageview, String url) {
@@ -313,14 +324,14 @@ public class ImageHandler {
     }
 
 
-    public static void loadImageBitmap2(Context context, String url, SimpleTarget<Bitmap> target) {
+    public static void loadImageBitmap2(Context context, String url, CustomTarget<Bitmap> target) {
         Glide.with(context)
-                .load(url)
                 .asBitmap()
+                .load(url)
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .centerCrop()
                 .into(target);
     }
@@ -329,8 +340,8 @@ public class ImageHandler {
                                         final String url) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
-                    .load(url)
                     .asBitmap()
+                    .load(url)
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
@@ -342,16 +353,16 @@ public class ImageHandler {
                                         final String url, int resIdEmpty) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
-                    .load(url)
                     .asBitmap()
+                    .load(url)
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
                     .into(getCircleImageViewTarget(imageView));
         } else {
             Glide.with(context)
-                    .load(resIdEmpty)
                     .asBitmap()
+                    .load(resIdEmpty)
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
@@ -362,8 +373,8 @@ public class ImageHandler {
     public static void loadImageCircle2(Context context, ImageView imageView, File file) {
         if (file != null && file.exists()) {
             Glide.with(context)
-                    .load(file)
                     .asBitmap()
+                    .load(file)
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
@@ -374,21 +385,14 @@ public class ImageHandler {
     public static void loadImageRounded2Target(final Context context,
                                                final ImageView imageview, final String url) {
         Glide.with(context)
-                .load(url)
                 .asBitmap()
+                .load(url)
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .into(new SimpleTarget<Bitmap>() {
-
+                .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                        super.onLoadStarted(placeholder);
-                        imageview.setImageDrawable(placeholder);
-                    }
-
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    public void onResourceReady(@NonNull Bitmap resource, @androidx.annotation.Nullable Transition<? super Bitmap> transition) {
                         float newWidth = context.getResources().getDimension(R.dimen.half_screen) * 2;
                         int width = resource.getWidth();
                         int height = resource.getHeight();
@@ -403,9 +407,14 @@ public class ImageHandler {
                     }
 
                     @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
+                    public void onLoadFailed(@androidx.annotation.Nullable Drawable errorDrawable) {
+                        super.onLoadFailed(errorDrawable);
                         imageview.setImageDrawable(errorDrawable);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@androidx.annotation.Nullable Drawable placeholder) {
+
                     }
                 });
     }
@@ -424,8 +433,8 @@ public class ImageHandler {
                                                   int height
                                                   ) {
         Glide.with(context)
-                .load(url)
                 .asBitmap()
+                .load(url)
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
@@ -442,8 +451,8 @@ public class ImageHandler {
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final int resourceDrawable, float radius) {
         Glide.with(context)
-                .load(resourceDrawable)
                 .asBitmap()
+                .load(resourceDrawable)
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
@@ -453,8 +462,8 @@ public class ImageHandler {
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url, float radius) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
-                    .load(url)
                     .asBitmap()
+                    .load(url)
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
@@ -465,25 +474,13 @@ public class ImageHandler {
     public static void loadImageRounded(Context context, final ImageView imageview, final String url, float radius) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
-                    .load(url)
                     .asBitmap()
+                    .load(url)
                     .dontAnimate()
                     .centerCrop()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
                     .into(getRoundedImageViewTarget(imageview, radius));
-        }
-    }
-
-    public static void loadImageRounded2(Fragment fragment, final ImageView imageview, final String url) {
-        if (url != null && !url.isEmpty()) {
-            Glide.with(fragment)
-                    .load(url)
-                    .asBitmap()
-                    .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .into(getRoundedImageViewTarget(imageview, 5.0f));
         }
     }
 
@@ -504,7 +501,7 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .centerCrop()
                 .transform(transformation)
                 .into(imageView);
@@ -516,30 +513,18 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .fitCenter()
-                .into(imageView);
-    }
-
-    public static void loadImageFit2(Context context, ImageView imageView, String url, RequestListener<String, GlideDrawable> requestListener) {
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .listener(requestListener)
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .centerCrop()
                 .into(imageView);
     }
 
     public static void loadImageLucky2(Context context, final ImageView imageView, String url) {
         Glide.with(context)
-                .load(url)
                 .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
+                .load(url)
+                .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    public void onResourceReady(@NonNull Bitmap resource, @androidx.annotation.Nullable Transition<? super Bitmap> transition) {
                         if (resource.getWidth() > 1) {
                             imageView.setImageBitmap(resource);
                             imageView.setVisibility(View.VISIBLE);
@@ -548,15 +533,14 @@ public class ImageHandler {
                     }
 
                     @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                        super.onLoadStarted(placeholder);
+                    public void onLoadFailed(@androidx.annotation.Nullable Drawable errorDrawable) {
+                        super.onLoadFailed(errorDrawable);
                         imageView.setVisibility(View.GONE);
                     }
 
                     @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        imageView.setVisibility(View.GONE);
+                    public void onLoadCleared(@androidx.annotation.Nullable Drawable placeholder) {
+
                     }
                 });
     }
@@ -676,14 +660,16 @@ public class ImageHandler {
 
     public static void loadGif(ImageView imageView, int gifDrawable, int placeholder) {
         if(placeholder < 0) {
-            Glide.with(imageView.getContext()).load(gifDrawable)
+            Glide.with(imageView.getContext())
                     .asGif()
+                    .load(gifDrawable)
                     .into(imageView);
             return;
         }
         Drawable drawable = AppCompatResources.getDrawable(imageView.getContext(), placeholder);
-        Glide.with(imageView.getContext()).load(gifDrawable)
+        Glide.with(imageView.getContext())
                 .asGif()
+                .load(gifDrawable)
                 .placeholder(drawable)
                 .into(imageView);
     }
@@ -694,10 +680,33 @@ public class ImageHandler {
             return;
         }
         Drawable drawable = AppCompatResources.getDrawable(imageView.getContext(), placeholder);
-        Glide.with(imageView.getContext()).load(url)
+        Glide.with(imageView.getContext())
                 .asGif()
+                .load(url)
                 .placeholder(drawable)
                 .into(imageView);
+    }
+
+    public static void loadRoundedImage(
+            ImageView imageView,
+            String imageUrl,
+            float cornerRadius,
+            int imgPlaceHolderRes,
+            int errorImageRes
+    ) {
+        RequestBuilder<Bitmap> glideBuilder = Glide.with(imageView.getContext())
+                .asBitmap()
+                .load(imageUrl)
+                .dontAnimate()
+                .error(errorImageRes < 0 ? R.drawable.error_drawable : errorImageRes)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.DATA);
+
+        if (imgPlaceHolderRes >= 0) {
+            glideBuilder = glideBuilder.placeholder(imgPlaceHolderRes);
+        }
+
+        glideBuilder.into(getRoundedImageViewTarget(imageView, cornerRadius));
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
@@ -712,7 +721,7 @@ public class ImageHandler {
                 .placeholder(drawable)
                 .error(R.drawable.error_drawable)
                 .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imageview);
     }
 
@@ -729,7 +738,7 @@ public class ImageHandler {
                 .placeholder(drawable)
                 .error(errorDrawable)
                 .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imageview);
     }
 
@@ -754,15 +763,19 @@ public class ImageHandler {
 
         if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Glide.with(context)
-                    .load(imageUrl)
                     .asBitmap()
-                    .thumbnail(Glide.with(context).load(imageUrl).asBitmap())
-                    .into(new SimpleTarget<Bitmap>() {
+                    .load(imageUrl)
+                    .thumbnail(Glide.with(context).asBitmap().load(imageUrl))
+                    .into(new CustomTarget<Bitmap>() {
                         @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation
-                                glideAnimation) {
+                        public void onResourceReady(@NonNull Bitmap resource, @androidx.annotation.Nullable Transition<? super Bitmap> transition) {
                             Bitmap blurredBitmap = blur(context, resource);
                             imageView.setImageBitmap(blurredBitmap);
+                        }
+
+                        @Override
+                        public void onLoadCleared(@androidx.annotation.Nullable Drawable placeholder) {
+
                         }
                     });
         }
@@ -770,34 +783,35 @@ public class ImageHandler {
 
     public static void loadImageBlurWithViewTarget(final Context context,
                                      String imageUrl,
-                                     SimpleTarget<Bitmap> simpleTarget) {
+                                     CustomTarget<Bitmap> simpleTarget) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
-                    .load(imageUrl)
                     .asBitmap()
+                    .load(imageUrl)
                     .centerCrop()
                     .into(simpleTarget);
         } else if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Glide.with(context)
-                    .load(imageUrl)
                     .asBitmap()
+                    .load(imageUrl)
                     .dontAnimate()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .transform(new CenterCrop(context), blurTransformation(context))
+                    .transform(new CenterCrop(), blurTransformation(context))
                     .into(simpleTarget);
         }
     }
 
     private static BitmapTransformation blurTransformation(Context context) {
-        return new BitmapTransformation(context) {
+        return new BitmapTransformation() {
             @Override
-            protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-                return blurStrong(context, toTransform);
+            public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+                messageDigest.update(getClass().getName().getBytes(Charset.forName("UTF-8")));
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
-            public String getId() {
-                return getClass().getName();
+            protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+                return blurStrong(context, toTransform);
             }
         };
     }
@@ -815,6 +829,7 @@ public class ImageHandler {
         return rs;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private static ScriptIntrinsicBlur getIntrinsic(Context context){
         if (theIntrinsic == null) {
             synchronized (ScriptIntrinsicBlur.class) {
@@ -827,6 +842,7 @@ public class ImageHandler {
         return theIntrinsic;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static Bitmap blurStrong(Context context, Bitmap image) {
         final float BITMAP_SCALE = 0.04f;
         final float BLUR_RADIUS = 7.5f;
@@ -847,6 +863,7 @@ public class ImageHandler {
         return outputBitmap;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static Bitmap blur(Context context, Bitmap image) {
         final float BITMAP_SCALE = 0.4f;
         final float BLUR_RADIUS = 7.5f;
@@ -871,16 +888,18 @@ public class ImageHandler {
 
     public static void loadCircleImageWithPlaceHolder(Context context, final ImageView imageView, int placeHolder, String url) {
         Glide.with(context)
-                .load(url)
                 .asBitmap()
+                .load(url)
                 .placeholder(placeHolder)
                 .error(placeHolder)
                 .into(getCircleImageViewTarget(imageView));
     }
 
-    public static void loadImageWithListener(ImageView imageview, String url,
-                                             RequestListener<String,
-                                                     GlideDrawable> requestListener) {
+    public static void loadImageWithListener(
+            ImageView imageview,
+            String url,
+            RequestListener<Drawable> requestListener
+    ) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
@@ -894,12 +913,16 @@ public class ImageHandler {
 
     public static void clearImage(ImageView imageView) {
         if (imageView != null) {
-            Glide.clear(imageView);
+            Glide.with(imageView.getContext()).clear(imageView);
         }
     }
 
-    public static void loadImageBlurredWithListener(ImageView imageView, String url, int
-            blurWidth, int blurHeight, RequestListener<String, GlideDrawable> listener) {
+    public static void loadImageBlurredWithListener(
+            ImageView imageView,
+            String url,
+            int blurWidth,
+            int blurHeight,
+            RequestListener<Drawable> listener) {
         if (url != null) {
             Glide.with(imageView.getContext())
                     .load(url)
@@ -914,12 +937,19 @@ public class ImageHandler {
 
     public static void loadBackgroundImage(@Nullable Window window, @NotNull String backgroundUrl) {
         if (window != null && window.getContext() != null) {
-            Glide.with(window.getContext()).load(backgroundUrl).into(new SimpleTarget<GlideDrawable>() {
-                @Override
-                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                    window.setBackgroundDrawable(resource);
-                }
-            });
+            Glide.with(window.getContext())
+                    .load(backgroundUrl)
+                    .into(new CustomTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
+                            window.setBackgroundDrawable(resource);
+                        }
+
+                        @Override
+                        public void onLoadCleared(@androidx.annotation.Nullable Drawable placeholder) {
+
+                        }
+                    });
         }
     }
 
@@ -929,14 +959,19 @@ public class ImageHandler {
         }
 
         Glide.with(view.getContext())
-                .load(url)
                 .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
+                .load(url)
+                .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    public void onResourceReady(@NonNull Bitmap resource, @androidx.annotation.Nullable Transition<? super Bitmap> transition) {
                         if (resource.getWidth() > 1) {
                             view.setBackground(new BitmapDrawable(view.getResources(), resource));
                         }
+                    }
+
+                    @Override
+                    public void onLoadCleared(@androidx.annotation.Nullable Drawable placeholder) {
+
                     }
                 });
     }
@@ -947,12 +982,16 @@ public class ImageHandler {
         Glide.with(context)
                 .load(url)
                 .override(size, size)
-                .into(new SimpleTarget<GlideDrawable>() {
+                .into(new CustomTarget<Drawable>() {
                     @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                    public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
                         cacheImageList.add(resource);
                     }
-                });
 
+                    @Override
+                    public void onLoadCleared(@androidx.annotation.Nullable Drawable placeholder) {
+
+                    }
+                });
     }
 }

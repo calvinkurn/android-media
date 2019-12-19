@@ -286,31 +286,6 @@ open class CustomVoucherView : FrameLayout {
 
     }
 
-//    protected fun spanBoldText(stringSource: String, stringToBeSpanned: String): CharSequence {
-//        val spanText = SpannableString(stringSource)
-//        val startIndex = stringSource.indexOf(stringToBeSpanned)
-//        if (startIndex == -1)
-//            return spanText
-//        val endIndex = startIndex + stringToBeSpanned.length
-//        spanText.setSpan(
-//                StyleSpan(Typeface.BOLD),
-//                startIndex,
-//                endIndex,
-//                Spannable.SPAN_INCLUSIVE_INCLUSIVE
-//        )
-//
-//        return spanText
-//    }
-//
-//    protected fun spanChangeTextSize(stringSource: String, stringToBeSpanned: String, sizeInDp :Int): CharSequence {
-//        val spanText = SpannableStringBuilder(stringSource)
-//        val startIndex = stringSource.indexOf(stringToBeSpanned)
-//        if (startIndex == -1)
-//            return spanText
-//        val endIndex = startIndex + stringToBeSpanned.length
-//
-//    }
-
     inner class CustomTypefaceSpan(family: String, private val newType: Typeface) : TypefaceSpan(family) {
 
         override fun updateDrawState(ds: TextPaint) {

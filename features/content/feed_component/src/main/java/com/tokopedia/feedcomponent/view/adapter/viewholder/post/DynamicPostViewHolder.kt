@@ -1,10 +1,10 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
 import android.os.Handler
-import android.support.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
@@ -42,6 +42,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
@@ -105,8 +106,9 @@ open class DynamicPostViewHolder(v: View,
         bindHeader(element.id, element.header, element.template.cardpost.header)
         bindCaption(element.caption, element.template.cardpost.body, element.trackingPostModel)
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
-        bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType)
+        bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType, element.header.followCta.authorType)
         bindFooter(element.id, element.footer, element.template.cardpost.footer, isPostTagAvailable(element.postTag))
+        bindTracking(element.impressHolder, element.tracking)
     }
 
     override fun bind(element: DynamicPostViewModel?, payloads: MutableList<Any>) {
@@ -327,30 +329,25 @@ open class DynamicPostViewHolder(v: View,
             }
 
             if (template.like) {
-                itemView.likeIcon.show()
-                itemView.likeText.show()
+                itemView.likeGroup.show()
                 itemView.likeIcon.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
                 itemView.likeText.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
                 bindLike(footer.like)
             } else {
-                itemView.likeIcon.hide()
-                itemView.likeText.hide()
+                itemView.likeGroup.hide()
             }
 
             if (template.comment) {
-                itemView.commentIcon.show()
-                itemView.commentText.show()
+                itemView.commentGroup.show()
                 itemView.commentIcon.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
                 itemView.commentText.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
                 bindComment(footer.comment)
             } else {
-                itemView.commentIcon.hide()
-                itemView.commentText.hide()
+                itemView.commentGroup.hide()
             }
 
             if (template.share) {
-                itemView.shareIcon.show()
-                itemView.shareText.show()
+                itemView.shareGroup.show()
                 itemView.shareText.text = footer.share.text
                 itemView.shareIcon.setOnClickListener {
                     listener.onShareClick(
@@ -374,34 +371,40 @@ open class DynamicPostViewHolder(v: View,
                 }
 
             } else {
-                itemView.shareIcon.hide()
-                itemView.shareText.hide()
+                itemView.shareGroup.hide()
             }
+
+            if (template.stats) {
+                itemView.statsIcon.shouldShowWithAction(true) {
+                    itemView.statsIcon.setOnClickListener { listener.onStatsClick(footer.stats.text, id.toString(), footer.stats.productIDs, footer.like.value, footer.comment.value) }
+                }
+            } else itemView.statsIcon.hide()
         }
     }
 
     private fun shouldShowFooter(template: TemplateFooter): Boolean {
-        return template.comment || template.ctaLink || template.like || template.share
+        return template.comment || template.ctaLink || template.like || template.share || template.stats
     }
 
     private fun bindLike(like: Like) {
         when {
             like.isChecked -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
-                itemView.likeText.text = like.fmt
+                val likeCount = if (like.fmt.isEmpty()) like.value.toString() else like.fmt
+                itemView.likeText.text = likeCount
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeText.context, R.color.tkpd_main_green)
                 )
             }
             like.value > 0 -> {
-                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
+                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
                 itemView.likeText.text = like.fmt
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeText.context, R.color.black_54)
                 )
             }
             else -> {
-                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
+                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
                 itemView.likeText.setText(R.string.kol_action_like)
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)
@@ -416,7 +419,7 @@ open class DynamicPostViewHolder(v: View,
                 else comment.fmt
     }
 
-    private fun bindPostTag(postId: Int, postTag: PostTag, template: TemplateBody, feedType: String) {
+    private fun bindPostTag(postId: Int, postTag: PostTag, template: TemplateBody, feedType: String, authorType: String) {
         itemView.layoutPostTag.shouldShowWithAction(shouldShowPostTag(postTag, template)) {
             if (postTag.text.isNotEmpty()) {
                 itemView.cardTitlePostTag.text = postTag.text
@@ -431,8 +434,9 @@ open class DynamicPostViewHolder(v: View,
                     SOURCE_DETAIL -> LinearLayoutManager(itemView.context)
                     else -> LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                 }
+                itemView.rvPosttag.isNestedScrollingEnabled = false
                 itemView.rvPosttag.layoutManager = layoutManager
-                itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(postTag.items, feedType, postId, adapterPosition), PostTagTypeFactoryImpl(listener))
+                itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(postTag.items, feedType, postId, adapterPosition, authorType), PostTagTypeFactoryImpl(listener))
                 (itemView.rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
             } else {
                 itemView.rvPosttag.hide()
@@ -448,7 +452,7 @@ open class DynamicPostViewHolder(v: View,
         return postTag.totalItems != 0 || postTag.items.isNotEmpty()
     }
 
-    private fun mapPostTag(postTagItemList: List<PostTagItem>, feedType: String, postId: Int, positionInFeed: Int): MutableList<BasePostTagViewModel> {
+    private fun mapPostTag(postTagItemList: List<PostTagItem>, feedType: String, postId: Int, positionInFeed: Int, authorType: String): MutableList<BasePostTagViewModel> {
         val needToRezise = postTagItemList.size > 1
         val itemList: MutableList<BasePostTagViewModel> = ArrayList()
         for (postTagItem in postTagItemList) {
@@ -469,7 +473,8 @@ open class DynamicPostViewHolder(v: View,
                             postTagItem.tags,
                             postTagItem,
                             postTagItem.rating,
-                            needToRezise
+                            needToRezise,
+                            authorType
                     )
                     item.feedType = feedType
                     item.postId = postId
@@ -495,6 +500,12 @@ open class DynamicPostViewHolder(v: View,
         return itemList
     }
 
+    private fun bindTracking(impressHolder: ImpressHolder, trackList: MutableList<TrackingViewModel>) {
+        itemView.addOnImpressionListener(impressHolder) {
+            listener.onAffiliateTrackClicked(trackList, false)
+        }
+    }
+
     interface DynamicPostListener {
         fun onAvatarClick(positionInFeed: Int, redirectUrl: String)
 
@@ -508,15 +519,17 @@ open class DynamicPostViewHolder(v: View,
 
         fun onCommentClick(positionInFeed: Int, id: Int)
 
+        fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int)
+
         fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String)
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
 
-        fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem)
+        fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String)
 
         fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel)
 

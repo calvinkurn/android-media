@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.inboxv2.view.adapter.viewholder.visitable;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.Button;
 

@@ -1,6 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_retry"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -47,7 +46,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginLeft="@dimen/dp_16"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/selectedFilterRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,6 +75,7 @@
         android:id="@+id/topads"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:display_type="grid"
         app:ep="product"
         app:items="4" />

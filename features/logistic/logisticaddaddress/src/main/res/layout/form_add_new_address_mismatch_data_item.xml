@@ -12,7 +12,7 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/et_kota_kecamatan_mismatch_wrapper"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
         android:layout_marginTop="@dimen/dp_24"
         android:hint="@string/et_kota_kecamatan_label">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_kota_kecamatan_mismatch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,9 +37,9 @@
             android:textColor="#ae31353b"
             android:textSize="@dimen/sp_14"/>
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/et_kode_pos_mismatch_wrapper"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
@@ -47,13 +47,12 @@
         android:layout_marginTop="@dimen/dp_24"
         android:hint="@string/et_kode_pos_label">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_kode_pos_mismatch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="false"
-            android:focusableInTouchMode="true"
             android:inputType="number"
             android:maxLength="5"
             android:overScrollMode="always"
@@ -62,16 +61,16 @@
             android:textColor="#ae31353b"
             android:textSize="@dimen/sp_14"/>
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_kodepos_chips_mismatch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
         android:visibility="gone" />
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/et_alamat_mismatch_wrapper"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
@@ -79,7 +78,7 @@
         android:layout_marginTop="@dimen/dp_24"
         android:hint="@string/alamat_label">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_alamat_mismatch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -93,7 +92,7 @@
             android:textColor="#ae31353b"
             android:textSize="@dimen/sp_14"/>
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/tv_alamat_info_mismatch"

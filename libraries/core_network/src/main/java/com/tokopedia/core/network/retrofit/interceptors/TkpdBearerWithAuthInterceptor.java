@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;

@@ -15,4 +15,6 @@
     <string name="single_payment_label_activated">Aktifkan</string>
     <string name="single_payment_label_activated_single">Aktifkan Autentikasi Tunggal</string>
     <string name= "share_dialog_title">Buka dengan</string>
+
+    <string name="title_no">Tidak</string>
 </resources>

@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
-import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
+import com.tokopedia.date.util.SaldoDatePickerUtil;
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem;
 
 public class SaldoHistoryContract {

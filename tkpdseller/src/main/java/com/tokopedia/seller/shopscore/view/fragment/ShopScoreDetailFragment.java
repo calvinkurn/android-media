@@ -3,10 +3,10 @@ package com.tokopedia.seller.shopscore.view.fragment;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -44,16 +44,10 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
     private LinearLayout containerView;
     private TextView summaryDetailTitle;
     private TextView descriptionGoldBadge;
-    private TextView buttonGoToGmSubscribe;
     private ImageView imageViewGoldBadge;
     private FrameLayout mainFrame;
     private TkpdProgressDialog progressDialog;
-    private View.OnClickListener goToGmSubscribe = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            callback.goToGmSubscribe();
-        }
-    };
+
     private View.OnClickListener goToSellerCenter = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -100,8 +94,6 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         descriptionGoldBadge = (TextView) parentView.findViewById(R.id.description_shop_score_detail_gold_badge_info);
         imageViewGoldBadge = (ImageView) parentView.findViewById(R.id.image_view_gold_badge);
 
-        buttonGoToGmSubscribe = (TextView) parentView.findViewById(R.id.button_go_to_gm_subscribe);
-        buttonGoToGmSubscribe.setOnClickListener(goToGmSubscribe);
         parentView.findViewById(R.id.button_go_to_seller_center).setOnClickListener(goToSellerCenter);
         parentView.findViewById(R.id.button_go_to_complete_information).setOnClickListener(goToCompleteInformation);
 
@@ -170,7 +162,6 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
             case NOT_GOLD_MERCHANT_QUALIFIED_BADGE:
             case NOT_GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
                 icon = GMConstant.getGMRegularBadgeDrawable(getContext());
-                buttonGoToGmSubscribe.setVisibility(View.GONE);
                 break;
             default:
                 icon = GMConstant.getGMRegularBadgeDrawable(getContext());

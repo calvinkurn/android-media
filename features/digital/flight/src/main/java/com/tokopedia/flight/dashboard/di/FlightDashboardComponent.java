@@ -5,6 +5,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.view.fragment.FlightClassesfragment;
 import com.tokopedia.flight.dashboard.view.fragment.FlightDashboardFragment;
 import com.tokopedia.flight.dashboard.view.fragment.FlightSelectPassengerFragment;
+import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget;
 
 import dagger.Component;
 
@@ -12,7 +13,8 @@ import dagger.Component;
  * Created by alvarisi on 10/26/17.
  */
 @FlightDashboardScope
-@Component(modules = FlightDashboardModule.class, dependencies = FlightComponent.class)
+@Component(modules = {FlightDashboardModule.class, FlightDashboardViewModelModule.class},
+        dependencies = FlightComponent.class)
 public interface FlightDashboardComponent {
     FlightDateUtil flightdateutlil();
 
@@ -21,4 +23,6 @@ public interface FlightDashboardComponent {
     void inject(FlightClassesfragment flightClassesfragment);
 
     void inject(FlightDashboardFragment flightDashboardFragment);
+
+    void inject(FlightCalendarOneWayWidget flightCalendarOneWayWidget);
 }

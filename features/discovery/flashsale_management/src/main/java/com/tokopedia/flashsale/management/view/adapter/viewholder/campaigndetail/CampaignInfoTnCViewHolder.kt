@@ -1,6 +1,6 @@
 package com.tokopedia.flashsale.management.view.adapter.viewholder.campaigndetail
 
-import android.support.constraint.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

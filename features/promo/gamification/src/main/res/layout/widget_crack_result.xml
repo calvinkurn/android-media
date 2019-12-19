@@ -27,7 +27,7 @@
             android:clipChildren="false"
             android:clipToPadding="false">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_bg_reward"
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="@dimen/dp_1"
@@ -36,7 +36,7 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_reward"
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="@dimen/dp_1"

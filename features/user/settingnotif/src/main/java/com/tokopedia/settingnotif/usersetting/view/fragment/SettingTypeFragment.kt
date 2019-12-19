@@ -2,8 +2,8 @@ package com.tokopedia.settingnotif.usersetting.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +12,7 @@ import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingTypeAdapter
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
 import com.tokopedia.showcase.*
+import java.util.*
 
 class SettingTypeFragment : BaseDaggerFragment() {
 
@@ -78,11 +79,11 @@ class SettingTypeFragment : BaseDaggerFragment() {
 
     private fun generateShowCaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.black)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
                 .shadowColorRes(R.color.shadow)
-                .textColorRes(R.color.grey_400)
-                .textSizeRes(R.dimen.sp_12)
-                .titleTextSizeRes(R.dimen.sp_16)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
+                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
+                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
                 .clickable(true)
                 .useArrow(true)
                 .build()

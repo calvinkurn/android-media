@@ -34,10 +34,9 @@ public class FlightUrl {
     public static final String FLIGHT_PROMO = FLIGHT_PATH + "promo/banner";
     public static final String PROMO_PATH =  "promo/";
     public static final String CONTACT_US_PATH = "contact-us";
-    public static final String CONTACT_US_FLIGHT_HOME_PREFIX = "?pid=97&flag_app=1&device=android&utm_source=android";
+    public static final String CONTACT_US_FLIGHT_HOME_PREFIX = "contact-us?pid=97&flag_app=1&device=android&utm_source=android";
     public static final String CONTACT_US_FLIGHT_PREFIX = "?pid=46&ivtype=4";
     public static final String CATEGORY_ID = "27";
-    public static final String TNC_LINK = "https://www.tokopedia.com/bantuan/pengembalian-dana-dan-penggantian-jadwal";
     public static String BASE_URL = TokopediaUrl.Companion.getInstance().getAPI();
     public static String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getWEB();
     public static String ALL_PROMO_LINK = WEB_DOMAIN + "promo/";

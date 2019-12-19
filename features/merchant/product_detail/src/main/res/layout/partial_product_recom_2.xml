@@ -11,23 +11,43 @@
     android:visibility="gone"
     tools:ignore="RtlSymmetry"
     tools:visibility="visible">
-
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/title_recom_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:text="@string/pdp_title_recommended_product"
-        app:fontSize="title"
-        app:textViewTheme="lightPrimary"
-        app:weight="medium" />
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16">
+        <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/title_recom_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/pdp_title_recommended_product"
+                android:layout_weight="1"
+                app:fontSize="title"
+                app:textViewTheme="lightPrimary"
+                app:weight="medium" />
+        <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/see_more_recom_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"
+                android:lineSpacingExtra="@dimen/sp_6"
+                android:text="@string/recom_see_more_title"
+                android:textColor="@color/green_500"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:visibility="gone"
+                app:typographyType="heading_5"/>
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.RecyclerView
+        <com.tokopedia.carouselproductcard.CarouselProductCardView
             android:id="@+id/product_recom_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

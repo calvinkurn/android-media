@@ -20,10 +20,6 @@ public class SearchProductModel {
     @Expose
     private DynamicFilterModel dynamicFilterModel = new DynamicFilterModel();
 
-    @SerializedName("ace_guide")
-    @Expose
-    private GuidedSearchModel guidedSearchModel = new GuidedSearchModel();
-
     @SerializedName("quick_filter")
     @Expose
     private DataValue quickFilterModel = new DataValue();
@@ -56,10 +52,6 @@ public class SearchProductModel {
         return dynamicFilterModel;
     }
 
-    public GuidedSearchModel getGuidedSearchModel() {
-        return guidedSearchModel;
-    }
-
     public DataValue getQuickFilterModel() {
         return quickFilterModel;
     }
@@ -90,6 +82,9 @@ public class SearchProductModel {
         @SerializedName("errorMessage")
         @Expose
         private String errorMessage;
+        @SerializedName("lite_url")
+        @Expose
+        private String liteUrl;
         @SerializedName("isFilter")
         @Expose
         private boolean isFilter;
@@ -120,6 +115,9 @@ public class SearchProductModel {
         @SerializedName("suggestion")
         @Expose
         private Suggestion suggestion = new Suggestion();
+        @SerializedName("ticker")
+        @Expose
+        private Ticker ticker = new Ticker();
         @SerializedName("related")
         @Expose
         private Related related = new Related();
@@ -145,6 +143,10 @@ public class SearchProductModel {
 
         public String getErrorMessage() {
             return this.errorMessage;
+        }
+
+        public String getLiteUrl() {
+            return this.liteUrl;
         }
 
         public boolean isQuerySafe() {
@@ -177,6 +179,10 @@ public class SearchProductModel {
 
         public Redirection getRedirection() {
             return this.redirection;
+        }
+
+        public Ticker getTicker() {
+            return ticker;
         }
 
         public Suggestion getSuggestion() {
@@ -336,6 +342,24 @@ public class SearchProductModel {
 
         public int getDepartmentId() {
             return departmentId;
+        }
+    }
+
+    public static class Ticker {
+
+        @SerializedName("text")
+        @Expose
+        private String text;
+        @SerializedName("query")
+        @Expose
+        private String query;
+
+        public String getText() {
+            return text;
+        }
+
+        public String getQuery() {
+            return query;
         }
     }
 
@@ -499,6 +523,9 @@ public class SearchProductModel {
         @SerializedName("shop")
         @Expose
         private Shop shop = new Shop();
+        @SerializedName("free_ongkir")
+        @Expose
+        private FreeOngkir freeOngkir = new FreeOngkir();
 
         public String getId() {
             return id;
@@ -638,6 +665,10 @@ public class SearchProductModel {
 
         public Shop getShop() {
             return shop;
+        }
+
+        public FreeOngkir getFreeOngkir() {
+            return freeOngkir;
         }
     }
 
@@ -806,6 +837,24 @@ public class SearchProductModel {
         }
     }
 
+    public static class FreeOngkir {
+        @SerializedName("is_active")
+        @Expose
+        private boolean isActive;
+
+        @SerializedName("img_url")
+        @Expose
+        private String imageUrl;
+
+        public boolean isActive() {
+            return isActive;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+    }
+
     public static class GlobalNavModel {
         @SerializedName("data")
         private GlobalNavData data = new GlobalNavData();
@@ -816,6 +865,9 @@ public class SearchProductModel {
     }
 
     public static class GlobalNavData {
+        @SerializedName("source")
+        private String source = "";
+
         @SerializedName("title")
         private String title = "";
 
@@ -825,6 +877,9 @@ public class SearchProductModel {
         @SerializedName("nav_template")
         private String navTemplate = "";
 
+        @SerializedName("background")
+        private String background = "";
+
         @SerializedName("see_all_applink")
         private String seeAllApplink = "";
 
@@ -833,6 +888,8 @@ public class SearchProductModel {
 
         @SerializedName("list")
         private List<GlobalNavItem> globalNavItems = new ArrayList<>();
+
+        public String getSource() { return source; }
 
         public String getTitle() {
             return title;
@@ -845,6 +902,8 @@ public class SearchProductModel {
         public String getNavTemplate() {
             return navTemplate;
         }
+
+        public String getBackground() { return background; }
 
         public String getSeeAllApplink() {
             return seeAllApplink;
@@ -860,6 +919,9 @@ public class SearchProductModel {
     }
 
     public static class GlobalNavItem {
+        @SerializedName("category_name")
+        private String categoryName = "";
+
         @SerializedName("name")
         private String name = "";
 
@@ -874,6 +936,22 @@ public class SearchProductModel {
 
         @SerializedName("url")
         private String url = "";
+
+        @SerializedName("subtitle")
+        private String subtitle = "";
+
+        @SerializedName("strikethrough")
+        private String strikethrough = "";
+
+        @SerializedName("background_url")
+        private String backgroundUrl = "";
+
+        @SerializedName("logo_url")
+        private String logoUrl = "";
+
+        public String getCategoryName() {
+            return categoryName;
+        }
 
         public String getName() {
             return name;
@@ -893,6 +971,22 @@ public class SearchProductModel {
 
         public String getUrl() {
             return url;
+        }
+
+        public String getSubtitle() {
+            return subtitle;
+        }
+
+        public String getStrikethrough() {
+            return strikethrough;
+        }
+
+        public String getBackgroundUrl() {
+            return backgroundUrl;
+        }
+
+        public String getLogoUrl() {
+            return logoUrl;
         }
     }
 }

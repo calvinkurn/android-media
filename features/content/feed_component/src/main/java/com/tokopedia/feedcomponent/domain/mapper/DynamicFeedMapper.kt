@@ -72,6 +72,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val feedQuery = t?.getData<FeedQuery?>(FeedQuery::class.java)
         val posts: MutableList<Visitable<*>> = ArrayList()
         var lastCursor = ""
+        var firstPageCursor = ""
         var hasNext = false
 
         throwIfNull(feedQuery, DynamicFeedMapper::class.java)
@@ -105,12 +106,14 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             }
 
             lastCursor = it.feedv2.meta.lastCursor
+            firstPageCursor = it.feedv2.meta.firstPageCursor
             hasNext = it.feedv2.meta.hasNextPage && lastCursor.isNotEmpty()
         }
 
         return DynamicFeedDomainModel(
                 posts,
                 lastCursor,
+                firstPageCursor,
                 hasNext
         )
     }
@@ -467,7 +470,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             if (item.media.isNotEmpty()) {
                 val media = item.media[0]
                 list.add(HighlightCardViewModel(
-                        feed.id,
+                        media.id.toIntOrZero(),
                         0,
                         media.thumbnail,
                         media.appLink,

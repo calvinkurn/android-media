@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.rescenter.create.interactor;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
 import com.tokopedia.inbox.rescenter.create.model.responsedata.CreateResCenterFormData;

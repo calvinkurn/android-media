@@ -1,7 +1,7 @@
 package com.tokopedia.topads.keyword.view.model;
 
 import android.os.Parcel;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;

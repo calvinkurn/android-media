@@ -2,7 +2,7 @@ package com.tokopedia.tkpdreactnative.react.fingerprint.view;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;

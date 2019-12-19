@@ -48,4 +48,6 @@
     <dimen name="use_case_and_dynamic_image_size">48dp</dimen>
     <dimen name="use_case_and_dynamic_icon_size">56dp</dimen>
     <dimen name="home_searchbar_transition_range">50dp</dimen>
+    <dimen name="home_banner_mix_carousel_width">125dp</dimen>
+    <dimen name="home_banner_mix_arrow_icon_size">50dp</dimen>
 </resources>

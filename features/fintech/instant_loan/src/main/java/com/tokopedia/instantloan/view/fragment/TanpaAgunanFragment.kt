@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.instantloan.InstantLoanComponentInstance
-import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.GqlFilterData
@@ -64,13 +63,11 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     private var loanPeriodTypeList: ArrayList<LoanPeriodType> = ArrayList()
     private var loanCategoryTypeList: ArrayList<GqlLendingCategoryData> = ArrayList()
     private var loanAmountList: ArrayList<GqlLoanAmountResponse> = ArrayList()
-    private var mCurrentTab: Int = 0
     private var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
-        mCurrentTab = arguments?.getInt(TAB_POSITION) ?: 0
     }
 
     override fun onAttachActivity(context: Context) {
@@ -85,7 +82,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.content_tanpa_agunan, null)
+        return inflater.inflate(com.tokopedia.instantloan.R.layout.content_tanpa_agunan, null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -97,16 +94,16 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
         prepareLoanPeriodTypeList()
 
-        loanPeriodLabelTV = spinner_label_nominal.findViewById(R.id.tv_label_text)
-        loanPeriodValueTV = spinner_value_nominal.findViewById(R.id.tv_label_text)
-        loanCategoryValueTV = spinner_loan_category.findViewById(R.id.tv_label_text)
-        widgetAddRemove = view.findViewById(R.id.widget_add_remove)
+        loanPeriodLabelTV = spinner_label_nominal.findViewById(com.tokopedia.instantloan.R.id.tv_label_text)
+        loanPeriodValueTV = spinner_value_nominal.findViewById(com.tokopedia.instantloan.R.id.tv_label_text)
+        loanCategoryValueTV = spinner_loan_category.findViewById(com.tokopedia.instantloan.R.id.tv_label_text)
+        widgetAddRemove = view.findViewById(com.tokopedia.instantloan.R.id.widget_add_remove)
 
         widgetAddRemove.setButtonClickListener(this)
 
-        loanAmountWarning = widgetAddRemove.findViewById(R.id.tv_warning)
+        loanAmountWarning = widgetAddRemove.findViewById(com.tokopedia.instantloan.R.id.tv_warning)
 
-        loanPeriodLabelTV.text = getString(R.string.il_loan_period_type_label)
+        loanPeriodLabelTV.text = getString(com.tokopedia.instantloan.R.string.il_loan_period_type_label)
         spinner_label_nominal.setOnClickListener {
 
             loanPeriodLabelTV.error = null
@@ -114,10 +111,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
             startActivityForResult(intent, LOAN_PERIOD_TYPE)
         }
 
-        loanPeriodValueTV.text = getString(R.string.il_loan_period_value_label)
+        loanPeriodValueTV.text = getString(com.tokopedia.instantloan.R.string.il_loan_period_value_label)
         loanPeriodValueTV.tag = ""
 
-        loanCategoryValueTV.text = getString(R.string.il_loan_category_label)
+        loanCategoryValueTV.text = getString(com.tokopedia.instantloan.R.string.il_loan_category_label)
         loanCategoryValueTV.tag = DEFAULT_LOAN_CATEGORY
 
         spinner_value_nominal.setOnClickListener {
@@ -143,7 +140,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
             }
         }
 
-        view.findViewById<View>(R.id.button_search_pinjaman).setOnClickListener { view1 ->
+        view.findViewById<View>(com.tokopedia.instantloan.R.id.button_search_pinjaman).setOnClickListener { view1 ->
 
             if (!presenter.isUserLoggedIn()) {
                 navigateToLoginPage()
@@ -170,7 +167,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
             if (userSession != null && userSession.isLoggedIn) {
                 searchLoanOnline()
             } else {
-                showToastMessage(resources.getString(R.string.login_to_proceed), Toast.LENGTH_SHORT)
+                showToastMessage(resources.getString(com.tokopedia.instantloan.R.string.login_to_proceed), Toast.LENGTH_SHORT)
             }
         } else if (resultCode == RESULT_OK && requestCode == LOAN_PERIOD_TYPE) {
 
@@ -237,7 +234,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         selectedLoanPeriodMonth = LoanPeriodType("", "", -1, false)
         selectedLoanCategoryData = GqlLendingCategoryData(0, "", "", "", false)
 
-        loanPeriodValueTV.text = getString(R.string.il_loan_period_value_label)
+        loanPeriodValueTV.text = getString(com.tokopedia.instantloan.R.string.il_loan_period_value_label)
     }
 
     override fun setFilterDataForOnlineLoan(gqlFilterData: GqlFilterData) {
@@ -295,9 +292,9 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
             loanAmountWarning.visibility = View.INVISIBLE
             widgetAddRemove.setText(loanAmountList[currentQuantity].label)
             widgetAddRemove.setLoanValue(loanAmountList[currentQuantity].value.toLong())
-        } else {
+        } else if (!loanAmountList.isNullOrEmpty()) {
             loanAmountWarning.visibility = View.VISIBLE
-            loanAmountWarning.text = String.format(getString(R.string.il_min_loan_amount_warning), loanAmountList[0].label)
+            loanAmountWarning.text = String.format(getString(com.tokopedia.instantloan.R.string.il_min_loan_amount_warning), loanAmountList[0].label)
         }
     }
 
@@ -309,7 +306,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
             widgetAddRemove.setLoanValue(loanAmountList[currentQuantity].value.toLong())
         } else if (!loanAmountList.isNullOrEmpty()) {
             loanAmountWarning.visibility = View.VISIBLE
-            loanAmountWarning.text = String.format(getString(R.string.il_max_loan_amount_warning), loanAmountList.last().label)
+            loanAmountWarning.text = String.format(getString(com.tokopedia.instantloan.R.string.il_max_loan_amount_warning), loanAmountList.last().label)
         }
     }
 
@@ -331,9 +328,8 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     }
 
     override fun navigateToLoginPage() {
-        if (activity != null && activity!!.application is InstantLoanRouter) {
-            startActivityForResult((activity!!.application as InstantLoanRouter).getLoginIntent(getContext()), LOGIN_REQUEST_CODE)
-        }
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        startActivityForResult(intent, LOGIN_REQUEST_CODE)
     }
 
     override fun showToastMessage(message: String, duration: Int) {
@@ -354,20 +350,26 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         } else {
             sendCariPinjamanClickEvent()
 
-            startActivity((activity!!
-                    .application as InstantLoanRouter).getWebviewActivityWithIntent(context,
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
                     URLEncoder.encode(WEB_LINK_NO_COLLATERAL + String.format(LOAN_AMOUNT_QUERY_PARAM,
                             widgetAddRemove.getLoanValue().toString(),
                             selectedLoanPeriodType.value?.toLowerCase(),
                             loanPeriodValueTV.tag as String,
                             (loanCategoryValueTV.tag as Int).toString()), "UTF-8")))
 
+            /*startActivity((activity!!
+                    .application as InstantLoanRouter).getWebviewActivityWithIntent(context,
+                    URLEncoder.encode(WEB_LINK_NO_COLLATERAL + String.format(LOAN_AMOUNT_QUERY_PARAM,
+                            widgetAddRemove.getLoanValue().toString(),
+                            selectedLoanPeriodType.value?.toLowerCase(),
+                            loanPeriodValueTV.tag as String,
+                            (loanCategoryValueTV.tag as Int).toString()), "UTF-8")))*/
+
         }
     }
 
     companion object {
 
-        private val TAB_POSITION = "tab_position"
 
         private val DEFAULT_LOAN_CATEGORY = 0
         private val DEFAULT_MONTH_VALUE = "Month"
@@ -380,9 +382,8 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         private val LOAN_PERIOD_YEAR = 14
         private val LOAN_CATEGORY_TYPE = 15
 
-        fun createInstance(position: Int): TanpaAgunanFragment {
+        fun createInstance(): TanpaAgunanFragment {
             val bundle = Bundle()
-            bundle.putInt(TAB_POSITION, position)
             val tanpaAgunanFragment = TanpaAgunanFragment()
             tanpaAgunanFragment.arguments = bundle
             return tanpaAgunanFragment

@@ -18,6 +18,7 @@ public interface Constant {
          String TRANSACTION = "com.tokopedia.tkpd.TRANSACTION";
          String NEW_ORDER = "com.tokopedia.tkpd.NEWORDER";
          String RESOLUTION = "com.tokopedia.tkpd.RESOLUTION";
+         String REVIEW = "com.tokopedia.tkpd.REVIEW";
          String GENERAL = "com.tokopedia.tkpd.GENERAL";
     }
 
@@ -33,7 +34,9 @@ public interface Constant {
         int SELLER = 500;
         int RESOLUTION = 600;
         int GROUPCHAT = 700;
+        int REVIEW = 900;
         int CHALLENGES = 2018;
+        int CHAT_BOT = 800;
     }
 
     interface Settings {
@@ -118,6 +121,10 @@ public interface Constant {
 
         //SELLER INFO
          int GCM_SELLER_INFO = 1300;
+    }
+
+    interface Host{
+         String CHATBOT = "chatbot";
     }
 
 }

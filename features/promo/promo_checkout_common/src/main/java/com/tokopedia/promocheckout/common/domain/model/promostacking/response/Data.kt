@@ -58,5 +58,9 @@ data class Data(
         val cashbackVoucherDescription: String = "",
 
         @field:SerializedName("tracking_details")
-        val trackingDetail: List<TrackingDetail> = arrayListOf()
+        val trackingDetail: List<TrackingDetail> = arrayListOf(),
+
+        @field:SerializedName("ticker_info")
+        val tickerInfo: TickerInfo = TickerInfo()
+
 )

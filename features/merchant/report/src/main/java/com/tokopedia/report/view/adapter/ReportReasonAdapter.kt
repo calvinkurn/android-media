@@ -1,7 +1,7 @@
 package com.tokopedia.report.view.adapter
 
 import android.graphics.Typeface
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Spannable
 import android.text.method.LinkMovementMethod
 import android.text.style.StyleSpan

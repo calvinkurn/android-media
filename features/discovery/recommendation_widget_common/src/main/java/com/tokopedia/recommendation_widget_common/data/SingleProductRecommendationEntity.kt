@@ -59,6 +59,8 @@ class SingleProductRecommendationEntity {
         var priceInt: Int = 0
         @SerializedName("shop")
         var shop: Shop? = Shop()
+        @SerializedName("freeOngkir")
+        var freeOngkirInformation: FreeOngkirInformation? = FreeOngkirInformation()
         @SerializedName("departmentId")
         var departmentId: Int = 0
         @SerializedName("rating")
@@ -81,6 +83,17 @@ class SingleProductRecommendationEntity {
         var wholesalePrice: List<*>? = listOf<Any>()
         @SerializedName("minOrder")
         var minOrder: Int? = 0
+        @SerializedName("labelgroup")
+        var labelGroups: List<LabelGroup>? = listOf()
+
+        class LabelGroup {
+            @SerializedName("position")
+            var position: String = "0"
+            @SerializedName("title")
+            var title: String? = ""
+            @SerializedName("type")
+            var type: String? = ""
+        }
 
         class Shop {
             @SerializedName("id")
@@ -95,6 +108,14 @@ class SingleProductRecommendationEntity {
 
             @SerializedName("title")
             var title: String? = ""
+            @SerializedName("imageUrl")
+            var imageUrl: String? = ""
+        }
+
+        class FreeOngkirInformation {
+
+            @SerializedName("isActive")
+            var isActive: Boolean? = false
             @SerializedName("imageUrl")
             var imageUrl: String? = ""
         }

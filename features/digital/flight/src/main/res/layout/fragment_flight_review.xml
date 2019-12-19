@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 style="@style/TextView.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
                 android:text="@string/flight_review_checkout_loading_label" />
         </LinearLayout>
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/container_full_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -71,7 +71,7 @@
                     android:paddingRight="@dimen/padding_16"
                     android:paddingBottom="@dimen/dp_20">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.Micro.BlackSecondary"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
                             tools:text="Detail" />
                     </RelativeLayout>
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view_departure_flight"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -162,7 +162,7 @@
                             tools:text="Detail" />
                     </RelativeLayout>
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view_return_flight"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -182,7 +182,7 @@
                         android:padding="@dimen/padding_16"
                         android:text="@string/flight_label_passenger_data" />
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view_data_passenger"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -191,6 +191,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/flight_promo_ticker_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_20"
@@ -217,7 +218,7 @@
                         android:padding="@dimen/padding_16"
                         android:text="@string/flight_label_detail_price" />
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view_detail_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -306,14 +307,14 @@
                         android:orientation="horizontal"
                         android:padding="@dimen/dp_20">
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/TextView.Title.Bold"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/flight_booking_total_price_label" />
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_total_final_price"
                             style="@style/TextView.Title.Bold"
                             android:layout_width="0dp"
@@ -342,7 +343,7 @@
 
             </LinearLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
     </RelativeLayout>
 
 </RelativeLayout>

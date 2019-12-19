@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -18,7 +18,7 @@ buildscript {
 project.ext {
     artifactId = 'common'
     groupId = 'com.tokopedia.payment'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = 'common_payment-release'
 }
 

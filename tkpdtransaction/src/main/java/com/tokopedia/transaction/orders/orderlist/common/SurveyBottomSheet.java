@@ -2,7 +2,7 @@ package com.tokopedia.transaction.orders.orderlist.common;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;

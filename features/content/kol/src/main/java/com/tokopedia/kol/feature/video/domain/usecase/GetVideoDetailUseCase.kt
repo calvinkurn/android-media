@@ -25,7 +25,11 @@ class GetVideoDetailUseCase
     companion object {
         val DETAIL_ID = "detailID"
         fun createRequestParams(userId: String, detailId: String): RequestParams {
-            val requestParams = GetDynamicFeedUseCase.createRequestParams(userId, "", GetDynamicFeedUseCase.SOURCE_DETAIL)
+            val requestParams = GetDynamicFeedUseCase.createRequestParams(
+                    userId = userId,
+                    cursor = "",
+                    source = GetDynamicFeedUseCase.FeedV2Source.Detail
+            )
             requestParams.putString(DETAIL_ID, detailId)
             return requestParams
         }

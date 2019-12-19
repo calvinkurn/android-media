@@ -1508,8 +1508,6 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_invoice_no">No Invoice</string>
     <string name="title_invoice_no_and_user_name">No Invoice / Nama Penerima</string>
     <string name="title_attachment">Lampiran</string>
-    <string name="error_detail_too_short">Message terlalu pendek, minimal 30 karakter</string>
-    <string name="error_detail_empty">Silakan mengisi keterangan masalah terlebih dahulu</string>
     <string name="message_default_suggestion">Jika belum menemukan masalah kamu, kami sarankan untuk:\n
     Mencari lagi pada topik masalah yang sudah tersedia.\n
     Jika masih belum bisa menemukan masalah kamu, silakan hubungi kami dengan menekan tombol di bawah ini</string>
@@ -1939,7 +1937,6 @@ di Tokopedia Sekarang!</string>
     <string name="template_people_total_following">Following List</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
     <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
-    <string name="failed_create_ticket">Gagal membuat tiket</string>
     <string name="permission_camera">Kamera</string>
     <string name="permission_read_storage">Media penyimpanan</string>
     <string name="permission_write_storage">Media penyimpanan</string>
@@ -2006,7 +2003,6 @@ di Tokopedia Sekarang!</string>
 
     <string name="notification_error_ssl_cert_invalid">Invalid SSL Certificate. Apakah anda ingin melanjutkan?</string>
     <string name="title_email_address">Alamat Email</string>
-    <string name="error_attachment">Mohon tambahkan lampiran.</string>
     <string name="action_send_otp_with_call">Atau lewat telepon</string>
     <string name="action_send_otp_with_call_2">Atau lewat telepon</string>
     <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan klik

@@ -1,8 +1,8 @@
 package com.tokopedia.flight.airport.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 
 /**
@@ -20,7 +19,7 @@ import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 
 public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportViewModel> {
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_airport;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_airport;
 
     private TextView cityTextView;
     private TextView airportTextView;
@@ -31,10 +30,10 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportVie
 
     public FlightAirportViewHolder(View itemView, FlightAirportClickListener filterTextListener) {
         super(itemView);
-        cityTextView = (TextView) itemView.findViewById(R.id.city);
-        airportTextView = (TextView) itemView.findViewById(R.id.airport);
+        cityTextView = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.city);
+        airportTextView = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.airport);
         this.filterTextListener = filterTextListener;
-        boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(), R.color.font_black_primary_70));
+        boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(), com.tokopedia.design.R.color.font_black_primary_70));
 
     }
 
@@ -43,16 +42,16 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportVie
         Context context = itemView.getContext();
         String filterText = filterTextListener.getFilterText();
 
-        String cityStr = context.getString(R.string.flight_label_city,
+        String cityStr = context.getString(com.tokopedia.flight.R.string.flight_label_city,
                 airport.getCityName(), airport.getCountryName());
         cityTextView.setText(getSpandableBoldText(cityStr, filterText));
 
         if (!TextUtils.isEmpty(airport.getAirportCode())) {
-            String airportString = context.getString(R.string.flight_label_airport,
+            String airportString = context.getString(com.tokopedia.flight.R.string.flight_label_airport,
                     airport.getAirportCode(), airport.getAirportName());
             airportTextView.setText(getSpandableBoldText(airportString, filterText));
         } else {
-            String airportString = context.getString(R.string.flight_labe_all_airport);
+            String airportString = context.getString(com.tokopedia.flight.R.string.flight_labe_all_airport);
             airportTextView.setText(airportString);
         }
         itemView.setOnClickListener(new View.OnClickListener() {

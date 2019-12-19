@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
@@ -40,6 +41,7 @@ public class OrderListActivity extends BaseSimpleActivity
     private OrderTabAdapter adapter;
     private OrderListComponent orderListComponent;
     private OrderListInitContract.Presenter presenter;
+    OrderListAnalytics orderListAnalytics;
 
     @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
     public static Intent getConfirmedIntent(Context context, Bundle extras) {
@@ -157,6 +159,7 @@ public class OrderListActivity extends BaseSimpleActivity
         if (bundle != null) {
             orderCategory = bundle.getString(ORDER_CATEGORY);
         }
+        orderListAnalytics = new OrderListAnalytics();
         UserSession userSession = new UserSession(this);
         if (!userSession.isLoggedIn()) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
@@ -203,6 +206,7 @@ public class OrderListActivity extends BaseSimpleActivity
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
         viewPager.setCurrentItem(position);
+        orderListAnalytics.sendPageClickEvent("order -list");
     }
 
     @Override

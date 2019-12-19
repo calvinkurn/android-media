@@ -1,6 +1,6 @@
 package com.tokopedia.shop.analytic;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
@@ -25,17 +25,22 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEND_CHAT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_MESSAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TOP_NAV;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_WISHLIST;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.FOLLOW;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.FREE_ONGKIR;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_FOLLOW_FROM_ZERO_FOLLOWER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_OF_PRODUCT_LIST;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE_OR_OTHER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_VIEW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.REMOVE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_NAV;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_SECTION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE;
@@ -51,7 +56,7 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                                               @ListTitleTypeDef String listTitle, String etalaseName,
                                               String attribution, int productPositionStart,
                                               @TrackShopTypeDef String shopTypeDef,
-                                              String shopId, String shopName) {
+                                              String shopId, String shopName, boolean isActiveFreeOngkir) {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < shopProductViewModelList.size(); i++) {
             ShopProductViewModel viewModel = shopProductViewModelList.get(i);
@@ -69,7 +74,8 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                             ShopPageTrackingConstant.SHOP_ID, shopId,
                             ShopPageTrackingConstant.SHOP_NAME, shopName,
                             ShopPageTrackingConstant.PAGE_TYPE, SHOPPAGE,
-                            ShopPageTrackingConstant.ATTRIBUTION, attribution
+                            ShopPageTrackingConstant.ATTRIBUTION, attribution,
+                            ShopPageTrackingConstant.DIMENSION83, isActiveFreeOngkir? FREE_ONGKIR: NONE_OR_OTHER
                     )
             );
         }
@@ -82,7 +88,7 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                                                                List<ShopProductViewModel> shopProductViewModelList,
                                                                @ListTitleTypeDef String listTitle, String listName,
                                                                int productPositionStart,
-                                                               String shopId, String shopName) {
+                                                               String shopId, String shopName, boolean isActiveFreeOngkir) {
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
         eventMap.put(ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
                 ShopPageTrackingConstant.CURRENCY_CODE, ShopPageTrackingConstant.IDR,
@@ -90,7 +96,7 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                 createProductListMap(shopProductViewModelList, listTitle, listName,
                         customDimensionShopPage.attribution,
                         productPositionStart,
-                        customDimensionShopPage.shopType, shopId, shopName)));
+                        customDimensionShopPage.shopType, shopId, shopName, isActiveFreeOngkir)));
         return eventMap;
     }
 
@@ -99,7 +105,7 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                                                           ShopProductViewModel shopProductViewModel,
                                                           @ListTitleTypeDef String listTitle, String etalaseName,
                                                           int productPositionStart,
-                                                          String shopId, String shopName) {
+                                                          String shopId, String shopName, boolean isActiveFreeOngkir) {
         ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
         shopProductViewModelArrayList.add(shopProductViewModel);
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
@@ -111,7 +117,7 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                                 customDimensionShopPage.attribution,
                                 productPositionStart,
                                 customDimensionShopPage.shopType,
-                                shopId, shopName))
+                                shopId, shopName, isActiveFreeOngkir))
         ));
         return eventMap;
     }
@@ -172,7 +178,7 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                                     CustomDimensionShopPageAttribution customDimensionShopPage,
                                     ShopProductViewModel shopProductViewModel,
                                     int productPosStart,
-                                    String shopId, String shopName) {
+                                    String shopId, String shopName, boolean isActiveFreeOngkir) {
         if (isOwner) {
             sendEvent(CLICK_SHOP_PAGE,
                     SHOP_PAGE_SELLER,
@@ -188,7 +194,7 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                             customDimensionShopPage,
                             shopProductViewModel,
                             listType, sectionName,
-                            productPosStart, shopId, shopName));
+                            productPosStart, shopId, shopName, isActiveFreeOngkir));
         }
     }
 
@@ -198,7 +204,7 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                                       CustomDimensionShopPageAttribution customDimensionShopPage,
                                       List<ShopProductViewModel> shopProductViewModelList,
                                       int productPosStart,
-                                      String shopId, String shopName) {
+                                      String shopId, String shopName, boolean isActiveFreeOngkir) {
         if (isOwner) {
             sendEvent(VIEW_SHOP_PAGE,
                     SHOP_PAGE_SELLER,
@@ -214,7 +220,7 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                             customDimensionShopPage,
                             shopProductViewModelList,
                             listType, sectionName,
-                            productPosStart, shopId, shopName));
+                            productPosStart, shopId, shopName, isActiveFreeOngkir));
         }
     }
 
@@ -234,6 +240,15 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                 SHOP_PAGE, CLICK_SEND_CHAT, "");
     }
 
+    public void clickSearchBox(String pageName) {
+        sendEvent(
+                CLICK_TOP_NAV,
+                String.format(TOP_NAV, pageName),
+                SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX,
+                "",
+                null
+        );
+    }
 
     public void sendEventMembership(String eventAction) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(

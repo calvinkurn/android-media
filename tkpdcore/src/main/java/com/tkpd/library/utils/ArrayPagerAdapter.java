@@ -1,6 +1,6 @@
 package com.tkpd.library.utils;
 
-import android.support.v4.view.PagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 import android.util.SparseBooleanArray;
 import android.view.ViewGroup;
 

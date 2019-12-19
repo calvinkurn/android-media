@@ -370,9 +370,18 @@
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;
 }
+-dontwarn kotlinx.coroutines.flow.**inlined**
 
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 
 # -- App indexing
 -dontwarn com.google.firebase.appindexing.**
+
+
+-dontwarn androidx.appcompat.widget.RebindReportingHolder
+
+# -- laku6
+-keep class com.scottyab.rootbeer.** { *; }
+-dontwarn com.scottyab.rootbeer.**
+-dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn

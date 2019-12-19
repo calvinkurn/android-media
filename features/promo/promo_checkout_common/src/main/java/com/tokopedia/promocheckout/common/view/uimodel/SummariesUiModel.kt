@@ -11,13 +11,15 @@ data class SummariesUiModel(
         var description: String = "",
         var type: String = "",
         var amountStr: String = "",
-        var amount: Int = -1
+        var amount: Int = -1,
+        val details: ArrayList<DetailUiModel> = arrayListOf()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readInt()) {
+            parcel.readInt(),
+            parcel.createTypedArrayList(DetailUiModel) ?: arrayListOf()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -25,6 +27,7 @@ data class SummariesUiModel(
         parcel.writeString(type)
         parcel.writeString(amountStr)
         parcel.writeInt(amount)
+        parcel.writeTypedList(details)
     }
 
     override fun describeContents(): Int {
@@ -32,6 +35,19 @@ data class SummariesUiModel(
     }
 
     companion object CREATOR : Parcelable.Creator<SummariesUiModel> {
+
+        @JvmStatic
+        val TYPE_DISCOUNT = "discount"
+
+        @JvmStatic
+        val TYPE_SHIPPING_DISCOUNT = "shipping_discount"
+
+        @JvmStatic
+        val TYPE_PRODUCT_DISCOUNT = "product_discount"
+
+        @JvmStatic
+        val TYPE_CASHBACK = "cashback"
+
         override fun createFromParcel(parcel: Parcel): SummariesUiModel {
             return SummariesUiModel(parcel)
         }

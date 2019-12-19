@@ -11,12 +11,19 @@
     <string name="limit_otp_reached_many_times">Anda telah melakukan permintaan kode berkali-kali.</string>
     <string name="verification_for_security">Verifikasi untuk Keamanan</string>
     <string name="login_with_other_method">Gunakan metode verifikasi lain</string>
+
+    <string name="pin_tokopedia_title">PIN Tokopedia</string>
+
     <string name="dialog_cancel">BATAL</string>
     <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
     <string name="not_received_code">Tidak menerima kode?</string>
     <string name="resend">Kirim ulang</string>
     <string name="or_small">atau</string>
+    <string name="or_small_with_space">atau</string>
+
     <string name="use_other_method">gunakan metode verifikasi lain</string>
+    <string name="other_method">Metode Verifikasi Lain</string>
+
     <string name="button_verify">Verifikasi</string>
     <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
     <string name="limit_otp_reached">Anda sudah 3 kali melakukan pengiriman ulang, silakan coba lagi dalam 60 menit.</string>
@@ -37,5 +44,34 @@
     <string name="btn_cancel">Batal</string>
     <string name="my_phone_inactive_change_at_setting">Nomor ponsel sudah tidak aktif?\nUbah nomor ponsel di Pengaturan</string>
     <string name="setting">Pengaturan</string>
+    
+    <string name="cotp_miscall_onboarding_title">Minta kode verifikasi lewat Missed Call</string>
+    <string name="cotp_miscall_onboarding_send_call">Telpon saya</string>
+    <string name="cotp_miscall_onboarding_point_1">1</string>
+    <string name="cotp_miscall_onboarding_point_2">2</string>
+    <string name="cotp_miscall_onboarding_step_1">Kamu akan menerima &lt;b&gt;panggilan telepon.&lt;/b&gt; Panggilan tidak perlu diangkat.</string>
+    <string name="cotp_miscall_onboarding_step_2">Masukkan &lt;b&gt;6 digit terakhir&lt;/b&gt; dari nomor tersebut.</string>
+    <string name="cotp_miscall_verification_title">Masukkan 6 Digit Terakhir Nomor Telepon Missed Call</string>
+    <string name="cotp_miscall_verification_resend">Kirim ulang</string>
+    <string name="cotp_miscall_verification_phone_code">000-00</string>
+    <string name="cotp_miscall_verification_invalid_code">Kode verifikasi salah. Silakan coba lagi.</string>
+    <string name="cotp_miscall_verification_not_received_code">Tidak menerima kode?</string>
+    <string name="cotp_miscall_verification_please_wait_to_resend">Mohon tunggu ***** untuk kirim ulang</string>
+    <string name="cotp_miscall_verification_with_other_method">Gunakan Metode Verifikasi Lain</string>
+  
+    <string name="limit_reached">Anda sudah melakukan</string>
 
+    <!-- Validator -->
+    <string name="title_activity_activation">Aktivasi Akun</string>
+    <string name="validation_title">Masukkan Kode Aktivasi</string>
+    <string name="title_validation_otp">Aktivasi</string>
+    <string name="validation_resend_email">Tidak menerima kode? Kirim ulang</string>
+    <string name="validation_text"><![CDATA[Kode verifikasi telah dikirimkan melalui email ke <b>{email}</b>.]]></string>
+    <string name="param_email_validation_text">{email}</string>
+    <string name="message_resend_email_to">Apakah anda ingin kirim ulang email ke</string>
+    <string name="resend_activation_email">Kirim Ulang Email</string>
+    <string name="button_change_email">Ubah Email</string>
+    <string name="change_email_error_condition">change email</string>
+    <string name="success_resend_activation">Kode aktivasi telah dikirim ulang</string>
+    <string name="cancel_dialog_change_email">Batal</string>
 </resources>

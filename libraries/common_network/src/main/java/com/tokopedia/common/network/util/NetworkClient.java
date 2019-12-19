@@ -1,7 +1,7 @@
 package com.tokopedia.common.network.util;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.common.network.data.db.RestDatabase;
 import com.tokopedia.common.network.data.source.cloud.api.RestApi;

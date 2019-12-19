@@ -8,7 +8,7 @@ data class Image(
         val mUrl: String? = null,
 
         @field:SerializedName("s_url")
-        val sUrl: String? = null,
+        val sUrl: String = "",
 
         @field:SerializedName("xs_ecs")
         val xsEcs: String? = null,

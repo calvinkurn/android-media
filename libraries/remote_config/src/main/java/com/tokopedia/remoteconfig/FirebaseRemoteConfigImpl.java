@@ -2,7 +2,7 @@ package com.tokopedia.remoteconfig;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.config.GlobalConfig;

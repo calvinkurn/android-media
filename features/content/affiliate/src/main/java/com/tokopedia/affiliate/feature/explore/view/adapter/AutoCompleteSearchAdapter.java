@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.feature.explore.view.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +49,7 @@ public class AutoCompleteSearchAdapter extends RecyclerView.Adapter<AutoComplete
 
     private void bindViewListener(Holder holder, AutoCompleteViewModel model) {
         holder.tvAutoComplete.setOnClickListener(v -> {
-            mainView.onAutoCompleteItemClicked(model.getText());
+            mainView.onAutoCompleteItemClicked(model.getText(), model.getKeyword());
         });
 
         holder.ivAutoComplete.setOnClickListener(v -> {

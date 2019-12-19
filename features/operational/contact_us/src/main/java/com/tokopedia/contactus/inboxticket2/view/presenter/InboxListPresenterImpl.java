@@ -1,8 +1,8 @@
 package com.tokopedia.contactus.inboxticket2.view.presenter;
 
 import android.content.Intent;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.v7.widget.LinearLayoutManager;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.MenuItem;
 import android.view.View;
 

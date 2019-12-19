@@ -58,7 +58,7 @@ public class DigitalSearchNumberActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    protected android.support.v4.app.Fragment getNewFragment() {
+    protected androidx.fragment.app.Fragment getNewFragment() {
         return DigitalSearchNumberFragment
                 .newInstance(categoryId, clientNumber, number, numberList);
     }

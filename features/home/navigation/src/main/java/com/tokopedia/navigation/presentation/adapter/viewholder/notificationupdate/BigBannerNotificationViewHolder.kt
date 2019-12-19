@@ -1,9 +1,10 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
@@ -15,7 +16,9 @@ class BigBannerNotificationViewHolder(itemView: View, listener: NotificationUpda
     override fun bindNotificationPayload(element: NotificationUpdateItemViewModel) {
         val imageUrl = element.contentUrl
 
-        ImageHandler.loadImage2(contentImageBanner, imageUrl, R.drawable.ic_loading_toped_new)
+        contentImageBanner.shouldShowWithAction(imageUrl.isNotEmpty()) {
+            ImageHandler.loadImage2(contentImageBanner, imageUrl, R.drawable.ic_loading_toped_new)
+        }
     }
 
     companion object {

@@ -1,6 +1,6 @@
 package com.tokopedia.home;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 

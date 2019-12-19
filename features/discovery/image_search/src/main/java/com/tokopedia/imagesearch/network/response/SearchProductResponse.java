@@ -1,7 +1,9 @@
 package com.tokopedia.imagesearch.network.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,6 +78,8 @@ public class SearchProductResponse {
     }
 
     public static class Data {
+        @SerializedName("token")
+        private String token = "";
         @SerializedName("source")
         private String source;
         @SerializedName("share_url")
@@ -84,6 +88,16 @@ public class SearchProductResponse {
         private String query;
         @SerializedName("products")
         private List<Products> products;
+        @SerializedName("categories")
+        private List<Categories> categories;
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
 
         public String getSource() {
             return source;
@@ -117,6 +131,10 @@ public class SearchProductResponse {
             this.products = products;
         }
 
+        public List<Categories> getCategories() {
+            return categories;
+        }
+
         public static class Products {
             @SerializedName("id")
             private String id;
@@ -132,6 +150,8 @@ public class SearchProductResponse {
             private String price;
             @SerializedName("price_range")
             private String priceRange;
+            @SerializedName("wishlist")
+            private boolean wishlist;
             @SerializedName("shop")
             private Shop shop;
             @SerializedName("condition")
@@ -166,6 +186,10 @@ public class SearchProductResponse {
             private String categoryName;
             @SerializedName("category_breadcrumb")
             private String categoryBreadcrumb;
+            @SerializedName("label_groups")
+            private List<LabelGroup> labelGroups = new ArrayList<>();
+            @SerializedName("free_ongkir")
+            private FreeOngkir freeOngkir = new FreeOngkir();
 
             public String getId() {
                 return id;
@@ -221,6 +245,14 @@ public class SearchProductResponse {
 
             public void setPriceRange(String priceRange) {
                 this.priceRange = priceRange;
+            }
+
+            public boolean isWishlist() {
+                return wishlist;
+            }
+
+            public void setWishlist(boolean wishlist) {
+                this.wishlist = wishlist;
             }
 
             public Shop getShop() {
@@ -354,6 +386,22 @@ public class SearchProductResponse {
 
             public String getCategoryBreadcrumb() {
                 return categoryBreadcrumb;
+            }
+
+            public List<LabelGroup> getLabelGroups() {
+                return labelGroups;
+            }
+
+            public void setLabelGroups(List<LabelGroup> labelGroups) {
+                this.labelGroups = labelGroups;
+            }
+
+            public FreeOngkir getFreeOngkir() {
+                return freeOngkir;
+            }
+
+            public void setFreeOngkir(FreeOngkir freeOngkir) {
+                this.freeOngkir = freeOngkir;
             }
 
             public static class Shop {
@@ -537,6 +585,66 @@ public class SearchProductResponse {
                 public void setShown(boolean shown) {
                     isShown = shown;
                 }
+            }
+
+            public static class FreeOngkir {
+                @SerializedName("is_active")
+                @Expose
+                private boolean isActive;
+
+                @SerializedName("img_url")
+                @Expose
+                private String imageUrl;
+
+                public boolean isActive() {
+                    return isActive;
+                }
+
+                public String getImageUrl() {
+                    return imageUrl;
+                }
+            }
+
+            public static class LabelGroup {
+                @SerializedName("position")
+                @Expose
+                private String position;
+
+                public String getPosition() {
+                    return position;
+                }
+
+                @SerializedName("type")
+                @Expose
+                private String type;
+
+                public String getType() {
+                    return type;
+                }
+
+                @SerializedName("title")
+                @Expose
+                private String title;
+
+                public String getTitle() {
+                    return title;
+                }
+            }
+        }
+
+        public static class Categories {
+            @SerializedName("id")
+            String id;
+
+            @SerializedName("name")
+            String name;
+
+            public String getId() {
+                return id;
+            }
+
+            public String getName() {
+                return name;
             }
         }
     }

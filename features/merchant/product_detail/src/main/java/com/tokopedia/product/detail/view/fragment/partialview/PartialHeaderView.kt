@@ -3,11 +3,12 @@ package com.tokopedia.product.detail.view.fragment.partialview
 import android.app.Activity
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.view.View
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.gone
@@ -76,7 +77,7 @@ class PartialHeaderView private constructor(private val view: View,
             val spanText = android.text.SpannableString(blackString + "   " +
                     labelIc)
 
-            spanText.setSpan(imageIc, startSpan, startSpan+1, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spanText.setSpan(imageIc, startSpan, startSpan + 1, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spanText.setSpan(
                     android.text.style.ForegroundColorSpan(colorIc),
                     startSpan, spanText.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -91,7 +92,14 @@ class PartialHeaderView private constructor(private val view: View,
     fun renderData(data: ProductInfo) {
         with(view) {
             product_name.text = MethodChecker.fromHtml(data.basic.name)
-            if (data.cashback.percentage > 0){
+            when {
+                data.freeOngkir.isFreeOngkirActive -> {
+                    ImageHandler.loadImageRounded2(context, img_free_ongkir, data.freeOngkir.freeOngkirImgUrl)
+                    img_free_ongkir.visibility = View.VISIBLE
+                }
+                else -> img_free_ongkir.visibility = View.GONE
+            }
+            if (data.cashback.percentage > 0) {
                 text_cashback.text = context.getString(R.string.template_cashback, data.cashback.percentage.toString())
                 text_cashback.visibility = View.VISIBLE
             } else
@@ -101,7 +109,7 @@ class PartialHeaderView private constructor(private val view: View,
             if (campaign.isActive) {
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
                         campaign.discountedPrice.getCurrencyFormatted())
-
+                text_title_discount_timer.text =  data.campaign.name
                 if (campaign.hideGimmick) {
                     text_original_price.visibility = View.GONE
                     text_discount.visibility = View.GONE
@@ -143,7 +151,7 @@ class PartialHeaderView private constructor(private val view: View,
         }
     }
 
-    fun renderCod(showCod: Boolean){
+    fun renderCod(showCod: Boolean) {
         if (showCod) view.layout_cod_content.visible() else view.layout_cod_content.gone()
     }
 
@@ -155,14 +163,14 @@ class PartialHeaderView private constructor(private val view: View,
             val endDate = dateFormat.parse(campaign.endDate)
             val delta = endDate.time - endDateTimeMs
 
-            if (TimeUnit.MICROSECONDS.toDays(now - endDate.time) < 1){
-                view.count_down.setup(delta, endDate){
+            if (TimeUnit.MICROSECONDS.toDays(now - endDate.time) < 1) {
+                view.count_down.setup(delta, endDate) {
                     hideProductCampaign(campaign)
                     showAlertCampaignEnded()
                 }
                 view.discount_timer_holder.visible()
             }
-        } catch (ex: Exception){
+        } catch (ex: Exception) {
             view.discount_timer_holder.visibility = View.GONE
         }
     }
@@ -179,7 +187,7 @@ class PartialHeaderView private constructor(private val view: View,
     }
 
     private fun hideProductCampaign(campaign: Campaign) {
-        with(view){
+        with(view) {
             discount_timer_holder.visibility = View.GONE
             text_discount.visibility = View.GONE
             text_original_price.visibility = View.GONE

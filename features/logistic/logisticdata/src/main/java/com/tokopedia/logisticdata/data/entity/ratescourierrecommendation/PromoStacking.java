@@ -47,6 +47,25 @@ public class PromoStacking {
     @SerializedName("is_applied")
     @Expose
     private Integer isApplied;
+    @SerializedName("image_url")
+    @Expose
+    private String imageUrl;
+    @SerializedName("discounted_rate")
+    @Expose
+    private int discontedRate;
+    @SerializedName("shipping_rate")
+    @Expose
+    private int shippingRate;
+    @SerializedName("benefit_amount")
+    @Expose
+    private int benefitAmount;
+    @SerializedName("disabled")
+    @Expose
+    private boolean disabled;
+    @SerializedName("hide_shipper_name")
+    @Expose
+    private boolean hideShipperName;
+
 
     public Integer getIsPromo() {
         return isPromo;
@@ -150,5 +169,53 @@ public class PromoStacking {
 
     public void setIsApplied(Integer isApplied) {
         this.isApplied = isApplied;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public int getDiscontedRate() {
+        return discontedRate;
+    }
+
+    public void setDiscontedRate(int discontedRate) {
+        this.discontedRate = discontedRate;
+    }
+
+    public int getShippingRate() {
+        return shippingRate;
+    }
+
+    public void setShippingRate(int shippingRate) {
+        this.shippingRate = shippingRate;
+    }
+
+    public int getBenefitAmount() {
+        return benefitAmount;
+    }
+
+    public void setBenefitAmount(int benefitAmount) {
+        this.benefitAmount = benefitAmount;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public boolean isHideShipperName() {
+        return hideShipperName;
+    }
+
+    public void setHideShipperName(boolean hideShipperName) {
+        this.hideShipperName = hideShipperName;
     }
 }

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -34,6 +34,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var trackerAttribution: String? = null
     private var trackerListName: String? = null
     private var affiliateString: String? = null
+    private var deeplinkUrl: String? = null
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -49,9 +50,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
 
         @JvmStatic
         fun createIntent(context: Context, productUrl: String) =
-            Intent(context, ProductDetailActivity::class.java).apply {
-                data = Uri.parse(productUrl)
-            }
+                Intent(context, ProductDetailActivity::class.java).apply {
+                    data = Uri.parse(productUrl)
+                }
 
         @JvmStatic
         fun createIntent(context: Context, shopDomain: String, productKey: String) = Intent(context, ProductDetailActivity::class.java).apply {
@@ -71,8 +72,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
             return RouteManager.getIntent(context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                uri.lastPathSegment) ?: Intent()
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    uri.lastPathSegment) ?: Intent()
         }
 
         @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
@@ -80,7 +81,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         fun getAffiliateIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
             val intent = RouteManager.getIntent(context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     uri.lastPathSegment) ?: Intent()
             intent.putExtra(IS_FROM_EXPLORE_AFFILIATE, true)
             return intent
@@ -91,14 +92,14 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         return "" // need only on success load data? (it needs custom dimension)
     }
 
-  override fun getNewFragment(): Fragment =
-            ProductDetailFragment.newInstance(productId,warehouseId, shopDomain,
+    override fun getNewFragment(): Fragment =
+            ProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
                     productKey, isFromDeeplink,
                     isFromAffiliate, trackerAttribution,
-                    trackerListName, affiliateString)
+                    trackerListName, affiliateString, deeplinkUrl)
 
-  override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
-        .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+    override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
@@ -110,6 +111,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             warehouseId = it.getString("warehouse_id")
         }
         if (uri != null) {
+            deeplinkUrl = generateApplink(uri.toString())
             if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL) {
                 val segmentUri = uri.pathSegments
                 if (segmentUri.size == 2) {
@@ -119,7 +121,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
                     productKey = segmentUri[segmentUri.size - 1]
                 }
             } else if (uri.pathSegments.size >= 2 && // might be tokopedia.com/
-                uri.host != AFFILIATE_HOST) {
+                    uri.host != AFFILIATE_HOST) {
                 val segmentUri = uri.pathSegments
                 if (segmentUri.size > 1) {
                     shopDomain = segmentUri[segmentUri.size - 2]
@@ -159,5 +161,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         }
 
         super.onCreate(savedInstanceState)
+    }
+
+    private fun generateApplink(applink:String) : String{
+        return if(applink.contains(getString(R.string.internal_scheme))){
+            applink.replace(getString(R.string.internal_scheme), "tokopedia")
+        }else {
+            ""
+        }
     }
 }

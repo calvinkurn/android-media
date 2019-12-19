@@ -1,5 +1,5 @@
-query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: String, $sourceID: String, $detailID: String) {
-  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID, limitDetail: $limit, detailID: $detailID) {
+query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: String, $sourceID: String, $detailID: String, $refreshCursor: String) {
+  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID, limitDetail: $limit, detailID: $detailID, refreshCursor: $refreshCursor) {
     data {
       id
       createTime
@@ -264,6 +264,10 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               imageURL
               description
             }
+            stats {
+              text
+              productIDs
+            }
           }
           tracking {
             clickURL
@@ -471,6 +475,7 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
     meta {
       totalData
       lastCursor
+      firstPageCursor
       hasNextPage
       linkSelf
     }
@@ -521,6 +526,7 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               comment
               share
               ctaLink
+              stats
             }
           }
           cardhighlight {

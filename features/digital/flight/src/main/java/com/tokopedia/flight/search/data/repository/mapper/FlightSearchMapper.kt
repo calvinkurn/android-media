@@ -2,13 +2,13 @@ package com.tokopedia.flight.search.data.repository.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.flight.search.data.api.single.response.*
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.search.data.db.FlightComboTable
 import com.tokopedia.flight.search.data.db.FlightJourneyTable
 import com.tokopedia.flight.search.data.db.FlightRouteTable
 import com.tokopedia.flight.search.data.db.JourneyAndRoutes
 import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel
 import com.tokopedia.flight.search.presentation.model.FlightAirportViewModel
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import javax.inject.Inject
 
 /**
@@ -19,21 +19,23 @@ class FlightSearchMapper @Inject constructor() {
     fun createCompleteJourneyAndRoutes(journeyResponse: FlightSearchData,
                                        journeyAirports: Pair<FlightAirportViewModel, FlightAirportViewModel>,
                                        journeyAirlines: List<FlightAirlineViewModel>,
-                                       routesAirlinesAndAirports: List<Pair<FlightAirlineViewModel, Pair<FlightAirportViewModel, FlightAirportViewModel>>>,
+                                       routesAirlinesAndAirports: List<Pair<Pair<FlightAirlineViewModel, FlightAirlineViewModel>, Pair<FlightAirportViewModel, FlightAirportViewModel>>>,
                                        isReturn: Boolean): JourneyAndRoutes {
         val isRefundable = isRefundable(journeyResponse.attributes.routes)
         val flightJourneyTable = createFlightJourneyTable(journeyResponse.id, journeyResponse.attributes,
                 isRefundable, isReturn)
         val routesAirlines = arrayListOf<FlightAirlineViewModel>()
+        val routesOperatingAirlines = arrayListOf<FlightAirlineViewModel>()
         val routesAirports = arrayListOf<Pair<FlightAirportViewModel, FlightAirportViewModel>>()
         for (routeAirlineAndAirport in routesAirlinesAndAirports) {
-            routesAirlines.add(routeAirlineAndAirport.first)
+            routesAirlines.add(routeAirlineAndAirport.first.first)
+            routesOperatingAirlines.add(routeAirlineAndAirport.first.second)
             routesAirports.add(Pair(routeAirlineAndAirport.second.first, routeAirlineAndAirport.second.second))
         }
         val completeJourney = createJourneyWithAirportAndAirline(
                 flightJourneyTable, journeyAirports, journeyAirlines)
         val routes = createRoutes(journeyResponse.attributes.routes, journeyResponse.id, routesAirports,
-                routesAirlines)
+                routesAirlines, routesOperatingAirlines)
         return JourneyAndRoutes(completeJourney, routes)
     }
 
@@ -91,11 +93,13 @@ class FlightSearchMapper @Inject constructor() {
 
     private fun createRoutes(routes: List<Route>, journeyId: String,
                              routesAirports: List<Pair<FlightAirportViewModel, FlightAirportViewModel>>,
-                             routesAirlines: List<FlightAirlineViewModel>): List<FlightRouteTable> {
+                             routesAirlines: List<FlightAirlineViewModel>,
+                             routesOperatingAirlines: ArrayList<FlightAirlineViewModel>): List<FlightRouteTable> {
         val gson = Gson()
-        return routes.zip(routesAirports).zip(routesAirlines).map { it ->
-            val (route, pairOfAirport) = it.first
-            val routeAirline = it.second
+        return routes.zip(routesAirports).zip(routesAirlines).zip(routesOperatingAirlines).map {
+            val (route, pairOfAirport) = it.first.first
+            val routeAirline = it.first.second
+            val routeOperatingAirline = it.second
             val routeDepartureAirport = pairOfAirport.first
             val routeArrivalAirport = pairOfAirport.second
             with(route) {
@@ -120,7 +124,8 @@ class FlightSearchMapper @Inject constructor() {
                         refundable,
                         gson.toJson(amenities),
                         stops,
-                        gson.toJson(stopDetails)
+                        gson.toJson(stopDetails),
+                        routeOperatingAirline.name
                 )
             }
         }

@@ -1,8 +1,8 @@
 package com.tokopedia.contactus.inboxticket2.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,10 +74,10 @@ public class InboxFilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             filterText.setText(valueItem);
             if (getAdapterPosition() == selected) {
                 tvDayTime.setVisibility(View.VISIBLE);
-                filterText.setTextColor(mContext.getResources().getColor(R.color.green_nob));
+                filterText.setTextColor(mContext.getResources().getColor(com.tokopedia.design.R.color.green_nob));
             } else {
                 tvDayTime.setVisibility(View.GONE);
-                filterText.setTextColor(mContext.getResources().getColor(R.color.black_70));
+                filterText.setTextColor(mContext.getResources().getColor(com.tokopedia.design.R.color.black_70));
             }
 
             locationDateItem.setOnClickListener(new View.OnClickListener() {

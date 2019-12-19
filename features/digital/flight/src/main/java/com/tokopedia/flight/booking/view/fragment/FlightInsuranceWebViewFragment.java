@@ -2,7 +2,7 @@ package com.tokopedia.flight.booking.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;

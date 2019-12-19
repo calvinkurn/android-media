@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -32,10 +32,11 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.otp.R;
-import com.tokopedia.otp.common.OTPAnalytics;
+import com.tokopedia.otp.common.analytics.OTPAnalytics;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.adapter.VerificationMethodAdapter;
 import com.tokopedia.otp.cotp.view.presenter.ChooseVerificationPresenter;
@@ -190,7 +191,11 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                 && !TextUtils.isEmpty(methodItem.getPopUpBody())) {
             showInterruptDialog(methodItem);
         } else if (getActivity()!= null && getActivity() instanceof VerificationActivity) {
-            ((VerificationActivity) getActivity()).goToVerificationPage(methodItem);
+            if (methodItem.getModeName().equals(RequestOtpUseCase.MODE_MISCALL) && otpType == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER) {
+                ((VerificationActivity) getActivity()).goToOnboardingMiscallPage(methodItem);
+            } else  {
+                ((VerificationActivity) getActivity()).goToVerificationPage(methodItem);
+            }
         }
     }
 

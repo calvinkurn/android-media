@@ -1,6 +1,6 @@
 package com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -42,6 +42,12 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         launch {
             getHotelInfo(hotelInfoQuery, propertyId)
             getHotelReview(hotelReviewQuery, propertyId)
+        }
+    }
+
+    fun getRoomWithoutHotelData(roomListQuery: String, searchParam: HotelHomepageModel) {
+        launch {
+            getRoomList(roomListQuery, searchParam)
         }
     }
 

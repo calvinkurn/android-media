@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +17,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
+import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
-import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
@@ -158,7 +160,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
                 .build();
 
         Bundle bundle = new Bundle();
-        bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+        bundle.putParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData);
         Intent intent = RouteManager.getIntent(getActivity(), data.getApplinks());
         intent.putExtras(bundle);
         startActivity(intent);
@@ -168,7 +170,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     public void onGimickItemClicked(LayoutRows data) {
 
         if (NAME_PINJAMAN_ONLINE.equalsIgnoreCase(data.getName())) {
-            RouteManager.route(getActivity(), ApplinkConst.INSTANT_LOAN);
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN);
             return;
         }
 

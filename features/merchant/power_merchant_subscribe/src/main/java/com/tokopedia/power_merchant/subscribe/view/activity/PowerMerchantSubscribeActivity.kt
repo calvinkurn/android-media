@@ -2,14 +2,13 @@ package com.tokopedia.power_merchant.subscribe.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
-import android.support.v4.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment
 
+/**
+ * Deeplink POWER_MERCHANT_SUBSCRIBE
+ */
 class PowerMerchantSubscribeActivity : BaseSimpleActivity() {
 
     companion object {
@@ -20,24 +19,6 @@ class PowerMerchantSubscribeActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         return PowerMerchantSubscribeFragment.createInstance()
-    }
-
-    object DeepLinkIntents {
-        @DeepLink(ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
-        @JvmStatic
-        fun getCallingIntentSellerHistory(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return newInstance(context).setData(uri.build())
-                    .putExtras(extras)
-        }
-
-        @DeepLink(ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
-        @JvmStatic
-        fun getCallingIntentCustomerAppHistory(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return newInstance(context).setData(uri.build())
-                    .putExtras(extras)
-        }
     }
 
 }

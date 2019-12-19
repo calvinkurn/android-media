@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,71 +9,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@android:color/transparent"
             android:descendantFocusability="blocksDescendants"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/dp_100"
             android:dividerHeight="0dp" />
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <RelativeLayout
-        android:id="@+id/relativeLayoutErrorMessageContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16"
-        android:layout_marginBottom="8dp"
-        android:background="@color/white"
-        android:visibility="gone"
-        >
-
-        <ImageView
-            android:id="@+id/no_result_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/product_search_not_found"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_view_empty_title_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:typographyType="heading_4"
-            android:textColor="@color/font_black_primary_70"
-            android:layout_toRightOf="@id/no_result_image"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:text="@string/msg_empty_search_product_title"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/custom_text_view_empty_content_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
-            android:textColor="@color/font_black_secondary_54"
-            android:layout_toRightOf="@id/no_result_image"
-            android:layout_below="@id/text_view_empty_title_text"
-            android:layout_marginTop="4dp"
-            android:layout_marginLeft="@dimen/dp_16"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/custom_button_add_promo"
-            android:gravity="center"
-            android:layout_below="@id/no_result_image"
-            android:background="@drawable/search_button_green_rounded_background"
-            app:typographyType="heading_6"
-            android:textColor="#ffffff"
-            android:layout_marginTop="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingLeft="21dp"
-            android:paddingRight="21dp"
-            android:text="@string/msg_empty_search_product_button"/>
-
-    </RelativeLayout>
-
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

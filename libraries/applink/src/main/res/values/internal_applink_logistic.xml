@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="host_logistic" translatable="false">logistic</string>
+
     <string name="path_shipping_confirmation" translatable="false">/shipping-confirmation/.*</string>
     <string name="path_upload_awb" translatable="false">/upload-awb</string>
+    <string name="path_add_address_v1" translatable="false">/addaddress/v1/.*\\/</string>
+    <string name="path_add_address_v2" translatable="false">/addaddress/v2/</string>
+    <string name="path_dropoff_picker" translatable="false">/dropoff/</string>
 </resources>

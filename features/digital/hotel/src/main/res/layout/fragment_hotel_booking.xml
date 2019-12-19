@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/hotel_detail_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_loading_image" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -112,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
                 app:srcCompat="@drawable/bg_dash_stroke_hotel" />
@@ -180,7 +180,7 @@
 
             </LinearLayout>
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
                 app:srcCompat="@drawable/bg_dash_stroke_hotel" />
@@ -199,7 +199,7 @@
                     android:padding="@dimen/dp_18"
                     tools:visibility="gone">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_add_request_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -391,7 +391,7 @@
                     app:fontSize="title"
                     app:textViewTheme="lightPrimary" />
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/invoice_room_price_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -418,9 +418,9 @@
                         app:textViewTheme="lightPrimary"
                         tools:text="Rp 400.000" />
 
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/invoice_tax_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -447,7 +447,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:textViewTheme="lightPrimary" />
 
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
                     android:id="@+id/view"
@@ -456,7 +456,7 @@
                     android:layout_marginBottom="@dimen/dp_16"
                     android:background="@color/divider_color" />
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/invoice_estimated_price_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -485,7 +485,7 @@
                         app:textViewTheme="lightPrimary"
                         tools:text="Rp 400.000" />
 
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/tv_invoice_foreign_currency"

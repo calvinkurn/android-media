@@ -1,9 +1,9 @@
 package com.tokopedia.instantloan.view.adapter
 
 import android.content.Context
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
-import android.support.v7.widget.CardView
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import androidx.cardview.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +32,7 @@ class DanaInstanTestimonialsPagerAdapter(private val context: Context, private v
     }
 
     override fun instantiateItem(view: ViewGroup, position: Int): Any {
-        val banner = inflater.inflate(R.layout.item_pager_testimonial, view, false) as CardView
+        val banner = inflater.inflate(com.tokopedia.instantloan.R.layout.item_pager_testimonial, view, false) as CardView
         ImageHandler.loadImageCircle2(context, banner.il_person_image, testimonialList[position].imageURL)
         banner.il_testimonial_text.text = testimonialList[position].review
         banner.il_testimonial_person_name.text = testimonialList[position].name

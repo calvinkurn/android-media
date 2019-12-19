@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -33,7 +33,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.otp.R;
-import com.tokopedia.otp.common.OTPAnalytics;
+import com.tokopedia.otp.common.analytics.OTPAnalytics;
 import com.tokopedia.otp.common.design.PinInputEditText;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;
@@ -65,16 +65,19 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private static final int COUNTDOWN_LENGTH = 30;
     private static final int INTERVAL = 1000;
-    protected static final int MAX_OTP_LENGTH = 6;
 
     private static final String CACHE_OTP = "CACHE_OTP";
     private static final String HAS_TIMER = "has_timer";
 
+    private static final String LIMIT_ERR_MSG = "3";
+
     private static final CharSequence VERIFICATION_CODE = "Kode verifikasi";
     private static final CharSequence PIN_ERR_MSG = "PIN";
 
+    private int maxOtpLength = 6;
+
     protected ImageView icon;
-    protected TextView message;
+    protected TextView message, title;
     protected PinInputEditText inputOtp;
     protected TextView countdownText;
     protected TextView verifyButton;
@@ -212,23 +215,37 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         noCodeText = view.findViewById(R.id.no_code);
         errorImage = view.findViewById(R.id.error_image);
         progressDialog = view.findViewById(R.id.progress_bar);
-        prepareView();
+        title = view.findViewById(R.id.title);
+        if (isPin) {
+            preparePinView();
+        } else {
+            prepareView();
+        }
         presenter.attachView(this);
         return view;
     }
 
-    protected void prepareView() {
-        if(isPin){
-            setLimitReachedCountdownText();
-        }else {
-            if (!isCountdownFinished()) {
-                startTimer();
-            } else {
-                setLimitReachedCountdownText();
-            }
-        }
 
+    protected void preparePinView() {
+        title.setText(R.string.pin_tokopedia_title);
+        setLimitReachedCountdownText();
+        setupGeneralView();
+        inputOtp.setMask(PinInputEditText.MASK_BLACK_DOT);
+        verifyButton.setVisibility(View.GONE);
+    }
+
+    protected void prepareView() {
+        if (!isCountdownFinished()) {
+            startTimer();
+        } else {
+            setLimitReachedCountdownText();
+        }
+        setupGeneralView();
+    }
+
+    private void setupGeneralView(){
         limitOtp.setVisibility(View.GONE);
+        inputOtp.setLength(viewModel.getNumberOtpDigit());
         inputOtp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -242,7 +259,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (inputOtp.getText().length() == MAX_OTP_LENGTH) {
+                if (inputOtp.getText().length() == maxOtpLength) {
                     enableVerifyButton();
                     verifyOtp();
                 } else {
@@ -253,7 +270,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
         inputOtp.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE
-                    && inputOtp.length() == MAX_OTP_LENGTH) {
+                    && inputOtp.length() == maxOtpLength) {
                 verifyOtp();
                 return true;
             }
@@ -432,8 +449,17 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         errorImage.setVisibility(View.VISIBLE);
         errorOtp.setVisibility(View.VISIBLE);
 
-        if(errorMessage.contains(PIN_ERR_MSG) && errorMessage.length() > 0){
+        if (errorMessage.contains(PIN_ERR_MSG) && errorMessage.length() > 0) {
             errorOtp.setText(errorMessage.substring(0, errorMessage.indexOf("(")));
+
+            if(errorMessage.contains(LIMIT_ERR_MSG)) {
+                verifyButton.setVisibility(View.VISIBLE);
+                verifyButton.setText(R.string.other_method);
+                verifyButton.setOnClickListener(v -> {
+                    onOtherMethodClick();
+                });
+                countdownText.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -544,16 +570,20 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             useOtherMethod.setVisibility(View.VISIBLE);
 
             useOtherMethod.setOnClickListener(v -> {
-                if (analytics != null && viewModel != null) {
-                    analytics.eventClickUseOtherMethod(viewModel.getOtpType());
-                }
-                dropKeyboard();
-                goToOtherVerificationMethod();
+                onOtherMethodClick();
             });
         } else {
             or.setVisibility(View.GONE);
             useOtherMethod.setVisibility(View.GONE);
         }
+    }
+
+    protected void onOtherMethodClick(){
+        if (analytics != null && viewModel != null) {
+            analytics.eventClickUseOtherMethod(viewModel.getOtpType());
+        }
+        dropKeyboard();
+        goToOtherVerificationMethod();
     }
 
     protected void removeErrorOtp() {
@@ -627,6 +657,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onSuccessGetModelFromServer(MethodItem methodItem) {
         this.viewModel.setImageUrl(methodItem.getImageUrl());
         this.viewModel.setMessage(methodItem.getVerificationText());
+        this.maxOtpLength = methodItem.getNumberOtpDigit();
         setData();
     }
 

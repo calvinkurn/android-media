@@ -17,9 +17,9 @@
 package com.github.rubensousa.bottomsheetbuilder.adapter;
 
 import android.os.Build;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;

@@ -3,7 +3,7 @@ package com.tokopedia.tokopoints.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
@@ -18,28 +20,33 @@ import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.CouponCatalogFragment;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
-import com.tokopedia.user.session.UserSession;
+
+import java.util.List;
 
 public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {
-    private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
-    private UserSession mUserSession;
+    private Bundle bundle = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mUserSession = new UserSession(getApplicationContext());
+        forDeeplink();
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_title_detail));
+
+    }
+
+    private void forDeeplink() {
+        bundle = getIntent().getExtras();
+        if (bundle == null)
+            bundle = new Bundle();
+        if (getIntent().getData() != null){
+            UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_DETAIL,getIntent().getData(),bundle);
+        }
     }
 
     @Override
     protected Fragment getNewFragment() {
-        if (mUserSession.isLoggedIn()) {
-            return CouponCatalogFragment.newInstance(getIntent().getExtras());
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-            return null;
-        }
+        return CouponCatalogFragment.newInstance(bundle);
     }
 
     @Override
@@ -54,7 +61,6 @@ public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements 
         return intent;
     }
 
-    @DeepLink({ApplinkConstant.CATALOG_DETAIL3, ApplinkConstant.CATALOG_DETAIL4})
     public static Intent getCatalogDetail(Context context, Bundle extras) {
         return getCallingIntent(context, extras);
     }
@@ -81,16 +87,6 @@ public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements 
                     AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_BACK_ARROW,
                     AnalyticsTrackerUtil.EventKeys.BACK_ARROW_LABEL);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
-            inflateFragment();
-        } else {
-            finish();
         }
     }
 }

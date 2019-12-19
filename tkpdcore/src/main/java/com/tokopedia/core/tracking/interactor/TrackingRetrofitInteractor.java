@@ -1,7 +1,7 @@
 package com.tokopedia.core.tracking.interactor;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.tracking.model.tracking.TrackingResponse;

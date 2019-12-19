@@ -6,17 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,26 +20,42 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
-import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
-import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
+import com.tokopedia.tokopoints.view.activity.TokoPointsHomeNewActivity;
 import com.tokopedia.tokopoints.view.adapter.ExploreSectionPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter;
 import com.tokopedia.tokopoints.view.adapter.SectionTickerPagerAdapter;
@@ -74,6 +79,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.tokopoints.view.util.CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN;
+
 /*
  * Dynamic layout params are applied via
  * function setLayoutParams() because configuration in statusBarHeight
@@ -85,8 +92,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
-    private static final int TAB_CATALOG = 0;
-    private static final int TAB_COUPON = 1;
     private ViewFlipper mContainerMain;
     private TextView mTextMembershipValue, mTextMembershipValueBottom, mTextPoints, mTextPointsBottom, mTextLoyalty;
     private TextView mTextMembershipLabel;
@@ -100,7 +105,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     public TokoPointsHomePresenterNew mPresenter;
 
     private int mSumToken;
-    private int mCouponCount;
     private String mValueMembershipDescription;
 
     private StartPurchaseBottomSheet mStartPurchaseBottomSheet;
@@ -118,6 +122,23 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private TokoPointToolbar tokoPointToolbar;
     private ServerErrorView serverErrorView;
 
+    private Boolean userLoggedInStatus;
+    private AppCompatImageView ivLeaderBoard;
+    private AppCompatImageView ivUserCoupon;
+    private TextView userCouponCount;
+    private CardView rewardsPointLayout;
+    private AppCompatImageView ivPointStack;
+    private TextView tvPointLabel;
+    private View midSeparator;
+    private AppCompatImageView ivLoyaltyStack;
+    private TextView tvLoyaltyLabel;
+    private TextView tvPointsValue;
+    private ConstraintLayout pointLayout;
+    private TextView emptyTitle;
+    private TextView emptySubtitle;
+    private TextView tvNonLoginCta;
+    private static final int REQUEST_CODE_LOGIN = 1;
+
 
     public static TokoPointsHomeFragmentNew newInstance() {
         return new TokoPointsHomeFragmentNew();
@@ -132,7 +153,9 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        initInjector();
+        if (getArguments() != null) {
+            userLoggedInStatus = getArguments().getBoolean(BUNDLE_ARGS_USER_IS_LOGGED_IN);
+        }
         View view = inflater.inflate(R.layout.tp_fragment_homepage_new, container, false);
         initViews(view);
         hideStatusBar();
@@ -143,7 +166,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
         appBarHeader.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> handleAppBarOffsetChange(verticalOffset));
         setLayoutParams();
-
         return view;
     }
 
@@ -161,6 +183,17 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         RelativeLayout.LayoutParams imageBigLp = (RelativeLayout.LayoutParams) mImgBackground.getLayoutParams();
         imageBigLp.height = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.tp_home_top_bg_height));
         mImgBackground.setLayoutParams(imageBigLp);
+
+        if (!userLoggedInStatus) {
+            RelativeLayout.LayoutParams rewardsPointLayoutLP = (RelativeLayout.LayoutParams) rewardsPointLayout.getLayoutParams();
+            rewardsPointLayoutLP.topMargin = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.tp_cta_container_nonlogin));
+            rewardsPointLayout.setLayoutParams(rewardsPointLayoutLP);
+
+            RelativeLayout.LayoutParams tvEmptyLP = (RelativeLayout.LayoutParams) emptyTitle.getLayoutParams();
+            tvEmptyLP.topMargin = (int) (statusBarHeight + getActivity().getResources().getDimension(com.tokopedia.design.R.dimen.dp_56));
+            emptyTitle.setLayoutParams(tvEmptyLP);
+        }
+
     }
 
     public static int getStatusBarHeight(Context context) {
@@ -266,7 +299,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private void slideUp() {
         if (bottomViewMembership.getVisibility() != View.VISIBLE) {
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
-            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.dp_90));
+            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_90));
             Animation bottomUp = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
                     R.anim.tp_bottom_up);
             bottomViewMembership.startAnimation(bottomUp);
@@ -313,6 +346,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     @Override
     public void onResume() {
         super.onResume();
+        mPresenter.getCouponCount();
         AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
@@ -328,7 +362,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getActivity();
     }
 
     @Override
@@ -339,7 +373,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof TokoPointsHomeActivity)
+        if (context instanceof TokoPointsHomeNewActivity)
             appBarCollapseListener = (onAppBarCollapseListener) context;
     }
 
@@ -356,7 +390,8 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     @Override
     public void onClick(View source) {
         if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -364,7 +399,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     AnalyticsTrackerUtil.ActionKeys.CLICK_STATUS_MEMBERSHIP,
                     mValueMembershipDescription);
         } else if (source.getId() == R.id.view_loyalty_bottom) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -372,14 +407,22 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     "");
         } else if (source.getId() == R.id.view_point_bottom
                 || source.getId() == R.id.view_point) {
-            startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
+            if (userLoggedInStatus) {
+                startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
+            } else {
+                getActivity().startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+            }
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
                     "");
         } else if (source.getId() == R.id.view_loyalty) {
-            startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
+            if (userLoggedInStatus) {
+                startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
+            } else {
+                getActivity().startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+            }
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -390,7 +433,8 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         } else if (source.getId() == R.id.container_fab_egg_token) {
             if (mSumToken <= 0) {
                 if (mStartPurchaseBottomSheet != null) {
-                    mStartPurchaseBottomSheet.show(getChildFragmentManager(), StartPurchaseBottomSheet.class.getName());
+                    AddPointsFragment addPointsFragment = new AddPointsFragment();
+                    addPointsFragment.show(getChildFragmentManager(), "");
                 }
             } else {
                 if (getActivity() != null) {
@@ -410,8 +454,10 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         coordinatorLayout = view.findViewById(R.id.container);
         mContainerMain = view.findViewById(R.id.container_main);
         mTextMembershipValue = view.findViewById(R.id.text_membership_value);
-        mTextMembershipValue.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
-                (getActivity(), R.drawable.ic_arrow_right_grey), null);
+        if (userLoggedInStatus) {
+            mTextMembershipValue.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                    (getActivity(), com.tokopedia.design.R.drawable.ic_arrow_right_grey), null);
+        }
         mTextMembershipLabel = view.findViewById(R.id.text_membership_label);
         mTextPoints = view.findViewById(R.id.text_my_points_value);
         mTextLoyalty = view.findViewById(R.id.text_loyalty_value);
@@ -432,6 +478,21 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         statusBarBgView = view.findViewById(R.id.status_bar_bg);
         tokoPointToolbar = view.findViewById(R.id.toolbar_tokopoint);
         serverErrorView = view.findViewById(R.id.server_error_view);
+        ivLeaderBoard = view.findViewById(R.id.iv_tpToolbar_leaderboard);
+        ivUserCoupon = view.findViewById(R.id.iv_tpToolbar_coupon);
+        userCouponCount = view.findViewById(R.id.tv_tpToolbar_couponCount);
+        rewardsPointLayout = view.findViewById(R.id.card_point);
+        ivPointStack = view.findViewById(R.id.img_points_stack);
+        tvPointLabel = view.findViewById(R.id.text_my_points_label);
+        midSeparator = view.findViewById(R.id.line_separator_points_vertical);
+        ivLoyaltyStack = view.findViewById(R.id.img_loyalty_stack);
+        pointLayout = view.findViewById(R.id.layout_homepoint);
+        tvLoyaltyLabel = view.findViewById(R.id.text_loyalty_label);
+        tvNonLoginCta = view.findViewById(R.id.tvNonLoginCta);
+
+        emptyTitle = view.findViewById(R.id.emptyTitle);
+        emptySubtitle = view.findViewById(R.id.emptySubtitle);
+
         setStatusBarViewHeight();
     }
 
@@ -457,7 +518,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     @Override
     public void openWebView(String url) {
-        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
     @Override
@@ -476,14 +537,14 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                 this.mSumToken = tokenDetail.getSumToken();
                 textMessage.setText(tokenDetail.getFloating().getTokenClaimCustomText());
                 if (tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl().endsWith(".gif")) {
-                    ImageHandler.loadGifFromUrl(imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl(), R.color.green_50);
+                    ImageHandler.loadGifFromUrl(imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl(), com.tokopedia.session.R.color.green_50);
                 } else {
                     ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
                 }
 
                 if (mSumToken == 0) {
                     textCount.setVisibility(View.GONE);
-                    textMessage.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_30),
+                    textMessage.setPadding(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30),
                             0,
                             0,
                             0);
@@ -554,7 +615,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         });
 
         adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
-            startActivity(MyCouponListingActivity.getCallingIntent(getActivityContext()));
+            startActivity(CouponListingStackedActivity.getCallingIntent(getActivityContext()));
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -680,14 +741,14 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     private void decorateDialog(AlertDialog dialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.tkpd_main_green));
+                    com.tokopedia.design.R.color.tkpd_main_green));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         }
 
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.grey_warm));
+                    com.tokopedia.design.R.color.grey_warm));
         }
     }
 
@@ -711,64 +772,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             mToolTip.cancel();
         });
 
-    }
-
-    @Override
-    public void showRedeemFullError(CatalogsValueEntity item, String title, String desc) {
-        if (getActivity() == null || !isAdded()) {
-            return;
-        }
-
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
-        View view = LayoutInflater.from(getContext())
-                .inflate(R.layout.layout_tp_network_error_large, null, false);
-
-        ImageView img = view.findViewById(R.id.img_error);
-        img.setImageResource(R.drawable.ic_tp_error_redeem_full);
-        TextView titleText = view.findViewById(R.id.text_title_error);
-
-        if (title == null || title.isEmpty()) {
-            titleText.setText(R.string.tp_label_too_many_access);
-        } else {
-            titleText.setText(title);
-        }
-
-        TextView label = view.findViewById(R.id.text_label_error);
-        label.setText(desc);
-
-        view.findViewById(R.id.text_failed_action).setOnClickListener(view1 -> mPresenter.startSaveCoupon(item));
-
-        adb.setView(view);
-        AlertDialog dialog = adb.create();
-        dialog.show();
-        decorateDialog(dialog);
-    }
-
-    @Override
-    public void onPreValidateError(String title, String message) {
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
-
-        adb.setTitle(title);
-        adb.setMessage(message);
-
-        adb.setPositiveButton(R.string.tp_label_ok, (dialogInterface, i) -> {
-                }
-        );
-
-        AlertDialog dialog = adb.create();
-        dialog.show();
-        decorateDialog(dialog);
-    }
-
-    @Override
-    public void gotoSendGiftPage(int id, String title, String pointStr) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
-        bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
-        bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
-        SendGiftFragment sendGiftFragment = new SendGiftFragment();
-        sendGiftFragment.setArguments(bundle);
-        sendGiftFragment.show(getChildFragmentManager(), CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);
     }
 
     @Override
@@ -802,7 +805,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         pager.setAdapter(new SectionTickerPagerAdapter(getContext(), content.getLayoutTickerAttr().getTickerList()));
         CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator_ticker);
         View hideTickerView = getView().findViewById(R.id.ic_close_ticker);
-        hideTickerView.setOnClickListener(v -> tickerContainer.setVisibility(View.GONE));
+        hideTickerView.setVisibility(View.GONE);
 
         if (content.getLayoutTickerAttr().getTickerList().size() > 1) {
             //adding bottom dots(Page Indicator)
@@ -856,29 +859,58 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         if (data == null) {
             return; //TODO any error page? Ask from gulfikar
         }
-
         //init header
         if (data.getStatus() != null) {
-            mTextMembershipLabel.setText(data.getStatus().getUserName());
 
-            if (data.getStatus().getTier() != null) {
-                mValueMembershipDescription = data.getStatus().getTier().getNameDesc();
-                mTextMembershipValue.setText(mValueMembershipDescription);
-                mTextMembershipValueBottom.setText(mValueMembershipDescription);
+
+            if (!userLoggedInStatus) {
+                mImgEgg.setVisibility(View.GONE);
+
+                emptyTitle.setVisibility(View.VISIBLE);
+                emptySubtitle.setVisibility(View.VISIBLE);
+                emptyTitle.setText(data.getStatus().getEmptyMessage().getTitle());
+                emptySubtitle.setText(data.getStatus().getEmptyMessage().getSubTitle());
+
+                ivLeaderBoard.setVisibility(View.GONE);
+                ivUserCoupon.setVisibility(View.GONE);
+                userCouponCount.setVisibility(View.GONE);
+                ivLoyaltyStack.setVisibility(View.GONE);
+                ivPointStack.setVisibility(View.GONE);
+                midSeparator.setVisibility(View.GONE);
+                tvPointLabel.setVisibility(View.GONE);
+                tvLoyaltyLabel.setVisibility(View.GONE);
+                mTextPoints.setVisibility(View.GONE);
+                mTextLoyalty.setVisibility(View.GONE);
+                pointLayout.setBackground(getResources().getDrawable(R.drawable.bg_tp_nonlogin_rewards_container));
+                tvNonLoginCta.setVisibility(View.VISIBLE);
+                tvNonLoginCta.setText(data.getStatus().getCta().getText());
+
                 ImageHandler.loadImageFitCenter(mImgBackground.getContext(), mImgBackground, data.getStatus().getTier().getBackgroundImgURLMobile());
-                ImageHandler.loadImageCircle2(getActivityContext(), mImgEgg, data.getStatus().getTier().getEggImageHomepageURL());
                 ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, data.getStatus().getTier().getEggImageHomepageURL());
-            }
 
-            if (data.getStatus().getPoints() != null) {
-                mTextPoints.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getReward(), false));
-                mTextPointsBottom.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getReward(), false));
-                mTextLoyalty.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getLoyalty(), false));
+            } else {
+                mTextMembershipLabel.setText(data.getStatus().getUserName());
+
+                if (data.getStatus().getTier() != null) {
+                    mValueMembershipDescription = data.getStatus().getTier().getNameDesc();
+                    mTextMembershipValue.setText(mValueMembershipDescription);
+                    mTextMembershipValueBottom.setText(mValueMembershipDescription);
+                    ImageHandler.loadImageFitCenter(mImgBackground.getContext(), mImgBackground, data.getStatus().getTier().getBackgroundImgURLMobile());
+                    ImageHandler.loadImageCircle2(getActivityContext(), mImgEgg, data.getStatus().getTier().getEggImageHomepageURL());
+                    ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, data.getStatus().getTier().getEggImageHomepageURL());
+                }
+
+                if (data.getStatus().getPoints() != null) {
+                    mTextPoints.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getReward(), false));
+                    mTextPointsBottom.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getReward(), false));
+                    mTextLoyalty.setText(CurrencyFormatUtil.convertPriceValue(data.getStatus().getPoints().getLoyalty(), false));
+                }
             }
         }
 
         //init bottom sheet
         renderPurchaseBottomsheet(data.getLobs());
+
     }
 
 
@@ -924,18 +956,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
         //init explore and kupon-saya tab
         renderExploreSectionTab(exploreSectionItem);
-    }
-
-    @Override
-    public void gotoCoupons() {
-        startActivity(MyCouponListingActivity.getCallingIntent(getActivityContext()));
-    }
-
-    @Override
-    public void gotoCatalog() {
-        Bundle bundle = new Bundle();
-        bundle.putInt(CommonConstant.EXTRA_COUPON_COUNT, mCouponCount);
-        startActivity(CatalogListingActivity.getCallingIntent(getActivityContext(), bundle));
     }
 
     public void renderExploreSectionTab(List<SectionContent> sections) {
@@ -996,14 +1016,12 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     @Override
     public void onToolbarLeaderboardClick() {
-        if (getAppContext() instanceof TokopointRouter) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.LEADERBOARD, getString(R.string.tp_leader));
-            AnalyticsTrackerUtil.sendEvent(getContext(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_LEADERBOARD,
-                    "");
-        }
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, CommonConstant.WebLink.LEADERBOARD, getString(R.string.tp_leader));
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_LEADERBOARD,
+                "");
     }
 
     @Override
@@ -1011,11 +1029,19 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         if (getActivity() == null) {
             return;
         }
-        startActivity(MyCouponListingActivity.getCallingIntent(getActivity()));
+        startActivity(CouponListingStackedActivity.getCallingIntent(getActivity()));
         AnalyticsTrackerUtil.sendEvent(getContext(),
                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_COUNTER_KUPON_SAYA,
                 "");
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mExploreSectionPagerAdapter != null){
+            mExploreSectionPagerAdapter.onDestroyView();
+        }
+        super.onDestroyView();
     }
 }

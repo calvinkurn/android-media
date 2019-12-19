@@ -1,8 +1,8 @@
 package com.tokopedia.common.travel.presentation.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
@@ -72,7 +72,7 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        contactViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer { contactList ->
+        contactViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
             contactList?.let{ travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
 
@@ -99,7 +99,7 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
         til_contact_name.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_title))
 
         context?.let {
-            travelContactArrayAdapter = TravelContactArrayAdapter(it, R.layout.layout_travel_autocompletetv, arrayListOf(), this)
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf(), this)
             (til_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
 
             (til_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id ->  autofillView(travelContactArrayAdapter.getItem(position)) }
@@ -176,6 +176,9 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
         if (til_contact_name.editText.text.isNullOrBlank()) {
             til_contact_name.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_error)
             isValid = false
+        } else if (isNotAplhabetOrSpaceOnly(til_contact_name.editText.text.toString())) {
+            til_contact_name.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_alphabet_only)
+            isValid = false
         }
         if (!isValidEmail(til_contact_email.editText.text.toString())) {
             til_contact_email.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_email_error)
@@ -186,6 +189,10 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
             isValid = false
         }
         return isValid
+    }
+
+    private fun isNotAplhabetOrSpaceOnly(string: String): Boolean {
+        return !string.matches(Regex("^[a-zA-Z\\s]*$"))
     }
     
     private fun resetEditTextError() {

@@ -1,8 +1,8 @@
 package com.tokopedia.logisticcart.cod.view
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +14,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.cod.di.DaggerCodComponent
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest
-import com.tokopedia.transactiondata.entity.response.cod.Data
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest
+import com.tokopedia.purchase_platform.common.data.model.response.cod.Data
 import kotlinx.android.synthetic.main.fragment_cod_confirmation.*
 import java.util.*
 import javax.inject.Inject

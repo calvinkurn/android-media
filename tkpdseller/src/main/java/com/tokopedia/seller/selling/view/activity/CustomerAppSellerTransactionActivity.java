@@ -9,11 +9,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.TabLayout;
-import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
@@ -24,10 +19,18 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.legacy.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.android.material.tabs.TabLayout;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -39,6 +42,9 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
@@ -54,6 +60,9 @@ import com.tokopedia.seller.selling.view.listener.SellingTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_CONFIRM_SHIPPING;
+import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_IN_SHIPPING;
 
 /**
  * @author okasurya on 8/1/18.
@@ -73,6 +82,10 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     public final static int TAB_POSITION_SHIPPED = 3;
     public final static int TAB_POSITION_DELIVERED = 4;
     public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
+
+    public static final String EXTRA_TAB_ACTIVE = "tab_active";
+    public static final String EXTRA_TAB_STATUS = "tab_status";
+    public static final String STATUS_DELIVERED = "delivered";
 
     ViewPager mViewPager;
     DownloadResultReceiver mReceiver;
@@ -108,29 +121,53 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)
     public static Intent getIntentReadyToShip(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, CustomerAppSellerTransactionActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_READY_TO_SHIP)
-                .putExtras(extras);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+        if (enable) {
+            return RouteManager.getIntent(context, ApplinkConstInternalOrder.READY_TO_SHIP)
+                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_CONFIRM_SHIPPING);
+        } else {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, CustomerAppSellerTransactionActivity.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_READY_TO_SHIP)
+                    .putExtras(extras);
+        }
     }
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_SHIPPED)
     public static Intent getIntentShipped(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, CustomerAppSellerTransactionActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SHIPPED)
-                .putExtras(extras);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+
+        if (enable) {
+            return RouteManager.getIntent(context, ApplinkConstInternalOrder.SHIPPED)
+                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
+        } else {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, CustomerAppSellerTransactionActivity.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SHIPPED)
+                    .putExtras(extras);
+        }
     }
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_DELIVERED)
     public static Intent getIntentDelivered(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, CustomerAppSellerTransactionActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_DELIVERED)
-                .putExtras(extras);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+
+        if (enable) {
+            return RouteManager.getIntent(context, ApplinkConstInternalOrder.DELIVERED)
+                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING)
+                    .putExtra(EXTRA_TAB_STATUS, STATUS_DELIVERED);
+        } else {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, CustomerAppSellerTransactionActivity.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_DELIVERED)
+                    .putExtras(extras);
+        }
     }
 
     public static Intent getIntentAllTransaction(Context context, Bundle extras) {

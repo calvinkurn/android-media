@@ -1,8 +1,8 @@
 package com.tokopedia.shop.info.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -284,9 +284,12 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
                     shopViewModel.isMyShop(shopId), position.toInt(),
                     CustomDimensionShopPage.create(shopId, goldOS.isOfficial == 1,
                             goldOS.isGold == 1))
+            startActivity(ShopNoteDetailActivity.createIntent(
+                    activity,
+                    shopId,
+                    shopNoteViewModel.shopNoteId.toString()
+            ))
         }
-
-        startActivity(ShopNoteDetailActivity.createIntent(activity, shopNoteViewModel.getShopNoteId().toString()))
     }
 
     private fun onSuccessGetReputation(speedFmt: String) {

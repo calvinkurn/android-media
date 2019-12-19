@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration
 
 import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 class LinearHorizontalSpacingDecoration(private val spacingBetween: Int, private val edgeMargin: Int) : RecyclerView.ItemDecoration() {

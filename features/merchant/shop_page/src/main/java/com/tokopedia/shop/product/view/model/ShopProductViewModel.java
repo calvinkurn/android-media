@@ -42,6 +42,8 @@ public class ShopProductViewModel implements BaseShopProductViewModel {
     private String productUrl;
     private boolean showWishList;
     private boolean isSoldOut;
+    private boolean isShowFreeOngkir;
+    private String freeOngkirPromoIcon;
 
     public ShopProductViewModel() {
     }
@@ -243,5 +245,14 @@ public class ShopProductViewModel implements BaseShopProductViewModel {
         isSoldOut = soldOut;
     }
 
+    public boolean isShowFreeOngkir() {return isShowFreeOngkir;}
+
+    public void setShowFreeOngkir(boolean showFreeOngkir) {isShowFreeOngkir = showFreeOngkir;}
+
+    public String getFreeOngkirPromoIcon() {return freeOngkirPromoIcon;}
+
+    public void setFreeOngkirPromoIcon(String freeOngkirPromoIcon) {
+        this.freeOngkirPromoIcon = freeOngkirPromoIcon;
+    }
 
 }

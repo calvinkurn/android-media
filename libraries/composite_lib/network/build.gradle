@@ -1,20 +1,30 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
 
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 project.ext {
     artifactId = 'network'
     groupId = 'com.tokopedia.network'
-    versionName = "1.0.7"
+    versionName = "1.0.11-test"
     artifactName = "network"
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "com.tokopedia.url:url:1.0.2"
-    implementation "com.tokopedia.authentication:authentication:1.0.1"
-    implementation "com.tokopedia.config:global_config:1.0.3"
-    implementation "com.tokopedia.user.session:user_session:1.0.7"
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

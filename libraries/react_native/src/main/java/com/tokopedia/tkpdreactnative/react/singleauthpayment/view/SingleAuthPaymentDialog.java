@@ -2,7 +2,7 @@ package com.tokopedia.tkpdreactnative.react.singleauthpayment.view;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;

@@ -1,7 +1,7 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder
 
-import android.support.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -32,7 +32,7 @@ class PlayChatViewHolder(itemView: View) : AbstractViewHolder<ChatViewModel>(ite
         val userName = getUserName(element.senderName, element.isAdministrator)
         message.append(userName)
         message.append(" ")
-        message.append(getColoredString(element.message, ContextCompat.getColor(itemView.context, R.color.white)))
+        message.append(getColoredString(element.message, ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.white)))
     }
 
     private fun getUserName(senderName: String?, administrator: Boolean): Spannable {

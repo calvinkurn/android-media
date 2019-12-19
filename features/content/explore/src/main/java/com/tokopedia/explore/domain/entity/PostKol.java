@@ -1,6 +1,7 @@
 
 package com.tokopedia.explore.domain.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -49,6 +50,9 @@ public class PostKol {
     @SerializedName("userId")
     @Expose
     private int userId;
+    @SerializedName("tracking")
+    @Expose
+    private List<Tracking> tracking = new ArrayList<>();
 
     public boolean isIsLiked() {
         return isLiked;
@@ -162,4 +166,7 @@ public class PostKol {
         this.userId = userId;
     }
 
+    public List<Tracking> getTracking() {
+        return tracking;
+    }
 }

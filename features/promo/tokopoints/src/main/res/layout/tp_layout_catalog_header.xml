@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_point_detail"
     android:layout_width="match_parent"
@@ -12,7 +12,7 @@
     android:paddingStart="@dimen/tp_padding_medium"
     android:paddingTop="@dimen/tp_padding_regular">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_points_stack"
         android:layout_width="32dp"
         android:layout_height="32dp"
@@ -49,4 +49,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_goneMarginEnd="@dimen/tp_padding_regular" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

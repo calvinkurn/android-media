@@ -51,7 +51,7 @@
         android:layout_marginStart="@dimen/dp_5"
         android:textSize="@dimen/fonts" />
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/address_text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
             android:id="@+id/address_text_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <include
         layout="@layout/open_map_view"

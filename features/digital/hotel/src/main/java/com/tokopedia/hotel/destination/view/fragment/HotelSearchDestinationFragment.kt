@@ -1,8 +1,8 @@
 package com.tokopedia.hotel.destination.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -52,7 +52,7 @@ SearchDestinationListener{
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        destinationViewModel.searchDestination.observe(this, android.arch.lifecycle.Observer { when (it) {
+        destinationViewModel.searchDestination.observe(this, androidx.lifecycle.Observer { when (it) {
             is Loaded -> {
                 when (it.data) {
                     is Success -> {

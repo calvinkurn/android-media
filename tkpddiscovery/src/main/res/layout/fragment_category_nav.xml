@@ -22,7 +22,7 @@
             tools:text="9.9jt+ produk" />
 
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/catalog_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

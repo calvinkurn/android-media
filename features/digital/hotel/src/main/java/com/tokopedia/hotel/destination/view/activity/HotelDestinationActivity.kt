@@ -1,12 +1,12 @@
 package com.tokopedia.hotel.destination.view.activity
 
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.hotel.R

@@ -3,8 +3,8 @@ package com.tokopedia.settingnotif.usersetting.widget
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingSectionViewHolder
 
@@ -16,9 +16,9 @@ class NotifSettingDividerDecoration(context: Context?) : RecyclerView.ItemDecora
 
     init {
         context?.let {
-            divider = ContextCompat.getDrawable(it, R.drawable.bg_line_separator_thin)
+            divider = ContextCompat.getDrawable(it, com.tokopedia.design.R.drawable.bg_line_separator_thin)
             dividerHeight = context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_half)
-            dividerLeftPadding = context.resources.getDimensionPixelSize(R.dimen.dp_56)
+            dividerLeftPadding = context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_56)
         }
     }
 

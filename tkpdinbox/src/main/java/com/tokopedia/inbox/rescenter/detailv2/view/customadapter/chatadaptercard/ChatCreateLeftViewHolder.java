@@ -1,10 +1,10 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;

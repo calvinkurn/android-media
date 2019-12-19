@@ -1,10 +1,9 @@
 package com.tokopedia.product.manage.list.di;
 
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageFragment;
+import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSortFragment;
-import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.SellerModuleRouter;
 
 import dagger.Component;
 
@@ -13,13 +12,11 @@ import dagger.Component;
  */
 
 @ProductManageScope
-@Component(modules = ProductManageModule.class, dependencies = ProductComponent.class)
+@Component(modules = {ProductManageModule.class, ViewModelModule.class}, dependencies = BaseAppComponent.class)
 public interface ProductManageComponent {
+
     void inject(ProductManageFragment productManageFragment);
-
     void inject(ProductManageSortFragment productManageSortFragment);
+    void inject(ProductManageSellerFragment productManageSellerFragment);
 
-    GetShopInfoUseCase getShopInfoUseCase();
-
-    SellerModuleRouter getSellerModuleRouter();
 }

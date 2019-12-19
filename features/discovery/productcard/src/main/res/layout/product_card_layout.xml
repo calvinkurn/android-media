@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="@dimen/dp_10"
@@ -8,7 +8,7 @@
     app:cardUseCompatPadding="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_8">
@@ -203,6 +203,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/product_card_ic_wishlist"
             tools:visibility="visible" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

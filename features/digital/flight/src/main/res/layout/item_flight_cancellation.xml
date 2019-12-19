@@ -18,7 +18,7 @@
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_8">
 
-        <android.support.v7.widget.AppCompatCheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/checkbox"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"

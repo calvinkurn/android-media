@@ -1,8 +1,8 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder
 
 import android.app.Activity
-import android.support.annotation.LayoutRes
-import android.support.design.widget.Snackbar
+import androidx.annotation.LayoutRes
+import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -14,6 +14,7 @@ import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.InboxGtmTracker
 import com.tokopedia.navigation.domain.model.Recommendation
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.unifycomponents.Toaster
@@ -27,29 +28,28 @@ class RecommendationViewHolder(itemView: View, private val recommendationListene
 
     override fun bind(element: Recommendation) {
         productCardView.run {
-            removeAllShopBadges()
-            setProductNameVisible(true)
-            setPriceVisible(true)
-            setImageProductVisible(true)
-            setButtonWishlistVisible(true)
-            setSlashedPriceVisible(element.recommendationItem.slashedPriceInt > 0 && element.recommendationItem.discountPercentage > 0)
-            setLabelDiscountVisible(element.recommendationItem.slashedPriceInt > 0 && element.recommendationItem.discountPercentage > 0)
-            setImageRatingVisible(element.recommendationItem.rating > 0 && element.recommendationItem.countReview > 0)
-            setReviewCountVisible(element.recommendationItem.rating > 0 && element.recommendationItem.countReview > 0)
-            setShopLocationVisible(element.recommendationItem.badgesUrl.isNotEmpty())
-            setShopBadgesVisible(true)
-            setButtonWishlistImage(element.recommendationItem.isWishlist)
-            setProductNameText(element.recommendationItem.name)
-            setPriceText(element.recommendationItem.price)
-            setImageProductUrl(element.recommendationItem.imageUrl)
-            setImageTopAdsVisible(element.recommendationItem.isTopAds)
-            setSlashedPriceText(element.recommendationItem.slashedPrice)
-            setLabelDiscountText(element.recommendationItem.discountPercentage)
-            setReviewCount(element.recommendationItem.countReview)
-            setRating(element.recommendationItem.rating)
-            mapBadges(element.recommendationItem.badgesUrl)
-            setShopLocationText(element.recommendationItem.location)
-            realignLayout()
+            setProductModel(
+                    ProductCardModel(
+                            slashedPrice = element.recommendationItem.slashedPrice,
+                            productName = element.recommendationItem.name,
+                            formattedPrice = element.recommendationItem.price,
+                            productImageUrl = element.recommendationItem.imageUrl,
+                            isTopAds = element.recommendationItem.isTopAds,
+                            discountPercentage = element.recommendationItem.discountPercentage.toString(),
+                            reviewCount = element.recommendationItem.countReview,
+                            ratingCount = element.recommendationItem.rating,
+                            shopLocation = element.recommendationItem.location,
+                            isWishlistVisible = true,
+                            isWishlisted = element.recommendationItem.isWishlist,
+                            shopBadgeList = element.recommendationItem.badgesUrl.map {
+                                ProductCardModel.ShopBadge(imageUrl = it?:"")
+                            },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    isActive = element.recommendationItem.isFreeOngkirActive,
+                                    imageUrl = element.recommendationItem.freeOngkirImageUrl
+                            )
+                    )
+            )
             setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener {
                 override fun onViewHint() {
                     recommendationListener.onProductImpression(element.recommendationItem)
@@ -76,14 +76,6 @@ class RecommendationViewHolder(itemView: View, private val recommendationListene
                     }
                 }
             }
-        }
-    }
-
-    private fun mapBadges(badges: List<String?>){
-        for (badge in badges) {
-            val view = LayoutInflater.from(productCardView.context).inflate(com.tokopedia.productcard.R.layout.layout_badge, null)
-            ImageHandler.loadImageFitCenter(productCardView.context, view.findViewById(com.tokopedia.productcard.R.id.badge), badge)
-            productCardView.addShopBadge(view)
         }
     }
 

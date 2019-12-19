@@ -83,7 +83,16 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                 clashings = mapClashing(data.clashingInfoDetail),
                 gatewayId = data.gatewayId,
                 isCoupon = data.isCoupon,
-                trackingDetailUiModel = mapTrackingDetails(data.trackingDetail)
+                trackingDetailUiModel = mapTrackingDetails(data.trackingDetail),
+                tickerInfoUiModel = mapTickerInfo(data.tickerInfo)
+        )
+    }
+
+    private fun mapTickerInfo(tickerInfo: TickerInfo): TickerInfoUiModel {
+        return TickerInfoUiModel(
+                message = tickerInfo.message,
+                statusCode = tickerInfo.statusCode,
+                uniqueId = tickerInfo.uniqueId
         )
     }
 
@@ -143,8 +152,26 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
                 description = summaries.description,
                 type = summaries.type,
                 amountStr = summaries.amountStr,
-                amount = summaries.amount
+                amount = summaries.amount,
+                details = mapSummaryBenefitDetails(summaries.details)
         )
+    }
+
+    private fun mapSummaryBenefitDetails(details: List<Detail>?): ArrayList<DetailUiModel> {
+        val listDetails = ArrayList<DetailUiModel>()
+        details?.apply {
+            this.forEach {
+                val detailUiModel = DetailUiModel(
+                        description = it.description,
+                        amount = it.amount,
+                        amountStr = it.amountStr,
+                        type = it.type
+                )
+                listDetails.add(detailUiModel)
+            }
+        }
+
+        return listDetails
     }
 
     private fun mapClashing(clash: ClashingInfoDetail): ClashingInfoDetailUiModel {

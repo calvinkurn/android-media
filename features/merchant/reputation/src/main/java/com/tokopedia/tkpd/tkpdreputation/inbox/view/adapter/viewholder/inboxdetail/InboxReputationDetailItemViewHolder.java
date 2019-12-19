@@ -1,10 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -272,20 +272,11 @@ public class InboxReputationDetailItemViewHolder extends
 
         }
         showOrHideGiveReviewLayout(element);
-        giveReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToGiveReview(element.getReviewId(),
-                        element.getProductId(),
-                        element.getShopId(),
-                        element.isReviewIsSkippable(),
-                        element.getProductAvatar(),
-                        element.getProductName(),
-                        element.getProductUrl(),
-                        element.getRevieweeName(),
-                        element.getproductStatus());
-            }
-        });
+        giveReview.setOnClickListener( view -> viewListener.onGoToGiveReview(
+                element.getProductId(),
+                element.getShopId(),
+                ""
+        ));
 
         adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
         adapter.notifyDataSetChanged();

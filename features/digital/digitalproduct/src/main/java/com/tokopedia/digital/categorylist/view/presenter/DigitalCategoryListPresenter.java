@@ -1,8 +1,10 @@
 package com.tokopedia.digital.categorylist.view.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common_wallet.balance.view.WalletBalanceModel;
+import com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.Action;
 import com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData;
 import com.tokopedia.digital.categorylist.data.cloud.exception.SessionExpiredException;
 import com.tokopedia.digital.categorylist.domain.interactor.IDigitalCategoryListInteractor;
@@ -65,7 +67,8 @@ public class DigitalCategoryListPresenter extends BaseDaggerPresenter<IDigitalCa
                     getView().renderErrorHttpGetDigitalCategoryList(
                             e.getMessage()
                     );
-                } else*/ if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                } else*/
+                if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     getView().renderErrorNoConnectionGetDigitalCategoryList(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_SHORT
                     );
@@ -90,8 +93,8 @@ public class DigitalCategoryListPresenter extends BaseDaggerPresenter<IDigitalCa
     }
 
     @NonNull
-    private Subscriber<TokoCashData> getSubscriberFetchTokoCashData() {
-        return new Subscriber<TokoCashData>() {
+    private Subscriber<WalletBalanceModel> getSubscriberFetchTokoCashData() {
+        return new Subscriber<WalletBalanceModel>() {
             @Override
             public void onCompleted() {
 
@@ -106,9 +109,39 @@ public class DigitalCategoryListPresenter extends BaseDaggerPresenter<IDigitalCa
             }
 
             @Override
-            public void onNext(TokoCashData tokoCashData) {
-                getView().renderTokoCashData(tokoCashData);
+            public void onNext(WalletBalanceModel walletBalanceModel) {
+                getView().renderTokoCashData(mapper(walletBalanceModel));
             }
         };
+    }
+
+    //TokocashData is not changed to WalletBalanceModel because it still in used by several classes in digital module
+    private TokoCashData mapper(WalletBalanceModel walletBalanceModel) {
+        TokoCashData tokoCashData = new TokoCashData();
+        if (walletBalanceModel != null) {
+
+            if (walletBalanceModel.getActionBalanceModel() != null) {
+                Action action = new Action();
+                action.setmAppLinks(walletBalanceModel.getActionBalanceModel().getApplinks());
+                action.setmText(walletBalanceModel.getActionBalanceModel().getLabelAction());
+                action.setRedirectUrl(walletBalanceModel.getActionBalanceModel().getRedirectUrl());
+                action.setmVisibility(walletBalanceModel.getActionBalanceModel().getVisibility());
+                tokoCashData.setAction(action);
+            }
+            tokoCashData.setAbTags(walletBalanceModel.getAbTags());
+            tokoCashData.setmAppLinks(walletBalanceModel.getApplinks());
+            tokoCashData.setBalance(walletBalanceModel.getBalance());
+            tokoCashData.setHoldBalance(walletBalanceModel.getHoldBalance());
+            tokoCashData.setLink(walletBalanceModel.getLink());
+            tokoCashData.setRaw_balance(walletBalanceModel.getRawBalance());
+            tokoCashData.setRawHoldBalance(walletBalanceModel.getRawHoldBalance());
+            tokoCashData.setRawThreshold(walletBalanceModel.getRawThreshold());
+            tokoCashData.setRawTotalBalance(walletBalanceModel.getRawTotalBalance());
+            tokoCashData.setRedirectUrl(walletBalanceModel.getRedirectUrl());
+            tokoCashData.setThreshold(walletBalanceModel.getThreshold());
+            tokoCashData.setText(walletBalanceModel.getTitleText());
+            tokoCashData.setTotalBalance(walletBalanceModel.getTotalBalance());
+        }
+        return tokoCashData;
     }
 }

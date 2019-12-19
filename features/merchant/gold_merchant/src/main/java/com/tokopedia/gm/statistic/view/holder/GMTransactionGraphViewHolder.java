@@ -1,9 +1,9 @@
 package com.tokopedia.gm.statistic.view.holder;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;

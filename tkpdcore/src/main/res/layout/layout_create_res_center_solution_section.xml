@@ -44,7 +44,7 @@
             android:text="@string/title_create_resolution_step_3a_desc"
             android:textSize="@dimen/fontvs" />
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/refund_box_prompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                 android:minHeight="48dp"
                 android:textSize="@dimen/sp_14" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 

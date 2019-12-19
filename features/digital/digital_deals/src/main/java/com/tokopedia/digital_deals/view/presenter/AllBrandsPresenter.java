@@ -1,6 +1,6 @@
 package com.tokopedia.digital_deals.view.presenter;
 
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
@@ -9,14 +9,12 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetAllCategoriesUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetNearestLocationUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextBrandPageUseCase;
 import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
 import com.tokopedia.digital_deals.view.model.Brand;
-import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Page;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
@@ -41,7 +39,7 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
     private boolean isLastPage;
     public final static String TAG = "url";
     private boolean SEARCH_SUBMITTED;
-
+    private GetNearestLocationUseCase getNearestLocationUseCase;
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetNextBrandPageUseCase getNextAllBrandPageUseCase;
     private GetLocationListRequestUseCase getLocationListRequestUseCase;
@@ -51,10 +49,11 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
 
 
     @Inject
-    public AllBrandsPresenter(GetAllBrandsUseCase getAllBrandsUseCase, GetNextBrandPageUseCase getNextBrandPageUseCase, GetLocationListRequestUseCase getLocationListRequestUseCase, DealsAnalytics dealsAnalytics) {
+    public AllBrandsPresenter(GetAllBrandsUseCase getAllBrandsUseCase, GetNextBrandPageUseCase getNextBrandPageUseCase, GetLocationListRequestUseCase getLocationListRequestUseCase, GetNearestLocationUseCase getNearestLocationUseCase, DealsAnalytics dealsAnalytics) {
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getNextAllBrandPageUseCase = getNextBrandPageUseCase;
         this.getLocationListRequestUseCase = getLocationListRequestUseCase;
+        this.getNearestLocationUseCase = getNearestLocationUseCase;
         this.dealAnalytics = dealsAnalytics;
     }
 
@@ -67,13 +66,14 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
         getAllBrandsUseCase.unsubscribe();
         getNextAllBrandPageUseCase.unsubscribe();
         getLocationListRequestUseCase.unsubscribe();
+        getNearestLocationUseCase.unsubscribe();
     }
 
 
     @Override
     public boolean onOptionMenuClick(int id) {
-        if (id == R.id.search_input_view) {
-        } else if (id == R.id.tv_see_all) {
+        if (id == com.tokopedia.digital_deals.R.id.search_input_view) {
+        } else if (id == com.tokopedia.digital_deals.R.id.tv_see_all) {
         } else {
             getView().getActivity().onBackPressed();
         }
@@ -253,5 +253,41 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
 
     public void sendScreenNameEvent(String screenName) {
         dealAnalytics.sendScreenNameEvent(screenName);
+    }
+
+
+    public void getNearestLocation(String coordinates) {
+        if (getView() == null) {
+            return;
+        }
+        RequestParams params = RequestParams.create();
+        params.putString(Utils.LOCATION_COORDINATES, coordinates);
+        getNearestLocationUseCase.setRequestParams(params);
+        getNearestLocationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+                if (locationResponse != null && locationResponse.getLocations() != null) {
+                    getView().setCurrentLocation(locationResponse.getLocations());
+                } else {
+                    getView().showErrorMessage();
+                    getAllBrands();
+                }
+            }
+        });
     }
 }

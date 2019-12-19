@@ -1,4 +1,4 @@
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,7 +24,7 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_step_title"
                 style="@style/TextView.Micro.BlackDisabled"
                 android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                     android:layout_marginBottom="@dimen/margin_16"
                     android:orientation="vertical">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_description_refund"
                         style="@style/TextView.Micro"
                         android:layout_width="match_parent"
@@ -66,14 +66,14 @@
                     android:layout_marginTop="@dimen/margin_8"
                     android:orientation="horizontal">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.Title.Bold"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Total Refund" />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_total_refund"
                         style="@style/TextView.Title.OrangeRed.Bold"
                         android:layout_width="0dp"
@@ -86,11 +86,11 @@
 
             </LinearLayout>
 
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_next"
                 style="@style/Button.Submit.Green"
                 android:text="@string/flight_cancellation_proof_reason_submit_button" />
         </LinearLayout>
     </RelativeLayout>
 
-</android.support.v4.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>

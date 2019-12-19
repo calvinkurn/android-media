@@ -1,7 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.domain.usecase
 
 import android.content.Context
-import android.support.annotation.RawRes
+import androidx.annotation.RawRes
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase

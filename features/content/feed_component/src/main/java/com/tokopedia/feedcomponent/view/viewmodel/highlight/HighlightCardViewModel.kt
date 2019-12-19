@@ -4,6 +4,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Footer
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
 import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * @author by yoasfs on 2019-08-06
@@ -18,5 +19,6 @@ data class HighlightCardViewModel (
         val footer: Footer = Footer(),
         val template: Template = Template(),
         val tracking: MutableList<TrackingViewModel> = ArrayList(),
-        val videoDuration: String = ""
-        )
+        val videoDuration: String = "",
+        val impressHolder: ImpressHolder = ImpressHolder()
+)

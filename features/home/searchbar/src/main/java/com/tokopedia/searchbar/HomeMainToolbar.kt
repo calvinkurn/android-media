@@ -8,8 +8,8 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
@@ -20,6 +20,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
+import java.net.URLEncoder
+import kotlin.text.Charsets.UTF_8
 
 
 class HomeMainToolbar : MainToolbar {
@@ -194,8 +196,17 @@ class HomeMainToolbar : MainToolbar {
             if(placeholder.isEmpty()){
                 RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
             }else{
-                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}&hint={hint}", HOME_SOURCE, keyword)
+                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}&hint={hint}", HOME_SOURCE, safeEncodeUTF8(keyword))
             }
+        }
+    }
+
+    private fun safeEncodeUTF8(value: String): String {
+        return try {
+            URLEncoder.encode(value, UTF_8.toString())
+        }
+        catch (e: Throwable) {
+            value
         }
     }
 

@@ -1,13 +1,17 @@
 package com.tokopedia.gamification.cracktoken.presenter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -23,7 +27,6 @@ import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity;
 import com.tokopedia.gamification.data.entity.ResponseTokenTokopointEntity;
 import com.tokopedia.gamification.data.entity.ResultStatusEntity;
 import com.tokopedia.gamification.data.entity.TokenAssetEntity;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.gamification.data.entity.TokenBackgroundAssetEntity;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.data.entity.TokenUserEntity;
@@ -31,6 +34,7 @@ import com.tokopedia.gamification.data.entity.TokoPointDetailEntity;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -238,15 +242,19 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         if(!TextUtils.isEmpty(homeSmallButton.getImageURL()))
             assetUrls.add(new Pair<>(homeSmallButton.getImageURL(), tokenAssetVersion));
 
-        RequestListener<String, GlideDrawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
+        RequestListener<Drawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
         for (Pair<String, String> assetUrlPair : assetUrls) {
+            ObjectKey signature = new ObjectKey(assetUrlPair.second);
             ImageHandler.downloadOriginalSizeImageWithSignature(
-                    context, assetUrlPair.first, new StringSignature(assetUrlPair.second),
-                    tokenAssetRequestListener);
+                    context,
+                    assetUrlPair.first,
+                    signature,
+                    tokenAssetRequestListener
+            );
         }
     }
 
-    public class ImageRequestListener implements RequestListener<String, GlideDrawable> {
+    public class ImageRequestListener implements RequestListener<Drawable> {
 
         private int size;
 
@@ -256,8 +264,9 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
         int counter = 0;
 
+
         @Override
-        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
             counter++;
             if (counter == size) {
                 onAllResourceDownloaded();
@@ -266,7 +275,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         }
 
         @Override
-        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
             counter++;
             if (counter == size) {
                 onAllResourceDownloaded();
@@ -276,7 +285,6 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
 
         void onAllResourceDownloaded() {
             if (isViewAttached()) {
-                getView().hideLoading();
                 getView().onSuccessDownloadAllAsset();
             }
         }

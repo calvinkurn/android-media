@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.discovery.R;

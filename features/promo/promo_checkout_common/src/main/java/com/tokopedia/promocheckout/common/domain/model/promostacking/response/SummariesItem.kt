@@ -16,5 +16,8 @@ data class SummariesItem(
 	val type: String = "",
 
 	@field:SerializedName("amount_str")
-	val amountStr: String = ""
+	val amountStr: String = "",
+
+	@field:SerializedName("details")
+	val details: List<Detail>
 )

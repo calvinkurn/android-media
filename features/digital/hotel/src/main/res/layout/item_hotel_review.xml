@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16">
@@ -46,7 +46,7 @@
             app:layout_constraintTop_toTopOf="@+id/review_title"
             tools:text="8,6" />
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/good_review_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,9 +72,9 @@
                 app:layout_constraintTop_toTopOf="@+id/icon_good_review"
                 android:lineSpacingExtra="@dimen/dp_2"
                 tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " />
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bad_review_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                 app:layout_constraintStart_toEndOf="@+id/icon_bad_review"
                 app:layout_constraintTop_toTopOf="@+id/icon_bad_review"
                 tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " />
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/reviewer_name"
@@ -120,7 +120,7 @@
             app:fontSize="micro"
             app:layout_constraintTop_toBottomOf="@+id/reviewer_name"
             tools:text="Indonesia -  8 Sep 2018" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:layout_width="match_parent"

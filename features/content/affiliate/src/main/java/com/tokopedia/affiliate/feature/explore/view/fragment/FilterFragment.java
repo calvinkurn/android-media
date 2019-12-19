@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,7 +82,7 @@ public class FilterFragment extends BaseDaggerFragment {
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                        RecyclerView.State state) {
                 super.getItemOffsets(outRect, view, parent, state);
-                outRect.bottom = (int) getResources().getDimension(R.dimen.dp_4);
+                outRect.bottom = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_4);
             }
         });
         adapter.setList(filterList);

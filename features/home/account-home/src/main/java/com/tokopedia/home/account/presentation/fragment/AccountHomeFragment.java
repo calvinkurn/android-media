@@ -2,14 +2,14 @@ package com.tokopedia.home.account.presentation.fragment;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,8 +52,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private ViewPager viewPager;
     private AppBarLayout appBarLayout;
     private AccountHomePagerAdapter adapter;
-    private BadgeView badgeView;
+    private BadgeView badgeViewInbox;
+    private BadgeView badgeViewNotification;
     private ImageButton menuNotification;
+    private ImageButton menuInbox;
+
     private int counterNumber = 0;
 
     private AccountAnalytics accountAnalytics;
@@ -150,6 +153,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         TextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(getString(R.string.title_account));
         menuNotification = toolbar.findViewById(R.id.action_notification);
+        menuInbox = toolbar.findViewById(R.id.action_inbox);
+
         ImageButton menuSettings = toolbar.findViewById(R.id.action_settings);
 
         menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent
@@ -157,6 +162,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         menuNotification.setOnClickListener(v -> {
             accountAnalytics.eventTrackingNotification();
             RouteManager.route(getActivity(), ApplinkConst.NOTIFICATION);
+        });
+
+        menuInbox.setOnClickListener(v -> {
+            accountAnalytics.eventTrackingInbox();
+            RouteManager.route(getActivity(), ApplinkConst.INBOX);
         });
 
         if (getActivity() instanceof AppCompatActivity) {
@@ -238,15 +248,30 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onNotificationChanged(int notificationCount, int inboxCount) {
-        if (menuNotification == null && getActivity() == null)
-            return;
-        if (badgeView == null)
-            badgeView = new BadgeView(getActivity());
+        setToolbarNotificationCount(notificationCount);
+        setToolbarInboxCount(inboxCount);
+    }
 
-        badgeView.bindTarget(menuNotification);
-        badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-        badgeView.setBadgeNumber(notificationCount);
+    private boolean setToolbarNotificationCount(int notificationCount) {
+        if (menuNotification == null && getActivity() == null)
+            return true;
+        if (badgeViewNotification == null) badgeViewNotification = new BadgeView(getActivity());
+
+        badgeViewNotification.bindTarget(menuNotification);
+        badgeViewNotification.setBadgeGravity(Gravity.END | Gravity.TOP);
+        badgeViewNotification.setBadgeNumber(notificationCount);
 
         this.counterNumber = notificationCount;
+        return false;
+    }
+
+    private void setToolbarInboxCount(int badgeNumber) {
+        if (menuInbox != null) {
+            if (badgeViewInbox == null) badgeViewInbox = new BadgeView(getContext());
+
+            badgeViewInbox.bindTarget(menuInbox);
+            badgeViewInbox.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeViewInbox.setBadgeNumber(badgeNumber);
+        }
     }
 }

@@ -16,7 +16,7 @@
         android:orientation="horizontal"
         app:srcCompat="@drawable/akun_terverifikasi"/>
 
-    <android.support.v4.widget.Space
+    <androidx.legacy.widget.Space
         android:layout_width="0dp"
         android:layout_height="@dimen/space_slightly_med"/>
 
@@ -32,7 +32,7 @@
         android:textStyle="normal"
         />
 
-    <android.support.v4.widget.Space
+    <androidx.legacy.widget.Space
         android:layout_width="0dp"
         android:layout_height="@dimen/space_med"/>
 

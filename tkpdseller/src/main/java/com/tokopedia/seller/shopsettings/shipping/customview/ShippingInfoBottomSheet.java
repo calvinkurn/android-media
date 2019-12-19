@@ -1,7 +1,7 @@
 package com.tokopedia.seller.shopsettings.shipping.customview;
 
 import android.content.Context;
-import android.support.design.widget.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;

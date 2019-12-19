@@ -1,5 +1,7 @@
 package com.tokopedia.contactus.createticket;
 
+import com.tokopedia.url.TokopediaUrl;
+
 /**
  * Created by nisie on 8/12/16.
  */
@@ -15,4 +17,7 @@ public interface ContactUsConstant {
      int ID_SELLER = 103;
      int ID_OTHER = 104;
 
+    String ACTION_CLOSE_ACTIVITY = "action_close_activity";
+
+    String BASE_CONTACT_US = TokopediaUrl.Companion.getInstance().getWEB() + "contact-us";
 }

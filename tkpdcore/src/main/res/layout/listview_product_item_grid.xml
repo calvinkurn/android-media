@@ -12,7 +12,7 @@
     <!-- use gridview_hotlist_product from tkpddiscovery -->
     <!-- DELETE THIS FILE -->
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/image_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
             android:gravity="center"
             android:scaleType="centerCrop"
             tools:src="@color/red_100"/>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <RelativeLayout
         android:id="@id/wishlist_button_container"

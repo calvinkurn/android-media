@@ -162,11 +162,6 @@ android {
 //                    }
 //                }
 //            } else {
-                applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
-                    }
-                }
 //            }
         }
     }
@@ -189,6 +184,12 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
 
@@ -203,7 +204,7 @@ android {
     }
 
     configurations.all {
-        resolutionStrategy.force 'com.android.support:multidex:1.0.3'
+        resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
         resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
     }
@@ -246,6 +247,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.webview)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
@@ -272,7 +274,6 @@ dependencies {
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.goldMerchant)
-    implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsManagement)
@@ -285,7 +286,6 @@ dependencies {
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.tkpdtransaction)
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
-    implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
@@ -297,6 +297,7 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.saldodetails)
+    implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.linker)
@@ -314,7 +315,6 @@ dependencies {
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.productManageItem)
-    implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessage)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
@@ -330,12 +330,12 @@ dependencies {
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.withdraw)
-    implementation project(rootProject.ext.features.paymentSetting)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.loginregister)
+    implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
 
     implementation rootProject.ext.unifyDependencies.icon
@@ -354,17 +354,7 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlow
     implementation project(rootProject.ext.libraries.analytics)
 
-
-    implementation rootProject.ext.analyticsDependencies.moengageSdk
-    implementation rootProject.ext.analyticsDependencies.moengagePushbase
-    implementation rootProject.ext.analyticsDependencies.moengageInapp
-    implementation(rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-firebase'
-    }
-
-    implementation(rootProject.ext.analyticsDependencies.moengageMSG) {
-        exclude group: 'com.android.support'
-    }
+    implementation(rootProject.ext.analyticsDependencies.moengage) 
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
@@ -375,6 +365,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.converterGson
@@ -418,9 +409,6 @@ dependencies {
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
-
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

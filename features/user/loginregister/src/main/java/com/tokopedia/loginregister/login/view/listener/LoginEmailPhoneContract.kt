@@ -1,7 +1,7 @@
 package com.tokopedia.loginregister.login.view.listener
 
 import android.content.Context
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.facebook.CallbackManager
@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import java.util.ArrayList
@@ -81,7 +83,7 @@ interface LoginEmailPhoneContract {
 
         fun onEmailExist(email: String)
 
-        fun showNotRegisteredEmailDialog(email: String)
+        fun showNotRegisteredEmailDialog(email: String, isPending: Boolean)
 
         fun onBackPressed()
 
@@ -103,12 +105,14 @@ interface LoginEmailPhoneContract {
 
         fun discoverLogin(context: Context)
 
-        fun checkLoginEmailPhone(emailPhone: String)
-
         fun loginFacebook(context: Context, accessToken: AccessToken, email: String)
 
         fun reloginAfterSQ(validateToken: String)
 
         fun getTickerInfo()
+
+        fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
+
+        fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
     }
 }

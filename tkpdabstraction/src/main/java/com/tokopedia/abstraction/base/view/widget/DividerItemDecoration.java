@@ -3,7 +3,7 @@ package com.tokopedia.abstraction.base.view.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.R;
@@ -38,7 +38,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
 
-            if (i == (childCount - 1)) {
+            if (i == (childCount - 1) && !shouldDrawOnLastItem()) {
                 continue;
             }
 
@@ -52,5 +52,9 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
         }
+    }
+
+    protected boolean shouldDrawOnLastItem() {
+        return false;
     }
 }

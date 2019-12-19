@@ -4,24 +4,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.text.TextUtils;
+import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
+import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
+import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity;
+
+import java.util.concurrent.TimeUnit;
+
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE;
 
 /**
  * Created by nathan on 2/15/18.
@@ -29,7 +37,9 @@ import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
 
 public class ShopProductListActivity extends BaseSimpleActivity
         implements HasComponent<ShopComponent>,
-        ShopProductListFragment.OnShopProductListFragmentListener{
+        ShopProductListFragment.OnShopProductListFragmentListener,
+        ShopProductListFragment.OnSuccessGetShopInfoListener,
+        ShopProductListFragment.OnInitTrackingListener {
 
     public static final String SAVED_KEYWORD = "svd_keyword";
 
@@ -37,12 +47,14 @@ public class ShopProductListActivity extends BaseSimpleActivity
     private String shopId;
 
     // this field only used first time for new fragment
-    private String keyword;
+    private String keyword = "";
     private String etalaseId;
     private String sort;
     private String attribution;
 
     private SearchInputView searchInputView;
+    private ShopInfo shopInfo;
+    private ShopPageTrackingBuyer shopPageTracking;
 
     public static Intent createIntent(Context context, String shopId, String keyword,
                                       String etalaseId, String attribution, String sortId) {
@@ -97,35 +109,49 @@ public class ShopProductListActivity extends BaseSimpleActivity
         attribution = getIntent().getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION);
         if (savedInstanceState == null) {
             keyword = getIntent().getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
+            if (null == keyword) {
+                keyword = "";
+            }
         } else {
-            keyword = savedInstanceState.getString(SAVED_KEYWORD);
+            keyword = savedInstanceState.getString(SAVED_KEYWORD,"");
         }
 
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        initSearchInputView();
+        findViewById(R.id.mainLayout).requestFocus();
+    }
+
+    private void initSearchInputView() {
         searchInputView = findViewById(R.id.searchInputView);
         searchInputView.getSearchTextView().setText(keyword);
-
-        searchInputView.setListener(new SearchInputView.Listener() {
-            @Override
-            public void onSearchSubmitted(String text) {
-                ShopProductListFragment fragment = (ShopProductListFragment) getFragment();
-                if (fragment!= null) {
-                    fragment.updateDataByChangingKeyword(text);
-                }
-
-                KeyboardHandler.hideSoftKeyboard(ShopProductListActivity.this);
-            }
-
-            @Override
-            public void onSearchTextChanged(String text) {
-                if (TextUtils.isEmpty(text)) {
-                    onSearchSubmitted(text);
+        searchInputView.getSearchTextView().setMovementMethod(null);
+        searchInputView.getSearchTextView().setKeyListener(null);
+        searchInputView.setOnClickListener(view -> {
+            if (null != shopPageTracking)
+                shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE);
+            if (null != shopInfo) {
+                String cacheManagerId = saveShopInfoModelToCacheManager(shopInfo);
+                if (null != cacheManagerId) {
+                    redirectToShopSearchProduct(cacheManagerId);
                 }
             }
         });
+    }
 
-        findViewById(R.id.mainLayout).requestFocus();
+    private void redirectToShopSearchProduct(String cacheManagerId) {
+        startActivity(ShopSearchProductActivity.createIntent(
+                this,
+                keyword,
+                cacheManagerId,
+                attribution
+        ));
+    }
+
+    private String saveShopInfoModelToCacheManager(ShopInfo shopInfo) {
+        CacheManager cacheManager = new SaveInstanceCacheManager(this, true);
+        cacheManager.put(ShopInfo.TAG, shopInfo, TimeUnit.DAYS.toMillis(7));
+        return cacheManager.getId();
     }
 
     @Override
@@ -162,10 +188,8 @@ public class ShopProductListActivity extends BaseSimpleActivity
     @Override
     public void onBackPressed() {
         if (isTaskRoot()) {
-            String applink = GlobalConfig.isSellerApp()? ApplinkConst.SellerApp.SELLER_APP_HOME: ApplinkConst.HOME;
-            ApplinkRouter router = (ApplinkRouter) getApplicationContext();
-            if (router.isSupportApplink(applink)) {
-                Intent intent = router.getApplinkIntent(this, applink);
+            Intent intent = RouteManager.getIntentNoFallback(this, ApplinkConst.HOME);
+            if (intent != null) {
                 startActivity(intent);
                 finish();
             } else {
@@ -180,5 +204,15 @@ public class ShopProductListActivity extends BaseSimpleActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(SAVED_KEYWORD, searchInputView.getSearchText());
+    }
+
+    @Override
+    public void updateShopInfo(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
+    }
+
+    @Override
+    public void updateShopPageTracking(ShopPageTrackingBuyer shopPageTracking) {
+        this.shopPageTracking = shopPageTracking;
     }
 }

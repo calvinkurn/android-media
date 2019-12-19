@@ -13,7 +13,7 @@
         android:layout_gravity="center"
         tools:src="@drawable/ic_product_cart_counter_light"/>
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

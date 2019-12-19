@@ -1,13 +1,13 @@
 package com.tokopedia.hotel.search.presentation.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -176,7 +176,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 data.properties)
 
         val searchProperties = data.properties
-        bottom_action_view.visible()
+
+        bottom_action_view.visibility = View.VISIBLE
+
         super.renderList(searchProperties, searchProperties.isNotEmpty())
         generateSortMenu(data.displayInfo.sort)
         initializeFilterClick(data.displayInfo.filter)
@@ -250,6 +252,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             emptyModel.buttonTitle = getString(R.string.hotel_search_filter_empty_button)
         }
 
+        bottom_action_view.visibility = View.GONE
         return emptyModel
     }
 

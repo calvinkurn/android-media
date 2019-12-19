@@ -3,20 +3,26 @@ package com.tokopedia.transaction.orders.orderlist.view.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -27,6 +33,9 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.datepicker.DatePickerUnify;
+import com.tokopedia.datepicker.OnDateChangedListener;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
@@ -42,10 +51,13 @@ import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.RequestCancelActivity;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.common.SaveDateBottomSheetActivity;
+import com.tokopedia.transaction.orders.orderlist.common.util.Utils;
 import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.CustomDate;
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.DefaultDate;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListUseCaseModule;
@@ -59,23 +71,33 @@ import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContra
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.UnifyButton;
+import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Locale;
 import javax.inject.Inject;
+import kotlin.Unit;
 
 
 public class OrderListFragment extends BaseDaggerFragment implements
+
         OrderListRecomListViewHolder.ActionListener, RefreshHandler.OnRefreshHandlerListener,
-        OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener,
+        OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener,QuickSingleFilterView.QuickFilterAnalytics,
         SearchInputView.ResetListener, OrderListViewHolder.OnMenuItemListener, View.OnClickListener,
         OrderListViewHolder.OnActionButtonListener {
+
 
     private static final String ORDER_CATEGORY = "orderCategory";
     private static final String ORDER_TAB_LIST = "TAB_LIST";
@@ -101,20 +123,50 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final String ACTION_TRACK_IT = "lacak";
     private static final String ACTION_SUBMIT_CANCELLATION = "ajukan pembatalan";
     private static final String ACTION_DONE = "selesai";
+    private static final String  MULAI_DARI= "Mulai Dari";
+    private static final String  SAMPAI= "Sampai";
+
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     LinearLayout filterDate;
+    private ImageView filterImg;
+    private TextView filterText;
     RelativeLayout mainContent;
+    private ImageView crossIcon;
+    private EditText mulaiButton;
+    private EditText sampaiButton;
+    private UnifyButton terapkan;
+    private RelativeLayout datePickerlayout;
+    private RadioGroup radioGroup;
+    private RadioButtonUnify radio1,radio2;
+    private DatePickerUnify datePickerUnify;
     private RefreshHandler refreshHandler;
+    private TextView reset;
     private boolean isLoading = false;
     private int page_num = 1;
     private Bundle savedState;
     private String startDate = "";
     private String endDate = "";
+    private String defStartDate = "";
+    private String defEndDate = "";
+    private String customStartDate = "";
+    private String customEndDate = "";
+    private int state = 0;
+
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
+    private static final String DATE_FORMAT_1 = "yyyy/MM/dd";
+    private static final String DATE_FORMAT_2 = "d MMM yyyy";
+    private static final String DATE_FORMAT_3= "d M yyyy";
+
     private int orderId = 1;
     private String selectedOrderId = "0";
     private String actionButtonUri = "";
+    private HashMap<String,String>selectedDateMap= new HashMap<>();
+    private SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
+    private SimpleDateFormat format1 = new SimpleDateFormat(DATE_FORMAT_1, Locale.getDefault());
+    private SimpleDateFormat format2 = new SimpleDateFormat(DATE_FORMAT_2,Locale.getDefault());
+
     @Inject
     OrderListAnalytics orderListAnalytics;
 
@@ -141,6 +193,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private GridLayoutManager layoutManager;
     EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TrackingQueue trackingQueue;
+    private CloseableBottomSheetDialog changeDateBottomSheetDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -279,6 +332,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         }
     }
 
+    private Locale getCurrentLocale(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return context.getResources().getConfiguration().getLocales().get(0);
+        } else return context.getResources().getConfiguration().locale;
+    }
+
+
     protected void initView(View view) {
         recyclerView = view.findViewById(R.id.order_list_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
@@ -286,36 +346,32 @@ public class OrderListFragment extends BaseDaggerFragment implements
         simpleSearchView = view.findViewById(R.id.simpleSearchView);
         simpleSearchView.setSearchHint(getContext().getResources().getString(R.string.search_hint_text));
         filterDate = view.findViewById(R.id.filterDate);
+        filterImg = view.findViewById(R.id.filter_image);
+        filterText = view.findViewById(R.id.filter_text);
         surveyBtn = view.findViewById(R.id.survey_bom);
         surveyBtn.setOnClickListener(this);
         mainContent = view.findViewById(R.id.mainContent);
+        //default 90 days filter
+        Date date = new Date();
+        Calendar cal = new GregorianCalendar();
+        cal.add(Calendar.DAY_OF_MONTH, -90);
+        Date today90 = cal.getTime();
+        endDate = selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : format.format(date);
+        startDate = selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : format.format(today90);
+        changeDateBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         if (orderLabelList != null && orderLabelList.getFilterStatusList() != null && orderLabelList.getFilterStatusList().size() > 0) {
             presenter.buildAndRenderFilterList(orderLabelList.getFilterStatusList());
         }
-
-        filterDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(SaveDateBottomSheetActivity.getDateInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
-            }
-        });
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == FILTER_DATE_REQUEST) {
-                startDate = data.getStringExtra(SaveDateBottomSheetActivity.START_DATE);
-                endDate = data.getStringExtra(SaveDateBottomSheetActivity.END_DATE);
-                refreshHandler.startRefresh();
-                orderListAnalytics.sendDateFilterClickEvent();
-            } else if (requestCode == SUBMIT_SURVEY_REQUEST) {
+            if (requestCode == SUBMIT_SURVEY_REQUEST) {
                 presenter.insertSurveyRequest(data.getIntExtra(SaveDateBottomSheetActivity.SURVEY_RATING, 3), data.getStringExtra(SaveDateBottomSheetActivity.SURVEY_COMMENT));
             }
-        } else
-        if (requestCode == REQUEST_CANCEL_ORDER) {
+        } else if (requestCode == REQUEST_CANCEL_ORDER) {
             String reason = "";
             int reasonCode = 1;
             if (resultCode == REJECT_BUYER_REQUEST) {
@@ -341,8 +397,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
         recyclerView.setAdapter(orderListAdapter);
         recyclerView.setHasFixedSize(false);
         quickSingleFilterView.setListener(this);
+        quickSingleFilterView.setquickFilterListener(this);
         simpleSearchView.setListener(this);
         simpleSearchView.setResetListener(this);
+        filterDate.setOnClickListener(this);
     }
 
     private void addRecyclerListener() {
@@ -518,7 +576,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void selectFilter(String typeFilter) {
         selectedFilter = typeFilter;
         refreshHandler.startRefresh();
-        orderListAnalytics.sendQuickFilterClickEvent(typeFilter);
     }
 
 
@@ -564,7 +621,17 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.Companion.showNormalWithAction(mainContent, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+        Toaster.INSTANCE.showNormalWithAction(mainContent, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+    }
+
+    @Override
+    public void setFilterRange(DefaultDate defaultDate, CustomDate customDate) {
+
+        defStartDate = Utils.INSTANCE.setFormat(format, format1, defaultDate.getStartRangeDate());
+        defEndDate = Utils.INSTANCE.setFormat(format, format1, defaultDate.getEndRangeDate());
+        customEndDate = Utils.INSTANCE.setFormat(format, format1, customDate.getEndRangeDate());
+        customStartDate = Utils.INSTANCE.setFormat(format, format1, customDate.getStartRangeDate());
+
     }
 
     @Override
@@ -609,14 +676,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSearchSubmitted(String text) {
-        searchedString = text;
+
+            searchedString = text;
+            orderListAnalytics.sendSearchFilterClickEvent(text);
+
     }
 
     @Override
     public void onSearchTextChanged(String text) {
         if (text.length() >= MINIMUM_CHARATERS_HIT_API || text.length() == 0) {
             searchedString = text;
-            orderListAnalytics.sendSearchFilterClickEvent();
             filterDate.setVisibility(View.GONE);
             Handler handler = new Handler();
             handler.postDelayed(() -> refreshHandler.startRefresh(), KEYBOARD_SEARCH_WAITING_TIME);
@@ -627,13 +696,134 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void onSearchReset() {
         searchedString = "";
         refreshHandler.startRefresh();
+        orderListAnalytics.sendSearchFilterCancelClickEvent();
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.survey_bom) {
             startActivityForResult(SaveDateBottomSheetActivity.getSurveyInstance(getContext(), OPEN_SURVEY_PAGE), SUBMIT_SURVEY_REQUEST);
+        } else if (v.getId() == R.id.terapkan) {
+            if (radio1.isChecked()) {
+                startDate = defStartDate;
+                endDate = defEndDate;
+                state = 0;
+            } else {
+                state = 1;
+                startDate = Utils.INSTANCE.setFormat(format, format2, mulaiButton.getText().toString());
+                endDate = Utils.INSTANCE.setFormat(format, format2, sampaiButton.getText().toString());
+            }
+            selectedDateMap.clear();
+            selectedDateMap.put(SAMPAI, endDate);
+            selectedDateMap.put(MULAI_DARI, startDate);
+
+            filterDate.getBackground().setColorFilter(getResources().getColor(R.color.tkpd_main_green),PorterDuff.Mode.SRC_ATOP);
+            filterImg.setColorFilter(getResources().getColor(R.color.white));
+            filterText.setTextColor(getResources().getColor(R.color.white));
+            refreshHandler.startRefresh();
+            orderListAnalytics.sendDateFilterSubmitEvent();
+            changeDateBottomSheetDialog.dismiss();
+
+        } else if (v.getId() == R.id.filterDate) {
+            orderListAnalytics.sendDateFilterClickEvent();
+            View categoryView = getLayoutInflater().inflate(R.layout.change_bom_deadline_bottomsheet, null);
+            crossIcon = categoryView.findViewById(R.id.cross_icon_bottomsheet);
+            mulaiButton = categoryView.findViewById(R.id.et_start_date);
+            sampaiButton = categoryView.findViewById(R.id.et_end_date);
+            terapkan = categoryView.findViewById(R.id.terapkan);
+            radio1 = categoryView.findViewById(R.id.radio1);
+            radio2 = categoryView.findViewById(R.id.radio2);
+            datePickerlayout = categoryView.findViewById(R.id.date_picker);
+            radioGroup = categoryView.findViewById(R.id.radio_grp);
+            reset = categoryView.findViewById(R.id.reset);
+            terapkan.setOnClickListener(this);
+            reset.setOnClickListener(view -> {
+                radio1.setChecked(true);
+                datePickerlayout.setVisibility(View.GONE);
+                sampaiButton.setText(Utils.INSTANCE.setFormat(format2, format, customEndDate));
+                mulaiButton.setText(Utils.INSTANCE.setFormat(format2, format, customStartDate));
+            });
+            if (state == 1) {
+                radio2.setChecked(true);
+                datePickerlayout.setVisibility(View.VISIBLE);
+                radio1.setChecked(false);
+
+            } else {
+                radio2.setChecked(false);
+                radio1.setChecked(true);
+
+            }
+            sampaiButton.setText(Utils.INSTANCE.setFormat(format2, format, selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate));
+            mulaiButton.setText(Utils.INSTANCE.setFormat(format2, format, selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate));
+
+
+            crossIcon.setOnClickListener((View view) -> {
+                changeDateBottomSheetDialog.dismiss();
+            });
+            changeDateBottomSheetDialog.setCustomContentView(categoryView, "", false);
+            changeDateBottomSheetDialog.show();
+
+            radioGroup.setOnCheckedChangeListener((RadioGroup group, int checkedId) -> {
+                if (checkedId == R.id.radio2) {
+                    datePickerlayout.setVisibility(View.VISIBLE);
+
+                } else {
+                    datePickerlayout.setVisibility(View.GONE);
+                }
+            });
+            mulaiButton.setOnClickListener((View view)-> {
+                    showDatePicker(MULAI_DARI);
+            });
+            sampaiButton.setOnClickListener((View view)->{
+                    showDatePicker(SAMPAI);
+            });
         }
+    }
+
+    private String[] split(String date) {
+        String[] dateFormat = new String[0];
+        if (date != null) {
+            dateFormat = date.split("/", 5);
+        }
+        return dateFormat;
+    }
+
+
+    private void showDatePicker(String title) {
+        String[] result = split(customStartDate);
+        Calendar minDate = new GregorianCalendar(Integer.parseInt(result[2]), Integer.parseInt(result[1]), Integer.parseInt(result[0]));
+        Calendar maxDate = new GregorianCalendar(getCurrentLocale(getActivity()));
+        Calendar defaultDate = new GregorianCalendar(getCurrentLocale(getActivity()));
+        datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
+            @Override
+            public void onDateChanged(long l) {
+                //
+            }
+        });
+        datePickerUnify.show(getFragmentManager(), "");
+        if (title.equalsIgnoreCase(MULAI_DARI)) {
+            datePickerUnify.setTitle(MULAI_DARI);
+
+        } else {
+            datePickerUnify.setTitle(SAMPAI);
+        }
+
+        datePickerUnify.getDatePickerButton().setOnClickListener((View v) -> {
+            Integer[] date = datePickerUnify.getDate();
+            date[1] = date[1] + 1;
+            if (title.equalsIgnoreCase(SAMPAI)) {
+                sampaiButton.setText(date[0] + " " + Utils.INSTANCE.convertMonth(date[1]) + " " + date[2]);
+            } else {
+                mulaiButton.setText(date[0] + " " + Utils.INSTANCE.convertMonth(date[1]) + " " + date[2]);
+            }
+            datePickerUnify.dismiss();
+        });
+
+        datePickerUnify.setCloseClickListener(view -> {
+            datePickerUnify.dismiss();
+            return Unit.INSTANCE;
+        });
+
     }
 
     private void setVisibilitySurveyBtn(boolean isVisible) {
@@ -683,45 +873,59 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void setSelectFilterName(String selectFilterName) {
+        orderListAnalytics.sendQuickFilterClickEvent(selectFilterName);
+}
+
+
     public void handleActionButtonClick(@NotNull Order order, @Nullable ActionButton actionButton) {
         if (actionButton != null)
             this.actionButtonUri = actionButton.uri();
         this.selectedOrderId = order.id();
-
         switch (actionButton.label().toLowerCase()) {
             case ACTION_BUY_AGAIN:
+                if(mOrderCategory.equals(OrderListContants.BELANJA))
+                    presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
+                else
+                    handleDefaultCase(actionButton);
+                break;
             case ACTION_SUBMIT_CANCELLATION:
             case ACTION_ASK_SELLER:
                 presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 break;
             case ACTION_TRACK_IT:
                 trackOrder();
+                orderListAnalytics.sendActionButtonClickEventList("click track", "");
                 break;
             case ACTION_DONE:
                 presenter.finishOrder(selectedOrderId, actionButtonUri);
                 break;
             default:
-                String newUri = actionButton.uri();
-                if (newUri.startsWith(KEY_URI)) {
-                    if (newUri.contains(KEY_URI_PARAMETER)) {
-                        Uri url = Uri.parse(newUri);
-                        String queryParameter = url.getQueryParameter(KEY_URI_PARAMETER) != null ? url.getQueryParameter(KEY_URI_PARAMETER):"";
-                        newUri = newUri.replace(queryParameter, "");
-                        newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
-                    }
-                    RouteManager.route(getActivity(), newUri);
-                } else if (!TextUtils.isEmpty(newUri)) {
-                    try {
-                        startActivity(((UnifiedOrderListRouter) getActivity()
-                                .getApplication()).getWebviewActivityWithIntent(getContext(),
-                                URLEncoder.encode(newUri, "UTF-8")));
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
+                handleDefaultCase(actionButton);
                 break;
         }
 
+    }
+
+    private void handleDefaultCase(ActionButton actionButton) {
+        String newUri = actionButton.uri();
+        if (newUri.startsWith(KEY_URI)) {
+            if (newUri.contains(KEY_URI_PARAMETER)) {
+                Uri url = Uri.parse(newUri);
+                String queryParameter = url.getQueryParameter(KEY_URI_PARAMETER) != null ? url.getQueryParameter(KEY_URI_PARAMETER):"";
+                newUri = newUri.replace(queryParameter, "");
+                newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
+            }
+            RouteManager.route(getActivity(), newUri);
+        } else if (!TextUtils.isEmpty(newUri)) {
+            try {
+                startActivity(((UnifiedOrderListRouter) getActivity()
+                        .getApplication()).getWebviewActivityWithIntent(getContext(),
+                        URLEncoder.encode(newUri, "UTF-8")));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -731,7 +935,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         intent.putExtra("action_button_url", actionButtonUri);
         if (status.status().equals(STATUS_CODE_220) || status.status().equals(STATUS_CODE_400)) {
             if (presenter.shouldShowTimeForCancellation()) {
-                Toaster.Companion.showErrorWithAction(mainContent,
+                Toaster.INSTANCE.showErrorWithAction(mainContent,
                         presenter.getCancelTime(),
                         Snackbar.LENGTH_LONG,
                         getResources().getString(R.string.title_ok), v -> {});

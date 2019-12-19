@@ -4,11 +4,11 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.support.annotation.NonNull
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.NonNull
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion
@@ -63,6 +63,7 @@ class PermissionCheckerHelper {
         const val PERMISSION_READ_CONTACTS = Manifest.permission.READ_CONTACTS
         const val PERMISSION_CALL_PHONE = Manifest.permission.CALL_PHONE
         const val PERMISSION_READ_PHONE_STATE =  Manifest.permission.READ_PHONE_STATE
+        const val PERMISSION_READ_CALL_LOG =  Manifest.permission.READ_CALL_LOG
     }
 
     interface PermissionCheckListener {

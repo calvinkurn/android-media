@@ -6,7 +6,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
 import com.tokopedia.digital.categorylist.data.mapper.CategoryDigitalListDataMapper;
@@ -53,7 +56,8 @@ public class DigitalListModule {
     }
 
     @Provides
-    DigitalCategoryListApi provideDigitalCategoryListApi(@ApplicationContext Context context) {
+    DigitalCategoryListApi provideDigitalCategoryListApi(@ApplicationContext Context context,
+                                                         UserSessionInterface userSession) {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .setPrettyPrinting()
@@ -74,9 +78,8 @@ public class DigitalListModule {
         okHttpbuilder.addInterceptor(loggingInterceptor);
 
         NetworkRouter networkRouter = (NetworkRouter) context;
-        UserSessionInterface userSessionInterceptor = new UserSession(context);
 
-        okHttpbuilder.addInterceptor(new FingerprintInterceptor(networkRouter, userSessionInterceptor));
+        okHttpbuilder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession));
         okHttpbuilder.addInterceptor(new TkpdBaseInterceptor());
         OkHttpRetryPolicy okHttpRetryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
         okHttpbuilder.readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -85,6 +88,11 @@ public class DigitalListModule {
         Retrofit retrofit = retrofitBuilder.client(okHttpbuilder.build()).build();
 
         return retrofit.create(DigitalCategoryListApi.class);
+    }
+
+    @Provides
+    UserSessionInterface providesUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @Provides
@@ -105,8 +113,14 @@ public class DigitalListModule {
     @Provides
     IDigitalCategoryListInteractor provideDigitalCategoryListInteractor(
             IDigitalCategoryListRepository digitalCategoryListRepository,
-            DigitalModuleRouter digitalModuleRouter
-    ) {
-        return new DigitalCategoryListInteractor(compositeSubscription, digitalCategoryListRepository, digitalModuleRouter);
+            GetWalletBalanceUseCase getWalletBalanceUseCase,
+            DigitalModuleRouter digitalModuleRouter) {
+        return new DigitalCategoryListInteractor(compositeSubscription, digitalCategoryListRepository,
+                getWalletBalanceUseCase, digitalModuleRouter);
+    }
+
+    @Provides
+    RemoteConfig provideRemoteConfig(@ApplicationContext Context context) {
+        return new FirebaseRemoteConfigImpl(context);
     }
 }

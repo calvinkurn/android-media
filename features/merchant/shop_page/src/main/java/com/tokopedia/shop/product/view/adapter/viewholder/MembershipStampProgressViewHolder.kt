@@ -1,9 +1,9 @@
 package com.tokopedia.shop.product.view.adapter.viewholder
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.PagerSnapHelper
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

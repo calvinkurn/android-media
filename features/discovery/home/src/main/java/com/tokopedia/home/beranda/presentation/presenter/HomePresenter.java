@@ -1,35 +1,44 @@
 package com.tokopedia.home.beranda.presentation.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
+import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase;
+import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
-import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsDataUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase;
+import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeReviewSuggestedUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.SendGeolocationInfoUseCase;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
-import com.tokopedia.home.beranda.presentation.view.subscriber.KeywordSearchHomeSubscriber;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetFeedTabsSubscriber;
+import com.tokopedia.home.beranda.presentation.view.subscriber.KeywordSearchHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
@@ -78,6 +87,17 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetFeedTabUseCase getFeedTabUseCase;
     @Inject
     SendGeolocationInfoUseCase sendGeolocationInfoUseCase;
+    @Inject
+    GetWalletBalanceUseCase getWalletBalanceUseCase;
+    @Inject
+    GetPendingCasbackUseCase getPendingCasbackUseCase;
+    @Inject
+    GetHomeReviewSuggestedUseCase getHomeReviewSuggestedUseCase;
+    @Inject
+    DismissHomeReviewUseCase dismissHomeReviewUseCase;
+
+    @Inject
+    HomeMapper homeMapper;
 
     @Inject
     Lazy<GetHomeTokopointsDataUseCase> getHomeTokopointsDataUseCaseLazy;
@@ -87,6 +107,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Inject
     StickyLoginUseCase stickyLoginUseCase;
+
+    @Inject
+    PlayCardHomeUseCase playCardHomeUseCase;
 
     private String currentCursor = "";
     private GetShopInfoByDomainUseCase getShopInfoByDomainUseCase;
@@ -102,7 +125,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                          GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
         this.userSession = userSession;
         this.getShopInfoByDomainUseCase = getShopInfoByDomainUseCase;
-
         compositeSubscription = new CompositeSubscription();
         subscription = Subscriptions.empty();
     }
@@ -116,7 +138,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     @NonNull
-    private Observable<List<HomeVisitable>> getDataFromNetwork() {
+    private Observable<HomeViewModel> getDataFromNetwork() {
         return getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.io())
@@ -146,6 +168,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getStickyContent();
     }
 
+
+
     public void sendGeolocationData() {
         sendGeolocationInfoUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
@@ -173,7 +197,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<HomeVisitable>>() {
+                .subscribe(new Subscriber<HomeViewModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -185,15 +209,56 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     }
 
                     @Override
-                    public void onNext(List<HomeVisitable> visitables) {
+                    public void onNext(HomeViewModel homeViewModel) {
                         if (isViewAttached()) {
-                            getView().updateListOnResume(new ArrayList<>(visitables));
-                            getView().addImpressionToTrackingQueue(visitables);
+                            getView().configureHomeFlag(homeViewModel.getHomeFlag());
+                            getView().updateListOnResume(new ArrayList<>(homeViewModel.getList()));
+                            getView().addImpressionToTrackingQueue(new ArrayList(homeViewModel.getList()));
                         }
                         lastRequestTimeHomeData = System.currentTimeMillis();
                     }
                 });
         compositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void dismissReview() {
+        getView().onSuccessDismissReview();
+
+        dismissHomeReviewUseCase.execute(RequestParams.EMPTY, new Subscriber<String>() {
+            @Override
+            public void onCompleted() { }
+
+            @Override
+            public void onError(Throwable e) { }
+
+            @Override
+            public void onNext(String s) { }
+        });
+    }
+
+    @Override
+    public void getSuggestedReview() {
+        getHomeReviewSuggestedUseCase.execute(RequestParams.EMPTY, new Subscriber<SuggestedProductReview>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorGetReviewData();
+                }
+            }
+
+            @Override
+            public void onNext(SuggestedProductReview suggestedProductReview) {
+                if (isViewAttached()) {
+                    getView().onSuccessGetReviewData(suggestedProductReview);
+                }
+            }
+        });
     }
 
     @Override
@@ -204,7 +269,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
-                .doOnNext(visitables ->
+                .doOnNext(homeViewModel ->
                 {
                     HomeDataSubscriber homeNetworkSubscriber = createHomeDataSubscriber();
                     homeNetworkSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_NETWORK);
@@ -221,10 +286,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     private void initHeaderViewModelData() {
         if (userSession.isLoggedIn()) {
-            if (headerViewModel == null) {
-                headerViewModel = new HeaderViewModel();
-            }
-            headerViewModel.setPendingTokocashChecked(false);
+            getHeaderViewModel().setPendingTokocashChecked(false);
         }
     }
 
@@ -235,12 +297,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletAction) {
-        if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
-        }
-        headerViewModel.setWalletDataSuccess();
-        headerViewModel.setHomeHeaderWalletActionData(homeHeaderWalletAction);
-        getView().updateHeaderItem(headerViewModel);
+        getHeaderViewModel().setWalletDataSuccess();
+        getHeaderViewModel().setHomeHeaderWalletActionData(homeHeaderWalletAction);
+        getView().updateHeaderItem(getHeaderViewModel());
     }
 
     @Override
@@ -250,46 +309,33 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void onHeaderTokocashError() {
-        if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
-        }
-
-        headerViewModel.setWalletDataError();
-        headerViewModel.setHomeHeaderWalletActionData(null);
-        getView().updateHeaderItem(headerViewModel);
+        getHeaderViewModel().setWalletDataError();
+        getHeaderViewModel().setHomeHeaderWalletActionData(null);
+        getView().updateHeaderItem(getHeaderViewModel());
     }
 
     @Override
     public void updateHeaderTokoCashPendingData(CashBackData cashBackData) {
-        if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
-        }
-        headerViewModel.setWalletDataSuccess();
-        headerViewModel.setCashBackData(cashBackData);
-        headerViewModel.setPendingTokocashChecked(true);
-        getView().updateHeaderItem(headerViewModel);
+        getHeaderViewModel().setWalletDataSuccess();
+        getHeaderViewModel().setCashBackData(cashBackData);
+        getHeaderViewModel().setPendingTokocashChecked(true);
+        getView().updateHeaderItem(getHeaderViewModel());
     }
 
     @Override
     public void onHeaderTokopointError() {
-        if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
-        }
-        headerViewModel.setTokoPointDataError();
-        headerViewModel.setTokoPointDrawerData(null);
-        headerViewModel.setTokopointsDrawerHomeData(null);
-        getView().updateHeaderItem(headerViewModel);
+        getHeaderViewModel().setTokoPointDataError();
+        getHeaderViewModel().setTokoPointDrawerData(null);
+        getHeaderViewModel().setTokopointsDrawerHomeData(null);
+        getView().updateHeaderItem(getHeaderViewModel());
     }
 
     @Override
     public void onRefreshTokoPoint() {
-        if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
-        }
-        headerViewModel.setTokoPointDataSuccess();
-        headerViewModel.setTokoPointDrawerData(null);
-        headerViewModel.setTokopointsDrawerHomeData(null);
-        getView().updateHeaderItem(headerViewModel);
+        getHeaderViewModel().setTokoPointDataSuccess();
+        getHeaderViewModel().setTokoPointDrawerData(null);
+        getHeaderViewModel().setTokopointsDrawerHomeData(null);
+        getView().updateHeaderItem(getHeaderViewModel());
 
         getTokopoint();
     }
@@ -298,12 +344,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void onRefreshTokoCash() {
         if (!userSession.isLoggedIn()) return;
 
-        if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
-        }
-        headerViewModel.setWalletDataSuccess();
-        headerViewModel.setHomeHeaderWalletActionData(null);
-        getView().updateHeaderItem(headerViewModel);
+        getHeaderViewModel().setWalletDataSuccess();
+        getHeaderViewModel().setHomeHeaderWalletActionData(null);
+        getView().updateHeaderItem(getHeaderViewModel());
 
         getTokocashBalance();
     }
@@ -402,7 +445,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getView().showNetworkError();
     }
 
-    public static class HomeDataSubscriber extends Subscriber<List<HomeVisitable>> {
+    public static class HomeDataSubscriber extends Subscriber<HomeViewModel> {
         public static int FLAG_FROM_NETWORK = 99;
         public static int FLAG_FROM_CACHE = 98;
         private int repositoryFlag;
@@ -444,15 +487,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
 
         @Override
-        public void onNext(List<HomeVisitable> visitables) {
-            if (visitables.size()>VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
+        public void onNext(HomeViewModel homeViewModel) {
+            if (homeViewModel.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                 if (homePresenter != null && homePresenter.isViewAttached()) {
-                    homePresenter.getView().setItems(new ArrayList<>(visitables), homePresenter.getHeaderViewModel(), repositoryFlag);
-                    homePresenter.getView().addImpressionToTrackingQueue(visitables);
-                    if (visitables.size() > 0) {
-                        homePresenter.getView().showRecomendationButton();
-                    }
-                    if (homePresenter.isDataValid(visitables)) {
+                    homePresenter.getView().configureHomeFlag(homeViewModel.getHomeFlag());
+                    homePresenter.getView().setItems(new ArrayList<>(homeViewModel.getList()), repositoryFlag);
+                    homePresenter.getView().addImpressionToTrackingQueue(new ArrayList<>(homeViewModel.getList()));
+                    if (homePresenter.isDataValid(new ArrayList<>(homeViewModel.getList()))) {
                         homePresenter.getView().removeNetworkError();
                     } else {
                         homePresenter.showNetworkError();
@@ -463,7 +504,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 onError(new Throwable());
             }
         }
-
     }
 
     private boolean isDataValid(List<HomeVisitable> visitables) {
@@ -500,27 +540,29 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (subscription != null) {
             subscription.unsubscribe();
         }
+
+        if (stickyLoginUseCase != null) {
+            stickyLoginUseCase.cancelJobs();
+        }
     }
 
     /**
      * Tokocash & Tokopoint
      */
     private void getTokocashBalance() {
-        if (getView().getTokocashBalance() != null) {
-            compositeSubscription.add(getView().getTokocashBalance().subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new TokocashHomeSubscriber(this)));
-        }
+        compositeSubscription.add(getWalletBalanceUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new TokocashHomeSubscriber(this)));
     }
 
     public void getTokocashPendingBalance() {
-        if (getView().getTokocashPendingCashback() != null) {
-            compositeSubscription.add(getView().getTokocashPendingCashback().subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new PendingCashbackHomeSubscriber(this)));
-        }
+        compositeSubscription.add(getPendingCasbackUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new PendingCashbackHomeSubscriber(this)));
     }
 
     public void getTokopoint() {
@@ -533,7 +575,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
-    public void getSearchHint(){
+    public void getSearchHint() {
         Observable<GraphqlResponse> graphqlResponseObservable = getKeywordSearchObservable();
         if (graphqlResponseObservable != null) {
             compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
@@ -553,7 +595,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         return null;
     }
 
-    private Observable<GraphqlResponse> getKeywordSearchObservable(){
+    private Observable<GraphqlResponse> getKeywordSearchObservable() {
         if (getKeywordSearchUseCaseLazy != null) {
             GetKeywordSearchUseCase getKeywordSearchUseCase = getKeywordSearchUseCaseLazy.get();
             getKeywordSearchUseCase.clearRequest();
@@ -596,12 +638,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void updateHeaderTokoPointData(TokopointsDrawerHomeData tokopointsDrawerHomeData) {
-        if (headerViewModel == null) {
-            headerViewModel = new HeaderViewModel();
-        }
-        headerViewModel.setTokoPointDataSuccess();
-
-        headerViewModel.setTokopointsDrawerHomeData(tokopointsDrawerHomeData != null ? tokopointsDrawerHomeData.getTokopointsDrawer() : null);
+        getHeaderViewModel().setTokoPointDataSuccess();
+        getHeaderViewModel().setTokopointsDrawerHomeData(tokopointsDrawerHomeData != null ? tokopointsDrawerHomeData.getTokopointsDrawer() : null);
         getView().updateHeaderItem(headerViewModel);
     }
 
@@ -625,13 +663,31 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         stickyLoginUseCase.setParams(StickyLoginConstant.Page.HOME);
         stickyLoginUseCase.execute(
             tickerResponse -> {
-                getView().setStickyContent(tickerResponse.getResponse());
+                for (StickyLoginTickerPojo.TickerDetail ticker : tickerResponse.getResponse().getTickers()) {
+                    if (ticker.getLayout().equals(StickyLoginConstant.LAYOUT_FLOATING)) {
+                        getView().setStickyContent(ticker);
+                        return Unit.INSTANCE;
+                    }
+                }
+                getView().hideStickyLogin();
                 return Unit.INSTANCE;
             },
             throwable -> {
-                // no op
+                getView().hideStickyLogin();
                 return Unit.INSTANCE;
             }
         );
     }
+
+    @Override
+    public void getPlayBanner(int adapterPosition) {
+        playCardHomeUseCase.execute(
+                playCardHome -> {
+                    getView().setPlayContentBanner(playCardHome, adapterPosition);
+                    return Unit.INSTANCE;
+                },
+                throwable -> Unit.INSTANCE
+        );
+    }
+
 }

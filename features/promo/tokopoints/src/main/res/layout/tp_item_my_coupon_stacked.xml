@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/light_green">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_4"
@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cv_shadow_2"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -29,9 +29,9 @@
             app:cardUseCompatPadding="true"
             app:layout_constraintBottom_toBottomOf="parent">
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cv_shadow_1"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -45,7 +45,7 @@
             app:cardUseCompatPadding="true"
             app:layout_constraintBottom_toBottomOf="@+id/cv_shadow_2" />
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cv_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/dp_10">
@@ -106,7 +106,7 @@
                     app:layout_constraintStart_toEndOf="@+id/img_time"
                     app:layout_constraintTop_toBottomOf="@+id/img_banner" />
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -143,7 +143,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/text_time_label"
                     tool:text="16 Aug 2019" />
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_rp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -190,25 +190,12 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_min_txn_label"
                     tool:text="Rp 3000000" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </android.support.v7.widget.CardView>
-    </android.support.constraint.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:id="@+id/view_coupon_new"
-        android:layout_width="@dimen/dp_14"
-        android:layout_height="@dimen/dp_14"
-        android:layout_marginLeft="@dimen/dp_7"
-        android:layout_marginTop="@dimen/dp_7"
-        android:background="@drawable/bg_category_new"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tool:visibility="visible" />
-
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/cv_1"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
@@ -221,7 +208,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/cv_2"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
@@ -234,4 +221,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

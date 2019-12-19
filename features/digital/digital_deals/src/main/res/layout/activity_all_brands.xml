@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
@@ -9,13 +9,13 @@
     tools:context=".view.activity.AllBrandsActivity">
 
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         app:elevation="@dimen/dp_0">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="@color/white"
@@ -23,7 +23,7 @@
             app:contentInsetStart="@dimen/dp_0"
             app:contentInsetStartWithNavigation="@dimen/dp_0">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -38,12 +38,12 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/toolbar_back_black" />
 
-                <TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/toolbar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
-                    android:drawableRight="@drawable/location_arrow_down"
+                    app:drawableRightCompat="@drawable/location_arrow_down"
                     android:gravity="center"
                     android:text="@string/deals_toolbar_title"
                     android:textColor="@color/toolbar_title_color"
@@ -77,8 +77,8 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_three_dot_menu" />
 
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.Toolbar>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.appcompat.widget.Toolbar>
         <com.tokopedia.digital_deals.view.customview.SearchInputView
             android:id="@+id/search_input_view"
             android:layout_width="match_parent"
@@ -91,7 +91,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_location_name" />
 
-        <android.support.design.widget.TabLayout
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -112,10 +112,10 @@
             android:layout_height="@dimen/dp_1"
             android:background="@color/grey_default_background"
             />
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -123,4 +123,4 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:visibility="gone" />
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

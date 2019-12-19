@@ -2,8 +2,8 @@ package com.tokopedia.similarsearch.view;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,15 +109,17 @@ public class SimilarSearchAdapter extends RecyclerView.Adapter<SimilarSearchAdap
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = getProductIntent(String.valueOf(productsItem.getId()));
-                    itemView.getContext().startActivity(intent);
                     Object productItem = null;
                     if (productsItem != null) {
                         if (productsItem.getId() != 0) {
+                            Intent intent = getProductIntent(String.valueOf(productsItem.getId()));
+                            itemView.getContext().startActivity(intent);
+
                             productItem = productsItem.getProductAsObjectDataLayer(String.valueOf(getIndex(String.valueOf(productsItem.getId()))));
+
+                            SimilarSearchTracking.eventClickSimilarProduct("/searchproduct - product " + productsItem.getId(), productsItem.getOriginProductID(),productItem);
                         }
                     }
-                    SimilarSearchTracking.eventClickSimilarProduct("/searchproduct - product " + productsItem.getId(), productsItem.getOriginProductID(),productItem);
                 }
 
 

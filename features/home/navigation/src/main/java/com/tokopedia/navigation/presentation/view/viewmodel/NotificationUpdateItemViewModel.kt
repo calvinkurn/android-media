@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateTypeFactory
 
-class NotificationUpdateItemViewModel(
+open class NotificationUpdateItemViewModel(
         var notificationId: String = "",
         var isRead: Boolean = false,
         var iconUrl: String? = "",
@@ -71,6 +71,25 @@ class NotificationUpdateItemViewModel(
             product = products[0]
         }
         return product
+    }
+
+    fun getProductIdImpression(): String {
+        if (products.isEmpty()) return ""
+        var productId = ""
+        val product = products[0]
+        if (isWishlistPriceDrop()) {
+            productId = product.productId
+        }
+        return productId
+    }
+
+    private fun isWishlistPriceDrop(): Boolean {
+        return typeLink == 3
+    }
+
+    fun getImpressionTrackLabel(location: String): String {
+        val productId = getProductIdImpression()
+        return "$location - $templateKey - $productId"
     }
 
     companion object {

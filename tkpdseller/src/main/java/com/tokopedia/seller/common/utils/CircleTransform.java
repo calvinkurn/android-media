@@ -6,12 +6,17 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import androidx.annotation.NonNull;
+
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+
 public class CircleTransform extends BitmapTransformation {
     public CircleTransform(Context context) {
-        super(context);
+
     }
 
     private static Bitmap circleCrop(BitmapPool pool, Bitmap source) {
@@ -44,7 +49,7 @@ public class CircleTransform extends BitmapTransformation {
     }
 
     @Override
-    public String getId() {
-        return getClass().getName();
+    public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+        messageDigest.update(getClass().getName().getBytes(Charset.forName("UTF-8")));
     }
-} 
+}

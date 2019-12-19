@@ -2,10 +2,6 @@ package com.tokopedia.contactus.inboxticket2.view.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -13,6 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -156,11 +157,11 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             }
             if(item.getRating()!=null && item.getRating().equals(KEY_DIS_LIKED)){
                 ratingThumbsDown.setVisibility(View.VISIBLE);
-                ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
+                ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.red_600));
                 ratingThumbsUp.setVisibility(View.GONE);
             }else if(item.getRating()!=null && item.getRating().equals(KEY_LIKED)) {
                 ratingThumbsUp.setVisibility(View.VISIBLE);
-                ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
+                ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.g_500));
                 ratingThumbsDown.setVisibility(View.GONE);
             }
             if (position == commentList.size() - 1 || !commentList.get(position).isCollapsed() || searchMode) {
@@ -193,8 +194,10 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                     tvAttachmentHint.setVisibility(View.GONE);
                 }
 
-                if (commentList.get(position).getAttachment() != null && commentList.get(position).getAttachment().size() > 0)
+                if (commentList.get(position).getAttachment() != null
+                        && commentList.get(position).getAttachment().size() > 0)  {
                     rvAttachedImage.setVisibility(View.VISIBLE);
+                }
             } else {
                 tvAttachmentHint.setVisibility(View.GONE);
                 tvDateRecent.setText(MethodChecker.fromHtml(item.getMessage()));
@@ -209,7 +212,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
 
             ratingThumbsUp.setOnClickListener((View v) -> {
                 if(item.getRating() != null && !(item.getRating().equals(KEY_LIKED) || item.getRating().equals(KEY_DIS_LIKED))) {
-                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
+                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.g_500));
                     ratingThumbsDown.setVisibility(View.GONE);
                     mPresenter.onClick(true, position, item.getId());
                     sendGTMEvent(InboxTicketTracking.Label.EventHelpful);
@@ -218,7 +221,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
 
             ratingThumbsDown.setOnClickListener((View v) -> {
                 if(item.getRating() != null && !(item.getRating().equals(KEY_LIKED) || item.getRating().equals(KEY_DIS_LIKED))) {
-                    ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
+                    ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.red_600));
                     ratingThumbsUp.setVisibility(View.GONE);
                     mPresenter.onClick(false, position, item.getId());
                     sendGTMEvent(InboxTicketTracking.Label.EventNotHelpful);

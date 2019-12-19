@@ -1,6 +1,6 @@
 package com.tokopedia.imagepicker.picker.instagram.data.source.cloud;
 
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import com.google.gson.Gson;
 import com.tokopedia.imagepicker.picker.instagram.data.model.ResponseGetAccessToken;

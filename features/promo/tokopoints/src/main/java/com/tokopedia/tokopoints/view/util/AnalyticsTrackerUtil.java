@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.util;
 import android.app.Activity;
 import android.content.Context;
 
+import com.tokopedia.analytic_constant.DataLayer;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -150,7 +151,8 @@ public class AnalyticsTrackerUtil {
         map.put(EventKeys.EVENT_CATEGORY, category);
         map.put(EventKeys.EVENT_ACTION, action);
         map.put(EventKeys.EVENT_LABEL, label);
-        map.put(EventKeys.ECOMMERCE, ecommerce);
+        map.put(EventKeys.ECOMMERCE, DataLayer.mapOf("promoView", ecommerce));
+
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
     }
 

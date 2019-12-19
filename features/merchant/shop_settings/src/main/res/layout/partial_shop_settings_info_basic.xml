@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:tools="http://schemas.android.com/tools"
+<androidx.cardview.widget.CardView xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -41,7 +41,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivShopLogo"
                 android:layout_width="@dimen/dp_72"
                 android:layout_height="@dimen/dp_72"
@@ -109,4 +109,4 @@
             tools:text="Toko saya bagus banget, menjual kebutuhan Anda dari rumah, kantor, hingga entertainment" />
 
     </LinearLayout>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

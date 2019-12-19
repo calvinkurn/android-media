@@ -1,16 +1,17 @@
 package com.tokopedia.hotel.homepage.presentation.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -18,7 +19,6 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
-import com.tokopedia.hotel.common.presentation.widget.hotelcalendar.HotelCalendarDialog
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
@@ -33,6 +33,7 @@ import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivit
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
@@ -76,6 +77,22 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelHomepageModel.locId = arguments?.getInt(EXTRA_PARAM_ID) ?: 4712
             hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: "Bali"
             hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: "region"
+            hotelHomepageModel.adultCount = arguments?.getInt(EXTRA_ADULT, 1) ?: 1
+            hotelHomepageModel.roomCount = arguments?.getInt(EXTRA_ROOM, 1) ?: 1
+            hotelHomepageModel.checkInDate = arguments?.getString(EXTRA_PARAM_CHECKIN) ?: ""
+            hotelHomepageModel.checkOutDate = arguments?.getString(EXTRA_PARAM_CHECKOUT) ?: ""
+
+            if (hotelHomepageModel.checkInDate.isNotBlank()) {
+                hotelHomepageModel.checkInDateFmt =
+                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
+                                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
+            }
+            if (hotelHomepageModel.checkOutDate.isNotBlank()) {
+                hotelHomepageModel.checkOutDateFmt =
+                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
+                                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
+            }
+            if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank()) hotelHomepageModel.nightCounter = countRoomDuration()
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -166,6 +183,19 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
             hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                     TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
+            hotelHomepageModel.nightCounter = countRoomDuration()
+        } else if (hotelHomepageModel.checkInDate.isBlank()) {
+            val checkout = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate)
+            val dayBeforeCheckOut = TravelDateUtil.addTimeToSpesificDate(checkout, Calendar.DATE, -1)
+            hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayBeforeCheckOut)
+            hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayBeforeCheckOut)
+            hotelHomepageModel.nightCounter = countRoomDuration()
+
+        } else if (hotelHomepageModel.checkOutDate.isBlank()) {
+            val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate)
+            val dayAfterCheckIn = TravelDateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
+            hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterCheckIn)
+            hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterCheckIn)
             hotelHomepageModel.nightCounter = countRoomDuration()
         }
 
@@ -328,11 +358,22 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
-        val hotelCalendarDialog = HotelCalendarDialog.getInstance(checkIn, checkOut)
-        hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener {
+        var minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY
+        if (!(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_BOOK_FOR_TODAY, true))) minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_PLUS_1_DAY
+
+        val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(checkIn, checkOut, SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
+                SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED_ONE_MONTH.toLong(),
+                getString(R.string.hotel_min_date_label), getString(R.string.hotel_max_date_label), minSelectDateFromToday)
+
+        hotelCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
                 onCheckOutDateChanged(dateOut)
+            }
+        }
+        hotelCalendarDialog.listenerMaxRange = object : SelectionRangeCalendarWidget.OnNotifyMaxRange {
+            override fun onNotifyMax() {
+                Toast.makeText(context, R.string.hotel_calendar_error_max_range, Toast.LENGTH_SHORT).show()
             }
         }
         hotelCalendarDialog.show(fragmentManager, "test")
@@ -360,17 +401,25 @@ class HotelHomepageFragment : HotelBaseFragment(),
         const val EXTRA_PARAM_ID = "param_id"
         const val EXTRA_PARAM_NAME = "param_name"
         const val EXTRA_PARAM_TYPE = "param_type"
+        const val EXTRA_PARAM_CHECKIN = "param_check_in"
+        const val EXTRA_PARAM_CHECKOUT = "param_check_out"
+        const val EXTRA_ADULT = "param_adult"
+        const val EXTRA_ROOM = "param_room"
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
-        fun getInstance(id: Int, name: String, type: String): HotelHomepageFragment =
+        fun getInstance(id: Int, name: String, type: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
                 HotelHomepageFragment().also {
                     it.arguments = Bundle().apply {
                         putInt(EXTRA_PARAM_ID, id)
                         putString(EXTRA_PARAM_NAME, name)
                         putString(EXTRA_PARAM_TYPE, type)
+                        if (checkIn.isNotBlank()) putString(EXTRA_PARAM_CHECKIN, checkIn)
+                        if (checkOut.isNotBlank()) putString(EXTRA_PARAM_CHECKOUT, checkOut)
+                        if (adult != 0) putInt(EXTRA_ADULT, adult)
+                        if (room != 0) putInt(EXTRA_ROOM, room)
                     }
                 }
     }

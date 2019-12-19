@@ -1,7 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -48,7 +46,7 @@ dependencies {
 project.ext {
     artifactId = 'filter'
     groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="filter-release"
 }
 

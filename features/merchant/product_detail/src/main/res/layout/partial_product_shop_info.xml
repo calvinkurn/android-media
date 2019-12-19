@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/base_shop_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -133,7 +133,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/l_medal"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_16"
@@ -194,4 +194,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"/>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

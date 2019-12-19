@@ -2,6 +2,8 @@
 <resources>
     <string name="host_digital" translatable="false">digital</string>
     <string name="host_recharge" translatable="false">recharge</string>
+    <string name="host_deals_slug" translatable="false">deals-slug</string>
+    <string name="host_deals" translatable="false">deals</string>
 
     <!--
         If the link is Ended with {id}, must end with "/"
@@ -12,4 +14,17 @@
     <string name="path_home" translatable="false">/home</string>
     <string name="title_digital_subhomepage"><![CDATA[Top-up & Tagihan]]></string>
     <string name="path_voucher_game" translatable="false">/vouchergame</string>
+
+    <string name="path_emoney_brizzi" translatable="false">/smartcard/emoneybrizzi</string>
+    <string name="path_emoney" translatable="false">/smartcard/emoney</string>
+    <string name="path_smartcard" translatable="false">/smartcard</string>
+    <string name="title_digital_emoney">Uang Elektronik</string>
+
+    <string name="title_voucher_game">Cari Voucher</string>
+    <string name="path_deals_home" translatable="false">/deals</string>
+    <string name="path_deals_detail" translatable="false">/deals/{slug}</string>
+    <string name="path_deals_brand_detail" translatable="false">/deals/brand/.*</string>
+    <string name="path_deals_category" translatable="false">/deals/category/page</string>
+    <string name="path_deals_all_brand" translatable="false">/deals/allbrands/.*</string>
+
 </resources>

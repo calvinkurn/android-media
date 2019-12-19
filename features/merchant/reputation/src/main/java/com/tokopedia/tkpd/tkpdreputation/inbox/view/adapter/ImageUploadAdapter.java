@@ -2,13 +2,14 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -102,8 +103,8 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
                 ImageHandler.loadImageRounded2(holder.image.getContext(),holder.image, data.get(position).getPicSrc(), convertDpToPx(holder.image.getContext(), RADIUS_CORNER));
             } else {
                 Glide.with(holder.image.getContext())
-                        .load(new File(data.get(position).getFileLoc()))
                         .asBitmap()
+                        .load(new File(data.get(position).getFileLoc()))
                         .centerCrop()
                         .into(getRoundedImageViewTarget(holder.image, convertDpToPx(holder.image.getContext(), RADIUS_CORNER)));
             }

@@ -1,8 +1,8 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
 
-import android.support.annotation.StringRes
-import android.support.v4.app.Fragment
+import androidx.annotation.StringRes
+import androidx.fragment.app.Fragment
 
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType

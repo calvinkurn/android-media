@@ -79,4 +79,18 @@
     <string name="pm_label_benefit_feature_header">Fitur Khusus Power Merchant</string>
     <string name="pm_label_cost_desc">Biaya layanan Power Merchant hanya 1%, dibayarkan setiap produk terjual.</string>
     <string name="pm_label_cost_header">Biaya Layanan Hanya 1%</string>
+
+    <string name="pm_title_cancellation_questionnaire">Berhenti Power Merchant</string>
+    <string name="pm_label_cancellation_questionnaire_intro_title">Bantu kami meningkatkan layanan Power Merchant</string>
+    <string name="pm_label_cancellation_questionnaire_intro_desc">Sebelum berhenti, yuk kasih masukan buat layanan ini! Fitur Power Merchant di tokomu akan dinonaktifkan pada %s.</string>
+    <string name="pm_label_cancellation_questionnaire_intro_rating_title">Bagaimana pengalamanmu jadi Power Merchant?</string>
+    <string name="pm_cancellation_questionnaire_intro_rating_1_star">Sangat Kurang</string>
+    <string name="pm_cancellation_questionnaire_intro_rating_2_star">Kurang</string>
+    <string name="pm_cancellation_questionnaire_intro_rating_3_star">Cukup</string>
+    <string name="pm_cancellation_questionnaire_intro_rating_4_star">Puas</string>
+    <string name="pm_cancellation_questionnaire_intro_rating_5_star">Sangat Puas</string>
+    <string name="pm_cancellation_questionnaire_some_question_not_answered_label">Pastikan semua pertanyaan sudah dijawab</string>
+    <string name="label_back">Kembali</string>
+    <string name="label_send_answer">Kirim Jawaban</string>
+
 </resources>

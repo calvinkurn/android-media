@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -20,9 +20,9 @@ import com.tokopedia.product.manage.item.catalog.view.listener.ProductEditCatego
 import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
 import com.tokopedia.product.manage.item.category.view.adapter.ProductCategoryRecommendationAdapter
 import com.tokopedia.product.manage.item.category.view.model.ProductCategory
-import com.tokopedia.product.manage.item.category.view.model.categoryrecomm.ProductCategoryPredictionViewModel
 import com.tokopedia.product.manage.item.category.view.presenter.ProductEditCategoryPresenter
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catalogdata.Catalog
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.categoryrecommendationdata.Category
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
@@ -225,7 +225,7 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         super.onDestroyView()
     }
 
-    override fun onSuccessLoadRecommendationCategory(categories: List<ProductCategoryPredictionViewModel>) {
+    override fun onSuccessLoadRecommendationCategory(categories: List<Category>) {
         renderRecommendation(categories)
     }
 
@@ -263,11 +263,10 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun renderRecommendation(categories: List<ProductCategoryPredictionViewModel>){
+    private fun renderRecommendation(categories: List<Category>){
         productCategoryRecommendationAdapter.replaceData(categories.map {ProductCategory().apply {
-            categoryId = it.lastCategoryId
-            categoryName = it.printedString
-            categoryList = it.categoryName
+            categoryId = it.id
+            categoryName = it.name
         }})
         setCatalogChosen(productCatalog)
         setCategoryChosen(productCategory)

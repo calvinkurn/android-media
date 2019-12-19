@@ -4,7 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 import android.view.View;
 
 import com.tokopedia.nps.NpsConstant;

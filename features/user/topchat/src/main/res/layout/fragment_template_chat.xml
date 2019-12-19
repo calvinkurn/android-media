@@ -43,7 +43,7 @@
                     android:id="@+id/title_template"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Template Pesan"
+                    android:text="@string/title_template_chat"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif"
                     android:textStyle="bold"
@@ -61,7 +61,7 @@
                     android:lineSpacingExtra="1sp"
                     android:layout_marginTop="@dimen/dp_8"/>
 
-                <android.support.v7.widget.SwitchCompat
+                <androidx.appcompat.widget.SwitchCompat
                     style="@style/SwitchCompatStyle"
                     android:id="@+id/switch_chat_template"
                     android:layout_width="wrap_content"
@@ -75,7 +75,7 @@
 
             </RelativeLayout>
 
-            <android.support.v4.widget.Space
+            <androidx.legacy.widget.Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_24" />
 
@@ -111,13 +111,13 @@
                     android:layout_alignBottom="@id/template_list"
                     android:paddingLeft="6dp"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:layout_below="@id/template_list"
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
             </RelativeLayout>
         </LinearLayout>

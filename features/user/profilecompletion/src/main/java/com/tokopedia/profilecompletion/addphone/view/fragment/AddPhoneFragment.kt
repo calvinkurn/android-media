@@ -1,12 +1,11 @@
 package com.tokopedia.profilecompletion.addphone.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -19,20 +18,23 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
+import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_phone.*
 import javax.inject.Inject
 
 
 class AddPhoneFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -98,10 +100,9 @@ class AddPhoneFragment : BaseDaggerFragment() {
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
-        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
         bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, "sms")
-        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
 
         intent.putExtras(bundle)
         startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
@@ -121,7 +122,6 @@ class AddPhoneFragment : BaseDaggerFragment() {
             tvMessage.visibility = View.GONE
             buttonSubmit.isEnabled = false
             buttonSubmit.buttonCompatType = ButtonCompat.PRIMARY_DISABLED
-
         }
     }
 
@@ -197,6 +197,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun onSuccessAddPhone(result: AddPhoneResult) {
         dismissLoading()
+        storeLocalSession(result.phoneNumber)
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
@@ -206,6 +207,11 @@ class AddPhoneFragment : BaseDaggerFragment() {
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+    }
+
+    private fun storeLocalSession(phone: String){
+        userSession.setIsMSISDNVerified(true)
+        userSession.phoneNumber = phone
     }
 
     private fun showLoading() {

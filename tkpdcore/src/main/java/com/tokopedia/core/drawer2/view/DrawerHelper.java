@@ -3,10 +3,10 @@ package com.tokopedia.core.drawer2.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -84,9 +84,9 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
                 if (context.getApplication() instanceof TkpdCoreRouter) {
-                    intent = ((TkpdCoreRouter) context.getApplication()).getInboxMessageIntent
-                            (context);
+                    intent = RouteManager.getIntent(context, ApplinkConst.TOPCHAT_IDLESS);
                     context.startActivity(intent);
+
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
                     TrackApp.getInstance().getGTM().sendGeneralEvent("clickNavigationDrawer",
                             "left navigation",

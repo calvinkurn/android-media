@@ -1,9 +1,9 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.tokopedia.abstraction.R;
 
@@ -23,8 +23,8 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        tabLayout = (TabLayout) findViewById(R.id.indicator);
+        viewPager = (ViewPager) findViewById(getViewPagerResourceId());
+        tabLayout = (TabLayout) findViewById(getTabLayoutResourceId());
         viewPager.setOffscreenPageLimit(getPageLimit());
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
@@ -32,6 +32,14 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
     @Override
     protected void setupFragment(Bundle savedinstancestate) {
         viewPager.setAdapter(getViewPagerAdapter());
+    }
+
+    protected int getViewPagerResourceId() {
+        return R.id.pager;
+    }
+
+    protected int getTabLayoutResourceId() {
+        return R.id.indicator;
     }
 
     @Override

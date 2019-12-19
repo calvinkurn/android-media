@@ -35,7 +35,7 @@
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_placeholder_shop_with_padding"/>
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_rect_stroke_light_gray" />
@@ -63,7 +63,7 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:gravity="center_vertical">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_power_merchant_logo"
                         android:layout_width="@dimen/dp_24"
                         android:layout_height="@dimen/dp_24"
@@ -145,11 +145,11 @@
             tools:visibility="visible"
             android:layout_marginTop="@dimen/dp_8">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/pm_ticker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border_rectangle_yellow"
+                android:background="@drawable/border_rectangle_yellow_shop_settings"
                 app:cardBackgroundColor="@color/ticker_blue"
                 app:cardPreventCornerOverlap="true"
                 app:elevation="0dp"
@@ -171,7 +171,7 @@
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_ticker_announcement_cropped" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
         </FrameLayout>
 
         <com.tokopedia.design.component.ButtonCompat

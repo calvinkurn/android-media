@@ -3,26 +3,28 @@ package com.tokopedia.seller.common.logout.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.core.common.category.data.source.CategoryDataSource;
 import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
 import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
 import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.core.common.category.data.source.db.CategoryDB;
+import com.tokopedia.core.common.category.data.source.db.CategoryDao;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.common.category.domain.interactor.ClearCategoryCacheUseCase;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao;
 import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.seller.common.logout.di.scope.TkpdSellerLogoutScope;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
-import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,8 +40,8 @@ public class TkpdSellerLogoutModule {
 
     @TkpdSellerLogoutScope
     @Provides
-    ClearAllDraftProductUseCase provideClearAllDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ProductDraftRepository productDraftRepository){
-        return new ClearAllDraftProductUseCase(threadExecutor, postExecutionThread, productDraftRepository);
+    ClearAllDraftProductUseCase provideClearAllDraftProductUseCase(ProductDraftRepository productDraftRepository){
+        return new ClearAllDraftProductUseCase(productDraftRepository);
     }
 
     @TkpdSellerLogoutScope
@@ -52,6 +54,24 @@ public class TkpdSellerLogoutModule {
     @Provides
     ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource dataSource, @ApplicationContext Context context){
         return new ProductDraftRepositoryImpl(dataSource, context);
+    }
+
+    @TkpdSellerLogoutScope
+    @Provides
+    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context);
+    }
+
+    @TkpdSellerLogoutScope
+    @Provides
+    ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
+        return productDraftDB.getProductDraftDao();
+    }
+
+    @TkpdSellerLogoutScope
+    @Provides
+    CategoryDao provideCategoryDao(@ApplicationContext Context context){
+        return CategoryDB.getInstance(context).getCategoryDao();
     }
 
     @TkpdSellerLogoutScope

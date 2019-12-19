@@ -1,6 +1,6 @@
 package com.tokopedia.shop.product.view.listener;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;

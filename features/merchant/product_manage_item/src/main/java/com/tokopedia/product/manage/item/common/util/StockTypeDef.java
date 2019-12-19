@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.item.common.util;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import static com.tokopedia.product.manage.item.common.util.StockTypeDef.TYPE_ACTIVE;
 import static com.tokopedia.product.manage.item.common.util.StockTypeDef.TYPE_ACTIVE_LIMITED;

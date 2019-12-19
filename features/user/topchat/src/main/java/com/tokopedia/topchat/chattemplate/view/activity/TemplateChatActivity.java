@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chattemplate.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topchat.R;
@@ -24,7 +24,7 @@ public class TemplateChatActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar.setTitle(getString(R.string.drawer_title_setting));
+        toolbar.setTitle(getString(R.string.title_template_chat));
     }
 
     @Override
@@ -34,6 +34,6 @@ public class TemplateChatActivity extends BaseSimpleActivity {
 
     @Override
     public String getScreenName() {
-        return ChatTemplateAnalytics.Companion.SCREEN_TEMPLATE_CHAT_SETTING;
+        return ChatTemplateAnalytics.Companions.SCREEN_TEMPLATE_CHAT_SETTING;
     }
 }

@@ -7,14 +7,6 @@ import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,18 +15,29 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.common.payment.model.PaymentCode;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.ticker.TickerView;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
@@ -43,13 +46,11 @@ import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
-import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.common.view.FullDividerItemDecoration;
@@ -59,6 +60,9 @@ import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapterTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.orderlist.network.model.FlightOrderError;
+import com.tokopedia.flight.orderlist.network.model.FlightOrderException;
+import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.activity.OnBackActionListener;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
@@ -94,18 +98,15 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public static final String RESULT_ERROR_CODE = "RESULT_ERROR_CODE";
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final String FLIGHT_CHECKOUT_TRACE = "tr_flight_checkout";
+    private static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
+
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_TOPPAY = 100;
-    private static final int REQUEST_CODE_PROMO_LIST = ConstantKt.getREQUST_CODE_PROMO_LIST();
-    private static final int REQUEST_CODE_PROMO_DETAIL = ConstantKt.getREQUEST_CODE_PROMO_DETAIL();
     public static final int DEFAULT_IS_COUPON_ZERO = 0;
     public static final int DEFAULT_IS_COUPON_ONE = 1;
-    private static final String ORDER_CATEGORY = "orderCategory";
 
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
-    @Inject
-    FlightModuleRouter flightModuleRouter;
 
     FlightBookingReviewModel flightBookingReviewModel;
     private LinearLayout fullPageLoading;
@@ -128,6 +129,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
+    private LinearLayout promoContainer;
     private boolean isPassengerInfoPageNeedToRefresh = false;
     private boolean isCouponVoucherChanged = false;
 
@@ -198,11 +200,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         reviewFinalTotalPrice = (AppCompatTextView) view.findViewById(R.id.tv_total_final_price);
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
         promoTicker = (TickerCheckoutView) view.findViewById(R.id.flight_promo_ticker_view);
+        promoContainer = (LinearLayout) view.findViewById(R.id.flight_promo_ticker_container);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
         tickerView = view.findViewById(R.id.flight_ticker_view);
 
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
+        progressDialog.setMessage(getString(com.tokopedia.flight.R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
 
         reviewTime.setListener(new CountdownTimeView.OnActionListener() {
@@ -257,7 +260,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
             public int getItemCount() {
                 return flightBookingReviewModel.getDetailViewModelListDeparture().getRouteList().size();
             }
-        });
+        }, true);
         List<Visitable> departureRoute = new ArrayList<>();
         departureRoute.addAll(flightBookingReviewModel.getDetailViewModelListDeparture().getRouteList());
         FlightDetailAdapter departureFlightAdapter = new FlightDetailAdapter(flightDetailRouteTypeFactory, departureRoute);
@@ -270,7 +273,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                 public int getItemCount() {
                     return flightBookingReviewModel.getDetailViewModelListReturn().getRouteList().size();
                 }
-            });
+            }, true);
             List<Visitable> arrivalRoute = new ArrayList<>();
             arrivalRoute.addAll(flightBookingReviewModel.getDetailViewModelListReturn().getRouteList());
             FlightDetailAdapter returnFlightAdapter = new FlightDetailAdapter(arrivalFlightDetailRouteTypeFactory1, arrivalRoute);
@@ -349,17 +352,15 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                 case REQUEST_CODE_TOPPAY:
                     hideCheckoutLoading();
                     reviewTime.start();
-                    if (getActivity().getApplication() instanceof FlightModuleRouter) {
-                        int paymentSuccess = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentSuccessCode();
-                        int paymentFailed = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentFailedCode();
-                        int paymentCancel = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentCancelCode();
-                        if (resultCode == paymentSuccess) {
-                            flightBookingReviewPresenter.onPaymentSuccess();
-                        } else if (resultCode == paymentFailed) {
-                            flightBookingReviewPresenter.onPaymentFailed();
-                        } else if (resultCode == paymentCancel) {
-                            flightBookingReviewPresenter.onPaymentCancelled();
-                        }
+                    int paymentSuccess = PaymentCode.PAYMENT_SUCCESS;
+                    int paymentFailed = PaymentCode.PAYMENT_FAILED;
+                    int paymentCancel = PaymentCode.PAYMENT_CANCELLED;
+                    if (resultCode == paymentSuccess) {
+                        flightBookingReviewPresenter.onPaymentSuccess();
+                    } else if (resultCode == paymentFailed) {
+                        flightBookingReviewPresenter.onPaymentFailed();
+                    } else if (resultCode == paymentCancel) {
+                        flightBookingReviewPresenter.onPaymentCancelled();
                     }
                     break;
             }
@@ -379,11 +380,11 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
             discountAppliedLayout.setVisibility(View.GONE);
             totalFinal = currentBookingReviewModel.getTotalPriceNumeric();
         }
-        reviewFinalTotalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalFinal));
+        reviewFinalTotalPrice.setText(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(totalFinal));
     }
 
     private String getFormattedDiscountPrice(double discountAmountPlain) {
-        return String.format(getString(R.string.flight_review_minus_discount_prefix), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) Math.round(discountAmountPlain)));
+        return String.format(getString(R.string.flight_review_minus_discount_prefix), FlightCurrencyFormatUtil.Companion.convertToIdrPrice((int) Math.round(discountAmountPlain)));
     }
 
     private void renderPromoTicker() {
@@ -456,12 +457,13 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
             intent.putExtra("EXTRA_CART_ID", flightBookingReviewModel.getId());
             startActivityForResult(intent, requestCode);
         } else {
-            Toast.makeText(getActivity(), R.string.promo_none_applied, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), com.tokopedia.promocheckout.common.R.string.promo_none_applied, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onDisablePromoDiscount() {
+        promoData.setPromoCode("");
         isCouponVoucherChanged = true;
         flightBookingReviewPresenter.onCancelAppliedVoucher();
         updateFinalTotal(null, getCurrentBookingReviewModel());
@@ -495,8 +497,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public void showExpireTransactionDialog(String message) {
         if (isAdded()) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-            dialog.setMessage(R.string.flight_booking_expired_booking_label);
-            dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+            dialog.setMessage(com.tokopedia.flight.R.string.flight_booking_expired_booking_label);
+            dialog.setPositiveButton(getActivity().getString(com.tokopedia.abstraction.R.string.title_ok),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -515,8 +517,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public void showSoldOutDialog() {
         if (isAdded()) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-            dialog.setMessage(R.string.flight_booking_sold_out_label);
-            dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+            dialog.setMessage(com.tokopedia.flight.R.string.flight_booking_sold_out_label);
+            dialog.setPositiveButton(getActivity().getString(com.tokopedia.abstraction.R.string.title_ok),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -598,7 +600,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public void setTotalPrice(int totalPrice) {
         flightBookingReviewModel.setTotalPriceNumeric(totalPrice);
         flightBookingReviewModel.setTotalPrice(
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice)
+                FlightCurrencyFormatUtil.Companion.convertToIdrPrice(totalPrice)
         );
         reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
         updateFinalTotal(getCurrentBookingReviewModel());
@@ -649,7 +651,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private String generateIdEmpotency(String requestId) {
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = FlightRequestUtil.md5(timeMillis);
-        return String.format(getString(R.string.flight_booking_id_empotency_format), requestId, token.isEmpty() ? timeMillis : token);
+        return String.format(getString(com.tokopedia.flight.R.string.flight_booking_id_empotency_format), requestId, token.isEmpty() ? timeMillis : token);
     }
 
     @Override
@@ -660,7 +662,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     @Override
     public void onErrorVerifyCode(Throwable e) {
         if (e instanceof FlightException) {
-            for (FlightError flightError : ((FlightException) e).getErrorList()) {
+            for (FlightOrderError flightError : ((FlightOrderException) e).getErrorList()) {
                 if (FlightErrorUtil.getErrorCode(flightError) >= 14 && FlightErrorUtil.getErrorCode(flightError) <= 21) {
                     Intent intent = new Intent();
                     intent.putExtra(RESULT_ERROR_CODE, FlightErrorUtil.getErrorCode(flightError));
@@ -687,26 +689,26 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     @Override
     public void navigateToTopPay(FlightCheckoutViewModel flightCheckoutViewModel) {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication()).getTopPayIntent(getActivity(), flightCheckoutViewModel) != null) {
-            reviewTime.cancel();
-            startActivityForResult(((FlightModuleRouter) getActivity().getApplication()).getTopPayIntent(getActivity(), flightCheckoutViewModel), REQUEST_CODE_TOPPAY);
-        }
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setPaymentId(flightCheckoutViewModel.getPaymentId());
+        paymentPassData.setTransactionId(flightCheckoutViewModel.getTransactionId());
+        paymentPassData.setRedirectUrl(flightCheckoutViewModel.getRedirectUrl());
+        paymentPassData.setCallbackFailedUrl(flightCheckoutViewModel.getCallbackFailedUrl());
+        paymentPassData.setCallbackSuccessUrl(flightCheckoutViewModel.getCallbackSuccessUrl());
+        paymentPassData.setQueryString(flightCheckoutViewModel.getQueryString());
+
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalPayment.PAYMENT_CHECKOUT);
+        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
+        startActivityForResult(intent, REQUEST_CODE_TOPPAY);
     }
 
     @Override
     public void navigateToOrderList() {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getHomeIntent(getActivity()) != null) {
-            Intent intent = ((FlightModuleRouter) getActivity().getApplication())
-                    .getHomeIntent(getActivity());
-            taskStackBuilder.addNextIntent(intent);
-        }
+        Intent homeTokopedia = RouteManager.getIntent(getContext(), ApplinkConst.HOME);
         Intent homepageFlight = FlightDashboardActivity.getCallingIntent(getActivity());
-        Intent ordersFlight = ((FlightModuleRouter) getActivity().getApplication()).getOrderListIntent(getActivity());
-        ordersFlight.putExtra(ORDER_CATEGORY, "FLIGHTS");
+        Intent ordersFlight = RouteManager.getIntent(getContext(), ApplinkConst.FLIGHT_ORDER);
+        taskStackBuilder.addNextIntent(homeTokopedia);
         taskStackBuilder.addNextIntent(homepageFlight);
         taskStackBuilder.addNextIntent(ordersFlight);
         taskStackBuilder.startActivities();
@@ -737,12 +739,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     @Override
     public void showVoucherContainer() {
-        promoTicker.setVisibility(View.VISIBLE);
+        promoContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideVoucherContainer() {
-        promoTicker.setVisibility(View.GONE);
+        promoContainer.setVisibility(View.GONE);
     }
 
     @Override

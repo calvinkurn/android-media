@@ -1,8 +1,8 @@
 package com.tokopedia.search.result.presentation.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +12,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.search.R;
-import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
-import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.HeaderViewModel;
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
-import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
+import com.tokopedia.search.result.presentation.model.*;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
 import com.tokopedia.search.result.presentation.view.listener.TopAdsSwitcher;
@@ -81,7 +77,7 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
     }
 
     private boolean isStaggeredGridFullSpan(int viewType) {
-        return viewType != SmallGridProductItemViewHolder.LAYOUT;
+        return viewType != SmallGridProductItemViewHolder.LAYOUT && viewType != RecommendationItemViewHolder.LAYOUT;
     }
 
     @Override
@@ -151,7 +147,6 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
                 if (productId.equals(model.getProductID())) {
                     model.setWishlistButtonEnabled(isEnabled);
                     notifyItemChanged(i);
-                    break;
                 }
             }
         }
@@ -164,6 +159,12 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
                 if (productId.equals(model.getProductID())) {
                     model.setWishlisted(isWishlisted);
                     notifyItemChanged(i);
+                }
+            } else if(list.get(i) instanceof RecommendationItemViewModel){
+                RecommendationItemViewModel model = (RecommendationItemViewModel) list.get(i);
+                if(productId.equals(String.valueOf(model.getRecommendationItem().getProductId()))){
+                    model.getRecommendationItem().setWishlist(isWishlisted);
+                    notifyItemChanged(i);
                     break;
                 }
             }
@@ -174,12 +175,18 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         if (adapterPosition >= 0 && list.get(adapterPosition) instanceof ProductItemViewModel) {
             ((ProductItemViewModel) list.get(adapterPosition)).setWishlisted(isWishlisted);
             notifyItemChanged(adapterPosition);
+        }else if (adapterPosition >= 0 && list.get(adapterPosition) instanceof RecommendationItemViewModel) {
+            ((RecommendationItemViewModel) list.get(adapterPosition)).getRecommendationItem().setWishlist(isWishlisted);
+            notifyItemChanged(adapterPosition);
         }
     }
 
     public boolean isHeaderBanner(int position) {
         if (checkDataSize(position))
-            return getItemList().get(position) instanceof HeaderViewModel;
+            return getItemList().get(position) instanceof CpmViewModel
+                    || getItemList().get(position) instanceof TickerViewModel
+                    || getItemList().get(position) instanceof QuickFilterViewModel
+                    || getItemList().get(position) instanceof SuggestionViewModel;
         return false;
     }
 
@@ -201,6 +208,10 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     public boolean isProductItem(int position) {
         return checkDataSize(position) && list.get(position) instanceof ProductItemViewModel;
+    }
+
+    public boolean isRecommendationItem(int position){
+        return checkDataSize(position) && list.get(position) instanceof RecommendationItemViewModel;
     }
 
     @Override
@@ -225,10 +236,6 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         super.clearData();
         setStartFrom(0);
         setTotalData(0);
-    }
-
-    public boolean hasHeader() {
-        return checkDataSize(0) && getItemList().get(0) instanceof HeaderViewModel;
     }
 
     public boolean isTopAds(int position) {

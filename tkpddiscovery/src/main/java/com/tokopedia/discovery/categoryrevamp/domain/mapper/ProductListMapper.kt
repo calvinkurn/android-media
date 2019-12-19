@@ -43,6 +43,9 @@ class ProductListMapper {
 
                         item.id = (dataItem.product?.id?.toInt()) ?: 0
                         item.categoryID = (dataItem.product?.category?.id?.toInt()) ?: 0
+                        item.productImpTrackingUrl = dataItem.product?.image?.sUrl ?: ""
+                        item.productClickTrackingUrl = dataItem.productClickUrl ?: ""
+                        item.productWishlistTrackingUrl = dataItem.productWishlistUrl ?: ""
                     }
 
                     productListResponse.searchProduct.products.add(0, item)

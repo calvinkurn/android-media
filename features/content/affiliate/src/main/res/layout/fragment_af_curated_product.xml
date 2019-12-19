@@ -5,9 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/Neutral_N0">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/sv_empty_state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,22 +25,22 @@
             app:unifyEmptyStatePrimaryCTAText="@string/af_share_now"
             app:unifyEmptyStateTitle="@string/af_curated_empty_title"
             app:unifyEmptyStateType="page"/>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"/>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/cv_sort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@color/white"
+        android:background="@color/Neutral_N0"
         app:cardCornerRadius="@dimen/dp_28"
         app:cardUseCompatPadding="true">
 
@@ -53,12 +53,10 @@
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_22"
             android:layout_marginBottom="@dimen/dp_12"
-            android:drawableStart="@drawable/ic_system_action_sort_grayscale_24"
-            android:drawableLeft="@drawable/ic_system_action_sort_grayscale_24"
             android:drawablePadding="@dimen/dp_8"
             android:gravity="center"
             android:text="@string/text_button_sort"
             tools:text="Sort" />
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>

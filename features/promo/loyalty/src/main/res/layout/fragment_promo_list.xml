@@ -22,7 +22,7 @@
             android:layout_gravity="bottom"
             android:visibility="visible">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_promo_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>

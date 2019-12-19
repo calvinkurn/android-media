@@ -62,7 +62,7 @@
                 app:textViewTheme="lightPrimary"
                 app:weight="medium" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/filter_star"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -159,7 +159,7 @@
                 app:textViewTheme="lightPrimary"
                 app:weight="medium" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/filter_accomodation_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

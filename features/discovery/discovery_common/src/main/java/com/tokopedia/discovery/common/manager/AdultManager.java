@@ -3,9 +3,9 @@ package com.tokopedia.discovery.common.manager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
@@ -69,7 +69,7 @@ public class AdultManager {
         if (callback != null) {
             callback.onVerificationSuccess(message);
         } else {
-            Toaster.Companion.showNormalWithAction(activity.findViewById(android.R.id.content),
+            Toaster.INSTANCE.showNormalWithAction(activity.findViewById(android.R.id.content),
                     message,
                     Snackbar.LENGTH_INDEFINITE,
                     "Ok", (v) -> {

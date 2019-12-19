@@ -2,7 +2,7 @@ package com.tokopedia.design.text;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;

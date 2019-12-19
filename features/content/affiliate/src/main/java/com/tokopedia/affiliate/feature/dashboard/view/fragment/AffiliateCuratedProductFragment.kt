@@ -2,11 +2,11 @@ package com.tokopedia.affiliate.feature.dashboard.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.widget.NestedScrollView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +14,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
@@ -69,6 +70,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     private var currentSort: Int? = null
 
     private lateinit var cvSort: CardView
+    private lateinit var tvSort: TextView
     private lateinit var svEmptyState: NestedScrollView
     private lateinit var esShareNow: EmptyState
 
@@ -99,7 +101,8 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter.attachView(this)
         return inflater.inflate(
-                if (hasInitialSwipeRefresh()) R.layout.fragment_af_curated_product_refresh else R.layout.fragment_af_curated_product,
+                if (hasInitialSwipeRefresh()) R.layout.fragment_af_curated_product_refresh
+                else R.layout.fragment_af_curated_product,
                 container,
                 false)
     }
@@ -110,15 +113,25 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
         setupView(view)
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
+    }
+
     private fun initView(view: View) {
         view.run {
             cvSort = findViewById(R.id.cv_sort)
+            tvSort = findViewById(R.id.tv_sort)
             svEmptyState = findViewById(R.id.sv_empty_state)
             esShareNow = findViewById(R.id.es_share_now)
         }
     }
 
     private fun setupView(view: View) {
+        tvSort.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_sort_grayscale_24), null, null, null)
         if (type == null) {
             cvSort.visible()
             getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {

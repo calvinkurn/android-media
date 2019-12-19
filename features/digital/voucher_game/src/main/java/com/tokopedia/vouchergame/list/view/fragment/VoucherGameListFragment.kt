@@ -1,17 +1,17 @@
 package com.tokopedia.vouchergame.list.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
@@ -20,10 +20,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
+import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
@@ -45,7 +47,7 @@ import javax.inject.Inject
 /**
  * Created by resakemal on 12/08/19.
  */
-class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
+class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
         VoucherGameListAdapterFactory>(),
         SearchInputView.ResetListener,
         VoucherGameListViewHolder.OnClickListener {
@@ -58,6 +60,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     @Inject
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
+    @Inject
+    lateinit var rechargeAnalytics: RechargeAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +72,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         }
 
         arguments?.let {
-            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME) ?: VoucherGameExtraParam()
+            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME)
+                    ?: VoucherGameExtraParam()
         }
     }
 
@@ -76,7 +81,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         super.onActivityCreated(savedInstanceState)
         voucherGameViewModel.voucherGameList.observe(this, Observer {
             it.run {
-                when(it) {
+                when (it) {
                     is Success -> {
                         renderOperators(it.data)
                     }
@@ -89,19 +94,23 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         voucherGameViewModel.voucherGameMenuDetail.observe(this, Observer {
             it.run {
                 togglePromoBanner(true)
-                when(it) {
+                when (it) {
                     is Success -> {
-                        with (it.data) {
-                            if (catalog.label.isNotEmpty())  (activity as BaseVoucherGameActivity).updateTitle(catalog.label)
-
-                            if (banners.isEmpty()) promo_banner.visibility = View.GONE
-                            else {
-                                renderBanners(banners)
+                        with(it.data) {
+                            if (catalog.label.isNotEmpty()) {
+                                val categoryName = catalog.label
+                                (activity as BaseVoucherGameActivity).updateTitle(categoryName)
+                                voucherGameAnalytics.categoryName = categoryName
+                                voucherGameExtraParam.categoryId.toIntOrNull()?.let { id ->
+                                    rechargeAnalytics.eventDigitalCategoryScreenLaunch(categoryName, id.toString())
+                                }
                             }
+
+                            renderBanners(banners)
+                            renderTickers(tickers)
                         }
                     }
                     is Fail -> {
-                        promo_banner.visibility = View.GONE
                     }
                 }
             }
@@ -115,9 +124,13 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        voucherGameExtraParam.categoryId.toIntOrNull()?.let {
+            rechargeAnalytics.trackVisitRechargePushEventRecommendation(it)
+        }
+
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             togglePromoBanner(false)
-            voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
+            voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_menu_detail),
                     voucherGameViewModel.createMenuDetailParams(it))
         }
         initView()
@@ -159,7 +172,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                             } else {
                                 voucherGameAnalytics.impressionOperatorCard(
                                         operators.subList(visibleIndexes.first,
-                                        visibleIndexes.second + 1))
+                                                visibleIndexes.second + 1))
                             }
                         }
                     }
@@ -179,17 +192,13 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         if (data.operators.isEmpty()) {
             adapter.clearAllElements()
             showEmpty()
-        }
-        else {
+        } else {
             checkAutoSelectOperator(data.operators)
             renderList(data.operators)
 
             recycler_view.post {
                 val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
-                if (searchInputView.searchText.isNotEmpty()) {
-                    voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
-                            data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
-                } else {
+                if (searchInputView.searchText.isEmpty()) {
                     voucherGameAnalytics.impressionOperatorCard(
                             data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
                 }
@@ -198,32 +207,90 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     private fun renderBanners(data: List<TopupBillsBanner>) {
-        promo_banner.setPromoList(data.map { it.imageUrl })
-        promo_banner.setOnPromoClickListener {
-            val banner = data[it]
-            voucherGameAnalytics.eventClickBanner(banner, it)
-            RouteManager.route(context, banner.applinkUrl) }
-        promo_banner.setOnPromoScrolledListener { voucherGameAnalytics.impressionBanner(data[it], it) }
-        promo_banner.setOnPromoAllClickListener {
-            voucherGameAnalytics.eventClickViewAllBanner()
-            RouteManager.route(context, ApplinkConst.PROMO_LIST)
-        }
-        context?.let {
-            promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, R.color.unify_G500))
-        }
-        promo_banner.setBannerIndicator(Indicator.GREEN)
+        if (data.isNotEmpty()) {
+            promo_banner.setPromoList(data.map { it.imageUrl })
+            promo_banner.setOnPromoClickListener {
+                val banner = data[it]
+                voucherGameAnalytics.eventClickBanner(banner, it)
+                RouteManager.route(context, banner.applinkUrl)
+            }
+            promo_banner.setOnPromoScrolledListener { voucherGameAnalytics.impressionBanner(data[it], it) }
+            promo_banner.setOnPromoAllClickListener {
+                voucherGameAnalytics.eventClickViewAllBanner()
+                RouteManager.route(context, ApplinkConst.PROMO_LIST)
+            }
+            context?.let {
+                promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, com.tokopedia.design.R.color.unify_G500))
+            }
+            promo_banner.setBannerIndicator(Indicator.GREEN)
 
-        val seeAllText = promo_banner.bannerSeeAll
-        seeAllText.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
+            val seeAllText = promo_banner.bannerSeeAll
+            seeAllText.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
 
-        promo_banner.buildView()
+            promo_banner.buildView()
+            promo_banner.visibility = View.VISIBLE
+        } else {
+            promo_banner.visibility = View.GONE
+        }
+    }
+
+    private fun renderTickers(tickers: List<TopupBillsTicker>) {
+        if (tickers.isNotEmpty()) {
+            val messages = mutableListOf<TickerData>()
+            for (item in tickers) {
+                var description: String = item.content
+                if (item.actionText.isNotEmpty() && item.actionLink.isNotEmpty()) {
+                    description += " [${item.actionText}]{${item.actionLink}}"
+                }
+                messages.add(TickerData(item.name, description,
+                        when (item.type) {
+                            TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
+                            TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
+                            TopupBillsTicker.TYPE_SUCCESS -> Ticker.TYPE_ANNOUNCEMENT
+                            TopupBillsTicker.TYPE_ERROR -> Ticker.TYPE_ERROR
+                            else -> Ticker.TYPE_INFORMATION
+                        }))
+            }
+
+            if (messages.size == 1) {
+                with (messages.first()) {
+                    ticker_view.tickerTitle = title
+                    ticker_view.setHtmlDescription(description)
+                    ticker_view.tickerType = type
+                }
+                ticker_view.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                    }
+
+                    override fun onDismiss() {
+
+                    }
+                })
+            } else {
+                context?.let { context ->
+                    val tickerAdapter = TickerPagerAdapter(context, messages)
+                    tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                        override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                        }
+                    })
+                    ticker_view.addPagerView(tickerAdapter, messages)
+                }
+            }
+
+            ticker_view.visibility = View.VISIBLE
+        } else {
+            ticker_view.visibility = View.GONE
+        }
+
     }
 
     override fun getAdapterTypeFactory(): VoucherGameListAdapterFactory {
         return VoucherGameListAdapterFactory(this)
     }
 
-    override fun getScreenName(): String = getString(R.string.app_label)
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(VoucherGameListComponent::class.java).inject(this)
@@ -242,6 +309,15 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun onItemClicked(operator: VoucherGameOperator) {
         if (searchInputView.searchText.isNotEmpty()) {
+            voucherGameAnalytics.eventClickSearchResult(searchInputView.searchText)
+
+            val operatorList = voucherGameViewModel.voucherGameList.value
+            if (operatorList is Success) {
+                val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
+                voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
+                        operatorList.data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
+            }
+
             voucherGameAnalytics.eventClickOperatorCardSearchResult(operator)
         } else {
             voucherGameAnalytics.eventClickOperatorCard(operator)
@@ -264,7 +340,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
+        hideSnackBarRetry()
+        swipeToRefresh.isRefreshing = true
         searchInputView.searchText = ""
     }
 
@@ -289,17 +366,11 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun onSearchSubmitted(text: String?) {
-        text?.let {
-            voucherGameAnalytics.eventClickSearchResult(it)
-            searchVoucherGame(it)
-        }
+        text?.let { if (text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it) }
     }
 
     override fun onSearchTextChanged(text: String?) {
-        text?.let {
-            voucherGameAnalytics.eventClickSearchResult(it)
-            searchVoucherGame(it)
-        }
+        text?.let { searchVoucherGame(it) }
     }
 
     override fun onSearchReset() {
@@ -316,10 +387,22 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         voucherGameAnalytics.eventClickBackButton()
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
+    }
+
+    override fun getSearchInputViewResourceId(): Int {
+        return R.id.search_input_view
+    }
+
     companion object {
 
-        val BANNER_SEE_ALL_TEXT_SIZE = R.dimen.sp_16
-        val ITEM_DECORATOR_SIZE = R.dimen.dp_8
+        val BANNER_SEE_ALL_TEXT_SIZE = com.tokopedia.design.R.dimen.sp_14
+        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
 
         const val FULL_SCREEN_SPAN_SIZE = 1
         const val OPERATOR_ITEM_SPAN_SIZE = 3

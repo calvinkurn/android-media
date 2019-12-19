@@ -22,6 +22,8 @@
       trade_in:$trade_in
       vehicle_leasing:$vehicle_leasing
       psl_code:"$psl_code"
+      products:"$products"
+      unique_id:"$unique_id"
   }) {
   ratesv3 {
     id
@@ -144,6 +146,12 @@
       shipper_disable_text
       service_id
       is_applied
+      image_url
+      discounted_rate
+      shipping_rate
+      benefit_amount
+      disabled
+      hide_shipper_name
     }
     info {
       blackbox_info {

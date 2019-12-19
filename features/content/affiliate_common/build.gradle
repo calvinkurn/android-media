@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -24,6 +22,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
@@ -39,14 +38,14 @@ dependencies {
     kapt rootProject.ext.miscDependencies.guava
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-    implementation 'io.reactivex:rxkotlin:0.60.0'
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation rootProject.ext.miscDependencies.rxKotlin
 }
 
 project.ext {
     artifactId = 'affiliate-common'
     groupId = 'com.tokopedia.content'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="affiliate_common-release"
 }
 

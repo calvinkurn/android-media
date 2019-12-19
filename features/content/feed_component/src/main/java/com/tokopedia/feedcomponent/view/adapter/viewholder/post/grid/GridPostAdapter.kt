@@ -1,7 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid
 
 import android.graphics.drawable.ColorDrawable
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +28,7 @@ class GridPostAdapter(private val contentPosition: Int,
         private const val MAX_FEED_SIZE_SMALL = 3
         private const val LAST_FEED_POSITION = 5
         private const val LAST_FEED_POSITION_SMALL = 2
+        private const val RAD_10f = 10f
 
         private const val EXTRA_DETAIL_ID = "{extra_detail_id}"
     }
@@ -85,7 +86,7 @@ class GridPostAdapter(private val contentPosition: Int,
                              private val contentPosition: Int,
                              private val listener: GridItemListener) : RecyclerView.ViewHolder(v) {
         fun bindImage(image: String, listSize: Int) {
-            itemView.productImage.loadImage(image)
+            itemView.productImage.loadImageRounded(image, RAD_10f)
             setImageMargins(listSize)
         }
 
@@ -130,7 +131,6 @@ class GridPostAdapter(private val contentPosition: Int,
         private fun setImageMargins(listSize: Int) {
             if (listSize == 1) {
                 itemView.productLayout.setMargin(0,0,0,0)
-                itemView.productLayout.radius = 0f
                 itemView.text.setPadding(
                         itemView.getDimens(R.dimen.dp_16),
                         0,
@@ -144,7 +144,6 @@ class GridPostAdapter(private val contentPosition: Int,
                         itemView.getDimens(R.dimen.dp_2),
                         0
                 )
-                itemView.productLayout.radius = itemView.getDimens(R.dimen.dp_4).toFloat()
                 itemView.text.setPadding(
                         itemView.getDimens(R.dimen.dp_4),
                         0,
@@ -159,6 +158,6 @@ class GridPostAdapter(private val contentPosition: Int,
         fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: Int,
                             redirectLink: String)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }
 }

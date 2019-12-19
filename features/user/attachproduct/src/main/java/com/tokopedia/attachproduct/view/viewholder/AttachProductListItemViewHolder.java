@@ -1,6 +1,6 @@
 package com.tokopedia.attachproduct.view.viewholder;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;

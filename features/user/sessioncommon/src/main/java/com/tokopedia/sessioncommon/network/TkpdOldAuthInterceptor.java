@@ -2,7 +2,7 @@ package com.tokopedia.sessioncommon.network;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.authentication.AuthHelper;

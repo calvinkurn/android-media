@@ -2,9 +2,10 @@ package com.tokopedia.transaction.orders.orderlist.view.presenter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -47,6 +48,7 @@ import com.tokopedia.transaction.orders.orderlist.data.Data;
 import com.tokopedia.transaction.orders.orderlist.data.FilterStatus;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.OrderFilter;
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.CheckBOMSurveyParams;
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.InsertBOMSurveyParams;
 import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.CheckSurveyResponse;
@@ -63,6 +65,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -140,7 +143,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             return;
         getView().displayLoadMore(true);
         RequestParams requestParam = getRecommendationUseCase.getRecomParams(
-                page, XSOURCE, PAGE_NAME, new ArrayList<>());
+                page,
+                XSOURCE,
+                PAGE_NAME,
+                new ArrayList<>(),
+                "");
         getRecommendationUseCase.execute(requestParam, new Subscriber<List<? extends RecommendationWidget>>() {
             @Override
             public void onCompleted() {
@@ -229,6 +236,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         getOrderListUseCase = new GraphqlUseCase();
         getOrderListUseCase.clearRequest();
         getOrderListUseCase.addRequest(graphqlRequest);
+        getOrderListUseCase.addRequest(getorderFiltergqlRequest());
 
         getOrderListUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -266,6 +274,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                         getView().unregisterScrollListener();
                         getView().renderEmptyList(typeRequest);
                     }
+
+                    OrderFilter orderFilter = response.getData(OrderFilter.class);
+                    if (orderFilter != null && orderFilter != null) {
+                        getView().setFilterRange(orderFilter.getGetBomOrderFilter().getDefaultDate(), orderFilter.getGetBomOrderFilter().getCustomDate());
+                    }
                 } else {
                     getView().unregisterScrollListener();
                     getView().renderEmptyList(typeRequest);
@@ -273,6 +286,13 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             }
         });
+    }
+
+    private GraphqlRequest getorderFiltergqlRequest() {
+        GraphqlRequest orderfiltergqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.bomorderfilter), OrderFilter.class);
+        return orderfiltergqlRequest;
     }
 
     public void buildAndRenderFilterList(List<FilterStatus> filterItems) {
@@ -594,7 +614,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
         variables.put(PARAM, generateInputQueryBuyAgain(orderDetails.getItems()));
-
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.buy_again), ResponseBuyAgain.class, variables, false);
@@ -697,9 +716,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 break;
             case "tanya penjual":
                 getView().startSellerAndAddInvoice();
+                orderListAnalytics.sendActionButtonClickEventList("click ask seller",orderDetails.getStatusInfo());
                 break;
             case "ajukan pembatalan":
                 getView().requestCancelOrder(getStatus());
+                orderListAnalytics.sendActionButtonClickEventList("", "");
                 break;
                 default:
                     break;

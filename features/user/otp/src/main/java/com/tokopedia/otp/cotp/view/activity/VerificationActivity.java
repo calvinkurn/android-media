@@ -3,9 +3,9 @@ package com.tokopedia.otp.cotp.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,12 +13,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.otp.R;
-import com.tokopedia.otp.common.OTPAnalytics;
+import com.tokopedia.otp.common.analytics.OTPAnalytics;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
+import com.tokopedia.otp.cotp.view.fragment.OnboardingOtpMiscallFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
@@ -48,6 +49,7 @@ public class VerificationActivity extends BaseSimpleActivity {
     protected static final String CHOOSE_FRAGMENT_TAG = "choose";
     protected static final String REGEX_MASK_PHONE_NUMBER =
             "(0...|62...|\\+62...)(\\d{3,4})(\\d{3,4})(\\d{0,4})";
+    private static final int DEFAULT_OTP_CODE_LENGTH = 6;
 
     private String phoneNumber;
     private String email;
@@ -191,8 +193,22 @@ public class VerificationActivity extends BaseSimpleActivity {
         }
     }
 
-    protected VerificationViewModel createSmsBundle() {
+    public void goToOnboardingMiscallPage(MethodItem methodItem) {
+        if (!(getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
+                OnboardingOtpMiscallFragment)) {
 
+            getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+            Fragment fragment = OnboardingOtpMiscallFragment.Companion.createInstance(createDynamicBundle(methodItem));
+            fragmentTransaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_left);
+            fragmentTransaction.add(R.id.parent_view, fragment, FIRST_FRAGMENT_TAG);
+            fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
+            fragmentTransaction.commit();
+        }
+    }
+
+    protected VerificationViewModel createSmsBundle() {
         return new VerificationViewModel(
                 phoneNumber,
                 email,
@@ -201,12 +217,12 @@ public class VerificationActivity extends BaseSimpleActivity {
                 R.drawable.ic_verification_sms,
                 createSmsMessage(phoneNumber, otpType),
                 OTPAnalytics.Screen.SCREEN_COTP_SMS,
-                canUseOtherMethod
+                canUseOtherMethod,
+                DEFAULT_OTP_CODE_LENGTH
         );
     }
 
     private VerificationViewModel createEmailBundle() {
-
         return new VerificationViewModel(
                 phoneNumber,
                 email,
@@ -215,13 +231,12 @@ public class VerificationActivity extends BaseSimpleActivity {
                 R.drawable.ic_verification_email,
                 createEmailMessage(email),
                 OTPAnalytics.Screen.SCREEN_COTP_EMAIL,
-                canUseOtherMethod
+                canUseOtherMethod,
+                DEFAULT_OTP_CODE_LENGTH
         );
     }
 
     protected VerificationViewModel createDynamicBundle(MethodItem methodItem) {
-
-
         return new VerificationViewModel(
                 phoneNumber,
                 email,
@@ -230,7 +245,8 @@ public class VerificationActivity extends BaseSimpleActivity {
                 methodItem.getImageUrl(),
                 methodItem.getVerificationText(),
                 getDynamicAppScreen(methodItem.getModeName()),
-                canUseOtherMethod
+                canUseOtherMethod,
+                methodItem.getNumberOtpDigit()
         );
     }
 

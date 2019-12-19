@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -282,7 +282,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
             }
 
             @Override
-            public void onSortResult(Map<String, String> selectedSort, String selectedSortName) {
+            public void onSortResult(Map<String, String> selectedSort, String selectedSortName, String autoApplyFilter) {
                 handleSortResult(selectedSort, selectedSortName);
             }
         });

@@ -13,6 +13,7 @@ class AddToCartDoneTypeFactory(
         private val addToCartDoneAddedProductListener: AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener,
         val recommendationListener: RecommendationListener
 ) : BaseAdapterTypeFactory() {
+
     fun type(addToCartDoneRecommendationDataModel: AddToCartDoneRecommendationDataModel): Int {
         return AddToCartDoneRecommendationViewHolder.LAYOUT_RES
     }

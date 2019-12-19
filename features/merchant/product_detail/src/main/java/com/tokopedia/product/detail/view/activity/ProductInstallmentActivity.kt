@@ -1,14 +1,14 @@
 package com.tokopedia.product.detail.view.activity
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -16,12 +16,12 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.installment.InstallmentBank
 import com.tokopedia.product.detail.data.util.InstallmentTypeDef
+import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.adapter.ProductInstallmentAdapter
 import com.tokopedia.product.detail.view.fragment.ProductInstallmentFragment
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.ProductInstallmentViewModel
-import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

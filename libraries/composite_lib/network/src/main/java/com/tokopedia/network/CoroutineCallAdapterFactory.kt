@@ -48,7 +48,7 @@ class CoroutineCallAdapterFactory private constructor(): CallAdapter.Factory() {
 
             call.enqueue(object : Callback<T> {
                 override fun onFailure(call: Call<T>?, t: Throwable) {
-                    deferred.cancel(t)
+                    deferred.cancel()
                 }
 
                 override fun onResponse(call: Call<T>, response: Response<T>) {
@@ -56,7 +56,7 @@ class CoroutineCallAdapterFactory private constructor(): CallAdapter.Factory() {
                     if (response.isSuccessful){
                         deferred.complete(response.body() as T)
                     } else {
-                        deferred.cancel(HttpException(response))
+                        deferred.cancel()
                     }
                 }
             })
@@ -80,7 +80,7 @@ class CoroutineCallAdapterFactory private constructor(): CallAdapter.Factory() {
 
             call.enqueue(object : Callback<T> {
                 override fun onFailure(call: Call<T>?, t: Throwable) {
-                    deferred.cancel(t)
+                    deferred.cancel()
                 }
 
                 override fun onResponse(call: Call<T>, response: Response<T>) {
@@ -88,7 +88,7 @@ class CoroutineCallAdapterFactory private constructor(): CallAdapter.Factory() {
                     if (response.isSuccessful){
                         deferred.complete(response)
                     } else {
-                        deferred.cancel(HttpException(response))
+                        deferred.cancel()
                     }
                 }
             })

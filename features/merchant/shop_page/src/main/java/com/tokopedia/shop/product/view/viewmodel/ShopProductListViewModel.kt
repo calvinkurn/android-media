@@ -1,6 +1,6 @@
 package com.tokopedia.shop.product.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -152,5 +152,7 @@ class ShopProductListViewModel @Inject constructor(private val userSession: User
         it.productUrl = productUrl
         it.isSoldOut = flags.isSold
         it.isShowWishList = !isMyOwnProduct
+        it.isShowFreeOngkir = freeOngkir.isActive
+        it.freeOngkirPromoIcon = freeOngkir.imgUrl
     }
 }

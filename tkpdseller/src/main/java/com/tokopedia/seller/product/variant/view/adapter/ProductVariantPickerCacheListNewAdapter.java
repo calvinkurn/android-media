@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.variant.view.adapter;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantOption;

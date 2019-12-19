@@ -2,10 +2,11 @@ package com.tokopedia.home.beranda.presentation.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,8 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration
+import com.tokopedia.home.beranda.helper.GravitySnapHelper
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BusinessUnitItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -40,6 +42,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     private var positionWidget: Int = 0
     private var nameTab: String = ""
     private var backgroundColor: String = ""
+    private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START)}
 
     companion object {
         const val ITEM_EXTRAS = "ITEM_EXTRAS"
@@ -177,10 +180,10 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
                     }
             )
         }
+        startSnapHelper.attachToRecyclerView(getRecyclerView(view))
         getRecyclerView(view).addItemDecoration(
-                SpacingItemDecoration(
-                        convertDpToPixel(8.toFloat(), activity),
-                        SpacingItemDecoration.HORIZONTAL)
+                BusinessUnitItemDecoration(
+                        convertDpToPixel(2.toFloat(), activity))
         )
     }
 

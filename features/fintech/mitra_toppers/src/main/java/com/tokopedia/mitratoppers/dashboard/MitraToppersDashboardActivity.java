@@ -1,6 +1,6 @@
 package com.tokopedia.mitratoppers.dashboard;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;

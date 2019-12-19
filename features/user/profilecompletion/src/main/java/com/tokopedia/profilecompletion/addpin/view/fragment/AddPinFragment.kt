@@ -1,30 +1,32 @@
 package com.tokopedia.profilecompletion.addpin.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 import com.tokopedia.profilecompletion.addpin.data.CheckPinData
-import com.tokopedia.profilecompletion.addpin.data.ValidatePinData
+import com.tokopedia.profilecompletion.addpin.data.SkipOtpPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
+import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
+import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_pin.*
 import javax.inject.Inject
@@ -37,6 +39,8 @@ import javax.inject.Inject
 class AddPinFragment: BaseDaggerFragment(){
 
     @Inject
+    lateinit var trackingPinUtil: TrackingPinUtil
+    @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -44,6 +48,7 @@ class AddPinFragment: BaseDaggerFragment(){
     private val addChangePinViewModel by lazy { viewModelProvider.get(AddChangePinViewModel::class.java) }
 
     private var isConfirmPin = false
+    private var isFromLogin: Boolean = false
     private var pin = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +60,7 @@ class AddPinFragment: BaseDaggerFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initVar()
         displayInitPin()
         inputPin.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {}
@@ -65,11 +71,18 @@ class AddPinFragment: BaseDaggerFragment(){
                 if(s?.length == 6){
                     if(isConfirmPin){
                         if(s.toString() == pin){
-                            goToVerificationActivity()
+                            if(isFromLogin){
+                                showLoading()
+                                addChangePinViewModel.checkSkipOtpPin()
+                            }else{
+                                goToVerificationActivity()
+                            }
                         }else{
+                            val errorMessage = getString(R.string.error_wrong_pin)
+                            trackingPinUtil.trackFailedInputConfirmationPin(errorMessage)
                             inputPin.setText("")
                             inputPin.focus()
-                            displayErrorPin(getString(R.string.error_wrong_pin))
+                            displayErrorPin(errorMessage)
                         }
                     }else{
                         showLoading()
@@ -84,7 +97,14 @@ class AddPinFragment: BaseDaggerFragment(){
         initObserver()
     }
 
-    override fun getScreenName(): String = ""
+    override fun onStart() {
+        super.onStart()
+        trackingPinUtil.trackScreen(screenName)
+    }
+
+    override fun getScreenName(): String =
+            if(!isConfirmPin) TrackingPinConstant.Screen.SCREEN_POPUP_PIN_INPUT
+            else TrackingPinConstant.Screen.SCREEN_POPUP_PIN_CONFIRMATION
 
     override fun initInjector() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
@@ -101,9 +121,22 @@ class AddPinFragment: BaseDaggerFragment(){
         addChangePinViewModel.checkPinResponse.observe(this, Observer {
             when(it){
                 is Success -> onSuccessCheckPin(it.data)
-                is Fail -> onError(it.throwable)
+                is Fail -> onErrorCheckPin(it.throwable)
             }
         })
+
+        addChangePinViewModel.skipOtpPinResponse.observe(this, Observer {
+            when(it){
+                is Success -> onSuccessCheckSkipOtp(it.data)
+                is Fail -> onErrorSkipOtpPin(it.throwable)
+            }
+        })
+    }
+
+    private fun initVar() {
+        val isFromLogin = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_LOGIN, false)
+        if(isFromLogin != null)
+            this.isFromLogin = isFromLogin
     }
 
     private fun goToVerificationActivity(){
@@ -121,20 +154,25 @@ class AddPinFragment: BaseDaggerFragment(){
 
     private fun onSuccessAddPin(addChangePinData: AddChangePinData){
         if(addChangePinData.success){
-            activity?.let {
-                it.setResult(Activity.RESULT_OK)
-                it.finish()
-            }
+            trackingPinUtil.trackSuccessInputConfirmationPin()
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE)
+            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PinCompleteFragment.SOURCE_ADD_PIN)
+            startActivity(intent)
+            activity?.finish()
         }
     }
 
     private fun onSuccessCheckPin(checkPinData: CheckPinData){
         when{
             checkPinData.valid -> {
+                trackingPinUtil.trackSuccessInputCreatePin()
                 dismissLoading()
                 displayConfirmPin()
+                trackingPinUtil.trackScreen(screenName)
             }
             checkPinData.errorMessage.isNotEmpty() -> {
+                trackingPinUtil.trackFailedInputCreatePin(checkPinData.errorMessage)
                 dismissLoading()
                 inputPin.setText("")
                 displayErrorPin(checkPinData.errorMessage)
@@ -143,9 +181,33 @@ class AddPinFragment: BaseDaggerFragment(){
         }
     }
 
+    private fun onSuccessCheckSkipOtp(skipOtpPinData: SkipOtpPinData){
+        dismissLoading()
+        if(skipOtpPinData.skipOtp && skipOtpPinData.validateToken.isNotEmpty()){
+            showLoading()
+            addChangePinViewModel.addPin(skipOtpPinData.validateToken)
+        }else{
+            goToVerificationActivity()
+        }
+    }
+
     private fun onErrorAddPin(throwable: Throwable){
+        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        trackingPinUtil.trackFailedInputConfirmationPin(errorMessage)
         onError(throwable)
         displayInitPin()
+    }
+
+    private fun onErrorCheckPin(throwable: Throwable){
+        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        trackingPinUtil.trackFailedInputCreatePin(errorMessage)
+        onError(throwable)
+    }
+
+    private fun onErrorSkipOtpPin(throwable: Throwable){
+        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        trackingPinUtil.trackFailedInputConfirmationPin(errorMessage)
+        onError(throwable)
     }
 
     private fun onError(throwable: Throwable){
@@ -172,6 +234,9 @@ class AddPinFragment: BaseDaggerFragment(){
                         }
                     }
                 }
+            }
+            Activity.RESULT_CANCELED -> {
+                trackingPinUtil.trackFailedInputConfirmationPin(getString(R.string.error_from_cotp))
             }
         }
     }
@@ -217,9 +282,12 @@ class AddPinFragment: BaseDaggerFragment(){
 
     fun onBackPressedFromConfirm(): Boolean{
         return if(isConfirmPin){
+            trackingPinUtil.trackClickBackButtonConfirmation()
             displayInitPin()
+            trackingPinUtil.trackScreen(screenName)
             true
         }else{
+            trackingPinUtil.trackClickBackButtonInput()
             false
         }
     }

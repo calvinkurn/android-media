@@ -1,6 +1,6 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
-import android.support.v4.app.FragmentActivity
+import androidx.fragment.app.FragmentActivity
 import android.view.View
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel

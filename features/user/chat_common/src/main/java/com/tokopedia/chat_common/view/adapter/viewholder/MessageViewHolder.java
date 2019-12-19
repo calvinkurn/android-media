@@ -1,7 +1,7 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,14 +38,46 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
     public MessageViewHolder(View itemView, ChatLinkHandlerListener listener) {
         super(itemView);
         this.context = itemView.getContext();
-        message = itemView.findViewById(R.id.message);
+        message = itemView.findViewById(getMessageId());
         message.setMovementMethod(new ChatLinkHandlerMovementMethod(listener));
-        chatStatus = itemView.findViewById(R.id.chat_status);
-        name = itemView.findViewById(R.id.name);
-        label = itemView.findViewById(R.id.label);
-        dot = itemView.findViewById(R.id.dot);
-        chatBalloon = itemView.findViewById(R.id.main);
+        chatStatus = itemView.findViewById(getChatStatusId());
+        name = itemView.findViewById(getNameId());
+        label = itemView.findViewById(getLabelId());
+        dot = itemView.findViewById(getDotId());
+        chatBalloon = itemView.findViewById(getMainId());
+        hour = itemView.findViewById(getHourId());
+        date = itemView.findViewById(getDateId());
 
+    }
+
+    @Override
+    protected int getHourId() {
+        return R.id.hour;
+    }
+
+    @Override
+    protected int getDateId() {
+        return R.id.date;
+    }
+
+    protected int getChatStatusId() {
+       return R.id.chat_status;
+    }
+
+    protected int getMessageId() {
+        return R.id.message;
+    }
+    protected int getNameId() {
+        return R.id.name;
+    }
+    protected int getLabelId() {
+        return R.id.label;
+    }
+    protected int getDotId() {
+        return R.id.dot;
+    }
+    protected int getMainId() {
+        return R.id.main;
     }
 
     @Override

@@ -4,15 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,15 +32,16 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
+
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
-import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogBannerPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.CatalogSortTypePagerAdapter;
@@ -147,19 +148,13 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTvFlashTimer = view.findViewById(R.id.tv_flash_time);
         mTvFlashTimerLabel = view.findViewById(R.id.tv_timer_label);
         mTvFlashTimerLabel.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (getActivity(), R.drawable.ic_tp_flash_green), null, null , null);
+                (getActivity(), R.drawable.ic_tp_flash_green), null, null, null);
         mProgressFlash = view.findViewById(R.id.progress_timer);
         mContainerFlashTimer = view.findViewById(R.id.cl_flash_container);
         serverErrorView = view.findViewById(R.id.server_error_view);
         initListener();
 
-        if (isSeeAllPage()) {
-            mPresenter.getHomePageData("", "", false);
-        } else {
-            mPresenter.getPointData();
-            mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
-                    getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
-        }
+        requestHomePageData();
     }
 
     @Override
@@ -181,7 +176,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getContext();
     }
 
     @Override
@@ -194,11 +189,6 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 fragment.getPresenter().getCatalog(mPresenter.getCurrentCategoryId(), mPresenter.getCurrentSubCategoryId(), true);
             }
         }
-    }
-
-    @Override
-    public boolean isAddedView() {
-        return getActivity() != null && isAdded();
     }
 
     @Override
@@ -222,8 +212,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         pager.setAdapter(new CatalogBannerPagerAdapter(getContext(), banners, mPresenter));
         //adding bottom dots(Page Indicator)
         final CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator);
-        pageIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-        pageIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.white_two));
+        pageIndicator.setFillColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.tkpd_main_green));
+        pageIndicator.setPageColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.white_two));
         pageIndicator.setViewPager(pager, 0);
         getView().findViewById(R.id.container_pager).setVisibility(View.VISIBLE);
         mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
@@ -239,7 +229,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTextPointsBottom.setText(CurrencyFormatUtil.convertPriceValue(rewardValue, false));
         if (!eggUrl.isEmpty())
             ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, eggUrl);
-        mContainerPointDetail.setVisibility(View.VISIBLE);
+
         isPointsAvailable = true;
         mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
         mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
@@ -383,7 +373,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public void gotoMyCoupons() {
-        startActivity(MyCouponListingActivity.getCallingIntent(getContext()));
+        startActivity(CouponListingStackedActivity.getCallingIntent(getContext()));
 
         AnalyticsTrackerUtil.sendEvent(getActivityContext(),
                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -419,14 +409,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         if (source.getId() == R.id.text_my_coupon) {
             gotoMyCoupons();
         } else if (source.getId() == R.id.text_failed_action) {
-            if (isSeeAllPage()) {
-                mPresenter.getHomePageData("", "", false);
-            } else {
-                mPresenter.getPointData();
-                mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
-                        getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
-            }
-
+            requestHomePageData();
             mPresenter.getPointData();
         } else if (source.getId() == R.id.text_token_title
                 || source.getId() == R.id.img_token) {
@@ -452,21 +435,30 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             }
         } else if (source.getId() == R.id.text_membership_label
                 || source.getId() == R.id.bottom_view_membership) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW,CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership));
 
             AnalyticsTrackerUtil.sendEvent(source.getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
                     "");
-        } else if (source.getId() == R.id.view_point_saya
-                || source.getId() == R.id.text_my_points_value_bottom) {
+        } else if (source.getId() == R.id.text_my_points_value_bottom) {
             startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
                     "");
+        }
+    }
+
+    private void requestHomePageData(){
+        if (isSeeAllPage()) {
+            mPresenter.getHomePageData("", "", false);
+        } else {
+            mPresenter.getPointData();
+            mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
+                    getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
         }
     }
 
@@ -520,7 +512,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             Animation bottomUp = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
                     R.anim.tp_bottom_up);
             bottomViewMembership.startAnimation(bottomUp);
-            bottomViewMembership.setVisibility(View.VISIBLE);
+            bottomViewMembership.setVisibility(View.GONE);
         }
 
     }
@@ -551,7 +543,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public void openWebView(String url) {
-        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+        if (getContext() != null)
+        getContext().startActivity(RouteManager.getIntent(getActivityContext(),url));
     }
 
     @Override
@@ -574,7 +567,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
                 if (mSumToken == 0) {
                     textCount.setVisibility(View.GONE);
-                    textMessage.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_30),
+                    textMessage.setPadding(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30),
                             0,
                             0,
                             0);
@@ -622,13 +615,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
             @Override
             public void onFinish() {
-                if (isSeeAllPage()) {
-                    mPresenter.getHomePageData("", "", false);
-                } else {
-                    mPresenter.getPointData();
-                    mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
-                            getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
-                }
+                requestHomePageData();
             }
         }.start();
     }

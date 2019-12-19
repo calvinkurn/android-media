@@ -1,51 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipe_refresh_layout"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/subcategory_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_light_pink_gradient"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:paddingTop="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_16" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/dp_12"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/quickfilter_recyclerview"
-                android:layout_width="wrap_content"
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/subcategory_recyclerview"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:itemCount="5"
-                tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                android:background="@drawable/bg_light_pink_gradient"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_16"
+                android:visibility="gone"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:orientation="horizontal"
-                tools:scrollbars="horizontal" />
+                tools:visibility="visible" />
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/quickfilter_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_12">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/quickfilter_recyclerview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:itemCount="5"
+                    tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:orientation="horizontal"
+                    tools:scrollbars="horizontal" />
+
+            </LinearLayout>
 
 
-        <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/product_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,15 +61,25 @@
                 android:divider="@android:color/transparent"
                 android:dividerHeight="0dp" />
 
-        <include
-            android:id="@+id/layout_no_data"
-            layout="@layout/layout_nav_no_product"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
+            <include
+                android:id="@+id/layout_no_data"
+                layout="@layout/layout_nav_no_product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_24"
+                android:visibility="gone" />
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
+    <include
+        android:id="@+id/layout_banned_screen"
+        layout="@layout/layout_nav_banned_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+</LinearLayout>

@@ -7,14 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.common.travel.data.entity.TravelContactListModel;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.common.travel.widget.TravelContactArrayAdapter;
 import com.tokopedia.common.travel.widget.filterchips.FilterChipRecyclerView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -40,7 +41,6 @@ import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresent
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightPassengerTitle;
 import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
@@ -178,25 +178,25 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_booking_passenger, container, false);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_booking_passenger, container, false);
 
-        tilFirstName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_first_name);
-        etFirstName = (AppCompatAutoCompleteTextView) view.findViewById(R.id.et_first_name);
-        tilLastName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_last_name);
-        etLastName = (AppCompatEditText) view.findViewById(R.id.et_last_name);
-        rvPassengerTitle = (FilterChipRecyclerView) view.findViewById(R.id.rv_passenger_title);
-        tilBirthDate = (TkpdHintTextInputLayout) view.findViewById(R.id.til_birth_date);
-        etBirthDate = (AppCompatEditText) view.findViewById(R.id.et_birth_date);
-        luggageContainer = (LinearLayout) view.findViewById(R.id.luggage_container);
-        rvLuggages = (RecyclerView) view.findViewById(R.id.rv_luggages);
-        mealsContainer = (LinearLayout) view.findViewById(R.id.meals_container);
-        rvMeals = (RecyclerView) view.findViewById(R.id.rv_meals);
-        etPassportNumber = view.findViewById(R.id.et_passport_no);
-        etPassportExpired = view.findViewById(R.id.et_passport_expiration_date);
-        etPassportNationality = view.findViewById(R.id.et_nationality);
-        etPassportIssuerCountry = view.findViewById(R.id.et_passport_issuer_country);
-        passportContainer = view.findViewById(R.id.container_passport_data);
-        buttonSubmit = (AppCompatButton) view.findViewById(R.id.button_submit);
+        tilFirstName = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.flight.R.id.til_first_name);
+        etFirstName = (AppCompatAutoCompleteTextView) view.findViewById(com.tokopedia.flight.R.id.et_first_name);
+        tilLastName = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.flight.R.id.til_last_name);
+        etLastName = (AppCompatEditText) view.findViewById(com.tokopedia.flight.R.id.et_last_name);
+        rvPassengerTitle = (FilterChipRecyclerView) view.findViewById(com.tokopedia.flight.R.id.rv_passenger_title);
+        tilBirthDate = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.flight.R.id.til_birth_date);
+        etBirthDate = (AppCompatEditText) view.findViewById(com.tokopedia.flight.R.id.et_birth_date);
+        luggageContainer = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.luggage_container);
+        rvLuggages = (RecyclerView) view.findViewById(com.tokopedia.flight.R.id.rv_luggages);
+        mealsContainer = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.meals_container);
+        rvMeals = (RecyclerView) view.findViewById(com.tokopedia.flight.R.id.rv_meals);
+        etPassportNumber = view.findViewById(com.tokopedia.flight.R.id.et_passport_no);
+        etPassportExpired = view.findViewById(com.tokopedia.flight.R.id.et_passport_expiration_date);
+        etPassportNationality = view.findViewById(com.tokopedia.flight.R.id.et_nationality);
+        etPassportIssuerCountry = view.findViewById(com.tokopedia.flight.R.id.et_passport_issuer_country);
+        passportContainer = view.findViewById(com.tokopedia.flight.R.id.container_passport_data);
+        buttonSubmit = (AppCompatButton) view.findViewById(com.tokopedia.flight.R.id.button_submit);
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -332,7 +332,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightBookingMealRouteViewModels) {
                 SimpleViewModel viewModel = new SimpleViewModel(
                         flightBookingAmenityMetaViewModel.getDescription(),
-                        getString(R.string.flight_booking_passenger_choose_label)
+                        getString(com.tokopedia.flight.R.string.flight_booking_passenger_choose_label)
                 );
                 for (FlightBookingAmenityMetaViewModel selected : selecteds) {
                     if (selected.getKey().equalsIgnoreCase(flightBookingAmenityMetaViewModel.getKey())) {
@@ -347,10 +347,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 viewModels.add(viewModel);
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
-        adapter.setMarginTopDp(getResources().getDimension(R.dimen.margin_4));
-        adapter.setMarginBottomDp(getResources().getDimension(R.dimen.margin_4));
+        adapter.setMarginTopDp(getResources().getDimension(com.tokopedia.flight.R.dimen.margin_4));
+        adapter.setMarginBottomDp(getResources().getDimension(com.tokopedia.flight.R.dimen.margin_4));
         adapter.setArrowVisible(true);
-        adapter.setFontSize(getResources().getDimension(R.dimen.sp_12));
+        adapter.setFontSize(getResources().getDimension(com.tokopedia.design.R.dimen.sp_12));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
             @Override
             public void onItemClick(int adapterPosition, SimpleViewModel viewModel) {
@@ -363,7 +363,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         rvMeals.setHasFixedSize(true);
         rvMeals.setNestedScrollingEnabled(false);
         rvMeals.setAdapter(adapter);
-        adapter.setDescriptionTextColor(getResources().getColor(R.color.colorPrimary));
+        adapter.setDescriptionTextColor(getResources().getColor(com.tokopedia.design.R.color.colorPrimary));
         adapter.setViewModels(viewModels);
         adapter.notifyDataSetChanged();
     }
@@ -378,7 +378,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageRouteViewModels) {
                 SimpleViewModel viewModel = new SimpleViewModel(
                         flightBookingLuggageMetaViewModel.getDescription(),
-                        getString(R.string.flight_booking_passenger_choose_label)
+                        getString(com.tokopedia.flight.R.string.flight_booking_passenger_choose_label)
                 );
                 for (FlightBookingAmenityMetaViewModel selected : selecteds) {
                     if (selected.getKey().equalsIgnoreCase(flightBookingLuggageMetaViewModel.getKey())) {
@@ -393,10 +393,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 viewModels.add(viewModel);
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
-        adapter.setMarginTopDp(getResources().getDimension(R.dimen.margin_4));
-        adapter.setMarginBottomDp(getResources().getDimension(R.dimen.margin_4));
+        adapter.setMarginTopDp(getResources().getDimension(com.tokopedia.flight.R.dimen.margin_4));
+        adapter.setMarginBottomDp(getResources().getDimension(com.tokopedia.flight.R.dimen.margin_4));
         adapter.setArrowVisible(true);
-        adapter.setFontSize(getResources().getDimension(R.dimen.sp_12));
+        adapter.setFontSize(getResources().getDimension(com.tokopedia.design.R.dimen.sp_12));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
             @Override
             public void onItemClick(int adapterPosition, SimpleViewModel viewModel) {
@@ -409,7 +409,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         rvLuggages.setHasFixedSize(true);
         rvLuggages.setNestedScrollingEnabled(false);
         rvLuggages.setAdapter(adapter);
-        adapter.setDescriptionTextColor(getResources().getColor(R.color.colorPrimary));
+        adapter.setDescriptionTextColor(getResources().getColor(com.tokopedia.design.R.color.colorPrimary));
         adapter.setViewModels(viewModels);
         adapter.notifyDataSetChanged();
     }
@@ -697,14 +697,14 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected) {
-        String title = String.format("%s %s", getString(R.string.flight_booking_luggage_toolbar_title), selected.getDescription());
+        String title = String.format("%s %s", getString(com.tokopedia.flight.R.string.flight_booking_luggage_toolbar_title), selected.getDescription());
         Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, luggages, selected);
         startActivityForResult(intent, REQUEST_CODE_PICK_LUGGAGE);
     }
 
     @Override
     public void navigateToMealPicker(List<FlightBookingAmenityViewModel> viewModel, FlightBookingAmenityMetaViewModel selected) {
-        String title = String.format("%s %s", getString(R.string.flight_booking_meal_toolbar_title), selected.getDescription());
+        String title = String.format("%s %s", getString(com.tokopedia.flight.R.string.flight_booking_meal_toolbar_title), selected.getDescription());
         Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, viewModel, selected);
         startActivityForResult(intent, REQUEST_CODE_PICK_MEAL);
     }
@@ -780,12 +780,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     private void navigateToChooseNationality() {
         startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(),
-                getString(R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY);
+                getString(com.tokopedia.flight.R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY);
     }
 
     private void navigateToChooseIssuerCountry() {
         startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(),
-                getString(R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY);
+                getString(com.tokopedia.flight.R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY);
     }
 
     @Override

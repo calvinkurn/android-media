@@ -15,7 +15,7 @@ public interface TkpdCoreRouter {
             = "com.tokopedia.transaction.cart.activity.CartActivity";
 
     String CART_ACTIVITY_NEW
-            = "com.tokopedia.checkout.view.feature.cartlist.CartActivity";
+            = "com.tokopedia.purchase_platform.features.checkout.view.feature.cartlist.CartActivity";
 
     String INBOX_TICKET_ACTIVITY = "com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity";
 

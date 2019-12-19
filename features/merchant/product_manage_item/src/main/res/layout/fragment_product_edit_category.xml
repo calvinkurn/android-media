@@ -10,14 +10,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             style="@style/TextView.TitleBig.Bold"
             android:text="@string/product_label_product_category"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/titleCategoryRecommendation"
             style="@style/TextView.Title.BlackSecondary"
             android:text="@string/product_label_category_recommendation"
@@ -26,12 +26,12 @@
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/labelNotFindCategory"
             style="@style/TextView.Title.Bold"
             android:text="@string/product_label_not_find_category"
@@ -58,7 +58,7 @@
             android:background="@drawable/line_divider"
             android:layout_marginLeft="@dimen/dp_16" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/titleCatalog"
             style="@style/TextView.TitleBig.Bold"
             android:text="@string/product_label_choose_product_catalog"

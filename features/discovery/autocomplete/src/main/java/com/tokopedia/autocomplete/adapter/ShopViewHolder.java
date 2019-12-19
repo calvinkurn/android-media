@@ -1,7 +1,7 @@
 package com.tokopedia.autocomplete.adapter;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;

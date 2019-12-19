@@ -1,11 +1,12 @@
 package com.tokopedia.home.beranda.presentation.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
+import com.google.android.material.tabs.TabLayout
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,13 +24,13 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_parent_business_unit.*
 import javax.inject.Inject
 
-class TabBusinessFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedListener {
+class TabBusinessFragment : BaseDaggerFragment(), ViewPager.OnPageChangeListener {
+    private var tabList: List<HomeWidget.TabItem> = arrayListOf()
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: TabBusinessViewModel
     lateinit var adapter: TabBusinessViewPagerAdapter
     private var positionWidget: Int = 0
-    private var isFirstTabImpression: Boolean = false
 
     override fun getScreenName(): String {
         return TabBusinessFragment::class.java.simpleName
@@ -70,12 +71,13 @@ class TabBusinessFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedListene
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        isFirstTabImpression = true
         errorView.visibility = View.GONE
         container.visibility = View.GONE
         temporayPlaceHolders.visibility = View.VISIBLE
 
-        getTabBusinessUnit()
+        if (tabList.isEmpty()) {
+            getTabBusinessUnit()
+        }
         buttonReload.setOnClickListener {
             errorView.visibility = View.GONE
             container.visibility = View.GONE
@@ -109,27 +111,20 @@ class TabBusinessFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedListene
     }
 
     private fun onSuccessGetTabBusinessWidget(homeWidget: HomeWidget) {
+        tabList = homeWidget.tabBusinessList;
         errorView.visibility = View.GONE
         container.visibility = View.VISIBLE
         temporayPlaceHolders.visibility = View.GONE
-
-        tabLayout.removeAllTabs()
-        addChildTabLayout(homeWidget.tabBusinessList)
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
 
         adapter = TabBusinessViewPagerAdapter(childFragmentManager, homeWidget.tabBusinessList, homeWidget.widgetHeader.backColor, positionWidget)
         viewPager.adapter = adapter
         viewPager.offscreenPageLimit = homeWidget.tabBusinessList.size
+        viewPager.removeOnPageChangeListener(this)
+        viewPager.addOnPageChangeListener(this)
         viewPager.setCanScrollHorizontal(false)
-        addTabLayoutListener(adapter)
-    }
-
-    private fun addChildTabLayout(list: List<HomeWidget.TabItem>) {
-        list.forEach {
-            val tab = tabLayout.newTab()
-            tab.text = it.name
-            tabLayout.addTab(tab)
-        }
+        tabLayout.setupWithViewPager(null)
+        tabLayout.setupWithViewPager(viewPager)
     }
 
     private fun onErrorGetTabBusinessWidget(throwable: Throwable) {
@@ -139,26 +134,15 @@ class TabBusinessFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedListene
         temporayPlaceHolders.visibility = View.GONE
     }
 
-    private fun addTabLayoutListener(adapter: TabBusinessViewPagerAdapter) {
-        viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
-
-        tabLayout.removeOnTabSelectedListener(this)
-        tabLayout.addOnTabSelectedListener(this)
+    override fun onPageScrollStateChanged(p0: Int) {
     }
 
-    override fun onTabReselected(tab: TabLayout.Tab) {
+    override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
     }
 
-    override fun onTabUnselected(tab: TabLayout.Tab) {
-    }
-
-    override fun onTabSelected(tab: TabLayout.Tab) {
-        if(!isFirstTabImpression) {
-            HomePageTracking.eventClickTabHomeWidget(activity, tab.text.toString().toLowerCase())
-        }
-        isFirstTabImpression = false
-        viewPager.setCurrentItem(tab.position, false)
+    override fun onPageSelected(tabPosition: Int) {
+        val tab = tabList[tabPosition]
+        HomePageTracking.eventClickTabHomeWidget(activity, tab.name.toString().toLowerCase())
         adapter.notifyDataSetChanged()
     }
-
 }

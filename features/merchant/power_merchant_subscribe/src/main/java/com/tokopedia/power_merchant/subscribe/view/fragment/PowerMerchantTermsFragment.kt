@@ -2,7 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -18,6 +18,8 @@ import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeCom
 import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseWebViewFragment
+import com.tokopedia.webview.KEY_URL
+import com.tokopedia.webview.TkpdWebView
 import kotlinx.android.synthetic.main.fragment_power_merchant_terms.*
 import javax.inject.Inject
 
@@ -37,6 +39,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
 
     companion object {
         fun createInstance(bundle: Bundle): Fragment {
+            bundle.putString(KEY_URL, TERMS_AND_CONDITION_URL)
             return PowerMerchantTermsFragment().apply {
                 arguments = bundle
             }
@@ -70,18 +73,6 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
         return R.layout.fragment_power_merchant_terms
     }
 
-    override fun getUrl(): String {
-        return TERMS_AND_CONDITION_URL
-    }
-
-    override fun getUserIdForHeader(): String? {
-        return userSession.userId
-    }
-
-    override fun getAccessToken(): String? {
-        return userSession.accessToken
-    }
-
     override fun onLoadFinished() {
         super.onLoadFinished()
         footer?.visible()
@@ -105,6 +96,14 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
 
     override fun onError(throwable: Throwable?) {
         view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable))
+    }
+
+    override fun setWebView(): Int {
+        return R.id.webviewPm
+    }
+
+    override fun setProgressBar(): Int {
+        return R.id.progressbarPm
     }
 
     private fun initVar() {

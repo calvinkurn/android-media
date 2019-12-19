@@ -1,57 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_view_most_helpful_review"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_shadow"
+    android:orientation="vertical"
     android:padding="@dimen/dp_16"
-    android:background="@drawable/bg_bottom_shadow_top_line"
     android:visibility="gone"
     tools:visibility="visible">
 
+    <ImageView
+        android:id="@+id/rating_review"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_9"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_thumb_like"
+        tools:srcCompat="@drawable/ic_star_five" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_review"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_16"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/txt_desc_review"
+        tools:visibility="visible" />
+
     <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/most_helpful_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/title_most_helpful_review"
         app:fontSize="title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:textViewTheme="lightPrimary"
-        app:weight="medium"/>
+        app:weight="medium" />
 
-    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
-        android:id="@+id/review_viewpager"
-        android:layout_width="@dimen/dp_340"
-        android:layout_height="@dimen/dp_240"
-        android:layout_gravity="center_horizontal"
-        android:padding="@dimen/dp_4"
-        android:layout_marginTop="@dimen/dp_16"/>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_thumb_like"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@drawable/bg_rounded_grey_250"
+        android:drawablePadding="@dimen/dp_4"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_4"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/most_helpful_title"
+        app:layout_constraintEnd_toStartOf="@+id/txt_like_static"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="53 orang"
+        tools:visibility="visible" />
 
-    <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
-        android:id="@+id/review_page_indicator"
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_like_static"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_5"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_gravity="center_horizontal"
-        app:fillColor="@color/tkpd_main_green"
-        app:pageColor="@color/white"/>
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:text="@string/txt_most_helpfull"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_thumb_like"
+        app:layout_constraintLeft_toRightOf="@+id/txt_thumb_like"
+        app:layout_constraintTop_toTopOf="@+id/txt_thumb_like"
+        app:typographyType="small"
+        tools:text="terbantu dengan ulasan ini"
+        tools:visibility="visible" />
 
-    <View android:background="@color/grey_300"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_half"/>
-
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/txt_see_all_review"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_desc_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_5"
-        android:gravity="end"
-        android:textColor="@color/tkpd_main_green"
-        android:lineSpacingExtra="@dimen/sp_8"
-        tools:text="@string/label_see_all_review"
-        app:fontSize="small"
-        android:layout_marginBottom="@dimen/dp_8"/>
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintTop_toBottomOf="@+id/txt_variant_review"
+        app:typographyType="body_2"
+        tools:text="Saya sangat puas sekali!! Awalnya saya gak percaya. Dengan memakai headphone ini, saya dapat mendengarkan percakapan tetangga sebelah rumah.. Selengkapnya" />
 
-</LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_variant_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rating_review"
+        app:typographyType="small"
+        tools:text="Variant: Maroon pad with headrest 256 kilobyte" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_date_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_review"
+        app:typographyType="small"
+        tools:text="Hari ini oleh Karinananana von Ziegezar" />
+</androidx.constraintlayout.widget.ConstraintLayout>

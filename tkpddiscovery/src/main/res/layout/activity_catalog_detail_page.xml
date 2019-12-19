@@ -1,4 +1,4 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
@@ -14,69 +14,16 @@
         android:layout_below="@+id/catalog_layout"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <LinearLayout
+    <com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
         android:id="@+id/search_nav_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_20"
-        android:layout_gravity="bottom|center_horizontal"
-        android:background="@drawable/background_search_navigation"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_gravity="bottom|center_horizontal">
 
-        <ImageView
-            android:id="@+id/icon_sort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/catalog_ic_sort"
-            android:paddingLeft="@dimen/dp_22"
-            android:paddingTop="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_12" />
+    </com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/button_sort"
-            style="@style/TextView.Small.BlackPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:paddingRight="@dimen/dp_16"
-            android:text="@string/sort"
-            app:typographyType="body_2"
-            android:paddingTop="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_12" />
-
-        <View
-            android:id="@+id/search_nav_divider"
-            android:layout_width="1px"
-            android:layout_height="@dimen/dp_32"
-            android:background="@color/grey_300" />
-
-        <ImageView
-            android:id="@+id/icon_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/catalog_ic_filter"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_12" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/button_filter"
-            style="@style/TextView.Small.BlackPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:text="@string/filter"
-            app:typographyType="body_2"
-            android:paddingRight="@dimen/dp_22"
-            android:paddingTop="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_12" />
-
-    </LinearLayout>
-
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -87,14 +34,14 @@
             app:layout_scrollFlags="scroll|enterAlways"
             android:orientation="vertical">
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
                 app:titleTextColor="@color/black_70">
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -155,9 +102,9 @@
                         app:layout_constraintRight_toLeftOf="@+id/img_share_button"
                         app:typographyType="heading_4"
                         tools:text="Iphone X - 64GB" />
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </android.support.v7.widget.Toolbar>
+            </androidx.appcompat.widget.Toolbar>
 
             <FrameLayout
                 android:id="@+id/parent_view"
@@ -165,7 +112,7 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.tokopedia.filter.widget.BottomSheetFilterView
         android:id="@+id/bottomSheetFilter"
@@ -176,4 +123,4 @@
         android:elevation="@dimen/dp_10"
         app:layout_behavior="com.tokopedia.filter.widget.UserLockBottomSheetBehavior"
         tools:visibility="gone"/>
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

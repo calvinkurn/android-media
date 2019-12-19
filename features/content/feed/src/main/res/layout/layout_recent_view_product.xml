@@ -17,9 +17,9 @@
             android:layout_weight="1"
             android:fontFamily="sans-serif-medium"
             android:padding="@dimen/dp_10"
-            android:text="@string/sub_history_product"
+            android:text="@string/text_sub_history_product"
             android:textColor="@color/font_black_primary_70"
-            android:textSize="@dimen/fontvs"
+            android:textSize="@dimen/sp_12"
             android:textStyle="normal" />
 
         <TextView
@@ -30,14 +30,14 @@
             android:focusable="true"
             android:fontFamily="sans-serif-medium"
             android:padding="@dimen/dp_10"
-            android:text="@string/title_see_all"
+            android:text="@string/text_title_see_all"
             android:textColor="@color/tkpd_main_green"
-            android:textSize="@dimen/fontvs" />
+            android:textSize="@dimen/sp_12" />
 
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/history_product_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

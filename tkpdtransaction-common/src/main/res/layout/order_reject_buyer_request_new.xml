@@ -25,12 +25,12 @@
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/layout_order_reject_reason"
                 tools:itemCount="3"/>
 

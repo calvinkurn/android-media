@@ -18,9 +18,9 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringDef;
-import android.support.media.ExifInterface;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringDef;
+import androidx.exifinterface.media.ExifInterface;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 

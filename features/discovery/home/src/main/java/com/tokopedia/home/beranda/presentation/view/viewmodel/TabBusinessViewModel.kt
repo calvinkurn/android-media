@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest

@@ -3,10 +3,10 @@ package com.tokopedia.contactus.inboxticket2.view.behaviour;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
+import androidx.cardview.widget.CardView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +45,7 @@ public class QuickHideBehaviour extends CoordinatorLayout.Behavior<View> {
         super(context, attrs);
 
         TypedArray a = context.getTheme()
-                .obtainStyledAttributes(new int[]{R.attr.actionBarSize});
+                .obtainStyledAttributes(new int[]{android.R.attr.actionBarSize});
 //Use half the standard action bar height
         mScrollThreshold = a.getDimensionPixelSize(0, 0) / 2;
         a.recycle();

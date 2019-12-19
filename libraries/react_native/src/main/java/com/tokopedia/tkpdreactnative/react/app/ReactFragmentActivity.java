@@ -3,8 +3,8 @@ package com.tokopedia.tkpdreactnative.react.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -14,11 +14,14 @@ import android.widget.ProgressBar;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.core.router.reactnative.IReactNativeRouter;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactNavigationModule;
+import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
+import com.tokopedia.analytics.firebase.FirebaseParams;
+import java.util.Date;
 
 /**
  *
@@ -28,16 +31,21 @@ import com.tokopedia.tkpdreactnative.react.ReactNavigationModule;
 
 public abstract class ReactFragmentActivity<T extends ReactNativeFragment> extends BaseActivity implements ReactNativeView {
 
+    private static final String REACT_NATIVE_FIREBASE_TRACE = "react_native_firebase_trace";
     public static final String IS_DEEP_LINK_FLAG = "is_deep_link_flag";
     public static final String ANDROID_INTENT_EXTRA_REFERRER = "android.intent.extra.REFERRER";
     public static final String DEEP_LINK_URI = "deep_link_uri";
 
     private ProgressBar loaderBootingReact;
     private Toolbar toolbar;
+    private PerformanceMonitoring performanceMonitoring;
+    private long startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startTime = new Date().getTime();
+        performanceMonitoring = PerformanceMonitoring.start(REACT_NATIVE_FIREBASE_TRACE);
         setContentView(R.layout.activity_react_native);
         initView();
     }
@@ -71,7 +79,7 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
         if (requestCode == ReactConst.REACT_LOGIN_REQUEST_CODE){
             if (resultCode == Activity.RESULT_OK){
                 String UserID = ReactNavigationModule.getUserId(this);
-                ((IReactNativeRouter) getApplication()).sendLoginEmitter(UserID);
+                ((ReactNativeRouter) getApplication()).sendLoginEmitter(UserID);
             }
         } else if (requestCode == ReactConst.REACT_ADD_CREDIT_CARD_REQUEST_CODE) {
             ReactInstanceManager reactInstanceManager = ((ReactApplication) getApplication()).getReactNativeHost().getReactInstanceManager();
@@ -116,6 +124,8 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
 
     @Override
     public void hideLoaderReactPage() {
+        performanceMonitoring.putMetric(FirebaseParams.Discovery.LOAD_TIME, new Date().getTime() - startTime);
+        performanceMonitoring.stopTrace();
         loaderBootingReact.setVisibility(View.GONE);
     }
 

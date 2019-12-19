@@ -1,8 +1,8 @@
 package com.tokopedia.cacheapi.data.source.db.model
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity(tableName = CacheApiData.TABLE_NAME, primaryKeys = [CacheApiData.COLUMN_HOST, CacheApiData.COLUMN_PATH, CacheApiData.COLUMN_REQUEST_PARAM, CacheApiData.COLUMN_METHOD])

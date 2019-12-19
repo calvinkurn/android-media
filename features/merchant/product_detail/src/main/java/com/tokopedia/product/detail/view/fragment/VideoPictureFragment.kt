@@ -6,7 +6,7 @@ import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -108,6 +108,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
         if (mediaSource.isBlank()) return
 
         if (mediaType == TYPE_IMAGE) {
+            volume_pdp.hide()
             img_pdp_video.show()
             video_player_pdp.hide()
             loading_pdp.hide()
@@ -115,23 +116,24 @@ class VideoPictureFragment : BaseDaggerFragment() {
             if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
                 img_pdp_video.scaleType = ImageView.ScaleType.FIT_CENTER
                 if (mediaSource.isNotEmpty()) {
-                    Glide.with(context)
+                    Glide.with(view.context)
                             .load(mediaSource)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                             .fitCenter()
                             .into(img_pdp_video)
                 }
             } else {
                 img_pdp_video.scaleType = ImageView.ScaleType.CENTER_CROP
                 if (mediaSource.isNotEmpty()) {
-                    Glide.with(context)
+                    Glide.with(view.context)
                             .load(mediaSource)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                             .centerCrop()
                             .into(img_pdp_video)
                 }
             }
         } else {
+            volume_pdp.show()
             video_player_pdp.show()
             loading_pdp.show()
             img_pdp_video.hide()

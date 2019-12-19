@@ -16,20 +16,31 @@
     <string name="path_profile_completion">/profile-completion</string>
     <string name="path_setting_profile">/setting-profile</string>
     <string name="path_user_identification_info">/user-identification-info</string>
+    <string name="path_user_identification_form">/user-identification-form</string>
+    <string name="path_change_name">/change-name</string>
     <string name="path_change_gender">/change-gender</string>
     <string name="path_change_phone_number">/change-phone-number</string>
+    <string name="path_change_pin">/change-pin</string>
     <string name="path_add_email">/add-email</string>
     <string name="path_add_phone">/add-phone</string>
     <string name="path_cotp">/cotp</string>
+    <string name="path_otp_validator">/otp-validator</string>
     <string name="path_image_picker">/image-picker</string>
     <string name="path_webview" translatable="false">/webview</string>
     <string name="path_setting_profile_phone_verification" translatable="false">/setting-profile-phone-verification</string>
+    <string name="path_setting_referral_phone_verification" translatable="false">/setting-referral-phone-verification</string>
     <string name="path_dynamic_features_install" translatable="false">/dynamic-features-install/.*\\/</string>
     <string name="path_add_bod">/add-bod</string>
+    <string name="path_logout" translatable="false">/logout</string>
     <string name="path_add_pin">/add-pin</string>
     <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
+    <string name="path_add_pin_complete">/add-pin-complete</string>
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
     <string name="path_add_bank" translatable="false">/add-bank</string>
-    <string name="path_saldo_deposit">/saldo</string>
-    <string name="path_saldo_intro">/saldo-intro</string>
+    <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
+    <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
+    <string name="path_change_email_register">/change-email-register</string>
+    <string name="path_email_register">/email-register</string>
+    <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
+    <string name="path_oqr_pin_url_response">/ovoqrthanks/.*\\/</string>
 </resources>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="66dp"
     android:layout_height="@dimen/dp_85"
     android:layout_margin="@dimen/dp_8"
@@ -33,4 +33,4 @@
         android:lineSpacingExtra="4sp"
         android:gravity="center_horizontal"
         tools:text="Top Up &amp; Tagihan"/>
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

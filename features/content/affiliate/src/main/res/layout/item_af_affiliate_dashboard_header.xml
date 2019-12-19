@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -84,7 +84,7 @@
 
         </RelativeLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <LinearLayout
         android:id="@+id/shareBtn"
@@ -93,7 +93,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:background="@drawable/bg_btn_green"
+        android:background="@drawable/bg_af_btn_green"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"
@@ -110,7 +110,7 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
@@ -196,7 +196,7 @@
 
         </RelativeLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
@@ -208,7 +208,7 @@
         android:textColor="@color/black_70"
         app:typographyType="heading_3" />
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
@@ -294,7 +294,7 @@
 
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <LinearLayout
         android:layout_width="match_parent"

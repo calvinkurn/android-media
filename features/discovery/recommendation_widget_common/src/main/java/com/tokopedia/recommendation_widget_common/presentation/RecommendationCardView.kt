@@ -5,7 +5,7 @@ package com.tokopedia.recommendation_widget_common.presentation
  */
 
 import android.content.Context
-import android.support.v7.widget.CardView
+import androidx.cardview.widget.CardView
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
@@ -36,7 +36,7 @@ open class RecommendationCardView : ProductCardView {
         setImageUrl(item.imageUrl)
         setTopAdsVisible(item.isTopAds)
         setSlashedPrice(item.slashedPrice)
-        setDiscount(item.discountPercentage)
+        setDiscount(item.discountPercentageInt)
         setWishlistButtonVisible(false)
         setRatingReviewCount(item.rating, item.countReview)
         setBadges(item.badgesUrl)

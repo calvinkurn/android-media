@@ -16,6 +16,18 @@
         android:paddingTop="@dimen/activity_vertical_margin">
 
         <TextView
+            android:id="@+id/review_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Review Notification"
+            android:textColor="@color/white" />
+
+        <TextView
             android:id="@+id/access_token"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -136,7 +148,7 @@
             android:padding="@dimen/margin_small"
             android:text="Enable ANR Debugger" />
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/remote_config_prefix"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -148,7 +160,7 @@
             android:hint="@string/remote_config_prefix_placeholder"
             app:backgroundTint="@color/Green_G500" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/remote_config_start"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -182,7 +194,7 @@
             </TableRow>
         </TableLayout>
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/ip_groupchat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -256,6 +268,11 @@
                 android:layout_weight="2"/>
 
         </LinearLayout>
-
+<!--
+        <com.tokopedia.translator.ui.TranslatorSettingView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+-->
     </LinearLayout>
 </ScrollView>

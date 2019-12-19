@@ -1,6 +1,6 @@
 package com.tokopedia.train.passenger.data;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import static com.tokopedia.train.passenger.data.TrainPassengerTitle.NONA;
 import static com.tokopedia.train.passenger.data.TrainPassengerTitle.NYONYA;

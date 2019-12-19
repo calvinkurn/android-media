@@ -1,4 +1,4 @@
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardViewProductCard"
@@ -9,14 +9,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutProductCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_8"
         tools:layout_height="match_parent">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardViewImageProduct"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                 tools:visibility="visible"
                 tools:src="@color/colorPink" />
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelPromo"
@@ -287,6 +287,21 @@
             tools:text="Credibility Label"
             tools:visibility="gone" />
 
+        <ImageView
+            android:id="@+id/imageFreeOngkirPromo"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/linearLayoutImageRating"
+            app:layout_constraintLeft_toRightOf="@id/cardViewImageProduct"
+            tools:visibility="visible" />
+
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelOffers"
             android:layout_width="wrap_content"
@@ -295,7 +310,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/linearLayoutImageRating"
+            app:layout_constraintTop_toBottomOf="@id/imageFreeOngkirPromo"
             app:layout_constraintLeft_toRightOf="@id/cardViewImageProduct"
             tools:text="Offers Label"
             tools:visibility="visible" />
@@ -313,6 +328,6 @@
             app:srcCompat="@drawable/product_card_v2_ic_topads"
             tools:visibility="visible" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

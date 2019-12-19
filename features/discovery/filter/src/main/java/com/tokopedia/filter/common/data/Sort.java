@@ -20,6 +20,9 @@ public final class Sort implements Parcelable {
     @SerializedName(value="input_type", alternate={"inputType"})
     @Expose
     String inputType;
+    @SerializedName("applyFilter")
+    @Expose
+    String applyFilter;
 
     public String getName() {
         return name;
@@ -53,9 +56,20 @@ public final class Sort implements Parcelable {
         this.inputType = inputType;
     }
 
+    public String getApplyFilter() {
+        return applyFilter;
+    }
+
+    public void setApplyFilter(String applyFilter) {
+        this.applyFilter = applyFilter;
+    }
+
     @Override
     public String toString() {
         return getName();
+    }
+
+    public Sort() {
     }
 
     @Override
@@ -69,9 +83,7 @@ public final class Sort implements Parcelable {
         dest.writeString(this.key);
         dest.writeString(this.value);
         dest.writeString(this.inputType);
-    }
-
-    public Sort() {
+        dest.writeString(this.applyFilter);
     }
 
     protected Sort(Parcel in) {
@@ -79,6 +91,7 @@ public final class Sort implements Parcelable {
         this.key = in.readString();
         this.value = in.readString();
         this.inputType = in.readString();
+        this.applyFilter = in.readString();
     }
 
     public static final Creator<Sort> CREATOR = new Creator<Sort>() {

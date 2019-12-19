@@ -17,15 +17,15 @@
 package testutils;
 
 import android.graphics.Typeface;
-import android.support.design.widget.TextInputLayout;
-import android.support.test.espresso.UiController;
-import android.support.test.espresso.ViewAction;
-import android.support.test.espresso.matcher.ViewMatchers;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.matcher.ViewMatchers;
 import android.view.View;
 
 import org.hamcrest.Matcher;
 
-import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 
 public class TextInputLayoutActions {
 
@@ -386,7 +386,7 @@ public class TextInputLayoutActions {
                 TextInputLayout textInputLayout = (TextInputLayout) view;
                 // Reach in and find the password toggle since we don't have a public API
                 // to get a reference to it
-                View passwordToggle = textInputLayout.findViewById(android.support.design.R.id.text_input_password_toggle);
+                View passwordToggle = textInputLayout.findViewById(com.google.android.material.R.id.text_input_password_toggle);
                 passwordToggle.performClick();
             }
         };

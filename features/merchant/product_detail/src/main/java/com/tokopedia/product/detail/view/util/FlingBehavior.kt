@@ -1,8 +1,8 @@
 package com.tokopedia.product.detail.view.util
 
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CoordinatorLayout
-import android.support.v4.widget.NestedScrollView
+import com.google.android.material.appbar.AppBarLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.widget.NestedScrollView
 import android.view.View
 import android.widget.Scroller
 

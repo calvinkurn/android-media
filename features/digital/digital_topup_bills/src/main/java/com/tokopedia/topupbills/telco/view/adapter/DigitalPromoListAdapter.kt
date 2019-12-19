@@ -1,8 +1,8 @@
 package com.tokopedia.topupbills.telco.view.adapter
 
 import android.content.Context
-import android.support.v7.content.res.AppCompatResources
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -92,7 +92,7 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
                 btnCopyPromo.text = context.getString(R.string.text_has_copied_promo_code)
                 btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.white))
             } else {
-                containerBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_round)
+                containerBg = AppCompatResources.getDrawable(context, com.tokopedia.common.topupbills.R.drawable.common_topup_bg_transparent_round)
                 btnCopyBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_border_green)
                 btnCopyPromo.text = context.getString(R.string.text_copy_promo_code)
                 btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.tkpd_main_green))

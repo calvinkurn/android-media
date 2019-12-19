@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/detail_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -38,21 +38,21 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 android:text="@string/action_share"
-                android:textSize="@dimen/fontm"/>
+                android:textSize="@dimen/sp_16"/>
 
             <TextView
                 android:id="@+id/see_shop"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/btn_height"
                 android:layout_weight="1"
-                android:background="@color/colorGreen"
+                android:background="@color/tkpd_main_green"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 android:text="@string/see_shop"
                 android:textColor="@color/white"
-                android:textSize="@dimen/fontm"/>
+                android:textSize="@dimen/sp_16"/>
         </LinearLayout>
     </LinearLayout>
 

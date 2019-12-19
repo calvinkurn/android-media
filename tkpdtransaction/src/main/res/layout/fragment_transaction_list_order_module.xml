@@ -29,7 +29,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/quick_filter">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/order_list_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -50,6 +50,7 @@
         android:visibility="gone"
         tools:visibility="visible">
         <ImageView
+            android:id="@+id/filter_image"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
@@ -59,6 +60,7 @@
             android:layout_marginBottom="@dimen/dp_10"
             app:srcCompat="@drawable/ic_filter_button" />
         <TextView
+            android:id="@+id/filter_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

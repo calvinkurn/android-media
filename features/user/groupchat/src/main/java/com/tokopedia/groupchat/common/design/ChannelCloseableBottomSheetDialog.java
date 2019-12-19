@@ -2,8 +2,8 @@ package com.tokopedia.groupchat.common.design;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetDialog;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;

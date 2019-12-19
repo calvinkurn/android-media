@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatlist.adapter
 
-import android.support.v7.util.DiffUtil
+import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -51,9 +51,10 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
     }
 
     fun deleteItem(position: Int) {
+        if (position == -1) return
+
         data.removeAt(position)
         notifyItemRemoved(position)
-        notifyItemRangeChanged(position, data.size)
     }
 
 }

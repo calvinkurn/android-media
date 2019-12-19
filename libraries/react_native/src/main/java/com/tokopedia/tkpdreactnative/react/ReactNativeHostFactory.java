@@ -3,13 +3,13 @@ package com.tokopedia.tkpdreactnative.react;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.microsoft.codepush.react.CodePush;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 
 import java.util.Arrays;
 import java.util.List;

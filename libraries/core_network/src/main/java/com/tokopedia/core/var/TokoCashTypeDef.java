@@ -1,6 +1,6 @@
 package com.tokopedia.core.var;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import static com.tokopedia.core.var.TokoCashTypeDef.TOKOCASH_ACTIVE;
 import static com.tokopedia.core.var.TokoCashTypeDef.TOKOCASH_INACTIVE;

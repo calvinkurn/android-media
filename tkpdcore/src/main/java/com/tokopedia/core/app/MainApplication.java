@@ -8,11 +8,16 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
-import android.support.multidex.MultiDex;
+import android.util.Log;
+
+import androidx.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
@@ -157,19 +162,12 @@ public abstract class MainApplication extends MainRouterApplication{
 
     private void upgradeSecurityProvider() {
         try {
-            ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
-                @Override
-                public void onProviderInstalled() {
-                    // Do nothing
-                }
-
-                @Override
-                public void onProviderInstallFailed(int i, Intent intent) {
-                    // Do nothing
-                }
-            });
+            ProviderInstaller.installIfNeeded(this);
+        } catch (GooglePlayServicesRepairableException e) {
+            GoogleApiAvailability.getInstance().showErrorNotification(this, e.getConnectionStatusCode());
         } catch (Throwable t) {
             // Do nothing
+            t.printStackTrace();
         }
     }
 
@@ -213,8 +211,7 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     private void initBranch() {
-        LinkerManager.initLinkerManager(getApplicationContext());
-
+        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         UserSession userSession = new UserSession(this);
 
         if(userSession.isLoggedIn()) {

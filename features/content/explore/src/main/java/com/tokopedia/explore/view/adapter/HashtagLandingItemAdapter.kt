@@ -1,8 +1,8 @@
 package com.tokopedia.explore.view.adapter
 
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.view.View
@@ -17,9 +17,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.explore.R
 import com.tokopedia.explore.domain.entity.PostKol
+import com.tokopedia.explore.domain.entity.Tracking
+import com.tokopedia.explore.view.type.ExploreCardType
 import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.feedcomponent.util.TagConverter
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_explore_hashtag_landing_item.view.*
 import java.net.URLEncoder
@@ -177,19 +178,23 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                     post_thumbnail.visible()
                     post_thumbnail.addOnImpressionListener(uiModel.impressHolder) {
                         listener?.onImageFirstTimeSeen(item, position)
+                        listener?.onAffiliateTrack(uiModel.postKol.tracking, false)
                     }
                     when {
                         item.content.size > 1 -> {
                             badge.loadImageDrawable(R.drawable.ic_affiliate_multi)
                             badge.visible()
                         }
-                        thumbnail.type == KolPostViewModel.TYPE_VIDEO -> {
+                        thumbnail.type == ExploreCardType.Video.typeString -> {
                             badge.loadImageDrawable(R.drawable.ic_affiliate_video)
                             badge.visible()
                         }
                         else -> badge.gone()
                     }
-                    post_thumbnail.setOnClickListener { listener?.onImageClick(item, position) }
+                    post_thumbnail.setOnClickListener {
+                        listener?.onImageClick(item, position)
+                        listener?.onAffiliateTrack(uiModel.postKol.tracking, true)
+                    }
                 }
 
                 creator_img.shouldShowWithAction(!item.userPhoto.isNullOrBlank()){
@@ -214,6 +219,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
         fun onImageClick(post: PostKol, position: Int)
         fun onUserImageClick(post: PostKol)
         fun onUserNameClick(post: PostKol)
+        fun onAffiliateTrack(trackingList: List<Tracking>, isClick: Boolean)
     }
 }
 

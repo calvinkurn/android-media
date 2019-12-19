@@ -1,6 +1,6 @@
 package com.tokopedia.session.data.viewmodel.login;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 

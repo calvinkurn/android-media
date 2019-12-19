@@ -1,9 +1,8 @@
 package com.tokopedia.ovop2p.viewmodel
 
-import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.content.Context
+import androidx.lifecycle.ViewModel
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.ovop2p.Constants
@@ -16,23 +15,23 @@ import java.util.HashMap
 
 import rx.Subscriber
 
-class OvoP2pTransferRequestViewModel(application: Application) : AndroidViewModel(application) {
+class OvoP2pTransferRequestViewModel: ViewModel() {
 
     var transferReqBaseMutableLiveData = MutableLiveData<TransferRequestState>()
     private var transferRequestSubscriber: Subscriber<GraphqlResponse>? = null
 
     fun makeTransferRequestCall(context: Context, transferReqMap: HashMap<String, Any>) {
-        OvoP2pUtil.executeOvoP2pTransferRequest(context, getTransferRequestSubscriber(), transferReqMap)
+        OvoP2pUtil.executeOvoP2pTransferRequest(context, getTransferRequestSubscriber(context), transferReqMap)
     }
 
-    private fun getTransferRequestSubscriber(): Subscriber<GraphqlResponse> {
+    private fun getTransferRequestSubscriber(context:Context): Subscriber<GraphqlResponse> {
         transferRequestSubscriber = object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
 
             }
 
             override fun onError(e: Throwable) {
-                transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(getApplication<Application>().resources.getString(R.string.general_error))
+                transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(context.resources.getString(R.string.general_error))
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
@@ -41,7 +40,7 @@ class OvoP2pTransferRequestViewModel(application: Application) : AndroidViewMode
                     reqObj.errors?.let { errList ->
                         if (errList.isNotEmpty()) {
                             errList[0][Constants.Keys.MESSAGE]?.let { errMsg ->
-                                if (errMsg.contentEquals(getApplication<Application>().resources.getString(R.string.non_ovo_usr))) {
+                                if (errMsg.contentEquals(context.resources.getString(R.string.non_ovo_usr))) {
                                     transferReqBaseMutableLiveData.value = TransferReqNonOvo()
                                 } else {
                                     transferReqBaseMutableLiveData.value = TransferReqErrorPage(errMsg)
@@ -52,7 +51,7 @@ class OvoP2pTransferRequestViewModel(application: Application) : AndroidViewMode
                         }
                     }
                 } ?: run {
-                    transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(getApplication<Application>().resources.getString(R.string.general_error))
+                    transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(context.resources.getString(R.string.general_error))
                 }
             }
         }

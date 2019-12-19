@@ -41,6 +41,10 @@ query SearchProduct(
             category_breadcrumb
             department_id
             department_name
+          	free_ongkir {
+              is_active
+              img_url
+            }
             labels {
                 title
                 color
@@ -131,6 +135,10 @@ query SearchProduct(
                 product_new_label
                 product_cashback_rate
                 product_rating
+              	free_ongkir {
+                  is_active
+                  img_url
+                }
                 campaign {
                     original_price
                     discount_percentage

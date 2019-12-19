@@ -11,7 +11,7 @@
         style="@style/LabelLayout"
         android:layout_marginTop="@dimen/activity_vertical_margin">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             style="@style/TextView.Title.Bold"
             android:text="@string/product_label_product_delivery" />
     </LinearLayout>

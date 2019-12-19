@@ -54,6 +54,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private List<LabelGroupViewModel> labelGroupList = new ArrayList<>();
     private boolean isShopPowerBadge;
     private boolean isShopOfficialStore;
+    private FreeOngkirViewModel freeOngkirViewModel = new FreeOngkirViewModel();
 
     public boolean isTopAds() {
         return isTopAds;
@@ -339,6 +340,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return isShopOfficialStore;
     }
 
+    public void setFreeOngkirViewModel(FreeOngkirViewModel freeOngkirViewModel) {
+        this.freeOngkirViewModel = freeOngkirViewModel;
+    }
+
+    public FreeOngkirViewModel getFreeOngkirViewModel() {
+        return freeOngkirViewModel;
+    }
+
     public ProductItemViewModel() {
     }
 
@@ -359,24 +368,17 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "position", Integer.toString(getPosition()),
                 "userId", userId,
                 "shopId", getShopID(),
-                "dimension61", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams
+                "dimension61", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams,
+                "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other"
         );
+    }
+
+    private boolean isFreeOngkirActive() {
+        return freeOngkirViewModel != null && freeOngkirViewModel.isActive();
     }
 
     private String getActionFieldString(int pageNumber) {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
-    }
-
-    public Object getProductAsObjectDataLayerForImageSearch(String userId) {
-        return DataLayer.mapOf(
-                "name", getProductName(),
-                "id", getProductID(),
-                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
-                "category", "",
-                "list", String.format(imageClick, getPosition()),
-                "position", Integer.toString(getPosition()),
-                "userId", userId
-        );
     }
 
     @Override
@@ -421,6 +423,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeTypedList(this.labelGroupList);
         dest.writeByte(this.isShopPowerBadge ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isShopOfficialStore ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.freeOngkirViewModel, flags);
     }
 
     protected ProductItemViewModel(Parcel in) {
@@ -459,6 +462,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.labelGroupList = in.createTypedArrayList(LabelGroupViewModel.CREATOR);
         this.isShopPowerBadge = in.readByte() != 0;
         this.isShopOfficialStore = in.readByte() != 0;
+        this.freeOngkirViewModel = in.readParcelable(FreeOngkirViewModel.class.getClassLoader());
     }
 
     public static final Creator<ProductItemViewModel> CREATOR = new Creator<ProductItemViewModel>() {

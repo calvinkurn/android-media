@@ -1,4 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="pc_timer_disable_color">#DBDEE2</color>
+    <color name="promo_checkout_default_text_reward_color">#FFFFFF</color>
+    <color name="promo_checkout_default_reward_color">#FFD65C</color>
+    <color name="promo_checkout_toolbar_color">#33ffffff</color>
+    <color name="promo_checkout_egg_source_color">#ffd63b</color>
+    <color name="promo_checkout_red_toast_bg_color">#e6d6001c</color>
+    <color name="promo_checkout_gf_tint_close_color">#6C727C</color>
+    <color name="promo_checkout_charcoal_gray_88">#e131353b</color>
+    <color name="promo_checkout_coupon_detail_tint_close_color">#6C727C</color>
+    <color name="promo_checkout_catalogtitle_color">#f531353b</color>
+    <color name="promo_checkout_catalogsubtitle_color">#8f000000</color>
+    <color name="promo_checkout_bottom_separator_color">#f3f4f5</color>
+    <color name="promo_checkout_mid_separator_color">#f3f4f5</color>
+    <color name="promo_checkout_top_separator_color">#fef4f5</color>
+    <color name="promo_popup_negative_button_rounded_corner">#dbdee2</color>
+    <color name="promo_gradient_centercolor">#11111111</color>
+    <color name="promo_gradient_endcolor">#00222222</color>
+    <color name="promo_gradient_startcolor">#44000000</color>
+    <color name="promo_text_salsh_color">#fdebec</color>
+    <color name="promo_timer_color_bg">#f8f8f8</color>
+    <color name="promo_timer_color_progress">#16ea212d</color>
+    <color name="discounted_red_color">#ea212d</color>
+    <color name="promo_color_promocode">#fa591d</color>
+    <color name="promo_ticket_initial_bg">#ffebee</color>
+    <color name="promo_ticket_colorshadow">#e2e2e2</color>
 </resources>

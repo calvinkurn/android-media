@@ -1,6 +1,7 @@
 package com.tokopedia.home_recom.model.entity
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.recommendation_widget_common.data.SingleProductRecommendationEntity
 
 /**
  * Created by Lukas on 29/08/19
@@ -59,6 +60,8 @@ class SingleProductRecommendationEntity {
         var priceInt: Int = 0
         @SerializedName("shop")
         var shop: Shop? = Shop()
+        @SerializedName("freeOngkir")
+        var freeOngkirInformation: FreeOngkirInformation? = FreeOngkirInformation()
         @SerializedName("departmentId")
         var departmentId: Int = 0
         @SerializedName("rating")
@@ -95,6 +98,15 @@ class SingleProductRecommendationEntity {
 
             @SerializedName("title")
             var title: String? = ""
+            @SerializedName("imageUrl")
+            var imageUrl: String? = ""
+        }
+
+
+        class FreeOngkirInformation {
+
+            @SerializedName("isActive")
+            var isActive: Boolean? = false
             @SerializedName("imageUrl")
             var imageUrl: String? = ""
         }

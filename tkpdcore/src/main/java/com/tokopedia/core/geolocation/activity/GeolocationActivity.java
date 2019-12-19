@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.analytics.AppScreen;
@@ -21,7 +21,7 @@ import com.tokopedia.core.geolocation.presenter.GeolocationPresenterImpl;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core2.R;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 
 import org.jetbrains.annotations.NotNull;
 

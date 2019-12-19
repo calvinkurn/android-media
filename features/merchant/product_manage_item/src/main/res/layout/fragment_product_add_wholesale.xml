@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -39,13 +39,13 @@
                     style="@style/TextView.Micro"
                     android:visibility="gone" />
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view_wholesale"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16">
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
                 <TextView
                     android:id="@+id/text_view_add_wholesale"
@@ -54,8 +54,8 @@
                     android:text="@string/product_label_add_wholesale" />
 
             </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

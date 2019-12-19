@@ -7,7 +7,7 @@
         android:icon="@drawable/ic_search_white"
         android:orderInCategory="101"
         android:title="@string/search_product"
-        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always|collapseActionView" />
 
     <item

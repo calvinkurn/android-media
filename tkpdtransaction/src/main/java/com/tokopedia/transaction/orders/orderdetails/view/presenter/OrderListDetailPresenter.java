@@ -21,12 +21,14 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalTickerInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.Body;
 import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.Flags;
@@ -42,12 +44,13 @@ import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.Rec
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
+import com.tokopedia.transaction.orders.orderdetails.view.adapter.ItemsAdapter;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
-import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +76,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String PARAM = "param";
     private static final String INVOICE = "invoice";
     private static final String TAB_ID = "tabId";
+    private static final String CATEGORY_PRODUCT = "Kategori Produk";
     private static final int DEFAULT_TAB_ID = 1;
     private static final String DEVICE_ID = "device_id";
     private static final String CATEGORY_IDS = "category_ids";
@@ -97,6 +101,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public String pdfUri = " ";
     private boolean isdownloadable = false;
     private OrderDetails details;
+    private List<Body> retryBody = new ArrayList<>();
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -104,7 +109,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment) {
+    public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream) {
         if (getView() == null || getView().getAppContext() == null)
             return;
 
@@ -125,7 +130,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             variables.put(ORDER_ID, orderId);
             variables.put(DETAIL, 1);
             variables.put(ACTION, 1);
-            variables.put(UPSTREAM, "");
+            variables.put(UPSTREAM, upstream != null ? upstream : "");
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                     R.raw.orderdetails), DetailsData.class, variables, false);
@@ -214,6 +219,12 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                 if (actionButtonList != null)
                                     if (flag) {
                                         view.setTapActionButton(position, actionButtonList);
+                                        for (int i=0; i< actionButtonList.size();i++) {
+                                            if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH))
+                                            {
+                                                actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
+                                            }
+                                        }
                                     } else {
                                         view.setActionButton(position, actionButtonList);
                                     }
@@ -662,4 +673,20 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url);
     }
 
+    public String getProductCategory() {
+        if (details.title() != null) {
+            for (Title title : details.title()) {
+                if (title.label().equalsIgnoreCase(CATEGORY_PRODUCT))
+                    return title.value();
+            }
+        }
+        return null;
+    }
+
+    public void showRetryButtonToaster(String message) {
+        if (getView() == null)
+            return;
+
+        getView().showSuccessMessageWithAction(message);
+    }
 }

@@ -8,8 +8,4 @@ project.ext {
     artifactName ="use_case"
 }
 
-dependencies {
-
-}
-
 apply from: '../publish_local.gradle'

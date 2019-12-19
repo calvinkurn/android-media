@@ -38,5 +38,38 @@
     <string name="product_manage_label_stock_counter">Stok %1$d</string>
     <string name="product_manage_desc_product_on_supervision">Produk dalam Pengawasan %1$s</string>
     <string name="product_manage_feature_name_cashback">Cashback</string>
+    <string name="product_manage_bulk_count">%1$s produk dipilih</string>
+    <string name="product_manage_select_all">Pilih semua produk</string>
+    <string name="product_manage_empty_list_content">Yaah, produk tidak ditemukan</string>
+    <string name="product_manage_empty_list_title">Masukkan informasi produk yang benar di pencarian.</string>
+    <string name="product_manage_change_btn">Ubah</string>
+    <string name="product_manage_bulk_change_btn">Ubah sekaligus</string>
+
+
+    <string name="product_bs_etalase_title">Etalase produk</string>
+    <string name="product_bs_stock_title">Stok produk</string>
+    <string name="product_bs_delete_title">Hapus produk</string>
+    <string name="product_bs_title">Atur produk</string>
+
+    <string name="product_available">Stok Tersedia</string>
+
+    <string name="product_confirmation_bs_button_next">Ya, lanjutkan</string>
+    <string name="product_confirmation_title">Produk yang kamu pilih akan diubah bersamaan. Yakin ubah produk?</string>
+    <string name="product_confirmation_selected_product">Produk yang dipilih</string>
+
+    <string name="product_confirmation_bs_title_change">Ubah %1$s produk sekaligus ?</string>
+    <string name="product_confirmation_bs_title_change_single">Ubah 1 produk ?</string>
+    <string name="product_confirmation_bs_title_delete">Hapus %1$s produk sekaligus ?</string>
+    <string name="product_confirmation_bs_title_delete_single">Hapus 1 produk ?</string>
+
+    <string name="product_manage_bulk_snackbar">%1$s produk berhasil diubah, %2$s gagal diubah</string>
+    <string name="product_manage_bulk_snackbar_sucess">%1$s produk berhasil diubah</string>
+    <string name="product_manage_bulk_snackbar_sucess_delete">Produk berhasil dihapus</string>
+
+    <string name="coachmark_title_checkbox">Pilih produk sekaligus</string>
+    <string name="coachmark_desc_checkbox">Lebih mudah atur produk, tinggal pilih produk-produk yang ingin dikelola.</string>
+    <string name="coachmark_title_btn">Klik dan ubah</string>
+    <string name="coachmark_desc_btn">Pilih aktivitas produk yang ingin kamu ubah dengan klik tombol ‘Ubah Sekaligus’.</string>
+
 
 </resources>

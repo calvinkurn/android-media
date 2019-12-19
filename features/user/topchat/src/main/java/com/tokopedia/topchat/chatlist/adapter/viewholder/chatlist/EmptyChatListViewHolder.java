@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;

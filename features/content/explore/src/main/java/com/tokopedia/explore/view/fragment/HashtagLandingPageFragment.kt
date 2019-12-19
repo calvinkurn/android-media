@@ -1,12 +1,12 @@
 package com.tokopedia.explore.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v7.widget.StaggeredGridLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.explore.R
 import com.tokopedia.explore.di.ExploreComponent
 import com.tokopedia.explore.domain.entity.PostKol
+import com.tokopedia.explore.domain.entity.Tracking
 import com.tokopedia.explore.view.adapter.HashtagLandingItemAdapter
 import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.explore.view.viewmodel.HashtagLandingPageViewModel
@@ -158,6 +159,15 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
 
     override fun onImageFirstTimeSeen(post: PostKol, position: Int) {
         feedAnalytics.eventHashtagPageViewPost(post.id.toString(), searchTag, position)
+    }
+
+    override fun onAffiliateTrack(trackingList: List<Tracking>, isClick: Boolean) {
+        trackingList.forEach { tracking ->
+            viewModel.trackAffiliate(
+                    if (isClick) tracking.clickURL
+                    else tracking.viewURL
+            )
+        }
     }
 
     override fun onPause() {

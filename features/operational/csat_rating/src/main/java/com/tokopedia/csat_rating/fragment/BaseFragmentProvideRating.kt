@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,14 +30,14 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
 
     private lateinit var presenter: ProvideRatingContract.ProvideRatingPresenter
     private lateinit var component: CsatComponent
-    private lateinit var mTxtHelpTitle: TextView
-    private lateinit var mSmileLayout: LinearLayout
-    private lateinit var mTxtSmileSelected: TextView
-    private lateinit var mTxtFeedbackQuestion: TextView
-    private lateinit var mTxtFinished: TextView
+    protected lateinit var mTxtHelpTitle: TextView
+    protected lateinit var mSmileLayout: LinearLayout
+    protected lateinit var mTxtSmileSelected: TextView
+    protected lateinit var mTxtFeedbackQuestion: TextView
+    protected lateinit var mTxtFinished: TextView
     private var progress: ProgressDialog?=null
     private var selectedOption: MutableList<String> = ArrayList()
-    private lateinit var mFilterReview: CustomQuickOptionView
+    protected lateinit var mFilterReview: CustomQuickOptionView
 
     companion object {
         const val CSAT_TITLE = "csatTitle"
@@ -218,14 +218,21 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     }
 
     private fun initView(view: View) {
-        mTxtHelpTitle = view.findViewById(R.id.txt_help_title)
-        mSmileLayout = view.findViewById(R.id.smile_layout)
-        mTxtSmileSelected = view.findViewById(R.id.txt_smile_selected)
-        mTxtFeedbackQuestion = view.findViewById(R.id.txt_feedback_question)
-        mTxtFinished = view.findViewById(R.id.txt_finished)
-        mFilterReview = view.findViewById(R.id.filter_review)
+        mTxtHelpTitle = view.findViewById(getTextHelpTitleId())
+        mSmileLayout = view.findViewById(getSmilleLayoutId())
+        mTxtSmileSelected = view.findViewById(getSmileSelectedId())
+        mTxtFeedbackQuestion = view.findViewById(getFeedbackQuestionId())
+        mTxtFinished = view.findViewById(getTextFinishedId())
+        mFilterReview = view.findViewById(getFilterReviewId())
         mTxtFinished.setOnClickListener { v: View -> presenter.onSubmitClick() }
     }
+
+    open fun getTextHelpTitleId():Int = R.id.txt_help_title
+    open fun getSmilleLayoutId():Int = R.id.smile_layout
+    open fun getSmileSelectedId():Int = R.id.txt_smile_selected
+    open fun getFeedbackQuestionId():Int = R.id.txt_feedback_question
+    open fun getTextFinishedId():Int = R.id.txt_finished
+    open fun getFilterReviewId():Int = R.id.filter_review
 
     fun disableSubmitButton() {
         mTxtFinished.setTextColor(MethodChecker.getColor(context, R.color.grey_500))

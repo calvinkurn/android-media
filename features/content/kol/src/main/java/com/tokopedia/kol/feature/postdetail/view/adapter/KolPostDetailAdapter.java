@@ -1,6 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.view.adapter;
 
-import android.support.v7.util.DiffUtil;
+import androidx.recyclerview.widget.DiffUtil;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;

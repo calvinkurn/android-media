@@ -1,7 +1,7 @@
 package com.tokopedia.kol.feature.video.view.adapter
 
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
@@ -39,7 +39,7 @@ class MediaTagAdapter(private val tags: MutableList<PostTagItem> = mutableListOf
 
         fun bind(postTagItem: PostTagItem) {
             with(itemView){
-                picture.loadImageRounded(postTagItem.thumbnail, resources.getDimension(R.dimen.dp_8))
+                picture.loadImageRounded(postTagItem.thumbnail, resources.getDimension(com.tokopedia.design.R.dimen.dp_8))
                 title.text = postTagItem.text
                 original_price.gone()
                 price.text = postTagItem.price
@@ -56,15 +56,15 @@ class MediaTagAdapter(private val tags: MutableList<PostTagItem> = mutableListOf
                     button_action.setOnClickListener { onProductActionClick?.invoke(postTagItem, true) }
                 } else {
                     favorite.setImageDrawable(ContextCompat.getDrawable(context,
-                            if (postTagItem.isWishlisted) R.drawable.ic_wishlist_checked
-                            else R.drawable.ic_wishlist_unchecked))
+                            if (postTagItem.isWishlisted) com.tokopedia.design.R.drawable.ic_wishlist_checked
+                            else com.tokopedia.design.R.drawable.ic_wishlist_unchecked))
                     button_action.buttonType = UnifyButton.Type.TRANSACTION
                     if (ctaBtn == null || ctaBtn.text.isBlank()){
                         button_action.isEnabled = false
-                        button_action.text = context.getString(R.string.empty_product)
+                        button_action.text = context.getString(com.tokopedia.feedcomponent.R.string.empty_product)
                     } else {
                         button_action.isEnabled = true
-                        button_action.text = context.getString(R.string.string_posttag_buy)
+                        button_action.text = context.getString(com.tokopedia.feedcomponent.R.string.string_posttag_buy)
                     }
 
                     favorite.setOnClickListener {

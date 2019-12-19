@@ -1,9 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.highlight
 
-import android.content.Context
-import android.os.Build
-import android.support.v7.widget.RecyclerView
-import android.util.DisplayMetrics
+import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -12,6 +9,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import kotlinx.android.synthetic.main.item_highlight_card.view.*
 
@@ -41,7 +39,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
         holder.bind(list[p1], p1)
     }
 
-    class Holder(v: View, val highlightListener: HighlightListener): RecyclerView.ViewHolder(v) {
+    class Holder(v: View, private val highlightListener: HighlightListener): RecyclerView.ViewHolder(v) {
 
         fun bind(item: HighlightCardViewModel, positionInAdapter: Int) {
             initView(item)
@@ -70,6 +68,10 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
             }
             itemView.productImage.setOnClickListener {
                 highlightListener.onHighlightItemClicked(item.positionInFeed, item)
+                highlightListener.onAffiliateTrackClicked(item.tracking, true)
+            }
+            itemView.addOnImpressionListener(item.impressHolder) {
+                highlightListener.onAffiliateTrackClicked(item.tracking, false)
             }
         }
 
@@ -78,7 +80,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
             if (getBadgeId(item) != 0) {
                 ImageHandler.loadImageWithId(itemView.badge, getBadgeId(item))
             }
-            ImageHandler.loadImageFit2(itemView.context, itemView.userImage, item.header.avatar)
+            ImageHandler.loadImageCircle2(itemView.context, itemView.userImage, item.header.avatar)
             itemView.userName.text = item.header.avatarTitle
             bindLike(item.footer.like)
             bindComment(item.footer.comment)
@@ -114,7 +116,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                 }
                 else -> {
                     itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
-                    val likeText = if (like.fmt.isNotEmpty()) like.fmt else itemView.context.getString(R.string.kol_action_like)
+                    val likeText = if (like.fmt.isNotEmpty()) like.fmt else ""
                     itemView.likeText.text = likeText
                     itemView.likeText.setTextColor(
                             MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)
@@ -124,7 +126,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
         }
 
         private fun bindComment(comment: Comment) {
-            val commentText = if (comment.fmt.isNotEmpty()) comment.fmt else itemView.context.getString(R.string.kol_action_comment)
+            val commentText = if (comment.fmt.isNotEmpty()) comment.fmt else ""
             itemView.commentText.text = commentText
         }
     }
@@ -138,7 +140,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
 
         fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel)
     }

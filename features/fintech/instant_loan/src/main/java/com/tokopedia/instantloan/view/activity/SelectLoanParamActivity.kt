@@ -4,13 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.data.model.response.LoanPeriodType
 import java.util.*
 
@@ -30,11 +29,11 @@ class SelectLoanParamActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_select_loan_param)
-        topBarTitle = findViewById<View>(R.id.top_bar_title) as TextView
-        topBarTitle!!.text = getString(R.string.title_sort_but)
-        recyclerView = findViewById<View>(R.id.list) as RecyclerView
-        buttonClose = findViewById(R.id.top_bar_close_button)
+        setContentView(com.tokopedia.instantloan.R.layout.activity_select_loan_param)
+        topBarTitle = findViewById<View>(com.tokopedia.instantloan.R.id.top_bar_title) as TextView
+        topBarTitle!!.text = getString(com.tokopedia.instantloan.R.string.il_title_sort_but)
+        recyclerView = findViewById<View>(com.tokopedia.instantloan.R.id.il_list) as RecyclerView
+        buttonClose = findViewById(com.tokopedia.instantloan.R.id.top_bar_close_button)
         buttonClose.setOnClickListener { onBackPressed() }
         data = intent.extras!!.getParcelableArrayList(EXTRA_DATA)
         adapter = ListAdapter(data, selectedKey, selectedValue, object : OnItemClickListener {
@@ -42,7 +41,7 @@ class SelectLoanParamActivity : BaseActivity() {
                 val intent = Intent()
                 intent.putExtra(EXTRA_SELECTED_NAME, loanType)
                 setResult(Activity.RESULT_OK, intent)
-                finish()
+                killActivity()
             }
         })
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -52,20 +51,20 @@ class SelectLoanParamActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_sort, menu)
+        menuInflater.inflate(com.tokopedia.instantloan.R.menu.instant_loan_menu_sort, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_close) {
-            finish()
+        if (item.itemId == com.tokopedia.instantloan.R.id.il_action_close) {
+            killActivity()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(android.R.anim.fade_in, R.anim.push_down)
+    fun killActivity() {
+        this.finish()
+        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.instantloan.R.anim.instant_loan_push_down)
     }
 
     private inner class ListAdapter(sortList: List<LoanPeriodType>?, private var selectedKey: Int, private var selectedValue: String?, internal var clickListener: OnItemClickListener) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
@@ -80,7 +79,7 @@ class SelectLoanParamActivity : BaseActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val v = LayoutInflater.from(parent.context).inflate(R.layout.sort_list_item, parent, false)
+            val v = LayoutInflater.from(parent.context).inflate(com.tokopedia.instantloan.R.layout.instant_loan_sort_list_item, parent, false)
             return ViewHolder(v)
         }
 
@@ -111,8 +110,8 @@ class SelectLoanParamActivity : BaseActivity() {
             var title: TextView
 
             init {
-                title = v.findViewById<View>(R.id.title) as TextView
-                title.setOnClickListener(this)
+                title = v.findViewById<View>(com.tokopedia.instantloan.R.id.il_rv_item_title) as TextView
+//                title.setOnClickListener(this)
             }
 
             override fun onClick(v: View) {

@@ -65,6 +65,12 @@ public class KolModule {
 
     @KolScope
     @Provides
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter)context;
+    }
+
+    @KolScope
+    @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                                     httpLoggingInterceptor,
                                             KolAuthInterceptor kolAuthInterceptor,
@@ -140,14 +146,14 @@ public class KolModule {
     @Provides
     @Named(KolConstant.KEY_QUERY_IS_WISHLISTED)
     public String getQueryProductIsWishlisted(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_is_wishlisted);
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.wishlist.common.R.raw.gql_get_is_wishlisted);
     }
 
     @KolScope
     @Provides
     @Named(KolConstant.KEY_QUERY_ATC)
     public String getQueryATCCommon(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart);
     }
 
     @KolScope

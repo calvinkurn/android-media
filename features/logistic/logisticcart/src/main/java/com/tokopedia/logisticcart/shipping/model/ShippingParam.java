@@ -3,6 +3,8 @@ package com.tokopedia.logisticcart.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * Created by Irfan Khoirul on 08/01/19.
  */
@@ -28,6 +30,9 @@ public class ShippingParam implements Parcelable {
     private int addressId;
     private boolean preorder;
     private boolean isTradein;
+    private boolean isTradeInDropOff;
+    private List<Product> products;
+    private String uniqueId; // this is actually cart string
 
     public ShippingParam() {
     }
@@ -53,6 +58,9 @@ public class ShippingParam implements Parcelable {
         addressId = in.readInt();
         preorder = in.readByte() != 0;
         isTradein = in.readByte() != 0;
+        isTradeInDropOff = in.readByte() != 0;
+        products = in.createTypedArrayList(Product.CREATOR);
+        uniqueId = in.readString();
     }
 
     @Override
@@ -77,6 +85,9 @@ public class ShippingParam implements Parcelable {
         dest.writeInt(addressId);
         dest.writeByte((byte) (preorder ? 1 : 0));
         dest.writeByte((byte) (isTradein ? 1 : 0));
+        dest.writeByte((byte) (isTradeInDropOff ? 1 : 0));
+        dest.writeTypedList(products);
+        dest.writeString(uniqueId);
     }
 
     @Override
@@ -242,5 +253,29 @@ public class ShippingParam implements Parcelable {
 
     public void setTradein(boolean tradein) {
         isTradein = tradein;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> product) {
+        this.products = product;
+    }
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    public boolean isTradeInDropOff() {
+        return isTradeInDropOff;
+    }
+
+    public void setTradeInDropOff(boolean tradeInDropOff) {
+        isTradeInDropOff = tradeInDropOff;
     }
 }

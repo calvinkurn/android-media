@@ -43,6 +43,10 @@ query getShopProduct($shopId: String!, $filter: ProductListFilter!){
                 cashback
                 cashback_amount
             }
+            freeOngkir {
+                isActive
+                imgURL
+            }
         }
         totalData
     }

@@ -2,7 +2,7 @@ package com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,12 +76,12 @@ public class ETollCardInfoView extends FrameLayout {
 
         textLabelCardNumber.setText(getResources().getString(R.string.emoney_card_info_label_card_number));
         textCardNumber.setText(cardInfo.getFormattedCardNumber());
-        textCardNumber.setTextColor(getResources().getColor(R.color.black));
+        textCardNumber.setTextColor(getResources().getColor(com.tokopedia.design.R.color.black));
         textCardNumber.setTypeface(textCardNumber.getTypeface(), Typeface.BOLD);
 
         textLabelBalance.setText(getResources().getString(R.string.emoney_card_info_label_card_balance));
         textRemainingBalance.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(cardInfo.getLastBalance(), true));
-        textRemainingBalance.setTextColor(getResources().getColor(R.color.green_400));
+        textRemainingBalance.setTextColor(getResources().getColor(com.tokopedia.design.R.color.green_400));
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy, HH:mm",
                 DateFormatUtils.DEFAULT_LOCALE);
@@ -122,11 +122,11 @@ public class ETollCardInfoView extends FrameLayout {
     public void removeCardInfo() {
         textLabelCardNumber.setText(getResources().getString(R.string.emoney_card_info_label_card_number));
         textCardNumber.setText(getResources().getString(R.string.card_info_is_not_available_yet));
-        textCardNumber.setTextColor(getResources().getColor(R.color.grey_300));
+        textCardNumber.setTextColor(getResources().getColor(com.tokopedia.design.R.color.grey_300));
         textCardNumber.setTypeface(Typeface.DEFAULT);
         textLabelBalance.setText(getResources().getString(R.string.emoney_card_info_label_card_balance));
         textRemainingBalance.setText(getResources().getString(R.string.card_info_is_not_available_yet));
-        textRemainingBalance.setTextColor(getResources().getColor(R.color.grey_300));
+        textRemainingBalance.setTextColor(getResources().getColor(com.tokopedia.design.R.color.grey_300));
         textDate.setText("");
         imageIssuer.setImageDrawable(null);
     }

@@ -1,12 +1,13 @@
 package com.tokopedia.tradein.view.viewcontrollers;
 
-import android.arch.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.tradein.R;
@@ -61,6 +62,8 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
         Uri uri = intent.getData();
         if (uri != null && uri.toString().contains("money_in/device_validation")) {
             TRADEIN_TYPE = TRADEIN_MONEYIN;
+        } else if (uri != null && uri.toString().contains("trade_in/device_validation")) {
+            TRADEIN_TYPE = TRADEIN_MONEYIN;
         } else {
             if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE))
                 TRADEIN_TYPE = intent.getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_OFFLINE);
@@ -69,8 +72,15 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             toolbar.setTitle(R.string.money_in);
             TRADEIN_TEST_TYPE = TRADEIN_MONEY_IN;
+            clickEvent = TradeInGTMConstants.ACTION_CLICK_MONEYIN;
+            viewEvent = TradeInGTMConstants.ACTION_VIEW_MONEYIN;
         }
         setSupportActionBar(toolbar);
+    }
+
+    @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
     }
 
     @Override
@@ -89,5 +99,25 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
     @Override
     protected ViewModelProvider.AndroidViewModelFactory getVMFactory() {
         return TradeInVMFactory.getInstance(this.getApplication(), getIntent());
+    }
+
+    @Override
+    protected void showProgressBar() {
+        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void hideProgressBar() {
+        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.GONE);
+    }
+
+    @Override
+    public View getRootView() {
+        return findViewById(R.id.root_view);
+    }
+
+    @Override
+    public int getRootViewId() {
+        return R.id.root_view;
     }
 }

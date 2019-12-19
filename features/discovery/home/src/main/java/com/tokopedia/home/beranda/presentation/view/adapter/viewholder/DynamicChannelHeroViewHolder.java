@@ -1,10 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;

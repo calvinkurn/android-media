@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingSectionViewHolder
@@ -18,7 +18,7 @@ class NotifSettingBigDividerDecoration(context: Context?) : RecyclerView.ItemDec
     init {
         context?.let {
             divider = ContextCompat.getDrawable(context, R.drawable.bg_line_separator_big)
-            dividerHeight = context.resources.getDimensionPixelSize(R.dimen.dp_12)
+            dividerHeight = context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12)
         }
     }
 
@@ -41,7 +41,6 @@ class NotifSettingBigDividerDecoration(context: Context?) : RecyclerView.ItemDec
             val nextChildPosition = childIndex + 1
 
             if (nextChildPosition >= childCount) {
-                drawBigDivider(c, parent, childView)
                 continue
             }
 

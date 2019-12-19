@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel;
 import com.tokopedia.flight.search.data.api.single.response.Amenity;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
     private List<FlightDetailRouteInfoViewModel> infos;
     private List<Amenity> amenities = null;
     private List<FlightStopOverViewModel> stopOverDetail;
+    private String operatingAirline;
 
     public FlightDetailRouteViewModel() {
     }
@@ -64,6 +66,7 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
         infos = in.createTypedArrayList(FlightDetailRouteInfoViewModel.CREATOR);
         amenities = in.createTypedArrayList(Amenity.CREATOR);
         stopOverDetail = in.createTypedArrayList(FlightStopOverViewModel.CREATOR);
+        operatingAirline = in.readString();
     }
 
     @Override
@@ -90,6 +93,7 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
         dest.writeTypedList(infos);
         dest.writeTypedList(amenities);
         dest.writeTypedList(stopOverDetail);
+        dest.writeString(operatingAirline);
     }
 
     @Override
@@ -288,5 +292,13 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
 
     public void setArrivalTerminal(String arrivalTerminal) {
         this.arrivalTerminal = arrivalTerminal;
+    }
+
+    public String getOperatingAirline() {
+        return operatingAirline;
+    }
+
+    public void setOperatingAirline(String operatingAirline) {
+        this.operatingAirline = operatingAirline;
     }
 }

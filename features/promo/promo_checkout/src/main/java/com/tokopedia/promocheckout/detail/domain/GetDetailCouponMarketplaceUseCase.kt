@@ -31,7 +31,6 @@ class GetDetailCouponMarketplaceUseCase(val resources: Resources)
     fun createRequestParams(promoCode: String, skipApply: Boolean = false, suggestedPromo: Boolean = false, oneClickShipment: Boolean = false): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString(INPUT_CODE, promoCode)
-        requestParams.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment)
         return requestParams
     }
 

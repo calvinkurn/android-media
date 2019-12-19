@@ -1,7 +1,7 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder
 
 import android.content.Context
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.LinearLayout
 

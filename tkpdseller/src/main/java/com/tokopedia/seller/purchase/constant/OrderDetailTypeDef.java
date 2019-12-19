@@ -1,6 +1,6 @@
 package com.tokopedia.seller.purchase.constant;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import static com.tokopedia.seller.purchase.constant.OrderDetailTypeDef.GREEN_BUTTON;
 import static com.tokopedia.seller.purchase.constant.OrderDetailTypeDef.HIDE_BUTTON;

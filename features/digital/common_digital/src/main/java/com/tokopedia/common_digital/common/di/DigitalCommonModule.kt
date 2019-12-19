@@ -18,11 +18,14 @@ import com.tokopedia.common_digital.cart.domain.IDigitalCartRepository
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.common.DigitalRouter
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalUrl
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi
+import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -171,6 +174,18 @@ class DigitalCommonModule {
     @DigitalCommonScope
     fun provideDigitalInstantCheckoutUseCase(digitalCartRepository: IDigitalCartRepository): DigitalInstantCheckoutUseCase {
         return DigitalInstantCheckoutUseCase(digitalCartRepository)
+    }
+
+    @Provides
+    @DigitalCommonScope
+    fun provideRechargePushEventRecommendationUseCase(@ApplicationContext context: Context): RechargePushEventRecommendationUseCase {
+        return RechargePushEventRecommendationUseCase(GraphqlUseCase(), context)
+    }
+
+    @Provides
+    @DigitalCommonScope
+    fun provideRechargeAnalytics(rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase): RechargeAnalytics {
+        return RechargeAnalytics(rechargePushEventRecommendationUseCase)
     }
 
     companion object {

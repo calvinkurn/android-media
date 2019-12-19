@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.AppCompatButton;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.AppCompatButton;
 import android.util.AttributeSet;
 
 import com.tokopedia.design.R;

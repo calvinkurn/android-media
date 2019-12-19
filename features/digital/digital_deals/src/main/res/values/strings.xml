@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">digital_deals</string>
     <string name="activity_checkout_title">Checkout</string>
     <string name="promo_button_text">Lihat Semua Promo</string>
     <string name="search">Search</string>
@@ -121,5 +120,13 @@
     <string name="location_search_hint">Lokasi hits, wilayah, atau kota</string>
     <string name="location_deals_changed_toast">Kamu sedang melihat pilihan Deals di</string>
     <string name="location_deals_changed_toast_oke">Oke</string>
+    <string name="share_link">Share Link!!!</string>
+    <string name="deals_disable_buy_now">Stok Produk Kosong</string>
+    <string name="deals_use_current_location">Tokopedia Would Like To Use Your Current Location</string>
+    <string name="deals_use_open_location_text_2">Biarkan Tokopedia mengakses lokasimu untuk menampilkan Deals terdekat.</string>
+    <string name="deals_use_open_location_text_1">Lokasimu nggak terdeteksi</string>
+    <string name="location_error_message">Belum ada Deals di lokasimu. Lokasi Deals dialihkan ke Jakarta</string>
+    <string name="detect_current_location">Gunakan lokasi saya saat ini</string>
+    <string name="ticker_desc">Kamu bisa cek status pembelian dan e-voucher lewat halaman Daftar Transaksi</string>
 
 </resources>

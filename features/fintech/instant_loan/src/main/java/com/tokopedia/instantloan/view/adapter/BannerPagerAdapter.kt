@@ -1,12 +1,13 @@
 package com.tokopedia.instantloan.view.adapter
 
 import android.content.Context
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.data.model.response.GqlLendingBannerData
@@ -29,14 +30,14 @@ class BannerPagerAdapter(private val context: Context, val bannerEntities: Array
     }
 
     override fun instantiateItem(view: ViewGroup, position: Int): Any {
-        val banner = mInflater.inflate(R.layout.item_pager_banner, view, false) as ImageView
-        ImageHandler.LoadImage(banner, bannerEntityList[position].bannerImageUrl)
-        view.addView(banner)
+        val parentLinearLayout = mInflater.inflate(com.tokopedia.instantloan.R.layout.item_pager_banner, view, false) as LinearLayout
+        val bannerImageView = parentLinearLayout.findViewById<ImageView>(R.id.image_banner_offer)
+        parentLinearLayout.tag = bannerEntityList[position].bannerLink
+        ImageHandler.LoadImage(bannerImageView, bannerEntityList[position].bannerImageUrl)
+        view.addView(parentLinearLayout)
+        parentLinearLayout.setOnClickListener { view1 -> bannerClick.onBannerClick(view1, position) }
 
-        banner.tag = bannerEntityList[position].bannerLink
-        banner.setOnClickListener { view1 -> bannerClick.onBannerClick(view1, position) }
-
-        return banner
+        return parentLinearLayout
     }
 
     interface BannerClick {

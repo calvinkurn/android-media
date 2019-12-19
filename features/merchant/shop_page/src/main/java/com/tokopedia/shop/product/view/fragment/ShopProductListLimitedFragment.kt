@@ -2,18 +2,18 @@ package com.tokopedia.shop.product.view.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SimpleItemAnimator
+import com.google.android.material.snackbar.Snackbar
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -47,7 +47,6 @@ import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPr
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -125,7 +124,9 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         private set
     private var selectedEtalaseName: String = ""
 
-    private var remoteConfig: RemoteConfig? = null
+    private val remoteConfig by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
 
     private val shopProductAdapter: ShopProductAdapter by lazy { adapter as ShopProductAdapter }
     private val gridLayoutManager: GridLayoutManager by lazy {
@@ -291,14 +292,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
     }
 
-    fun displayProduct(shopInfo: ShopInfo) {
-        this.shopInfo = shopInfo
-        this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
-        this.isGoldMerchant = shopInfo.goldOS.isGold == 1
-        this.shopId = shopInfo.shopCore.shopID
-        loadInitialData()
-    }
-
     fun setShopInfo(shopInfo: ShopInfo) {
         this.shopInfo = shopInfo
         this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
@@ -308,7 +301,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     fun clearCache() {
         merchantVoucherListPresenter.clearCache()
-        viewModel.clearEtalaseCache()
+        viewModel.clearCache()
     }
 
     // load data promo/featured/etalase
@@ -347,11 +340,10 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             shopProductAdapter.clearMerchantVoucherData()
             shopProductAdapter.clearFeaturedData()
             shopProductAdapter.clearMembershipData()
-
             loadMembership()
             loadVoucherList()
 
-            viewModel.getFeaturedProduct(it.shopCore.shopID, false)
+            viewModel.getFeaturedProduct(it.shopCore.shopID, viewModel.userId, false)
         }
     }
 
@@ -405,28 +397,22 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        val emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_empty_list_product
+        val emptyOwnShopModel = EmptyOwnShopModel()
         if (shopInfo != null && viewModel.isMyShop(shopInfo!!.shopCore.shopID)) {
-            if (isCurrentlyShowAllEtalase) {
-                emptyModel.title = getString(R.string.shop_product_limited_empty_product_title_owner)
-            } else {
-                emptyModel.title = getString(R.string.shop_product_limited_empty_product_title_owner_at_etalase)
-            }
-            emptyModel.content = getString(R.string.shop_product_limited_empty_product_content_owner)
-            emptyModel.buttonTitle = getString(R.string.shop_page_label_add_product)
+            emptyOwnShopModel.title = getString(R.string.shop_product_limited_empty_products_title_owner)
+            emptyOwnShopModel.content = getString(R.string.shop_product_limited_empty_products_content_owner)
             if (shopInfo != null) {
                 shopPageTracking?.impressionZeroProduct(CustomDimensionShopPage.create(shopInfo!!.shopCore.shopID,
                         shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1))
             }
         } else {
             if (isCurrentlyShowAllEtalase) {
-                emptyModel.content = getString(R.string.shop_product_limited_empty_product_title)
+                emptyOwnShopModel.content = getString(R.string.shop_product_limited_empty_product_title)
             } else {
-                emptyModel.content = getString(R.string.shop_product_empty_title_etalase_desc)
+                emptyOwnShopModel.content = getString(R.string.shop_product_empty_title_etalase_desc)
             }
         }
-        return emptyModel
+        return emptyOwnShopModel
     }
 
     override fun initInjector() {
@@ -503,15 +489,18 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private fun renderProductList(list: List<ShopProductViewModel>, hasNextPage: Boolean) {
         if (list.isNotEmpty() && shopInfo != null) {
-            shopPageTracking?.impressionProductList(
-                    isOwner,
-                    ListTitleTypeDef.ETALASE,
-                    selectedEtalaseName, CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
-                    shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                    "", attribution),
-                    list, shopProductAdapter.shopProductViewModelList.size, shopInfo!!.shopCore.shopID,
-                    shopInfo!!.shopCore.name
-            )
+            shopInfo?.let {
+                shopPageTracking?.impressionProductList(
+                        isOwner,
+                        ListTitleTypeDef.ETALASE,
+                        selectedEtalaseName, CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
+                        shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
+                        "", attribution),
+                        list, shopProductAdapter.shopProductViewModelList.size, shopInfo!!.shopCore.shopID,
+                        shopInfo!!.shopCore.name,
+                        it.freeOngkir.isActive
+                )
+            }
         }
 
         hideLoading()
@@ -524,28 +513,14 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         updateScrollListenerState(hasNextPage)
 
         if (shopProductAdapter.shopProductViewModelList.size == 0) {
-            // only add the empty state when the shop has No Product And No Official URL
+            shopProductAdapter.removeElement(emptyDataViewModel)
+            shopProductAdapter.isNeedToShowEtalase = true
+            shopProductAdapter.addElement(emptyDataViewModel)
 
-            val needShowEmpty: Boolean
-            val officialWebViewUrl = getOfficialWebViewUrl(shopInfo)
-            if (TextUtils.isEmpty(officialWebViewUrl)) { // no promo web, show empty
-                needShowEmpty = true
-            } else {
-                // no need to show empty (even if the product is empty) when there is official web
-                // check if it is all product or specific etalase.
-                needShowEmpty = !isCurrentlyShowAllEtalase
-            }
-
-            if (needShowEmpty) {
-                shopProductAdapter.isNeedToShowEtalase = true
-                shopProductAdapter.addElement(emptyDataViewModel)
-            } else {
-                shopProductAdapter.isNeedToShowEtalase = false
-                shopProductAdapter.clearAllNonDataElement()
-            }
             bottom_action_view.visibility = View.GONE
             bottom_action_view.hide()
         } else {
+            shopProductAdapter.removeElement(emptyDataViewModel)
             shopProductAdapter.isNeedToShowEtalase = true
             bottom_action_view.visibility = View.VISIBLE
             bottom_action_view.show()
@@ -570,12 +545,15 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                 etalaseHighlightCarouselViewModels.add(
                         EtalaseHighlightCarouselViewModel(listItem, viewModel.etalaseHighLight[index]))
                 if (listItem.isNotEmpty()) {
-                    shopPageTracking?.impressionProductList(isOwner,
-                            ListTitleTypeDef.HIGHLIGHTED,
-                            viewModel.etalaseHighLight[index].etalaseName,
-                            customDimensionShopPageAttribution,
-                            listItem, 0, shopInfo!!.shopCore.shopID,
-                            shopInfo!!.shopCore.name)
+                    shopInfo?.let {shopInfo ->
+                        shopPageTracking?.impressionProductList(isOwner,
+                                ListTitleTypeDef.HIGHLIGHTED,
+                                viewModel.etalaseHighLight[index].etalaseName,
+                                customDimensionShopPageAttribution,
+                                listItem, 0, shopInfo!!.shopCore.shopID,
+                                shopInfo.shopCore.name,shopInfo.freeOngkir.isActive)
+                    }
+
                 }
             }
 
@@ -654,14 +632,18 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     private fun onSuccessGetProductFeature(list: List<ShopProductViewModel>) {
         shopProductAdapter.shopProductFeaturedViewModel = ShopProductFeaturedViewModel(list)
         if (list.isNotEmpty() && shopInfo != null) {
-            shopPageTracking?.impressionProductList(
-                    isOwner,
-                    ListTitleTypeDef.HIGHLIGHTED,
-                    FEATURED_PRODUCT,
-                    CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
-                            shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1, "", attribution),
-                    list, 0,
-                    shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name)
+            shopInfo?.let {
+                shopPageTracking?.impressionProductList(
+                        isOwner,
+                        ListTitleTypeDef.HIGHLIGHTED,
+                        FEATURED_PRODUCT,
+                        CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
+                                shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1, "", attribution),
+                        list, 0,
+                        shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
+                        it.freeOngkir.isActive
+                )
+            }
         }
         shopProductAdapter.refreshSticky()
     }
@@ -844,29 +826,38 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                                   productPosition: Int) {
         if (shopInfo != null) {
             if (shopTrackType == ShopTrackProductTypeDef.FEATURED) {
-                shopPageTracking?.clickProductPicture(isOwner,
-                        ListTitleTypeDef.HIGHLIGHTED,
-                        FEATURED_PRODUCT,
-                        CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
-                                shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                                shopProductViewModel.id, attribution),
-                        shopProductViewModel, productPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name)
+                shopInfo?.let {
+                    shopPageTracking?.clickProductPicture(isOwner,
+                            ListTitleTypeDef.HIGHLIGHTED,
+                            FEATURED_PRODUCT,
+                            CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
+                                    shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
+                                    shopProductViewModel.id, attribution),
+                            shopProductViewModel, productPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
+                            it.freeOngkir.isActive)
+                }
             } else if (shopTrackType == ShopTrackProductTypeDef.PRODUCT) {
-                shopPageTracking?.clickProductPicture(isOwner,
-                        ListTitleTypeDef.ETALASE,
-                        selectedEtalaseName,
-                        CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
-                                shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                                shopProductViewModel.id, attribution),
-                        shopProductViewModel, productPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name)
+                shopInfo?.let {
+                    shopPageTracking?.clickProductPicture(isOwner,
+                            ListTitleTypeDef.ETALASE,
+                            selectedEtalaseName,
+                            CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
+                                    shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
+                                    shopProductViewModel.id, attribution),
+                            shopProductViewModel, productPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
+                            it.freeOngkir.isActive)
+                }
             } else if (shopTrackType == ShopTrackProductTypeDef.ETALASE_HIGHLIGHT) {
-                shopPageTracking?.clickProductPicture(isOwner,
-                        ListTitleTypeDef.HIGHLIGHTED,
-                        shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
-                        CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
-                                shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
-                                shopProductViewModel.id, attribution),
-                        shopProductViewModel, productPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name)
+                shopInfo?.let {
+                    shopPageTracking?.clickProductPicture(isOwner,
+                            ListTitleTypeDef.HIGHLIGHTED,
+                            shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
+                            CustomDimensionShopPageAttribution.create(shopInfo!!.shopCore.shopID,
+                                    shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1,
+                                    shopProductViewModel.id, attribution),
+                            shopProductViewModel, productPosition, shopInfo!!.shopCore.shopID, shopInfo!!.shopCore.name,
+                            it.freeOngkir.isActive)
+                }
             }
         }
         goToPDP(shopProductViewModel.id, attribution,
@@ -1095,7 +1086,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
-        remoteConfig = FirebaseRemoteConfigImpl(context)
         shopModuleRouter = context.applicationContext as ShopModuleRouter
         onShopProductListFragmentListener = context as? ShopProductListFragment.OnShopProductListFragmentListener
 
@@ -1145,6 +1135,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         private const val GRID_SPAN_COUNT = 2
 
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
+
 
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         const val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"

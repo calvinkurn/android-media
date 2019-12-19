@@ -2,10 +2,10 @@ package com.tokopedia.topads.common;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.annotation.MenuRes;
-import android.support.v7.view.SupportMenuInflater;
-import android.support.v7.view.menu.MenuBuilder;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.MenuRes;
+import androidx.appcompat.view.SupportMenuInflater;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;

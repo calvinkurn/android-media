@@ -1,6 +1,6 @@
 package com.tokopedia.kol.feature.video.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -9,7 +9,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailWishlistedUseCase
@@ -50,7 +50,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
     fun getPostDetail(){
         getPostDetailUseCase.execute(GetPostDetailUseCase
                 .createRequestParams(userSession.userId, "",
-                        GetDynamicFeedUseCase.SOURCE_DETAIL, postId),
+                        GetDynamicFeedUseCase.FeedV2Source.Detail, postId),
                 object : Subscriber<PostDetailViewModel>() {
                     override fun onNext(t: PostDetailViewModel?) {
                         if (t == null) {
@@ -90,7 +90,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
 
     fun doLikePost(isLikeAction: Boolean, onFail: (Throwable) -> Unit) {
         likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(postId.toInt(),
-                if (isLikeAction) LikeKolPostUseCase.ACTION_LIKE else LikeKolPostUseCase.ACTION_UNLIKE),
+                if (isLikeAction) LikeKolPostUseCase.LikeKolPostAction.Like else LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {
                         if (t == true){

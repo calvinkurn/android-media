@@ -1,6 +1,6 @@
 package com.tokopedia.merchantvoucher.voucherlistbottomsheet
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.merchantvoucher.R

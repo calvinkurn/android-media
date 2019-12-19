@@ -111,16 +111,20 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_template"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_3"
-                android:layout_marginTop="@dimen/dp_3"
-                android:layout_marginRight="@dimen/dp_3"
-                android:layout_marginBottom="@dimen/dp_5" />
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingStart="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_12"
+                android:paddingEnd="@dimen/dp_16"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:orientation="horizontal"
+                tools:scrollbars="horizontal" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_quick_reply"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -136,74 +140,86 @@
                 android:id="@+id/reply_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/cards_ui_chat"
-                android:elevation="300dp"
-                android:paddingLeft="@dimen/dp_5"
-                android:paddingTop="@dimen/dp_5"
-                android:paddingRight="@dimen/dp_5"
-                android:paddingBottom="@dimen/dp_5"
-                android:visibility="visible">
-
-                <ImageView
-                    android:id="@+id/iv_chat_menu"
-                    android:layout_width="@dimen/dp_52"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:paddingStart="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_10"
-                    android:paddingEnd="@dimen/dp_16"
-                    android:paddingBottom="@dimen/dp_10"
-                    app:srcCompat="@drawable/ic_plus_circle_bordered" />
+                android:paddingStart="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_12"
+                android:paddingEnd="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_16">
 
                 <ImageView
                     android:id="@+id/send_but"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/new_comment"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_alignBottom="@+id/new_comment"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:padding="@dimen/dp_8"
-                    app:srcCompat="@drawable/ic_send_24dp_green" />
+                    app:srcCompat="@drawable/ic_send_grey_chat_common" />
 
                 <EditText
                     android:id="@+id/new_comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginRight="6dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
                     android:layout_toStartOf="@+id/send_but"
                     android:layout_toLeftOf="@+id/send_but"
-                    android:layout_toEndOf="@+id/iv_chat_menu"
-                    android:layout_toRightOf="@+id/iv_chat_menu"
                     android:background="@drawable/bg_rounded_chat_input"
                     android:hint="@string/chat_edit_text"
                     android:inputType="textMultiLine"
                     android:maxLines="5"
+                    android:paddingStart="@dimen/dp_12"
                     android:paddingLeft="@dimen/dp_12"
                     android:paddingTop="@dimen/dp_10"
-                    android:paddingRight="@dimen/dp_12"
+                    android:paddingEnd="@dimen/dp_48"
+                    android:paddingRight="@dimen/dp_48"
                     android:paddingBottom="@dimen/dp_10"
                     android:textSize="@dimen/sp_16"
-                    tools:text="dsajj\ndifjidfi\nidjfidj\nfdfidjidfijdfijd" />
+                    tools:text="@tools:sample/lorem/random" />
 
-                <ProgressBar
-                    android:id="@+id/loading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                <FrameLayout
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_alignEnd="@+id/new_comment"
+                    android:layout_alignRight="@+id/new_comment"
+                    android:layout_alignBottom="@+id/new_comment"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:background="@drawable/bg_oval_transparent">
 
-
+                    <ImageView
+                        android:id="@+id/iv_chat_menu"
+                        android:layout_width="@dimen/dp_40"
+                        android:layout_height="@dimen/dp_40"
+                        android:padding="@dimen/dp_8"
+                        app:srcCompat="@drawable/ic_add_grey_chat_common" />
+                </FrameLayout>
             </RelativeLayout>
 
+            <FrameLayout
+                android:id="@+id/rv_attachment_menu_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_8"
+                    android:layout_gravity="top"
+                    android:background="@drawable/bg_shadow_attachment_menu_chat_common" />
+
+                <com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
+                    android:id="@+id/rv_attachment_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never"
+                    android:paddingTop="@dimen/dp_24"
+                    android:paddingBottom="@dimen/dp_24"
+                    tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    tools:spanCount="2" />
+            </FrameLayout>
         </LinearLayout>
 
         <include
@@ -212,8 +228,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/dp_8"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -226,12 +241,19 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
-    <android.support.v7.widget.RecyclerView
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/chatbot_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:tickerShapeType="full" />
+
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/footer"
-        android:layout_below="@id/header"
+        android:layout_below="@id/chatbot_ticker"
         android:layout_gravity="center"
         android:scrollbars="vertical" />
 

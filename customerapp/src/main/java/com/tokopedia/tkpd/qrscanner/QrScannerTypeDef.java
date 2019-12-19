@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.qrscanner;
 
-import android.support.annotation.StringDef;
+import androidx.annotation.StringDef;
 
 import static com.tokopedia.tkpd.qrscanner.QrScannerTypeDef.CAMPAIGN_QR_CODE;
 import static com.tokopedia.tkpd.qrscanner.QrScannerTypeDef.PAYMENT_QR_CODE;

@@ -1,7 +1,7 @@
 package com.tokopedia.flight.search.data.db;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 /**
  * Created by Rizky on 01/10/18.
@@ -31,13 +31,14 @@ public class FlightRouteTable {
     private String amenities;
     private int stops;
     private String stopDetail;
+    private String operatingAirline;
 
     public FlightRouteTable(String journeyId, String airline, String airlineName, String airlineShortName,
                             String airlineLogo, String departureAirport, String departureAirportName,
                             String departureAirportCity, String arrivalAirport, String arrivalAirportName,
                             String arrivalAirportCity, String departureTimestamp, String arrivalTimestamp,
                             String duration, String infos, String layover, String flightNumber,
-                            boolean isRefundable, String amenities, int stops, String stopDetail) {
+                            boolean isRefundable, String amenities, int stops, String stopDetail, String operatingAirline) {
         this.journeyId = journeyId;
         this.airline = airline;
         this.airlineName = airlineName;
@@ -59,6 +60,7 @@ public class FlightRouteTable {
         this.amenities = amenities;
         this.stops = stops;
         this.stopDetail = stopDetail;
+        this.operatingAirline = operatingAirline;
     }
 
     public void setId(int id) {
@@ -149,6 +151,10 @@ public class FlightRouteTable {
         this.stopDetail = stopDetail;
     }
 
+    public void setOperatingAirline(String operatingAirline) {
+        this.operatingAirline = operatingAirline;
+    }
+
     public int getId() {
         return id;
     }
@@ -235,5 +241,9 @@ public class FlightRouteTable {
 
     public int getStops() {
         return stops;
+    }
+
+    public String getOperatingAirline() {
+        return operatingAirline;
     }
 }

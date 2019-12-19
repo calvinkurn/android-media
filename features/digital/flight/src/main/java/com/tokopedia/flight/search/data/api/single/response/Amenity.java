@@ -68,4 +68,12 @@ public class Amenity implements Parcelable {
             return new Amenity[size];
         }
     };
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

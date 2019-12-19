@@ -1,10 +1,8 @@
 package com.tokopedia.home_recom.viewmodel
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.home_recom.model.entity.SingleProductRecommendationEntity
-import com.tokopedia.home_recom.model.mapper.SingleProductRecommendationMapper
 import com.tokopedia.home_recom.util.Response
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -36,11 +34,11 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
     internal val recommendationItem = MutableLiveData<Response<List<RecommendationItem>>>()
     private var hasNextPage = true
 
-    fun getSimilarProductRecommendation(page: Int = 1, ref: String, productId: String){
+    fun getSimilarProductRecommendation(page: Int = 1, queryParam: String, productId: String){
         if(page == 1 && recommendationItem.value != null) recommendationItem.value = null
         if (recommendationItem.value == null) recommendationItem.postValue(Response.loading())
         else recommendationItem.postValue(Response.loadingMore(recommendationItem.value?.data))
-        val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), ref = ref)
+        val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
         singleRecommendationUseCase.execute(params,object: Subscriber<List<RecommendationItem>>(){
             override fun onNext(list: List<RecommendationItem>) {
                 recommendationItem.postValue(Response.success(combineList(recommendationItem.value?.data
@@ -134,14 +132,5 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
 
     internal fun <T> combineList(first: List<T>, second: List<T>): List<T>{
         return ArrayList(first).apply { addAll(second) }
-    }
-
-    private fun mapToRecommendationItem(data: SingleProductRecommendationEntity.RecommendationData): List<RecommendationItem>{
-        return SingleProductRecommendationMapper.convertIntoRecommendationList(
-                data.recommendation,
-                data.title,
-                data.pageName,
-                data.layoutType
-        )
     }
 }

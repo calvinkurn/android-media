@@ -59,6 +59,8 @@ class RecomendationEntity {
         var priceInt: Int = 0
         @SerializedName("shop")
         var shop: Shop? = Shop()
+        @SerializedName("freeOngkir")
+        var freeOngkirInformation: FreeOngkirInformation? = FreeOngkirInformation()
         @SerializedName("departmentId")
         var departmentId: Int = 0
         @SerializedName("rating")
@@ -75,12 +77,23 @@ class RecomendationEntity {
         var isWishlist: Boolean = false
         @SerializedName("labels")
         var labels: List<*>? = listOf<Any>()
+        @SerializedName("labelgroup")
+        var labelGroups: List<LabelGroup>? = listOf<LabelGroup>()
         @SerializedName("badges")
         var badges: List<Badges>? = listOf()
         @SerializedName("wholesalePrice")
         var wholesalePrice: List<*>? = listOf<Any>()
         @SerializedName("minOrder")
         var minOrder: Int? = 0
+
+        class LabelGroup {
+            @SerializedName("position")
+            var position: String = "0"
+            @SerializedName("title")
+            var title: String? = ""
+            @SerializedName("type")
+            var type: String? = ""
+        }
 
         class Shop {
             @SerializedName("id")
@@ -89,12 +102,22 @@ class RecomendationEntity {
             var name: String? = ""
             @SerializedName("city")
             var city: String? =""
+            @SerializedName("isGold")
+            var isGold: Boolean ?= false
         }
 
         class Badges {
 
             @SerializedName("title")
             var title: String? = ""
+            @SerializedName("imageUrl")
+            var imageUrl: String? = ""
+        }
+
+        class FreeOngkirInformation {
+
+            @SerializedName("isActive")
+            var isActive: Boolean? = false
             @SerializedName("imageUrl")
             var imageUrl: String? = ""
         }

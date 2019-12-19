@@ -5,10 +5,10 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.cardview.widget.CardView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -26,8 +26,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics;
@@ -36,6 +34,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
+import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity;
 
 import javax.inject.Inject;
 
@@ -142,8 +141,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
 
                 saldoDetailsAnalytics.eventMCLCardCLick(String.valueOf(merchantCreditDetails.getStatus()));
                 if (!TextUtils.isEmpty(merchantCreditDetails.getMainRedirectUrl())) {
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                            merchantCreditDetails.getMainRedirectUrl()));
+                    startWebView(merchantCreditDetails.getMainRedirectUrl());
                 }
             });
         }
@@ -176,8 +174,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                         @Override
                         public void onClick(@NonNull View view) {
                             if (!TextUtils.isEmpty(merchantCreditDetails.getBoxInfo().getLinkUrl())) {
-                                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                                        merchantCreditDetails.getBoxInfo().getLinkUrl()));
+                                startWebView(merchantCreditDetails.getBoxInfo().getLinkUrl());
                             }
                         }
 
@@ -206,6 +203,10 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
         } else {
             mclBoxDescTV.setVisibility(View.GONE);
         }
+    }
+
+    private void startWebView(String linkUrl) {
+        startActivity(SaldoWebViewActivity.getWebViewIntent(context, linkUrl));
     }
 
     private void populateInfolistData() {
@@ -251,8 +252,9 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                     closeableBottomSheetDialog.show();
                     closeableBottomSheetDialog.setCanceledOnTouchOutside(true);
                 } else {
-                    RouteManager.route(context, String.format("%s?url=%s",
-                            ApplinkConst.WEBVIEW, gqlAnchorListResponse.getLink()));
+                    if (!TextUtils.isEmpty(gqlAnchorListResponse.getLink())) {
+                        startWebView(gqlAnchorListResponse.getLink());
+                    }
                 }
             });
         }

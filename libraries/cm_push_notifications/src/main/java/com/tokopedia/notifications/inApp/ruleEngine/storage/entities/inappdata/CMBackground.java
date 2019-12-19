@@ -1,6 +1,6 @@
 package com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata;
 
-import android.arch.persistence.room.ColumnInfo;
+import androidx.room.ColumnInfo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

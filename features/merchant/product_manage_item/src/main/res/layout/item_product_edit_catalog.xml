@@ -25,7 +25,7 @@
             android:layout_height="@dimen/dp_56"
             app:srcCompat="@color/colorPrimary"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textViewName"
             style="@style/TextView.Title"
             android:text="@string/product_label_product_category"

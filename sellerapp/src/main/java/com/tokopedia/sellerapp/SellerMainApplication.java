@@ -2,12 +2,13 @@ package com.tokopedia.sellerapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.webkit.URLUtil;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
@@ -17,52 +18,30 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.abstraction.constant.AbstractionBaseURL;
-import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.changepassword.data.ChangePasswordUrl;
-import com.tokopedia.chat_common.network.ChatUrl;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
-import com.tokopedia.core.common.category.CategoryDbFlow;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.digital.common.constant.DigitalUrl;
-import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
-import com.tokopedia.imageuploader.data.ImageUploaderUrl;
-import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
-import com.tokopedia.logout.data.LogoutUrl;
-import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
-import com.tokopedia.network.SessionUrl;
-import com.tokopedia.otp.cotp.data.CotpUrl;
-import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
-import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
-import com.tokopedia.product.detail.data.util.ProductDetailConstant;
-import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
-import com.tokopedia.sessioncommon.data.SessionCommonUrl;
-import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
-import com.tokopedia.settingbank.choosebank.data.BankListUrl;
-import com.tokopedia.shop.common.constant.ShopCommonUrl;
-import com.tokopedia.shop.common.constant.ShopUrl;
-import com.tokopedia.talk.common.data.TalkUrl;
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -143,6 +122,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        com.tokopedia.config.GlobalConfig.APPLICATION_ID = BuildConfig.APPLICATION_ID;
         com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = DashboardActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeepLinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
@@ -153,6 +133,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+        TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
 
         TrackApp.initTrackApp(this);
@@ -164,8 +145,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         PersistentCacheManager.init(this);
 
-        PersistentCacheManager.init(this);
-
         super.onCreate();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
@@ -173,8 +152,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initCacheApi();
         GraphqlClient.init(this);
         NetworkClient.init(this);
-        InstabugInitalize.init(this);
-        TokopediaUrl.Companion.init(this);
+        initializeAbTestVariant();
     }
 
     @Override
@@ -182,6 +160,19 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         super.attachBaseContext(base);
         SplitCompat.install(this);
     }
+
+    private void initializeAbTestVariant() {
+        SharedPreferences sharedPreferences = getSharedPreferences(AbTestPlatform.Companion.getSHARED_PREFERENCE_AB_TEST_PLATFORM(), Context.MODE_PRIVATE);
+        Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
+        RemoteConfigInstance.initAbTestPlatform(this);
+        Long current = new Date().getTime();
+
+        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
+            RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
+        }
+    }
+
+    protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
 
     private void setVersionCode() {
         try {
@@ -206,18 +197,14 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         } catch (IllegalStateException e) {
             FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
         }
-        FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(ProductDraftGeneratedDatabaseHolder.class)
-                .build());
-        CategoryDbFlow.initDatabase(getApplicationContext());
     }
 
     private void initCacheApi() {
         CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
         new CacheApiWhiteListUseCase(this).executeSync(
                 CacheApiWhiteListUseCase.createParams(
-                CacheApiWhiteList.getWhiteList(),
-                String.valueOf(getCurrentVersion(getApplicationContext())))
+                        CacheApiWhiteList.getWhiteList(),
+                        String.valueOf(getCurrentVersion(getApplicationContext())))
         );
     }
 
@@ -229,11 +216,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
-        return null;
-    }
-
-    //@Override
-    public Intent getInboxTicketCallingIntent(Context context) {
         return null;
     }
 

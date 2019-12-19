@@ -6,14 +6,13 @@ import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
+import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -21,7 +20,8 @@ import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightAmenityType;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
-import com.tokopedia.flight.common.util.FlightStatusOrderType;
+import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
+import com.tokopedia.flight.orderlist.constant.FlightStatusOrderType;
 import com.tokopedia.flight.orderlist.data.cloud.entity.ManualTransferEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
@@ -29,8 +29,15 @@ import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderAmenityViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
+import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderToCancellationJourneyMapper;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo;
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
+import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -41,8 +48,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -55,8 +60,10 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private static final String NEW_LINE = "\n";
 
     private final FlightGetOrderUseCase flightGetOrderUseCase;
+    private final TravelCrossSellingUseCase crossSellingUseCase;
     private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
     private UserSessionInterface userSession;
+    private GetProfileUseCase getProfileUseCase;
     private CompositeSubscription compositeSubscription;
     private int totalPrice = 0;
     private String userResendEmail = "";
@@ -64,16 +71,24 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Inject
     public FlightDetailOrderPresenter(FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper,
                                       UserSessionInterface userSession,
-                                      FlightGetOrderUseCase flightGetOrderUseCase) {
+                                      FlightGetOrderUseCase flightGetOrderUseCase,
+                                      GetProfileUseCase getProfileUseCase,
+                                      TravelCrossSellingUseCase crossSellingUseCase) {
         this.flightOrderToCancellationJourneyMapper = flightOrderToCancellationJourneyMapper;
         this.userSession = userSession;
         this.flightGetOrderUseCase = flightGetOrderUseCase;
+        this.getProfileUseCase = getProfileUseCase;
+        this.crossSellingUseCase = crossSellingUseCase;
         compositeSubscription = new CompositeSubscription();
     }
 
     public void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData) {
         getView().showProgressDialog();
         flightGetOrderUseCase.execute(flightGetOrderUseCase.createRequestParams(orderId), getSubscriberGetDetailOrder(flightOrderDetailPassData));
+    }
+
+    public void getCrossSellingItems(String orderId, String crossSellingQuery) {
+        crossSellingUseCase.executeRx(crossSellingQuery, crossSellingUseCase.createRequestParams(orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT), getTravelCrossSelling());
     }
 
     @Override
@@ -113,6 +128,32 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         getView().navigateToInputEmailForm(userSession.getUserId(), userResendEmail);
     }
 
+    private Subscriber<GraphqlResponse> getTravelCrossSelling() {
+        return new Subscriber<GraphqlResponse>() {
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().hideCrossSellingItems();
+                }
+            }
+
+            @Override
+            public void onNext(GraphqlResponse response) {
+                if (isViewAttached()) {
+                    TravelCrossSelling.Response crossSellingResponse = response.getData(TravelCrossSelling.Response.class);
+                    if (crossSellingResponse.getResponse().getItems().isEmpty()) getView().hideCrossSellingItems();
+                    else getView().showCrossSellingItems(crossSellingResponse.getResponse());
+                }
+            }
+        };
+    }
+
     private Subscriber<FlightOrder> getSubscriberGetDetailOrder(final FlightOrderDetailPassData flightOrderDetailPassData) {
         return new Subscriber<FlightOrder>() {
             @Override
@@ -147,9 +188,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                         flightOrder.getJourneys(),
                         flightOrderDetailPassData
                 );
-                getView().updateFlightList(flightOrderJourneyList);
+                getView().updateFlightList(transformToDetailJourneyList(flightOrderJourneyList));
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
-                getView().updatePrice(transformToSimpleModelPrice(flightOrder), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
+                getView().updatePrice(transformToSimpleModelPrice(flightOrder), FlightCurrencyFormatUtil.Companion.convertToIdrPrice(totalPrice));
                 getView().setTransactionDate(
                         FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                 FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime())
@@ -200,30 +241,26 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     @Override
     public void onGetProfileData() {
-        compositeSubscription.add(getView().getProfileObservable()
-                .onBackpressureDrop()
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ProfileInfo>() {
-                    @Override
-                    public void onCompleted() {
+        getProfileUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
 
-                    }
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
 
-                    @Override
-                    public void onNext(ProfileInfo profileInfo) {
-                        if (profileInfo != null && isViewAttached()) {
-                            userResendEmail = profileInfo.getEmail();
-                        }
-                    }
-                })
-        );
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                ProfilePojo data = graphqlResponse.getData(ProfilePojo.class);
+                ProfileInfo profileInfo = data.getProfileInfo();
+                if (profileInfo.getEmail().length() > 0 && isViewAttached()) {
+                    userResendEmail = profileInfo.getEmail();
+                }
+            }
+        });
     }
 
     @Override
@@ -242,14 +279,14 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
             getView().showPaymentInfoLayout();
             if (flightOrder.getPayment().getManualTransfer() != null && flightOrder.getPayment().getManualTransfer().getAccountBankName().length() > 0) {
-                getView().setPaymentLabel(R.string.flight_order_payment_manual_label);
+                getView().setPaymentLabel(com.tokopedia.flight.orderlist.R.string.flight_order_payment_manual_label);
                 getView().setPaymentDescription(renderManualPaymentDescriptionText(flightOrder.getPayment().getManualTransfer()));
                 getView().setTotalTransfer(flightOrder.getPayment().getManualTransfer().getTotal());
             } else {
-                getView().setPaymentLabel(R.string.flight_order_payment_label);
+                getView().setPaymentLabel(com.tokopedia.flight.orderlist.R.string.flight_order_payment_label);
                 getView().setPaymentDescription(renderPaymentDescriptionText(flightOrder.getPayment()));
                 if (flightOrder.getPayment().getNeedToPayAmount() > 0) {
-                    getView().setTotalTransfer(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightOrder.getPayment().getNeedToPayAmount()));
+                    getView().setTotalTransfer(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(flightOrder.getPayment().getNeedToPayAmount()));
                 } else {
                     getView().hideTotalTransfer();
                 }
@@ -292,8 +329,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         SpannableStringBuilder desc = new SpannableStringBuilder();
         String newLine = "\n";
         StringBuilder result = new StringBuilder();
-        result.append(getView().getString(R.string.flight_order_a_n_prefix) + " " + manualTransfer.getAccountName() + newLine);
-        result.append(getView().getString(R.string.flight_order_branch_prefix) + " " + manualTransfer.getAccountBranch() + newLine);
+        result.append(getView().getString(com.tokopedia.flight.orderlist.R.string.flight_order_a_n_prefix) + " " + manualTransfer.getAccountName() + newLine);
+        result.append(getView().getString(com.tokopedia.flight.orderlist.R.string.flight_order_branch_prefix) + " " + manualTransfer.getAccountBranch() + newLine);
         result.append(manualTransfer.getAccountNo());
         makeSmall(desc.append(result.toString()));
         text.append("\n");
@@ -350,35 +387,35 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private void generateStatus(int status, String statusString) {
         switch (status) {
             case FlightStatusOrderType.EXPIRED:
-                getView().updateViewStatus(statusString, R.color.deep_orange_500, false, false, false, true);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.deep_orange_500, false, false, false, true);
                 break;
             case FlightStatusOrderType.CONFIRMED:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, true, false, true, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, true, false, true, false);
                 break;
             case FlightStatusOrderType.FAILED:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.FINISHED:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, true, false, true, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, true, false, true, false);
                 break;
             case FlightStatusOrderType.PROGRESS:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.READY_FOR_QUEUE:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.FLIGHT_CANCELLED:
             case FlightStatusOrderType.REFUNDED:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_PAYMENT:
-                getView().updateViewStatus(statusString, R.color.deep_orange_500, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.deep_orange_500, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_THIRD_PARTY:
-                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_TRANSFER:
-                getView().updateViewStatus(statusString, R.color.deep_orange_500, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.deep_orange_500, false, false, false, false);
                 break;
             default:
                 break;
@@ -427,7 +464,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     break;
             }
 
-            for (FlightBookingAmenityViewModel amenityViewModel : flightOrderPassengerViewModel.getAmenities()) {
+            for (FlightOrderAmenityViewModel amenityViewModel : flightOrderPassengerViewModel.getAmenities()) {
                 switch (Integer.toString(amenityViewModel.getAmenityType())) {
                     case FlightAmenityType.LUGGAGE:
                         String key = String.format("%s - %s", amenityViewModel.getDepartureId(), amenityViewModel.getArrivalId());
@@ -459,28 +496,28 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
         // add simpleViewModel price for adult passenger
         if (passengerAdultCount > 0)
-            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(R.string.select_passenger_adult_title), passengerAdultCount, flightOrder.getTotalAdultNumeric()));
+            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(com.tokopedia.flight.R.string.select_passenger_adult_title), passengerAdultCount, flightOrder.getTotalAdultNumeric()));
 
         // add simpleViewModel price for child passenger
         if (passengerChildCount > 0)
-            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(R.string.select_passenger_children_title), passengerChildCount, flightOrder.getTotalChildNumeric()));
+            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(com.tokopedia.flight.R.string.select_passenger_children_title), passengerChildCount, flightOrder.getTotalChildNumeric()));
 
         // add simpleViewModel price for infant passenger
         if (passengerInfantCount > 0)
-            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(R.string.select_passenger_infant_title), passengerInfantCount, flightOrder.getTotalInfantNumeric()));
+            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(com.tokopedia.flight.R.string.select_passenger_infant_title), passengerInfantCount, flightOrder.getTotalInfantNumeric()));
 
         for (Map.Entry<String, Integer> entry : luggages.entrySet()) {
             simpleViewModelList.add(new SimpleViewModel(
-                    String.format("%s %s", getView().getString(R.string.flight_price_detail_prefix_luggage_label),
+                    String.format("%s %s", getView().getString(com.tokopedia.flight.R.string.flight_price_detail_prefix_luggage_label),
                             entry.getKey()),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
+                    FlightCurrencyFormatUtil.Companion.convertToIdrPrice(entry.getValue())));
         }
 
         for (Map.Entry<String, Integer> entry : meals.entrySet()) {
             simpleViewModelList.add(new SimpleViewModel(
-                    String.format("%s %s", getView().getString(R.string.flight_price_detail_prefixl_meal_label),
+                    String.format("%s %s", getView().getString(com.tokopedia.flight.R.string.flight_price_detail_prefixl_meal_label),
                             entry.getKey()),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
+                    FlightCurrencyFormatUtil.Companion.convertToIdrPrice(entry.getValue())));
         }
 
         int totalPassenger = passengerAdultCount + passengerChildCount + passengerInfantCount;
@@ -504,7 +541,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 String.format("%s x%d",
                         label,
                         passengerCount),
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(price));
+                FlightCurrencyFormatUtil.Companion.convertToIdrPrice(price));
     }
 
     private List<FlightDetailPassenger> transformToListPassenger(List<FlightOrderPassengerViewModel> passengerViewModels) {
@@ -524,6 +561,25 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         return flightDetailPassengers;
     }
 
+    private List<FlightDetailOrderJourney> transformToDetailJourneyList(List<FlightOrderJourney> journeyList) {
+        List<FlightDetailOrderJourney> items = new ArrayList<>();
+        for (FlightOrderJourney item : journeyList) {
+            items.add(new FlightDetailOrderJourney(
+                    item.getJourneyId(),
+                    item.getDepartureCity(),
+                    item.getDepartureCityCode(),
+                    item.getDepartureAiportId(),
+                    item.getDepartureTime(),
+                    item.getArrivalCity(),
+                    item.getArrivalCityCode(),
+                    item.getArrivalAirportId(),
+                    item.getArrivalTime(),
+                    item.getStatus(),
+                    item.getRouteViewModels()));
+        }
+        return items;
+    }
+
     private String generateSalutation(int passengerTitleId) {
         switch (passengerTitleId) {
             case FlightPassengerTitleType.TUAN:
@@ -537,13 +593,13 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         }
     }
 
-    private List<SimpleViewModel> transformToSimpleModelPassenger(List<FlightBookingAmenityViewModel> amenities) {
+    private List<SimpleViewModel> transformToSimpleModelPassenger(List<FlightOrderAmenityViewModel> amenities) {
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
-        for (FlightBookingAmenityViewModel flightBookingAmenityViewModel : amenities) {
+        for (FlightOrderAmenityViewModel flightOrderAmenityViewModel : amenities) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
-            simpleViewModel.setDescription(generateLabelPassenger(String.valueOf(flightBookingAmenityViewModel.getAmenityType()), flightBookingAmenityViewModel.getDepartureId(),
-                    flightBookingAmenityViewModel.getArrivalId()));
-            simpleViewModel.setLabel(flightBookingAmenityViewModel.getTitle());
+            simpleViewModel.setDescription(generateLabelPassenger(String.valueOf(flightOrderAmenityViewModel.getAmenityType()), flightOrderAmenityViewModel.getDepartureId(),
+                    flightOrderAmenityViewModel.getArrivalId()));
+            simpleViewModel.setLabel(flightOrderAmenityViewModel.getTitle());
             simpleViewModels.add(simpleViewModel);
         }
         return simpleViewModels;
@@ -552,9 +608,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private String generateLabelPassenger(String type, String departureId, String arrivalId) {
         switch (type) {
             case FlightAmenityType.LUGGAGE:
-                return getView().getString(R.string.flight_luggage_detail_order, departureId, arrivalId);
+                return getView().getString(com.tokopedia.flight.R.string.flight_luggage_detail_order, departureId, arrivalId);
             case FlightAmenityType.MEAL:
-                return getView().getString(R.string.flight_meal_detail_order, departureId, arrivalId);
+                return getView().getString(com.tokopedia.flight.R.string.flight_meal_detail_order, departureId, arrivalId);
             default:
                 return "";
         }
@@ -563,6 +619,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Override
     public void detachView() {
         flightGetOrderUseCase.unsubscribe();
+        getProfileUseCase.unsubscribe();
         if (compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }

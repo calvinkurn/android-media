@@ -13,6 +13,10 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
                 tagLine
                 url
             }
+            freeOngkir{
+                isActive
+                imgURL
+            }
             closedInfo{
                 closedNote
                 reason

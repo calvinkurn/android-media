@@ -1,7 +1,6 @@
 package com.tokopedia.gamification.taptap.compoundview;
 
 import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -9,10 +8,9 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +19,14 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationConstants;
 import com.tokopedia.gamification.R;
@@ -33,9 +34,9 @@ import com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.taptap.data.entiity.TokenAsset;
 import com.tokopedia.gamification.taptap.data.entiity.TokensUser;
+import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
-import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 
 import java.util.List;
 import java.util.Random;
@@ -280,24 +281,29 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         String imageFullWhitetUrl = tokenAsset.getGlowImgURL();
         String imageSemiWhiteUrl = tokenAsset.getGlowShadowImgURL();
 
-        StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
+        ObjectKey signature = new ObjectKey(String.valueOf(tokenAsset.getVersion()));
 
-        ImageHandler.loadImageWithSignature(imageViewFull, full, stringSignature);
+        ImageHandler.loadImageWithSignature(imageViewFull, full, signature);
         Glide.with(getContext())
-                .load(cracked)
                 .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .signature(new StringSignature(String.valueOf(tokenAsset.getVersion())))
-                .into(new SimpleTarget<Bitmap>() {
+                .load(cracked)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .signature(signature)
+                .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         imageViewCracked.setImageBitmap(resource);
                     }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
                 });
-        ImageHandler.loadImageWithSignature(imageViewRight, imageRightUrl, stringSignature);
-        ImageHandler.loadImageWithSignature(imageViewLeft, imageLeftUrl, stringSignature);
-        ImageHandler.loadImageWithSignature(imageFullWhiteEgg, imageFullWhitetUrl, stringSignature);
-        ImageHandler.loadImageWithSignature(imageSemiWhiteEgg, imageSemiWhiteUrl, stringSignature);
+        ImageHandler.loadImageWithSignature(imageViewRight, imageRightUrl, signature);
+        ImageHandler.loadImageWithSignature(imageViewLeft, imageLeftUrl, signature);
+        ImageHandler.loadImageWithSignature(imageFullWhiteEgg, imageFullWhitetUrl, signature);
+        ImageHandler.loadImageWithSignature(imageSemiWhiteEgg, imageSemiWhiteUrl, signature);
 
         show();
         reset(tokenUser);
@@ -310,8 +316,8 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         }
         this.tokenUserId = tokenUser.getTokenUserID();
         String empty = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_EMPTY);
-        StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
-        ImageHandler.loadImageWithSignature(imageViewFull, empty, stringSignature);
+        ObjectKey signature = new ObjectKey(String.valueOf(tokenAsset.getVersion()));
+        ImageHandler.loadImageWithSignature(imageViewFull, empty, signature);
         reset(tokenUser);
         this.setVisibility(View.VISIBLE);
 

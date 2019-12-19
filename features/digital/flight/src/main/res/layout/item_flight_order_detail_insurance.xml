@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_title"
             style="@style/TextView.Title.Bold"
             android:layout_width="0dp"
@@ -23,7 +23,7 @@
             android:textSize="@dimen/sp_18"
             tools:text="Asuransi Perjalanan" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             style="@style/TextView.Title.Green"
             android:id="@+id/ic_flight_insurance_protection_tv"
             android:layout_width="wrap_content"
@@ -33,13 +33,13 @@
             android:textSize="@dimen/sp_18" />
     </LinearLayout>
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_tagline"
         style="@style/TextView.Small.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/CardInsuranceDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

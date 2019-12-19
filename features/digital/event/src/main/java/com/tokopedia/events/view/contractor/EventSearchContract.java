@@ -1,8 +1,8 @@
 package com.tokopedia.events.view.contractor;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;

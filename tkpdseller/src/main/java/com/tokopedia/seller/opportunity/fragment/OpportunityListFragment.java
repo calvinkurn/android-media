@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -109,6 +109,12 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         return fragment;
     }
 
+    public static OpportunityListFragment createInstance(Bundle extras) {
+        OpportunityListFragment fragment = new OpportunityListFragment();
+        fragment.setArguments(extras);
+        return fragment;
+    }
+
     @Override
     protected boolean isRetainInstance() {
         return true;
@@ -177,8 +183,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             opportunityParam = savedInstanceState.getParcelable(ARGS_PARAM);
         else {
             opportunityParam = new GetOpportunityListParam();
-            if (getArguments().containsKey(EXTRA_QUERY)) {
-                opportunityParam.setQuery(getArguments().getString(EXTRA_QUERY));
+            if (getArguments() != null) {
+                if (getArguments().containsKey(EXTRA_QUERY)) {
+                    opportunityParam.setQuery(getArguments().getString(EXTRA_QUERY));
+                }
             }
         }
 

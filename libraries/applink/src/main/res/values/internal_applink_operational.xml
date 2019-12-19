@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_customercare" translatable="false">customercare</string>
+    <string name="path_ticket_detail" translatable="false">/.*\</string>
+    <string name="path_inbox_list" translatable="false">/inbox-list</string>
+    <string name="host_contactus" translatable="false">contactus</string>
+    <string name="path_contactus" translatable="false">/.*\</string>
+    <string name="host_contact_us" translatable="false">contact-us</string>
+    <string name="applink_title_contact_us" >Contact Us</string>
+
+</resources>

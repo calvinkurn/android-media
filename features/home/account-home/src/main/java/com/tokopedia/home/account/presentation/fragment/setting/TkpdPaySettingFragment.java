@@ -3,9 +3,9 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,8 +102,6 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
 
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SALDO_ID,
                 getString(R.string.title_saldo_setting)));
-        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_BANK_ACCOUNT_ID,
-                getString(R.string.title_bank_account_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_CREDIT_CARD_ID,
                 getString(R.string.title_credit_card_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_DEBIT_INSTANT,
@@ -122,14 +120,6 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
         if (getActivity().getApplication() instanceof AccountHomeRouter) {
             AccountHomeRouter router = (AccountHomeRouter) getActivity().getApplication();
             switch (settingId) {
-                case SettingConstant.SETTING_BANK_ACCOUNT_ID:
-                    accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
-                    if (userSession.hasPassword()) {
-                        startActivity(RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK));
-                    } else {
-                        showNoPasswordDialog();
-                    }
-                    break;
                 case SettingConstant.SETTING_CREDIT_CARD_ID:
                     accountAnalytics.eventClickPaymentSetting(CREDIT_CARD);
                     router.goToManageCreditCard(getActivity());
@@ -193,32 +183,6 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
         } catch (Exception e) {
             e.printStackTrace();
             return "";
-        }
-    }
-
-    private void showNoPasswordDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getResources().getString(R.string.error_bank_no_password_title));
-        builder.setMessage(getResources().getString(R.string.error_bank_no_password_content));
-        builder.setPositiveButton(getResources().getString(R.string.error_no_password_yes), (DialogInterface dialogInterface, int i) -> {
-            intentToAddPassword();
-            dialogInterface.dismiss();
-        });
-        builder.setNegativeButton(getResources().getString(R.string.error_no_password_no), (DialogInterface dialogInterface, int i) -> {
-            dialogInterface.dismiss();
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.colorSheetTitle));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
-    }
-
-    private void intentToAddPassword() {
-        if (getActivity() != null) {
-            startActivityForResult(RouteManager.getIntent(getActivity(),
-                    ApplinkConstInternalGlobal.ADD_PASSWORD), REQUEST_CHANGE_PASSWORD);
         }
     }
 }

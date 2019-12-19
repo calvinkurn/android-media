@@ -1,14 +1,15 @@
 package com.tokopedia.hotel.roomlist.presentation.fragment
 
 import android.app.ProgressDialog
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.graphics.Rect
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
@@ -24,7 +25,6 @@ import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
-import com.tokopedia.hotel.common.presentation.widget.hotelcalendar.HotelCalendarDialog
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
@@ -38,6 +38,10 @@ import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -72,6 +76,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     lateinit var progressDialog: ProgressDialog
 
+    private lateinit var remoteConfig: RemoteConfig
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -93,12 +99,14 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
                     TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut))
         }
+
+        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        roomListViewModel.roomListResult.observe(this, android.arch.lifecycle.Observer {
+        roomListViewModel.roomListResult.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     if (firstTime) trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId)
@@ -118,7 +126,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             }
         })
 
-        roomListViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
+        roomListViewModel.addCartResponseResult.observe(this, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
@@ -287,11 +295,23 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     private fun openCalendarDialog(selectedDate: Date? = null) {
-        val hotelCalendarDialog = HotelCalendarDialog.getInstance(hotelRoomListPageModel.checkIn, hotelRoomListPageModel.checkOut)
-        hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener{
+        var minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY
+        if (!(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_BOOK_FOR_TODAY, true))) minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_PLUS_1_DAY
+
+        val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(hotelRoomListPageModel.checkIn,
+                hotelRoomListPageModel.checkOut, SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
+                SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED_ONE_MONTH.toLong(),
+                getString(R.string.hotel_min_date_label), getString(R.string.hotel_max_date_label), minSelectDateFromToday)
+
+        hotelCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener{
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
                 onCheckOutDateChanged(dateOut)
+            }
+        }
+        hotelCalendarDialog.listenerMaxRange = object : SelectionRangeCalendarWidget.OnNotifyMaxRange {
+            override fun onNotifyMax() {
+                Toast.makeText(context, R.string.hotel_calendar_error_max_range, Toast.LENGTH_SHORT).show()
             }
         }
         hotelCalendarDialog.show(fragmentManager, "test")

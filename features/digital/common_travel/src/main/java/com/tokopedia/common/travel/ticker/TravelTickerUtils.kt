@@ -1,7 +1,7 @@
 package com.tokopedia.common.travel.ticker
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.View
 import com.tokopedia.common.travel.R
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel

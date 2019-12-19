@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,11 +38,11 @@
             android:layout_marginRight="@dimen/dp_8"
             android:text="@string/recom_see_more_title"
             android:textColor="@color/green_500"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="?attr/selectableItemBackground"
             app:typographyType="heading_5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
-    <android.support.v7.widget.RecyclerView
+    <com.tokopedia.carouselproductcard.CarouselProductCardView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,4 +50,4 @@
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

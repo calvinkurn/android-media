@@ -1,6 +1,6 @@
 package com.tokopedia.datepicker.range.model;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.datepicker.range.domain.model.DatePickerDomainModel;
 

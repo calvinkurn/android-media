@@ -1,7 +1,7 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.adapter.DigitalItemSubMenuCategoryAdapter

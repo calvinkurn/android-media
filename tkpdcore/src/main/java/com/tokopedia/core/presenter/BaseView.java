@@ -2,7 +2,7 @@ package com.tokopedia.core.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Created by m.normansyah on 06/11/2015.

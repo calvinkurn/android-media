@@ -40,7 +40,7 @@
             android:padding="@dimen/dp_8"
             app:srcCompat="@drawable/ic_chevron_right_green_24dp"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_48"
             android:layout_gravity="end"

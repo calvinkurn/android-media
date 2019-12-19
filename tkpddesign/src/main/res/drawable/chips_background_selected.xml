@@ -5,6 +5,6 @@
     <stroke
         android:width="@dimen/dp_1"
         android:color="@color/snackbar_border_normal" />
-    <corners android:radius="@dimen/dp_20" />
+    <corners android:radius="@dimen/dp_16" />
 
 </shape>

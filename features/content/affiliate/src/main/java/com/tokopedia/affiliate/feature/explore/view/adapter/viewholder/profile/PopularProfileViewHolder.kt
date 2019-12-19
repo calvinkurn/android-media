@@ -1,8 +1,8 @@
 package com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.profile
 
 import android.graphics.Rect
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.R
@@ -25,7 +25,7 @@ class PopularProfileViewHolder(v: View, private val mainView: ExploreContract.Vi
         itemView.profileRv.addItemDecoration(object : RecyclerView.ItemDecoration(){
             override fun getItemOffsets(outRect: Rect, view: View,
                                         parent: RecyclerView, state: RecyclerView.State) {
-                outRect.right = itemView.getDimens(R.dimen.dp_8)
+                outRect.right = itemView.getDimens(com.tokopedia.design.R.dimen.dp_8)
             }
         })
     }

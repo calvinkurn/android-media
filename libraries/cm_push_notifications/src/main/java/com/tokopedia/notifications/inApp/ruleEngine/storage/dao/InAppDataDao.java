@@ -1,9 +1,9 @@
 package com.tokopedia.notifications.inApp.ruleEngine.storage.dao;
 
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.OnConflictStrategy;
-import android.arch.persistence.room.Query;
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
+import androidx.room.Query;
 
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 
@@ -23,7 +23,7 @@ public interface InAppDataDao {
     @Query("DELETE FROM inapp_data where id = :id")
     void deleteRecord(long id);
 
-    @Query("SELECT * from inapp_data where s = :screenName")
+    @Query("SELECT * from inapp_data where s = :screenName or s = '*'")
     List<CMInApp> getDataForScreen(String screenName);
 
     @Query("SELECT * from inapp_data where id = :id LIMIT 1")

@@ -15,9 +15,9 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
@@ -244,8 +244,9 @@ abstract class BaseNotification internal constructor(protected var context: Cont
 
     internal fun getBitmap(url: String?): Bitmap {
         return try {
-            Glide.with(context).load(url)
+            Glide.with(context)
                     .asBitmap()
+                    .load(url)
                     .into(imageWidth, imageHeight)
                     .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
@@ -262,8 +263,9 @@ abstract class BaseNotification internal constructor(protected var context: Cont
     internal fun getActionButtonBitmap(url: String): Bitmap {
         return try {
             val wh = actionButtonHeightWidth
-            Glide.with(context).load(url)
+            Glide.with(context)
                     .asBitmap()
+                    .load(url)
                     .into(wh, wh)
                     .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {

@@ -4,8 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 
+import androidx.annotation.NonNull;
+
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+
+import java.security.MessageDigest;
 
 /**
  * Created by alifa on 3/22/17.
@@ -16,7 +20,7 @@ public class CategoryHeaderTransformation extends BitmapTransformation {
     public static double CATEGORY_HEADER_CROP = 0.19;
 
     public CategoryHeaderTransformation(Context context) {
-        super(context);
+        super();
     }
 
     @Override
@@ -40,7 +44,7 @@ public class CategoryHeaderTransformation extends BitmapTransformation {
     }
 
     @Override
-    public String getId() {
-        return getClass().toString();
+    public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+
     }
 }

@@ -3,14 +3,12 @@ package com.tokopedia.affiliate.feature.explore.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.explore.view.fragment.ExploreFragment;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
-import com.tokopedia.applink.ApplinkConst;
 
 /**
  * @author by yfsx on 24/09/18.
@@ -19,7 +17,6 @@ public class ExploreActivity extends BaseActivity {
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
 
-    @DeepLink(ApplinkConst.AFFILIATE_EXPLORE)
     public static Intent getInstance(Context context) {
         Intent intent = new Intent(context, ExploreActivity.class);
         Bundle bundle = new Bundle();
@@ -35,7 +32,7 @@ public class ExploreActivity extends BaseActivity {
     }
 
     protected int getLayoutRes() {
-        return R.layout.activity_no_toolbar;
+        return R.layout.activity_af_no_toolbar;
     }
 
     protected void inflateFragment() {

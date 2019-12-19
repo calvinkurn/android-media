@@ -6,8 +6,8 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     implementation rootProject.ext.supportLibDependencies.appCompactV7
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
 
     testImplementation "org.robolectric:robolectric:3.8"
     testImplementation "org.robolectric:multidex:3.4.2"
@@ -16,7 +16,7 @@ dependencies {
 project.ext {
     artifactId = 'track'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "track-release"
 }
 

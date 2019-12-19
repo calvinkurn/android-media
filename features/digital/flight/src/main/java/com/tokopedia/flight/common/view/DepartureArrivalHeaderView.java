@@ -1,15 +1,14 @@
 package com.tokopedia.flight.common.view;
 
 import android.content.Context;
-import android.support.annotation.AttrRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.AttrRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.flight.R;
 
 /**
  * Created by User on 11/16/2017.
@@ -38,12 +37,12 @@ public class DepartureArrivalHeaderView extends BaseCustomView {
     }
 
     private void init(){
-        View view = inflate(getContext(), R.layout.include_header_flight_detail, this);
-        tvDepAirportCode = (TextView) view.findViewById(R.id.departure_airport_code);
-        tvDepAirportName = (TextView) view.findViewById(R.id.departure_airport_name);
+        View view = inflate(getContext(), com.tokopedia.flight.R.layout.include_header_flight_detail, this);
+        tvDepAirportCode = (TextView) view.findViewById(com.tokopedia.flight.R.id.departure_airport_code);
+        tvDepAirportName = (TextView) view.findViewById(com.tokopedia.flight.R.id.departure_airport_name);
 
-        tvArrAirportCode = (TextView) view.findViewById(R.id.arrival_airport_code);
-        tvArrAirportName = (TextView) view.findViewById(R.id.arrival_airport_name);
+        tvArrAirportCode = (TextView) view.findViewById(com.tokopedia.flight.R.id.arrival_airport_code);
+        tvArrAirportName = (TextView) view.findViewById(com.tokopedia.flight.R.id.arrival_airport_name);
     }
 
     public void setDeparture(String depCode, String depName){

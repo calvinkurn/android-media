@@ -1,12 +1,14 @@
 package com.tokopedia.tradein.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.MutableLiveData
 import android.content.Intent
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.model.ValidateTradePDP
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -136,7 +138,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         val variables = HashMap<String, Any>()
         variables["params"] = tradeInParams
         launchCatchError(block = {
-            val query = GraphqlHelper.loadRawString(applicationInstance.resources, R.raw.gql_validate_tradein)
+            val query = GraphqlHelper.loadRawString(applicationInstance.resources, com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
             val response = repository?.getGQLData(query, ValidateTradePDP::class.java, variables) as ValidateTradePDP?
             checkIfElligible(response, jsonObject)
         }, onError = {

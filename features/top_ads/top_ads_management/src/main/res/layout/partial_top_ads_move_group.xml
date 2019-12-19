@@ -13,7 +13,7 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_layout_choose_group"
             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
             style="@style/TextInputLayout"
@@ -22,7 +22,7 @@
             <com.tokopedia.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView
                 android:id="@+id/choose_group_auto_text"
                 style="@style/EditText.GreenHighlight.TopAdsCustomAutoCompleteTextView" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             tools:text="@string/label_top_ads_info_group_option_exist"

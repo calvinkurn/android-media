@@ -1,7 +1,7 @@
 package com.tokopedia.topads.keyword.view.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment

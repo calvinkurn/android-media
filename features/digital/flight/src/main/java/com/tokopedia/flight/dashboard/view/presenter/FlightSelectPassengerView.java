@@ -1,6 +1,6 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
@@ -15,6 +15,8 @@ public interface FlightSelectPassengerView extends CustomerView {
     void showTotalPassengerErrorMessage(@StringRes int resId);
 
     void showInfantGreaterThanAdultErrorMessage(@StringRes int resId);
+
+    void showInfantMoreThanFourErrorMessage(@StringRes int resId);
 
     void showAdultShouldAtleastOneErrorMessage(@StringRes int resId);
 

@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd;
 
-import android.support.test.espresso.IdlingResource;
+import androidx.test.espresso.IdlingResource;
 import android.util.Log;
 
 import rx.plugins.RxJavaPlugins;

@@ -1,6 +1,6 @@
 package com.tokopedia.base.list.seller.view.listener;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 

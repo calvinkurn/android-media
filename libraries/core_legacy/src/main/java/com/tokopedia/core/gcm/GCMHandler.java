@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
-import android.support.v4.util.Preconditions;
+import androidx.core.util.Preconditions;
 import android.text.TextUtils;
 import android.util.Log;
 

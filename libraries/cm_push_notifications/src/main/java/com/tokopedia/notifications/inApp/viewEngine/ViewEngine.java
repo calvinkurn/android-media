@@ -7,14 +7,13 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -87,7 +86,7 @@ public class ViewEngine {
             view.findViewById(R.id.mainContainer).setTag(cmInApp);
             cmInApp.setCmInAppView(view);
             View innerContainer = view.findViewById(R.id.innerContainer);
-            addOnClose(view);
+            addOnClose(view, cmInApp);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) innerContainer.getLayoutParams();
             setMainContainerMargin(layoutParams, cmInApp, innerContainer);
             setMainContainerBackGround(view, cmInApp);
@@ -110,7 +109,7 @@ public class ViewEngine {
 
             setDrawable(innerContainer, cmLayout.getForeground());
             setCmInAppImage(view, cmLayout, (ConstraintLayout) innerContainer);
-            handleBackPress(view);
+            handleBackPress(view, cmInApp);
             return cmInApp;
         } catch (Exception e) {
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
@@ -166,8 +165,10 @@ public class ViewEngine {
                 innerLayoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
                 innerLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 changeToImageOnly((ConstraintLayout) innerContainer);
-                if (cmInApp.getCmLayout().getAppLink() != null)
-                    addOnClickAction(cmInApp, innerContainer, cmInApp.getCmLayout().getAppLink());
+                if (cmInApp.getCmLayout().getAppLink() != null) {
+                    ElementType elementType = new ElementType(ElementType.MAIN);
+                    addOnClickAction(cmInApp, innerContainer, cmInApp.getCmLayout().getAppLink(), elementType);
+                }
                 break;
 
             case CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY:
@@ -178,8 +179,10 @@ public class ViewEngine {
                 margins[1] = margins[1] + (int) getPXtoDP(40F);
                 margins[2] = margins[2] + (int) getPXtoDP(40F);
                 margins[3] = margins[3] + (int) getPXtoDP(40F);
-                if (cmInApp.getCmLayout().getAppLink() != null)
-                    addOnClickAction(cmInApp, innerContainer, cmInApp.getCmLayout().getAppLink());
+                if (cmInApp.getCmLayout().getAppLink() != null) {
+                    ElementType elementType = new ElementType(ElementType.MAIN);
+                    addOnClickAction(cmInApp, innerContainer, cmInApp.getCmLayout().getAppLink(), elementType);
+                }
                 break;
         }
 
@@ -256,8 +259,10 @@ public class ViewEngine {
         for (CMButton cmButton : cmButtonList) {
             buttonCount--;
             Button button = createButton(container, cmLayout.getBtnOrientation(), cmButton, buttonCount == 0);
+            ElementType elementType = new ElementType(ElementType.BUTTON);
+            elementType.setElementId(cmButton.getId());
             if (cmButton.getAppLink() != null)
-                addOnClickAction(cmInApp, button, cmButton.getAppLink());
+                addOnClickAction(cmInApp, button, cmButton.getAppLink(), elementType);
         }
     }
 
@@ -304,9 +309,9 @@ public class ViewEngine {
         return button;
     }
 
-    private void addOnClickAction(final CMInApp cmInApp, View actionableView, String deepLink) {
+    private void addOnClickAction(final CMInApp cmInApp, View actionableView, String deepLink, ElementType elementType) {
         if (deepLink.equalsIgnoreCase("close")) {
-            addOnClose(actionableView);
+            addOnClose(actionableView, cmInApp);
             return;
         }
         actionableView.setTag(deepLink);
@@ -317,7 +322,7 @@ public class ViewEngine {
                 CmInAppListener listener = CMInAppManager.getCmInAppListener();
                 if (listener != null && !TextUtils.isEmpty(deepLink)) {
                     listener.onCMinAppDismiss();
-                    listener.onCMInAppLinkClick(Uri.parse(deepLink), cmInApp.getScreen());
+                    listener.onCMInAppLinkClick(Uri.parse(deepLink), cmInApp, elementType);
                 }
                 ((ViewGroup) cmInApp.getCmInAppView().getParent()).removeView(cmInApp.getCmInAppView());
             }
@@ -357,12 +362,12 @@ public class ViewEngine {
         return (int) (24 * appContext.getResources().getDisplayMetrics().density);
     }
 
-    private void addOnClose(final View view) {
+    private void addOnClose(final View view, CMInApp cmInApp) {
         View closeView = view.findViewById(R.id.iv_close);
         closeView.setOnClickListener(v -> {
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
-                listener.onCMInAppClosed();
+                listener.onCMInAppClosed(cmInApp);
                 listener.onCMinAppDismiss();
             }
             ((ViewGroup) view.getParent()).removeView(view);
@@ -370,7 +375,7 @@ public class ViewEngine {
 
     }
 
-    private void handleBackPress(View view) {
+    private void handleBackPress(View view, CMInApp cmInApp) {
         view.setFocusableInTouchMode(true);
         view.requestFocus();
         view.setOnKeyListener((v, keyCode, event) -> {
@@ -378,7 +383,7 @@ public class ViewEngine {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                     CmInAppListener listener = CMInAppManager.getCmInAppListener();
                     if (listener != null) {
-                        listener.onCMInAppClosed();
+                        listener.onCMInAppClosed(cmInApp);
                         listener.onCMinAppDismiss();
                     }
                     ((ViewGroup) v.getParent()).removeView(v);
@@ -466,7 +471,8 @@ public class ViewEngine {
         }
 
         /*title*/
-        constraintSet.constrainWidth(R.id.tv_cmTitle, ConstraintSet.WRAP_CONTENT);
+        constraintSet.constrainWidth(resCmTitle, 0);
+        constraintSet.constrainHeight(resCmTitle, ConstraintSet.WRAP_CONTENT);
 
         if (isCLoseButtonVisible)
             constraintSet.connect(resCmTitle, ConstraintSet.TOP,
@@ -474,15 +480,20 @@ public class ViewEngine {
         else
             constraintSet.connect(resCmTitle, ConstraintSet.TOP,
                     ConstraintSet.PARENT_ID, ConstraintSet.TOP);
+        constraintSet.connect(resCmTitle, ConstraintSet.BOTTOM,
+                resCmMessage, ConstraintSet.TOP);
 
         constraintSet.connect(resCmTitle, ConstraintSet.END,
                 ConstraintSet.PARENT_ID, ConstraintSet.END);
 
         /*message*/
-        constraintSet.constrainWidth(resCmMessage, ConstraintSet.WRAP_CONTENT);
-        constraintSet.constrainHeight(resCmMessage, 0);
+        constraintSet.constrainWidth(resCmMessage, 0);
+        constraintSet.constrainHeight(resCmMessage, ConstraintSet.WRAP_CONTENT);
         constraintSet.connect(resCmMessage, ConstraintSet.TOP,
                 resCmTitle, ConstraintSet.BOTTOM);
+        constraintSet.connect(resCmMessage, ConstraintSet.BOTTOM,
+                buttonContainer, ConstraintSet.TOP);
+
         constraintSet.connect(resCmMessage, ConstraintSet.END,
                 ConstraintSet.PARENT_ID, ConstraintSet.END);
 
@@ -608,4 +619,6 @@ public class ViewEngine {
         set.setDimensionRatio(mView.getId(), null);
         set.applyTo(mLayout);
     }
+
+
 }

@@ -1,8 +1,8 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
 import android.content.Context
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -44,7 +44,7 @@ class PlayWelcomeHelper constructor(
         welcomeInfoDialog.setOnShowListener() { dialog ->
             val d = dialog as BottomSheetDialog
 
-            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            val bottomSheet = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (bottomSheet != null) {
                 BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
             }
@@ -75,11 +75,11 @@ class PlayWelcomeHelper constructor(
         title.text = channelInfoViewModel.title
         subtitle.text = channelInfoViewModel.description
 
-        ImageHandler.loadImage2(image, channelInfoViewModel.image, R.drawable.loading_page)
+        ImageHandler.loadImage2(image, channelInfoViewModel.image, com.tokopedia.abstraction.R.drawable.loading_page)
         ImageHandler.loadImageCircle2(profile.context,
                 profile,
                 channelInfoViewModel.adminPicture,
-                R.drawable.loading_page)
+                com.tokopedia.abstraction.R.drawable.loading_page)
 
         ctaButton.setOnClickListener {
             welcomeInfoDialog.dismiss()

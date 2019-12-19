@@ -2,8 +2,8 @@ package com.tokopedia.flight.booking.view.adapter;
 
 import android.content.res.Resources;
 import android.graphics.Typeface;
-import android.support.annotation.ColorInt;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.ColorInt;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 
 import java.util.ArrayList;
@@ -59,7 +58,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_simple_view, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(com.tokopedia.flight.orderlist.R.layout.item_simple_view, parent, false);
         return new ViewHolder(view);
     }
 
@@ -149,10 +148,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
 
         public ViewHolder(View itemView) {
             super(itemView);
-            titleTextView = (TextView) itemView.findViewById(R.id.tv_title);
-            contentTextView = (TextView) itemView.findViewById(R.id.tv_content);
-            arrowImageView = (ImageView) itemView.findViewById(R.id.iv_arrow);
-            containerLinearLayout = (LinearLayout) itemView.findViewById(R.id.container);
+            titleTextView = (TextView) itemView.findViewById(com.tokopedia.design.R.id.tv_title);
+            contentTextView = (TextView) itemView.findViewById(com.tokopedia.flight.orderlist.R.id.tv_content);
+            arrowImageView = (ImageView) itemView.findViewById(com.tokopedia.flight.orderlist.R.id.iv_arrow);
+            containerLinearLayout = (LinearLayout) itemView.findViewById(com.tokopedia.design.R.id.container);
         }
 
         public void bind(final SimpleViewModel viewModel) {
@@ -209,7 +208,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
                 }
             });
             if (isClickable) {
-                containerLinearLayout.setBackground(itemView.getContext().getResources().getDrawable(R.drawable.selectable_background_tokopedia));
+                containerLinearLayout.setBackground(itemView.getContext().getResources().getDrawable(com.tokopedia.abstraction.R.drawable.selectable_background_tokopedia));
             } else {
                 containerLinearLayout.setBackground(null);
             }

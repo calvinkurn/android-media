@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/cards_ui_flat"
     android:gravity="center"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
     android:padding="@dimen/padding_small">
 
     <TextView

@@ -1,0 +1,88 @@
+query payment($paymentID: Int!) {
+  payment(payment_id: $paymentID) {
+    fee_amount
+    payment_amount
+    partial {
+      amount
+      gateway {
+        gateway_fee
+        gateway_id
+        gateway_img_url
+        gateway_name
+      }
+    }
+    payment_gateway {
+        gateway_fee
+        gateway_id
+        gateway_img_url
+        gateway_name
+        error
+    }
+    payment_id
+    payment_method {
+        defer {
+            gateway {
+                gateway_fee
+                gateway_id
+                gateway_img_url
+                gateway_name
+                error
+            }
+            payment_code
+        }
+        instant {
+          gateway{
+            gateway_fee
+            gateway_id
+            gateway_img_url
+            gateway_name
+            error
+          }
+        }
+        method
+        transfer {
+            destination_account
+            destination_name
+            gateway {
+                gateway_fee
+                gateway_id
+                gateway_img_url
+                gateway_name
+                error
+            }
+            source_account
+            source_name
+        }
+    }
+    payment_ref_num
+    payment_status
+    payment_type {
+        types
+    }
+    stacked_promos {
+        benefits_by_orders {
+            global_level_orders {
+                promo_code
+                total_benefit
+                total_cashback
+                total_discount
+                type
+            }
+            order_id
+            order_level_orders {
+                promo_code
+                total_benefit
+                total_cashback
+                total_discount
+                type
+            }
+        }
+        final_benefit_amount
+        promo_code_id
+    }
+    voucher {
+        voucher_code
+        voucher_id
+    }
+  }
+}

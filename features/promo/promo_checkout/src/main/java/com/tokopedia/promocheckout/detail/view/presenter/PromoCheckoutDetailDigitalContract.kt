@@ -5,7 +5,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 
 interface PromoCheckoutDetailDigitalContract {
     interface Presenter : CustomerPresenter<PromoCheckoutDetailContract.View>{
-        fun getDetailPromo(codeCoupon: String)
+        fun getDetailPromo(slug: String)
         fun checkVoucher(promoCode: String, promoDigitalModel: PromoDigitalModel)
     }
 }

@@ -8,7 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contactus.createticket.adapter.ImageUploadAdapter;
@@ -32,7 +33,6 @@ import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPr
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenterImpl;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
@@ -210,7 +210,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         imageAdapter.setCanUpload(true);
 
         attachment.setLayoutManager(new LinearLayoutManager(getActivity(),
-                android.support.v7.widget.LinearLayoutManager.HORIZONTAL, false));
+                androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false));
         attachment.setAdapter(imageAdapter);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
 
@@ -244,7 +244,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     }
 
     private void showImagePickerDialog() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.contactus.R.string.choose_image),
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
                 null, null);

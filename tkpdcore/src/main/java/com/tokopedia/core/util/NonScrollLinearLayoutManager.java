@@ -1,7 +1,7 @@
 package com.tokopedia.core.util;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 

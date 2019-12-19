@@ -21,6 +21,8 @@ dependencies {
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.imagePreviewSlider)
+
+    implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
@@ -62,7 +64,7 @@ dependencies {
 project.ext {
     artifactId = 'hotel'
     groupId = 'com.tokopedia.travel'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "hotel-release"
 }
 

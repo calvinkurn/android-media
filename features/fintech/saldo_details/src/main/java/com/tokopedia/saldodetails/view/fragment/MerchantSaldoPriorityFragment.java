@@ -4,9 +4,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -20,8 +20,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics;
@@ -33,13 +32,13 @@ import com.tokopedia.saldodetails.presenter.MerchantSaldoPriorityPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
 import com.tokopedia.saldodetails.response.model.GqlSpAnchorListResponse;
+import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_PARAM_SELLER_DETAILS;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         MerchantSaldoPriorityContract.View {
@@ -277,12 +276,12 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
                 }
 
                 anchorLabel.setOnClickListener(v -> {
-                    saldoDetailsAnalytics.eventAnchorLabelClick(anchorLabel.getText().toString());
-                    RouteManager.route(context, String.format("%s?url=%s",
-                            ApplinkConst.WEBVIEW,
-                            gqlAnchorListResponse.getUrl()));
+                    if (gqlAnchorListResponse != null &&
+                            !TextUtils.isEmpty(gqlAnchorListResponse.getUrl())) {
+                        saldoDetailsAnalytics.eventAnchorLabelClick(anchorLabel.getText().toString());
+                        startActivity(SaldoWebViewActivity.getWebViewIntent(context, gqlAnchorListResponse.getUrl()));
+                    }
                 });
-
                 spActionListLinearLayout.addView(view);
             }
         }

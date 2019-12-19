@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/clr_ae31353b">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/header_bottom_sheet_rounded_white">
@@ -43,12 +43,12 @@
                 app:tabTextColor="@color/unify_N700_44" />
 
 
-            <android.support.v4.view.ViewPager
+            <androidx.viewpager.widget.ViewPager
                 android:id="@+id/view_pager_specs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tab_layout_specs" />
         </RelativeLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

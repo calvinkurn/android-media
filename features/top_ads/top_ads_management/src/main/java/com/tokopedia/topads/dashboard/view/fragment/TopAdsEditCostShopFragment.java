@@ -1,8 +1,8 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;

@@ -37,10 +37,10 @@ dependencies {
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.feedComponent)
-    implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.atc_common)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.stickyLogin)
 
@@ -74,12 +74,20 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.playServicesDependencies.analytics
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.unifyDependencies.components
+
 }
 
 project.ext {
     artifactId = 'shop-page'
     groupId = 'com.tokopedia.merchant'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="shop_page-release"
 }
 

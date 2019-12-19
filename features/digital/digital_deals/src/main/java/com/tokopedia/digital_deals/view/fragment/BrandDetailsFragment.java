@@ -1,20 +1,12 @@
 package com.tokopedia.digital_deals.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +16,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
@@ -88,7 +90,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_brand_detail, container, false);
+        View view = inflater.inflate(com.tokopedia.digital_deals.R.layout.fragment_brand_detail, container, false);
         setViewIds(view);
         setHasOptionsMenu(true);
         userSession = new UserSession(getActivity());
@@ -99,9 +101,9 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                 verticalOffset = Math.abs(verticalOffset);
                 int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
                 if (verticalOffset >= difference) {
-                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
+                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.digital_deals.R.color.tkpd_dark_gray_toolbar));
                 } else {
-                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.white));
+                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.white));
                 }
             }
         });
@@ -118,22 +120,23 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     }
 
 
+    @SuppressLint("WrongConstant")
     private void setViewIds(View view) {
-        collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
-        ivHeader = view.findViewById(R.id.header_image);
-        ivBrandLogo = view.findViewById(R.id.iv_brand_logo);
-        recyclerViewDeals = view.findViewById(R.id.recycler_view);
-        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
-        mainContent = view.findViewById(R.id.main_content);
-        baseMainContent = view.findViewById(R.id.base_main_content);
-        progBar = view.findViewById(R.id.prog_bar);
-        flHeader = view.findViewById(R.id.fl_header);
-        noContent = view.findViewById(R.id.no_content);
-        toolbar = view.findViewById(R.id.toolbar);
+        collapsingToolbarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.collapsing_toolbar);
+        appBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.app_bar_layout);
+        ivHeader = view.findViewById(com.tokopedia.digital_deals.R.id.header_image);
+        ivBrandLogo = view.findViewById(com.tokopedia.digital_deals.R.id.iv_brand_logo);
+        recyclerViewDeals = view.findViewById(com.tokopedia.digital_deals.R.id.recycler_view);
+        progressBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.progress_bar_layout);
+        mainContent = view.findViewById(com.tokopedia.digital_deals.R.id.main_content);
+        baseMainContent = view.findViewById(com.tokopedia.digital_deals.R.id.base_main_content);
+        progBar = view.findViewById(com.tokopedia.digital_deals.R.id.prog_bar);
+        flHeader = view.findViewById(com.tokopedia.digital_deals.R.id.fl_header);
+        noContent = view.findViewById(com.tokopedia.digital_deals.R.id.no_content);
+        toolbar = view.findViewById(com.tokopedia.digital_deals.R.id.toolbar);
 
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
         collapsingToolbarLayout.setTitle(" ");
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDeals.setLayoutManager(layoutManager);
@@ -165,7 +168,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             locationName = location.getName();
         }
         loadBrandImage(ivHeader, brand.getFeaturedImage());
-        ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
         if (productItems != null && productItems.size() > 0) {
             dealsAdapter.clearList();
             recyclerViewDeals.clearOnScrollListeners();
@@ -187,15 +190,9 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     }
 
     private void loadBrandImage(ImageView imageView, String featuredImageUrl) {
-        ImageHandler.loadImageWithTarget(getContext(), featuredImageUrl, new SimpleTarget<Bitmap>() {
+        ImageHandler.loadImageWithTarget(getContext(), featuredImageUrl, new CustomTarget<Bitmap>() {
             @Override
-            public void onLoadStarted(Drawable placeholder) {
-                super.onLoadStarted(placeholder);
-                imageView.setImageResource(R.color.grey_1100);
-            }
-
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     try {
                         imageView.setImageBitmap(Utils.getSingletonInstance().setBlur(resource, 3.0f, getContext()));
@@ -208,9 +205,20 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             }
 
             @Override
-            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                super.onLoadFailed(e, errorDrawable);
-                imageView.setImageResource(R.color.grey_1100);
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+
+            }
+
+            @Override
+            public void onLoadStarted(Drawable placeholder) {
+                super.onLoadStarted(placeholder);
+                imageView.setImageResource(com.tokopedia.design.R.color.grey_1100);
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                super.onLoadFailed(errorDrawable);
+                imageView.setImageResource(com.tokopedia.design.R.color.grey_1100);
             }
         });
     }
@@ -241,13 +249,15 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     public RequestParams getParams() {
-        Brand brand = getArguments().getParcelable(BrandDetailsPresenter.BRAND_DATA);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(BrandDetailsPresenter.TAG, brand.getUrl());
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location != null) {
-            if (!TextUtils.isEmpty(location.getCoordinates())) {
-                requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+        if (getArguments() != null) {
+            Brand brand = getArguments().getParcelable(BrandDetailsPresenter.BRAND_DATA);
+            requestParams.putString(BrandDetailsPresenter.TAG, brand.getUrl());
+            Location location = Utils.getSingletonInstance().getLocation(getActivity());
+            if (location != null) {
+                if (!TextUtils.isEmpty(location.getCoordinates())) {
+                    requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+                }
             }
         }
         return requestParams;

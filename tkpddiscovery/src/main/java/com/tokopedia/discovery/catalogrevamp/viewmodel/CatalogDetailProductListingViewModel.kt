@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.catalogrevamp.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.DynamicFilterUseCase

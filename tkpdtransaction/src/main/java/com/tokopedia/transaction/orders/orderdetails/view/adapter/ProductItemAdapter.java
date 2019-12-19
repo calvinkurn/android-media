@@ -3,8 +3,8 @@ package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,6 +18,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
+import com.tokopedia.transaction.orders.orderdetails.data.Status;
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 
 import java.util.ArrayList;
@@ -26,15 +28,19 @@ import java.util.List;
 public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Items> itemsList;
     private Context context;
+    private Status status;
     private OrderListDetailPresenter presenter;
     private boolean isOrderTradeIn;
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
+    public OrderListAnalytics orderListAnalytics;
 
-    public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter, boolean isTradeIn) {
+    public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter, boolean isTradeIn, Status status) {
         this.context = context;
         this.itemsList = itemsList;
         this.presenter = presenter;
         this.isOrderTradeIn = isTradeIn;
+        this.status = status;
+        orderListAnalytics = new OrderListAnalytics();
     }
 
     @NonNull
@@ -68,6 +74,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         private TextView productPrice;
         private TextView productDescription, totalPrice, buyBtn;
         private TextView labelTradeIn;
+        private ImageView freeShippingImage;
 
 
         ItemViewHolder(View itemView) {
@@ -76,6 +83,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             productName = itemView.findViewById(R.id.txt_product_name);
             quantity = itemView.findViewById(R.id.txt_quantity);
             productPrice = itemView.findViewById(R.id.txt_item_price);
+            freeShippingImage = itemView.findViewById(R.id.image_bebas_ongkir);
             productDescription = itemView.findViewById(R.id.txt_description);
             totalPrice = itemView.findViewById(R.id.txt_total_price);
             buyBtn = itemView.findViewById(R.id.btn_buy);
@@ -88,6 +96,10 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             } else {
                 if (labelTradeIn.getVisibility() != View.GONE)
                     labelTradeIn.setVisibility(View.GONE);
+            }
+            if (items != null && items.getFreeShipping() != null && items.getFreeShipping().isEligible()) {
+                freeShippingImage.setVisibility(View.VISIBLE);
+                ImageHandler.loadImage(context, freeShippingImage, items.getFreeShipping().getImageUrl(), R.color.grey_1100, R.color.grey_1100);
             }
             if (items != null) {
                 if (!TextUtils.isEmpty(items.getImageUrl())) {
@@ -130,7 +142,9 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     public void onClick(View view) {
                         List<Items> itemsList = new ArrayList<>();
                         itemsList.add(items);
+
                         presenter.onBuyAgainItems(itemsList, " - product");
+
                     }
                 });
             }
@@ -138,6 +152,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    orderListAnalytics.sendProductClickDetailsEvent(items, getIndex(), status.status());
                     RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(items.getId()));
                 }
             });

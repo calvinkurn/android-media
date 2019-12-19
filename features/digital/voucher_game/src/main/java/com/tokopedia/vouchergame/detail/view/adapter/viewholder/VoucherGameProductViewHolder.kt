@@ -1,7 +1,7 @@
 package com.tokopedia.vouchergame.detail.view.adapter.viewholder
 
 import android.graphics.Paint
-import android.support.v7.content.res.AppCompatResources
+import androidx.appcompat.content.res.AppCompatResources
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchergame.R
@@ -23,17 +23,21 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
             with(product.attributes) {
                 title_product.text = desc
                 product_promo_price.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-                if (promo == null) {
-                    product_promo_price.visibility = View.INVISIBLE
-                    product_price.text = price
-                } else {
+                if (promo != null) {
+                    product_promo_price.visibility = View.VISIBLE
                     product_promo_price.text = price
                     product_price.text = promo.newPrice
+                } else {
+                    product_promo_price.visibility = View.INVISIBLE
+                    product_price.text = price
                 }
 
-                if (productLabels.isNotEmpty())
+                if (productLabels.isNotEmpty()) {
                     product_promo_label.visibility = View.VISIBLE
                     product_promo_label.text = productLabels.joinToString(",", limit = 2)
+                } else {
+                    product_promo_label.visibility = View.INVISIBLE
+                }
 
                 if (detail.isNotEmpty()) {
                     product_detail.visibility = View.VISIBLE

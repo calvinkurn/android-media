@@ -189,7 +189,6 @@ public protected *;
 -keep class com.tokopedia.core.util.GlobalConfig
 -keep class com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity
 -keep class com.tokopedia.common.payment.model.PaymentPassData
--keep class com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData
 
 # -- Feeds --
 -keep class com.tkpdfeed.feeds.** { *; }
@@ -206,12 +205,15 @@ public protected *;
 }
 
 -keep public class com.tokopedia.design.component.BottomNavigation { *; }
--keep public class android.support.design.widget.BottomNavigationView { *; }
--keep public class android.support.design.internal.BottomNavigationMenuView { *; }
--keep public class android.support.design.internal.BottomNavigationPresenter { *; }
--keep public class android.support.design.internal.BottomNavigationItemView { *; }
+-keep public class com.google.android.material.bottomnavigation.** { *; }
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 -keep class com.github.anrwatchdog.** { *; }
 
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
+
+-assumenosideeffects class com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity {
+    public void initTranslator();
+}
+
+-keep class com.google.firebase.perf.FirebasePerformance

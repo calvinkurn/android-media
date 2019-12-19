@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_24"
+        android:paddingBottom="@dimen/dp_24">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Lengkapi Perjalananmu"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:textColor="@color/Neutral_N700_96"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_24"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cross_selling_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_14"
+            android:paddingStart="@dimen/dp_14"
+            android:paddingEnd="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_6"
+            android:clipToPadding="false"
+            />
+    </LinearLayout>
+
+
+
+</androidx.cardview.widget.CardView>

@@ -1,14 +1,14 @@
 package com.tokopedia.loyalty.view.compoundview;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 
 /**
  * @author anggaprasetiyo on 08/01/18.
  */
 
-public class PromoImageView extends android.support.v7.widget.AppCompatImageView {
+public class PromoImageView extends androidx.appcompat.widget.AppCompatImageView {
     public PromoImageView(Context context) {
         super(context);
     }

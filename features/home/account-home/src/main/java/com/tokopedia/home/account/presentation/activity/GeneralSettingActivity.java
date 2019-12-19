@@ -2,7 +2,7 @@ package com.tokopedia.home.account.presentation.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.home.account.presentation.fragment.setting.GeneralSettingFragment;
@@ -15,6 +15,6 @@ public class GeneralSettingActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return GeneralSettingFragment.createInstance();
+        return GeneralSettingFragment.Companion.createInstance();
     }
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.TextView;
 

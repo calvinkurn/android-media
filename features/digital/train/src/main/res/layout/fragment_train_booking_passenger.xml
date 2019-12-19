@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
@@ -67,12 +67,12 @@
                     android:paddingTop="@dimen/dp_16"
                     android:paddingBottom="@dimen/dp_16">
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/button_choose_seat"
                         style="@style/Button.Submit.White.Stroke"
                         android:text="@string/train_booking_passenger_btn_choose_seat" />
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/button_submit"
                         style="@style/Button.Submit.Orange"
                         android:layout_marginTop="@dimen/dp_8"
@@ -100,6 +100,6 @@
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

@@ -4,16 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.ovo.R;
 
-import static com.tokopedia.ovo.Constants.OVO_THANKS_TRANSACTION_URL;
+import java.util.List;
+
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY;
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY_PATTERN;
 import static com.tokopedia.ovo.view.PaymentQRSummaryFragment.LOCAL_CACHE_ID;
 
 public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements TransactionResultListener {
@@ -26,14 +28,6 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
     private int transferId;
     private int transactionId;
 
-    @DeepLink(OVO_THANKS_TRANSACTION_URL)
-    public static Intent getOvoPayQrIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, QrOvoPayTxDetailActivity.class)
-                .setData(uri.build())
-                .putExtras(bundle);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         LocalCacheHandler localCache = new LocalCacheHandler(getApplicationContext(), LOCAL_CACHE_ID);
@@ -44,12 +38,16 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
             saveInstanceCacheManager = new SaveInstanceCacheManager(getApplicationContext(), saveInstanceCacheId);
         String txnId = saveInstanceCacheManager.get(TRANSACTION_ID, String.class);
         String tfId = saveInstanceCacheManager.get(TRANSFER_ID, String.class);
+        Uri uri = getIntent().getData();
         if (txnId != null)
             transactionId = Integer.parseInt(txnId);
         else if(getIntent().getStringExtra(TRANSACTION_ID) != null){
             transactionId = Integer.parseInt(getIntent().getStringExtra(TRANSACTION_ID));
         }
-        if (getIntent().getStringExtra(TRANSFER_ID) != null) {
+        if (uri != null) {
+            List<String> param = UriUtil.destructureUri(OQR_PIN_URL_ENTRY_PATTERN, uri, true);
+            transferId = Integer.parseInt(param.get(0));
+        } else if (getIntent().getStringExtra(TRANSFER_ID) != null) {
             transferId = Integer.parseInt(getIntent().getStringExtra(TRANSFER_ID));
         } else {
             if (tfId != null)
@@ -60,7 +58,7 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
         getSupportActionBar().setHomeButtonEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
-        toolbar.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), 0, 0, 0);
+        toolbar.setPadding(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16), 0, 0, 0);
     }
 
     public static Intent createInstance(Context context, int transferId, int transactionId, int code) {
@@ -75,23 +73,23 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
     @Override
     protected Fragment getNewFragment() {
         if (getIntent().getIntExtra(CODE, SUCCESS) == SUCCESS) {
-            updateTitle(getString(R.string.oqr_success_transaction));
+            updateTitle(getString(com.tokopedia.ovo.R.string.oqr_success_transaction));
             return QrTxSuccessDetailFragment.createInstance(transferId, transactionId);
         } else {
-            updateTitle(getString(R.string.oqr_fail_transaction));
+            updateTitle(getString(com.tokopedia.ovo.R.string.oqr_fail_transaction));
             return QrPayTxFailFragment.createInstance(transferId, transactionId);
         }
     }
 
     public void goToFailFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.parent_view, QrPayTxFailFragment.createInstance(transferId, transactionId));
+        transaction.add(com.tokopedia.abstraction.R.id.parent_view, QrPayTxFailFragment.createInstance(transferId, transactionId));
         transaction.commit();
     }
 
     public void goToSuccessFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.parent_view, QrTxSuccessDetailFragment.createInstance(transferId, transactionId));
+        transaction.add(com.tokopedia.abstraction.R.id.parent_view, QrTxSuccessDetailFragment.createInstance(transferId, transactionId));
         transaction.commit();
     }
 }

@@ -1,8 +1,8 @@
 package com.tokopedia.digital.widget.view.adapter
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import android.view.ViewGroup
 import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager
 import com.tokopedia.digital.widget.view.fragment.WidgetAllStyleRechargeFragment

@@ -1,9 +1,9 @@
 package com.tokopedia.report.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,8 +21,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_report.*
 import javax.inject.Inject
-import android.support.v7.widget.LinearSmoothScroller
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.view.activity.ProductReportFormActivity
 

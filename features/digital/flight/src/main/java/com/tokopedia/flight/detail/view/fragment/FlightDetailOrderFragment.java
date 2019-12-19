@@ -7,18 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,39 +22,55 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.app.TaskStackBuilder;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
+import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
+import com.tokopedia.common.travel.widget.TravelCrossSellWidget;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
-import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.detail.view.activity.FlightInvoiceActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightOrderDetailInsuranceAdapter;
-import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
+import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
+import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
@@ -70,9 +78,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-
 import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_IS_AFTER_CANCELLATION;
+import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_IS_CANCELLATION;
 
 /**
  * Created by zulfikarrahman on 12/12/17.
@@ -85,12 +93,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
     private static final float JOURNEY_TITLE_FONT_SIZE = 18;
-    public static final String EXTRA_IS_AFTER_CANCELLATION = "EXTRA_IS_AFTER_CANCELLATION";
 
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
     @Inject
-    FlightModuleRouter flightModuleRouter;
+    TrackingCrossSellUtil trackingCrossSellUtil;
+
+    private RemoteConfig remoteConfig;
 
     private TextView orderId;
     private ImageView copyOrderId;
@@ -132,6 +141,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private Ticker cancellationWarningTicker;
     private LinearLayout insuranceLayout;
     private RecyclerView insuranceRecyclerView;
+    private TravelCrossSellWidget travelCrossSellWidget;
 
     private boolean isCancellation;
 
@@ -139,7 +149,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_ORDER_DETAIL_PASS, flightOrderDetailPassData);
-        bundle.putBoolean(FlightDetailOrderActivity.EXTRA_IS_CANCELLATION, isCancellation);
+        bundle.putBoolean(EXTRA_IS_CANCELLATION, isCancellation);
         flightDetailOrderFragment.setArguments(bundle);
         return flightDetailOrderFragment;
     }
@@ -151,7 +161,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     protected void initInjector() {
-        getComponent(FlightOrderComponent.class)
+        getComponent(FlightComponent.class)
                 .inject(this);
     }
 
@@ -159,7 +169,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         flightOrderDetailPassData = getArguments().getParcelable(EXTRA_ORDER_DETAIL_PASS);
-        isCancellation = getArguments().getBoolean(FlightDetailOrderActivity.EXTRA_IS_CANCELLATION, false);
+        isCancellation = getArguments().getBoolean(EXTRA_IS_CANCELLATION, false);
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     @Nullable
@@ -193,10 +204,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         insuranceLayout = view.findViewById(R.id.insurance_layout);
         insuranceRecyclerView = view.findViewById(R.id.rv_insurance);
         showEticket = view.findViewById(R.id.tv_lihat_e_ticket);
+        travelCrossSellWidget = view.findViewById(R.id.cross_sell_widget);
         progressDialog = new ProgressDialog(getActivity());
 
-        containerCancellation = view.findViewById(R.id.cancellation_container);
-        cancellationWarningTicker = view.findViewById(R.id.cancellation_warning);
+        containerCancellation = view.findViewById(com.tokopedia.flight.R.id.cancellation_container);
+        cancellationWarningTicker = view.findViewById(com.tokopedia.flight.R.id.cancellation_warning);
 
         setViewClickListener();
 
@@ -210,7 +222,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         recyclerViewPassenger.setAdapter(flightBookingReviewPassengerAdapter);
         recyclerViewPrice.setAdapter(flightBookingReviewPriceAdapter);
         recyclerViewPrice.setLayoutManager(new LinearLayoutManager(getActivity()));
-        progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
+        progressDialog.setMessage(getString(com.tokopedia.flight.R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
         orderId.setText(flightOrderDetailPassData.getOrderId());
 
@@ -222,6 +234,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         super.onViewCreated(view, savedInstanceState);
         flightDetailOrderPresenter.attachView(this);
         flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
+        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL))
+            flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId(), GraphqlHelper.loadRawString(getResources(), com.tokopedia.common.travel.R.raw.query_travel_cross_selling));
         flightDetailOrderPresenter.onGetProfileData();
     }
 
@@ -230,13 +244,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
             @Override
             public void onClick(View view) {
                 ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText(getString(R.string.flight_label_order_id), orderId.getText().toString());
+                ClipData clip = ClipData.newPlainText(getString(com.tokopedia.flight.R.string.flight_label_order_id), orderId.getText().toString());
                 clipboard.setPrimaryClip(clip);
                 clipboard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
                     @Override
                     public void onPrimaryClipChanged() {
                         if (getActivity() != null) {
-                            Toast.makeText(getActivity(), R.string.flight_label_copy_clipboard, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), com.tokopedia.flight.R.string.flight_label_copy_clipboard, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -274,7 +288,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(FlightInvoiceActivity.newInstance(getActivity(), invoiceLink));
+                if (!TextUtils.isEmpty(invoiceLink)) {
+                    startActivity(FlightInvoiceActivity.newInstance(getActivity(), invoiceLink));
+                }
             }
         });
 
@@ -301,7 +317,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         layoutExpendablePassenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageExpendablePassenger.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.rotate_reverse));
+                imageExpendablePassenger.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.flight_rotate_reverse));
                 togglePassengerInfo();
             }
         });
@@ -323,12 +339,15 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
             @Override
             public void onRetryClicked() {
                 flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
+                if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL))
+                    flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId(), GraphqlHelper.loadRawString(getResources(), com.tokopedia.common.travel.R.raw.query_travel_cross_selling));
+
             }
         }).showRetrySnackbar();
     }
 
     @Override
-    public void updateFlightList(List<FlightOrderJourney> journeys) {
+    public void updateFlightList(List<FlightDetailOrderJourney> journeys) {
         flightDetailOrderAdapter.addElement(journeys);
         flightDetailOrderAdapter.notifyDataSetChanged();
     }
@@ -379,6 +398,22 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         if (isCancellation) {
             navigateToCancellationListPage();
         }
+    }
+
+    @Override
+    public void showCrossSellingItems(TravelCrossSelling travelCrossSelling) {
+        trackingCrossSellUtil.crossSellImpression(travelCrossSelling.getItems());
+        travelCrossSellWidget.setVisibility(View.VISIBLE);
+        travelCrossSellWidget.buildView(travelCrossSelling);
+        travelCrossSellWidget.setListener((item, position) -> {
+            trackingCrossSellUtil.crossSellClick(item, position);
+            RouteManager.route(getContext(), item.getUri());
+        });
+    }
+
+    @Override
+    public void hideCrossSellingItems() {
+        travelCrossSellWidget.setVisibility(View.GONE);
     }
 
     @Override
@@ -456,20 +491,14 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToWebview(String url) {
-        startActivity(flightModuleRouter
-                .getDefaultContactUsIntent(getActivity(), url));
+        RouteManager.route(getContext(), url);
     }
 
     @Override
     public void navigateToFlightHomePage() {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getHomeIntent(getActivity()) != null) {
-            Intent intent = ((FlightModuleRouter) getActivity().getApplication())
-                    .getHomeIntent(getActivity());
-            taskStackBuilder.addNextIntent(intent);
-        }
+        Intent homeIntent = RouteManager.getIntent(getContext(), ApplinkConst.HOME);
+        taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(FlightDashboardActivity.getCallingIntent(getActivity()));
         taskStackBuilder.startActivities();
     }
@@ -604,7 +633,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         switch (requestCode) {
             case REQUEST_CODE_RESEND_ETICKET_DIALOG:
                 if (resultCode == RESULT_OK) {
-                    showGreenSnackbar(R.string.resend_eticket_success);
+                    showGreenSnackbar(com.tokopedia.flight.orderlist.R.string.resend_eticket_success);
                 }
                 break;
             case REQUEST_CODE_CANCELLATION:
@@ -618,20 +647,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         }
     }
 
-    @Override
-    public Observable<ProfileInfo> getProfileObservable() {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getProfile() != null) {
-            return ((FlightModuleRouter) getActivity().getApplication())
-                    .getProfile();
-        }
-        return Observable.empty();
-    }
-
     @NonNull
     private SpannableString buildAirlineContactInfo(String fullText, String mark) {
-        final int color = getContext().getResources().getColor(R.color.green_500);
+        final int color = getContext().getResources().getColor(com.tokopedia.design.R.color.green_500);
         int startIndex = fullText.indexOf(mark);
         int stopIndex = fullText.length();
         SpannableString description = new SpannableString(fullText);
@@ -656,9 +674,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void showRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> items) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
+        dialog.setTitle(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_title));
         dialog.setDesc(MethodChecker.fromHtml(
-                getString(R.string.flight_cancellation_dialog_refundable_description)));
+                getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_refundable_description)));
         dialog.setBtnOk("Lanjut");
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -667,7 +685,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setBtnCancel(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -680,9 +698,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void showNonRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> items) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
+        dialog.setTitle(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_title));
         dialog.setDesc(MethodChecker.fromHtml(getString(
-                R.string.flight_cancellation_dialog_non_refundable_description)));
+                com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_non_refundable_description)));
         dialog.setBtnOk("Lanjut");
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -691,7 +709,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setBtnCancel(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -702,17 +720,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     private void navigateToShowEticket() {
-        if (flightOrder.getEticketUri() != null) {
-            startActivity(flightModuleRouter.getWebviewActivity(
-                    getActivity(), flightOrder.getEticketUri()));
-        }
-    }
-
-    private void navigateToShowInvoice() {
-        if (flightOrder.getInvoiceUri() != null) {
-            startActivity(flightModuleRouter.getWebviewActivity(
-                    getActivity(), flightOrder.getInvoiceUri()));
-        }
+        RouteManager.route(getContext(), flightOrder.getEticketUri());
     }
 
     private void showGreenSnackbar(int resId) {

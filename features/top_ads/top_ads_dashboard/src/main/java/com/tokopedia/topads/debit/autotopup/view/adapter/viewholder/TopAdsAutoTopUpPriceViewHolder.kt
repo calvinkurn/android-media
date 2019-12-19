@@ -1,6 +1,6 @@
 package com.tokopedia.topads.debit.autotopup.view.adapter.viewholder
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topads.dashboard.R

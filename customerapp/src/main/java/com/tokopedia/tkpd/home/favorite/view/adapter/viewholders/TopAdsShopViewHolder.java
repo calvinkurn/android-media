@@ -1,9 +1,9 @@
 package com.tokopedia.tkpd.home.favorite.view.adapter.viewholders;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;

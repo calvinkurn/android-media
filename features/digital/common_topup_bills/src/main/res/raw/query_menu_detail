@@ -40,6 +40,7 @@ query catalogMenuDetail($menuID: Int!){
     }
     banners {
       id
+      title
       img_url: filename
       link_url: img_url
       promo_code

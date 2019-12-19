@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,9 +30,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
-import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
-import com.tokopedia.affiliate.common.constant.AffiliateConstant;
+import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliatecommon.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
@@ -240,7 +239,7 @@ public class ExploreFragment
 
     private void initEmptyResultModel() {
         emptyResultModel = new EmptyModel();
-        emptyResultModel.setIconRes(R.drawable.ic_empty_search);
+        emptyResultModel.setIconRes(com.tokopedia.design.R.drawable.ic_empty_search);
         emptyResultModel.setTitle(
                 getString(R.string.text_product_not_found)
         );
@@ -250,7 +249,7 @@ public class ExploreFragment
         //init image
         if (userSession.isLoggedIn()) {
             ImageHandler.loadImageCircle2(getActivity(), ivProfile,
-                    userSession.getProfilePicture(), R.drawable.loading_page);
+                    userSession.getProfilePicture(), com.tokopedia.topads.sdk.R.drawable.loading_page);
         }
 
         if (getActivity() == null) {
@@ -387,7 +386,7 @@ public class ExploreFragment
                 }
 
                 if (position == 0) {
-                    outRect.top = (int) getResources().getDimension(R.dimen.dp_16);
+                    outRect.top = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_16);
                 }
 
                 Visitable visitable = adapter.getData().get(position);
@@ -396,9 +395,9 @@ public class ExploreFragment
                     int spanIndex =
                             ((GridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
                     if (spanIndex == 0) {
-                        outRect.left = (int) getResources().getDimension(R.dimen.dp_12);
+                        outRect.left = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_12);
                     } else {
-                        outRect.right = (int) getResources().getDimension(R.dimen.dp_12);
+                        outRect.right = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_12);
                     }
                 }
             }
@@ -660,9 +659,9 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetData(List<Visitable<?>> products, String cursor, boolean isSearch) {
+    public void onSuccessGetData(List<Visitable<?>> products, String cursor, String keyword, boolean isSearch) {
         if (isSearch)
-            trackImpressionNonEE(products);
+            trackImpressionSearch(products, exploreParams.getKeyword());
 
         trackImpression(products);
 
@@ -857,8 +856,8 @@ public class ExploreFragment
     }
 
     @Override
-    public void onAutoCompleteItemClicked(String keyword) {
-        affiliateAnalytics.onAutoCompleteClicked(keyword);
+    public void onAutoCompleteItemClicked(String suggestionText, String keyword) {
+        affiliateAnalytics.onAutoCompleteClicked(suggestionText, keyword);
         clearAutoCompleteAdapter(keyword);
         onSearchSubmitted(keyword);
         autoCompleteLayout.setVisibility(View.GONE);
@@ -956,19 +955,33 @@ public class ExploreFragment
         presenter.detachView();
     }
 
-    private void trackImpressionNonEE(List<Visitable<?>> visitables){
+    private void trackImpressionSearch(List<Visitable<?>> visitables, String keyword){
         for (int i = 0; i < visitables.size(); i++) {
             Visitable visitable = visitables.get(i);
 
             if (visitable instanceof ExploreProductViewModel) {
                 ExploreProductViewModel model = (ExploreProductViewModel) visitable;
                 if (!TextUtils.isEmpty(model.getExploreCardViewModel().getProductId()))
-                    affiliateAnalytics.trackProductImpressionNonEE(model.getExploreCardViewModel().getProductId());
+                    affiliateAnalytics.trackProductImpressionSearchResult(
+                            keyword,
+                            model.getExploreCardViewModel().getAdId(),
+                            model.getExploreCardViewModel().getTitle(),
+                            model.getExploreCardViewModel().getProductId(),
+                            model.getExploreCardViewModel().getCommissionValue(),
+                            i
+                    );
             } else if (visitable instanceof RecommendationViewModel) {
                 RecommendationViewModel model = (RecommendationViewModel) visitable;
                 for (ExploreCardViewModel card : model.getCards()) {
                     if (!TextUtils.isEmpty(card.getProductId()))
-                        affiliateAnalytics.trackProductImpressionNonEE(card.getProductId());
+                        affiliateAnalytics.trackProductImpressionSearchResult(
+                                keyword,
+                                card.getAdId(),
+                                card.getTitle(),
+                                card.getProductId(),
+                                card.getCommissionValue(),
+                                i
+                        );
                 }
             }
         }
@@ -993,6 +1006,7 @@ public class ExploreFragment
 
     private void trackProductImpression(ExploreCardViewModel card, int position) {
         affiliateAnalytics.onProductImpression(
+                card.getAdId(),
                 card.getTitle(),
                 card.getProductId(),
                 card.getCommissionValue(),
@@ -1003,6 +1017,7 @@ public class ExploreFragment
 
     private void trackProductClick(ExploreCardViewModel card, int position) {
         affiliateAnalytics.onProductClicked(
+                card.getAdId(),
                 card.getTitle(),
                 card.getProductId(),
                 card.getCommissionValue(),
@@ -1011,7 +1026,14 @@ public class ExploreFragment
         );
 
         if (!TextUtils.isEmpty(exploreParams.getKeyword())){
-            affiliateAnalytics.onProductSearchClicked(card.getProductId());
+            affiliateAnalytics.onProductSearchClicked(
+                    exploreParams.getKeyword(),
+                    card.getAdId(),
+                    card.getTitle(),
+                    card.getProductId(),
+                    card.getCommissionValue(),
+                    position
+            );
         }
     }
 
@@ -1021,7 +1043,7 @@ public class ExploreFragment
 
     private void showError(String message, View.OnClickListener listener) {
         ToasterError.make(getView(), message, ToasterError.LENGTH_LONG)
-                .setAction(R.string.title_try_again, listener)
+                .setAction(com.tokopedia.abstraction.R.string.title_try_again, listener)
                 .show();
     }
 
@@ -1052,14 +1074,14 @@ public class ExploreFragment
 
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.black)
-                .shadowColorRes(R.color.shadow)
-                .titleTextColorRes(R.color.white)
-                .textColorRes(R.color.grey_400)
-                .textSizeRes(R.dimen.sp_12)
-                .titleTextSizeRes(R.dimen.sp_16)
-                .nextStringRes(R.string.next)
-                .prevStringRes(R.string.previous)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
+                .shadowColorRes(com.tokopedia.coachmark.R.color.shadow)
+                .titleTextColorRes(com.tokopedia.topads.sdk.R.color.white)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
+                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
+                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
+                .nextStringRes(com.tokopedia.showcase.R.string.next)
+                .prevStringRes(com.tokopedia.showcase.R.string.previous)
                 .useCircleIndicator(true)
                 .clickable(true)
                 .useArrow(true)

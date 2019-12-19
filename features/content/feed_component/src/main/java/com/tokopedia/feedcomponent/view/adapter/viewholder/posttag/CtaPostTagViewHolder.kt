@@ -1,7 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.posttag
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.CardView
+import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -11,6 +11,7 @@ import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.unifycomponents.CardUnify
 
 /**
  * @author by yoasfs on 2019-07-18
@@ -19,7 +20,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 class CtaPostTagViewHolder(val mainView: View, val listener: DynamicPostViewHolder.DynamicPostListener)
     : AbstractViewHolder<CtaPostTagViewModel>(mainView) {
 
-    private lateinit var itemCard: CardView
+    private lateinit var itemCard: CardUnify
     private lateinit var titleCard: TextView
 
     override fun bind(item: CtaPostTagViewModel) {

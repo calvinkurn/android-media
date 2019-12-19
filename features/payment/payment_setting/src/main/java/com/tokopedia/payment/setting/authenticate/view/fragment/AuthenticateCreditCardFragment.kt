@@ -4,8 +4,8 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DividerItemDecoration
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.authenticate.di.DaggerAuthenticateCreditCardComponent
 import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardModule
@@ -23,7 +25,6 @@ import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCCAda
 import com.tokopedia.payment.setting.authenticate.view.presenter.AuthenticateCCContract
 import com.tokopedia.payment.setting.authenticate.view.presenter.AuthenticateCCPresenter
 import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCreditCardAdapter
-import com.tokopedia.payment.setting.util.PaymentSettingRouter
 import kotlinx.android.synthetic.main.fragment_authenticate_credit_card.*
 import javax.inject.Inject
 
@@ -32,12 +33,10 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
 
     @Inject
     lateinit var authenticateCCPresenter: AuthenticateCCPresenter
-    var paymentSettingRouter: PaymentSettingRouter? = null
 
     val progressDialog : ProgressDialog by lazy { ProgressDialog(context) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        paymentSettingRouter = activity?.application as PaymentSettingRouter
     }
 
 
@@ -56,7 +55,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
             ContextCompat.getDrawable(it, R.drawable.divider_list_card)?.let { it1 -> dividerItemDecoration.setDrawable(it1) }
             getRecyclerView(view).addItemDecoration(dividerItemDecoration)
         }
-        progressDialog.setMessage(getString(R.string.title_loading))
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         updateVisibilityButtonUse()
     }
 
@@ -132,7 +131,17 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     }
 
     override fun goToOtpPage(phoneNumber: String) {
-        startActivityForResult(paymentSettingRouter?.getIntentOtpPageVerifCreditCard(activity, phoneNumber), REQUEST_CODE_OTP_PAYMENT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val bundle = Bundle()
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_VERIFY_AUTH_CREDIT_CARD)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, MODE_SMS)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
+
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_CODE_OTP_PAYMENT)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -155,8 +164,12 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         authenticateCCPresenter.checkWhiteList(resources)
     }
 
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
     companion object {
         val REQUEST_CODE_OTP_PAYMENT = 1273
+        val OTP_TYPE_VERIFY_AUTH_CREDIT_CARD = 122
+        val MODE_SMS = "sms"
         fun createInstance(): AuthenticateCreditCardFragment {
             return AuthenticateCreditCardFragment()
         }

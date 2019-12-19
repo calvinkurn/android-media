@@ -1,9 +1,9 @@
 
 package com.tokopedia.core.database;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
 import android.content.Context;
 
 import com.tokopedia.core.gcm.database.PushNotificationDao;
@@ -38,5 +38,9 @@ public abstract class CoreLegacyDbFlowDatabase extends RoomDatabase {
         return Room.databaseBuilder(context,
                 CoreLegacyDbFlowDatabase.class,
                 NAME).build();
+    }
+
+    public static void reset(){
+        instance = null;
     }
 }

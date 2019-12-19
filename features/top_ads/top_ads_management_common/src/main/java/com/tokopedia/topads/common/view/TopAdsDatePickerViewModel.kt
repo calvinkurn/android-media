@@ -1,7 +1,7 @@
 package com.tokopedia.topads.common.view
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor

@@ -3,13 +3,11 @@ package com.tokopedia.flight.cancellation.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 import android.view.Menu;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationChooseReasonFragment;
@@ -43,7 +41,7 @@ public class FlightCancellationChooseReasonActivity extends BaseFlightActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.travel_anim_stay, R.anim.travel_slide_out_up);
+        overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_anim_stay, com.tokopedia.common.travel.R.anim.travel_slide_out_up);
     }
 
     @Override
@@ -58,11 +56,8 @@ public class FlightCancellationChooseReasonActivity extends BaseFlightActivity
 
     @Override
     public FlightCancellationComponent getComponent() {
-        if (getApplication() instanceof FlightModuleRouter) {
-            return DaggerFlightCancellationComponent.builder()
-                    .flightComponent(getFlightComponent())
-                    .build();
-        }
-        throw new RuntimeException("Application must implement FlightModuleRouter");
+        return DaggerFlightCancellationComponent.builder()
+                .flightComponent(getFlightComponent())
+                .build();
     }
 }

@@ -3,7 +3,7 @@ package com.tokopedia.tokopoints.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -23,7 +23,7 @@ public class SendGiftActivity extends BaseSimpleActivity implements HasComponent
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_title_send_coupon));
-        toolbar.setNavigationIcon(R.drawable.navigation_cancel);
+        toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_close);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

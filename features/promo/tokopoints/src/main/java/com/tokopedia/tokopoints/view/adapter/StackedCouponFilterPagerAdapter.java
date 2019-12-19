@@ -1,14 +1,13 @@
 package com.tokopedia.tokopoints.view.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment;
-import com.tokopedia.tokopoints.view.fragment.MyCouponListingFragment;
 import com.tokopedia.tokopoints.view.model.CouponFilterItem;
 
 import java.util.List;

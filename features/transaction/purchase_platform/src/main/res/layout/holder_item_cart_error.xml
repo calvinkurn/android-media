@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Neutral_N0">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/iv_product_card"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:layout_alignTop="@+id/tv_product_name"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:clipChildren="true"
+        app:cardCornerRadius="@dimen/dp_6"
+        app:cardElevation="@dimen/dp_0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_product_name">
+
+        <ImageView
+            android:id="@+id/iv_image_product"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.5"
+            app:srcCompat="@drawable/empty_photo"
+            tools:ignore="ContentDescription" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_product_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            app:labelTitle="Dilarang"
+            app:labelType="general_dark_red" />
+
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_name"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:alpha="0.5"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_product_card"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_6"
+        app:typographyWeight="bold"
+        tools:text="Tas organizerdfnlgjdhdfhn sepeda double container yang panjang" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_price"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:alpha="0.5"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/price_label"
+        app:layout_constraintEnd_toEndOf="@id/tv_product_name"
+        app:layout_constraintStart_toStartOf="@id/tv_product_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_name"
+        app:typographyType="heading_6"
+        app:typographyWeight="bold"
+        tools:text="Rp 200.000.000.000.000.000" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_message"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:visibility="visible"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="Barang mengandung nikotin atau tembakau tidak dapat dibeli di aplikasi Android"
+        app:layout_constraintEnd_toEndOf="@id/tv_product_name"
+        app:layout_constraintStart_toStartOf="@id/iv_product_card"
+        app:layout_constraintTop_toBottomOf="@id/iv_product_card"
+        app:tickerShapeType="loose"
+        app:tickerType="warning"
+        tools:layout_height="@dimen/dp_56" />
+
+    <ImageView
+        android:id="@+id/img_wishlist"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="@+id/v_divider_wishlist_delete"
+        app:layout_constraintTop_toBottomOf="@id/ticker_message"
+        app:srcCompat="@drawable/ic_wishlist_checkout_on"
+        tools:ignore="ContentDescription" />
+
+    <View
+        android:id="@+id/v_divider_wishlist_delete"
+        android:layout_width="0.5dp"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@color/unify_N75"
+        app:layout_constraintEnd_toStartOf="@+id/btn_delete_cart"
+        app:layout_constraintTop_toBottomOf="@id/ticker_message" />
+
+    <ImageView
+        android:id="@+id/btn_delete_cart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintEnd_toStartOf="@+id/v_divider_delete_similar"
+        app:layout_constraintTop_toBottomOf="@id/ticker_message"
+        app:srcCompat="@drawable/ic_delete_cart"
+        tools:ignore="ContentDescription" />
+
+    <View
+        android:id="@+id/v_divider_delete_similar"
+        android:layout_width="0.5dp"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@color/unify_N75"
+        app:layout_constraintEnd_toStartOf="@+id/tv_similar_product_on_cart_error"
+        app:layout_constraintTop_toBottomOf="@id/ticker_message" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_similar_product_on_cart_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:textColor="@color/unify_G500"
+        app:layout_constraintBottom_toBottomOf="@id/v_divider_delete_similar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/v_divider_delete_similar"
+        app:typographyType="heading_5"
+        app:typographyWeight="reguler"
+        tools:text="Lihat Produk Serupa" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_delete_cart" />
+
+    <View
+        android:id="@+id/v_divider_item_cart_error"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@color/unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/space"
+        tools:visibility="visible" />
+
+    <Space
+        android:id="@+id/space2"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_divider_item_cart_error" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_similar_product_on_cart_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="v_divider_delete_similar,tv_similar_product_on_cart_error" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_wishlist_on_cart_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="v_divider_wishlist_delete,img_wishlist" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="space2,v_divider_item_cart_error" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

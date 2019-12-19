@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.CardView
+import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -15,6 +15,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemVie
 import com.tokopedia.feedcomponent.view.widget.RatingBarReview
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.CardUnify
 
 /**
  * @author by yfsx on 18/09/18.
@@ -37,7 +38,7 @@ class DashboardItemViewHolder(
     private val tvComission: TextView = itemView.findViewById(R.id.tv_comission)
     private val llFromPost: LinearLayout = itemView.findViewById(R.id.ll_from_post)
     private val llFromTraffic: LinearLayout = itemView.findViewById(R.id.ll_from_traffic)
-    private val cardView: CardView = itemView.findViewById(R.id.card_view)
+    private val cardView: CardUnify = itemView.findViewById(R.id.card_view)
     private val tvSection: TextView = itemView.findViewById(R.id.tv_section)
     private val rbCuratedTraffic: RatingBarReview = itemView.findViewById(R.id.rb_curated_traffic)
     private val tvRating: TextView = itemView.findViewById(R.id.tv_rating)

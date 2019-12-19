@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -11,7 +11,7 @@
         android:id="@+id/parent_layout"
         layout="@layout/item_notification_update_parent" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
@@ -25,14 +25,13 @@
         app:layout_constraintTop_toBottomOf="@+id/parent_layout"
         tools:text="Hari Terakhir Promo Cashback untuk Dapat Ekstra Lebih" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/body"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/sp_4"
-        android:maxLines="4"
         android:textColor="@color/charcoal_grey_40"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="@+id/title"
@@ -41,7 +40,7 @@
         tools:text="Spesial untuk Anda! Ekstra cashback 25% Rp 250.000" />
 
 
-    <android.support.design.card.MaterialCardView
+    <com.google.android.material.card.MaterialCardView
         style="@style/Widget.MaterialComponents.CardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -57,7 +56,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/body">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -153,8 +152,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/ic_add_to_cart" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.design.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

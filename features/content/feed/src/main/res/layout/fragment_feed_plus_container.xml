@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -8,11 +8,33 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <android.support.design.widget.AppBarLayout
+    <FrameLayout
+        android:id="@+id/feed_background_frame"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_200"
+        app:layout_scrollFlags="scroll|snap">
+
+        <ImageView
+            android:id="@+id/feed_background_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_feed"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/ic_searchbar_feed_header_mask"/>
+    </FrameLayout>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/feed_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+        android:background="@color/transparent"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:elevation="0dp">
 
         <View
             android:visibility="invisible"
@@ -20,37 +42,50 @@
             android:id="@+id/status_bar_bg"
             android:background="@color/green_600"
             android:layout_width="match_parent"
-            android:layout_height="25dp"/>
+            app:layout_scrollFlags="scroll|snap"
+            android:layout_height="@dimen/dp_25"/>
 
-        <com.tokopedia.searchbar.MainToolbar
+        <com.tokopedia.searchbar.FeedMainToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-20dp"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
-            app:layout_anchor="@id/status_bar_bg"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="scroll|snap"
             app:screenName="/feed"/>
+
+        <View
+            android:visibility="invisible"
+            app:layout_collapseMode="pin"
+            android:id="@+id/status_bar_bg2"
+            android:background="@color/green_600"
+            android:layout_width="match_parent"
+            android:layout_marginTop="-5dp"
+            android:layout_height="@dimen/dp_25"/>
 
         <com.tokopedia.design.component.Tabs
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
             android:visibility="visible"
+            app:layout_scrollFlags="enterAlways"
             app:tabMode="fixed"
             app:tabGravity="fill"
             app:tabIndicatorHeight="@dimen/dp_1"
             app:tabSelectedTextColor="@color/tkpd_main_green"
             app:tabTextColor="@color/font_black_disabled_38"
-            app:tabTextAppearance="@style/Tabs.Secondary"
+            app:tabTextAppearance="@style/FeedTabLayoutTextStyle"
             app:tabIndicatorColor="@color/tkpd_main_green"
             android:theme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/transparent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
         <include layout="@layout/partial_feed_loading"
@@ -61,8 +96,9 @@
             android:id="@+id/feed_error"
             android:visibility="gone"/>
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -71,18 +107,18 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="@dimen/dp_2">
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/layout_grey_popup"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black_54">
+            android:background="@color/black_54"
+            android:visibility="gone">
 
         </FrameLayout>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_feed"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
@@ -95,7 +131,7 @@
             app:srcCompat="@drawable/ic_feed_post_plus"
             tools:visibility="visible"/>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_feed_byme"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
@@ -123,7 +159,7 @@
             android:textSize="@dimen/sp_14"
             android:textStyle="bold"/>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_feed_shop"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
@@ -151,4 +187,4 @@
             android:textStyle="bold"/>
     </RelativeLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -9,7 +9,7 @@ import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.imagesearch.analytics.ImageSearchTracking;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactory;
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
+import com.tokopedia.kotlin.model.ImpressHolder;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  * Created by henrypriyono on 10/9/17.
  */
 
-public class ProductItem extends ImpressHolder implements Parcelable, Visitable<ImageProductListTypeFactory> {
+public class ProductItem extends ImpressHolder implements Visitable<ImageProductListTypeFactory> {
     private String productID;
     private String productName;
     private String imageUrl;
@@ -34,62 +34,16 @@ public class ProductItem extends ImpressHolder implements Parcelable, Visitable<
     private boolean isWishlisted;
     private boolean isWishlistButtonEnabled = true;
     private List<BadgeItem> badgesList;
-    private List<LabelItem> labelList;
     private int position;
     private String originalPrice;
     private int discountPercentage;
     private boolean isOfficial;
-    private String topLabel;
-    private String bottomLabel;
-    private String productWishlistUrl;
     private int categoryID;
     private String categoryName;
     private String categoryBreadcrumb;
     private boolean isTopAds;
-    private String topadsImpressionUrl;
-    private String topadsClickUrl;
-    private String topadsWishlistUrl;
-    private boolean isNew;
-
-    public boolean isTopAds() {
-        return isTopAds;
-    }
-
-    public void setTopAds(boolean topAds) {
-        isTopAds = topAds;
-    }
-
-    public String getTopadsImpressionUrl() {
-        return topadsImpressionUrl;
-    }
-
-    public void setTopadsImpressionUrl(String topadsImpressionUrl) {
-        this.topadsImpressionUrl = topadsImpressionUrl;
-    }
-
-    public String getTopadsClickUrl() {
-        return topadsClickUrl;
-    }
-
-    public void setTopadsClickUrl(String topadsClickUrl) {
-        this.topadsClickUrl = topadsClickUrl;
-    }
-
-    public String getTopadsWishlistUrl() {
-        return topadsWishlistUrl;
-    }
-
-    public void setTopadsWishlistUrl(String topadsWishlistUrl) {
-        this.topadsWishlistUrl = topadsWishlistUrl;
-    }
-
-    public boolean isNew() {
-        return isNew;
-    }
-
-    public void setNew(boolean aNew) {
-        isNew = aNew;
-    }
+    private List<LabelGroup> labelGroupList;
+    private FreeOngkir freeOngkir;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -195,18 +149,6 @@ public class ProductItem extends ImpressHolder implements Parcelable, Visitable<
         return badgesList;
     }
 
-    public void setLabelList(List<LabelItem> labelList) {
-        this.labelList = labelList;
-    }
-
-    public List<LabelItem> getLabelList() {
-        return labelList;
-    }
-
-    public int getPageNumber() {
-        return (position - 1) / Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS) + 1;
-    }
-
     public int getPosition() {
         return position;
     }
@@ -263,22 +205,6 @@ public class ProductItem extends ImpressHolder implements Parcelable, Visitable<
         isOfficial = official;
     }
 
-    public String getTopLabel() {
-        return topLabel;
-    }
-
-    public void setTopLabel(String topLabel) {
-        this.topLabel = topLabel;
-    }
-
-    public String getBottomLabel() {
-        return bottomLabel;
-    }
-
-    public void setBottomLabel(String bottomLabel) {
-        this.bottomLabel = bottomLabel;
-    }
-
     public int getCategoryID() {
         return categoryID;
     }
@@ -303,7 +229,28 @@ public class ProductItem extends ImpressHolder implements Parcelable, Visitable<
         this.categoryBreadcrumb = categoryBreadcrumb;
     }
 
-    public ProductItem() {
+    public boolean isTopAds() {
+        return isTopAds;
+    }
+
+    public void setTopAds(boolean topAds) {
+        isTopAds = topAds;
+    }
+
+    public List<LabelGroup> getLabelGroupList() {
+        return labelGroupList;
+    }
+
+    public void setLabelGroupList(List<LabelGroup> labelGroupList) {
+        this.labelGroupList = labelGroupList;
+    }
+
+    public FreeOngkir getFreeOngkir() {
+        return freeOngkir;
+    }
+
+    public void setFreeOngkir(FreeOngkir freeOngkir) {
+        this.freeOngkir = freeOngkir;
     }
 
     @Override
@@ -331,100 +278,4 @@ public class ProductItem extends ImpressHolder implements Parcelable, Visitable<
                 "position", Integer.toString(getPosition())
         );
     }
-
-    public void setProductWishlistUrl(String productWishlistUrl) {
-        this.productWishlistUrl = productWishlistUrl;
-    }
-
-    public String getProductWishlistUrl() {
-        return productWishlistUrl;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.productID);
-        dest.writeString(this.productName);
-        dest.writeString(this.imageUrl);
-        dest.writeString(this.imageUrl700);
-        dest.writeInt(this.rating);
-        dest.writeInt(this.countReview);
-        dest.writeInt(this.countCourier);
-        dest.writeString(this.price);
-        dest.writeString(this.priceRange);
-        dest.writeString(this.shopID);
-        dest.writeString(this.shopName);
-        dest.writeString(this.shopCity);
-        dest.writeByte(this.isGoldMerchant ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isWishlisted ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isWishlistButtonEnabled ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.badgesList);
-        dest.writeTypedList(this.labelList);
-        dest.writeInt(this.position);
-        dest.writeString(this.originalPrice);
-        dest.writeInt(this.discountPercentage);
-        dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
-        dest.writeString(this.topLabel);
-        dest.writeString(this.bottomLabel);
-        dest.writeString(this.productWishlistUrl);
-        dest.writeInt(this.categoryID);
-        dest.writeString(this.categoryName);
-        dest.writeString(this.categoryBreadcrumb);
-        dest.writeByte(this.isTopAds ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isNew ? (byte) 1 : (byte) 0);
-        dest.writeString(this.topadsImpressionUrl);
-        dest.writeString(this.topadsClickUrl);
-        dest.writeString(this.topadsWishlistUrl);
-    }
-
-    protected ProductItem(Parcel in) {
-        this.productID = in.readString();
-        this.productName = in.readString();
-        this.imageUrl = in.readString();
-        this.imageUrl700 = in.readString();
-        this.rating = in.readInt();
-        this.countReview = in.readInt();
-        this.countCourier = in.readInt();
-        this.price = in.readString();
-        this.priceRange = in.readString();
-        this.shopID = in.readString();
-        this.shopName = in.readString();
-        this.shopCity = in.readString();
-        this.isGoldMerchant = in.readByte() != 0;
-        this.isWishlisted = in.readByte() != 0;
-        this.isWishlistButtonEnabled = in.readByte() != 0;
-        this.badgesList = in.createTypedArrayList(BadgeItem.CREATOR);
-        this.labelList = in.createTypedArrayList(LabelItem.CREATOR);
-        this.position = in.readInt();
-        this.originalPrice = in.readString();
-        this.discountPercentage = in.readInt();
-        this.isOfficial = in.readByte() != 0;
-        this.topLabel = in.readString();
-        this.bottomLabel = in.readString();
-        this.productWishlistUrl = in.readString();
-        this.categoryID = in.readInt();
-        this.categoryName = in.readString();
-        this.categoryBreadcrumb = in.readString();
-        this.isTopAds = in.readByte() != 0;
-        this.isNew = in.readByte() != 0;
-        this.topadsImpressionUrl = in.readString();
-        this.topadsClickUrl = in.readString();
-        this.topadsWishlistUrl = in.readString();
-    }
-
-    public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
-        @Override
-        public ProductItem createFromParcel(Parcel source) {
-            return new ProductItem(source);
-        }
-
-        @Override
-        public ProductItem[] newArray(int size) {
-            return new ProductItem[size];
-        }
-    };
 }

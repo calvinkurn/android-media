@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.item.description.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.product.manage.item.R;

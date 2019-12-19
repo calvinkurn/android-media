@@ -27,7 +27,9 @@ class GetDynamicFeedProfileUseCase
     companion object {
         val SOURCE_ID = "sourceID"
         fun createRequestParams(userId: String, targetUserId: String, cursor: String): RequestParams {
-            val requestParams = GetDynamicFeedUseCase.createRequestParams(userId, cursor, GetDynamicFeedUseCase.SOURCE_PROFILE)
+            val requestParams = GetDynamicFeedUseCase.createRequestParams(
+                    userId = userId, cursor = cursor, source = GetDynamicFeedUseCase.FeedV2Source.Profile
+            )
             requestParams.putString(SOURCE_ID, targetUserId)
             return requestParams
         }

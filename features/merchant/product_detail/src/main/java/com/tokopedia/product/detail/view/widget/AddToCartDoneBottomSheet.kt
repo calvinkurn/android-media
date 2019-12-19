@@ -1,27 +1,29 @@
 package com.tokopedia.product.detail.view.widget
 
 import android.app.Dialog
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.CoordinatorLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST
+import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
@@ -33,12 +35,12 @@ import com.tokopedia.product.detail.view.adapter.AddToCartDoneTypeFactory
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationViewHolder
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
-import com.tokopedia.product.detail.view.viewmodel.Loaded
-import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -63,7 +65,8 @@ class AddToCartDoneBottomSheet :
     private lateinit var atcDoneAdapter: AddToCartDoneAdapter
     private var lastAdapterPosition = -1
     private lateinit var recyclerView: RecyclerView
-    private lateinit var containerLayout: CoordinatorLayout
+    private lateinit var containerLayout: FrameLayout
+    private lateinit var viewShimmeringLoading: View
     private var addedProductDataModel: AddToCartDoneAddedProductDataModel? = null
 
     override fun getLayoutResourceId(): Int {
@@ -78,6 +81,7 @@ class AddToCartDoneBottomSheet :
         view?.let {
             recyclerView = it.findViewById(R.id.recycler_view_add_to_cart_done)
             containerLayout = it.findViewById(R.id.container_layout)
+            viewShimmeringLoading = it.findViewById(R.id.atc_done_bottomsheet_shimmering_loading)
         }
     }
 
@@ -91,7 +95,6 @@ class AddToCartDoneBottomSheet :
             findViewById<FrameLayout>(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent)
         }
     }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
         initViewModel()
@@ -107,6 +110,7 @@ class AddToCartDoneBottomSheet :
 
     private fun getRecommendationProduct() {
         addedProductDataModel?.productId?.let {
+            viewShimmeringLoading.show()
             addToCartDoneViewModel.getRecommendationProduct(it)
         }
     }
@@ -116,29 +120,43 @@ class AddToCartDoneBottomSheet :
         atcDoneAdapter = AddToCartDoneAdapter(factory)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = atcDoneAdapter
-        atcDoneAdapter.addElement(addedProductDataModel)
     }
 
     private fun observeRecommendationProduct() {
         addToCartDoneViewModel.recommendationProduct.observe(this, Observer {
             when (it) {
-                is Loading -> {
-                    atcDoneAdapter.addElement(LoadingMoreModel())
+                is Success -> {
+                    viewShimmeringLoading.hide()
+                    atcDoneAdapter.clearAllElements()
+                    for (res in it.data) {
+                        atcDoneAdapter.addElement(AddToCartDoneRecommendationDataModel(res))
+                    }
+                    atcDoneAdapter.addElement(0, addedProductDataModel)
                     atcDoneAdapter.notifyDataSetChanged()
                 }
-                is Loaded -> {
-                    (it.data as? Success)?.data?.let { result ->
-                        atcDoneAdapter.clearAllElements()
-                        for (res in result) {
-                            atcDoneAdapter.addElement(AddToCartDoneRecommendationDataModel(res))
-                        }
-                        atcDoneAdapter.addElement(0, addedProductDataModel)
-                        atcDoneAdapter.notifyDataSetChanged()
-                    }
+                is Fail -> {
+                    showToasterRequestError(
+                            it.throwable,
+                            View.OnClickListener {
+                                getRecommendationProduct()
+                            }
+                    )
                 }
             }
             configBottomSheetHeight()
         })
+    }
+
+    private fun showToasterRequestError(throwable: Throwable, onClickListener: View.OnClickListener) {
+        dialog?.run {
+            Toaster.showErrorWithAction(
+                    findViewById(android.R.id.content),
+                    ErrorHandler.getErrorMessage(this.context, throwable),
+                    Snackbar.LENGTH_INDEFINITE,
+                    getString(R.string.title_try_again),
+                    onClickListener
+            )
+        }
     }
 
     private fun configBottomSheetHeight() {
@@ -176,6 +194,7 @@ class AddToCartDoneBottomSheet :
     private fun goToCart() {
         activity?.let {
             startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
+            dismiss()
         }
     }
 
@@ -188,6 +207,7 @@ class AddToCartDoneBottomSheet :
             putExtra(PDP_EXTRA_UPDATED_POSITION, position)
             startActivityForResult(this, REQUEST_FROM_PDP)
         }
+        dismiss()
     }
 
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
@@ -207,7 +227,7 @@ class AddToCartDoneBottomSheet :
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
-                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
+                val wishlistStatusFromPdp = data.getBooleanExtra(WISHLIST_STATUS_IS_WISHLIST,
                         false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
                 updateWishlist(wishlistStatusFromPdp, position)
@@ -255,8 +275,7 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onButtonGoToCartClicked() {
-        productDetailTracking.eventClickAddToCart(addedProductDataModel?.productId ?: "",
-                addedProductDataModel?.isVariant ?: false)
+        productDetailTracking.eventAtcClickLihat(addedProductDataModel?.productId ?: "")
         goToCart()
     }
 

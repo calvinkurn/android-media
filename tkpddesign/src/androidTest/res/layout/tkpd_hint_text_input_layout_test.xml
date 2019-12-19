@@ -1,4 +1,4 @@
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -17,11 +17,11 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8">
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edit_text"
                 style="@style/TextView.Small"
                 android:layout_width="match_parent" />
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>

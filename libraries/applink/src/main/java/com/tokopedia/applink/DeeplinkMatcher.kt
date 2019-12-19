@@ -19,14 +19,15 @@ import com.tokopedia.applink.DeepLinkChecker.OTHER
 import com.tokopedia.applink.DeepLinkChecker.PELUANG
 import com.tokopedia.applink.DeepLinkChecker.PLAY
 import com.tokopedia.applink.DeepLinkChecker.PRODUCT
+import com.tokopedia.applink.DeepLinkChecker.PRODUCT_REVIEW
 import com.tokopedia.applink.DeepLinkChecker.PROFILE
-import com.tokopedia.applink.DeepLinkChecker.PROMO
+import com.tokopedia.applink.DeepLinkChecker.PROMO_DETAIL
+import com.tokopedia.applink.DeepLinkChecker.PROMO_LIST
 import com.tokopedia.applink.DeepLinkChecker.RECHARGE
 import com.tokopedia.applink.DeepLinkChecker.RECOMMENDATION
 import com.tokopedia.applink.DeepLinkChecker.REFERRAL
 import com.tokopedia.applink.DeepLinkChecker.SALE
 import com.tokopedia.applink.DeepLinkChecker.SHOP
-import com.tokopedia.applink.DeepLinkChecker.SIMILAR_PRODUCT
 import com.tokopedia.applink.DeepLinkChecker.SMCREFERRAL
 import com.tokopedia.applink.DeepLinkChecker.TOKOPOINT
 import com.tokopedia.applink.DeepLinkChecker.TOPPICKS
@@ -43,7 +44,8 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "play")) to PLAY)
             add(Pattern(GT, 0, mapOf(0 to "groupchat")) to GROUPCHAT)
             add(Pattern(GT, 0, mapOf(0 to "flight")) to FLIGHT)
-            add(Pattern(GT, 0, mapOf(0 to "promo")) to PROMO)
+            add(Pattern(EQ, 2, mapOf(0 to "promo")) to PROMO_DETAIL)
+            add(Pattern(GT, 0, mapOf(0 to "promo")) to PROMO_LIST)
             add(Pattern(GT, 0, mapOf(0 to "sale")) to SALE)
             add(Pattern(EQ, 1, mapOf(0 to "invoice.pl")) to INVOICE)
             add(Pattern(GT, 0, mapOf(0 to "blog")) to BLOG)
@@ -63,7 +65,7 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "tokopoints")) to TOKOPOINT)
             add(Pattern(GT, 0, mapOf(0 to "ovo")) to WALLET_OVO)
             add(Pattern(GT, 1, mapOf(0 to "people")) to PROFILE)
-            add(Pattern(GT, 0, mapOf(0 to "content")) to CONTENT)
+            add(Pattern(GT, 1, mapOf(0 to "content")) to CONTENT)
             add(Pattern(GT, 0, mapOf(0 to "kupon-thr")) to SMCREFERRAL)
             add(Pattern(GT, 1, mapOf(0 to "seru")) to SMCREFERRAL)
             add(Pattern(GT, 0, mapOf(0 to "emas")) to OTHER)
@@ -79,9 +81,12 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 1, mapOf(0 to "kredit-motor")) to OTHER)
             add(Pattern(EQ, 2, mapOf(0 to "fm", 1 to "modal-toko")) to OTHER)
             add(Pattern(EQ, 1, mapOf(0 to "hotel")) to HOTEL)
-            add(Pattern(GT, 2, mapOf(0 to "rekomendasi", 2 to "d")) to SIMILAR_PRODUCT)
             add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
+            add(Pattern(EQ, 4, mapOf(0 to "product-review")) to PRODUCT_REVIEW)
+            add(Pattern(GT, 1, mapOf(0 to "myshop")) to OTHER)
+            add(Pattern(EQ, 1, mapOf(0 to "my-shop")) to OTHER)
+            add(Pattern(EQ, 2, mapOf(0 to "terms", 1 to "aktivasi-powermerchant")) to OTHER)
             add(Pattern(EQ, 1, null) to SHOP)
             add(Pattern(EQ, 2, null) to PRODUCT)
         }

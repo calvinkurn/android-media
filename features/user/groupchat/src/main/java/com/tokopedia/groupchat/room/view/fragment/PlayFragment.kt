@@ -6,10 +6,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.support.design.widget.Snackbar
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import com.airbnb.lottie.LottieAnimationView
@@ -40,7 +40,6 @@ import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
@@ -73,6 +72,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         const val GROUP_CHAT_NETWORK_PREFERENCES = "gc_network"
 
         var VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1)
+        const val STICKY_COMPONENT = 102
         const val REQUEST_LOGIN = 111
         const val YOUTUBE_DELAY = 1500
 
@@ -333,8 +333,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         (activity as PlayActivity).let {
             var color: Int
             color = when {
-                isEnabled -> R.color.white
-                else -> R.color.black_70
+                isEnabled -> com.tokopedia.design.R.color.white
+                else -> com.tokopedia.design.R.color.black_70
             }
             it.changeHomeDrawableColor(color)
         }
@@ -484,10 +484,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         } else {
             RouteManager.route(activity, ApplinkConst.WEBVIEW, generateLink)
         }
-    }
-
-    private fun getInboxChannelsIntent(): Intent? {
-        return RouteManager.getIntent(activity, ApplinkConst.GROUPCHAT_LIST)
     }
 
     override fun onOpenWebSocket(needRefreshInfo: Boolean) {
@@ -790,9 +786,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_LOGIN) {
-            viewState.onSuccessLogin()
-            loadFirstTime()
+        when(requestCode) {
+            REQUEST_LOGIN -> {
+                viewState.onSuccessLogin()
+                loadFirstTime()
+            }
+            STICKY_COMPONENT -> {
+                ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.play_atc_success))
+            }
         }
     }
 

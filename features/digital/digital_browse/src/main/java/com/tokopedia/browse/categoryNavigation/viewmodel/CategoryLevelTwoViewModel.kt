@@ -1,7 +1,7 @@
 package com.tokopedia.browse.categoryNavigation.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
 import com.tokopedia.browse.categoryNavigation.data.model.hotlist.CategoryHotlist
 import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem

@@ -2,9 +2,9 @@ package com.tokopedia.tkpd.rule;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.intent.Intents;
-import android.support.test.rule.ActivityTestRule;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.espresso.intent.Intents;
+import androidx.test.rule.ActivityTestRule;
 
 import com.tokopedia.sellerapp.RxJavaTestPlugins;
 import com.tokopedia.tkpd.BaseRetrofitJsonFactory;

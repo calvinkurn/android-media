@@ -1,130 +1,41 @@
 package com.tokopedia.tkpd.applink;
 
-import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
-import android.text.TextUtils;
+import androidx.fragment.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 /**
  * @author anggaprasetiyo on 7/20/17.
+ * Refer to BaseSimpleWebViewActivity in the libraries.
  */
-
-public class AppLinkWebsiteActivity extends BasePresenterActivity
-        implements FragmentGeneralWebView.OnFragmentInteractionListener {
+@Deprecated
+public class AppLinkWebsiteActivity extends BasePresenterActivity {
     private static final String EXTRA_URL = "EXTRA_URL";
     private static final String EXTRA_REFRESH_FLAG = "EXTRA_REFRESH_FLAG";
-    private static final String EXTRA_TITLEBAR = "EXTRA_TITLEBAR";
-    private static final String EXTRA_NEED_LOGIN = "EXTRA_NEED_LOGIN";
     private static final String EXTRA_PARENT_APP_LINK = "EXTRA_PARENT_APP_LINK";
     private static final String KEY_APP_LINK_QUERY_URL = "url";
     private static final String KEY_APP_LINK_QUERY_TITLEBAR = "titlebar";
     private static final String KEY_APP_LINK_QUERY_NEED_LOGIN = "need_login";
     private static final String KEY_APP_LINK_QUERY_ALLOW_OVERRIDE = "allow_override";
 
-
-
-    private FragmentGeneralWebView fragmentGeneralWebView;
+    private BaseSessionWebViewFragment fragmentWebView;
 
     private String url;
     private boolean showToolbar;
     private boolean needLogin;
     private boolean allowOverride;
-
-
-    private static final String WEB_URL = TokopediaUrl.Companion.getInstance().getWEB();
-
-    public static Intent newInstance(Context context, String url) {
-        return new Intent(context, AppLinkWebsiteActivity.class)
-                .putExtra(EXTRA_URL, url)
-                .putExtra(EXTRA_TITLEBAR, true)
-                .putExtra(EXTRA_NEED_LOGIN, false)
-                .putExtra(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE, true);
-
-    }
-
-    public static Intent newInstance(Context context, String url, boolean showToolbar,
-                                     boolean needLogin, boolean allowOverride) {
-
-        return new Intent(context, AppLinkWebsiteActivity.class)
-                .putExtra(EXTRA_URL, url)
-                .putExtra(EXTRA_TITLEBAR, showToolbar)
-                .putExtra(EXTRA_NEED_LOGIN, needLogin)
-                .putExtra(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE, allowOverride);
-    }
-
-    @SuppressWarnings("unused")
-    @DeepLink({ApplinkConst.WEBVIEW})
-    public static Intent getInstanceIntentAppLink(Context context, Bundle extras) {
-        String webUrl = extras.getString(
-                KEY_APP_LINK_QUERY_URL, WEB_URL
-        );
-        boolean showToolbar;
-        boolean needLogin;
-        boolean allowOverride;
-
-        try {
-            showToolbar = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_TITLEBAR,
-                    "true"));
-        } catch (ParseException e) {
-            showToolbar = true;
-        }
-
-        try {
-            needLogin = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_NEED_LOGIN,
-                    "false"));
-        } catch (ParseException e) {
-            needLogin = false;
-        }
-
-        try {
-            allowOverride = Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_ALLOW_OVERRIDE,
-                    "true"));
-        } catch (ParseException e) {
-            allowOverride = true;
-        }
-
-        if (TextUtils.isEmpty(webUrl)) {
-            webUrl = WEB_URL;
-        }
-
-        return AppLinkWebsiteActivity.newInstance(context, webUrl, showToolbar, needLogin, allowOverride);
-    }
-
-    @SuppressWarnings("unused")
-    @DeepLink({ApplinkConst.WEBVIEW_PARENT_HOME})
-    public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
-        String webUrl = extras.getString(KEY_APP_LINK_QUERY_URL, WEB_URL);
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (context.getApplicationContext() instanceof TkpdCoreRouter) {
-            Intent homeIntent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
-            homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
-            taskStackBuilder.addNextIntent(homeIntent);
-        }
-        Intent destination = AppLinkWebsiteActivity.newInstance(context, webUrl);
-        taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
-    }
 
     @Override
     protected boolean isLightToolbarThemes() {
@@ -174,12 +85,12 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
 
     @Override
     protected void initView() {
-        Fragment fragment = getFragmentManager().findFragmentById(com.tokopedia.digital.R.id.container);
-        if (fragment == null || !(fragment instanceof FragmentGeneralWebView)) {
-            fragmentGeneralWebView = FragmentGeneralWebView.createInstance(getEncodedUrl(url),
-                    allowOverride, showToolbar, needLogin);
-            getFragmentManager().beginTransaction().replace(com.tokopedia.digital.R.id.container,
-                    fragmentGeneralWebView).commit();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (!(fragment instanceof BaseSessionWebViewFragment)) {
+            fragmentWebView = BaseSessionWebViewFragment.newInstance(url,needLogin,
+                    allowOverride);
+            getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                    fragmentWebView).commit();
         }
     }
 
@@ -195,21 +106,6 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
 
     @Override
     protected void setActionVar() {
-
-    }
-
-    @Override
-    public void onWebViewSuccessLoad() {
-
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
 
     }
 
@@ -241,8 +137,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @Override
     public void onBackPressed() {
         try {
-            if (fragmentGeneralWebView.getWebview().canGoBack()) {
-                fragmentGeneralWebView.getWebview().goBack();
+            if (fragmentWebView.getWebView().canGoBack()) {
+                fragmentWebView.getWebView().goBack();
             } else {
                 if (isTaskRoot() && getApplication() instanceof TkpdCoreRouter) {
                     startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
@@ -270,8 +166,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         super.onResume();
         if(PersistentCacheManager.instance.get("reload_webview", int.class, 0) == 1) {
             PersistentCacheManager.instance.put("reload_webview", 0);
-            if (fragmentGeneralWebView != null) {
-                fragmentGeneralWebView.reloadPage();
+            if (fragmentWebView != null) {
+                fragmentWebView.reloadPage();
             }
         }
     }

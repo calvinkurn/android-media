@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_main_content"
@@ -121,7 +121,7 @@
         app:layout_constraintVertical_bias="0.5"
         tools:text="Berlaku hingga tanggal 1 Juni 2018" />
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_outlets"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -183,7 +183,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_popular">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cv_image_view"
                 android:layout_width="@dimen/image_width_brand"
                 android:layout_height="@dimen/image_width_brand"
@@ -198,7 +198,7 @@
                     android:scaleType="fitCenter"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_popular" />
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
 
         <TextView
@@ -251,7 +251,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tv_brand_address"
             app:layout_constraintTop_toBottomOf="@+id/tv_brand_address" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <View
@@ -263,7 +263,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cl_outlets" />
 
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -312,10 +312,10 @@
             android:layout_marginTop="@dimen/dp_16"
             android:background="@color/grey_300"
             app:layout_constraintTop_toBottomOf="@+id/seemorebutton_description" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_tnc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -366,9 +366,9 @@
             android:layout_marginTop="@dimen/dp_16"
             android:background="@color/grey_300"
             app:layout_constraintTop_toBottomOf="@+id/seemorebutton_tnc" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_redeem_instructions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -408,7 +408,7 @@
             app:layout_constraintTop_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="@+id/iv_how_to_redeem"
             app:srcCompat="@drawable/ic_arrow_right_deals" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/divider6"
@@ -430,7 +430,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider6" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -438,11 +438,11 @@
         android:clipToPadding="false"
         android:paddingLeft="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_recommended_deals"
         tools:listitem="@layout/deal_item_card_short" />
 
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

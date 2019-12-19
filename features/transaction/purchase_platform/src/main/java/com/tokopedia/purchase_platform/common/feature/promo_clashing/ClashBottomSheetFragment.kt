@@ -1,0 +1,204 @@
+package com.tokopedia.purchase_platform.common.feature.promo_clashing
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOptionUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
+import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.promo_clashing.adapter.ClashingAdapter
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+
+/**
+ * Created by fwidjaja on 10/03/19.
+ */
+
+open class ClashBottomSheetFragment : BottomSheetUnify(), ClashingAdapter.ActionListener {
+
+    private lateinit var actionListener: ActionListener
+    private lateinit var tvClashingInfoTicker: Ticker
+    private lateinit var uiModel: ClashingInfoDetailUiModel
+    private lateinit var source: String
+    private lateinit var type: String
+    private lateinit var rvClashingOption: RecyclerView
+    private lateinit var btSubmit: UnifyButton
+    private lateinit var adapter: ClashingAdapter
+    private var checkoutAnalyticsCart: CheckoutAnalyticsCart? = null
+    private var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection? = null
+
+    interface ActionListener {
+        fun onSubmitNewPromoAfterClash(oldPromoList: ArrayList<String>, newPromoList: ArrayList<ClashingVoucherOrderUiModel>, type: String)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(): ClashBottomSheetFragment {
+            return ClashBottomSheetFragment()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setTitle(getString(R.string.clash_bottomsheet_title))
+        setChild(LayoutInflater.from(context).inflate(R.layout.bottom_sheet_clash_voucher, null, false))
+        setCloseClickListener { dismiss() }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView(view)
+    }
+
+    fun setData(uiModel: ClashingInfoDetailUiModel) {
+        this.uiModel = uiModel
+    }
+
+    fun setSource(source: String) {
+        this.source = source
+    }
+
+    fun setType(type: String) {
+        this.type = type
+    }
+
+    fun setActionListener(actionListener: ActionListener) {
+        this.actionListener = actionListener
+    }
+
+    fun setAnalyticsCart(checkoutAnalyticsCart: CheckoutAnalyticsCart) {
+        this.checkoutAnalyticsCart = checkoutAnalyticsCart
+    }
+
+    fun setAnalyticsShipment(checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection) {
+        this.checkoutAnalyticsCourierSelection = checkoutAnalyticsCourierSelection
+    }
+
+    fun initView(view: View) {
+        btSubmit = view.findViewById(R.id.bt_submit)
+        rvClashingOption = view.findViewById(R.id.rv_clashing_option)
+        tvClashingInfoTicker = view.findViewById(R.id.tv_clashing_info_ticker)
+        tvClashingInfoTicker.setTextDescription(uiModel.clashMessage)
+
+        adapter = ClashingAdapter()
+        adapter.setListener(this)
+        adapter.data = uiModel.options
+        rvClashingOption.adapter = adapter
+        rvClashingOption.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        (rvClashingOption.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        adapter.notifyDataSetChanged()
+
+        setButtonSubmitVisibility()
+    }
+
+    private fun setButtonSubmitVisibility() {
+        var isDataSelected = false
+        for (model: ClashingVoucherOptionUiModel in adapter.data) {
+            if (model.isSelected) {
+                isDataSelected = true
+                break
+            }
+        }
+
+        btSubmit.isEnabled = isDataSelected
+        if (btSubmit.isEnabled) {
+            btSubmit.setOnClickListener {
+                for (index in adapter.data.indices) {
+                    if (index == 0) {
+                        val oldPromoList = ArrayList<String>()
+                        var oldPromoListStr = ""
+                        adapter.data[index + 1].voucherOrders.forEach { voucherOrder ->
+                            oldPromoList.add(voucherOrder.code)
+                            if (oldPromoListStr.isEmpty()) {
+                                oldPromoListStr = voucherOrder.code
+                            } else {
+                                oldPromoListStr = oldPromoListStr + "," + voucherOrder.code
+                            }
+                        }
+                        if (adapter.data[index].isSelected) {
+                            val newPromoList = ArrayList<String>()
+                            adapter.data[index].voucherOrders.forEach { voucherOrder ->
+                                newPromoList.add(voucherOrder.code)
+                            }
+                            if (newPromoList.size > 0) {
+                                if (source.equals("cart", ignoreCase = true)) {
+                                    checkoutAnalyticsCart?.eventClickSubmitPromoKonflik(newPromoList[0])
+                                } else {
+                                    checkoutAnalyticsCourierSelection?.eventSubmitPromoConflict(newPromoList[0])
+                                }
+                            }
+                            dismiss()
+                            actionListener.onSubmitNewPromoAfterClash(oldPromoList, adapter.data[index].voucherOrders, type)
+                        } else {
+                            if (oldPromoList.size > 0) {
+                                if (source.equals("cart", ignoreCase = true)) {
+                                    // checkoutAnalyticsCart?.eventClickSubmitPromoKonflik(Gson().toJson(oldPromoList))
+                                    checkoutAnalyticsCart?.eventClickSubmitPromoKonflik(oldPromoListStr)
+                                } else {
+                                    // checkoutAnalyticsCourierSelection?.eventSubmitPromoConflict(Gson().toJson(oldPromoList))
+                                    checkoutAnalyticsCourierSelection?.eventSubmitPromoConflict(oldPromoListStr)
+                                }
+                            }
+                            dismiss()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onVoucherItemSelected(index: Int, isSelected: Boolean) {
+        var reverseIndex = 0
+        for (i in adapter.data.indices) {
+            if (i != index) {
+                adapter.data[i].isSelected = false
+                reverseIndex = i
+            }
+        }
+
+        if (rvClashingOption.isComputingLayout) {
+            rvClashingOption.post {
+                adapter.notifyItemChanged(reverseIndex)
+            }
+        } else {
+            adapter.notifyItemChanged(reverseIndex)
+        }
+
+        for (model: ClashingVoucherOptionUiModel in adapter.data) {
+            if (model.isSelected) {
+                val vouchers = ArrayList<String>()
+                for (voucherModel: ClashingVoucherOrderUiModel in model.voucherOrders) {
+                    vouchers.add(voucherModel.code)
+                }
+
+                var listVouchers = ""
+                for (voucherModel: ClashingVoucherOrderUiModel in model.voucherOrders) {
+                    if (listVouchers.isEmpty()) {
+                        listVouchers = voucherModel.code
+                    } else {
+                        listVouchers = listVouchers + "," + voucherModel.code
+                    }
+                }
+
+                if (source.equals("cart", ignoreCase = true)) {
+                    // checkoutAnalyticsCart?.eventSelectPromoPromoKonflik(Gson().toJson(vouchers))
+                    checkoutAnalyticsCart?.eventSelectPromoPromoKonflik(listVouchers)
+                } else {
+                    // checkoutAnalyticsCourierSelection?.eventSelectPromoConflict(Gson().toJson(vouchers))
+                    checkoutAnalyticsCourierSelection?.eventSelectPromoConflict(listVouchers)
+                }
+                break
+            }
+        }
+
+        setButtonSubmitVisibility()
+    }
+
+}

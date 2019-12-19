@@ -1,6 +1,6 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
@@ -53,12 +53,12 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
         action.visibility = View.GONE
 
         val resource = if (element.isDummy)
-            R.drawable.ic_chat_pending;
+            com.tokopedia.chat_common.R.drawable.ic_chat_pending;
         else
             if (element.isRead)
-                R.drawable.ic_chat_read
+                com.tokopedia.chat_common.R.drawable.ic_chat_read
             else
-                R.drawable.ic_chat_unread
+                com.tokopedia.chat_common.R.drawable.ic_chat_unread
         chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(),resource))
     }
 

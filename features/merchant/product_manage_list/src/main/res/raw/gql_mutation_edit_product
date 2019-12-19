@@ -1,0 +1,10 @@
+mutation productUpdateV3($input: ProductInputV3!){
+  ProductUpdateV3(input:$input) {
+    header {
+      messages
+      reason
+      errorCode
+    }
+    isSuccess
+  }
+}

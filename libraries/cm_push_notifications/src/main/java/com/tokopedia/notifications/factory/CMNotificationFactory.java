@@ -5,8 +5,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -45,7 +45,9 @@ public class CMNotificationFactory {
             return null;
         }
         BaseNotificationModel baseNotificationModel = convertToBaseModel(bundle);
-        IrisAnalyticsEvents.INSTANCE.sendPushReceiveEvent(context, baseNotificationModel);
+
+        IrisAnalyticsEvents.INSTANCE.sendPushEvent(context,IrisAnalyticsEvents.PUSH_RECEIVED,baseNotificationModel);
+
         if (CMConstant.NotificationType.SILENT_PUSH.equals(baseNotificationModel.getType())) {
             handleSilentPush(context, baseNotificationModel);
             return null;

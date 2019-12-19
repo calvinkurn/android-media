@@ -1,8 +1,8 @@
 package com.tokopedia.design.text;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.ViewGroup;

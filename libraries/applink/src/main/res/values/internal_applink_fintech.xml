@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="host_fintech" translatable="false">fintech</string>
-
+    <string name="host_ovo" translatable="false">ovo</string>
     <!--
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"
     -->
+    <string name="path_intro_ovo">/introduction</string>
+    <string name="path_activation_ovo">/activation</string>
+
+    <string name="path_saldo_deposit">/saldo</string>
+    <string name="path_saldo_intro">/saldo-intro</string>
+
+    <string name="path_instant_loan" translatable="false">/instant-loan</string>
+    <string name="path_instant_loan_tab" translatable="false">/loan/category/.*\\/</string>
 
     <string name="applink_saldo_deposit_title">Saldo</string>
     <string name="applink_saldo_intro_title">Saldo Intro</string>
+    <string name="applink_wallet_title">Ovo</string>
+    <string name="ovo_pay_with_qr_title">Ovo Pay with QR</string>
 
 </resources>

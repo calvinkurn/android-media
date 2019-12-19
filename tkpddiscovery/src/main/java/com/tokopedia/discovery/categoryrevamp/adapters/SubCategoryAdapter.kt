@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.categoryrevamp.adapters
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,20 +48,34 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
                 subCategoryListener.OnDefaultItemClicked()
             } else {
                 val id = ((holder.itemView.context) as CategoryNavActivity).getCategoryId()
-                catAnalyticsInstance.eventClickSubCategory(item.id.toString(),
-                        id, item.name ?: "", item.url ?: "", position,
-                        getSubCategoryPath(item.url
-                                ?: "", item.id.toString()))
+                catAnalyticsInstance.eventClickSubCategory(
+                        item.id.toString(),
+                        id,
+                        item.name ?: "",
+                        item.thumbnailImage ?: "",
+                        position,
+                        getSubCategoryPath(item.url ?: "", id),
+                        getCategoryNamePath(item.url ?: ""))
 
                 subCategoryListener.OnSubCategoryClicked(item.id.toString(), item.name ?: "")
             }
         }
     }
 
+    private fun getCategoryNamePath(path: String): String {
+        if (path.isNotEmpty()) {
+            val m = path.split("/p/")
+            if (m.size > 1)
+                return m[1]
+        }
+        return ""
+    }
+
     private fun getSubCategoryPath(path: String, id: String): String {
         if (path.isNotEmpty()) {
             val m = path.split("/p/")
-            return "category" + m[1] + "-" + id
+            if (m.size > 1)
+                return "category/" + m[1] + " - " + id
         }
         return ""
     }
@@ -81,10 +95,14 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
             viewMap[position] = true
 
             val item = subCategoryList[position]
+            val id = ((holder.itemView.context) as CategoryNavActivity).getCategoryId()
 
-            catAnalyticsInstance.eventSubCategoryImpression(((holder.itemView.context) as CategoryNavActivity).getCategoryId(),
-                    item.id.toString(), item.name ?: "", item.url ?: "", position,
-                    getSubCategoryPath(item.url ?: "", item.id.toString()))
+            catAnalyticsInstance.eventSubCategoryImpression(id,
+                    item.id.toString(),
+                    item.name ?: "",
+                    item.thumbnailImage ?: "", position,
+                    getSubCategoryPath(item.url ?: "", id),
+                    getCategoryNamePath(item.url ?: ""))
         }
     }
 

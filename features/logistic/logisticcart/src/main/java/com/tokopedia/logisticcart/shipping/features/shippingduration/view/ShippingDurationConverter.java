@@ -35,8 +35,10 @@ public class ShippingDurationConverter {
         boolean applied = promo.getIsApplied() == 1;
         return new LogisticPromoViewModel(
                 promo.getPromoCode(), promo.getTitle(), promo.getBenefitDesc(),
-                promo.getShipperName(), promo.getServiceId(), promo.getShipperId(), promo.getShipperProductId(),
-                promo.getShipperDesc(), promo.getShipperDisableText(), promo.getPromoTncHtml(), applied);
+                promo.getShipperName(), promo.getServiceId(), promo.getShipperId(),
+                promo.getShipperProductId(), promo.getShipperDesc(), promo.getShipperDisableText(),
+                promo.getPromoTncHtml(), applied, promo.getImageUrl(), promo.getDiscontedRate(),
+                promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled(), promo.isHideShipperName());
     }
 
     public List<ShippingDurationViewModel> convertToViewModel(List<ServiceData> serviceDataList,

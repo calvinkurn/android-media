@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.picker.view.listener;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;

@@ -23,6 +23,7 @@
     <string name="fare_breakup">Fare Breakup for %s</string>
     <string name="pay_button">Lanjut Pembayaran</string>
     <string name="date_hint">DD/MM/YY</string>
+    <string name="ticker_desc">Kamu bisa cek status pembelian dan e-tiket lewat halaman Daftar Transaksi</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="x_type">%1$d x %2$s</string>
@@ -33,7 +34,7 @@
     <string name="cek_kode">Cek Kode</string>
     <string name="kode_promo">Kode Promo</string>
     <string name="tujuan_pengiriman_tiket">Tujuan Pengiriman Tiket</string>
-    <string name="emailinfo_text">Alamat email dan nomor telepon yang tertulis akan menjadi tujuan pengiriman e-tiket pemesanan Anda.</string>
+    <string name="emailinfo_text">Alamat email yang tertulis akan menjadi tujuan pengiriman e-tiket Anda</string>
     <string name="data_pelanggan_tambahan">Data Pelanggan Tambahan</string>
     <string name="additionallinfo_text">Data pelanggan tambahan akan digunakan pada saat penukaran tiket</string>
     <string name="promo_success_msg">Anda mendapatkan promo:</string>
@@ -125,9 +126,12 @@
     <string name="enter_additional_data">Silahkan Isi Data Pelanggan Tambahan</string>
     <string name="digital_event_reset_label">Reset</string>
     <string name="digital_event_all_time_label">Semua Waktu</string>
-
+    <string name="coachicon_event_date">Bebas pilih tanggal kunjungan</string>
+    <string name="coachicon_event_date_description">Nggak perlu ribet atur waktu, tinggal pilih tanggal yang sesuai dengan rencana kegiatanmu.</string>
+    <string name="ticker_info_description">Hanya bisa beli satu jenis tiket, lakukan transaksi baru untuk beli jenis tiket lainnya.</string>
 
     <string name="reset">Reset</string>
+    <string name="event_ended">Penjualan tiket untuk event ini telah berakhir</string>
     <!-- need to changed -->
 
 </resources>

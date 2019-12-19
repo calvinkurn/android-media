@@ -1,6 +1,6 @@
 package com.tokopedia.home.account.presentation.adapter;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * @author okasurya on 7/21/18.

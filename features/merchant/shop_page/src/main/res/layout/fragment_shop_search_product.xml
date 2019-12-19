@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/ly_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance"
+        app:elevation="0dp" >
+
+        <com.tokopedia.design.text.SearchInputView
+            android:id="@+id/search_input_view"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:layout_height="wrap_content"
+            app:siv_search_hint="@string/shop_product_search_hint"/>
+
+    </androidx.appcompat.widget.Toolbar>
+    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:clipToPadding="false"
+        android:layout_height="match_parent" />
+</LinearLayout>

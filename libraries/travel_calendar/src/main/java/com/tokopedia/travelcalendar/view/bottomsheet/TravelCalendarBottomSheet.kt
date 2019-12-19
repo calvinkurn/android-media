@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.travelcalendar.R
-import com.tokopedia.travelcalendar.view.TravelCalendarComponentInstance
+import com.tokopedia.travelcalendar.TravelCalendarComponentInstance
 import com.tokopedia.travelcalendar.view.TravelCalendarContract
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet.Builder
 import com.tokopedia.travelcalendar.view.model.CellDate
@@ -24,6 +24,7 @@ import javax.inject.Inject
  * @property setListener
  * @property show
  */
+@Deprecated("please use Calendar from unify module or SinglePickCalendarWidget")
 class TravelCalendarBottomSheet : BottomSheets(), TravelCalendarContract.View {
 
     private lateinit var travelCalendarWidgetView: TravelCalendarWidgetView

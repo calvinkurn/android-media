@@ -1,7 +1,7 @@
 package com.tokopedia.base.list.seller.view.old;
 
-import android.support.annotation.DrawableRes;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.DrawableRes;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

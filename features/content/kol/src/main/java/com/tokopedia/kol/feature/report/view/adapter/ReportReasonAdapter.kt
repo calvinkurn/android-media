@@ -1,6 +1,6 @@
 package com.tokopedia.kol.feature.report.view.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,8 +27,8 @@ class ReportReasonAdapter(val view: ContentReportContract.View)
         }
 
         MethodChecker.getDrawable(holder.radio.getContext(),
-                if (model.isSelected) R.drawable.ic_radiobutton_selected
-                else R.drawable.ic_radiobutton_normal
+                if (model.isSelected) com.tokopedia.design.R.drawable.ic_radiobutton_selected
+                else com.tokopedia.design.R.drawable.ic_radiobutton_normal
         )?.apply {
             holder.radio.setImageDrawable(this)
         }

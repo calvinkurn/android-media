@@ -1,5 +1,5 @@
-query getShopFeaturedProduct($shopId: Int!){
-    shop_featured_product(shopID: $shopId){
+query getShopFeaturedProduct($shopId: Int!, $userID: Int!){
+    shop_featured_product(shopID: $shopId, userID: $userID){
         data{
             parent_id
             product_id
@@ -20,6 +20,10 @@ query getShopFeaturedProduct($shopId: Int!){
                 cashback_percent
                 is_cashback_expired
                 cashback_value
+            }
+            free_ongkir {
+                is_active
+                img_url
             }
             total_review
             rating

@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core2.R;
@@ -48,8 +47,8 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
     public View MainView;
     View deadlineColoredBorder;
 
-    public ShippingViewHolder(View itemView, MultiSelector multiSelector) {
-        super(itemView, multiSelector);
+    public ShippingViewHolder(View itemView) {
+        super(itemView);
         invoice_selected = (TextView) itemView.findViewById(R.id.invoice_text_selected);
         vRefNumber = (Button) itemView.findViewById(R.id.ref_number);
         vError = (TextView) itemView.findViewById(R.id.error_msg);
@@ -76,14 +75,6 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
         CameraBut = (ImageView) itemView.findViewById(R.id.camera_but);
         MainView = itemView.findViewById(R.id.main_view);
         deadlineColoredBorder = itemView.findViewById(R.id.colored_border);
-
-        if(Build.VERSION.SDK_INT >= 21) {
-            setSelectionModeStateListAnimator(null);
-            setDefaultModeStateListAnimator(itemView.getStateListAnimator());
-        }
-
-        setSelectionModeBackgroundDrawable(itemView.getBackground());
-        setDefaultModeBackgroundDrawable(itemView.getBackground());
     }
 
     private void checkError(ShippingImpl.Model model, Context context) {

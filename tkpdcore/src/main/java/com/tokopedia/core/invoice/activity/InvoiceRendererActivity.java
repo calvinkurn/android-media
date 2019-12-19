@@ -14,7 +14,7 @@ import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintJob;
 import android.print.PrintManager;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -110,6 +110,7 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
         webViewOauth.getSettings().setJavaScriptEnabled(true);
         webViewOauth.getSettings().setBuiltInZoomControls(false);
         webViewOauth.getSettings().setDisplayZoomControls(true);
+        webViewOauth.getSettings().setDomStorageEnabled(true);
         webViewOauth.setWebChromeClient(new MyWebChrome());
         webViewOauth.setWebViewClient(new MyWebViewClient());
         webViewOauth.setOnKeyListener(new View.OnKeyListener() {

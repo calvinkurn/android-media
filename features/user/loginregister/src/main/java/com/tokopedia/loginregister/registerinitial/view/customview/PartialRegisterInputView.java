@@ -3,10 +3,11 @@ package com.tokopedia.loginregister.registerinitial.view.customview;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.content.ContextCompat;
+import com.google.android.material.textfield.TextInputEditText;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -16,7 +17,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
@@ -25,8 +25,12 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
+import com.tokopedia.loginregister.common.utils.KeyboardHandler;
+import com.tokopedia.loginregister.common.view.EmailExtension;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * @author by alvinatin on 11/06/18.
@@ -39,6 +43,7 @@ public class PartialRegisterInputView extends BaseCustomView {
     TextView tvMessage;
     TextView tvError;
     ButtonCompat btnAction;
+    EmailExtension emailExtension;
 
     TextInputEditText etPassword;
     TkpdHintTextInputLayout wrapperPassword;
@@ -48,8 +53,10 @@ public class PartialRegisterInputView extends BaseCustomView {
     RegisterAnalytics registerAnalytics = new RegisterAnalytics();
 
     private static Boolean isButtonValidatorActived = false;
+    private Boolean isExtensionSelected = false;
 
     private PartialRegisterInputViewListener listener;
+    private List<String> emailExtensionList;
 
     public void setListener(PartialRegisterInputViewListener listener) {
         this.listener = listener;
@@ -120,6 +127,8 @@ public class PartialRegisterInputView extends BaseCustomView {
             @Override
             public void onClick(View v) {
                 showDefaultView();
+
+                hideEmailExtension();
             }
         });
     }
@@ -155,8 +164,25 @@ public class PartialRegisterInputView extends BaseCustomView {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 setWrapperError(wrapper, null);
-                if(s != null && isButtonValidatorActived)
-                    validateValue(s.toString());
+                if(s != null) {
+                    if (isButtonValidatorActived) {
+                        validateValue(s.toString());
+                    }
+
+                    if (etInputEmailPhone.isFocused() && etInputEmailPhone.getText().toString().contains("@") && emailExtension != null) {
+                        showEmailExtension();
+                        isExtensionSelected = false;
+
+                        String[] charEmail = etInputEmailPhone.getText().toString().split("@");
+                        if (charEmail.length > 1) {
+                            emailExtension.filterExtensions(charEmail[1]);
+                        } else {
+                            emailExtension.updateExtensions(emailExtensionList);
+                        }
+                    } else {
+                        hideEmailExtension();
+                    }
+                }
             }
 
             @Override
@@ -215,15 +241,46 @@ public class PartialRegisterInputView extends BaseCustomView {
         }
         etInputEmailPhone.setAdapter(adapter);
         etInputEmailPhone.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus)
-                ((AutoCompleteTextView)v).showDropDown();
-            else
-                ((AutoCompleteTextView)v).dismissDropDown();
+            if (hasFocus) {
+                ((AutoCompleteTextView) v).showDropDown();
+            } else {
+                ((AutoCompleteTextView) v).dismissDropDown();
+            }
         });
     }
 
-    public ListAdapter getAdapterInputEmailPhone(){
-        return etInputEmailPhone.getAdapter();
+    public void setEmailExtension(EmailExtension emailExtension, List<String> emailExtensionList) {
+        this.emailExtensionList = emailExtensionList;
+        this.emailExtension = emailExtension;
+        this.emailExtension.setExtensions(emailExtensionList, (extension, position) -> {
+            String[] charEmail = etInputEmailPhone.getText().toString().split("@");
+            if (charEmail.length > 0) {
+                etInputEmailPhone.setText(String.format("%s@%s", charEmail[0], extension));
+            } else {
+                etInputEmailPhone.setText(String.format("%s@%s", etInputEmailPhone.getText().toString().replace("@", ""), extension));
+            }
+            etInputEmailPhone.setSelection(etInputEmailPhone.getText().toString().trim().length());
+            isExtensionSelected = true;
+            hideEmailExtension();
+        });
+    }
+
+    public void initKeyboardListener(View view) {
+        new KeyboardHandler(view, new KeyboardHandler.OnKeyBoardVisibilityChangeListener() {
+            @Override
+            public void onKeyboardShow() {
+                if (etInputEmailPhone != null) {
+                    if (etInputEmailPhone.getText().toString().contains("@") && !isExtensionSelected && etInputEmailPhone.isFocused()) {
+                        showEmailExtension();
+                    }
+                }
+            }
+
+            @Override
+            public void onKeyboardHide() {
+                hideEmailExtension();
+            }
+        });
     }
 
     private class ClickRegister implements OnClickListener {
@@ -278,5 +335,17 @@ public class PartialRegisterInputView extends BaseCustomView {
     public void resetErrorWrapper() {
         setWrapperError(wrapperEmailPhone, null);
         setWrapperError(wrapperPassword, null);
+    }
+
+    private void showEmailExtension() {
+        if (emailExtension != null) {
+            emailExtension.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideEmailExtension() {
+        if (emailExtension != null) {
+            emailExtension.setVisibility(View.GONE);
+        }
     }
 }

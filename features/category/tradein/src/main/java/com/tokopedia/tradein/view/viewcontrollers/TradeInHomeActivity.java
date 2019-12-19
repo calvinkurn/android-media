@@ -3,6 +3,7 @@ package com.tokopedia.tradein.view.viewcontrollers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import androidx.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -11,9 +12,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -29,7 +30,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
-import com.tokopedia.tradein.model.TradeInParams;
+import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.tradein.viewmodel.HomeResult;
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
 import com.tokopedia.tradein_common.Constants;
@@ -197,7 +198,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         viewMoneyInPriceGTM(homeResult.getDeviceDisplayName() + " - " + homeResult.getDisplayMessage());
                         break;
                     case MONEYIN_ERROR:
-                        showDialogFragment(0, getString(R.string.money_in), homeResult.getDisplayMessage(),
+                        showDialogFragment(getString(R.string.money_in), homeResult.getDisplayMessage(),
                                 getString(R.string.tradein_return), null);
                         errorDialogGTMLabel = homeResult.getDisplayMessage();
                     default:
@@ -233,7 +234,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         TradeInParams params = tradeInHomeViewModel.getTradeInParams();
         finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), params);
         finalPriceIntent.putExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_TYPE);
-        navigateToActivityRequest(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
+        navigateToActivityRequest(finalPriceIntent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE);
     }
 
     private void getPriceFromSDK(Context context) {
@@ -322,7 +323,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         });
                         if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) {
                             showMessageWithAction(getString(R.string.tradein_permission_setting),
-                                    getString(R.string.title_ok), (v) -> {
+                                    getString(com.tokopedia.abstraction.R.string.title_ok), (v) -> {
                                         final Intent intent = new Intent();
                                         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                         intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -331,7 +332,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                                     });
                         } else {
                             showMessageWithAction(getString(R.string.tradein_requires_permission_for_diagnostic),
-                                    getString(R.string.title_ok), (v) -> requestPermission());
+                                    getString(com.tokopedia.abstraction.R.string.title_ok), (v) -> requestPermission());
                         }
                         return;
                     }
@@ -347,12 +348,16 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
 
     private void showPermissionDialog() {
         isShowingPermissionPopup = true;
-        showDialogFragment(0, getString(R.string.tradein_text_request_access),
-                getString(R.string.tradein_text_permission_description), "", "");
+        if (getIntent().getBooleanExtra(TradeInParams.PARAM_PERMISSION_GIVEN, false)) {
+            clickAccept();
+        } else {
+            showDialogFragment(getString(R.string.tradein_text_request_access),
+                    getString(R.string.tradein_text_permission_description), "", "");
+        }
     }
 
     private void showDeviceNotElligiblePopup(int messageStringId) {
-        int greenColor = getResources().getColor(R.color.green_nob);
+        int greenColor = getResources().getColor(com.tokopedia.design.R.color.green_nob);
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
@@ -377,7 +382,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == FinalPriceActivity.FINAL_PRICE_REQUEST_CODE) {
+        if (requestCode == ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 setResult(Activity.RESULT_OK, data);
                 finish();
@@ -418,6 +423,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
             mTvGoToProductDetails.setOnClickListener(v -> {
                 showPermissionDialog();
             });
+            if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
+                sendGeneralEvent(clickEvent,
+                        category,
+                        TradeInGTMConstants.ACTION_CLICK_BATAL_BUTTON,
+                        TradeInGTMConstants.BERI_IZIN_PENG_HP);
+            }
         } else {
         }
     }

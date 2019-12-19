@@ -1,6 +1,6 @@
 package com.tokopedia.settingbank.choosebank.data.database
 
-import android.arch.persistence.room.*
+import androidx.room.*
 
 /**
  * Created by Ade Fulki on 2019-05-15.

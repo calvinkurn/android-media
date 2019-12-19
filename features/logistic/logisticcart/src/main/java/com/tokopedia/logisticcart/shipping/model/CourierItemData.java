@@ -32,8 +32,15 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String shipmentItemDataEtd;
     private String shipmentItemDataType;
     private String promoCode;
+
     private String logPromoCode;
     private String logPromoMsg;
+    private int discountedRate;
+    private int shippingRate;
+    private int benefitAmount;
+    private String promoTitle;
+    private boolean hideShipperName;
+
     private String checksum;
     private String ut;
     private String blackboxInfo;
@@ -312,6 +319,30 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.priorityFormattedPrice = priorityFormattedPrice;
     }
 
+    public int getDiscountedRate() {
+        return discountedRate;
+    }
+
+    public void setDiscountedRate(int discountedRate) {
+        this.discountedRate = discountedRate;
+    }
+
+    public int getShippingRate() {
+        return shippingRate;
+    }
+
+    public void setShippingRate(int shippingRate) {
+        this.shippingRate = shippingRate;
+    }
+
+    public int getBenefitAmount() {
+        return benefitAmount;
+    }
+
+    public void setBenefitAmount(int benefitAmount) {
+        this.benefitAmount = benefitAmount;
+    }
+
     public String getPriorityInactiveMessage() {
         return priorityInactiveMessage;
     }
@@ -368,6 +399,22 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.ontimeDelivery = ontimeDelivery;
     }
 
+    public String getPromoTitle() {
+        return promoTitle;
+    }
+
+    public void setPromoTitle(String promoTitle) {
+        this.promoTitle = promoTitle;
+    }
+
+    public boolean isHideShipperName() {
+        return hideShipperName;
+    }
+
+    public void setHideShipperName(boolean hideShipperName) {
+        this.hideShipperName = hideShipperName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -401,10 +448,15 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeString(this.promoCode);
         dest.writeString(this.logPromoCode);
         dest.writeString(this.logPromoMsg);
+        dest.writeInt(this.discountedRate);
+        dest.writeInt(this.shippingRate);
+        dest.writeInt(this.benefitAmount);
+        dest.writeString(this.promoTitle);
+        dest.writeByte(this.hideShipperName ? (byte) 1 : (byte) 0);
         dest.writeString(this.checksum);
         dest.writeString(this.ut);
         dest.writeString(this.blackboxInfo);
-        dest.writeByte(this.isNow ?(byte) 1 : (byte) 0);
+        dest.writeValue(this.isNow);
         dest.writeInt(this.priorityPrice);
         dest.writeString(this.priorityInnactiveMessage);
         dest.writeString(this.priorityFormattedPrice);
@@ -444,10 +496,15 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.promoCode = in.readString();
         this.logPromoCode = in.readString();
         this.logPromoMsg = in.readString();
+        this.discountedRate = in.readInt();
+        this.shippingRate = in.readInt();
+        this.benefitAmount = in.readInt();
+        this.promoTitle = in.readString();
+        this.hideShipperName = in.readByte() != 0;
         this.checksum = in.readString();
         this.ut = in.readString();
         this.blackboxInfo = in.readString();
-        this.isNow = in.readByte() != 0;
+        this.isNow = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.priorityPrice = in.readInt();
         this.priorityInnactiveMessage = in.readString();
         this.priorityFormattedPrice = in.readString();

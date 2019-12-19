@@ -1,6 +1,6 @@
 package com.tokopedia.trackingoptimizer.db.dao
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.tokopedia.trackingoptimizer.db.model.TrackingScreenNameDbModel
 
 @Dao

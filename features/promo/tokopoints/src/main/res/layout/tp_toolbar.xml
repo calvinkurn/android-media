@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
@@ -9,7 +9,7 @@
     app:contentInsetStart="0dp"
     app:contentInsetStartWithNavigation="0dp">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:orientation="horizontal"
@@ -32,7 +32,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="TokoPoint" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_tpToolbar_leaderboard"
             android:layout_width="@dimen/tp_toolbar_icon_wh"
             android:layout_height="@dimen/tp_toolbar_icon_wh"
@@ -45,7 +45,7 @@
             app:layout_constraintEnd_toStartOf="@+id/iv_tpToolbar_coupon"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_tpToolbar_coupon"
             android:layout_width="@dimen/tp_toolbar_icon_wh"
             android:layout_height="@dimen/tp_toolbar_icon_wh"
@@ -70,12 +70,14 @@
             android:background="@drawable/bg_tp_cr_red"
             android:textColor="@color/white"
             android:textSize="@dimen/tp_text_size_xxsmall"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_20"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/iv_tpToolbar_coupon"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/iv_tpToolbar_coupon"
             app:layout_constraintTop_toTopOf="@+id/iv_tpToolbar_coupon"
-            tools:text="999" />
+            tools:text="9" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</android.support.v7.widget.Toolbar>
+</androidx.appcompat.widget.Toolbar>

@@ -4,12 +4,12 @@ package com.tokopedia.topchat.chattemplate.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +24,9 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topchat.R;
+import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity;
-import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingTypeFactoryImpl;
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
@@ -66,12 +66,16 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     @Inject
     TemplateChatSettingPresenter presenter;
+
+    @Inject
+    ChatTemplateAnalytics analytic;
+
     private ItemTouchHelper mItemTouchHelper;
     private Snackbar snackbarError;
 
     private Snackbar snackbarInfo;
     private BottomSheetView bottomSheetView;
-    private Boolean isSeller;
+    private Boolean isSeller = false;
 
     public static TemplateChatFragment createInstance(Bundle extras) {
         TemplateChatFragment fragment = new TemplateChatFragment();
@@ -128,10 +132,10 @@ public class TemplateChatFragment extends BaseDaggerFragment
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        TextView textView = snackbarError.getView().findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = snackbarError.getView().findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
-        TextView textView2 = snackbarInfo.getView().findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView2 = snackbarInfo.getView().findViewById(com.google.android.material.R.id.snackbar_text);
         textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
@@ -142,6 +146,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
             @Override
             public void onClick(View view) {
                 boolean b = switchTemplate.isChecked();
+                analytic.trackOnCheckedChange(b);
                 presenter.switchTemplateAvailability(b);
                 if (b) {
                     templateContainer.setVisibility(View.VISIBLE);
@@ -208,8 +213,10 @@ public class TemplateChatFragment extends BaseDaggerFragment
             bundle.putStringArrayList(InboxMessageConstant.PARAM_ALL, adapter.getListString());
             if (message == null) {
                 bundle.putInt(InboxMessageConstant.PARAM_MODE, CREATE);
+                analytic.trackAddTemplateChat();
             } else {
                 bundle.putInt(InboxMessageConstant.PARAM_MODE, EDIT);
+                analytic.trackEditTemplateChat();
             }
             bundle.putBoolean(PARAM_IS_SELLER, isSeller);
             intent.putExtras(bundle);

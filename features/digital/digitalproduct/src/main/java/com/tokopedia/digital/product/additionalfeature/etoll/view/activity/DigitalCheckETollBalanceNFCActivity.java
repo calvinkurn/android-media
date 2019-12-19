@@ -14,11 +14,11 @@ import android.nfc.tech.NfcA;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.core.app.TaskStackBuilder;
+import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
@@ -29,7 +29,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
+import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.common.di.DigitalComponent;
@@ -45,7 +48,6 @@ import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryB
 import com.tokopedia.digital.product.additionalfeature.etoll.view.presenter.ETollPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.listener.IETollView;
-import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.utils.NFCUtils;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -80,9 +82,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     private static final int TRANSCEIVE_TIMEOUT_IN_SEC = 5000;
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
-    public static final String DIGITAL_NFC_CALLING_TYPE = "calling_page_check_saldo";
-    public static final String DIGITAL_NFC_FROM_PDP = "calling_from_pdp";
-    private static final String DIGITAL_NFC = "calling_from_nfc";
 
     private static final String TAG = DigitalCheckETollBalanceNFCActivity.class.getSimpleName();
 
@@ -106,30 +105,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     public static Intent newInstance(Context context, String typeCallingPage) {
         Intent intent = new Intent(context, DigitalCheckETollBalanceNFCActivity.class);
-        intent.putExtra(DIGITAL_NFC_CALLING_TYPE, typeCallingPage);
+        intent.putExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD, typeCallingPage);
         return intent;
-    }
-
-    @SuppressWarnings("unused")
-    @DeepLink({ApplinkConst.DIGITAL_SMARTCARD})
-    public static TaskStackBuilder intentForTaskStackBuilderMethods(Context context, Bundle extras) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent homeIntent = ((DigitalRouter) context.getApplicationContext()).getHomeIntent(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-
-        DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
-                .appLinks(uri.toString())
-                .categoryId(ETOLL_CATEGORY_ID)
-                .operatorId(ETOLL_EMONEY_OPERATOR_ID)
-                .build();
-        Intent intentDigitalProduct = DigitalProductActivity.newInstance(context, passData);
-        taskStackBuilder.addNextIntent(intentDigitalProduct);
-
-        Intent intentEToll = DigitalCheckETollBalanceNFCActivity.newInstance(context, DIGITAL_NFC);
-        taskStackBuilder.addNextIntent(intentEToll);
-
-        return taskStackBuilder;
     }
 
     @Override
@@ -187,12 +164,12 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                     .additionalETollLastUpdatedDate(eTollUpdateBalanceResultView.getCardLastUpdatedDate())
                     .build();
 
-            if (getIntent() != null && getIntent().getStringExtra(DIGITAL_NFC_CALLING_TYPE) != null) {
-                if (getIntent().getStringExtra(DIGITAL_NFC_CALLING_TYPE) == DIGITAL_NFC) {
+            if (getIntent() != null && getIntent().getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) != null) {
+                if (getIntent().getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) == DigitalExtraParam.EXTRA_NFC) {
                     navigatePageToDigitalProduct(passData);
                 } else {
                     Intent intentReturn = new Intent();
-                    intentReturn.putExtra(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+                    intentReturn.putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData);
                     setResult(Activity.RESULT_OK, intentReturn);
                 }
             } else {

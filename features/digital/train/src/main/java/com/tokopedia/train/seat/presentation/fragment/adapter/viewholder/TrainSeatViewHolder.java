@@ -1,7 +1,7 @@
 package com.tokopedia.train.seat.presentation.fragment.adapter.viewholder;
 
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.LinearLayout;
 

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:gravity="center_vertical">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dynamic_filter_category_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"

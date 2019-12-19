@@ -1,11 +1,13 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +17,12 @@ import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.BuildConfig;
@@ -29,13 +33,15 @@ import com.tokopedia.home.account.data.model.AccountSettingConfig;
 import com.tokopedia.home.account.di.component.AccountSettingComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
+
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT_BANK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ADDRESS_LIST;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PERSONAL_DATA;
@@ -43,6 +49,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PERSONAL_DAT
 public class AccountSettingFragment extends BaseDaggerFragment implements AccountSetting.View {
 
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
+
     private static final int REQUEST_CHANGE_PASSWORD = 123;
     private static int REQUEST_ADD_PASSWORD = 1234;
     private UserSessionInterface userSession;
@@ -55,6 +62,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private View kycSeparator;
     private View kycMenu;
     private View sampaiMenu;
+    private View bankAccount;
     private View mainView;
     private View sampaiSeparator;
     private ProgressBar progressBar;
@@ -84,6 +92,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         pinMenu = view.findViewById(R.id.label_view_pin);
         kycMenu = view.findViewById(R.id.label_view_kyc);
         sampaiMenu = view.findViewById(R.id.label_view_sampai);
+        bankAccount = view.findViewById(R.id.label_view_account_bank);
         sampaiSeparator = view.findViewById(R.id.separator_sampai);
         mainView = view.findViewById(R.id.main_view);
         progressBar = view.findViewById(R.id.progress_bar);
@@ -159,6 +168,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 onItemClicked(SettingConstant.SETTING_PIN));
         kycMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_KYC_ID));
+        bankAccount.setOnClickListener(view1 ->
+                onItemClicked(SettingConstant.SETTING_BANK_ACCOUNT_ID));
         sampaiMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_SAMPAI_ID));
     }
@@ -190,9 +201,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     break;
                 case SettingConstant.SETTING_PIN:
                     accountAnalytics.eventClickPinSetting();
-                    String PIN_ADDRESS = String.format("%s%s", TokopediaUrl.getInstance().getMOBILEWEB(), "user/pin");
-                    RouteManager.route(getActivity(),
-                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, PIN_ADDRESS));
+                    onPinMenuClicked();
                     break;
                 case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
                     accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
@@ -203,6 +212,11 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     break;
                 case SettingConstant.SETTING_ACCOUNT_SAMPAI_ID:
                     goToTokopediaCorner();
+                    break;
+                case SettingConstant.SETTING_BANK_ACCOUNT_ID:
+                    accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
+                    gotoAccountBank();
+                    break;
                 default:
                     break;
             }
@@ -211,8 +225,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void goToKyc() {
         if (getActivity() != null) {
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC);
-            getActivity().startActivity(intent);
+            RouteManager.route(getContext(), ApplinkConst.KYC);
         }
     }
 
@@ -231,6 +244,15 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         }
     }
 
+    private void gotoAccountBank() {
+        if (getActivity() != null) {
+            if (userSession.hasPassword()) {
+                startActivity(RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK));
+            } else {
+                showNoPasswordDialog();
+            }
+        }
+    }
 
     private void onKycMenuClicked() {
         accountAnalytics.eventClickKycSetting();
@@ -273,5 +295,59 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void onPinMenuClicked(){
+        if(userSession.isMsisdnVerified()) {
+            goToPinOnboarding();
+        }else {
+            showAddPhoneDialog();
+        }
+    }
+
+    private void goToPinOnboarding(){
+        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING);
+    }
+
+    private void showAddPhoneDialog(){
+        if(getActivity() != null) {
+            DialogUnify dialog = new DialogUnify(getActivity(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE);
+            dialog.setTitle(getString(R.string.account_home_add_phone_title));
+            dialog.setDescription(getString(R.string.account_home_add_phone_message));
+            dialog.setPrimaryCTAText(getString(R.string.account_home_add_phone_title));
+            dialog.setSecondaryCTAText(getString(R.string.cancel));
+
+            dialog.setPrimaryCTAClickListener(() -> {
+                goToPinOnboarding();
+                dialog.dismiss();
+                return Unit.INSTANCE;
+            });
+
+            dialog.setSecondaryCTAClickListener(() -> {
+                dialog.dismiss();
+                return Unit.INSTANCE;
+            });
+
+            dialog.show();
+        }
+    }
+
+    private void showNoPasswordDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getResources().getString(R.string.error_bank_no_password_title));
+        builder.setMessage(getResources().getString(R.string.error_bank_no_password_content));
+        builder.setPositiveButton(getResources().getString(R.string.error_no_password_yes), (DialogInterface dialogInterface, int i) -> {
+            intentToAddPassword();
+            dialogInterface.dismiss();
+        });
+        builder.setNegativeButton(getResources().getString(R.string.error_no_password_no), (DialogInterface dialogInterface, int i) -> {
+            dialogInterface.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.colorSheetTitle));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
     }
 }

@@ -2,16 +2,15 @@ package com.tokopedia.sessioncommon.di;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Build;
 
-import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
@@ -127,12 +126,6 @@ public class SessionModule {
         return builder.build();
     }
 
-    private static final String userAgentFormat = "TkpdConsumer/%s (%s;)";
-
-    public static String getUserAgent() {
-        return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android " + Build.VERSION.RELEASE);
-    }
-
     @SessionCommonScope
     @Provides
     @Named(TOKEN)
@@ -147,5 +140,9 @@ public class SessionModule {
     @Provides
     TokenApi provideTokenApi(@Named(TOKEN) Retrofit retrofit) {
         return retrofit.create(TokenApi.class);
+    }
+
+    public static String getUserAgent() {
+        return AuthHelper.getUserAgent();
     }
 }

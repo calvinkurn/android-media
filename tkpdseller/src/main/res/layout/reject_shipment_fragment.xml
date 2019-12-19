@@ -27,7 +27,7 @@
             android:layout_below="@id/notes_label"
             android:text="@string/sub_title_cancel_shipment_notes" />
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/notes_text_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/reject_shipment_confirm_button"

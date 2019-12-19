@@ -54,7 +54,9 @@ class DialogOnboardingRecomFollowView : LinearLayout {
             avatarUrl: String,
             badgeUrl: String,
             instruction: String,
-            isFollowed: Boolean
+            isFollowed: Boolean,
+            actionFalse: String,
+            actionTrue: String
     ) {
         tvTitle.text = name
         ivAvatar.loadImageCircle(avatarUrl)
@@ -66,10 +68,10 @@ class DialogOnboardingRecomFollowView : LinearLayout {
 
         btnFollow.apply {
             if (isFollowed) {
-                text = context.getString(R.string.following)
+                text = actionFalse
                 buttonVariant = 2
             } else {
-                text = context.getString(R.string.action_follow_english)
+                text = actionTrue
                 buttonVariant = 1
             }
             setOnClickListener {

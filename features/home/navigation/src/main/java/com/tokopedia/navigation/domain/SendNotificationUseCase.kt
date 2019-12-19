@@ -2,10 +2,9 @@ package com.tokopedia.navigation.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.navigation.domain.pojo.SendNotification
-import com.tokopedia.navigation.presentation.di.notification.NotificationQueriesConstant
+import com.tokopedia.navigation.data.consts.NotificationQueriesConstant
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -36,7 +35,7 @@ class SendNotificationUseCase @Inject constructor(
                 NotificationQueriesConstant.PARAM_SECTION_TYPE to SECTION_TYPE,
                 NotificationQueriesConstant.PARAM_TEMPLATE_KEY to TEMPLATE_KEY,
                 NotificationQueriesConstant.PARAM_EXPIRED_TIME to EXPIRED_TIME,
-                NotificationQueriesConstant.PARAM_UNIQUE_ID to userSession.userId.toIntOrZero())
+                NotificationQueriesConstant.PARAM_UNIQUE_ID to userSession.userId)
     }
 
     companion object {

@@ -2,8 +2,8 @@ package com.tokopedia.gm.statistic.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;

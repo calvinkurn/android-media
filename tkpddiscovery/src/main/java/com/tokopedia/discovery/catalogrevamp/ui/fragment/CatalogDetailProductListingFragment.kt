@@ -1,17 +1,16 @@
 package com.tokopedia.discovery.catalogrevamp.ui.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -102,7 +101,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
         @JvmStatic
-        fun newInstance(catalogId: String, catalogName: String, departmentid: String?, departmentName: String?): Fragment {
+        fun newInstance(catalogId: String, catalogName: String, departmentid: String?, departmentName: String?): BaseCategorySectionFragment {
             val fragment = CatalogDetailProductListingFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
@@ -538,20 +537,35 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         viewModel.onDetach()
     }
 
-    override fun onListItemImpressionEvent(element: Visitable<Any>, position: Int) {
-        val item = element as ProductsItem
+    override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
+        if (viewedProductList.isNotEmpty()) {
+            CatalogDetailPageAnalytics.eventProductListImpression(
+                    "catalog/$catalogName - $catalogId",
+                    viewedProductList, false)
+        }
 
-        CatalogDetailPageAnalytics.eventProductListImpression(
-                item.name,
-                item.id.toString(),
-                CurrencyFormatHelper.convertRupiahToInt(item.price),
-                position,
-                "catalog/$catalogName - $catalogId",
-                item.categoryBreadcrumb ?: "",
-                item.isTopAds)
+        if (viewedTopAdsList.isNotEmpty()) {
+            CatalogDetailPageAnalytics.eventProductListImpression(
+                    "catalog/$catalogName - $catalogId",
+                    viewedTopAdsList, true)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        productNavListAdapter?.onPause()
     }
 
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
         CatalogDetailPageAnalytics.trackEvenSortApplied(selectedSortName, sortValue)
+    }
+
+    override fun wishListEnabledTracker(wishListTrackerUrl: String) {
+    }
+
+    override fun onShareButtonClicked() {
+    }
+
+    override fun topAdsTrackerUrlTrigger(url: String) {
     }
 }

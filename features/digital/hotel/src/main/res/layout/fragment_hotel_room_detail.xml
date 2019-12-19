@@ -6,17 +6,17 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/room_detail_app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:theme="@style/ThemeOverlay.AppCompat.Light">
 
-            <android.support.design.widget.CollapsingToolbarLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/room_detail_collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                         android:layout_height="200dp" />
                 </LinearLayout>
 
-                <android.support.v7.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                     android:id="@+id/room_detail_detail_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
@@ -54,8 +54,8 @@
                     app:subtitleTextAppearance="@style/TitleTextAppearance.White"
                     app:titleTextAppearance="@style/SubTitleTextAppearance" />
 
-            </android.support.design.widget.CollapsingToolbarLayout>
-        </android.support.design.widget.AppBarLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <RelativeLayout
             android:id="@+id/container_room_detail"
@@ -64,7 +64,7 @@
             android:background="@color/white"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <android.support.v4.widget.NestedScrollView
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
@@ -89,7 +89,7 @@
                         app:weight="medium"
                         tools:text="Kamar Deluxe Double"/>
 
-                    <android.support.constraint.ConstraintLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginBottom="@dimen/dp_16"
@@ -141,7 +141,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent" />
 
-                    </android.support.constraint.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <View
                         android:id="@+id/view"
@@ -170,7 +170,7 @@
                             app:weight="medium"
                             tools:text="@string/hotel_room_detail_pay_at_hotel" />
 
-                        <android.support.constraint.ConstraintLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
@@ -193,7 +193,7 @@
                                 app:textViewTheme="lightSecondary"
                                 tools:text="Perlu jaminan kartu kredit" />
 
-                        </android.support.constraint.ConstraintLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </LinearLayout>
 
@@ -272,9 +272,9 @@
 
 
                 </LinearLayout>
-            </android.support.v4.widget.NestedScrollView>
+            </androidx.core.widget.NestedScrollView>
         </RelativeLayout>
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

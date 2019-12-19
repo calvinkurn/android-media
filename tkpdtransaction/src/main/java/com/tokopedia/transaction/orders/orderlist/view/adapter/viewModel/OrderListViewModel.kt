@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable

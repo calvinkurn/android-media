@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.utils;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 
 /**
  * Created by Fajar Ulin Nuha on 29/10/18.

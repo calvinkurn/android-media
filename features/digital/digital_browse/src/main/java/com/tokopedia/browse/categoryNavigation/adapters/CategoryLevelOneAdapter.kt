@@ -1,7 +1,7 @@
 package com.tokopedia.browse.categoryNavigation.adapters
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +10,16 @@ import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.item_category_level_one.view.*
 
-class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesItem>, private val context: Context,
-                              private val listener: CategorylevelOneFragment.CategorySelectListener)
+class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesItem>,
+                              private val listener: CategorylevelOneFragment.CategorySelectListener,
+                              private val trackingQueue: TrackingQueue?)
     : RecyclerView.Adapter<CategoryLevelOneAdapter.ViewHolder>() {
 
     val viewMap = HashMap<Int, Boolean>()
@@ -31,6 +35,17 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.itemView.addOnImpressionListener(
+                categoryList[position], object : ViewHintListener {
+            override fun onViewHint() {
+                if (!viewMap.containsKey(position)) {
+                    viewMap[position] = true
+                    trackingQueue?.let {
+                        CategoryAnalytics.createInstance().eventCategoryLevelOneView(it, categoryList[position], position)
+                    }
+                }
+            }
+        })
 
         holder.categoryName.text = categoryList[position].name
 
@@ -47,16 +62,6 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
         }
 
     }
-
-    override fun onViewAttachedToWindow(holder: ViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        val position = holder.adapterPosition
-        if (!viewMap.containsKey(position)) {
-            viewMap[position] = true
-            CategoryAnalytics.createInstance().eventCategoryLevelOneView(categoryList[position], position)
-        }
-    }
-
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 

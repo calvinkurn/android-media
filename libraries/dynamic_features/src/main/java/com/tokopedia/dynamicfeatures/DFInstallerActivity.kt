@@ -1,12 +1,12 @@
 package com.tokopedia.dynamicfeatures
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -16,9 +16,13 @@ import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
+import kotlinx.coroutines.*
+import java.io.File
+import java.lang.Exception
+import kotlin.coroutines.CoroutineContext
+
 
 /**
  * Activity that handles for installing new dynamic feature module
@@ -32,7 +36,7 @@ import com.tokopedia.unifycomponents.Toaster
  * This activity will install the "shop_settings_sellerapp" module with progress bar,
  * and after the module is successfully installed, it will bring the user to ShopNotesActivity
  */
-class DFInstallerActivity : BaseSimpleActivity() {
+class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
 
     private lateinit var manager: SplitInstallManager
 
@@ -40,7 +44,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private lateinit var progressText: TextView
     private lateinit var progressTextPercent: TextView
     private lateinit var buttonDownload: Button
-    private lateinit var closeButton: View
     private lateinit var imageView: ImageView
     private lateinit var progressGroup: View
     private var isAutoDownload = false
@@ -50,7 +53,13 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private lateinit var moduleNameTranslated: String
     private lateinit var applink: String
     private var imageUrl: String? = null
-    private var initialDownloading = false
+    private var moduleSize = 0L
+    private var usableSpaceBeforeDownload = 0L
+
+    private var errorList: MutableList<String> = mutableListOf()
+    private var downloadTimes = 0
+    private var successInstall = false
+    private var job = Job()
 
     companion object {
         private const val EXTRA_NAME = "dfname"
@@ -59,6 +68,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         private const val EXTRA_IMAGE = "dfimage"
         private const val defaultImageUrl = "https://ecs7.tokopedia.net/img/android/empty_profile/drawable-xxxhdpi/product_image_48_x_48.png"
         private const val CONFIRMATION_REQUEST_CODE = 1
+        private const val SETTING_REQUEST_CODE = 2
         private const val ONE_KB = 1024
     }
 
@@ -90,8 +100,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
             onSuccessfulLoad(moduleName, launch = true)
         } else {
             if (isAutoDownload) {
-                DFInstaller.logStatus(this, "Download Module {launch}", moduleName)
-                loadAndLaunchModule(moduleName)
+                downloadFeature()
             } else {
                 hideProgress()
             }
@@ -105,6 +114,8 @@ class DFInstallerActivity : BaseSimpleActivity() {
             if (resultCode == Activity.RESULT_CANCELED) {
                 hideProgress()
             }
+        } else if (requestCode == SETTING_REQUEST_CODE) {
+            downloadFeature()
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
@@ -123,69 +134,59 @@ class DFInstallerActivity : BaseSimpleActivity() {
             ContextCompat.getColor(this, R.color.tkpd_main_green),
             android.graphics.PorterDuff.Mode.MULTIPLY);
         buttonDownload = findViewById(R.id.button_download)
-        closeButton = findViewById<View>(R.id.close_button)
 
         buttonDownload.setOnClickListener {
-            DFInstaller.logStatus(this, "Download Module {button}", moduleName)
-            loadAndLaunchModule(moduleName)
-        }
-        closeButton.setOnClickListener {
-            try {
-                sessionId?.run {
-                    manager.cancelInstall(this)
-                }
-            } catch (e: Exception) {
-            } finally {
-                sessionId = null
-            }
-            hideProgress()
+            downloadFeature()
         }
         progressGroup = findViewById(R.id.progress_group)
-
-        if (imageUrl?.isEmpty() == true) {
-            imageView.visibility = View.GONE
-        } else {
-            ImageHandler.LoadImage(imageView, imageUrl)
-            imageView.visibility = View.VISIBLE
-        }
+        title_txt.setText(String.format(getString(R.string.feature_download_title), moduleNameTranslated))
+        subtitle_txt.setText(String.format(getString(R.string.feature_download_subtitle), moduleNameTranslated))
     }
 
     private fun loadAndLaunchModule(name: String) {
-        initialDownloading = true
-        displayProgress()
-        progressText.text = getString(R.string.downloading_x, moduleNameTranslated)
+        launch {
+            moduleSize = 0
+            displayProgress()
+            progressText.text = getString(R.string.downloading_x, moduleNameTranslated)
 
-        // Skip loading if the module already is installed. Perform success action directly.
-        if (manager.installedModules.contains(name)) {
-            onSuccessfulLoad(name, launch = true)
-            return
-        }
-
-        // Create request to install a feature module by name.
-        val request = SplitInstallRequest.newBuilder()
-            .addModule(name)
-            .build()
-
-        // Load and install the requested feature module.
-        manager.startInstall(request).addOnSuccessListener {
-            if (it == 0) {
-                onSuccessfulLoad(moduleName, true)
-            } else {
-                sessionId = it
+            // Skip loading if the module already is installed. Perform success action directly.
+            if (manager.installedModules.contains(name)) {
+                onSuccessfulLoad(name, launch = true)
+                return@launch
             }
-        }.addOnFailureListener { exception ->
-            val errorCode = (exception as SplitInstallException).errorCode
-            sessionId = null
-            hideProgress()
-            val message = getString(R.string.error_for_module_x, moduleName)
-            showFailedMessage(message, errorCode)
+
+            // Create request to install a feature module by name.
+            val request = SplitInstallRequest.newBuilder()
+                .addModule(name)
+                .build()
+
+            if (usableSpaceBeforeDownload == 0L) {
+                usableSpaceBeforeDownload = withContext(Dispatchers.IO) {
+                    DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
+                }
+            }
+
+            // Load and install the requested feature module.
+            manager.startInstall(request).addOnSuccessListener {
+                if (it == 0) {
+                    onSuccessfulLoad(moduleName, true)
+                } else {
+                    sessionId = it
+                }
+            }.addOnFailureListener { exception ->
+                val errorCode = (exception as? SplitInstallException)?.errorCode
+                sessionId = null
+                hideProgress()
+                val message = getString(R.string.error_for_module_x, moduleName)
+                showFailedMessage(message, errorCode?.toString() ?: exception.toString())
+            }
         }
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
-        DFInstaller.logStatus(this, "Installed Module", moduleName)
+        successInstall = manager.installedModules.contains(moduleName)
         progressGroup.visibility = View.INVISIBLE
-        if (launch && manager.installedModules.contains(moduleName)) {
+        if (launch && successInstall) {
             launchAndForwardIntent(applink)
         }
         this.finish()
@@ -214,9 +215,8 @@ class DFInstallerActivity : BaseSimpleActivity() {
             SplitInstallSessionStatus.DOWNLOADING -> {
                 //  In order to see this, the application has to be uploaded to the Play Store.
                 displayLoadingState(state, getString(R.string.downloading_x, moduleNameTranslated))
-                if (initialDownloading) {
-                    initialDownloadStatus(names, state.totalBytesToDownload())
-                    initialDownloading = false
+                if (moduleSize == 0L) {
+                    moduleSize = state.totalBytesToDownload()
                 }
             }
             SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
@@ -239,24 +239,63 @@ class DFInstallerActivity : BaseSimpleActivity() {
             }
             SplitInstallSessionStatus.FAILED -> {
                 val message = getString(R.string.error_for_module, state.moduleNames(), state.errorCode())
-                showFailedMessage(message, state.errorCode())
+                showFailedMessage(message, state.errorCode().toString())
                 hideProgress()
             }
         }
     }
 
-    private fun showFailedMessage(message: String, errorCode: Int = 0) {
-        DFInstaller.logStatus(this, "Failed Module", moduleName, 0, errorCode.toString())
-        val userMessage: String
-        if (SplitInstallErrorCode.INSUFFICIENT_STORAGE == errorCode) {
-            userMessage = getString(R.string.error_install_df_insufficient_storate)
+    private fun showFailedMessage(message: String, errorCode: String = "") {
+        errorList.add(errorCode)
+        button_download.visibility = View.VISIBLE
+        if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
+            image.setImageResource(R.drawable.ic_ill_insuficient_memory)
+            title_txt.setText(getString(R.string.download_error_insuficient_memory_title))
+            subtitle_txt.setText(String.format(getString(R.string.download_error_insuficient_memory_subtitle), (moduleSize.toFloat() / ONE_KB)))
+            button_download.setText(getString(R.string.goto_seting))
+            button_download.setOnClickListener {
+                startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)
+            }
+        } else if (SplitInstallErrorCode.NETWORK_ERROR.toString() == errorCode) {
+            image.setImageResource(R.drawable.ic_ill_no_connection)
+            title_txt.setText(getString(R.string.download_error_connection_title))
+            subtitle_txt.setText(getString(R.string.download_error_connection_subtitle))
+            button_download.setText(getString(R.string.try_again))
+            button_download.setOnClickListener {
+                downloadFeature()
+            }
+        } else if (SplitInstallErrorCode.MODULE_UNAVAILABLE.toString() == errorCode) {
+            image.setImageResource(R.drawable.ic_ill_module_unavailable)
+            title_txt.setText(getString(R.string.download_error_module_unavailable_title))
+            subtitle_txt.setText(getString(R.string.download_error_module_unavailable_subtitle))
+            button_download.setText(getString(R.string.goto_playstore))
+            button_download.setOnClickListener {
+                gotoPlayStore()
+            }
         } else {
-            userMessage = message
+            image.setImageResource(R.drawable.ic_ill_general_error)
+            title_txt.setText(getString(R.string.download_error_general_title))
+            subtitle_txt.setText(getString(R.string.download_error_general_subtitle))
+            button_download.setOnClickListener {
+                downloadFeature()
+            }
         }
-        Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
-            userMessage,
-            Snackbar.LENGTH_INDEFINITE,
-            getString(R.string.general_label_ok), View.OnClickListener { })
+    }
+
+    private fun gotoPlayStore() {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+        } catch (anfe: ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+        }
+    }
+
+    private fun downloadFeature() {
+        title_txt.setText(getString(R.string.dowload_on_process))
+        subtitle_txt.setText(getString(R.string.wording_download_waiting))
+        image.setImageResource(R.drawable.ic_ill_downloading)
+        downloadTimes++
+        loadAndLaunchModule(moduleName)
     }
 
     private fun updateProgressMessage(message: String) {
@@ -272,10 +311,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressText.text = String.format("%.2f KB / %.2f KB",
             (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
-    }
-
-    private fun initialDownloadStatus(moduleName: String, moduleSize: Long) {
-        DFInstaller.logStatus(this, "Downloading Module", moduleName, moduleSize)
+        button_download.visibility = View.INVISIBLE
     }
 
     private fun displayProgress() {
@@ -303,5 +339,17 @@ class DFInstallerActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
         return null
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val applicationContext = this.applicationContext
+        DFInstallerLogUtil.logStatus(applicationContext, "DFM",
+            moduleName, usableSpaceBeforeDownload, moduleSize,
+            errorList, downloadTimes, successInstall)
+        job.cancel()
+    }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, _ -> }
 
 }

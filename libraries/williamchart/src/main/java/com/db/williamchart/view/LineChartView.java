@@ -28,7 +28,7 @@ import android.graphics.PointF;
 import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.FloatRange;
+import androidx.annotation.FloatRange;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
