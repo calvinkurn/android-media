@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction
+package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification
 
 import android.view.View
 import android.widget.ImageView
@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.domain.model.EmptyState
 
-class EmptyDataViewHolder(view: View): AbstractViewHolder<EmptyState>(view) {
+class EmptyDataStateViewHolder(view: View): AbstractViewHolder<EmptyState>(view) {
 
     private val imgState = view.findViewById<ImageView>(R.id.img_state)
     private val txtMessage = view.findViewById<TextView>(R.id.txt_message)
