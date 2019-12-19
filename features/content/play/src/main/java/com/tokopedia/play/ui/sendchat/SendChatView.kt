@@ -25,7 +25,10 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
     init {
         view.findViewById<ImageView>(R.id.iv_send)
                 .setOnClickListener {
-                    listener.onSendChatClicked(this)
+                    val message: String = etChat.text.toString()
+                    if (message.isNotEmpty() && message.isNotBlank()) {
+                        listener.onSendChatClicked(this, message)
+                    }
                 }
     }
 
@@ -41,6 +44,6 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
 
     interface Listener {
         fun onChatFormClicked(view: SendChatView)
-        fun onSendChatClicked(view: SendChatView)
+        fun onSendChatClicked(view: SendChatView, message: String)
     }
 }
