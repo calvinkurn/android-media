@@ -146,7 +146,7 @@ class DFInstaller {
                 tag == TAG_LOG_DFM_BG)
         }
         DFInstallerLogUtil.logStatus(context, tag,
-            moduleNameToDownload.joinToString(), moduleSize, usableSpaceBeforeDownload, null, 1, true)
+            moduleNameToDownload.joinToString(), usableSpaceBeforeDownload, moduleSize, null, 1, true)
     }
 
     internal fun logFailedStatus(tag: String, applicationContext: Context, moduleNameToDownload: List<String>,
