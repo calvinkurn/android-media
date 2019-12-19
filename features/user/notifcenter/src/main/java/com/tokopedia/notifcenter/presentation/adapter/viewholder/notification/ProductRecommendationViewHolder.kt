@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction
+package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,11 +10,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.domain.pojo.ProductData
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationTransactionItemListener
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationUpdateItemListener
+import com.tokopedia.notifcenter.listener.NotificationItemListener
 
-class ProductRecommendationViewHolder(itemView: View, val listener: NotificationTransactionItemListener)
-    : RecyclerView.ViewHolder(itemView) {
+class ProductRecommendationViewHolder(
+        itemView: View,
+        val listener: NotificationItemListener
+) : RecyclerView.ViewHolder(itemView) {
 
     private val thumbnail = itemView.findViewById<ImageView>(R.id.iv_product)
 
@@ -37,7 +38,7 @@ class ProductRecommendationViewHolder(itemView: View, val listener: Notification
 
     companion object {
 
-        fun create(parent: ViewGroup, listener: NotificationTransactionItemListener): ProductRecommendationViewHolder {
+        fun create(parent: ViewGroup, listener: NotificationItemListener): ProductRecommendationViewHolder {
             val layout = LayoutInflater.from(parent.context).inflate(R.layout.item_notification_product_recommendation, parent, false)
             return ProductRecommendationViewHolder(layout, listener)
         }

@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction
+package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification
 
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -10,16 +10,16 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.domain.model.TransactionItemNotification
 import com.tokopedia.notifcenter.domain.pojo.ProductData
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationTransactionItemListener
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationUpdateItemListener
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateItemViewModel
+import com.tokopedia.notifcenter.listener.NotificationItemListener
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
 import com.tokopedia.notifcenter.widget.CampaignLayout
 import com.tokopedia.notifcenter.widget.ProductVariantLayout
 
-class WishListNotificationViewHolder(itemView: View, listener: NotificationTransactionItemListener)
-    : NotificationTransactionItemViewHolder(itemView, listener) {
+class WishListNotificationViewHolder(
+        itemView: View,
+        listener: NotificationItemListener
+) : BaseNotificationItemViewHolder(itemView, listener) {
 
     private val thumbnail: ImageView = itemView.findViewById(R.id.iv_thumbnail)
     private val productName: TextView = itemView.findViewById(R.id.tv_product_name)
@@ -29,7 +29,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationTrans
     private val productVariant: ProductVariantLayout = itemView.findViewById(R.id.pvl_variant)
     private val btnCart: ImageView = itemView.findViewById(R.id.iv_cart)
 
-    override fun bindNotificationPayload(element: TransactionItemNotification) {
+    override fun bindNotificationPayload(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
         val atcDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.ic_add_to_cart)
 
@@ -47,7 +47,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationTrans
         //getAnalytic().saveProductCardImpression(element, adapterPosition)
     }
 
-    private fun assignClickListenerAtc(element: TransactionItemNotification) {
+    private fun assignClickListenerAtc(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
         btnCart.setOnClickListener {
             listener.getAnalytic().trackAtcOnClick(product)
@@ -64,17 +64,17 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationTrans
         }
     }
 
-    override fun bindOnNotificationClick(element: TransactionItemNotification) {
+    override fun bindOnNotificationClick(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
         container.setOnClickListener(getItemClickListener(product, element))
     }
 
-    private fun assignProductClickListener(element: TransactionItemNotification) {
+    private fun assignProductClickListener(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
         productContainer.setOnClickListener(getItemClickListener(product, element))
     }
 
-    private fun getItemClickListener(product: ProductData, element: TransactionItemNotification): View.OnClickListener {
+    private fun getItemClickListener(product: ProductData, element: NotificationItemViewBean): View.OnClickListener {
         return View.OnClickListener {
             listener.itemClicked(element, adapterPosition)
             element.isRead = true

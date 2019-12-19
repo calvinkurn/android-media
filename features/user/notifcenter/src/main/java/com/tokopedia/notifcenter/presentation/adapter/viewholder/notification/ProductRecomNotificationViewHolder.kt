@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction
+package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification
 
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
@@ -7,15 +7,16 @@ import android.view.View
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.domain.model.TransactionItemNotification
 import com.tokopedia.notifcenter.presentation.adapter.NotifCenterProductRecomAdapter
 import com.tokopedia.notifcenter.presentation.adapter.NotifcenterProductRecommendationAdapter
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationTransactionItemListener
-import com.tokopedia.notifcenter.presentation.view.listener.NotificationUpdateItemListener
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateItemViewModel
+import com.tokopedia.notifcenter.listener.NotificationItemListener
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
 import com.tokopedia.notifcenter.widget.ProductRecomNotificationItemDecoration
 
-class ProductRecomNotificationViewHolder(itemView: View, listener: NotificationTransactionItemListener) : NotificationTransactionItemViewHolder(itemView, listener) {
+class ProductRecomNotificationViewHolder(
+        itemView: View,
+        listener: NotificationItemListener
+) : BaseNotificationItemViewHolder(itemView, listener) {
 
     private val rvRecommendation = itemView.findViewById<RecyclerView>(R.id.rv_recommendation)
     private val decoration = ProductRecomNotificationItemDecoration()
@@ -34,7 +35,7 @@ class ProductRecomNotificationViewHolder(itemView: View, listener: NotificationT
         }
     }
 
-    override fun bindNotificationPayload(element: TransactionItemNotification) {
+    override fun bindNotificationPayload(element: NotificationItemViewBean) {
         layoutAdapter.updateProductRecommendation(element.products)
         layoutAdapter.updateTotalProductCount(element.totalProduct)
 
@@ -42,7 +43,7 @@ class ProductRecomNotificationViewHolder(itemView: View, listener: NotificationT
         listener.getAnalytic().trackImpressionProductRecommendation(seenProducts)
     }
 
-    override fun bindOnNotificationClick(element: TransactionItemNotification) {
+    override fun bindOnNotificationClick(element: NotificationItemViewBean) {
         itemView.setOnClickListener {
             val context = it.context
             listener.itemClicked(element, adapterPosition)
@@ -51,12 +52,12 @@ class ProductRecomNotificationViewHolder(itemView: View, listener: NotificationT
                     context,
                     ApplinkConst.RECOMMENDATION_PAGE,
                     getLastShowedProductId(element),
-                    NotificationUpdateItemViewModel.SOURCE
+                    NotificationItemViewBean.SOURCE
             )
         }
     }
 
-    private fun getLastShowedProductId(element: TransactionItemNotification): String {
+    private fun getLastShowedProductId(element: NotificationItemViewBean): String {
         val products = element.products
         val lastItemPosition = products.size - 1
         val lastMaxSeenPosition = NotifcenterProductRecommendationAdapter.MAX_ITEM - 1
