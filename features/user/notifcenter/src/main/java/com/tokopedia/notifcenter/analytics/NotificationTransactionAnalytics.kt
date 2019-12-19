@@ -1,6 +1,6 @@
 package com.tokopedia.notifcenter.analytics
 
-import com.tokopedia.notifcenter.domain.model.TransactionItemNotification
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
@@ -45,7 +45,7 @@ class NotificationTransactionAnalytics @Inject constructor() {
     }
 
     //10C
-    fun saveNotificationImpression(notification: TransactionItemNotification) {
+    fun saveNotificationImpression(notification: NotificationItemViewBean) {
         val notificationId = notification.notificationId
         val isNotAlreadyTracked = seenNotifications.add(notificationId)
         if (isNotAlreadyTracked) {
@@ -54,7 +54,7 @@ class NotificationTransactionAnalytics @Inject constructor() {
     }
 
     //10D
-    fun trackNotificationClick(notification: TransactionItemNotification) {
+    fun trackNotificationClick(notification: NotificationItemViewBean) {
         val label = notification.getImpressionTrackLabel(LABEL_LOCATION)
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT,
@@ -74,7 +74,7 @@ class NotificationTransactionAnalytics @Inject constructor() {
         ))
     }
 
-    private fun trackNotificationImpression(notification: TransactionItemNotification) {
+    private fun trackNotificationImpression(notification: NotificationItemViewBean) {
         val label = notification.getImpressionTrackLabel(LABEL_LOCATION)
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_IMPRESSION_IRIS,

@@ -2,7 +2,7 @@ package com.tokopedia.notifcenter.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.notifcenter.domain.pojo.ProductData
-import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationUpdateItemViewModel
+import com.tokopedia.notifcenter.presentation.view.viewmodel.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
@@ -67,7 +67,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
     }
 
     // #NC2
-    fun trackClickNotifList(viewModel: NotificationUpdateItemViewModel) {
+    fun trackClickNotifList(viewModel: NotificationItemViewBean) {
         val label = viewModel.getImpressionTrackLabel(LABEL_LOCATION)
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_NOTIF_CENTER,
@@ -229,7 +229,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
         )
     }
 
-    fun saveNotificationImpression(notification: NotificationUpdateItemViewModel) {
+    fun saveNotificationImpression(notification: NotificationItemViewBean) {
         val notificationId = notification.notificationId
         val isNotAlreadyTracked = seenNotifications.add(notificationId)
         if (isNotAlreadyTracked) {
@@ -237,7 +237,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
         }
     }
 
-    private fun trackNotificationImpression(notification: NotificationUpdateItemViewModel) {
+    private fun trackNotificationImpression(notification: NotificationItemViewBean) {
         val label = notification.getImpressionTrackLabel(LABEL_LOCATION)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackAppUtils.gtmData(
@@ -260,7 +260,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
         )
     }
 
-    fun saveProductCardImpression(notification: NotificationUpdateItemViewModel, position: Int) {
+    fun saveProductCardImpression(notification: NotificationItemViewBean, position: Int) {
         val notificationId = notification.notificationId
         val isNotAlreadyTracked = seenProductCards.add(notificationId)
         if (isNotAlreadyTracked) {
@@ -283,7 +283,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
         )
     }
 
-    private fun trackProductCardImpression(notification: NotificationUpdateItemViewModel, position: Int) {
+    private fun trackProductCardImpression(notification: NotificationItemViewBean, position: Int) {
         val product = notification.getAtcProduct()
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
