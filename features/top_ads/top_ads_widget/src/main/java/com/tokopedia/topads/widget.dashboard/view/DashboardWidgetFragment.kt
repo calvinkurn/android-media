@@ -61,6 +61,9 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(DashboardWidgetViewModel::class.java)
         setupView()
+    }
+
+    override fun onResume() {
         loadData()
     }
 
@@ -73,9 +76,9 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
             toggleStatisticView(true)
         }
         data.topAdsGetAutoAds?.let {
-            if (it.data.status == 500) {
+            if (it.data.status == 500 || it.data.status == 600) {
                 showActiveAds()
-            } else{
+            } else {
                 showInactiveAds()
             }
         }
