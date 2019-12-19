@@ -59,8 +59,6 @@ import javax.inject.Inject
  * @author anggaprasetiyo on 18/01/18.
  */
 
-// Todo: Change exception handler to fragment
-// Todo: Remove getActivityObject
 class CartListPresenter @Inject constructor(private val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase?,
                                             private val deleteCartListUseCase: DeleteCartListUseCase?,
                                             private val updateCartUseCase: UpdateCartUseCase?,
