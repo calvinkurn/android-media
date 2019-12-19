@@ -101,7 +101,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private lateinit var coachMarkItem:  CoachMarkItem
     private lateinit var feedBackgroundCrossfader: TransitionDrawable
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         mainParentStatusBarListener = context as MainParentStatusBarListener
         requestStatusBarDark()

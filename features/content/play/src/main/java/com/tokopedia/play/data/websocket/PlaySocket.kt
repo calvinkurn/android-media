@@ -1,5 +1,6 @@
 package com.tokopedia.play.data.websocket
 
+import android.util.Log
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -42,10 +43,12 @@ class PlaySocket @Inject constructor(
         val webSocketSubscriber = object : WebSocketSubscriber() {
 
             override fun onOpen(webSocket: WebSocket) {
+                Log.d("socket", "onOpen")
                 onOpen()
             }
 
             override fun onClose() {
+                Log.d("socket", "onClose")
                 onClose()
             }
 
@@ -54,10 +57,13 @@ class PlaySocket @Inject constructor(
             }
 
             override fun onError(e: Throwable) {
+                Log.d("socket", "onError" + e.message)
                 onError(e)
             }
 
-            override fun onReconnect() { }
+            override fun onReconnect() {
+                Log.d("socket", "onReconnect")
+            }
         }
 
         rxWebSocketUtil = RxWebSocketUtil.getInstance(null, settings.minReconnectDelay, settings.maxRetries, settings.pingInterval)
