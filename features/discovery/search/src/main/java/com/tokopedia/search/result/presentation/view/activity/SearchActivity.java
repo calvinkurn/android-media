@@ -624,8 +624,7 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void startActivityWithApplink(String applink, String... parameter) {
-        Intent intent = RouteManager.getIntent(this, applink, parameter);
-        startActivity(intent);
+        RouteManager.route(this, applink, parameter);
     }
 
     @Override

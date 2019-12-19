@@ -27,7 +27,7 @@
             tools:visibility="visible" />
 
         <com.tokopedia.design.text.SearchInputView
-            android:id="@+id/search_input_view"
+            android:id="@+id/search_input_view_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_6"
