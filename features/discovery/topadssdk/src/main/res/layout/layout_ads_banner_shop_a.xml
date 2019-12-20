@@ -7,7 +7,7 @@
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     android:layout_width="148dp"
-    android:layout_height="268dp"
+    android:layout_height="260dp"
     tools:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
