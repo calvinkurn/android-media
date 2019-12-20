@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_wallet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:layout_marginTop="@dimen/dp_4"
+    android:layout_marginBottom="@dimen/dp_4"
+    android:layout_marginLeft="@dimen/dp_14"
+    android:layout_marginStart="@dimen/dp_14"
+    android:layout_marginRight="@dimen/dp_14"
+    android:layout_marginEnd="@dimen/dp_14">
+    <LinearLayout
+        android:id="@+id/container_action_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        app:layout_constraintHorizontal_weight="0.8"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/container_tokocash">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_product_fintech_qr_normal_24" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_header_fintech_scan"
+            android:textColor="@color/font_black_disabled_38"
+            android:textSize="@dimen/sp_10"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="#1F000000"
+        app:layout_constraintStart_toEndOf="@+id/container_action_scan"
+        app:layout_constraintTop_toTopOf="@+id/container_action_scan"
+        app:layout_constraintBottom_toBottomOf="@+id/container_action_scan"
+        app:layout_constraintEnd_toStartOf="@+id/container_tokocash"
+        app:layout_constraintHorizontal_bias="1"/>
+
+    <RelativeLayout
+        android:id="@+id/container_tokocash"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_weight="4.5"
+        app:layout_constraintStart_toEndOf="@+id/container_action_scan"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/container_tokopoint"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_logo_tokocash"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_margin="@dimen/dp_8"
+            android:layout_centerVertical="true"/>
+
+        <RelativeLayout
+            android:layout_toRightOf="@+id/iv_logo_tokocash"
+            android:layout_toEndOf="@+id/iv_logo_tokocash"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_title_tokocash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_below="@+id/tv_title_tokocash"
+                android:id="@+id/tv_btn_action_tokocash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#03ac0e"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_12"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_below="@+id/tv_title_tokocash"
+                android:id="@+id/tv_balance_tokocash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/font_black_disabled_38"
+                android:textSize="@dimen/sp_12"/>
+
+            <ProgressBar
+                android:id="@+id/progress_bar_tokocash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@android:style/Widget.ProgressBar.Small.Inverse"
+                android:indeterminate="true"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="#1F000000"
+        app:layout_constraintStart_toEndOf="@+id/container_tokocash"
+        app:layout_constraintTop_toTopOf="@+id/container_action_scan"
+        app:layout_constraintBottom_toBottomOf="@+id/container_action_scan"
+        app:layout_constraintEnd_toStartOf="@+id/container_tokopoint"/>
+    <RelativeLayout
+        android:id="@+id/container_tokopoint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        app:layout_constraintHorizontal_weight="4.5"
+        app:layout_constraintStart_toEndOf="@+id/container_tokocash"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_logo_tokopoint"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_margin="@dimen/dp_8"
+            android:layout_centerVertical="true" />
+
+        <LinearLayout
+            android:id="@+id/container_action_tokopoint"
+            android:layout_toRightOf="@+id/iv_logo_tokopoint"
+            android:layout_toEndOf="@+id/iv_logo_tokopoint"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:baselineAligned="false">
+
+            <TextView
+                android:id="@+id/tv_balance_tokopoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:gravity="center"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/font_black_primary_70"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:text="50 Toko Poin"/>
+
+            <TextView
+                android:id="@+id/tv_btn_action_tokopoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:singleLine="true"
+                android:textColor="#03ac0e"
+                android:textSize="@dimen/sp_12"
+                android:visibility="gone"
+                tools:text="Kupon Baru"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/text_coupon_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:ellipsize="end"
+                android:lineSpacingExtra="@dimen/sp_4"
+                android:lines="1"
+                android:singleLine="true"
+                android:textColor="@color/font_black_disabled_38"
+                android:textSize="12sp"
+                android:visibility="gone"
+                tools:text="900000000000000000 Poin"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar_tokopoint_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            style="@android:style/Widget.ProgressBar.Small.Inverse"
+            android:indeterminate="true"  />
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

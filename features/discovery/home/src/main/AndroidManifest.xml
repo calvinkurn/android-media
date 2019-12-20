@@ -10,6 +10,10 @@
             android:label="@string/explore"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
+        <activity android:name=".beranda.presentation.view.HomeActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

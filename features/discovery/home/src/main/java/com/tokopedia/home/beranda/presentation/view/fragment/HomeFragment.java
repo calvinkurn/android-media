@@ -410,7 +410,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             statusBarBackground.setVisibility(View.GONE);
         }
 
-        initEggDragListener();
+//        initEggDragListener();
 
         presenter.attachView(this);
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
@@ -666,9 +666,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private FloatingEggButtonFragment getFloatingEggButtonFragment() {
         // https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
-        if (getActivity() != null && isAdded() && getChildFragmentManager() != null) {
-            return (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
-        }
+//        if (getActivity() != null && isAdded() && getChildFragmentManager() != null) {
+//            return (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
+//        }
         return null;
     }
 

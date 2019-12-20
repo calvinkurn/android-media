@@ -59,10 +59,10 @@ include 'tkpddesign'
 include 'tkpdabstraction'
 include "features:user:sessioncommon"
 include "features:common:resources_common"
-
+include "libraries:inappupdate"
 
 // digital home
 //include ":features:digital:digital_homepage"
 
-
+include "features:discovery:home"
 include 'testapp'

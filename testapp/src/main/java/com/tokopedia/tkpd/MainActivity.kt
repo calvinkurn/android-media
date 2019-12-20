@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
 
         // TODO : revert!
-        startActivity(Intent(this, SomListActivity::class.java))
+        startActivity(HomeActivity.newInstance(this))
     }
 
 }

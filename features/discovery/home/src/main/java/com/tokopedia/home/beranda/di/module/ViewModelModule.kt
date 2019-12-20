@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.presentation.view.viewmodel.TabBusinessViewModel
+import com.tokopedia.v2.home.viewModel.HomePageViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,4 +23,8 @@ abstract class ViewModelModule {
     @ViewModelKey(TabBusinessViewModel::class)
     internal abstract fun tabBusinessViewModel(viewModel: TabBusinessViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(HomePageViewModel::class)
+    internal abstract fun recommendationItemViewModel(viewModel: HomePageViewModel): ViewModel
 }
