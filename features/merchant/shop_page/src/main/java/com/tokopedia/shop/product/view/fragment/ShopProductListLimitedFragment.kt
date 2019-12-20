@@ -949,26 +949,25 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
-        if (context == null) {
-            return
+        context?.let {
+            shopPageTracking?.clickUseMerchantVoucher(isOwner, merchantVoucherViewModel, shopId, position)
+            //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
+            /*if (!merchantVoucherListPresenter.isLogin()) {
+                if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
+                    Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
+                    startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
+                }
+            } else if (!merchantVoucherListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
+                showUseMerchantVoucherLoading();
+                merchantVoucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
+                        merchantVoucherViewModel.getVoucherId());
+            }*/
+            //TOGGLE_MVC_OFF
+            showSnackBarClose(getString(R.string.title_voucher_code_copied))
         }
-        shopPageTracking!!.clickUseMerchantVoucher(isOwner, merchantVoucherViewModel, position)
-        //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
-        /*if (!merchantVoucherListPresenter.isLogin()) {
-            if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
-                Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
-                startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
-            }
-        } else if (!merchantVoucherListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
-            showUseMerchantVoucherLoading();
-            merchantVoucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
-                    merchantVoucherViewModel.getVoucherId());
-        }*/
-        //TOGGLE_MVC_OFF
-        showSnackBarClose(getString(R.string.title_voucher_code_copied))
     }
 
-    fun showSnackBarClose(stringToShow: String) {
+    private fun showSnackBarClose(stringToShow: String) {
         activity?.let {
             val snackbar = Snackbar.make(it.findViewById(android.R.id.content), stringToShow,
                     Snackbar.LENGTH_LONG)
@@ -979,7 +978,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-        shopPageTracking?.clickDetailMerchantVoucher(isOwner)
+        shopPageTracking?.clickDetailMerchantVoucher(isOwner, merchantVoucherViewModel.voucherId.toString())
 
         context?.let {
             val intent = MerchantVoucherDetailActivity.createIntent(it, merchantVoucherViewModel.voucherId,
@@ -1035,7 +1034,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun onSuccessGetMerchantVoucherList(merchantVoucherViewModelList: ArrayList<MerchantVoucherViewModel>) {
-        shopPageTracking?.impressionUseMerchantVoucher(isOwner, merchantVoucherViewModelList)
+        shopPageTracking?.impressionUseMerchantVoucher(isOwner, merchantVoucherViewModelList, shopId)
 
         shopProductAdapter.setShopMerchantVoucherViewModel(ShopMerchantVoucherViewModel(merchantVoucherViewModelList))
         shopProductAdapter.refreshSticky()
