@@ -4,15 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.ui.loading.VideoLoadingComponent
+import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.video.VideoComponent
+import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
@@ -96,11 +102,91 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                 }
             else delegateVideoProperty(it)
         })
+        viewModel.observableOneTapOnboarding.observe(this, EventObserver { showOneTapOnboarding() })
     }
 
+    //region Component Initialization
     private fun initComponents(container: ViewGroup) {
-        VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
-        VideoLoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        val videoComponent = initVideoComponent(container)
+        val videoLoadingComponent = initVideoLoadingComponent(container)
+        val oneTapComponent = initOneTapComponent(container)
+
+        layoutView(
+                container = container,
+                videoComponentId = videoComponent.getContainerId(),
+                videoLoadingComponentId = videoLoadingComponent.getContainerId(),
+                oneTapComponentId = oneTapComponent.getContainerId()
+        )
+    }
+
+    private fun initVideoComponent(container: ViewGroup): UIComponent<Unit> {
+        return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+    }
+
+    private fun initVideoLoadingComponent(container: ViewGroup): UIComponent<Unit> {
+        return VideoLoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+    }
+
+    private fun initOneTapComponent(container: ViewGroup): UIComponent<Unit> {
+        return OneTapComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+    }
+    //endregion
+
+    //region layouting
+    private fun layoutView(
+            container: ViewGroup,
+            @IdRes videoComponentId: Int,
+            @IdRes videoLoadingComponentId: Int,
+            @IdRes oneTapComponentId: Int
+    ) {
+
+        fun layoutVideo(container: ViewGroup, @IdRes id: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            }
+
+            constraintSet.applyTo(container)
+        }
+
+        fun layoutVideoLoading(container: ViewGroup, @IdRes id: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            }
+
+            constraintSet.applyTo(container)
+        }
+
+        fun layoutOneTap(container: ViewGroup, @IdRes id: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+                connect(id, ConstraintSet.TOP, R.id.gl_quarter, ConstraintSet.BOTTOM)
+            }
+
+            constraintSet.applyTo(container)
+        }
+
+        layoutVideo(container, videoComponentId)
+        layoutVideoLoading(container, videoLoadingComponentId)
+        layoutOneTap(container , oneTapComponentId)
     }
 
     private fun delegateVideoProperty(prop: VideoPropertyUiModel) {
@@ -109,6 +195,16 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                     .emit(
                             ScreenStateEvent::class.java,
                             ScreenStateEvent.VideoPropertyChanged(prop)
+                    )
+        }
+    }
+
+    private fun showOneTapOnboarding() {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.ShowOneTapOnboarding
                     )
         }
     }

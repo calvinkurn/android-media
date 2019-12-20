@@ -19,6 +19,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetQuickReply(val quickReply: QuickReplyUiModel) : ScreenStateEvent()
     data class IncomingChat(val chat: PlayChat) : ScreenStateEvent()
     object ComposeChat : ScreenStateEvent()
+    object ShowOneTapOnboarding : ScreenStateEvent()
     data class VideoPropertyChanged(val videoProp: VideoPropertyUiModel) : ScreenStateEvent()
     data class VideoStreamChanged(val videoStream: VideoStreamUiModel) : ScreenStateEvent()
 }
