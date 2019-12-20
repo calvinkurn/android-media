@@ -12,12 +12,14 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.BaseDataModel
+import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_discovery.view.*
 
 class DiscoveryFragment : Fragment() {
 
     private lateinit var dataList: ArrayList<BaseDataModel>
+    private lateinit var discoveryViewModel: DiscoveryViewModel
 
     companion object {
         fun getInstance(endPoint: String?): Fragment {
@@ -34,6 +36,8 @@ class DiscoveryFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_discovery, container, false)
         initView(view)
+        discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
         return view
     }
 
@@ -48,8 +52,7 @@ class DiscoveryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as DiscoveryActivity).getViewModel().getDiscoveryData(arguments?.getString(END_POINT)
-                ?: "")
+        discoveryViewModel.getDiscoveryData()
         setUpObserver()
     }
 

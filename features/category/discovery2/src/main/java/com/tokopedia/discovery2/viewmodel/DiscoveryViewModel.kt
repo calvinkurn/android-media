@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.data.DiscoveryResponse
@@ -20,16 +19,17 @@ import kotlinx.coroutines.withContext
 class DiscoveryViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
 
     private val discoveryResponse = MutableLiveData<Result<DiscoveryResponse>>()
+    var pageIdentifier: String = ""
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    fun getDiscoveryData(endPoint: String) {
+    fun getDiscoveryData() {
         progBarVisibility.value = true
         launchCatchError(
                 block = {
                     withContext(Dispatchers.IO){
-                        val data = DiscoveryDataUseCase().getDiscoveryData(repository, GenerateUrl.getUrl(endPoint))
+                        val data = DiscoveryDataUseCase().getDiscoveryData(repository, GenerateUrl.getUrl(pageIdentifier))
                         data?.let {
                             discoveryResponse.postValue(Success(it))
                         }
