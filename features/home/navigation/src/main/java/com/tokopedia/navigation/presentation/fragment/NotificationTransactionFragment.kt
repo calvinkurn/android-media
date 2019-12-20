@@ -99,8 +99,8 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
             viewModel.getTransactionNotification(it)
         })
 
-        swipeRefresh.setOnRefreshListener {
-            swipeRefresh.isRefreshing = true
+        swipeRefresh?.setOnRefreshListener {
+            swipeRefresh?.isRefreshing = true
 
             /*
             * add some delay for 1 sec to
@@ -134,7 +134,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     private fun onViewError() = Observer<String> { message ->
-        swipeRefresh.hide()
+        swipeRefresh?.hide()
         notificationEmpty.show()
         activity?.let {
             NetworkErrorHelper.showEmptyState(it,
@@ -146,7 +146,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun loadData(page: Int) {
-        swipeRefresh.isRefreshing = false
+        swipeRefresh?.isRefreshing = false
         renderList(buyerMenu(), false)
         viewModel.getInfoStatusNotification()
     }
@@ -203,17 +203,14 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun showTextLonger(element: TransactionItemNotification) {
-        val bundle = Bundle().apply {
-            with(element) {
-                putString(PARAM_CONTENT_IMAGE, contentUrl)
-                putString(PARAM_CONTENT_IMAGE_TYPE, typeLink.toString())
-                putString(PARAM_CTA_APPLINK, appLink)
-                putString(PARAM_CONTENT_TEXT, body)
-                putString(PARAM_CONTENT_TITLE, title)
-                putString(PARAM_BUTTON_TEXT, btnText)
-                putString(PARAM_TEMPLATE_KEY, templateKey)
-            }
-        }
+        val bundle = Bundle()
+        bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
+        bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
+        bundle.putString(PARAM_CTA_APPLINK, element.appLink)
+        bundle.putString(PARAM_CONTENT_TEXT, element.body)
+        bundle.putString(PARAM_CONTENT_TITLE, element.title)
+        bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
+        bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
 
         if (!::longerTextDialog.isInitialized) {
             longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
@@ -269,6 +266,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         analytics.saveNotificationImpression(element)
     }
 
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
     override fun getRecyclerViewResourceId() = R.id.lstNotification
     override fun onItemClicked(t: Visitable<*>?) = Unit

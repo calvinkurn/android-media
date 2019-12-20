@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
@@ -50,6 +51,7 @@ class DynamicChannelThematicViewHolder(
 
     private fun setupHeader(header: Header?) {
         if (header != null && header.name.isNotEmpty()) {
+            mainContainer.setMargin(0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_20), 0, 0)
             headerContainer.visibility = View.VISIBLE
             headerTitle.text = header.name
             headerCountDown.visibility = View.GONE
@@ -62,6 +64,7 @@ class DynamicChannelThematicViewHolder(
             }
 
         } else {
+            mainContainer.setMargin(0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_6), 0, 0)
             headerContainer.visibility = View.GONE
         }
     }

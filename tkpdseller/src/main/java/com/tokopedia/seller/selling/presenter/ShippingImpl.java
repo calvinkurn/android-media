@@ -281,6 +281,20 @@ public class ShippingImpl extends Shipping {
                 onFinishConnection();
                 if (modelList.size() == 0) {
                     view.addRetry();
+                    view.removeRetryMessage();
+                    view.hideFab();
+                } else {
+                    NetworkErrorHelper.showSnackbar((Activity) context);
+                }
+                view.setRefreshPullEnabled(true);
+            }
+
+            @Override
+            public void onErrorWithMessage(String message) {
+                onFinishConnection();
+                if (modelList.size() == 0) {
+                    view.addRetry();
+                    view.addRetryMessage(message);
                     view.hideFab();
                 } else {
                     NetworkErrorHelper.showSnackbar((Activity) context);
@@ -294,6 +308,7 @@ public class ShippingImpl extends Shipping {
                 if (isDataEmpty()) {
                     view.setRefreshPullEnabled(false);
                     view.addRetry();
+                    view.removeRetryMessage();
                     view.hideFab();
                 } else {
                     try {
@@ -304,6 +319,7 @@ public class ShippingImpl extends Shipping {
                     view.setRefreshPullEnabled(true);
                     if (!view.isRefreshing()) {
                         view.addRetry();
+                        view.removeRetryMessage();
                     }
                 }
             }

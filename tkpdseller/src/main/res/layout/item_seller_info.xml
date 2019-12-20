@@ -12,8 +12,7 @@
         android:layout_marginTop="@dimen/dp_15"
         android:layout_marginBottom="@dimen/dp_15"
         android:layout_marginLeft="@dimen/dp_15"
-        android:layout_marginStart="@dimen/dp_15"
-        tools:src="@drawable/akun_lainnya"/>
+        android:layout_marginStart="@dimen/dp_15"/>
     
     <LinearLayout
         android:orientation="vertical"
