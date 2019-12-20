@@ -96,7 +96,7 @@ dependencies {
     implementation rootProject.ext.analyticsDependencies.moengageAmp
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation (rootProject.ext.viewDependencies.ahBottomNavigation) {
         exclude group: 'com.android.support', module: 'design'
     }

@@ -198,5 +198,11 @@ query GetSOMDetail($orderID: String!, $lang: String!){
       content
       param
     }
+    online_booking {
+      is_hide_input_awb
+      is_remove_input_awb
+      is_show_info
+      info_text
+    }
   }
 }

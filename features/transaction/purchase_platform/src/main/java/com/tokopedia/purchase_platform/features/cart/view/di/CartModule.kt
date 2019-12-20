@@ -19,6 +19,9 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformQualifier
+import com.tokopedia.purchase_platform.common.domain.schedulers.DefaultSchedulers
+import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
+import com.tokopedia.purchase_platform.common.domain.schedulers.IOSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
@@ -26,10 +29,7 @@ import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.data.api.CartApi
 import com.tokopedia.purchase_platform.features.cart.data.repository.CartRepository
 import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartMapper
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.IVoucherCouponMapper
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.VoucherCouponMapper
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.*
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartItemDecoration
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
@@ -187,6 +187,18 @@ class CartModule {
     fun provideGraphqlRepository(): GraphqlRepository {
         return Interactor.getInstance().graphqlRepository
     }
+
+    @Provides
+    @CartScope
+    fun provideExecutorSchedulers(): ExecutorSchedulers = DefaultSchedulers
+
+    @Provides
+    @CartScope
+    @Named("UpdateReloadUseCase")
+    fun provideGetCartListSimplifiedUseCase(@Named("shopGroupSimplifiedQuery") queryString: String,
+                                            graphqlUseCase: GraphqlUseCase,
+                                            cartMapperV3: CartMapperV3): GetCartListSimplifiedUseCase =
+            GetCartListSimplifiedUseCase(queryString, graphqlUseCase, cartMapperV3, IOSchedulers)
 
     @Provides
     @CartScope
