@@ -74,6 +74,7 @@ import static com.tokopedia.shop.analytic.model.ListTitleTypeDef.HIGHLIGHTED;
 
 public class ShopPageTrackingUser {
     public static final String SHOPPAGE = "/shoppage";
+    public static final String SHOP_PAGE = "Shop page";
 
     protected final TrackingQueue trackingQueue;
 
@@ -116,9 +117,9 @@ public class ShopPageTrackingUser {
                 list.add(
                         DataLayer.mapOf(
                                 ShopPageTrackingConstant.ID, shopId,
-                                ShopPageTrackingConstant.NAME, joinDash(SHOPPAGE, String.valueOf(position), viewModel.getVoucherName()),
+                                ShopPageTrackingConstant.NAME, joinDash(SHOP_PAGE, String.valueOf(position), viewModel.getVoucherName()),
                                 ShopPageTrackingConstant.POSITION, position,
-                                //ShopPageTrackingConstant.CREATIVE, view,
+                                ShopPageTrackingConstant.CREATIVE, "",
                                 //ShopPageTrackingConstant.CREATIVE_URL, view, //optional
                                 //ShopPageTrackingConstant.CATEGORY, viewModel, //optional
                                 ShopPageTrackingConstant.PROMO_ID, viewModel.getVoucherId(), //optional
@@ -455,8 +456,6 @@ public class ShopPageTrackingUser {
                         )
                 )
         );
-
-        Timber.d("clickUseMerchantVoucher: %s", new Gson().toJsonTree(eventMap));
 
         sendDataLayerEvent(eventMap);
     }
