@@ -15,6 +15,10 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_wallet.balance.data.CacheUtil;
+import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.utils.InAppReviewUtils;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
@@ -37,6 +41,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     private static final String GL_THANK_YOU_PAGE = "gl_thank_you_page";
     private static final String PAGE_TITLE = "Thank You";
 
+    private boolean enableInAppReview;
     private ReactInstanceManager reactInstanceManager;
     private static final String SAVED_VERSION = "SAVED_VERSION";
     private static final String REACT_NAVIGATION_MODULE = "REACT_NAVIGATION_MODULE";
@@ -66,6 +71,8 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_THANKYOU_PAGE, false);
         reactInstanceManager = ((ReactApplication) getApplication())
                 .getReactNativeHost().getReactInstanceManager();
         PurchaseNotifier.notify(this, getIntent().getExtras());
@@ -153,17 +160,19 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     @Override
     public void onBackPressed() {
         FragmentManager manager = getSupportFragmentManager();
-
         if (isDigital() && manager != null) {
-            InAppReviewUtils.showInAppReview(this, new InAppReviewUtils.Callback() {
-                @Override
-                public void onFinish() {
-                    closeThankyouPage();
-                }
-            });
-            /*AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-            rating.setDialogDismissListener(this::closeThankyouPage);
-            rating.showDialog(manager, this);*/
+            if (enableInAppReview) {
+                InAppReviewUtils.showInAppReview(this, new InAppReviewUtils.Callback() {
+                    @Override
+                    public void onFinish() {
+                        closeThankyouPage();
+                    }
+                });
+            } else {
+                AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+                rating.setDialogDismissListener(this::closeThankyouPage);
+                rating.showDialog(manager, this);
+            }
         } else {
             closeThankyouPage();
         }

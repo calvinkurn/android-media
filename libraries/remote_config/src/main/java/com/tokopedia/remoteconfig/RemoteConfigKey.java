@@ -184,4 +184,6 @@ public class RemoteConfigKey {
     public static final String AKAMAI_CART_ENABLE = "android_akamai_cart_enable";
 
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
+
+    public static final String ENABLE_IN_APP_REVIEW_THANKYOU_PAGE = "android_customer_enable_in_app_review_thank_you_page";
 }
