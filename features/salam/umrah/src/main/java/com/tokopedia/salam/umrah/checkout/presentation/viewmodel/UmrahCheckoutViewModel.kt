@@ -26,8 +26,6 @@ import com.tokopedia.usecase.coroutines.Result
 
 class UmrahCheckoutViewModel @Inject constructor(val umrahCheckoutGetDataUseCase: UmrahCheckoutGetDataUseCase,
                                                  val umrahCheckoutResultUseCase: UmrahCheckoutResultUseCase,
-                                                 val getContactListUseCase: GetContactListUseCase,
-                                                 private val upsertContactListUseCase: UpsertContactListUseCase,
                                                  coroutineDispatcher: UmrahDispatchersProvider)
     : BaseViewModel(coroutineDispatcher.Main) {
 
@@ -39,40 +37,14 @@ class UmrahCheckoutViewModel @Inject constructor(val umrahCheckoutGetDataUseCase
     val checkoutResult: LiveData<Result<UmrahCheckoutResultEntity>>
         get() = _checkoutResult
 
-    private val _contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
-    val contactListResult : LiveData<List<TravelContactListModel.Contact>>
-        get() = _contactListResult
-
-    fun getContactList(query: String) {
-        launch {
-            var contacts = getContactListUseCase.execute(query = query,
-                    product = GetContactListUseCase.PARAM_PRODUCT_HOTEL)
-            _contactListResult.value = contacts.map {
-                if (it.fullName.isBlank()) {
-                    it.fullName = "${it.firstName} ${it.lastName}"
-                }
-                return@map it
-            }.toMutableList()
-        }
-    }
-
-    fun updateContactList(query: String,
-                          updatedContact: TravelUpsertContactModel.Contact) {
-        launch {
-            upsertContactListUseCase.execute(query,
-                    TravelUpsertContactModel(updateLastUsedProduct = UpsertContactListUseCase.PARAM_TRAVEL_HOTEL,
-                            contacts = listOf(updatedContact)))
-        }
-    }
-
     fun execute(rawQueryPDP: String, rawQuerySummaryPayment: String, rawQueryOptionPayment: String,
                 rawQueryTermCondition: String, slugName: String, variantId: String,
-                pilgrimsCount: Int, price: Int, departDate: String, idTermCondition: String) {
+                pilgrimsCount: Int, price: Int, departDate: String, idTermCondition: String,downPaymentPrice:Int) {
         launch {
             val result = umrahCheckoutGetDataUseCase.execute(
                     rawQueryPDP, rawQuerySummaryPayment, rawQueryOptionPayment,
                     rawQueryTermCondition, slugName, variantId, pilgrimsCount,
-                    price, departDate, idTermCondition)
+                    price, departDate, idTermCondition,downPaymentPrice)
             _checkoutMapped.value = result
 
         }

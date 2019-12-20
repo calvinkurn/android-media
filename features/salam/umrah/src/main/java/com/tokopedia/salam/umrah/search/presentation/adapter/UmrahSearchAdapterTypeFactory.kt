@@ -13,7 +13,7 @@ import com.tokopedia.salam.umrah.search.presentation.adapter.viewholder.UmrahSea
 /**
  * @author by furqan on 20/10/2019
  */
-class UmrahSearchAdapterTypeFactory(private val callback:BaseEmptyViewHolder.Callback) : BaseAdapterTypeFactory() {
+class UmrahSearchAdapterTypeFactory(private val callback: BaseEmptyViewHolder.Callback) : BaseAdapterTypeFactory() {
 
     fun type(): Int = UmrahSearchViewHolder.LAYOUT
     override fun type(viewModel: LoadingModel): Int = UmrahSearchLoadingViewHolder.LAYOUT
@@ -22,7 +22,7 @@ class UmrahSearchAdapterTypeFactory(private val callback:BaseEmptyViewHolder.Cal
             when (type) {
                 UmrahSearchViewHolder.LAYOUT -> UmrahSearchViewHolder(parent)
                 UmrahSearchLoadingViewHolder.LAYOUT -> UmrahSearchLoadingViewHolder(parent)
-                EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent,callback)
+                EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent, callback)
                 else -> super.createViewHolder(parent, type)
             }
 }

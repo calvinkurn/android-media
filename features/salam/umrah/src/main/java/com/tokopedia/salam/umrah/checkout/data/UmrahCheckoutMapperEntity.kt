@@ -19,7 +19,7 @@ class ContactUser(
         var name: String = "",
         var email: String = "",
         var phoneNumber : String = "",
-        var phoneCode : Int = 0
+        var phoneCode : Int = 62
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),

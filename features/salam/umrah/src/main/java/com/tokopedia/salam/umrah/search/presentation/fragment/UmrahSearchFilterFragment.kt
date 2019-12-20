@@ -18,7 +18,6 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.UmrahOption
 import com.tokopedia.salam.umrah.common.data.PriceRangeLimit
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
-import com.tokopedia.salam.umrah.search.data.model.Filter
 import com.tokopedia.salam.umrah.search.data.model.ParamFilter
 import com.tokopedia.salam.umrah.search.di.UmrahSearchComponent
 import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchActivity.Companion.EXTRA_DEPARTURE_CITY_ID
@@ -55,7 +54,6 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
     private val bottomSheetdepartureCityAdapter: UmrahSearchSortAdapter by lazy { UmrahSearchSortAdapter() }
     private lateinit var maxCurrencyTextWatcher: CurrencyTextWatcher
     private lateinit var minCurrencyTextWatcher: CurrencyTextWatcher
-    private var filter = Filter()
     private var scrollPositionDepartureCity = 0
     private var scrollPositionDeparturePeriod = 0
 
@@ -64,6 +62,11 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
 
         getComponent(UmrahSearchComponent::class.java).inject(this)
         loadData()
+    }
+
+    private fun loadData() {
+        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_home_page_search_parameter)
+        umrahSearchFilterSortViewModel.getUmrahSearchParameter(searchQuery)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -114,24 +117,17 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun loadData() {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_home_page_search_parameter)
-        umrahSearchFilterSortViewModel.getUmrahSearchParameter(searchQuery)
-    }
-
     private fun onSuccessGetResult(data: UmrahSearchParameterEntity) {
-        filter.departureCities = data.umrahSearchParameter.depatureCities.options
-        filter.departurePeriods = data.umrahSearchParameter.departurePeriods.options
-        filter.durationDaysRangeLimit = data.umrahSearchParameter.durationDaysRangeLimit
-        filter.priceRangeLimit = data.umrahSearchParameter.priceRangeLimit
-        if (selectedFilter.departureCity == "-" && selectedFilter.departurePeriod == "-") {
-            selectedFilter.departurePeriod = filter.departurePeriods[data.umrahSearchParameter.departurePeriods.defaultOption].query
-            selectedFilter.departureCity = filter.departureCities[data.umrahSearchParameter.depatureCities.defaultOption].query
+        data.umrahSearchParameter.also {
+            if (selectedFilter.departureCity == "-" && selectedFilter.departurePeriod == "-") {
+                selectedFilter.departurePeriod = it.departurePeriods.options[it.departurePeriods.defaultOption].query
+                selectedFilter.departureCity = it.depatureCities.options[it.depatureCities.defaultOption].query
+            }
+            setupFilterDeparturePeriod(it.departurePeriods.options)
+            setupFilterDepartureCity(it.depatureCities.options)
+            setupFilterDurationDaysRange(it.durationDaysRangeLimit)
+            setupFilterPriceRange(it.priceRangeLimit)
         }
-        setupFilterDeparturePeriod(filter.departurePeriods)
-        setupFilterDepartureCity(filter.departureCities)
-        setupFilterDurationDaysRange(filter.durationDaysRangeLimit)
-        setupFilterPriceRange(filter.priceRangeLimit)
         restoreScrollPosition()
     }
 
@@ -248,7 +244,6 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
         }
         view.rv_umrah_search_sort.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_18), LinearLayoutManager.VERTICAL))
             this.adapter = bottomSheetAdapter
         }
         bottomSheetAdapter.apply {

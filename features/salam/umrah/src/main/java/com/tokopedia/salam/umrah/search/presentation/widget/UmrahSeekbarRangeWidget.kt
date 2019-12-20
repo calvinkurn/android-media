@@ -106,7 +106,7 @@ class UmrahSeekbarRangeWidget @JvmOverloads constructor(
     private fun updateSeekbar() {
         val itemCount = seekbarNumbers.size
         val halfSpanWidth = (spanWidth / 2)
-        val quarterSpanWidth = (halfSpanWidth / 5)
+        val quarterSpanWidth = (halfSpanWidth / 3.8f)
         if (discretePositions.isEmpty() && seekBarWidth != 0f && itemNumberWidth != 0) {
             val initMargin = halfSpanWidth - itemNumberWidth.toFloat() / 2 - quarterSpanWidth
             discretePositions.clear()

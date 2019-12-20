@@ -6,6 +6,7 @@ import com.tokopedia.salam.umrah.checkout.data.*
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import javax.inject.Inject
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.salam.umrah.common.util.UmrahPhoneTransform.transform
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -14,6 +15,9 @@ import com.tokopedia.user.session.UserSessionInterface
 class UmrahCheckoutGetDataUseCase @Inject constructor(private val useCase: MultiRequestGraphqlUseCase,
                                                       private val userSession: UserSessionInterface) {
 
+
+    var pdpData = UmrahProductModel(
+            UmrahProductModel.UmrahProduct())
 
     suspend fun execute(rawQueryPDP: String,
                         rawQuerySummaryPayment: String,
@@ -24,17 +28,18 @@ class UmrahCheckoutGetDataUseCase @Inject constructor(private val useCase: Multi
                         pilgrimsCount: Int,
                         price: Int,
                         departDate: String,
-                        idTermCondition: String
-                        ): Result<UmrahCheckoutMapperEntity>{
+                        idTermCondition: String,
+                        downPaymentPrice: Int
+    ): Result<UmrahCheckoutMapperEntity> {
 
         useCase.clearRequest()
 
         val requestPDPParam = mapOf(SLUG_NAME to slugName)
 
-        val checkoutSummaryParam = UmrahCheckoutSummaryParams(variantId,pilgrimsCount)
+        val checkoutSummaryParam = UmrahCheckoutSummaryParams(variantId, pilgrimsCount)
         val requestSummaryParam = mapOf(PARAMS to checkoutSummaryParam)
 
-        val checkoutOptionParam = UmrahCheckoutPaymentOptionsParams(price,pilgrimsCount,departDate)
+        val checkoutOptionParam = UmrahCheckoutPaymentOptionsParams(price, pilgrimsCount, departDate, downPaymentPrice)
         val requestOptionParam = mapOf(PARAMS to checkoutOptionParam)
 
         val checkoutTermConditions = UmrahCheckoutTermConditionParams(idTermCondition)
@@ -42,7 +47,7 @@ class UmrahCheckoutGetDataUseCase @Inject constructor(private val useCase: Multi
 
         try {
 
-            val pdpRequest = GraphqlRequest(rawQueryPDP,UmrahProductModel::class.java,requestPDPParam)
+            val pdpRequest = GraphqlRequest(rawQueryPDP, UmrahProductModel::class.java, requestPDPParam)
             useCase.addRequest(pdpRequest)
 
             val summaryRequest = GraphqlRequest(rawQuerySummaryPayment, UmrahCheckoutSummaryEntity::class.java, requestSummaryParam)
@@ -55,22 +60,22 @@ class UmrahCheckoutGetDataUseCase @Inject constructor(private val useCase: Multi
             useCase.addRequest(termConditionRequest)
 
 
-            val pdpData = useCase.executeOnBackground().getSuccessData<UmrahProductModel>()
+            pdpData = useCase.executeOnBackground().getSuccessData<UmrahProductModel>()
             val termConditionData = useCase.executeOnBackground().getSuccessData<UmrahCheckoutTermConditionsEntity>()
             val summaryData = useCase.executeOnBackground().getSuccessData<UmrahCheckoutSummaryEntity>()
             val optionData = useCase.executeOnBackground().getSuccessData<UmrahCheckoutPaymentOptionsEntity>()
 
-            return Success(mapCheckout(pdpData,summaryData,optionData,termConditionData))
+            return Success(mapCheckout(pdpData, summaryData, optionData, termConditionData))
 
-        }catch (throwable: Throwable){
+        } catch (throwable: Throwable) {
             return Fail(throwable)
         }
 
     }
 
-    private fun mapCheckout(pdpData:UmrahProductModel, summaryData:UmrahCheckoutSummaryEntity,
-                            optionData:UmrahCheckoutPaymentOptionsEntity,termConditionData: UmrahCheckoutTermConditionsEntity
-    ): UmrahCheckoutMapperEntity{
+    private fun mapCheckout(pdpData: UmrahProductModel, summaryData: UmrahCheckoutSummaryEntity,
+                            optionData: UmrahCheckoutPaymentOptionsEntity, termConditionData: UmrahCheckoutTermConditionsEntity
+    ): UmrahCheckoutMapperEntity {
         return UmrahCheckoutMapperEntity(
                 pdpData.umrahProduct,
                 mapUser(),
@@ -81,12 +86,13 @@ class UmrahCheckoutGetDataUseCase @Inject constructor(private val useCase: Multi
     }
 
 
-    private fun mapUser(): ContactUser{
+    private fun mapUser(): ContactUser {
         return ContactUser(
                 userSession.userId,
                 userSession.name,
                 userSession.email,
-                userSession.phoneNumber
+                transform(userSession.phoneNumber)
+
         )
     }
 

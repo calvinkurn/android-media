@@ -17,7 +17,6 @@ data class UmrahSearchParameterEntity(
 ) : UmrahHomepageModel() {
 
     companion object {
-        val LAYOUT = R.layout.partial_umrah_home_page_main
     }
 
     override fun type(typeFactory: UmrahHomepageFactory): Int {

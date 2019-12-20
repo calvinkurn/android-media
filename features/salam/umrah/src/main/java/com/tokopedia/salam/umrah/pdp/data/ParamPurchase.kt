@@ -14,5 +14,6 @@ data class ParamPurchase(
         var categoryId: String = "",
         var totalPrice: Int = 0,
         var departureDate: String = "",
-        var variantId: String = ""
+        var variantId: String = "",
+        var downPaymentPrice: Int = 0
 )

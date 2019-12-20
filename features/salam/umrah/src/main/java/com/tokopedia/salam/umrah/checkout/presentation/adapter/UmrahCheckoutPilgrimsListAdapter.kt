@@ -53,13 +53,15 @@ class UmrahCheckoutPilgrimsListAdapter(val listenerEmpty: UmrahPilgrimsEmptyView
       }
     }
 
-     fun onReplaceData(data: UmrahCheckoutPilgrims, index: Int){
+
+    fun onReplaceData(data: UmrahCheckoutPilgrims, index: Int){
          listUmrahCheckoutPilgrims.set(index, data)
          notifyItemChanged(index)
     }
 
     fun setList(list: MutableList<UmrahCheckoutPilgrims>) {
-        listUmrahCheckoutPilgrims = list
+        listUmrahCheckoutPilgrims.clear()
+        listUmrahCheckoutPilgrims.addAll(list)
         notifyDataSetChanged()
     }
 

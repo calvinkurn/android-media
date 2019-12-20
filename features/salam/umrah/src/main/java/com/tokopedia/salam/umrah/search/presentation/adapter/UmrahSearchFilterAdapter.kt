@@ -16,11 +16,12 @@ import kotlinx.android.synthetic.main.item_umrah_search_filter.view.*
 class UmrahSearchFilterAdapter : RecyclerView.Adapter<UmrahSearchFilterAdapter.UmrahSearchFilterViewHolder>() {
     private var selectedOptionQuery: String = "-"
     private lateinit var options: List<UmrahOption>
+    private val maximumItemsShowed = 5
 
     var listener: OnItemSelected? = null
 
     fun addOptions(options: List<UmrahOption>) {
-        this.options = limitTo5Items(options)
+        this.options = options
         notifyDataSetChanged()
     }
 
@@ -33,7 +34,7 @@ class UmrahSearchFilterAdapter : RecyclerView.Adapter<UmrahSearchFilterAdapter.U
 
     private fun limitTo5Items(options: List<UmrahOption>): List<UmrahOption> {
         val newOptions = mutableListOf<UmrahOption>()
-        val last = if (options.size > 5) 5 else options.size
+        val last = if (options.size > maximumItemsShowed) maximumItemsShowed else options.size
         for (i in 0 until last) newOptions.add(options[i])
         return newOptions.toList()
     }

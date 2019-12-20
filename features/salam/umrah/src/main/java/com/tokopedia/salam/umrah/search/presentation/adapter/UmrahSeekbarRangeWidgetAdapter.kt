@@ -69,7 +69,7 @@ class UmrahSeekbarRangeWidgetAdapter : RecyclerView.Adapter<UmrahSeekbarRangeWid
         fun setItemWidth(){
             itemView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
             itemWidth = itemView.measuredWidth
-            listener!!.onItemWidthMeasured(itemWidth)
+            listener?.onItemWidthMeasured(itemWidth)
         }
     }
 

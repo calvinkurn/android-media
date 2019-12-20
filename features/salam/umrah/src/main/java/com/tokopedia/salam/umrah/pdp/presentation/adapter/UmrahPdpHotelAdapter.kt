@@ -4,14 +4,13 @@ package com.tokopedia.salam.umrah.pdp.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.UmrahHotel
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
-import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDate
+import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getTime
 import kotlinx.android.synthetic.main.item_umrah_pdp_hotel.view.*
 
 /**
@@ -21,8 +20,9 @@ class UmrahPdpHotelAdapter : RecyclerView.Adapter<UmrahPdpHotelAdapter.UmrahPdpH
     var hotels = emptyList<UmrahHotel>()
     var onImageListener: UmrahPdpHotelImagesAdapter.UmrahPdpHotelImagesListener? = null
     lateinit var onScrollListener: OnScrollListener
+
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): UmrahPdpHotelViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_umrah_pdp_hotel,parent,false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_umrah_pdp_hotel, parent, false)
         return UmrahPdpHotelViewHolder(view)
     }
 
@@ -36,33 +36,35 @@ class UmrahPdpHotelAdapter : RecyclerView.Adapter<UmrahPdpHotelAdapter.UmrahPdpH
 
     inner class UmrahPdpHotelViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(umrahHotel: UmrahHotel) {
-            with(itemView){
+            with(itemView) {
                 tg_umrah_pdp_rv_hotel_name.text = umrahHotel.name
-                tg_umrah_pdp_hotel_check_in.text = resources.getString(R.string.umrah_pdp_hotel_check_in,getDate(UmrahDateUtil.DATE_ONLY_DATE_FORMAT,umrahHotel.checkIn), getDate(UmrahDateUtil.DATE_WITH_YEAR_FORMAT,umrahHotel.checkOut))
-                tg_umrah_pdp_hotel_distance.text = umrahHotel.poiDistances
+                tg_umrah_pdp_hotel_check_in.text = resources.getString(R.string.umrah_pdp_hotel_check_in, getTime(UmrahDateUtil.DATE_ONLY_DATE_FORMAT, umrahHotel.checkIn), getTime(UmrahDateUtil.DATE_WITH_YEAR_FORMAT, umrahHotel.checkOut))
+                tg_umrah_pdp_hotel_distance.text = umrahHotel.ui.distance
                 rb_umrah_pdp_hotel_rating.apply {
                     numStars = umrahHotel.rating
                     rating = umrahHotel.rating.toFloat()
                 }
                 rv_umrah_pdp_hotel_images.apply {
-                    layoutManager = LinearLayoutManager(context,LinearLayout.HORIZONTAL,false)
+                    layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                     adapter = UmrahPdpHotelImagesAdapter(umrahHotel.imageUrls).apply {
                         clickListener = onImageListener
                         itemPosition = adapterPosition
                     }
-                    addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12), LinearLayoutManager.HORIZONTAL))
-                    addOnScrollListener(object : RecyclerView.OnScrollListener(){
-                        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                            super.onScrolled(recyclerView, dx, dy)
-                            onScrollListener.onScrolled()
+                    while (itemDecorationCount > 0) removeItemDecorationAt(0)
+                    addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4), LinearLayoutManager.HORIZONTAL))
+                    addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                            super.onScrollStateChanged(recyclerView, newState)
+                            onScrollListener.onScrollStateChanged()
                         }
                     })
                 }
             }
         }
     }
-    interface OnScrollListener{
-        fun onScrolled()
+
+    interface OnScrollListener {
+        fun onScrollStateChanged()
     }
 
 }

@@ -19,12 +19,16 @@ class UmrahPdpDetailActivity : BaseSimpleActivity(), HasComponent<UmrahPdpCompon
             .build()
 
     override fun getNewFragment(): Fragment? = UmrahPdpDetailFragment().getInstance(
-            intent.getStringExtra(UmrahPdpActivity.EXTRA_SLUG_NAME)
+            intent.getStringExtra(UmrahPdpActivity.EXTRA_SLUG_NAME),
+            intent.getIntExtra(EXTRA_TOTAL_AVAILABILITY,0)
     )
 
     companion object {
-        fun createIntent(context: Context, slugName: String): Intent =
-                Intent(context, UmrahPdpDetailActivity::class.java).putExtra(UmrahPdpActivity.EXTRA_SLUG_NAME, slugName)
+        private const val EXTRA_TOTAL_AVAILABILITY = "EXTRA_TOTAL_AVAILABILITY"
+        fun createIntent(context: Context, slugName: String, totalAvailability: Int): Intent =
+                Intent(context, UmrahPdpDetailActivity::class.java)
+                        .putExtra(UmrahPdpActivity.EXTRA_SLUG_NAME, slugName)
+                        .putExtra(EXTRA_TOTAL_AVAILABILITY, totalAvailability)
     }
 
     override fun onBackPressed() {

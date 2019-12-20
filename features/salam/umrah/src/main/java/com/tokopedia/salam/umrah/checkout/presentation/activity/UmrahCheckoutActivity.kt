@@ -30,7 +30,8 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
             intent.getIntExtra(EXTRA_PRICE,0),
             intent.getIntExtra(EXTRA_TOTAL_PRICE, 0),
             intent.getIntExtra(EXTRA_TOTAL_PASSENGER,0),
-            intent.getStringExtra(EXTRA_DEPART_DATE)
+            intent.getStringExtra(EXTRA_DEPART_DATE),
+            intent.getIntExtra(EXTRA_DOWN_PAYMENT_PRICE,0)
     )
 
     override fun getComponent(): UmrahCheckoutComponent =
@@ -49,10 +50,11 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
         const val EXTRA_VARIANT = "EXTRA_VARIANT"
         const val EXTRA_TOTAL_PASSENGER = "EXTRA_TOTAL_PASSENGER"
         const val EXTRA_DEPART_DATE = "EXTRA_DEPART_DATE"
+        const val EXTRA_DOWN_PAYMENT_PRICE = "EXTRA_DOWN_PAYMENT_PRICE"
 
 
         fun createIntent(context:Context, slugName: String, variant:String, price: Int,
-                         totalPrice:Int, totalPassenger:Int, departDate: String
+                         totalPrice:Int, totalPassenger:Int, departDate: String, downPaymentPrice:Int
         ):Intent = Intent(context,UmrahCheckoutActivity::class.java)
                 .putExtra(EXTRA_PRICE,price)
                 .putExtra(EXTRA_TOTAL_PRICE,totalPrice)
@@ -60,6 +62,7 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
                 .putExtra(EXTRA_VARIANT, variant)
                 .putExtra(EXTRA_TOTAL_PASSENGER, totalPassenger)
                 .putExtra(EXTRA_DEPART_DATE, departDate)
+                .putExtra(EXTRA_DOWN_PAYMENT_PRICE, downPaymentPrice)
 
     }
 

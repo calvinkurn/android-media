@@ -13,9 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
  * @author by M on 8/11/19
  */
 class UmrahPdpFaqIndicator : RecyclerView.ItemDecoration() {
-    private val colorActive = 0x6603ac0e
-    private val colorInactive = 0x66a6b03d
-
     private val indicatorMarginTop = (DP * 16).toInt()
     private val indicatorStrokeWidth = DP * 3
     private val indicatorItemWidth = DP * 3
@@ -34,39 +31,47 @@ class UmrahPdpFaqIndicator : RecyclerView.ItemDecoration() {
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
 
-        val itemCount = parent.adapter!!.itemCount
+        val itemCount = parent.adapter?.itemCount
 
         // center horizontally, calculate width and subtract half from center
-        val totalLength = indicatorItemWidth * itemCount
-        val paddingBetweenItems = 0.coerceAtLeast(itemCount - 1) * indicatorSeparatorPadding
-        val indicatorTotalWidth = totalLength + paddingBetweenItems
-        val indicatorStartX = (parent.width - indicatorTotalWidth) / 2f
+        val totalLength = itemCount?.let { indicatorItemWidth * it }
+        val paddingBetweenItems = itemCount?.minus(1)?.let { 0.coerceAtLeast(it) }?.times(indicatorSeparatorPadding)
+        val indicatorTotalWidth = paddingBetweenItems?.let { totalLength?.plus(it) }
+        val indicatorStartX = indicatorTotalWidth?.let { (parent.width - it) / 2f }
 
         // center vertically in the allotted space
         val indicatorPosY = parent.height - indicatorMarginTop / 2f
 
-        drawInactiveIndicators(c, indicatorStartX, indicatorPosY, itemCount)
+        if (indicatorStartX != null) {
+            drawInactiveIndicators(c, indicatorStartX, indicatorPosY, itemCount)
+        }
 
         // find active page (which should be highlighted)
         val layoutManager = parent.layoutManager as LinearLayoutManager?
-        var activePosition = layoutManager!!.findFirstVisibleItemPosition()
-        val isLastPosition = layoutManager.findLastCompletelyVisibleItemPosition() == layoutManager.itemCount-1
-        if (isLastPosition) activePosition = itemCount-1
+        var activePosition = layoutManager?.findFirstVisibleItemPosition()
+        val isLastPosition = layoutManager?.findLastCompletelyVisibleItemPosition() == (layoutManager?.itemCount)?.minus(1)
+        if (isLastPosition) activePosition = itemCount?.minus(1)
         if (activePosition == RecyclerView.NO_POSITION) {
             return
         }
 
         // find offset of active page (if the user is scrolling)
-        val activeChild = layoutManager.findViewByPosition(activePosition)
-        val left = activeChild!!.left
-        val width = activeChild.width
+        val activeChild = activePosition?.let { layoutManager?.findViewByPosition(it) }
+        val left = activeChild?.left
+        val width = activeChild?.width
 
         // on swipe the active item will be positioned from [-width, 0]
         // interpolate offset for smooth animation
-        var progress = interpolator.getInterpolation(left * -1 / width.toFloat())
-        if (isLastPosition) progress= 0f
+        var progress = width?.toFloat()?.let { itWidth -> (left?.times(-1))?.div(itWidth)?.let { interpolator.getInterpolation(it) } }
+        if (isLastPosition) progress = 0f
 
-        drawHighlights(c, indicatorStartX, indicatorPosY, activePosition, progress)
+        if (indicatorStartX != null) {
+            if (activePosition != null) {
+                if (progress != null) {
+                    drawHighlights(c, indicatorStartX, indicatorPosY, activePosition, progress)
+                }
+            }
+        }
     }
 
     private fun drawInactiveIndicators(c: Canvas, indicatorStartX: Float, indicatorPosY: Float, itemCount: Int) {
@@ -112,5 +117,7 @@ class UmrahPdpFaqIndicator : RecyclerView.ItemDecoration() {
 
     companion object {
         private val DP = Resources.getSystem().displayMetrics.density
+        private const val colorActive = 0x6603ac0e
+        private const val colorInactive = 0x66a6b03d
     }
 }

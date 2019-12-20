@@ -82,6 +82,9 @@ data class UmrahProductModel(
             @SerializedName("slashPrice")
             val slashPrice: Int = 0,
 
+            @SerializedName("downPaymentPrice")
+            val downPaymentPrice: Int = 0,
+
             @SerializedName("faq")
             val faqs: UmrahFAQ = UmrahFAQ()
     ) {

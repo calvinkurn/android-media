@@ -14,13 +14,13 @@ import kotlinx.android.synthetic.main.widget_umrah_pdp_itinerary.view.*
  * @author by M on 22/10/19
  */
 class UmrahPdpItineraryWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        BaseCustomView(context, attrs, defStyleAttr){
+        BaseCustomView(context, attrs, defStyleAttr) {
 
     private val umrahPdpItineraryAdapter: UmrahPdpItineraryAdapter by lazy { UmrahPdpItineraryAdapter() }
-    var items = mutableListOf<UmrahPdpItineraryModel>()
-    private var maxDisplay: Int? = null
+    private var items = mutableListOf<UmrahPdpItineraryModel>()
+    private var maxDisplay: Int = 0
 
-    fun setItem(_items: List<UmrahPdpItineraryModel>, maxDisplay: Int? = null){
+    fun setItem(_items: List<UmrahPdpItineraryModel>, maxDisplay: Int = 0) {
         items.clear()
         items.addAll(_items)
         this.maxDisplay = maxDisplay
@@ -40,25 +40,27 @@ class UmrahPdpItineraryWidget @JvmOverloads constructor(context: Context, attrs:
     }
 
     private fun setUpItineraryList() {
-        val umrahItineraryItems : List<UmrahPdpItineraryAdapter.UmrahPdpItineraryItem>
-        if (maxDisplay!=null){
+        val umrahItineraryItems: List<UmrahPdpItineraryModel>
+        if (maxDisplay != 0) {
             read_more.visibility = View.VISIBLE
-            umrahItineraryItems = items.dropLast(items.size- maxDisplay!!).map { UmrahPdpItineraryAdapter.UmrahPdpItineraryItem(it.day, it.desc) }
-        }
-        else{
+            umrahItineraryItems = items.dropLast(items.size - maxDisplay)
+        } else {
             read_more.visibility = View.GONE
-            umrahItineraryItems = items.map { UmrahPdpItineraryAdapter.UmrahPdpItineraryItem(it.day, it.desc) }
+            umrahItineraryItems = items
         }
-        rv_widget_umrah_pdp_itinerary.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        rv_widget_umrah_pdp_itinerary.adapter = umrahPdpItineraryAdapter
+        rv_widget_umrah_pdp_itinerary.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = umrahPdpItineraryAdapter
+        }
         umrahPdpItineraryAdapter.updateItems(umrahItineraryItems)
     }
 
-    private fun showLoading(){
+    private fun showLoading() {
         container_widget_umrah_pdp_itinerary_shimmering.visibility = View.VISIBLE
         container_widget_umrah_pdp_itinerary.visibility = View.GONE
     }
-    private fun hideLoading(){
+
+    private fun hideLoading() {
         container_widget_umrah_pdp_itinerary_shimmering.visibility = View.GONE
         container_widget_umrah_pdp_itinerary.visibility = View.VISIBLE
     }

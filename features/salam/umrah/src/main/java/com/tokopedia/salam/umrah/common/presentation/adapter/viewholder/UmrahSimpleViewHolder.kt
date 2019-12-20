@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_umrah_simple_view.view.*

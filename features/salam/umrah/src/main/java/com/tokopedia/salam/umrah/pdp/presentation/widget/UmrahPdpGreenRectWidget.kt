@@ -16,9 +16,10 @@ import kotlinx.android.synthetic.main.widget_umrah_pdp_green_rect_shimmering.vie
  * @author by M on 22/10/19
  */
 class UmrahPdpGreenRectWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        BaseCustomView(context, attrs, defStyleAttr){
+        BaseCustomView(context, attrs, defStyleAttr) {
 
     lateinit var umrahPdpGreenRectWidgetModel: UmrahPdpGreenRectWidgetModel
+
     init {
         View.inflate(context, R.layout.widget_umrah_pdp_green_rect, this)
     }
@@ -41,33 +42,35 @@ class UmrahPdpGreenRectWidget @JvmOverloads constructor(context: Context, attrs:
     }
 
     private fun checkIfDescSecondLineNotNull() {
-        if(umrahPdpGreenRectWidgetModel.descSecondLine!=null){
+        umrahPdpGreenRectWidgetModel.descSecondLine?.let {
             tg_widget_umrah_pdp_green_rect_second_line.visibility = View.VISIBLE
             tg_widget_umrah_pdp_green_rect_second_line.text = umrahPdpGreenRectWidgetModel.descSecondLine
         }
     }
 
     private fun checkIfImageSecondLineNotNull(marginInDp: Int) {
-        if(umrahPdpGreenRectWidgetModel.imageSecondLineUrl!=null){
-            tg_widget_umrah_pdp_green_rect_second_line.setMargin(marginInDp,0,0,0)
+        umrahPdpGreenRectWidgetModel.imageSecondLineUrl?.let {
+            iv_widget_umrah_pdp_green_rect_second_line.loadImageDrawable(it)
+            tg_widget_umrah_pdp_green_rect_second_line.setMargin(marginInDp, 0, 0, 0)
             iv_widget_umrah_pdp_green_rect_second_line.visibility = View.VISIBLE
-            iv_widget_umrah_pdp_green_rect_second_line.loadImageDrawable(umrahPdpGreenRectWidgetModel.imageSecondLineUrl!!)
         }
     }
 
     private fun checkIfImageFirstLineNotNull(marginInDp: Int) {
-        if(umrahPdpGreenRectWidgetModel.imageFirstLineUrl!=null){
+        umrahPdpGreenRectWidgetModel.imageFirstLineUrl?.let {
+            iv_widget_umrah_pdp_green_rect_first_line.loadImageDrawable(it)
             iv_widget_umrah_pdp_green_rect_first_line.visibility = View.VISIBLE
-            iv_widget_umrah_pdp_green_rect_first_line.loadImageDrawable(umrahPdpGreenRectWidgetModel.imageFirstLineUrl!!)
-            tg_widget_umrah_pdp_green_rect_first_line.setMargin(marginInDp,0,0,0)
+            tg_widget_umrah_pdp_green_rect_first_line.setMargin(marginInDp, 0, 0, 0)
+
         }
     }
 
-    private fun showLoading(){
+    private fun showLoading() {
         container_widget_umrah_pdp_green_rect_shimmering.visibility = View.VISIBLE
         container_widget_umrah_pdp_green_rect.visibility = View.GONE
     }
-    private fun hideLoading(){
+
+    private fun hideLoading() {
         container_widget_umrah_pdp_green_rect_shimmering.visibility = View.GONE
         container_widget_umrah_pdp_green_rect.visibility = View.VISIBLE
     }

@@ -3,7 +3,6 @@ package com.tokopedia.salam.umrah.search.presentation.adapter.viewholder
 import android.content.res.Resources
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.salam.umrah.R
@@ -18,7 +17,6 @@ import kotlinx.android.synthetic.main.item_umrah_search.view.*
  * @author by furqan on 18/10/2019
  */
 class UmrahSearchViewHolder(view: View) : AbstractViewHolder<UmrahSearchProduct>(view) {
-
     override fun bind(element: UmrahSearchProduct) {
         val hotelsRating = getAllHotelRatings(element.hotels)
         with(itemView) {
@@ -34,11 +32,9 @@ class UmrahSearchViewHolder(view: View) : AbstractViewHolder<UmrahSearchProduct>
     }
 
     private fun getFormattedCalendarString(resources: Resources, departureDate: String, returningDate: String): String {
-        return resources.getString(R.string.umrah_pdp_calendar,
-                TravelDateUtil.dateToString(UmrahDateUtil.DATE_WITHOUT_YEAR_FORMAT, TravelDateUtil
-                        .stringToDate(TravelDateUtil.YYYY_MM_DD, departureDate)),
-                TravelDateUtil.dateToString(UmrahDateUtil.DATE_WITH_YEAR_FORMAT, TravelDateUtil
-                        .stringToDate(TravelDateUtil.YYYY_MM_DD, returningDate)))
+        val formattedDepartureDate = UmrahDateUtil.getTime(UmrahDateUtil.DATE_WITHOUT_YEAR_FORMAT, departureDate)
+        val formattedReturningDate = UmrahDateUtil.getTime(UmrahDateUtil.DATE_WITH_YEAR_FORMAT, returningDate)
+        return resources.getString(R.string.umrah_pdp_calendar, formattedDepartureDate, formattedReturningDate)
     }
 
     companion object {

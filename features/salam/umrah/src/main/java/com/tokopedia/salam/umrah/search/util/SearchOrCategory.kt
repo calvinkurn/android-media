@@ -2,7 +2,6 @@ package com.tokopedia.salam.umrah.search.util
 
 import com.tokopedia.salam.umrah.common.analytics.CATEGORY_RESULT_PAGE_UMROH
 import com.tokopedia.salam.umrah.common.analytics.SEARCH_RESULT_PAGE_UMROH
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 
 /**
  * @author by M on 11/11/2019

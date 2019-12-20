@@ -53,19 +53,15 @@ class UmrahCheckoutInstallmentAdapter (context: Context, val umrahInstallmentLis
 
                 val spannable = SpannableString(installmentTitle)
 
-                spannable.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.design.R.color.orange_500)), data.title.length+3,
-                        (data.title.length+data.price.toString().length)+7 , Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                 spannable.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.design.R.color.orange_500)), data.title.length,
+                        installmentTitle.length , Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 tv_umrah_checkout_bottom_sheet_payment_option.setText(spannable, TextView.BufferType.SPANNABLE)
-                radio_umrah_checkout_bottom_sheet_payment_option.setOnClickListener {
+                rl_umrah_checkout_down_payment.setOnClickListener {
                     umrahInstallmentListener.onInstallment(position)
                     lastCheckedPosition = adapterPosition
                     notifyDataSetChanged()
-                    if (radio_umrah_checkout_bottom_sheet_payment_option.isChecked)
-                        radio_umrah_checkout_bottom_sheet_payment_option.isChecked = false
-                    else {
-                        radio_umrah_checkout_bottom_sheet_payment_option.isChecked = true
-                    }
+                    radio_umrah_checkout_bottom_sheet_payment_option.isChecked = !radio_umrah_checkout_bottom_sheet_payment_option.isChecked
                 }
 
                 if(data.terms.isNotEmpty()){
@@ -77,7 +73,7 @@ class UmrahCheckoutInstallmentAdapter (context: Context, val umrahInstallmentLis
                             adapter = umrahCheckoutDueDateAdapter
                             layoutManager = LinearLayoutManager(
                                     context,
-                                    LinearLayoutManager.VERTICAL, false
+                                    RecyclerView.VERTICAL, false
                             )
 
                             umrahCheckoutDueDateAdapter.setList(data.terms)

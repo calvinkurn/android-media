@@ -17,6 +17,8 @@ data class UmrahSearchProductEntity(
 )
 
 data class UmrahSearchProduct(
+        var isViewed: Boolean = false,
+        var isSetOnClicked: Boolean = false,
         @SerializedName("id")
         @Expose
         val id: String = "",

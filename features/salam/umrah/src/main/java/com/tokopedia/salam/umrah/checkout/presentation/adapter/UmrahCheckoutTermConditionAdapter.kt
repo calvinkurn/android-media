@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.UmrahTermCondition
 import kotlinx.android.synthetic.main.item_umrah_checkout_bottom_sheet_term_condition.view.*
@@ -20,8 +21,17 @@ class UmrahCheckoutTermConditionAdapter : RecyclerView.Adapter<UmrahCheckoutTerm
 
         fun bind(umrahTermCondition: UmrahTermCondition) {
             with(itemView) {
-                tg_umrah_checkout_title_term.text = umrahTermCondition.header
-                tg_umrah_checkout_desc_term.text = umrahTermCondition.content
+                umrahTermCondition.apply {
+                    if (header.isNotEmpty()) {
+                        tg_umrah_checkout_title_term.show()
+                        tg_umrah_checkout_title_term.text = header
+                    }
+
+                    if (content.isNotEmpty()) {
+                        tg_umrah_checkout_desc_term.show()
+                        tg_umrah_checkout_desc_term.text = content
+                    }
+                }
             }
         }
     }

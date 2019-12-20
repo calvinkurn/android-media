@@ -18,13 +18,13 @@ import javax.inject.Inject
 class UmrahSearchFilterSortViewModel @Inject constructor(private val useCase: UmrahSearchParameterUseCase,
                                                          dispatcher: UmrahDispatchersProvider) : BaseViewModel(dispatcher.Main) {
 
-    private val privateUmrahSearchParameter = MutableLiveData<Result<UmrahSearchParameterEntity>>()
+    private val privateUmrahSearchParameter by lazy { MutableLiveData<Result<UmrahSearchParameterEntity>>() }
     val umrahSearchParameter: LiveData<Result<UmrahSearchParameterEntity>>
         get() = privateUmrahSearchParameter
 
     fun getUmrahSearchParameter(rawQuery: String) {
         launch {
-            privateUmrahSearchParameter.value = useCase.execute(rawQuery)
+            privateUmrahSearchParameter.value = useCase.executeUseCase(rawQuery)
         }
     }
 }

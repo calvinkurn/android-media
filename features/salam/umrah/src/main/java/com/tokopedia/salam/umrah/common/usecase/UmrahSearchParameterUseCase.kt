@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class UmrahSearchParameterUseCase @Inject constructor(graphqlRepository: GraphqlRepository): GraphqlUseCase<UmrahSearchParameterEntity>(graphqlRepository) {
 
-    suspend fun execute(rawQuery: String, fromCloud: Boolean = false): Result<UmrahSearchParameterEntity> {
+    suspend fun executeUseCase(rawQuery: String, fromCloud: Boolean = false): Result<UmrahSearchParameterEntity> {
 
         try {
             this.setGraphqlQuery(rawQuery)

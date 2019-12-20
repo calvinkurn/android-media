@@ -1,6 +1,7 @@
 package com.tokopedia.salam.umrah.pdp.presentation.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -11,11 +12,13 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
@@ -28,7 +31,7 @@ import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
-import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDate
+import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getTime
 import com.tokopedia.salam.umrah.common.util.UmrahHotelRating.getAllHotelRatings
 import com.tokopedia.salam.umrah.common.util.UmrahHotelVariant.getAllHotelVariants
 import com.tokopedia.salam.umrah.common.util.UmrahPriceUtil.getSlashedPrice
@@ -37,6 +40,8 @@ import com.tokopedia.salam.umrah.pdp.data.UmrahPdpFeaturedFacilityModel
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpGreenRectWidgetModel
 import com.tokopedia.salam.umrah.pdp.di.UmrahPdpComponent
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity
+import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity.Companion.EXTRA_IS_EMPTY
+import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity.Companion.EXTRA_MAX_PASSENGER
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity.Companion.EXTRA_SLUG_NAME
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity.Companion.EXTRA_TOTAL_PASSENGER
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity.Companion.EXTRA_TOTAL_PRICE
@@ -52,17 +57,18 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottom_sheets_umrah_pdp_facilities.view.*
-import kotlinx.android.synthetic.main.bottom_sheets_umrah_pdp_itinerary.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_pdp.*
+import kotlinx.android.synthetic.main.fragment_umrah_pdp.view.*
 import kotlinx.android.synthetic.main.partial_umrah_pdp_ad.*
 import kotlinx.android.synthetic.main.widget_umrah_pdp_green_rect.view.*
 import kotlinx.android.synthetic.main.widget_umrah_pdp_itinerary.view.*
 import javax.inject.Inject
 
+
 /**
  * @author by M on 30/10/19
  */
-class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
+class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, AppBarLayout.OnOffsetChangedListener {
     @Inject
     lateinit var umrahPdpViewModel: UmrahPdpViewModel
     @Inject
@@ -76,13 +82,21 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
     private val umrahPdpNonFacilityAdapter by lazy { UmrahPdpNonFacilityAdapter() }
     private val umrahPdpFaqAdapter by lazy { UmrahPdpFaqAdapter() }
 
+    private var slugName: String? = ""
+
+    private var isFaqsScrolled = false
+    private var isAirlinesScrolled = false
+    private var isHotelsScrolled = false
+
+    private lateinit var swipeToRefresh: SwipeToRefresh
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() = getComponent(UmrahPdpComponent::class.java).inject(this)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahPdpViewModel.pdpResult.observe(this, Observer {
+        umrahPdpViewModel.pdpData.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
                 is Fail -> showGetListError()
@@ -90,8 +104,21 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
         })
     }
 
+    private fun setupSwipeToRefresh(view: View) {
+        swipeToRefresh = view.umrah_pdp_swipe_to_refresh
+        swipeToRefresh.setOnRefreshListener {
+            hideData()
+            swipeToRefresh.isRefreshing = true
+            requestData()
+            resetParamPurchase()
+        }
+    }
+
     private fun showGetListError() {
-        NetworkErrorHelper.showEmptyState(context, view?.rootView) { loadData() }
+        swipeToRefresh.isEnabled = false
+        NetworkErrorHelper.showEmptyState(context, view?.rootView) {
+            requestData()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -99,22 +126,36 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
         when (requestCode) {
             REQUEST_PDP_DETAIL -> {
                 if (data != null) {
-                    paramPurchase.variant = data.getStringExtra(EXTRA_VARIANT_ROOM)
-                    paramPurchase.totalPassenger = data.getIntExtra(EXTRA_TOTAL_PASSENGER, 1)
-                    paramPurchase.totalPrice = data.getIntExtra(EXTRA_TOTAL_PRICE, 1)
-                    setupHotelTypeItem()
-                    setupPriceAndPurchaseButton()
+                    val isEmpty = data.getBooleanExtra(EXTRA_IS_EMPTY, false)
+                    if (isEmpty) {
+                        activity?.apply {
+                            setResult(Activity.RESULT_OK)
+                            finish()
+                        }
+                    } else {
+                        paramPurchase.apply {
+                            variant = data.getStringExtra(EXTRA_VARIANT_ROOM)
+                            totalPassenger = data.getIntExtra(EXTRA_TOTAL_PASSENGER, 1)
+                            val maxPassenger = data.getIntExtra(EXTRA_MAX_PASSENGER, 1)
+                            totalPrice = data.getIntExtra(EXTRA_TOTAL_PRICE, 1)
+                            setupHotelTypeItem()
+                            if (maxPassenger != 0) setupPriceAndPurchaseButton()
+                        }
+                    }
                 }
             }
         }
     }
 
-    private fun loadData() {
-        umrahPdpViewModel.getUmrahPdp(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_pdp_simple))
+    private fun requestData() {
+        slugName?.let {
+            umrahPdpViewModel.requestPdpData(
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_pdp), it)
+        }
     }
 
     private fun onSuccessGetResult(umrahProduct: UmrahProductModel.UmrahProduct) {
+        enableSwipeToRefresh()
         UmrahPdpFragment.umrahProduct = umrahProduct
         setupAll()
     }
@@ -135,8 +176,18 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
         setupRVNonFacilities()
         setupRVFaq()
         setupAdditionalInformation()
-        checkPackageAvailability()
+        initPackageAvailability()
         showData()
+    }
+
+    private fun enableSwipeToRefresh() {
+        swipeToRefresh.isRefreshing = false
+        swipeToRefresh.isEnabled = true
+    }
+
+    private fun hideData() {
+        container_umrah_pdp.visibility = GONE
+        container_umrah_pdp_shimmering.visibility = VISIBLE
     }
 
     private fun showData() {
@@ -146,16 +197,12 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        umrahPdpViewModel.slugName = arguments!!.getString(EXTRA_SLUG_NAME, "")
-        if (umrahPdpViewModel.slugName != umrahProduct.slugName) {
-            resetObject()
-        }
-
+        slugName = arguments?.getString(EXTRA_SLUG_NAME, "")
+        resetObject()
     }
 
     private fun resetObject() {
         umrahProduct = UmrahProductModel.UmrahProduct()
-        paramPurchase = ParamPurchase()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -165,9 +212,10 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
         super.onViewCreated(view, savedInstanceState)
 
         loadAdContainerBg()
+        setupSwipeToRefresh(view)
 
         if (umrahProduct.title != "") setupAll()
-        else loadData()
+        else requestData()
     }
 
     private fun loadAdContainerBg() {
@@ -180,7 +228,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
         (activity as UmrahPdpActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = umrah_pdp_toolbar.navigationIcon
-        navIcon?.setColorFilter(ContextCompat.getColor(context!!, com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
+        context?.let { ContextCompat.getColor(it, com.tokopedia.design.R.color.white) }?.let { navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP) }
         (activity as UmrahPdpActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         umrah_pdp_collapsing_toolbar.title = ""
@@ -194,11 +242,11 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     umrah_pdp_collapsing_toolbar.title = umrahProduct.title
-                    navIcon?.setColorFilter(ContextCompat.getColor(context!!, com.tokopedia.design.R.color.black), PorterDuff.Mode.SRC_ATOP)
+                    context?.let { ContextCompat.getColor(it, com.tokopedia.design.R.color.black) }?.let { navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP) }
                     isShow = true
                 } else if (isShow) {
                     umrah_pdp_collapsing_toolbar.title = ""
-                    navIcon?.setColorFilter(ContextCompat.getColor(context!!, com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
+                    context?.let { ContextCompat.getColor(it, com.tokopedia.design.R.color.white) }?.let { navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP) }
                     isShow = false
                 }
             }
@@ -251,13 +299,13 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
         grw_umrah_pdp_hotel_type.buildView()
         grw_umrah_pdp_hotel_type.setOnClickListener {
             umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.CHOOSE_ROOM_TYPE_UP)
-            startActivityForResult(context?.let { it1 -> UmrahPdpDetailActivity.createIntent(it1, umrahProduct.slugName) }, REQUEST_PDP_DETAIL)
+            startActivityForResult(context?.let { it1 -> UmrahPdpDetailActivity.createIntent(it1, umrahProduct.slugName, umrahProduct.availableSeat) }, REQUEST_PDP_DETAIL)
         }
     }
 
     private fun setupCalendarItem() {
-        val departureDate = getDate(UmrahDateUtil.DATE_WITHOUT_YEAR_FORMAT, umrahProduct.departureDate)
-        val returningDate = getDate(UmrahDateUtil.DATE_WITH_YEAR_FORMAT, umrahProduct.returningDate)
+        val departureDate = getTime(UmrahDateUtil.DATE_WITHOUT_YEAR_FORMAT, umrahProduct.departureDate)
+        val returningDate = getTime(UmrahDateUtil.DATE_WITH_YEAR_FORMAT, umrahProduct.returningDate)
         val umrahPdpItemWidgetModel = UmrahItemWidgetModel()
         umrahPdpItemWidgetModel.apply {
             imageDrawable = R.drawable.umrah_ic_calendar
@@ -300,7 +348,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
     private fun setupRVHotels() {
         val hotels = umrahProduct.hotels
         umrahPdpHotelAdapter.hotels = hotels
-        rv_umrah_pdp_hotel.apply {
+        rv_umrah_pdp_accommodation.apply {
             adapter = umrahPdpHotelAdapter.apply {
                 onImageListener = object : UmrahPdpHotelImagesAdapter.UmrahPdpHotelImagesListener {
                     override fun onImageClicked(itemPosition: Int, position: Int) {
@@ -313,13 +361,16 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
                     }
                 }
                 onScrollListener = object : UmrahPdpHotelAdapter.OnScrollListener {
-                    override fun onScrolled() {
-                        umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.SCROLLING_HOTEL)
+                    override fun onScrollStateChanged() {
+                        if (!isHotelsScrolled) {
+                            umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.SCROLLING_HOTEL)
+                            isHotelsScrolled = true
+                        }
                     }
-
                 }
             }
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
                     LinearLayoutManager.VERTICAL))
         }
@@ -330,23 +381,30 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
         rv_umrah_pdp_airline.apply {
             adapter = umrahPdpAirlineAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12),
+            while (itemDecorationCount > 0) removeItemDecorationAt(0)
+            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4),
                     LinearLayoutManager.HORIZONTAL))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.SCROLLING_PENERBANGAN)
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (!isAirlinesScrolled) {
+                        umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.SCROLLING_PENERBANGAN)
+                        isAirlinesScrolled = true
+                    }
                 }
             })
         }
     }
 
     private fun setupItineraries() {
-        iw_umrah_pdp_itineraries.setItem(umrahProduct.itineraries, 4)
-        iw_umrah_pdp_itineraries.buildView()
-        iw_umrah_pdp_itineraries.read_more.setOnClickListener {
-            umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.LIHAT_ITINERARY_SELENGKAPNYA)
-            openBottomSheetItinerary()
+        val maxDisplayedItineraries = 4
+        iw_umrah_pdp_itineraries.apply {
+            setItem(umrahProduct.itineraries, maxDisplayedItineraries)
+            buildView()
+            read_more.setOnClickListener {
+                umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.LIHAT_ITINERARY_SELENGKAPNYA)
+                openBottomSheetItinerary()
+            }
         }
     }
 
@@ -369,6 +427,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
         rv_umrah_pdp_facilities.apply {
             adapter = umrahPdpFeaturedFacilityAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
                     LinearLayoutManager.HORIZONTAL))
         }
@@ -425,12 +484,16 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
         rv_umrah_pdp_faqs.apply {
             adapter = umrahPdpFaqAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8), LinearLayoutManager.HORIZONTAL))
+            while (itemDecorationCount > 0) removeItemDecorationAt(0)
+            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4), LinearLayoutManager.HORIZONTAL))
             addItemDecoration(UmrahPdpFaqIndicator())
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.SCROLL_FAQ)
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (!isFaqsScrolled) {
+                        umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.SCROLL_FAQ)
+                        isFaqsScrolled = true
+                    }
                 }
             })
         }
@@ -447,32 +510,38 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
     }
 
     private fun setupAdditionalInformation() {
-        var bulletData = "\u2022\t${umrahProduct.additionalInformation[0]}"
+        var bulletData = getString(R.string.umrah_pdp_additional_information_bullet, umrahProduct.additionalInformation[0])
         for (i in 1 until umrahProduct.additionalInformation.size) {
-            bulletData += "\n\u2022\t${umrahProduct.additionalInformation[i]}"
+            bulletData += getString(R.string.umrah_pdp_additional_information_bullet, umrahProduct.additionalInformation[i])
         }
         ticker_umrah_pdp_additional_info.setTextDescription(bulletData)
         ticker_umrah_pdp_additional_info.tickerTitle = getString(R.string.umrah_pdp_additional_information_title)
     }
 
     private fun setupPriceAndPurchaseButton() {
-        if (paramPurchase.totalPrice == 0) paramPurchase.totalPrice = umrahProduct.originalPrice
+        if (paramPurchase.totalPrice == 0) {
+            paramPurchase.totalPrice = umrahProduct.originalPrice
+        }
         tg_umrah_pdp_price.text = getRupiahFormat(paramPurchase.totalPrice)
         tg_umrah_pdp_price_start_from.text = getSlashedPrice(resources, umrahProduct.slashPrice)
         bt_umrah_pdp_buy_package.setOnClickListener {
             umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.CHOOSE_ROOM_TYPE_DOWN)
-            startActivityForResult(context?.let { it1 -> UmrahPdpDetailActivity.createIntent(it1, umrahProduct.slugName) }, REQUEST_PDP_DETAIL)
+            startActivityForResult(context?.let { it1 -> UmrahPdpDetailActivity.createIntent(it1, umrahProduct.slugName, umrahProduct.availableSeat) }, REQUEST_PDP_DETAIL)
         }
     }
 
-    private fun checkPackageAvailability() {
-        if (umrahProduct.availableSeat != 0) setupPriceAndPurchaseButton()
-        else showSoldOutPackage()
+    private fun initPackageAvailability() {
+        if (umrahProduct.availableSeat != 0) {
+            setupPriceAndPurchaseButton()
+        } else {
+            showSoldOutPackage()
+        }
     }
 
     private fun showSoldOutPackage() {
         tg_umrah_pdp_price_start_from.visibility = GONE
         tg_umrah_pdp_price.visibility = GONE
+        tg_umrah_pdp_include_visa_and_equipments.visibility = GONE
         tg_umrah_pdp_empty_price_label.visibility = VISIBLE
         bt_umrah_pdp_buy_package.buttonType = UnifyButton.Type.MAIN
         bt_umrah_pdp_buy_package.text = getString(R.string.umrah_pdp_change_search)
@@ -489,12 +558,31 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener {
                     it.arguments = Bundle().apply {
                         putString(EXTRA_SLUG_NAME, slugName)
                     }
+                    resetParamPurchase()
                 }
+
+        private fun resetParamPurchase() {
+            paramPurchase = ParamPurchase()
+        }
     }
 
     override fun onBackPressed() {
         if (!isDetached) {
             umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.CLICK_BACK)
         }
+    }
+
+    override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+        swipeToRefresh.isEnabled = umrah_pdp_collapsing_toolbar.height + verticalOffset >= 2 * ViewCompat.getMinimumHeight(umrah_pdp_collapsing_toolbar)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        umrah_pdp_app_bar_layout.addOnOffsetChangedListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        umrah_pdp_app_bar_layout.removeOnOffsetChangedListener(this)
     }
 }

@@ -15,12 +15,12 @@ import com.tokopedia.salam.umrah.search.di.UmrahSearchComponent
 import com.tokopedia.salam.umrah.search.presentation.fragment.UmrahSearchFragment
 
 class UmrahSearchActivity : BaseSimpleActivity(), HasComponent<UmrahSearchComponent> {
-    private var categorySlugName = ""
+    private var categorySlugName: String? = ""
     private var categoryTitle = ""
-    private var departureCityId = ""
-    private var departurePeriod = ""
-    private var priceMin = 0
-    private var priceMax = 0
+    private var departureCityId: String? = ""
+    private var departurePeriod: String? = ""
+    private var priceMin: Int? = 0
+    private var priceMax: Int? = 0
     private var durationDaysMin = 0
     private var durationDaysMax = 0
     private var sort = ""
@@ -28,6 +28,7 @@ class UmrahSearchActivity : BaseSimpleActivity(), HasComponent<UmrahSearchCompon
     override fun getNewFragment(): Fragment? =
             UmrahSearchFragment.getInstance(categorySlugName, departureCityId, departurePeriod,
                     priceMin, priceMax, durationDaysMin, durationDaysMax, sort)
+
 
     override fun getComponent(): UmrahSearchComponent =
             DaggerUmrahSearchComponent.builder()
@@ -62,20 +63,20 @@ class UmrahSearchActivity : BaseSimpleActivity(), HasComponent<UmrahSearchCompon
     }
 
     @SuppressLint("DefaultLocale")
-    private fun getCategoryIntent(uri: Uri?) {
-        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-        categorySlugName = uri!!.lastPathSegment
-        val titleArray = categorySlugName.split("-")
+    private fun getCategoryIntent(uri: Uri) {
+        categorySlugName = uri.lastPathSegment
+        val titleArray = categorySlugName?.split("-")
         categoryTitle = ""
-        for (title in titleArray) categoryTitle += title.capitalize() + " "
+        if (titleArray != null) {
+            for (title in titleArray) categoryTitle += title.capitalize() + " "
+        }
     }
 
-    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    private fun getSearchIntent(uri: Uri) {
-        if (!uri.getQueryParameter(PARAM_PRICE_MIN).isNullOrEmpty()) priceMin = uri.getQueryParameter(PARAM_PRICE_MIN).toInt()
-        if (!uri.getQueryParameter(PARAM_PRICE_MAX).isNullOrEmpty()) priceMax = uri.getQueryParameter(PARAM_PRICE_MAX).toInt()
-        if (!uri.getQueryParameter(PARAM_DEPARTURE_CITY_ID).isNullOrEmpty()) departureCityId = uri.getQueryParameter(PARAM_DEPARTURE_CITY_ID)
-        if (!uri.getQueryParameter(PARAM_DEPARTURE_PERIOD).isNullOrEmpty()) departurePeriod = uri.getQueryParameter(PARAM_DEPARTURE_PERIOD)
+    private fun getSearchIntent(uri: Uri?) {
+        if (!uri?.getQueryParameter(PARAM_PRICE_MIN).isNullOrEmpty()) priceMin = uri?.getQueryParameter(PARAM_PRICE_MIN)?.toInt()
+        if (!uri?.getQueryParameter(PARAM_PRICE_MAX).isNullOrEmpty()) priceMax = uri?.getQueryParameter(PARAM_PRICE_MAX)?.toInt()
+        if (!uri?.getQueryParameter(PARAM_DEPARTURE_CITY_ID).isNullOrEmpty()) departureCityId = uri?.getQueryParameter(PARAM_DEPARTURE_CITY_ID)
+        if (!uri?.getQueryParameter(PARAM_DEPARTURE_PERIOD).isNullOrEmpty()) departurePeriod = uri?.getQueryParameter(PARAM_DEPARTURE_PERIOD)
     }
 
     override fun onBackPressed() {
@@ -91,6 +92,7 @@ class UmrahSearchActivity : BaseSimpleActivity(), HasComponent<UmrahSearchCompon
 
     companion object {
         const val REQUEST_FILTER = 0x10
+        const val REQUEST_PDP = 0x11
 
         const val PARAM_DEPARTURE_CITY_ID = "dcity"
         const val PARAM_DEPARTURE_PERIOD = "dmonth"

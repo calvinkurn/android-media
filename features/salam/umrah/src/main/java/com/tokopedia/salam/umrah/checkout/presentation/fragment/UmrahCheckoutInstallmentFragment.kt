@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.Schemes
@@ -67,7 +68,7 @@ class UmrahCheckoutInstallmentFragment : BaseDaggerFragment(), UmrahCheckoutInst
                     adapter = umrahCheckoutInstallmentAdapter
                     layoutManager = LinearLayoutManager(
                             context,
-                            LinearLayoutManager.VERTICAL, false
+                            RecyclerView.VERTICAL, false
                     )
                 }
                 umrahCheckoutInstallmentAdapter.setList(this)

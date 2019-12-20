@@ -13,11 +13,8 @@ class UmrahDreamFundWidget @JvmOverloads constructor(context: Context, attrs: At
 
     init {
         View.inflate(context, R.layout.widget_umrah_dream_fund, this)
-        loadUmrahDreamFundContainerBg()
     }
 
-    private fun loadUmrahDreamFundContainerBg() {
-        val containerBg = context?.let { AppCompatResources.getDrawable(it, R.drawable.umrah_bg_dream_fund_widget) }
-        container_widget_umrah_dream_fund.background = containerBg
-    }
+
+
 }

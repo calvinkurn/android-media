@@ -12,6 +12,7 @@ import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductEntity
 import com.tokopedia.salam.umrah.search.data.model.ParamFilter
+import com.tokopedia.salam.umrah.search.util.SearchOrCategory
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -19,7 +20,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * @author by furqan on 20/10/2019
+ * @author by M on 16/12/2019
  */
 class UmrahSearchViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                val dispatcher: UmrahDispatchersProvider)
@@ -29,13 +30,19 @@ class UmrahSearchViewModel @Inject constructor(private val graphqlRepository: Gr
     val searchResult: LiveData<Result<List<UmrahSearchProduct>>>
         get() = privateSearchResult
 
-    fun setSearchParam(_searchParam: UmrahSearchProductDataParam) {
-        searchParam = _searchParam
+    private fun getSlugName() = searchParam.categorySlugName
+
+    fun setSearchParam(umrahSearchProductDataParam: UmrahSearchProductDataParam) {
+        searchParam = umrahSearchProductDataParam
+    }
+
+    private fun getSearchParam() = searchParam
+
+    fun setSortValue(sort: String) {
+        searchParam.sortMethod = sort
     }
 
     fun getSortValue() = searchParam.sortMethod
-
-    fun getSlugName() = searchParam.categorySlugName
 
     fun setFilter(paramFilter: ParamFilter) {
         paramFilter.let {
@@ -50,8 +57,13 @@ class UmrahSearchViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    fun setSortValue(sort: String) {
-        searchParam.sortMethod = sort
+    fun getFilter() = ParamFilter().apply {
+        departureCity = getSearchParam().departureCityId
+        departurePeriod = getSearchParam().departurePeriod
+        durationDaysMinimum = getSearchParam().durationDaysMin
+        durationDaysMaximum = getSearchParam().durationDaysMax
+        priceMinimum = getSearchParam().priceMin
+        priceMaximum = getSearchParam().priceMax
     }
 
     fun searchUmrahProducts(page: Int, searchQuery: String) {
@@ -69,8 +81,16 @@ class UmrahSearchViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
+    fun getSearchOrCategory(): SearchOrCategory =
+            if (getSlugName() != "") SearchOrCategory.CATEGORY
+            else SearchOrCategory.SEARCH
+
+    fun initSortValue(sort: String) {
+        if (getSortValue() == "") searchParam.sortMethod = sort
+    }
+
     companion object {
-        var searchParam: UmrahSearchProductDataParam = UmrahSearchProductDataParam()
+        private var searchParam: UmrahSearchProductDataParam = UmrahSearchProductDataParam()
         const val PARAM_UMRAH_SEARCH = "params"
     }
 }

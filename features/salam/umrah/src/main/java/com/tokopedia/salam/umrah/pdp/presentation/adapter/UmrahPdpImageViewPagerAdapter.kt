@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.salam.umrah.R
 import kotlinx.android.synthetic.main.layout_umrah_image_slider.view.*
@@ -38,5 +39,8 @@ class UmrahPdpImageViewPagerAdapter : PagerAdapter() {
         view.image_banner.loadImage(imageUrl, com.tokopedia.design.R.drawable.ic_loading_image)
     }
 
+    override fun destroyItem(container: View, position: Int, `object`: Any) {
+        (container as ViewPager).removeView(`object` as View?)
+    }
 }
 
