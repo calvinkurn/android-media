@@ -49,6 +49,14 @@ public class OrderListActivity extends BaseSimpleActivity
 
     }
 
+    @DeepLink(ApplinkConst.ORDER_LIST_WEBVIEW)
+    public static Intent getOrderList(Context context,Bundle extras){
+        String cat = extras.getString("query_param").substring(4);
+        extras.putString(ORDER_CATEGORY,cat);
+        Intent intent = new Intent(context, OrderListActivity.class);
+        return intent.putExtras(extras);
+    }
+
     @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
     public static Intent getProcessedIntent(Context context, Bundle extras) {
         return getMarketPlaceIntent(context, extras);
