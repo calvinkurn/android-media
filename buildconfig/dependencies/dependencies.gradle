@@ -279,7 +279,7 @@ ext {
     debugToolsDependencies = [
             stetho      : "com.facebook.stetho:stetho:1.4.2",
             stethoOkHttp: "com.facebook.stetho:stetho-okhttp3:1.4.2",
-            chuck       : "com.github.okasurya.chuck:library-no-op:1.0.4-alpha2",
+            chuck       : "com.github.okasurya.chuck:library:1.0.4-alpha2",
             chuckNoOp   : "com.github.okasurya.chuck:library-no-op:1.0.4-alpha2",
             toolargetool: "com.gu.android:toolargetool:0.1.3@aar",
             timber      : "com.jakewharton.timber:timber:4.7.1",
