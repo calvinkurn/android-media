@@ -122,7 +122,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Inject
     OrderListDetailPresenter presenter;
     private LinearLayout mainView;
-    private LinearLayout ViewRecomendItems;
+    private LinearLayout viewRecomendItems;
     private TextView statusLabel;
     private TextView statusValue;
     private TextView conditionalInfoText;
@@ -217,7 +217,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
         recommendationList = view.findViewById(R.id.recommendation_list);
         recommendListTitle = view.findViewById(R.id.recommend_title);
-        ViewRecomendItems = view.findViewById(R.id.recommend_items);
+        viewRecomendItems = view.findViewById(R.id.recommend_items);
         setMainViewVisible(View.GONE);
         itemsRecyclerView.setNestedScrollingEnabled(false);
         setUpScrollChangeListener();
@@ -971,6 +971,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void onRefresh(View view) {
         presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT), null);
+
     }
 
     private void setUpScrollChangeListener() {
@@ -992,16 +993,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setRecommendation(Object recommendationResponse) {
         RecommendationResponse rechargeWidgetResponse = (RecommendationResponse) recommendationResponse;
         if (rechargeWidgetResponse != null && rechargeWidgetResponse.getRechargeFavoriteRecommendationList() != null) {
-            if (rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getRecommendations().isEmpty()) {
-                ViewRecomendItems.setVisibility(View.GONE);
-            } else {
-                if (getContext() != null) {
-                    recommendListTitle.setText(rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getTitle());
-                    recommendationList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-                    recommendationList.setAdapter(new RecommendationMPAdapter(rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getRecommendations()));
-                }
+            if (!rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getRecommendations().isEmpty() && getContext() != null) {
+                viewRecomendItems.setVisibility(View.VISIBLE);
+                recommendListTitle.setText(rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getTitle());
+                recommendationList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                recommendationList.setAdapter(new RecommendationMPAdapter(rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getRecommendations()));
             }
         }
-
     }
 }

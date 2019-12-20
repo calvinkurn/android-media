@@ -8,14 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.transaction.R
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RecommendationsItem
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
@@ -106,20 +105,20 @@ class RecommendationMPAdapter(private val recommendationItems: List<Recommendati
         }
 
         fun renderProduct(element: RecommendationsItem) {
-            if (element.categoryName.isNullOrEmpty()) {
+            if (element.title.isNullOrEmpty()) {
                 productName.hide()
             } else {
                 productName.show()
-                productName.text = MethodChecker.fromHtml(element.categoryName)
+                productName.text = MethodChecker.fromHtml(element.title)
             }
         }
 
         fun renderSubtitle(element: RecommendationsItem) {
-            if (element.clientNumber.isNullOrEmpty()) {
+            if (element.description.isNullOrEmpty()) {
                 subtitle.hide()
             } else {
                 subtitle.show()
-                subtitle.text = MethodChecker.fromHtml(element.clientNumber)
+                subtitle.text = MethodChecker.fromHtml(element.description)
             }
 
             if (element.title.isNullOrEmpty() &&
@@ -138,7 +137,7 @@ class RecommendationMPAdapter(private val recommendationItems: List<Recommendati
             if (hasTagLabel(element)) {
                 footer.show()
                 renderLabel(element)
-              //  renderPrice(element)
+                //  renderPrice(element)
             } else {
                 footer.hide()
             }
@@ -185,22 +184,8 @@ class RecommendationMPAdapter(private val recommendationItems: List<Recommendati
         }
 
         private fun renderPrice(element: RecommendationsItem) {
-            Log.d("bhoo"," "+hasPrice(element))
             if (hasPrice(element)) {
-//
-//
-//                    pricePrefix.show()
-//                    pricePrefix.text = MethodChecker.fromHtml(element.productPrice.toString())
-//
-//
-////                if (element.originalPrice.isNullOrEmpty()) {
-////                    strikeThroughPrice.hide()
-////                } else {
-////                    strikeThroughPrice.show()
-////                    strikeThroughPrice.text = MethodChecker.fromHtml(element.originalPrice)
-////                    strikeThroughPrice.paintFlags = strikeThroughPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-////                }
-//
+
                 if (element.productPrice.toString().isNullOrEmpty()) {
                     price.hide()
                 } else {
@@ -210,11 +195,7 @@ class RecommendationMPAdapter(private val recommendationItems: List<Recommendati
 
             } else {
                 price.hide()
-//                pricePrefix.hide()
-//                strikeThroughPrice.hide()
-//            }
             }
-
         }
     }
 }

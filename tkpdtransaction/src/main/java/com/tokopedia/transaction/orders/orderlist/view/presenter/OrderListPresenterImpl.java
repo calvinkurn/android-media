@@ -902,7 +902,4 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         });
 
     }
-
-    public void refund(String actionButtonUri) {
-    }
 }

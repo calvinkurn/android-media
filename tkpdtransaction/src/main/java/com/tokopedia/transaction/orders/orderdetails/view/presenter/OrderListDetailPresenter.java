@@ -102,6 +102,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private boolean isdownloadable = false;
     private OrderDetails details;
     private List<Body> retryBody = new ArrayList<>();
+    ArrayList<String> categoryList;
+    String category;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -139,7 +141,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
         orderDetailsUseCase.addRequest(graphqlRequest);
         orderDetailsUseCase.addRequest(makegraphqlRequestForRecommendation());
-        orderDetailsUseCase.addRequest(makegraphqlRequestForMPRecommendation());
         orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -150,7 +151,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
                     CommonUtils.dumper("error occured" + e);
-                    Log.d("bhoo", "error ");
                     getView().hideProgressBar();
                 }
             }
@@ -161,22 +161,51 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     DetailsData data = response.getData(DetailsData.class);
                     setDetailsData(data.orderDetails());
                     orderDetails = data.orderDetails();
-                    List<Items> list = orderDetails.getItems();
-                    for(Items item:list){
-                        Log.d("bhoo" ,"cat"+item.getCategoryID()+"");
-
-                    }
 
                     if (orderCategory.equalsIgnoreCase("marketplace")) {
-                        RecommendationResponse recommendationResponse = response.getData(RecommendationResponse.class);
-                        getView().setRecommendation(recommendationResponse);
-                        Log.d("bhoo", recommendationResponse.getRechargeFavoriteRecommendationList() + "");
+                        List<Items> list = orderDetails.getItems();
+                        categoryList = new ArrayList<>();
+                        for (Items item : list) {
+                            categoryList.add(Integer.toString(item.getCategoryID()));
+                            categoryList.add(Integer.toString(item.getCategoryL1()));
+                            categoryList.add(Integer.toString(item.getCategoryL2()));
+                            categoryList.add(Integer.toString(item.getCategoryL3()));
+                        }
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            category = String.join(",", category);
+                        } else {
+                            category = category.toString().substring(1, category.toString().length() - 1);
+                        }
                     } else {
                         RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
                         getView().setRecommendation(rechargeWidgetResponse);
-                        Log.d("bhoo", "else " + rechargeWidgetResponse.getHomeWidget().getWidgetGrid());
                     }
                 }
+                getRecommendation();
+            }
+        });
+
+    }
+
+    public void getRecommendation() {
+        orderDetailsUseCase = new GraphqlUseCase();
+        orderDetailsUseCase.clearRequest();
+        orderDetailsUseCase.addRequest(makegraphqlRequestForMPRecommendation());
+        orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(GraphqlResponse response) {
+                RecommendationResponse recommendationResponse = response.getData(RecommendationResponse.class);
+                getView().setRecommendation(recommendationResponse);
+
             }
         });
     }
@@ -656,7 +685,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         GraphqlRequest graphqlRequestForMPRecommendation;
         Map<String, Object> variable = new HashMap<>();
         variable.put(DEVICE_ID, DEFAULT_DEVICE_ID);
-        variable.put(CATEGORY_IDS, "");
+        variable.put(CATEGORY_IDS, category);
         graphqlRequestForMPRecommendation = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.recommendation_mp), RecommendationResponse.class, variable);
