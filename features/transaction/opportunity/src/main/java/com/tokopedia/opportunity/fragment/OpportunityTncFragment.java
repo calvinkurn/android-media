@@ -27,8 +27,6 @@ import com.tokopedia.opportunity.listener.OpportunityView;
 import com.tokopedia.opportunity.presentation.ActionViewData;
 import com.tokopedia.opportunity.presenter.OpportunityPresenter;
 import com.tokopedia.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.BaseWebViewFragment;
 
 import javax.inject.Inject;
