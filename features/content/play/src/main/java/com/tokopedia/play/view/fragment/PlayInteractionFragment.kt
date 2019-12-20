@@ -561,7 +561,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
 
-
     //region set data
     /**
      * Emit data to ui component
