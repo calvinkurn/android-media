@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class BundleModule (private val bundle : Bundle){
+class BundleModule constructor(private val bundle : Bundle = Bundle()){
 
     @Provides
     @TokoPointScope
