@@ -4,13 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_umrah_widget_my_umrah"
-    android:layout_width="@dimen/dp_260"
+    android:layout_width="wrap_content"
     app:cardCornerRadius="@dimen/dp_8"
     android:layout_height="wrap_content"
     app:cardUseCompatPadding="true">
 
     <com.tokopedia.unifycomponents.ContainerUnify
-        android:layout_width="260dp"
+        android:layout_width="270dp"
         android:layout_height="126dp"
         app:container_color="BLUE">
 
@@ -50,12 +50,16 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_departure"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
+                android:ellipsize="end"
+                android:lines="1"
+                android:singleLine="true"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintLeft_toRightOf="@+id/iv_my_umrah"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tg_umrah_package"
                 app:typographyType="heading_4"
                 tools:text="Berangkat 256 hari lagi" />

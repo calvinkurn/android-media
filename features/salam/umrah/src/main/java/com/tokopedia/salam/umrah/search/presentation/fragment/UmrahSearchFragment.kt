@@ -248,13 +248,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     override fun getEmptyDataViewModel(): Visitable<*> {
         umrah_search_bottom_action_view.gone()
         val emptyModel = EmptyModel()
-        val imageUri = Uri.Builder()
-                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-                .authority(getString(R.string.umrah_search_empty_state_package_name))
-                .appendPath(resources.getResourceTypeName(R.drawable.umrah_img_empty_search_png))
-                .appendPath(resources.getResourceEntryName(R.drawable.umrah_img_empty_search_png))
-                .build()
-        emptyModel.urlRes = imageUri.toString()
+        emptyModel.iconRes = R.drawable.umrah_img_empty_search_png
         emptyModel.title = getString(R.string.umrah_search_empty_title)
 
         if (!isFilter) {
