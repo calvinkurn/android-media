@@ -108,10 +108,6 @@ class PlayFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun showToaster() {
-
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         playViewModel.destroy()
