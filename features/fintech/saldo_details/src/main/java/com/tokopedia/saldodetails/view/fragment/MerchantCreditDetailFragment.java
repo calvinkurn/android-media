@@ -35,10 +35,12 @@ import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
 import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 
 import javax.inject.Inject;
 
 import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS;
+import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID;
 
 public class MerchantCreditDetailFragment extends BaseDaggerFragment {
 
@@ -56,6 +58,8 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     private CardView mclParentCardView;
 
     private TextView mclBlockedStatusTV;
+    private SaveInstanceCacheManager saveInstanceCacheManager;
+    private int saveInstanceCachemanagerId;
 
     @Inject
     SaldoDetailsAnalytics saldoDetailsAnalytics;
@@ -66,7 +70,9 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_merchant_credit_details, container, false);
         Bundle bundle = getArguments();
-        merchantCreditDetails = bundle != null ? bundle.getParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS) : null;
+        saveInstanceCachemanagerId = bundle != null ? bundle.getInt(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID):0;
+        saveInstanceCacheManager=new SaveInstanceCacheManager(context,String.valueOf(saveInstanceCachemanagerId));
+        merchantCreditDetails=saveInstanceCacheManager.get(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS,GqlMerchantCreditResponse.class);
         initViews(view);
         if (merchantCreditDetails != null) {
             saldoDetailsAnalytics.eventMCLImpression(String.valueOf(merchantCreditDetails.getStatus()));

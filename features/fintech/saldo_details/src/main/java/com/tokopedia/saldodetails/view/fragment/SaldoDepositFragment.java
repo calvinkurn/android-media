@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -59,7 +60,6 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK;
-
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
@@ -131,6 +131,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private static final String IS_SELLER = "is_seller";
     private boolean showMclBlockTickerFirebaseFlag = false;
     private FirebaseRemoteConfigImpl remoteConfig;
+    private SaveInstanceCacheManager saveInstanceCacheManager;
+    public static final String BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID = "merchant_credit_details_id";
 
     public SaldoDepositFragment() {
     }
@@ -739,8 +741,11 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     public void showMerchantCreditLineWidget(GqlMerchantCreditResponse response) {
         merchantStatusLL.setVisibility(View.VISIBLE);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
-        getChildFragmentManager()
+        saveInstanceCacheManager=new SaveInstanceCacheManager(context,true);
+        saveInstanceCacheManager.put(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, response);
+        if (saveInstanceCacheManager.getId()!=null) {
+            bundle.putInt(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID, Integer.parseInt(saveInstanceCacheManager.getId()));
+        }        getChildFragmentManager()
                 .beginTransaction()
                 .replace(com.tokopedia.saldodetails.R.id.merchant_credit_line_widget, MerchantCreditDetailFragment.newInstance(bundle))
                 .commit();
