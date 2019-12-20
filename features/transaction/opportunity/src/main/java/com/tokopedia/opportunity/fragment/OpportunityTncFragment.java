@@ -79,6 +79,12 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loadWeb();
+    }
+
+    @Override
     public int setProgressBar() {
         return R.id.progressbar_opportunity;
     }
@@ -115,7 +121,7 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
     @Override
     protected String getUrl() {
         if(opportunityItemViewModel == null)
-            return null;
+            return "";
         return opportunityItemViewModel.getReplacementTnc();
     }
 
