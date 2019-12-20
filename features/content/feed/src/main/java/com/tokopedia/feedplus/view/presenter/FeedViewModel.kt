@@ -310,7 +310,7 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
         )
     }
 
-    private fun mappingOnboardingListData(pojoList: MutableList<DataItem>) : MutableList<InterestPickDataViewModel> {
+    private fun mappingOnboardingListData(pojoList: List<DataItem>) : MutableList<InterestPickDataViewModel> {
         val dataList: MutableList<InterestPickDataViewModel> = mutableListOf()
         for (pojo in pojoList) {
             dataList.add(InterestPickDataViewModel(

@@ -114,7 +114,7 @@ fun FeatureBody.createFeedTestInstance() {
     }
 }
 
-fun GetDynamicFeedFirstPageUseCase.getFeedFirstDataWithSample(data: MutableList<Visitable<*>>, cursor: String = "") {
+fun GetDynamicFeedFirstPageUseCase.getFeedFirstDataWithSample(data: List<Visitable<*>>, cursor: String = "") {
     coEvery {
         createObservable(any())
                 .toBlocking().single()
@@ -122,7 +122,7 @@ fun GetDynamicFeedFirstPageUseCase.getFeedFirstDataWithSample(data: MutableList<
             DynamicFeedFirstPageDomainModel(DynamicFeedDomainModel(postList = data, cursor = cursor), false)
 }
 
-fun GetDynamicFeedUseCase.getFeedNextDataWithSample(data: MutableList<Visitable<*>>) {
+fun GetDynamicFeedUseCase.getFeedNextDataWithSample(data: List<Visitable<*>>) {
     coEvery {
         createObservable(any())
                 .toBlocking().single()

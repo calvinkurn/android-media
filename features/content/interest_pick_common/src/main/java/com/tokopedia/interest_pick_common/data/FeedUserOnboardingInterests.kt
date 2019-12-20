@@ -7,7 +7,7 @@ data class FeedUserOnboardingInterests(
 
 		@SerializedName("data")
 	@Expose
-	var data: MutableList<DataItem> = mutableListOf(),
+	var data: List<DataItem> = listOf(),
 
 		@SerializedName("meta")
 	@Expose
