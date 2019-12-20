@@ -75,7 +75,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.CouponDetailActivity"
+            android:name=".view.coupondetail.CouponDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
             <intent-filter >

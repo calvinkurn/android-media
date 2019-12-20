@@ -6,7 +6,7 @@ import com.tokopedia.tokopoints.view.fragment.AddPointsFragment;
 import com.tokopedia.tokopoints.view.fragment.CatalogListItemFragment;
 import com.tokopedia.tokopoints.view.fragment.CatalogListingFragment;
 import com.tokopedia.tokopoints.view.fragment.CouponCatalogFragment;
-import com.tokopedia.tokopoints.view.fragment.CouponDetailFragment;
+import com.tokopedia.tokopoints.view.coupondetail.CouponDetailFragment;
 import com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment;
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryFragment;
 import com.tokopedia.tokopoints.view.fragment.SendGiftFragment;
@@ -16,7 +16,7 @@ import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment;
 import dagger.Component;
 
 @TokoPointScope
-@Component(dependencies = BaseAppComponent.class , modules = {ViewModelModule.class,TokopointsQueryModule.class})
+@Component(dependencies = BaseAppComponent.class )
 public interface TokoPointComponent {
 
     void inject(TokoPointsHomeFragmentNew fragment);
@@ -37,9 +37,7 @@ public interface TokoPointComponent {
 
     void inject(CouponListingStackedActivity activity);
 
-    void inject(CouponDetailFragment fragment);
 
-    void inject(PointHistoryFragment fragment);
 
     void inject(AddPointsFragment fragment);
 }
