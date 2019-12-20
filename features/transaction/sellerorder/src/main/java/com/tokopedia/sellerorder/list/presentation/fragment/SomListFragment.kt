@@ -142,7 +142,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun prepareLayout() {
-        refreshHandler = RefreshHandler(activity, view, this)
+        refreshHandler = RefreshHandler(swipe_refresh_layout, this)
         refreshHandler?.setPullEnabled(true)
         somListItemAdapter = SomListItemAdapter()
         somListItemAdapter.setActionListener(this)
