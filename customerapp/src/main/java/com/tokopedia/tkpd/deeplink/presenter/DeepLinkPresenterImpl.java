@@ -293,7 +293,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.ORDER_LIST:
                     Bundle bundle =  new Bundle();
-                    bundle.putString("query_param",uriData.getQuery());
+                    bundle.putString("url",uriData.toString());
                     RouteManager.route(context,bundle,ApplinkConst.ORDER_LIST_WEBVIEW);
                     screenName = "";
                     break;
