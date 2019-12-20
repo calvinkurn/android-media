@@ -122,14 +122,6 @@ fun GetDynamicFeedFirstPageUseCase.getFeedFirstDataWithSample(data: MutableList<
             DynamicFeedFirstPageDomainModel(DynamicFeedDomainModel(postList = data, cursor = cursor), false)
 }
 
-//fun GetDynamicFeedFirstPageUseCase.getErrorFeedData() {
-//    coEvery {
-//        createObservable(any())
-//                .toBlocking().single()
-//    } returns Throwable()
-//}
-
-
 fun GetDynamicFeedUseCase.getFeedNextDataWithSample(data: MutableList<Visitable<*>>) {
     coEvery {
         createObservable(any())
@@ -137,15 +129,6 @@ fun GetDynamicFeedUseCase.getFeedNextDataWithSample(data: MutableList<Visitable<
     } returns
             DynamicFeedDomainModel(postList = data)
 }
-//
-//fun GetInterestPickUseCase.getInterestPickDataWithSample(pojodata: MutableList<DataItem> ) {
-//    coEvery {
-//        execute(any(), any())
-//    } answers {
-//        val successResult = (firstArg() as (OnboardingData))
-//        successResult.feedUserOnboardingInterests.data = pojodata
-//    }
-//}
 
 fun GetInterestPickUseCase.getInterestPickDataWithSample(pojodata: MutableList<DataItem>, resultObserver: Observer<Result<OnboardingViewModel>>) {
     coEvery {
