@@ -189,9 +189,8 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
         int rootHeight = rootView.getHeight();
         int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
         int imageHeight = imageWidth;
-        int screenHeight = getScreenHeightWithoutStatusBar();
-        int imageMarginTop = (int) (screenHeight - (screenHeight * TokenMarginUtil.RATIO_IMAGE_MARGIN_TOP));
-
+        int imageMarginBottom = TokenMarginUtil.getEggMarginBottom(rootHeight);
+        int imageMarginTop = imageMarginBottom - imageHeight;
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) tokenEmptyImage.getLayoutParams();
         ivFullLp.width = imageWidth;
