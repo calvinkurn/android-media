@@ -21,7 +21,7 @@ object WebViewHelper {
     private const val JS_DOMAIN_PATTERN: String = "js.tokopedia.com"
     private const val KEY_PARAM_URL: String = "url"
     private const val PARAM_APPCLIENT_ID = "appClientId"
-    private const val HOST_TOKOPEDIA = "tokopedia.com"
+    private const val HOST_TOKOPEDIA = "tokopedia"
 
     @JvmStatic
     fun isUrlValid(url: String): Boolean {
@@ -89,7 +89,6 @@ object WebViewHelper {
             } catch (ex: Exception) {
                 //do nothing
             }
-
         }
 
         Log.d("WebviewHelper updated URL" , returnURl)
