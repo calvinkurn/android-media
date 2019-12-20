@@ -446,16 +446,18 @@ class CreateReviewFragment : BaseDaggerFragment() {
      * Fetch the animation from http URL and play the animation
      */
     private fun setLottieAnimationFromUrl(animationUrl: String) {
-        val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(this, animationUrl)
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(this, animationUrl)
 
-        lottieCompositionLottieTask.addListener { result ->
-            Log.e("CreateReviewFragment setLottieAnimationFromUrl", "Success ".plus(animationUrl))
-            imgAnimationView.setComposition(result)
-            imgAnimationView.playAnimation()
+            lottieCompositionLottieTask.addListener { result ->
+                Log.e("CreateReviewFragment setLottieAnimationFromUrl", "Success ".plus(animationUrl))
+                imgAnimationView.setComposition(result)
+                imgAnimationView.playAnimation()
+            }
+
+            lottieCompositionLottieTask.addFailureListener {
+                Log.e("CreateReviewFragment setLottieAnimationFromUrl", it.message) }
         }
-
-        lottieCompositionLottieTask.addFailureListener {
-            Log.e("CreateReviewFragment setLottieAnimationFromUrl", it.message) }
     }
 
     private fun renderBackgroundTransition(url: String) {
