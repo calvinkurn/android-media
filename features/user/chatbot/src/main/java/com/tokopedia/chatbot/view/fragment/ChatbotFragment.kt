@@ -351,6 +351,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
         mapMessageToList(visitable)
+        getViewState().hideEmptyMessage(visitable)
         getViewState().onCheckToHideQuickReply(visitable)
     }
 
@@ -361,6 +362,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun mapMessageToList(visitable: Visitable<*>) {
         when (visitable) {
             is QuickReplyListViewModel -> getViewState().onReceiveQuickReplyEvent(visitable)
+            is ChatActionSelectionBubbleViewModel -> getViewState().onReceiveQuickReplyEventWithActionButton(visitable)
+            is ChatRatingViewModel -> getViewState().onReceiveQuickReplyEventWithChatRating(visitable)
             else -> super.onReceiveMessageEvent(visitable)
         }
     }
@@ -388,11 +391,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    override fun onQuickReplyClicked(quickReplyListViewModel: QuickReplyListViewModel,
-                                     model: QuickReplyViewModel) {
-
+    override fun onQuickReplyClicked(model: QuickReplyViewModel) {
         presenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime(), opponentId)
-
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
@@ -653,8 +653,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         view?.let { mView -> Toaster.showErrorWithAction(mView, it.message.toString(), Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { }) }
     }
 
-    override fun onReceiveConnectionEvent(connectionDividerViewModel: ConnectionDividerViewModel) {
+    override fun onReceiveConnectionEvent(connectionDividerViewModel: ConnectionDividerViewModel, quickReplyList: List<QuickReplyViewModel>) {
         getViewState().showDividerViewOnConnection(connectionDividerViewModel)
+        getViewState().showLiveChatQuickReply(quickReplyList)
     }
 
     override fun isBackAllowed(isBackAllowed: Boolean) {
