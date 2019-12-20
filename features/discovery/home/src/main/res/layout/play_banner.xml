@@ -25,12 +25,22 @@
         app:typographyType="body_1"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:layout_constraintStart_toStartOf="parent"/>
-    <com.google.android.exoplayer2.ui.PlayerView
+    <com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
         android:id="@+id/video_player"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="12dp"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        app:show_play_buffering="when_playing"
+        app:layout_constraintTop_toBottomOf="@+id/description"/>
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
         app:use_controller="false"
+        app:surface_type="texture_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description"/>
@@ -138,6 +148,7 @@
         android:foreground="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
+        android:visibility="gone"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"

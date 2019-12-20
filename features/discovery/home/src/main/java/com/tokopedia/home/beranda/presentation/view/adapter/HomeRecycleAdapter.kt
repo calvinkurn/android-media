@@ -312,7 +312,7 @@ class HomeRecycleAdapter(private val adapterTypeFactory: HomeAdapterFactory, vis
                     currentSelected = -1
                 }
             }
-            holder.helper?.releasePlayer()
+            holder.helper?.playerPause()
         }
     }
 

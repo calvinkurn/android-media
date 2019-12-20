@@ -13,13 +13,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
+import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
 import com.tokopedia.home.beranda.presentation.view.helper.ExoThumbListener
 import com.tokopedia.home.beranda.presentation.view.helper.ExoUtil.visibleAreaOffset
 import com.tokopedia.home.beranda.presentation.view.helper.TokopediaPlayerHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-
 
 class PlayCardViewHolder(
         val view: View,
@@ -36,30 +36,35 @@ class PlayCardViewHolder(
     private var mThumbUrl: String = ""
     private var mVideoUrl: String = ""
 
-    private val videoPlayer = view.findViewById<PlayerView>(R.id.video_player)
+    private val videoPlayer = view.findViewById<TokopediaPlayView>(R.id.video_player)
 
     override fun bind(element: PlayCardViewModel) {
         mVideoUrl = element.url
         mThumbUrl = element.thumbnailUrl
-        volumeContainer.hide()
         volumeContainer.setOnClickListener {
             helper?.updateVideoMuted()
             volumeAsset.setImageResource(if (helper?.isPlayerVideoMuted() == true) R.drawable.ic_volume_mute_white_24dp else R.drawable.ic_volume_up_white_24dp)
         }
         play.setOnClickListener {
-            listener.onOpenPlayActivity(videoPlayer)
+            videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it) }
         }
     }
 
     fun createHelper() {
-        helper = TokopediaPlayerHelper.Builder(videoPlayer.context, videoPlayer)
-                .setAutoPlayOn(false)
-                .setToPrepareOnResume(false)
-                .setVideoUrls(mVideoUrl)
-                .setExoPlayerEventsListener(this)
-                .setThumbImageViewEnabled(this)
-                .setRepeatModeOn(true)
-                .create()
+        if(helper == null) {
+            helper = TokopediaPlayerHelper.Builder(videoPlayer.context, videoPlayer)
+                    .setAutoPlayOn(false)
+                    .setToPrepareOnResume(false)
+                    .setVideoUrls(mVideoUrl)
+                    .setExoPlayerEventsListener(this)
+                    .setThumbImageViewEnabled(this)
+                    .setRepeatModeOn(true)
+                    .create()
+        }
+
+        if(helper?.isPlayerNull() == true){
+            helper?.createPlayer(false)
+        }
     }
 
     override fun onThumbImageViewReady(imageView: ImageView) {

@@ -1,7 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
-import android.os.Bundle
-
 
 interface ExoPlayerControl {
     fun createPlayer(isToPrepare: Boolean)
@@ -17,5 +15,4 @@ interface ExoPlayerControl {
     fun onActivityResume()
     fun onActivityPause()
     fun onActivityStop()
-    fun onSaveInstanceState(outState: Bundle?)
 }

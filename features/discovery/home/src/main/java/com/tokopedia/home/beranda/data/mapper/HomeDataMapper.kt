@@ -59,7 +59,9 @@ class HomeDataMapper(
             var position = 1
             for (channel in homeData.dynamicHomeChannel.channels) {
                 if (position == 2 && !isCache){
-                    list.add(PlayCardViewModel().apply { url="https://www.vidio.com/videos/1559052/vjs_playlist.m3u8" ;thumbnailUrl = "https://cdn0-production-images-kly.akamaized.net/Y3MRGs3f3lKJj6OCxqfLK-jMfgU=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/thumbnails/2644554/original/016821600_1546994118-nba-i-cuplikan-pertandingan-lakers-107-vs-mavericks-97-ca246c.jpg" })
+//                    list.add(PlayCardViewModel().apply { url="http://www.exit109.com/~dnn/clips/RW20seconds_2.mp4"; thumbnailUrl = "https://cdn0-production-images-kly.akamaized.net/Y3MRGs3f3lKJj6OCxqfLK-jMfgU=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/thumbnails/2644554/original/016821600_1546994118-nba-i-cuplikan-pertandingan-lakers-107-vs-mavericks-97-ca246c.jpg" })
+                    list.add(PlayCardViewModel().apply { url="rtmp://fms.105.net/live/rmc1"; thumbnailUrl = "https://cdn0-production-images-kly.akamaized.net/Y3MRGs3f3lKJj6OCxqfLK-jMfgU=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/thumbnails/2644554/original/016821600_1546994118-nba-i-cuplikan-pertandingan-lakers-107-vs-mavericks-97-ca246c.jpg" })
+//                    list.add(PlayCardViewModel().apply { url="https://www.vidio.com/videos/1559052/vjs_playlist.m3u8" ;thumbnailUrl = "https://cdn0-production-images-kly.akamaized.net/Y3MRGs3f3lKJj6OCxqfLK-jMfgU=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/thumbnails/2644554/original/016821600_1546994118-nba-i-cuplikan-pertandingan-lakers-107-vs-mavericks-97-ca246c.jpg" })
                 }
                 if (channel.layout != null) {
                     if (!isCache) {

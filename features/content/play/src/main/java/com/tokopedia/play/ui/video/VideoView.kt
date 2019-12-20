@@ -1,5 +1,6 @@
 package com.tokopedia.play.ui.video
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,9 @@ class VideoView(container: ViewGroup) : UIView(container) {
     }
 
     fun setPlayer(exoPlayer: ExoPlayer) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.videoSurfaceView.transitionName = "playlah"
+        }
         view.player = exoPlayer
     }
 }

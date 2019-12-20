@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewParent
 import androidx.annotation.FloatRange
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 
 object ExoUtil {
     @FloatRange(from = 0.0, to = 1.0) //
-    fun visibleAreaOffset(player: PlayerView, container: ViewParent?): Float {
+    fun visibleAreaOffset(player: View, container: ViewParent?): Float {
         if (container == null) return 0.0f
         val playerView: View = player
         val drawRect = Rect()

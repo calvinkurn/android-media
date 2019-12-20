@@ -1,13 +1,10 @@
 package com.tokopedia.home.beranda.listener
 
 import androidx.fragment.app.FragmentManager
-import com.google.android.exoplayer2.ui.PlayerView
-
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.trackingoptimizer.TrackingQueue
-
-import java.util.HashMap
+import java.util.*
 
 /**
  * @author by errysuprayogi on 11/29/17.
@@ -39,7 +36,7 @@ interface HomeCategoryListener {
 
     fun openShop()
 
-    fun onOpenPlayActivity(videoPlayer: PlayerView)
+    fun onOpenPlayActivity(videoPlayer: android.view.View)
 
     fun actionAppLinkWalletHeader(appLinkBalance: String)
 
