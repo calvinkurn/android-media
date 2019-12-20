@@ -1,5 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter
 
-interface DiscoveryVisitable {
+interface BaseDataModel {
     fun type() : String
 }

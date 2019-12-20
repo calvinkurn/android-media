@@ -8,17 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.data.ComponentOneDataModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
-import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryVisitable
+import com.tokopedia.discovery2.viewcontrollers.adapter.BaseDataModel
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_discovery.view.*
 
 class DiscoveryFragment : Fragment() {
 
-    private lateinit var dataList: ArrayList<DiscoveryVisitable>
+    private lateinit var dataList: ArrayList<BaseDataModel>
 
     companion object {
         fun getInstance(endPoint: String?): Fragment {
@@ -40,37 +39,6 @@ class DiscoveryFragment : Fragment() {
 
     private fun initView(view: View) {
         dataList = ArrayList()
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-        dataList.add(ComponentOneDataModel())
-
-
-
-
-
         view.discovery_recyclerView.layoutManager = LinearLayoutManager(activity)
         val discoveryRecycleAdapter = DiscoveryRecycleAdapter()
         view.discovery_recyclerView.adapter = discoveryRecycleAdapter

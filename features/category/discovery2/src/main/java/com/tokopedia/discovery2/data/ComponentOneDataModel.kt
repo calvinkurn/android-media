@@ -1,8 +1,8 @@
 package com.tokopedia.discovery2.data
 
-import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryVisitable
+import com.tokopedia.discovery2.viewcontrollers.adapter.BaseDataModel
 
-class ComponentOneDataModel : DiscoveryVisitable {
+class ComponentOneDataModel : BaseDataModel {
 
     // To be Removed
     override fun type(): String {

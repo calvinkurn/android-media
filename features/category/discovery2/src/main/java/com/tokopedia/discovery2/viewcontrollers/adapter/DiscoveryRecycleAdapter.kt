@@ -8,21 +8,21 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFac
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
 class DiscoveryRecycleAdapter()
-    : RecyclerView.Adapter<AbstractViewHolder<DiscoveryVisitable>>() {
+    : RecyclerView.Adapter<AbstractViewHolder<BaseDataModel>>() {
 
-    private val componentList: ArrayList<DiscoveryVisitable> = ArrayList()
+    private val componentList: ArrayList<BaseDataModel> = ArrayList()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<DiscoveryVisitable> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<BaseDataModel> {
         val itemViewType: View =
                 LayoutInflater.from(parent.context).inflate(viewType, parent, false);
-        return DiscoveryHomeFactory.createViewHolder(viewType, itemViewType) as AbstractViewHolder<DiscoveryVisitable>
+        return DiscoveryHomeFactory.createViewHolder(viewType, itemViewType) as AbstractViewHolder<BaseDataModel>
     }
 
     override fun getItemCount(): Int {
         return componentList.size
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<DiscoveryVisitable>, position: Int) {
+    override fun onBindViewHolder(holder: AbstractViewHolder<BaseDataModel>, position: Int) {
         holder.bindView(componentList[position])
     }
 
@@ -31,7 +31,7 @@ class DiscoveryRecycleAdapter()
         return id ?: -1
     }
 
-    fun setDataList(dataList: List<DiscoveryVisitable>) {
+    fun setDataList(dataList: List<BaseDataModel>) {
         componentList.addAll(dataList)
         notifyDataSetChanged()
     }
