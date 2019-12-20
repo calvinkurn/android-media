@@ -3,8 +3,6 @@ package com.tokopedia.shop.open.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -22,7 +20,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
@@ -68,6 +70,8 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     public static final int MIN_SHOP_NAME_LENGTH = 3;
     public static final int MIN_SHOP_DOMAIN_LENGTH = 3;
     public static final int REQUEST_CODE_DISTRICTRECOMMENDATION = 1235;
+    public static final int REQUEST_CODE_PHONE_VERIFICATION = 1236;
+
     public static final int REQUEST_CODE_POSTAL_CODE = 1515;
     private static final String EXTRA_DISTRICTRECOMMENDATION = "district_recommendation_address";
     public static final String VALIDATE_DOMAIN_NAME_SHOP = "validate_domain_name_shop";
@@ -202,7 +206,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                 && getActivity().getApplicationContext() instanceof SellerModuleRouter) {
             Intent intent = ((SellerModuleRouter) getActivity().getApplicationContext())
                     .getPhoneVerificationActivityIntent(getActivity());
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_PHONE_VERIFICATION);
         }
     }
 
@@ -453,8 +457,12 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         switch (requestCode) {
+            case REQUEST_CODE_PHONE_VERIFICATION: {
+                if(resultCode != Activity.RESULT_OK && !GlobalConfig.isSellerApp())
+                    getActivity().finish();
+            }
+            break;
             case REQUEST_CODE_POSTAL_CODE:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     postalCode = data.getStringExtra(ShopOpenPostalCodeChooserFragment.INTENT_DATA_POSTAL_CODE);

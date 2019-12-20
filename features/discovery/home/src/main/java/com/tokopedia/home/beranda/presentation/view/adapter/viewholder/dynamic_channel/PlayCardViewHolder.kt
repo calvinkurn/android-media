@@ -1,153 +1,100 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
-import android.net.Uri
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.dynamicbanner.entity.PlayCard
-import com.tokopedia.dynamicbanner.entity.PlayCardHome
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
+import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
+import com.tokopedia.home.beranda.presentation.view.helper.ExoThumbListener
+import com.tokopedia.home.beranda.presentation.view.helper.ExoUtil.visibleAreaOffset
+import com.tokopedia.home.beranda.presentation.view.helper.TokopediaPlayerHelper
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 class PlayCardViewHolder(
         val view: View,
         val listener: HomeCategoryListener
-): AbstractViewHolder<PlayCardViewModel>(view) {
+): AbstractViewHolder<PlayCardViewModel>(view), ExoThumbListener, ExoPlayerListener {
 
-    private val imgBanner = view.findViewById<ImageView>(R.id.imgBanner)
-    private val chipPlayLive = view.findViewById<LinearLayout>(R.id.chipPlayLive)
-    private val chipPlayViewers = view.findViewById<LinearLayout>(R.id.chipPlayViewers)
-    private val txtTotalViewers = view.findViewById<TextView>(R.id.txtTotalViewers)
-    private val videoPlayer = view.findViewById<PlayerView>(R.id.playerView)
+    internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
+    private val volumeContainer = view.findViewById<FrameLayout>(R.id.volume)
+    private val play = view.findViewById<ImageView>(R.id.play)
+    private val volumeAsset = view.findViewById<ImageView>(R.id.volume_asset)
+    private val errorMessage = view.findViewById<TextView>(R.id.error_message)
+    var helper: TokopediaPlayerHelper? = null
 
-    private var playCardHome: PlayCardHome? = null
+    private var mThumbUrl: String = ""
+    private var mVideoUrl: String = ""
+
+    private val videoPlayer = view.findViewById<TokopediaPlayView>(R.id.video_player)
 
     override fun bind(element: PlayCardViewModel) {
-        element.getPlayCardHome()?.let { viewModel ->
-            this.playCardHome = viewModel //flag to preventing re-hit
-
-            bindCard(viewModel.playGetCardHome.data.card)
-
-            //impression tracker
-            if(element.getChannel() != null) {
-                HomePageTracking.eventEnhanceImpressionPlayBanner(view.context, element.getChannel())
-            }
-            itemView.setOnClickListener {
-                val appLink = viewModel.playGetCardHome.data.card.applink
-                with(view.context) {
-                    //event click tracker
-                    HomePageTracking.eventClickPlayBanner(this, element.getChannel())
-
-                    //start applink
-                    startActivity(RouteManager.getIntent(this, appLink))
-                }
-            }
+        mVideoUrl = element.url
+        mThumbUrl = element.thumbnailUrl
+        volumeContainer.setOnClickListener {
+            helper?.updateVideoMuted()
+            volumeAsset.setImageResource(if (helper?.isPlayerVideoMuted() == true) R.drawable.ic_volume_mute_white_24dp else R.drawable.ic_volume_up_white_24dp)
         }
-
-        if (playCardHome == null) {
-            listener.onGetPlayBanner(adapterPosition)
+        play.setOnClickListener {
+            videoPlayer.getSurfaceView()?.let { listener.onOpenPlayActivity(it) }
         }
     }
 
-    private fun bindCard(card: PlayCard) {
-        chipLive(card)
-        chipViewers(card)
-        loadVideo("https://www.w3schools.com/html/mov_bbb.mp4", object : PlayerStateCallback{
-            override fun onVideoDurationRetrieved(duration: Long, player: Player) {
+    fun createHelper() {
+        if(helper == null) {
+            helper = TokopediaPlayerHelper.Builder(videoPlayer.context, videoPlayer)
+                    .setAutoPlayOn(false)
+                    .setToPrepareOnResume(false)
+                    .setVideoUrls(mVideoUrl)
+                    .setExoPlayerEventsListener(this)
+                    .setThumbImageViewEnabled(this)
+                    .setRepeatModeOn(true)
+                    .create()
+        }
 
-            }
-
-            override fun onVideoBuffering(player: Player) {
-
-            }
-
-            override fun onStartedPlaying(player: Player) {
-
-            }
-
-            override fun onFinishedPlaying(player: Player) {
-                player.stop()
-            }
-        })
+        if(helper?.isPlayerNull() == true){
+            helper?.createPlayer(false)
+        }
     }
 
-    private fun loadVideo(url: String, callback: PlayerStateCallback){
-        if (url == null) return
-        val player = ExoPlayerFactory.newSimpleInstance(
-                itemView.context, DefaultRenderersFactory(itemView.context), DefaultTrackSelector(),
-                DefaultLoadControl()
-        )
-
-        player.playWhenReady = true
-        player.repeatMode = Player.REPEAT_MODE_ALL
-        // When changing track, retain the latest frame instead of showing a black screen
-        this.videoPlayer.setKeepContentOnPlayerReset(true)
-        // We'll show the controller
-        this.videoPlayer.useController = true
-        // Provide url to load the video from here
-        val mediaSource = ExtractorMediaSource.Factory(
-                DefaultHttpDataSourceFactory("exoplayer-codelab")
-        ).createMediaSource(Uri.parse(url))
-
-        player.prepare(mediaSource)
-
-        this.videoPlayer.player = player
-
-        this.videoPlayer.player.addListener(object : Player.EventListener {
-
-            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-
-                if (playbackState == Player.STATE_BUFFERING) callback.onVideoBuffering(player) // Buffering.. set progress bar visible here
-                if (playbackState == Player.STATE_READY){
-                    // [PlayerView] has fetched the video duration so this is the block to hide the buffering progress bar
-                    callback.onVideoDurationRetrieved(videoPlayer.player.duration, player)
-                }
-                if (playbackState == Player.STATE_READY && player.playWhenReady){
-                    // [PlayerView] has started playing/resumed the video
-                    callback.onStartedPlaying(player)
-                }
-            }
-        })
+    override fun onThumbImageViewReady(imageView: ImageView) {
+        Glide.with(itemView.context).load(mThumbUrl).override(200,100).diskCacheStrategy(DiskCacheStrategy.RESOURCE).skipMemoryCache(true).into(imageView)
     }
 
-    private fun chipLive(card: PlayCard) {
-        chipPlayLive.showWithCondition(card.isShowLive)
+    override fun onPlayerPlaying(currentWindowIndex: Int) {
+        volumeContainer.show()
     }
 
-    private fun chipViewers(card: PlayCard) {
-        chipPlayViewers.showWithCondition(card.isShowTotalView)
-        txtTotalViewers.text = card.totalView
+    override fun onPlayerPaused(currentWindowIndex: Int) {
+        errorMessage.hide()
+    }
+
+    override fun onPlayerBuffering(currentWindowIndex: Int) {
+        errorMessage.hide()
+    }
+
+    override fun onPlayerError(errorString: String?) {
+        errorMessage.text = errorString
+        errorMessage.show()
+    }
+
+    override fun releaseExoPlayerCalled() {
     }
 
     companion object {
-        const val ROUNDED_RADIUS = 20f
-        @LayoutRes val LAYOUT = R.layout.item_home_play_card
+        @LayoutRes val LAYOUT = R.layout.play_banner
     }
 
-}
+    fun wantsToPlay() = visibleAreaOffset(videoPlayer, itemView.parent) >= 0.65
 
-interface PlayerStateCallback {
-    /**
-     * Callback to when the [PlayerView] has fetched the duration of video
-     **/
-    fun onVideoDurationRetrieved(duration: Long, player: Player)
-
-    fun onVideoBuffering(player: Player)
-
-    fun onStartedPlaying(player: Player)
-
-    fun onFinishedPlaying(player: Player)
 }

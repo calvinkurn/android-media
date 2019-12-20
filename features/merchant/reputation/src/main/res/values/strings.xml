@@ -137,7 +137,9 @@
     <string name="review_text_3">Hai %s, tuliskan hal yang kamu <![CDATA[<b>kurang suka</b>]]> dari barang ini?</string>
     <string name="review_text_4">Hai %s, suka dengan barang ini? Yuk, berikan ulasan dan rekomendasikan barang ini!</string>
     <string name="review_text_5">Hai %s, suka barang ini? Beri ulasan dan rekomendasikan barang ini ke pembeli lain!</string>
-    <string name="anonymous_review_prefix">Kirim sebagai anonim %s</string>
+    <string name="review_already_submit">Ulasan untuk produk ini sudah kamu berikan.</string>
+    <string name="review_error_not_found">Produk yang ingin kamu berikan ulasan tidak ditemukan.</string>
+    <string name="anonymous_review_prefix">Kirim sebagai anonim</string>
     <string name="txt_btn_submit_review">Kirim Ulasan</string>
     <string name="review_msg_placeholder">Ulasan saya</string>
     <string name="txt_success_submit_review">Terima kasih %s sudah memberikan ulasanmu untuk barang ini</string>

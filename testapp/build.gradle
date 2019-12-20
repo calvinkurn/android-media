@@ -212,7 +212,6 @@ dependencies {
     implementation rootProject.ext.firebase.core
 
     // TO BE ADDED AS FEATURE REQUIREMENT
-    implementation project(rootProject.ext.features.home)
 
     implementation project(rootProject.ext.libraries.logger)
     implementation (rootProject.ext.debugToolsDependencies.timber){

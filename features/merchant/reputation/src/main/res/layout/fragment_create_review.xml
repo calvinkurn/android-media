@@ -8,21 +8,22 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:background="@color/white">
 
     <ScrollView
         android:id="@+id/create_review_container"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintBottom_toTopOf="@+id/btn_submit_container"
-        android:layout_height="0dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/img_review"
@@ -99,25 +100,25 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/txt_input_review"
+                style="@style/TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_14"
-                android:layout_marginEnd="@dimen/dp_14"
                 android:layout_marginTop="@dimen/dp_26"
+                android:layout_marginEnd="@dimen/dp_14"
+                android:hint="@string/review_msg_placeholder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_review_desc"
-                style="@style/TextInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/txt_review_desc">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_text_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/review_msg_placeholder"
-                    android:inputType="textMultiLine|textCapSentences"
                     android:gravity="top|start"
+                    android:inputType="textMultiLine|textCapSentences"
                     android:maxLines="10" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -126,10 +127,13 @@
                 android:id="@+id/rv_img_review"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_16"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:padding="@dimen/dp_16"
-                app:layout_constraintTop_toBottomOf="@id/txt_input_review" />
+                app:layout_constraintTop_toBottomOf="@id/txt_input_review"
+                tools:listitem="@layout/item_image_chooser_review" />
 
             <View
                 android:id="@+id/review_line"
@@ -211,6 +215,12 @@
             android:layout_gravity="center" />
 
     </FrameLayout>
+
+    <include
+        android:id="@+id/shimmering_create_review"
+        layout="@layout/partial_shimmering_create_review"
+        android:visibility="visible"
+        tools:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

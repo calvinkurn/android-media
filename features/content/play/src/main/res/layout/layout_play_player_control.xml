@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:id="@+id/fl_play_pause"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@id/exo_play"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:background="@null"
+            app:srcCompat="@drawable/ic_play_play_white" />
+
+        <ImageButton
+            android:id="@id/exo_pause"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:background="@null"
+            app:srcCompat="@drawable/ic_play_pause_white" />
+
+    </FrameLayout>
+
+    <com.google.android.exoplayer2.ui.DefaultTimeBar
+        android:id="@+id/exo_progress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        app:layout_constraintBottom_toBottomOf="@id/fl_play_pause"
+        app:layout_constraintEnd_toStartOf="@id/ll_video_time"
+        app:layout_constraintStart_toEndOf="@id/fl_play_pause"
+        app:layout_constraintTop_toTopOf="@id/fl_play_pause" />
+
+        <LinearLayout
+            android:id="@+id/ll_video_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/fl_play_pause"
+            app:layout_constraintBottom_toBottomOf="@id/fl_play_pause"
+            >
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/exo_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Neutral_N0"
+                app:typographyType="body_3"
+                tools:text="00:03"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Neutral_N0"
+                android:text="@string/play_duration_divider"
+                app:typographyType="body_3"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/exo_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Neutral_N0"
+                app:typographyType="body_3"
+                tools:text="03:19"
+                />
+
+        </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

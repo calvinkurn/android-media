@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.emoney.NFCUtils
 import com.tokopedia.emoney.data.EmoneyInquiry
 import com.tokopedia.emoney.data.EmoneyInquiryResponse
+import com.tokopedia.emoney.view.activity.EmoneyCheckBalanceNFCActivity
 import com.tokopedia.emoney.view.electronicmoney.MandiriCheckBalance
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -36,6 +37,7 @@ class EmoneyInquiryBalanceViewModel @Inject constructor(private val graphqlRepos
             data.emoneyInquiry.attributesEmoneyInquiry?.let {
                 it.formattedCardNumber = NFCUtils.formatCardUID(it.cardNumber)
                 it.operatorId = MandiriCheckBalance.EMONEY_OPERATOR_ID
+                it.issuer_id = EmoneyCheckBalanceNFCActivity.ISSUER_ID_EMONEY
             }
             onSuccess(mapAttributesParam, data.emoneyInquiry)
         }) {

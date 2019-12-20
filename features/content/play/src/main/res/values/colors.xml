@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="play_chat_text">#99FFFFFF</color>
+    <color name="play_chat_background">#6631353B</color>
+    <color name="play_pinned_chat_background">#B331353B</color>
+    <color name="play_pinned_action_background">#00B736</color>
+    <color name="play_loading_overlay_background">#B331353B</color>
+</resources>
