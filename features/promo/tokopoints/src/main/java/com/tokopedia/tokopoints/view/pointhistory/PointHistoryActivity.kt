@@ -10,11 +10,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.DaggerTokoPointComponent
-import com.tokopedia.tokopoints.di.TokoPointComponent
+import com.tokopedia.tokopoints.di.*
 
-class PointHistoryActivity : BaseSimpleActivity(), HasComponent<TokoPointComponent> {
-    private val tokoPointComponent: TokoPointComponent by lazy { initInjector() }
+class PointHistoryActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent> {
+    private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,12 +28,13 @@ class PointHistoryActivity : BaseSimpleActivity(), HasComponent<TokoPointCompone
         return PointHistoryFragment.newInstance(intent.extras)
     }
 
-    override fun getComponent(): TokoPointComponent {
+    override fun getComponent(): TokopointBundleComponent {
         return tokoPointComponent
     }
 
-    private fun initInjector() : TokoPointComponent {
-        return  DaggerTokoPointComponent.builder()
+    private fun initInjector() : TokopointBundleComponent {
+        return  DaggerTokopointBundleComponent.builder()
+                .bundleModule(BundleModule(Bundle()))
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
     }

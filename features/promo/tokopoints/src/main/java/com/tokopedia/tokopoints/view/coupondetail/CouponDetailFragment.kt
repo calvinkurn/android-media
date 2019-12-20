@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.fragment
+package com.tokopedia.tokopoints.view.coupondetail
 
 import android.content.Context
 import android.content.Intent
@@ -7,15 +7,11 @@ import android.os.CountDownTimer
 
 import com.google.android.material.snackbar.Snackbar
 
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 
 import android.text.TextUtils
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -25,9 +21,13 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.ViewFlipper
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -38,19 +38,19 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokoPointComponent
+import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity
 import com.tokopedia.tokopoints.view.contract.CouponDetailContract
-import com.tokopedia.tokopoints.view.customview.RoundButton
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.customview.SwipeCardView
+import com.tokopedia.tokopoints.view.fragment.CloseableBottomSheetFragment
+import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
+import com.tokopedia.tokopoints.view.model.CouponSwipeDetail
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
-import com.tokopedia.tokopoints.view.presenter.CouponDetailPresenter
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.webview.TkpdWebView
 
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -63,51 +63,106 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
-import com.tokopedia.tokopoints.view.util.getLessDisplayData
 import com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE
 import com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING
 import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
+import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
+import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
 import kotlinx.android.synthetic.main.tp_layout_swipe_coupon_code.*
 import kotlinx.android.synthetic.main.tp_layput_container_swipe.*
 
+
 class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, View.OnClickListener {
-    private var mContainerMain: ViewFlipper? = null
     private var mSubscriptionCouponTimer: Subscription? = null
     private var mRefreshRepeatCount = 0
-    private var mCouponRealCode: String? = null
     private var mCouponName: String? = null
     var mTimer: CountDownTimer? = null
 
     @Inject
-    lateinit var mPresenter: CouponDetailPresenter
-    private var llBottomBtn: View? = null
+    lateinit var viewModelFactory: ViewModelFactory
+
+    val mPresenter: CouponDetailViewModel by lazy { ViewModelProviders.of(this, viewModelFactory).get(CouponDetailViewModel::class.java) }
+
     private var mRealCode: String? = null
     private var mBottomSheetFragment: CloseableBottomSheetFragment? = null
-    private var mServerErrorView: ServerErrorView? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
         val view = inflater.inflate(R.layout.tp_fragment_coupon_detail, container, false)
-        initViews(view)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mPresenter!!.attachView(this)
+        initObserver()
         initListener()
 
-        if (TextUtils.isEmpty(arguments?.getString(CommonConstant.EXTRA_COUPON_CODE))) {
-            activity?.finish()
-            return
-        }
-
-        mPresenter!!.getCouponDetail(arguments!!.getString(CommonConstant.EXTRA_COUPON_CODE))
     }
 
-    override fun onDestroy() {
-        mPresenter!!.destroyView()
+    private fun initObserver() {
+        obserserFinish()
+        observeCouponDetail()
+        observeSwipeDetail()
+        observeOnSwipeCoupon()
+        observePinPage()
+        observeRefetchCoupon()
+        onbserveOnRedeemCoupon()
+    }
 
+    private fun obserserFinish() = mPresenter.finish.observe(this, Observer {
+        it?.let {
+            activity?.finish()
+        }
+    })
+
+    private fun onbserveOnRedeemCoupon() = mPresenter.onRedeemCoupon.observe(this, Observer {
+        it?.let {
+            when (it) {
+                is ErrorMessage -> RouteManager.route(context, it.data)
+                is Success -> RouteManager.route(context, it.data)
+            }
+            return@let
+        }
+    })
+
+    private fun observeRefetchCoupon() = mPresenter.onReFetch.observe(this, Observer {
+        it?.let {
+            when (it) {
+                is ErrorMessage -> onRealCodeReFreshError()
+                is Success -> onRealCodeReFresh(it.data)
+            }
+        }
+    })
+
+    private fun observePinPage() = mPresenter.pinPageData.observe(this, Observer {
+        it?.let { showPinPage(it.code, it.pinText) }
+    })
+
+    private fun observeOnSwipeCoupon() = mPresenter.onCouponSwipe.observe(this, Observer {
+        it.let {
+            when (it) {
+                is ErrorMessage -> onSwipeError(it.data)
+                is Success -> onSwipeResponse(it.data, "", "")
+            }
+        }
+    })
+
+    private fun observeSwipeDetail() = mPresenter.swipeDetail.observe(this, Observer {
+        it?.let { setSwipeUi(it) }
+    })
+
+    private fun observeCouponDetail() = mPresenter.detailLiveData.observe(this, Observer {
+        it?.let {
+            when (it) {
+                is Loading -> showLoader()
+                is ErrorMessage -> showError(NetworkDetector.isConnectedToInternet(context))
+                is Success -> setCouponToUi(it.data)
+            }
+        }
+    })
+
+
+    override fun onDestroy() {
         if (mTimer != null) {
             mTimer!!.cancel()
             mTimer = null
@@ -130,28 +185,24 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     override fun showLoader() {
-        mContainerMain!!.displayedChild = CONTAINER_LOADER
+        container?.displayedChild = CONTAINER_LOADER
     }
 
     override fun showError(networkError: Boolean) {
-        mContainerMain!!.displayedChild = CONTAINER_ERROR
-        mServerErrorView!!.showErrorUi(networkError)
+        container?.displayedChild = CONTAINER_ERROR
+        server_error_view?.showErrorUi(networkError)
     }
 
     override fun hideLoader() {
-        mContainerMain!!.displayedChild = CONTAINER_DATA
+        container?.displayedChild = CONTAINER_DATA
     }
 
     override fun populateDetail(data: CouponValueEntity) {
-        mContainerMain!!.postDelayed({ setCouponToUi(data) }, CommonConstant.UI_SETTLING_DELAY_MS2.toLong())
+        container?.postDelayed({ setCouponToUi(data) }, CommonConstant.UI_SETTLING_DELAY_MS2.toLong())
     }
 
     override fun getActivityContext(): Context? {
         return activity
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
     }
 
     override fun getScreenName(): String {
@@ -159,7 +210,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     override fun initInjector() {
-        getComponent(TokoPointComponent::class.java).inject(this)
+        getComponent(TokopointBundleComponent::class.java).inject(this)
     }
 
     override fun onClick(source: View) {
@@ -168,17 +219,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
     }
 
-    private fun initViews(view: View) {
-        mContainerMain = view.findViewById(R.id.container)
-        llBottomBtn = view.findViewById(R.id.ll_bottom_button)
-        mServerErrorView = view.findViewById(R.id.server_error_view)
-    }
 
     private fun initListener() {
-        if (view == null) {
-            return
-        }
-        mServerErrorView!!.setErrorButtonClickListener { view -> mPresenter!!.getCouponDetail(arguments!!.getString(CommonConstant.EXTRA_COUPON_CODE)) }
+        server_error_view?.setErrorButtonClickListener { view -> mPresenter.onErrorButtonClick() }
     }
 
     override fun openWebView(url: String) {
@@ -186,202 +229,72 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     override fun showRedeemCouponDialog(cta: String, code: String, title: String) {
-        val adb = AlertDialog.Builder(activityContext!!)
-        adb.setTitle(R.string.tp_label_use_coupon)
-        val messageBuilder = StringBuilder()
-                .append(getString(R.string.tp_label_coupon))
-                .append(" ")
-                .append("<strong>")
-                .append(title)
-                .append("</strong>")
-                .append(" ")
-                .append(getString(R.string.tp_mes_coupon_part_2))
-        adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
-        adb.setPositiveButton(R.string.tp_label_use) { dialogInterface, i ->
-            //Call api to validate the coupon
-            mPresenter!!.redeemCoupon(code, cta)
+        context?.let {
+            val adb = AlertDialog.Builder(context!!)
+            adb.setTitle(R.string.tp_label_use_coupon)
+            val messageBuilder = StringBuilder()
+                    .append(getString(R.string.tp_label_coupon))
+                    .append(" ")
+                    .append("<strong>")
+                    .append(title)
+                    .append("</strong>")
+                    .append(" ")
+                    .append(getString(R.string.tp_mes_coupon_part_2))
+            adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
+            adb.setPositiveButton(R.string.tp_label_use) { dialogInterface, i ->
+                //Call api to validate the coupon
+                mPresenter.redeemCoupon(code, cta)
 
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                    title)
+                AnalyticsTrackerUtil.sendEvent(context,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                        AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                        title)
+            }
+            adb.setNegativeButton(R.string.tp_label_later) { dialogInterface, i ->
+                AnalyticsTrackerUtil.sendEvent(context,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                        AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                        title)
+            }
+            val dialog = adb.create()
+            dialog.show()
+            decorateDialog(dialog)
         }
-        adb.setNegativeButton(R.string.tp_label_later) { dialogInterface, i ->
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                    title)
-        }
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
+
     }
 
-    override fun showConfirmRedeemDialog(cta: String, code: String, title: String) {
-        val adb = AlertDialog.Builder(activityContext!!)
-        adb.setNegativeButton(R.string.tp_label_use) { dialogInterface, i ->
-            showRedeemCouponDialog(cta, code, title)
-
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                    title)
-        }
-
-        adb.setPositiveButton(R.string.tp_label_view_coupon
-        ) { dialogInterface, i ->
-            startActivity(CouponListingStackedActivity.getCallingIntent(activityContext))
-
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_KUPON,
-                    "")
-        }
-
-        adb.setTitle(R.string.tp_label_successful_exchange)
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-
-        AnalyticsTrackerUtil.sendEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
-                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                AnalyticsTrackerUtil.ActionKeys.VIEW_REDEEM_SUCCESS,
-                title)
-    }
-
-    override fun showValidationMessageDialog(item: CatalogsValueEntity, title: String?, message: String, resCode: Int) {
-        val adb = AlertDialog.Builder(activityContext!!)
-        val labelPositive: String
-        var labelNegative: String? = null
-
-        when (resCode) {
-            CommonConstant.CouponRedemptionCode.LOW_POINT -> {
-                labelPositive = getString(R.string.tp_label_shopping)
-                labelNegative = getString(R.string.tp_label_later)
-            }
-            CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                labelPositive = getString(R.string.tp_label_complete_profile)
-                labelNegative = getString(R.string.tp_label_later)
-            }
-            CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                labelPositive = getString(R.string.tp_label_exchange)
-                labelNegative = getString(R.string.tp_label_betal)
-            }
-            CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> labelPositive = getString(R.string.tp_label_ok)
-            else -> labelPositive = getString(R.string.tp_label_ok)
-        }
-
-        if (title == null || title.isEmpty()) {
-            adb.setTitle(R.string.tp_label_exchange_failed)
-        } else {
-            adb.setTitle(title)
-        }
-
-        adb.setMessage(MethodChecker.fromHtml(message))
-
-        if (labelNegative != null && !labelNegative.isEmpty()) {
-            adb.setNegativeButton(labelNegative) { dialogInterface, i ->
-                when (resCode) {
-                    CommonConstant.CouponRedemptionCode.LOW_POINT -> AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                            "")
-                    CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                            "")
-                    CommonConstant.CouponRedemptionCode.SUCCESS -> AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_BATAL,
-                            title)
-                }
-            }
-        }
-
-        adb.setPositiveButton(labelPositive) { dialogInterface, i ->
-            when (resCode) {
-                CommonConstant.CouponRedemptionCode.LOW_POINT -> {
-                    RouteManager.route(context, ApplinkConst.HOME)
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_BELANJA,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> {
-                    dialogInterface.cancel()
-
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KUOTA_HABIS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_OK,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                    startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
-
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                    mPresenter!!.startSaveCoupon(item)
-
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                            title)
-                }
-                else -> dialogInterface.cancel()
-            }
-        }
-
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-    }
 
     override fun showRedeemFullError(item: CatalogsValueEntity, title: String, desc: String) {
 
     }
 
     override fun onRealCodeReFresh(realCode: String?) {
-        if (view == null || mSubscriptionCouponTimer == null) {
+        if (mSubscriptionCouponTimer == null) {
             return
         }
-
         try {
-            this.mRealCode = realCode
-            val btnAction2 = view!!.findViewById<TextView>(com.tokopedia.session.R.id.btn_continue)
-            val progressBar = view!!.findViewById<ProgressBar>(R.id.progress_refetch_code)
+            view?.apply {
+                this@CouponDetailFragment.mRealCode = realCode
+                if (TextUtils.isEmpty(realCode)) {
+                    btn_continue.setText(R.string.tp_label_use)
+                    btn_continue.isEnabled = true
+                    progress_refetch_code.visibility = View.GONE
+                    btn_continue.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.design.R.color.white))
+                    mSubscriptionCouponTimer?.unsubscribe()
+                    return
+                }
 
-            if (realCode != null && !realCode.isEmpty()) {
-                btnAction2.setText(R.string.tp_label_use)
-                btnAction2.isEnabled = true
-                progressBar.visibility = View.GONE
-                btnAction2.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.design.R.color.white))
-                mSubscriptionCouponTimer!!.unsubscribe()
-                return
+                if (mRefreshRepeatCount >= CommonConstant.MAX_COUPON_RE_FETCH_COUNT) {
+                    btn_continue.setText(R.string.tp_label_refresh_repeat)
+                    btn_continue.isEnabled = true
+                    progress_refetch_code.visibility = View.GONE
+                    btn_continue.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.design.R.color.white))
+                    mSubscriptionCouponTimer?.unsubscribe()
+                }
             }
 
-            if (mRefreshRepeatCount >= CommonConstant.MAX_COUPON_RE_FETCH_COUNT) {
-                btnAction2.setText(R.string.tp_label_refresh_repeat)
-                btnAction2.isEnabled = true
-                progressBar.visibility = View.GONE
-                btnAction2.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.design.R.color.white))
-                mSubscriptionCouponTimer!!.unsubscribe()
-            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -421,11 +334,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
     }
 
-    private fun setCouponToUi(data: CouponValueEntity?) {
-        if (view == null || data == null || data.isEmpty) {
+    private fun setCouponToUi(data: CouponValueEntity) {
+        if (view == null || data.isEmpty) {
             return
         }
-
+        hideLoader()
         mCouponName = data.title
         val description = view!!.findViewById<TextView>(R.id.tv_title)
         val label = view!!.findViewById<TextView>(R.id.text_time_label)
@@ -437,7 +350,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         val textMinExchangeLabel = view!!.findViewById<TextView>(R.id.tv_min_txn_label)
         val imgMinExchange = view!!.findViewById<ImageView>(R.id.iv_rp)
         val progressBar = view!!.findViewById<ProgressBar>(R.id.progress_refetch_code)
-        val actionContainer = view!!.findViewById<ViewFlipper>(R.id.ll_container_button)
 
         description.text = data.title
         ImageHandler.loadImageFitCenter(imgBanner.context, imgBanner, data.imageUrlMobile)
@@ -486,9 +398,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
         this.mRealCode = data.realCode
         btnAction2.setOnClickListener { v ->
-            if (!TextUtils.isEmpty(mRealCode)) {
-                mPresenter!!.showRedeemCouponDialog(data.cta, mCouponRealCode, data.title)
-
+            val code = mRealCode as String
+            if (!TextUtils.isEmpty(code)) {
+                showRedeemCouponDialog(data.cta, code, data.title)
                 AnalyticsTrackerUtil.sendEvent(context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                         AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
@@ -500,14 +412,13 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     btnAction2.setTextColor(resources.getColor(com.tokopedia.abstraction.R.color.black_12))
                     progressBar.visibility = View.VISIBLE
                     btnAction2.text = ""
-                    mPresenter!!.reFetchRealCode(arguments!!.getString(CommonConstant.EXTRA_COUPON_CODE))
+                    mPresenter.reFetchRealCode()
                 }
             }
         }
         setupInfoPager(data.howToUse, data.tnc)
 
         if (data.realCode != null && !data.realCode.isEmpty()) {
-            mCouponRealCode = data.realCode
             btnAction2.setText(R.string.tp_label_use)
             btnAction2.isEnabled = true
             btnAction2.setTextColor(resources.getColor(com.tokopedia.design.R.color.white))
@@ -532,7 +443,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
                         override fun onNext(aLong: Long?) {
                             if (arguments != null && arguments!!.getString(CommonConstant.EXTRA_COUPON_CODE) != null) {
-                                mPresenter!!.reFetchRealCode(arguments!!.getString(CommonConstant.EXTRA_COUPON_CODE))
+                                mPresenter.reFetchRealCode()
                                 mRefreshRepeatCount++
                             }
                         }
@@ -541,47 +452,43 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
         addCountDownTimer(data, value, btnAction2)
 
-        if (data.swipe != null && data.swipe.isNeedSwipe) {
-            actionContainer.displayedChild = CONTAINER_SWIPE
-            card_swipe?.apply {
-                setTitle(data.swipe.text)
-                setOnSwipeListener(object : SwipeCardView.OnSwipeListener {
-                    override fun onComplete() {
-                        if (data.swipe.pin.isPinRequire) {
-                            showPinPage(data.realCode, data.swipe.pin.text)
-                        } else {
-                            mPresenter!!.swipeMyCoupon(data.realCode, "") //Empty for online partner
-                        }
-
-                        AnalyticsTrackerUtil.sendEvent(activityContext,
-                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                                AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
-                                AnalyticsTrackerUtil.ActionKeys.SWIPE_COUPON,
-                                "")
-                    }
-
-                    override fun onPartialSwipe() {
-                        AnalyticsTrackerUtil.sendEvent(activityContext,
-                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                                AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
-                                AnalyticsTrackerUtil.ActionKeys.SWIPE_COUPON,
-                                "")
-                    }
-                })
-                if (data.swipe.partnerCode != null && !data.swipe.partnerCode.isEmpty()) {
-                    couponCode = data.swipe.partnerCode
-                }
-                showBarCodeView(data.swipe.note, "", "")
-
-            }
-
-        }
         //Coupon impression ga
         AnalyticsTrackerUtil.sendEvent(context,
                 AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
                 AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
                 AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON_DETAIL,
                 mCouponName)
+    }
+
+
+    private fun setSwipeUi(swipeDetail: CouponSwipeDetail) = view?.apply {
+        ll_container_button.displayedChild = CONTAINER_SWIPE
+        card_swipe?.apply {
+            setTitle(swipeDetail.text)
+            setOnSwipeListener(object : SwipeCardView.OnSwipeListener {
+                override fun onComplete() {
+                    mPresenter.onSwipeComplete()
+                    AnalyticsTrackerUtil.sendEvent(activityContext,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                            AnalyticsTrackerUtil.ActionKeys.SWIPE_COUPON,
+                            "")
+                }
+
+                override fun onPartialSwipe() {
+                    AnalyticsTrackerUtil.sendEvent(activityContext,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                            AnalyticsTrackerUtil.ActionKeys.SWIPE_COUPON,
+                            "")
+                }
+            })
+            if (swipeDetail.partnerCode != null && !swipeDetail.partnerCode.isEmpty()) {
+                couponCode = swipeDetail.partnerCode
+            }
+            showBarCodeView(swipeDetail.note, "", "")
+
+        }
     }
 
 
@@ -592,7 +499,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
             tnc_see_more.setOnClickListener { v -> loadWebViewInBottomsheet(tnc, getString(R.string.tnc_coupon_catalog)) }
             how_to_use_see_more.setOnClickListener { v -> loadWebViewInBottomsheet(info, getString(R.string.how_to_use_coupon_catalog)) }
-            llBottomBtn!!.visibility = View.VISIBLE
+            ll_bottom_button.visibility = View.VISIBLE
         }
     }
 
@@ -612,7 +519,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     private fun addCountDownTimer(item: CouponValueEntity, label: Typography, btnContinue: TextView) {
         if (mTimer != null || view == null) {
-            mTimer!!.cancel()
+            mTimer?.cancel()
         }
 
         if (item.usage.activeCountDown < 1) {
@@ -683,16 +590,16 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         showBarCodeView(data.note, qrCodeLink, barCodeLink)
     }
 
-    private fun showBarCodeView(note: String?, qrCodeLink: String?, barCodeLink: String?) {
+    private fun showBarCodeView(note: String?, qrCodeLink: String, barCodeLink: String) {
         barcode_container?.apply {
             visibility = View.GONE
-            if (qrCodeLink != null && !qrCodeLink.isEmpty()) {
+            if (!qrCodeLink.isEmpty()) {
                 btn_qrcode.visibility = View.VISIBLE
                 view_code_separator.visibility = View.VISIBLE
                 text_swipe_note.gravity = Gravity.LEFT
             }
 
-            if (barCodeLink != null && !barCodeLink.isEmpty()) {
+            if (!barCodeLink.isEmpty()) {
                 btn_barcode.visibility = View.VISIBLE
                 text_swipe_note.gravity = Gravity.LEFT
             }
@@ -718,17 +625,12 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     fun showPinPage(code: String, pinInfo: String) {
-        if (activity == null || activity!!.isFinishing) {
-            return
-        }
         val bundle = Bundle()
         bundle.putString(CommonConstant.EXTRA_PIN_INFO, pinInfo)
         bundle.putString(CommonConstant.EXTRA_COUPON_ID, code)
         val fragment = ValidateMerchantPinFragment.newInstance(bundle)
         fragment.setmValidatePinCallBack { couponSwipeUpdate ->
-            if (mBottomSheetFragment != null) {
-                mBottomSheetFragment!!.dismiss()
-            }
+            mBottomSheetFragment?.dismiss()
             card_swipe?.couponCode = couponSwipeUpdate.partnerCode
             showBarCodeView(couponSwipeUpdate.note, "", "")
         }
@@ -743,7 +645,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     }
 
                 })
-        mBottomSheetFragment?.showNow(activity!!.supportFragmentManager, "")
+        mBottomSheetFragment?.showNow(activity?.supportFragmentManager, "")
     }
 
 

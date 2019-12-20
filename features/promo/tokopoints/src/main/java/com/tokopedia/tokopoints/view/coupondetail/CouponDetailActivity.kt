@@ -10,18 +10,21 @@ import androidx.fragment.app.Fragment
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.DaggerTokoPointComponent
+import com.tokopedia.tokopoints.di.BundleModule
+import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokoPointComponent
-import com.tokopedia.tokopoints.view.fragment.CouponDetailFragment
+import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 
-class CouponDetailActivity : BaseSimpleActivity(), HasComponent<TokoPointComponent> {
-    private var tokoPointComponent: TokoPointComponent? = null
-    private var bundle: Bundle? = null
+class CouponDetailActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent> {
+     val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
+
+     private var bundle: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         forDeeplink()
@@ -37,21 +40,20 @@ class CouponDetailActivity : BaseSimpleActivity(), HasComponent<TokoPointCompone
         bundle = intent.extras
         if (intent.data != null) {
             bundle = UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_COUPON_DETAIL, intent.data, bundle)
-
         }
     }
 
     override fun getNewFragment(): Fragment {
-        return CouponDetailFragment.newInstance(bundle)
+        return CouponDetailFragment.newInstance(bundle ?: Bundle())
     }
 
-    override fun getComponent(): TokoPointComponent? {
-        if (tokoPointComponent == null) initInjector()
+    override fun getComponent(): TokopointBundleComponent {
         return tokoPointComponent
     }
 
-    private fun initInjector() {
-        tokoPointComponent = DaggerTokoPointComponent.builder()
+    private fun initInjector() : TokopointBundleComponent {
+        return DaggerTokopointBundleComponent.builder()
+                .bundleModule(BundleModule(bundle ?: Bundle()))
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
     }
