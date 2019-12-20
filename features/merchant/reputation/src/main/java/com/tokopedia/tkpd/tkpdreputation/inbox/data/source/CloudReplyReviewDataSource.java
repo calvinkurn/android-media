@@ -1,11 +1,14 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReplyReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Observable;
 
@@ -16,19 +19,23 @@ import rx.Observable;
 public class CloudReplyReviewDataSource {
     private final ReputationService reputationService;
     private final ReplyReviewMapper replyReviewMapper;
+    private UserSessionInterface userSession;
 
     public CloudReplyReviewDataSource(ReputationService reputationService,
-                                      ReplyReviewMapper replyReviewMapper) {
+                                      ReplyReviewMapper replyReviewMapper,
+                                      UserSessionInterface userSession) {
         this.reputationService = reputationService;
         this.replyReviewMapper = replyReviewMapper;
+        this.userSession = userSession;
     }
 
     public Observable<SendReplyReviewDomain> insertReviewResponse(RequestParams requestParams) {
         return reputationService.getApi()
-                .insertReviewResponse(AuthUtil.generateParamsNetwork2(MainApplication
-                                .getAppContext(),
-                        requestParams
-                        .getParameters()))
+                .insertReviewResponse(AuthHelper.generateParamsNetwork(
+                        userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        ReputationUtil.convertMapObjectToString(requestParams.getParameters())
+                ))
                 .map(replyReviewMapper);
     }
 }

@@ -1,12 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.ActReviewPass;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.repository.DeleteCommentRepository;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.ActResultDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -18,10 +16,8 @@ import rx.Observable;
 public class DeleteCommentUseCase extends UseCase<ActResultDomain> {
     protected DeleteCommentRepository deleteCommentRepository;
 
-    public DeleteCommentUseCase(ThreadExecutor threadExecutor,
-                                PostExecutionThread postExecutionThread,
-                                DeleteCommentRepository deleteCommentRepository) {
-        super(threadExecutor, postExecutionThread);
+    public DeleteCommentUseCase(DeleteCommentRepository deleteCommentRepository) {
+        super();
         this.deleteCommentRepository = deleteCommentRepository;
     }
 

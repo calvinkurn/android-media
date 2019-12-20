@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -17,10 +18,10 @@ import rx.functions.Func1;
  * @author by nisie on 9/12/17.
  */
 
-public class SkipReviewMapper implements Func1<Response<TkpdResponse>, SkipReviewDomain> {
+public class SkipReviewMapper implements Func1<Response<TokopediaWsV4Response>, SkipReviewDomain> {
 
     @Override
-    public SkipReviewDomain call(Response<TkpdResponse> response) {
+    public SkipReviewDomain call(Response<TokopediaWsV4Response> response) {
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals(""))

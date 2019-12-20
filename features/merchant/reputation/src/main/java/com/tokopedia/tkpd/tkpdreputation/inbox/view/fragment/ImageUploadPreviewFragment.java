@@ -128,7 +128,7 @@ public class ImageUploadPreviewFragment extends
 
     @Override
     protected void initialPresenter() {
-        presenter = new ImageUploadFragmentPresenterImpl(this);
+        presenter = new ImageUploadFragmentPresenterImpl(this, getActivity().getBaseContext());
     }
 
     @Override

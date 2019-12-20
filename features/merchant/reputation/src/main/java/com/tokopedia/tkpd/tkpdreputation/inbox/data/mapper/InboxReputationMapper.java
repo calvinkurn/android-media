@@ -1,13 +1,12 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
 
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
+import androidx.annotation.Nullable;
+
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.InboxReputationPojo;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.OrderData;
@@ -37,9 +36,9 @@ import rx.functions.Func1;
  * @author by nisie on 8/14/17.
  */
 
-public class InboxReputationMapper implements Func1<Response<TkpdResponse>, InboxReputationDomain> {
+public class InboxReputationMapper implements Func1<Response<TokopediaWsV4Response>, InboxReputationDomain> {
     @Override
-    public InboxReputationDomain call(Response<TkpdResponse> response) {
+    public InboxReputationDomain call(Response<TokopediaWsV4Response> response) {
 
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()

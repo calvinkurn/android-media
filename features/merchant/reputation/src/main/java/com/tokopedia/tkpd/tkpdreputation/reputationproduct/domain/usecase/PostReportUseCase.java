@@ -1,11 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.repository.PostReportRepository;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.ActResultDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -20,10 +18,8 @@ public class PostReportUseCase extends UseCase<ActResultDomain> {
     private static final String PARAM_REPORT_MESSAGE = "text_message";
     protected PostReportRepository postReportRepository;
 
-    public PostReportUseCase(ThreadExecutor threadExecutor,
-                             PostExecutionThread postExecutionThread,
-                             PostReportRepository postReportRepository) {
-        super(threadExecutor, postExecutionThread);
+    public PostReportUseCase(PostReportRepository postReportRepository) {
+        super();
         this.postReportRepository = postReportRepository;
     }
 

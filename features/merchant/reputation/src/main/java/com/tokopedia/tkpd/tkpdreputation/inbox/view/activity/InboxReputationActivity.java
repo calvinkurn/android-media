@@ -73,9 +73,9 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
+        userSession = new UserSession(this);
         super.onCreate(savedInstanceState);
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
-        userSession = new UserSession(this);
     }
 
     @Override

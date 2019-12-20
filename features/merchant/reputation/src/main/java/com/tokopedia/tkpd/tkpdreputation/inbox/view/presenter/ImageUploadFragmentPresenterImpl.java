@@ -1,12 +1,13 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.ImageUploadHandler;
@@ -18,6 +19,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.ImageUploadPreviewF
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.ImageUploadPreviewFragmentView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
+import com.tokopedia.usecase.RequestParams;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,15 +45,13 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
     List<ImageUpload> deletedImageUploads;
     String cameraFileLoc;
 
-    public ImageUploadFragmentPresenterImpl(ImageUploadPreviewFragmentView viewListener) {
+    public ImageUploadFragmentPresenterImpl(ImageUploadPreviewFragmentView viewListener, Context context) {
         this.viewListener = viewListener;
         this.imageUploadHandler = ImageUploadHandler.createInstance(viewListener.getActivity());
         this.deletedImageUploads = new ArrayList<>();
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        this.getSendReviewFormUseCase = new GetSendReviewFormUseCase(new JobExecutor(),
-                new UIThread(), globalCacheManager);
-        this.setReviewFormCacheUseCase = new SetReviewFormCacheUseCase(new JobExecutor(),
-                new UIThread(), globalCacheManager);
+        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(context);
+        this.getSendReviewFormUseCase = new GetSendReviewFormUseCase(persistentCacheManager);
+        this.setReviewFormCacheUseCase = new SetReviewFormCacheUseCase(persistentCacheManager);
     }
 
 

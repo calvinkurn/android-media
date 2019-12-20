@@ -1,11 +1,14 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewSubmitMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
+import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Observable;
 
@@ -17,26 +20,33 @@ public class CloudSendReviewSubmitDataSource {
 
     private final ReputationService reputationService;
     private final SendReviewSubmitMapper sendReviewSubmitMapper;
+    private UserSessionInterface userSession;
 
     public CloudSendReviewSubmitDataSource(ReputationService reputationService,
-                                           SendReviewSubmitMapper sendReviewSubmitMapper) {
+                                           SendReviewSubmitMapper sendReviewSubmitMapper,
+                                           UserSessionInterface userSession) {
         this.reputationService = reputationService;
         this.sendReviewSubmitMapper = sendReviewSubmitMapper;
+        this.userSession = userSession;
     }
 
-    public Observable<SendReviewSubmitDomain> sendReviewSubmit(RequestParams requestParams) {
+    public Observable<SendReviewSubmitDomain> sendReviewSubmit(com.tokopedia.usecase.RequestParams requestParams) {
         return reputationService.getApi()
-                .sendReviewSubmit(AuthUtil.generateParamsNetwork2(
-                        MainApplication.getAppContext(),
-                        requestParams.getParameters()))
+                .sendReviewSubmit(AuthHelper.generateParamsNetwork(
+                        userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        ReputationUtil.convertMapObjectToString(requestParams.getParameters())
+                ))
                 .map(sendReviewSubmitMapper);
     }
 
     public Observable<SendReviewSubmitDomain> editReviewSubmit(RequestParams requestParams) {
         return reputationService.getApi()
-                .editReviewSubmit(AuthUtil.generateParamsNetwork2(
-                        MainApplication.getAppContext(),
-                        requestParams.getParameters()))
+                .editReviewSubmit(AuthHelper.generateParamsNetwork(
+                        userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        ReputationUtil.convertMapObjectToString(requestParams.getParameters())
+                ))
                 .map(sendReviewSubmitMapper);
     }
 }

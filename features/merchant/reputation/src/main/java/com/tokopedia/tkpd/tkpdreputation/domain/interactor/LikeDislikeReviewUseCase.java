@@ -1,12 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
-
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 import rx.Observable;
 
 /**
@@ -27,12 +24,10 @@ public class LikeDislikeReviewUseCase extends UseCase<LikeDislikeDomain> {
     private static final String PARAM_ACTION = "action";
     private static final String ACTION_LIKE_DISLIKE_REVIEW = "event_like_dislike_review";
 
-    ReputationRepository reputationRepository;
+    private final ReputationRepository reputationRepository;
 
-    public LikeDislikeReviewUseCase(ThreadExecutor threadExecutor,
-                                    PostExecutionThread postExecutionThread,
-                                    ReputationRepository reputationRepository) {
-        super(threadExecutor, postExecutionThread);
+    public LikeDislikeReviewUseCase(ReputationRepository reputationRepository) {
+        super();
         this.reputationRepository = reputationRepository;
     }
 
@@ -41,7 +36,7 @@ public class LikeDislikeReviewUseCase extends UseCase<LikeDislikeDomain> {
         return reputationRepository.likeDislikeReview(requestParams);
     }
 
-    public static RequestParams getParam(String reviewId, int likeStatus, 
+    public static RequestParams getParam(String reviewId, int likeStatus,
                                          String productId, String shopId) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_REVIEW_ID, reviewId);
@@ -51,4 +46,6 @@ public class LikeDislikeReviewUseCase extends UseCase<LikeDislikeDomain> {
         params.putString(PARAM_ACTION, ACTION_LIKE_DISLIKE_REVIEW);
         return params;
     }
+
+
 }

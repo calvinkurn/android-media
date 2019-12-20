@@ -1,10 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.ImageUploadHandler;
@@ -12,6 +8,8 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewRequestModel;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.repository.ImageUploadRepository;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.model.UploadImageDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.File;
@@ -47,11 +45,9 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
     private ImageUploadRepository imageUploadRepository;
     private UserSessionInterface userSession;
 
-    public UploadImageUseCase(ThreadExecutor threadExecutor,
-                              PostExecutionThread postExecutionThread,
-                              ImageUploadRepository imageUploadRepository,
+    public UploadImageUseCase(ImageUploadRepository imageUploadRepository,
                               UserSessionInterface userSession) {
-        super(threadExecutor, postExecutionThread);
+        super();
         this.imageUploadRepository = imageUploadRepository;
         this.userSession = userSession;
     }

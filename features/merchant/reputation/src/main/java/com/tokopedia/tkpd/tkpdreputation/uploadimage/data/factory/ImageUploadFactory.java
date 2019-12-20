@@ -7,6 +7,7 @@ import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.UploadImageMapp
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.repository.ImageUploadRepository;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.source.CloudGenerateHostDataSource;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.source.CloudUploadImageDataSource;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * @author by nisie on 9/5/17.
@@ -18,19 +19,22 @@ public class ImageUploadFactory {
     private final GenerateHostActService generateHostActService;
     private final GenerateHostMapper generateHostMapper;
     private final UploadImageMapper uploadImageMapper;
+    private UserSessionInterface userSession;
 
     public ImageUploadFactory(GenerateHostActService generateHostActService,
                               UploadImageService uploadImageService,
                               GenerateHostMapper generateHostMapper,
-                              UploadImageMapper uploadImageMapper) {
+                              UploadImageMapper uploadImageMapper,
+                              UserSessionInterface userSession) {
         this.generateHostActService = generateHostActService;
         this.uploadImageService = uploadImageService;
         this.generateHostMapper = generateHostMapper;
         this.uploadImageMapper = uploadImageMapper;
+        this.userSession = userSession;
     }
 
     public CloudGenerateHostDataSource createCloudGenerateHostDataSource() {
-        return new CloudGenerateHostDataSource(generateHostActService,generateHostMapper);
+        return new CloudGenerateHostDataSource(generateHostActService,generateHostMapper,userSession);
     }
 
     public CloudUploadImageDataSource createCloudUploadImageDataSource() {

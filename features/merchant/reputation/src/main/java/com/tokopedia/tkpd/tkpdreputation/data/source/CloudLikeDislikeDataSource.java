@@ -1,11 +1,14 @@
 package com.tokopedia.tkpd.tkpdreputation.data.source;
 
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
+import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Observable;
 
@@ -17,19 +20,23 @@ public class CloudLikeDislikeDataSource {
 
     private final ReputationService reputationService;
     private final LikeDislikeMapper likeDislikeMapper;
+    private UserSessionInterface userSession;
 
     public CloudLikeDislikeDataSource(ReputationService reputationService,
-                                      LikeDislikeMapper likeDislikeMapper) {
+                                      LikeDislikeMapper likeDislikeMapper,
+                                      UserSessionInterface userSession) {
         this.reputationService = reputationService;
         this.likeDislikeMapper = likeDislikeMapper;
+        this.userSession = userSession;
     }
 
     public Observable<LikeDislikeDomain> getLikeDislikeReview(RequestParams requestParams) {
         return reputationService.getApi()
-                .likeDislikeReview(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext
-                        (),requestParams
-                        .getParameters
-                        ()))
+                .likeDislikeReview(AuthHelper.generateParamsNetwork(
+                        userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        ReputationUtil.convertMapObjectToString(requestParams.getParameters())
+                ))
                 .map(likeDislikeMapper);
     }
 }

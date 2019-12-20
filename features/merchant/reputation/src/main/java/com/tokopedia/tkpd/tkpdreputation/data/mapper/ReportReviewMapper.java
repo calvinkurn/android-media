@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.data.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -17,10 +18,10 @@ import rx.functions.Func1;
  * @author by nisie on 9/13/17.
  */
 
-public class ReportReviewMapper implements Func1<Response<TkpdResponse>, ReportReviewDomain> {
+public class ReportReviewMapper implements Func1<Response<TokopediaWsV4Response>, ReportReviewDomain> {
 
     @Override
-    public ReportReviewDomain call(Response<TkpdResponse> response) {
+    public ReportReviewDomain call(Response<TokopediaWsV4Response> response) {
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals(""))

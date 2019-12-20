@@ -140,18 +140,10 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         postReportRepository = new PostReportRepositoryImpl(reputationProductDataFactory);
         deleteCommentRepository = new DeleteCommentRepositoryImpl(reputationProductDataFactory);
 
-        getLikeDislikeUseCase = new GetLikeDislikeUseCase(new JobExecutor(),
-                new UIThread(),
-                getLikeDislikeRepository);
-        likeDislikeUseCase = new LikeDislikeUseCase(new JobExecutor(),
-                new UIThread(),
-                likeDislikeRepository);
-        postReportUseCase = new PostReportUseCase(new JobExecutor(),
-                new UIThread(),
-                postReportRepository);
-        deleteCommentUseCase = new DeleteCommentUseCase(new JobExecutor(),
-                new UIThread(),
-                deleteCommentRepository);
+        getLikeDislikeUseCase = new GetLikeDislikeUseCase(getLikeDislikeRepository);
+        likeDislikeUseCase = new LikeDislikeUseCase(likeDislikeRepository);
+        postReportUseCase = new PostReportUseCase(postReportRepository);
+        deleteCommentUseCase = new DeleteCommentUseCase(deleteCommentRepository);
 
         presenter = new ReputationProductViewFragmentPresenterImpl(this,
                 getLikeDislikeUseCase,

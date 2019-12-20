@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.data.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -17,9 +18,9 @@ import rx.functions.Func1;
  * @author by nisie on 9/29/17.
  */
 
-public class LikeDislikeMapper implements Func1<Response<TkpdResponse>, LikeDislikeDomain> {
+public class LikeDislikeMapper implements Func1<Response<TokopediaWsV4Response>, LikeDislikeDomain> {
     @Override
-    public LikeDislikeDomain call(Response<TkpdResponse> response) {
+    public LikeDislikeDomain call(Response<TokopediaWsV4Response> response) {
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals(""))

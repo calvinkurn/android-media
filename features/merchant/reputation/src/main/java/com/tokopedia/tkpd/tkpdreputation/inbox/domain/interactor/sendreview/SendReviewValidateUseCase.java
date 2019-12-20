@@ -1,12 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,9 +45,8 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
 
     protected ReputationRepository reputationRepository;
 
-    public SendReviewValidateUseCase(ThreadExecutor threadExecutor, PostExecutionThread
-            postExecutionThread, ReputationRepository reputationRepository) {
-        super(threadExecutor, postExecutionThread);
+    public SendReviewValidateUseCase(ReputationRepository reputationRepository) {
+        super();
         this.reputationRepository = reputationRepository;
     }
 

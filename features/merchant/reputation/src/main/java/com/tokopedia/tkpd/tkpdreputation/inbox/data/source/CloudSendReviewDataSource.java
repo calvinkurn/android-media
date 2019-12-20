@@ -1,11 +1,14 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
+import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Observable;
 
@@ -16,27 +19,35 @@ import rx.Observable;
 public class CloudSendReviewDataSource {
     private final ReputationService reputationService;
     private final SendReviewValidateMapper sendReviewValidateMapper;
+    private UserSessionInterface userSession;
 
     public CloudSendReviewDataSource(ReputationService reputationService,
-                                     SendReviewValidateMapper sendReviewValidateMapper) {
+                                     SendReviewValidateMapper sendReviewValidateMapper,
+                                     UserSessionInterface userSession) {
         this.reputationService = reputationService;
         this.sendReviewValidateMapper = sendReviewValidateMapper;
-
+        this.userSession = userSession;
     }
 
-    public Observable<SendReviewValidateDomain> sendReviewValidation(RequestParams requestParams) {
+    public Observable<SendReviewValidateDomain> sendReviewValidation(com.tokopedia.usecase.RequestParams requestParams) {
         return reputationService
                 .getApi()
-                .sendReviewValidate(AuthUtil.generateParamsNetwork2(
-                        MainApplication.getAppContext(), requestParams.getParameters()))
+                .sendReviewValidate(AuthHelper.generateParamsNetwork(
+                        userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        ReputationUtil.convertMapObjectToString(requestParams.getParameters())
+                ))
                 .map(sendReviewValidateMapper);
     }
 
     public Observable<SendReviewValidateDomain> editReviewValidation(RequestParams requestParams) {
         return reputationService
                 .getApi()
-                .editReviewValidate(AuthUtil.generateParamsNetwork2(
-                        MainApplication.getAppContext(), requestParams.getParameters()))
+                .editReviewValidate(AuthHelper.generateParamsNetwork(
+                        userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        ReputationUtil.convertMapObjectToString(requestParams.getParameters())
+                ))
                 .map(sendReviewValidateMapper);
     }
 }

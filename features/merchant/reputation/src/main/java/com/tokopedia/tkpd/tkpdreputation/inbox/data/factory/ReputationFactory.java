@@ -36,6 +36,7 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProduc
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductGetListProductCloud;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductGetStarCountCloud;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.data.source.ReviewShopGetListReviewCloud;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * @author by nisie on 8/14/17.
@@ -61,6 +62,7 @@ public class ReputationFactory {
     private final GetLikeDislikeMapper getLikeDislikeMapper;
     private final LikeDislikeMapper likeDislikeMapper;
     private final ReviewProductApi reputationReviewApi;
+    private final UserSessionInterface userSession;
 
     public ReputationFactory(TomeService tomeService,
                              ReputationService reputationService,
@@ -78,7 +80,8 @@ public class ReputationFactory {
                              DeleteReviewResponseMapper deleteReviewResponseMapper,
                              ReplyReviewMapper replyReviewMapper,
                              GetLikeDislikeMapper getLikeDislikeMapper,
-                             LikeDislikeMapper likeDislikeMapper, ReviewProductApi reputationReviewApi) {
+                             LikeDislikeMapper likeDislikeMapper, ReviewProductApi reputationReviewApi,
+                             UserSessionInterface userSession) {
         this.reputationService = reputationService;
         this.globalCacheManager = globalCacheManager;
         this.inboxReputationMapper = inboxReputationMapper;
@@ -97,10 +100,11 @@ public class ReputationFactory {
         this.getLikeDislikeMapper = getLikeDislikeMapper;
         this.likeDislikeMapper = likeDislikeMapper;
         this.reputationReviewApi = reputationReviewApi;
+        this.userSession = userSession;
     }
 
     public CloudInboxReputationDataSource createCloudInboxReputationDataSource() {
-        return new CloudInboxReputationDataSource(reputationService, inboxReputationMapper, globalCacheManager);
+        return new CloudInboxReputationDataSource(reputationService, inboxReputationMapper, globalCacheManager, userSession);
     }
 
     public LocalInboxReputationDataSource createLocalInboxReputationDataSource() {
@@ -108,33 +112,36 @@ public class ReputationFactory {
     }
 
     public CloudInboxReputationDetailDataSource createCloudInboxReputationDetailDataSource() {
-        return new CloudInboxReputationDetailDataSource(reputationService,
-                inboxReputationDetailMapper);
+        return new CloudInboxReputationDetailDataSource(
+                reputationService,
+                inboxReputationDetailMapper,
+                userSession
+        );
     }
 
     public CloudSendSmileyReputationDataSource createCloudSendSmileyReputationDataSource() {
         return new CloudSendSmileyReputationDataSource(reputationService,
-                sendSmileyReputationMapper);
+                sendSmileyReputationMapper, userSession);
     }
 
     public CloudSendReviewDataSource createCloudSendReviewValidationDataSource() {
         return new CloudSendReviewDataSource(reputationService,
-                sendReviewValidateMapper);
+                sendReviewValidateMapper, userSession);
     }
 
     public CloudSendReviewSubmitDataSource createCloudSendReviewSubmitDataSource() {
         return new CloudSendReviewSubmitDataSource(reputationService,
-                sendReviewSubmitMapper);
+                sendReviewSubmitMapper, userSession);
     }
 
     public CloudSkipReviewDataSource createCloudSkipReviewDataSource() {
         return new CloudSkipReviewDataSource(reputationService,
-                skipReviewMapper);
+                skipReviewMapper, userSession);
     }
 
     public CloudReportReviewDataSource createCloudReportReviewDataSource() {
         return new CloudReportReviewDataSource(reputationService,
-                reportReviewMapper);
+                reportReviewMapper, userSession);
     }
 
     public CloudCheckShopFavoriteDataSource createCloudCheckShopFavoriteDataSource() {
@@ -142,17 +149,17 @@ public class ReputationFactory {
     }
 
     public CloudFaveShopDataSource createCloudFaveShopDataSource() {
-        return new CloudFaveShopDataSource(faveShopActService, faveShopMapper);
+        return new CloudFaveShopDataSource(faveShopActService, faveShopMapper, userSession);
     }
 
     public CloudDeleteReviewResponseDataSource createCloudDeleteReviewResponseDataSource() {
         return new CloudDeleteReviewResponseDataSource(reputationService,
-                deleteReviewResponseMapper);
+                deleteReviewResponseMapper, userSession);
     }
 
     public CloudReplyReviewDataSource createCloudReplyReviewDataSource() {
         return new CloudReplyReviewDataSource(reputationService,
-                replyReviewMapper);
+                replyReviewMapper, userSession);
     }
 
     public CloudGetLikeDislikeDataSource createCloudGetLikeDislikeDataSource() {
@@ -165,7 +172,8 @@ public class ReputationFactory {
     public CloudLikeDislikeDataSource createCloudLikeDislikeDataSource() {
         return new CloudLikeDislikeDataSource(
                 reputationService,
-                likeDislikeMapper
+                likeDislikeMapper,
+                userSession
         );
     }
 

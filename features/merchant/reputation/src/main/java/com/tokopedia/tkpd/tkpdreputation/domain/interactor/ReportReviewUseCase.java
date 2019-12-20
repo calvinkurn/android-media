@@ -1,14 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.domain.interactor;
 
 import android.text.TextUtils;
-
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.ReportReviewDomain;
-
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 import rx.Observable;
 
 /**
@@ -29,10 +25,8 @@ public class ReportReviewUseCase extends UseCase<ReportReviewDomain> {
 
     private final ReputationRepository reputationRepository;
 
-    public ReportReviewUseCase(ThreadExecutor threadExecutor,
-                               PostExecutionThread postExecutionThread,
-                               ReputationRepository reputationRepository) {
-        super(threadExecutor, postExecutionThread);
+    public ReportReviewUseCase(ReputationRepository reputationRepository) {
+        super();
         this.reputationRepository = reputationRepository;
     }
 
@@ -53,4 +47,6 @@ public class ReportReviewUseCase extends UseCase<ReportReviewDomain> {
             params.putString(PARAM_OTHER_REASON, otherReason);
         return params;
     }
+
+
 }

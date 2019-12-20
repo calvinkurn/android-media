@@ -1,12 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.ActReviewPass;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.repository.LikeDislikeRepository;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.ActResultDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -19,10 +17,8 @@ public class LikeDislikeUseCase extends UseCase<ActResultDomain> {
     public static final String PARAM_SHOP_ID = "shop_id";
     protected LikeDislikeRepository likeDislikeRepository;
 
-    public LikeDislikeUseCase(ThreadExecutor threadExecutor,
-                              PostExecutionThread postExecutionThread,
-                              LikeDislikeRepository likeDislikeRepository) {
-        super(threadExecutor, postExecutionThread);
+    public LikeDislikeUseCase(LikeDislikeRepository likeDislikeRepository) {
+        super();
         this.likeDislikeRepository = likeDislikeRepository;
     }
 

@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -46,9 +47,9 @@ import rx.functions.Func1;
  * @author by nisie on 8/19/17.
  */
 
-public class InboxReputationDetailMapper implements Func1<Response<TkpdResponse>, ReviewDomain> {
+public class InboxReputationDetailMapper implements Func1<Response<TokopediaWsV4Response>, ReviewDomain> {
     @Override
-    public ReviewDomain call(Response<TkpdResponse> response) {
+    public ReviewDomain call(Response<TokopediaWsV4Response> response) {
 
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()

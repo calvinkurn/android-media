@@ -1,11 +1,14 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SkipReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Observable;
 
@@ -17,18 +20,24 @@ public class CloudSkipReviewDataSource {
 
     private final ReputationService reputationService;
     private final SkipReviewMapper skipReviewMapper;
+    private UserSessionInterface userSession;
 
     public CloudSkipReviewDataSource(ReputationService reputationService,
-                                     SkipReviewMapper skipReviewMapper) {
+                                     SkipReviewMapper skipReviewMapper,
+                                     UserSessionInterface userSession) {
         this.reputationService = reputationService;
         this.skipReviewMapper = skipReviewMapper;
+        this.userSession = userSession;
     }
 
 
     public Observable<SkipReviewDomain> skipReview(RequestParams requestParams) {
         return reputationService.getApi()
-                .skipReview(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(),
-                        requestParams.getParameters()))
+                .skipReview(AuthHelper.generateParamsNetwork(
+                        userSession.getUserId(),
+                        userSession.getDeviceId(),
+                        ReputationUtil.convertMapObjectToString(requestParams.getParameters())
+                ))
                 .map(skipReviewMapper);
     }
 }
