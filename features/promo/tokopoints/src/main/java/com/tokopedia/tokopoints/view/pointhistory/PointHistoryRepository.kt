@@ -1,6 +1,9 @@
 package com.tokopedia.tokopoints.view.pointhistory
 
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -16,20 +19,22 @@ import java.util.HashMap
 import javax.inject.Inject
 
 @TokoPointScope
-class PointHistoryRepository @Inject constructor(private val mGetPointHistory: GraphqlUseCase, private val mGetHomePageData: GraphqlUseCase, val queryMap: Map<String, String>) {
+class PointHistoryRepository @Inject constructor(private val repository: GraphqlRepository,private val queryMap: Map<String, String>) {
 
-    suspend fun getPointsDetail(subscriber: Subscriber<GraphqlResponse>) = withContext(Dispatchers.IO) {
+    private val cacheStrategy by lazy {
+        GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build()
+    }
+    suspend fun getPointsDetail() = withContext(Dispatchers.IO) {
         val variables = HashMap<String, Any>()
         val request = GraphqlRequest(queryMap[CommonConstant.GQLQuery.TP_GQL_CURRENT_POINTS],
                 TokoPointDetailEntity::class.java,
                 variables, false)
-        mGetPointHistory.clearRequest()
-        mGetPointHistory.addRequest(request)
-        mGetPointHistory.execute(subscriber)
+        repository.getReseponse(listOf(request), cacheStrategy)
+
     }
 
-    suspend fun getPointList(currentPageIndex: Int, subscriber: Subscriber<GraphqlResponse>) = withContext(Dispatchers.IO) {
-        mGetHomePageData.clearRequest()
+    suspend fun getPointList(currentPageIndex: Int) = withContext(Dispatchers.IO) {
         //Adding request for main query
         val variablesMain = HashMap<String, Any>()
         variablesMain[CommonConstant.GraphqlVariableKeys.PAGE] = currentPageIndex
@@ -37,12 +42,6 @@ class PointHistoryRepository @Inject constructor(private val mGetPointHistory: G
         val graphqlRequestMain = GraphqlRequest(queryMap[CommonConstant.GQLQuery.TP_GQL_HISTORY_POINTS],
                 PointHistoryBase::class.java,
                 variablesMain, false)
-        mGetHomePageData.addRequest(graphqlRequestMain)
-        mGetHomePageData.execute(subscriber)
-    }
-
-    fun onCleared() {
-        mGetPointHistory.unsubscribe()
-        mGetHomePageData.unsubscribe()
+        repository.getReseponse(listOf(graphqlRequestMain), cacheStrategy)
     }
 }

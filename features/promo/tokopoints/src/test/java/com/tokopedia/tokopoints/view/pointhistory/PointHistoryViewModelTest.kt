@@ -2,7 +2,6 @@ package com.tokopedia.tokopoints.view.pointhistory
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.view.util.ErrorMessage
 import io.mockk.*
@@ -14,9 +13,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-import org.junit.Assert.*
 import org.junit.Rule
-import org.mockito.Mock
 
 class PointHistoryViewModelTest {
 
@@ -28,11 +25,12 @@ class PointHistoryViewModelTest {
     var routeManager = mockkStatic(RouteManager::class)
     @get:Rule
     var rule = InstantTaskExecutorRule()
+    val data = mockk<com.tokopedia.graphql.data.model.GraphqlResponse>()
 
     @Before
     internal fun initialize() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        coEvery { repository.getPointsDetail(any()) } just Runs
+        coEvery { repository.getPointsDetail() } returns data
         every { context.getString(any()) } returns "Yuk Belanja"
         viewModel = PointHistoryViewModel(repository)
     }
@@ -41,7 +39,7 @@ class PointHistoryViewModelTest {
     fun onErrorButtonClicked() {
         viewModel.onErrorButtonClicked(context = context, toString = "")
 
-        coVerify(exactly = 2) { repository.getPointsDetail(any()) }
+        coVerify(exactly = 2) { repository.getPointsDetail() }
 
 
         every { RouteManager.route(context, any()) } returns false
@@ -64,9 +62,9 @@ class PointHistoryViewModelTest {
 
     @Test
     fun loadData(){
-        coEvery{repository.getPointList(1, any()) } just Runs
+        coEvery{repository.getPointList(1) } returns data
         viewModel.loadData(1)
-        coVerify { repository.getPointList(1, any()) }
+        coVerify { repository.getPointList(1) }
     }
 
     @After

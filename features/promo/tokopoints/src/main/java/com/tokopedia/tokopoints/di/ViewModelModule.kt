@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailViewModel
-import com.tokopedia.tokopoints.view.viewmodel.PointHistoryViewModel
+import com.tokopedia.tokopoints.view.pointhistory.PointHistoryViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

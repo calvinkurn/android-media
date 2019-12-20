@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.pointhistory
 
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import io.mockk.*
@@ -19,62 +20,36 @@ class PointHistoryRepositoryTest {
 
     lateinit var repository: PointHistoryRepository
 
-    var homeUseCase = mockk<GraphqlUseCase>()
-    var pointHistory = mockk<GraphqlUseCase>()
+    var repo = mockk<GraphqlRepository>()
     var map = mockk<Map<String,String>>()
-    var suberscriber = mockk<Subscriber<GraphqlResponse>>()
 
     @Before
     fun setUp() {
-        repository = PointHistoryRepository(pointHistory, homeUseCase,map)
+        repository = PointHistoryRepository(repo, map)
     }
 
     @Test
     fun getPointsDetail() {
-        coEvery{pointHistory.clearRequest()} just Runs
-        coEvery{pointHistory.addRequest(any())} just Runs
-        coEvery{pointHistory.execute(suberscriber)} just Runs
+        var data = mockk<GraphqlResponse>()
+        coEvery { repo.getReseponse(any(),any()) } returns  data
         coEvery{map.get(any())} returns "hiosdbvoiav"
-
-
         runBlocking{
-            repository.getPointsDetail(suberscriber)
+           assert(repository.getPointsDetail() == data)
         }
-        coVerify {
-            pointHistory.clearRequest()
-            pointHistory.addRequest(any())
-            pointHistory.execute(suberscriber)
-        }
+
 
     }
 
     @Test
     fun getPointList() {
-        coEvery{homeUseCase.clearRequest()} just Runs
-        coEvery{homeUseCase.addRequest(any())} just Runs
-        coEvery{homeUseCase.execute(suberscriber)} just Runs
+        var data = mockk<GraphqlResponse>()
+        coEvery { repo.getReseponse(any(),any()) } returns  data
         coEvery{map.get(any())} returns "hiosdbvoiav"
-
         runBlocking {
-            repository.getPointList(1,suberscriber)
+             assert(repository.getPointList(1) == data)
         }
 
-        coVerify {
-            homeUseCase.clearRequest()
-            homeUseCase.addRequest(any())
-            homeUseCase.execute(suberscriber)
-        }
     }
 
-    @Test
-    fun onCleared() {
-        every { pointHistory.unsubscribe() } just Runs
-        every { homeUseCase.unsubscribe() } just Runs
-        repository.onCleared()
 
-        coVerify {
-            homeUseCase.unsubscribe()
-            pointHistory.unsubscribe()
-        }
-    }
 }

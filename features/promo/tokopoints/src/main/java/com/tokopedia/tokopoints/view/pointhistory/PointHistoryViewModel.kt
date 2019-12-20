@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.PointHistoryBase
@@ -31,22 +33,12 @@ class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistor
     }
 
     private fun hitApi() {
-        launch {
+        launchCatchError(block = {
             listLoading.value = Loading()
             data.postValue(Loading())
-            mUserRepository.getPointsDetail(object : Subscriber<GraphqlResponse>() {
-                override fun onCompleted() {
-
-                }
-
-                override fun onError(e: Throwable) {
-                    data.postValue(ErrorMessage(e.toString()))
-                }
-
-                override fun onNext(response: GraphqlResponse) {
-                    onPointDetailNext(response)
-                }
-            })
+            onPointDetailNext(mUserRepository.getPointsDetail())
+        } ){
+            data.postValue(ErrorMessage(it.toString()))
         }
     }
 
@@ -64,21 +56,10 @@ class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistor
     }
 
     fun loadData(currentPageIndex: Int) {
-        launch {
-            mUserRepository.getPointList(currentPageIndex, object : Subscriber<GraphqlResponse>() {
-                override fun onCompleted() {
-
-                }
-
-                override fun onError(e: Throwable) {
-                    listLoading.value = ErrorMessage(e.toString())
-                }
-
-                override fun onNext(graphqlResponse: GraphqlResponse) {
-                    onPointListNext(graphqlResponse)
-
-                }
-            })
+        launchCatchError(block = {
+           onPointListNext(mUserRepository.getPointList(currentPageIndex))
+        }){
+            listLoading.value = ErrorMessage(it.toString())
         }
     }
 
@@ -90,12 +71,6 @@ class PointHistoryViewModel @Inject constructor(val mUserRepository: PointHistor
         } else {
             listLoading.value = ErrorMessage("data Error")
         }
-    }
-
-
-    override fun onCleared() {
-        super.onCleared()
-        mUserRepository.onCleared()
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
