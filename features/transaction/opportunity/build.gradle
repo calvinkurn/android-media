@@ -49,12 +49,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdLibDependencies.showcase
-
-//    testImplementation rootProject.ext.testDependencies.spek2Api
-//    testImplementation rootProject.ext.testDependencies.spek2Dsl
-//    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-//    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
-//    testImplementation rootProject.ext.testDependencies.mockk
 }
 
 project.ext {

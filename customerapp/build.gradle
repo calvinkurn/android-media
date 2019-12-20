@@ -301,7 +301,6 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdtransaction)
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.sellerorder)
-//    implementation project(rootProject.ext.features.opportunity)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.tkpddiscovery)
