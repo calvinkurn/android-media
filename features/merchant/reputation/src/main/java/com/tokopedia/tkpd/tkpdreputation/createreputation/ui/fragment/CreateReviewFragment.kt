@@ -447,16 +447,16 @@ class CreateReviewFragment : BaseDaggerFragment() {
      */
     private fun setLottieAnimationFromUrl(animationUrl: String) {
         context?.let {
-            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(this, animationUrl)
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
 
             lottieCompositionLottieTask.addListener { result ->
-                Log.e("CreateReviewFragment setLottieAnimationFromUrl", "Success ".plus(animationUrl))
+                Log.e("CRF LotieAnimFromUrl", "Success ".plus(animationUrl))
                 imgAnimationView.setComposition(result)
                 imgAnimationView.playAnimation()
             }
 
-            lottieCompositionLottieTask.addFailureListener {
-                Log.e("CreateReviewFragment setLottieAnimationFromUrl", it.message) }
+            lottieCompositionLottieTask.addFailureListener { throwable ->
+                Log.e("CRF LotieAnimFromUrl", throwable.message) }
         }
     }
 
