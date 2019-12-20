@@ -25,6 +25,8 @@ public interface UserIdentificationUploadImage  {
 
         void onErrorUpload(String error);
 
+        void onImageEmpty();
+
         GetKtpStatusSubscriber.GetKtpStatusListener getKtpStatusListener();
 
         void showLoading();
