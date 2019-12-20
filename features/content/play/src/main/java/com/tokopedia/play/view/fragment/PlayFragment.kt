@@ -5,13 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -73,6 +77,7 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         playViewModel.getChannelInfo(channelId)
+        observeSocketInfo()
     }
 
     private fun setupScreen(view: View) {
@@ -87,5 +92,24 @@ class PlayFragment : BaseDaggerFragment() {
 
             insets
         }
+    }
+
+    private fun observeSocketInfo() {
+        playViewModel.observableSocketInfo.observe(viewLifecycleOwner, Observer {
+            view?.let { view ->
+                if (it == PlaySocketInfo.ERROR) {
+                    Toaster.showErrorWithAction(view, getString(R.string.play_message_socket_error), Snackbar.LENGTH_INDEFINITE, getString(R.string.play_try_again), View.OnClickListener {
+                        playViewModel.getChannelInfo(channelId)
+                    })
+                } else if (it == PlaySocketInfo.RECONNECT) {
+                    Toaster.showError(view, getString(R.string.play_message_socket_reconnect), Snackbar.LENGTH_LONG)
+                }
+            }
+        })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        playViewModel.destroy()
     }
 }

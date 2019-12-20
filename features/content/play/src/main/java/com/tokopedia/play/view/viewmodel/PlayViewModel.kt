@@ -10,6 +10,7 @@ import com.tokopedia.play.PARTNER_NAME_ADMIN
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
+import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.GetChannelInfoUseCase
 import com.tokopedia.play.domain.GetShopInfoUseCase
 import com.tokopedia.play.domain.GetVideoStreamUseCase
@@ -26,7 +27,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -51,6 +51,9 @@ class PlayViewModel @Inject constructor(
 
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
     val observableVideoStream: LiveData<VideoStreamUiModel> = _observableVideoStream
+
+    private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
+    val observableSocketInfo: LiveData<PlaySocketInfo> = _observableSocketInfo
 
     private val _observableChatListSocket = MutableLiveData<PlayChat>()
     val observableChatListSocket: LiveData<PlayChat> = _observableChatListSocket
@@ -122,21 +125,18 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    // TODO don't forget to destroy socket
     fun destroy() {
         playSocket.destroy()
     }
 
     fun sendChat(message: String) {
-        if (userSessionInterface.isLoggedIn) {
-            playSocket.send(message, onSuccess = {
-                _observableChatListSocket.value = PlayChat("", "", message,
-                        PlayChat.UserData(userSessionInterface.userId, userSessionInterface.name, userSessionInterface.profilePicture))
-            })
-        } else {
-            // TODO route to login activity
-        }
+        if (!userSessionInterface.isLoggedIn)
+            return
 
+        playSocket.send(message, onSuccess = {
+            _observableChatListSocket.value = PlayChat("", "", message,
+                    PlayChat.UserData(userSessionInterface.userId, userSessionInterface.name, userSessionInterface.profilePicture))
+        })
     }
 
     private fun getPartnerInfo(partnerType: PartnerType, partnerId: Long) {
@@ -178,13 +178,7 @@ class PlayViewModel @Inject constructor(
         playSocket.channelId = channelId
         playSocket.gcToken = gcToken
         playSocket.settings = settings
-        playSocket.connect(onOpen = {
-            Timber.tag("PlaySocket").d("onOpen")
-            // Todo, handle on open web socket
-        }, onClose = {
-            Timber.tag("PlaySocket").d("onClose")
-            // Todo, handle on close web socket
-        }, onMessageReceived = { response ->
+        playSocket.connect(onMessageReceived = { response ->
             launch {
                 val result = withContext(dispatchers.io) {
                     val socketMapper = PlaySocketMapper(response)
@@ -217,9 +211,10 @@ class PlayViewModel @Inject constructor(
                     }
                 }
             }
+        }, onReconnect = {
+            _observableSocketInfo.value = PlaySocketInfo.RECONNECT
         }, onError = {
-            Timber.tag("PlaySocket").e(it)
-            // Todo, handle on error web socket
+            _observableSocketInfo.value = PlaySocketInfo.ERROR
         })
     }
 
