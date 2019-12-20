@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">Umrah</string>
+    <string name="umrah_host_umrah">umrah</string>
+    <string name="umrah_host_s">s</string>
+    <string name="umrah_path_search">/umroh/search</string>
+    <string name="umrah_path_category">/umroh/paket/.*\</string>
+    <string name="umrah_path_pdp">/umroh/produk/.*\</string>
+    <string name="umrah_home_page_path">/umroh</string>
+    <string name="umrah_checkout_path">/umroh/checkout</string>
+    <string name="umrah_host_order_detail">/order-details</string>
+    <string name="umrah_path_order_detail">/umroh</string>
+
 
     <string name="umrah_order_detail_status_label">Status</string>
     <string name="umrah_order_detail_detail_title">Detail Umroh</string>
@@ -7,7 +17,8 @@
 
     <string name="umrah_my_umrah_show_detail">Lihat Detail</string>
 
-    <string name="umrah_home_page_bg_label">Penuhi Panggilan Hati \n dengan Umrah</string>
+    <string name="umrah_home_page_bg_label">Bayar umroh di Tokopedia bisa dicicil tanpa bunga</string>
+    <string name="umrah_home_page_activity_label">Tokopedia Umroh - Paket Umroh Terlengkap %s</string>
     <string name="umrah_home_page_search_label">Cari Paket Umrah</string>
     <string name="umrah_home_page_search_depart_month_label">Bulan Keberangkatan</string>
     <string name="umrah_home_page_search_depart_city_label">Kota Keberangkatan</string>
@@ -25,16 +36,14 @@
     <string name="umrah_home_page_departure_back_date">%s - %s</string>
 
 
-
     <string name="umrah_homepage_pax_all_in">/pax</string>
     <string name="umrah_homepage_dream_fund_title">Wujudkan Umrah dengan Menabung di Dana Impian</string>
     <string name="umrah_homepage_save_now">Tabung Sekarang ></string>
     <string name="umrah_search_filter_departure_period">Bulan Keberangkatan</string>
     <string name="umrah_see_all">Lihat Semua</string>
     <string name="umrah_search_filter_travel_duration">Durasi Perjalanan (Hari)</string>
-    <string name="umrah_last_path_segment_search" translatable="false">search</string>
 
-    <string name="umrah_dana_impian_link">https://tokopedia.com/reksa-dana/dana-impian?fromUmroh=true&amp;target_amount=5000000&amp;name=TabunganUmroh</string>
+    <string name="umrah_dana_impian_link">https://www.tokopedia.com/reksa-dana/dana-impian?fromUmroh=true&amp;target_amount=5000000&amp;name=TabunganUmroh</string>
 
     <string name="umrah_common_booking_code_label">Kode Booking</string>
     <string name="umrah_common_start_from">Mulai dari %s</string>
@@ -65,7 +74,7 @@
     <string name="umrah_dream_fund_progress_not_started_yet">Belum Dimulai</string>
     <string name="umrah_search_empty_title">Paket yang Kamu Cari Tidak Ditemukan</string>
     <string name="umrah_search_empty_subtitle">Tenang, mungkin kamu cuma perlu ubah detail pencarian di awal.</string>
-    <string name="umrah_search_empty_button">Cari Paket Lainnya</string>
+    <string name="umrah_empty_button">Cari Paket Lainnya</string>
     <string name="umrah_search_filter_empty_subtitle">Coba ubah Filter dan cari sekali lagi, yuk!</string>
     <string name="umrah_search_filter_empty_button">Ubah Filter</string>
     <string name="umrah_homepage_pax">/pax</string>
@@ -74,9 +83,9 @@
     <string name="umrah_search_seekbar_number_7">7</string>
     <string name="umrah_search_title">Cari Paket Umrah</string>
     <string name="umrah_dream_fund_progress_percentage">%d%%</string>
-    <string name="umrah_pdp_hotel_title">Hotel</string>
-    <string name="umrah_pdp_airline_title">Penerbangan</string>
-    <string name="umrah_pdp_itinerary_title">Itinerary</string>
+    <string name="umrah_pdp_accommodation_title">Akomodasi</string>
+    <string name="umrah_pdp_airline_title">Rute Penerbangan</string>
+    <string name="umrah_pdp_itinerary_title">Rencana Perjalanan</string>
     <string name="umrah_pdp_facilities_title">Fasilitas</string>
     <string name="umrah_pdp_non_facilities_title">Fasilitas Tidak Termasuk</string>
     <string name="umrah_pdp_ad_title">Keuntungan Umrah di Tokopedia</string>
@@ -145,12 +154,12 @@
     <string name="umrah_checkout_bottom_sheet_pilgrims_label_name_first_label">Nama Depan</string>
     <string name="umrah_checkout_bottom_sheet_pilgrims_label_name_last_label">Nama Belakang</string>
     <string name="umrah_checkout_bottom_sheet_pilgrims_label_date_birth">Tanggal Lahir</string>
-    <string name="umrah_checkout_pilgrims_title_activity">Isi Data Jamaah</string>
-    <string name="umrah_checkout_title_activity">Pemesanan Umrah</string>
-    <string name="umrah_checkout_contact_title_activity">Informasi Kontak</string>
-    <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
+    <string name="umrah_checkout_pilgrims_app_name">Isi Data Jamaah</string>
+    <string name="umrah_checkout_app_name">Pemesanan Umrah</string>
+    <string name="umrah_checkout_contact_app_name">Informasi Kontak</string>
+    <string name="umrah_checkout_installment_app_name">Pilihan Cicilan</string>
 
-    <string name="umrah_checkout_pilgrims_title_label">Title</string>
+    <string name="umrah_checkout_pilgrims_title_label">Sapaan</string>
     <array name="umrah_checkout_pilgrims_titles">
         <item>Tuan</item>
         <item>Nyonya</item>
@@ -170,9 +179,15 @@
     <array name="umrah_checkout_mandatory_document">
         <item>Setiap calon jamaah harus memiliki KTP Indonesia dan mengupload foto KTP.</item>
         <item>Setiap calon jamaah harus memiliki Paspor Indonesia dan mengupload foto Paspor.</item>
-        <item>Setiap calon jamaah harus memiliki Kartu Keluarga dan mengupload foto Kartu Keluarga.</item>
-        <item>Bagi calon jamaah suami istri harus memiliki Surat Nikah dan mengupload foto Surat Nikah.</item>
-        <item>Setiap calon jamaah harus memiliki Buku Meningitis, bisa didapatkan setelah melakukan suntik meningitis di Kantor Kesehatan Pelabuhan yang tersebar diberbagai kota. </item>
+        <item>Setiap calon jamaah harus memiliki Kartu Keluarga dan mengupload foto Kartu
+            Keluarga.
+        </item>
+        <item>Bagi calon jamaah suami istri harus memiliki Surat Nikah dan mengupload foto Surat
+            Nikah.
+        </item>
+        <item>Setiap calon jamaah harus memiliki Buku Meningitis, bisa didapatkan setelah melakukan
+            suntik meningitis di Kantor Kesehatan Pelabuhan yang tersebar diberbagai kota.
+        </item>
     </array>
     <string name="umroh_checkout_birth_date">Tanggal Lahir</string>
 
@@ -193,17 +208,42 @@
     <string name="umrah_checkout_contact_name_error">Nama belum diisi</string>
     <string name="umrah_checkout_contact_email_error">Format e-mail salah</string>
     <string name="umrah_checkout_contact_phone_error">Nomor telepon minimum 9 digit</string>
-    <string name="umrah_checkout_contact_phone_code_and_phone_number">+%s%s</string>
+    <string name="umrah_checkout_contact_phone_code_and_phone_number">%s%s</string>
 
     <string name="umrah_checkout_pilgrims_first_name_error">Nama Depan Kosong</string>
     <string name="umrah_checkout_pilgrims_last_name_error">Nama Belakang Kosong</string>
     <string name="umrah_checkout_pilgrims_date_birth_error">Tanggal Lahir Kosong</string>
     <string name="umrah_checkout_pilgrims_title_error">Harap Pilih Title Anda</string>
     <string name="umrah_checkout_error_confirmation">OK</string>
+    <string name="umrah_include_visa_and_equipments"><![CDATA[Termasuk visa & perlengkapan]]></string>
+
+    <string name="umrah_share">Bagikan</string>
+    <string name="umrah_help">Bantuan</string>
+    <string name="umrah_salam">Tokopedia Salam</string>
+    <string name="umrah_cancel">Batal</string>
+    <string name="umrah_menu_title">Menu</string>
+
+    <string name="umrah_pdp_link_share">https://m.tokopedia.com/s/umroh/produk/%s</string>
+    <string name="umrah_salam_app_link">https://m.tokopedia.com/salam</string>
+    <string name="umrah_help_link">https://www.tokopedia.com/help</string>
+    <string name="umrah_link">https://m.tokopedia.com/s/umroh</string>
+    <string name="umrah_progress_dialog">Sedang diproses…</string>
+
+    <string name="umrah_title_df">Umrah</string>
     <string name="umrah_label_filter">Filter</string>
     <string name="umrah_label_pdp">Pilih Detail</string>
+    <string name="umrah_checkout_pilgrims_title_activity">Isi Data Jamaah</string>
+    <string name="umrah_checkout_title_activity">Pemesanan Umrah</string>
+    <string name="umrah_checkout_contact_title_activity">Informasi Kontak</string>
+    <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
+    <string name="umrah_last_path_segment_search">search</string>
 
-
-
+    <string name="umrah_checkout_error_title">Pemesanan Umroh Gagal</string>
+    <string name="umrah_empty_state_desc">Maaf, paket umrah yang kamu pilih sudah
+ dipesan oleh orang lain. Insya allah niat baik pasti tetap bisa berangkat umrah. Yuk, cek paket lainnya!</string>
+    <string name="umrah_checkout_error_btn">Cari Paket Umroh</string>
+    <string name="umrah_pdp_additional_information_bullet">\u2022\t%s\n</string>
+    <string name="umrah_pdp_empty_state_title">Paket Umroh Habis</string>
+    <string name="umrah_search_empty_state_package_name">com.tokopedia.tkpd</string>
 
 </resources>

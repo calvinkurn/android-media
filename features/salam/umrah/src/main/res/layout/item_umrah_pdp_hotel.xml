@@ -13,8 +13,8 @@
         android:layout_height="@dimen/dp_100"
         tools:ignore="RtlSymmetry"
         android:clipToPadding="false"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"/>
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_pdp_rv_hotel_name"

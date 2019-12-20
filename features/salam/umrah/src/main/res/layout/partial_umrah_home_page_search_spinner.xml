@@ -1,187 +1,217 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginRight="@dimen/dp_16"
     android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
     android:layout_marginBottom="@dimen/dp_8"
-    >
+    android:orientation="vertical">
+
     <RelativeLayout
+        android:id="@+id/rl_umrah_home_page_calendar_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:clickable="true"
-        android:id="@+id/rl_umrah_home_page_calendar_parent"
-        >
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        tools:ignore="UnusedAttribute"
+        tools:targetApi="m">
+
         <ImageView
             android:id="@+id/img_umrah_home_page_search_image_calendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/umrah_ic_home_page_calendar"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_centerVertical="true"
-            />
+            app:srcCompat="@drawable/umrah_ic_home_page_calendar"
+            tools:ignore="ContentDescription" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_umrah_home_page_search_depature_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/umrah_home_page_search_depart_month_label"
+            android:layout_toEndOf="@+id/img_umrah_home_page_search_image_calendar"
             android:layout_toRightOf="@+id/img_umrah_home_page_search_image_calendar"
-            app:typographyType="body_3"
-            />
+            android:text="@string/umrah_home_page_search_depart_month_label"
+            app:typographyType="body_3" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_umrah_home_page_search_depart_spinner_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/umrah_home_page_search_spinner_month_label"
             android:layout_below="@+id/tv_umrah_home_page_search_depature_label"
-            android:layout_toRightOf="@+id/img_umrah_home_page_search_image_calendar"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_toEndOf="@+id/img_umrah_home_page_search_image_calendar"
+            android:layout_toRightOf="@+id/img_umrah_home_page_search_image_calendar"
+            android:text="@string/umrah_home_page_search_spinner_month_label"
             android:textColor="@color/black"
-            app:typographyType="body_1"
-            />
+            app:typographyType="body_1" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/bg_button_border_outline"
             android:layout_below="@+id/tv_umrah_home_page_search_depart_spinner_like"
-            android:layout_toRightOf="@+id/img_umrah_home_page_search_image_calendar"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            />
+            android:layout_toEndOf="@+id/img_umrah_home_page_search_image_calendar"
+            android:layout_toRightOf="@+id/img_umrah_home_page_search_image_calendar"
+            android:background="@color/bg_button_border_outline" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/umrah_ic_home_page_down"
             android:layout_below="@+id/img_umrah_home_page_search_image_calendar"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_12"
-            />
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            app:srcCompat="@drawable/umrah_ic_home_page_down"
+            tools:ignore="ContentDescription" />
 
 
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_umrah_home_page_price_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:clickable="true"
-        android:id="@+id/rl_umrah_home_page_price_parent"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
 
-        >
+        tools:ignore="UnusedAttribute"
+        tools:targetApi="m">
+
         <ImageView
             android:id="@+id/img_umrah_home_page_search_image_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/umrah_ic_home_page_transaction"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_centerVertical="true"
-            />
+            app:srcCompat="@drawable/umrah_ic_home_page_transaction"
+            tools:ignore="ContentDescription" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_umrah_home_page_search_price_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/umrah_home_page_search_price_label"
+            android:layout_toEndOf="@+id/img_umrah_home_page_search_image_price"
             android:layout_toRightOf="@+id/img_umrah_home_page_search_image_price"
-            app:typographyType="body_3"
-            />
+            android:text="@string/umrah_home_page_search_price_label"
+            app:typographyType="body_3" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_umrah_home_page_search_price_spinner_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/umrah_home_page_search_spinner_price_label"
             android:layout_below="@+id/tv_umrah_home_page_search_price_label"
-            android:layout_toRightOf="@+id/img_umrah_home_page_search_image_price"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_toEndOf="@+id/img_umrah_home_page_search_image_price"
+            android:layout_toRightOf="@+id/img_umrah_home_page_search_image_price"
+            android:text="@string/umrah_home_page_search_spinner_price_label"
             android:textColor="@color/black"
-            app:typographyType="body_1"
-            />
+            app:typographyType="body_1" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/bg_button_border_outline"
             android:layout_below="@+id/tv_umrah_home_page_search_price_spinner_like"
-            android:layout_toRightOf="@+id/img_umrah_home_page_search_image_price"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            />
+            android:layout_toEndOf="@+id/img_umrah_home_page_search_image_price"
+            android:layout_toRightOf="@+id/img_umrah_home_page_search_image_price"
+            android:background="@color/bg_button_border_outline" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/umrah_ic_home_page_down"
             android:layout_below="@+id/img_umrah_home_page_search_image_price"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_12"
-            />
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            app:srcCompat="@drawable/umrah_ic_home_page_down"
+            tools:ignore="ContentDescription" />
 
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_umrah_home_page_location_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:id="@+id/rl_umrah_home_page_location_parent"
         android:clickable="true"
-        >
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        tools:ignore="UnusedAttribute"
+        tools:targetApi="m">
+
         <ImageView
             android:id="@+id/img_umrah_home_page_search_image_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/umrah_ic_home_page_location"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_20"
             android:layout_centerVertical="true"
-            />
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            app:srcCompat="@drawable/umrah_ic_home_page_location"
+            tools:ignore="ContentDescription" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_umrah_home_page_search_location_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/umrah_home_page_search_depart_city_label"
+            android:layout_toEndOf="@+id/img_umrah_home_page_search_image_location"
             android:layout_toRightOf="@+id/img_umrah_home_page_search_image_location"
-            app:typographyType="body_3"
-            />
+            android:text="@string/umrah_home_page_search_depart_city_label"
+            app:typographyType="body_3" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_umrah_home_page_search_location_spinner_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/umrah_home_page_search_spinner_city_label"
             android:layout_below="@+id/tv_umrah_home_page_search_location_label"
-            android:layout_toRightOf="@+id/img_umrah_home_page_search_image_location"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_toEndOf="@+id/img_umrah_home_page_search_image_location"
+            android:layout_toRightOf="@+id/img_umrah_home_page_search_image_location"
+            android:text="@string/umrah_home_page_search_spinner_city_label"
             android:textColor="@color/black"
-            app:typographyType="body_1"
-            />
+            app:typographyType="body_1" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/bg_button_border_outline"
             android:layout_below="@+id/tv_umrah_home_page_search_location_spinner_like"
-            android:layout_toRightOf="@+id/img_umrah_home_page_search_image_location"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            />
+            android:layout_toEndOf="@+id/img_umrah_home_page_search_image_location"
+            android:layout_toRightOf="@+id/img_umrah_home_page_search_image_location"
+            android:background="@color/bg_button_border_outline" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/umrah_ic_home_page_down"
             android:layout_below="@+id/img_umrah_home_page_search_image_location"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_2"
-            />
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            app:srcCompat="@drawable/umrah_ic_home_page_down"
+            tools:ignore="ContentDescription" />
 
 
     </RelativeLayout>

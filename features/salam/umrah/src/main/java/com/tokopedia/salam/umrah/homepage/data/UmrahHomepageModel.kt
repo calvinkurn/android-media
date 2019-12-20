@@ -5,4 +5,5 @@ import com.tokopedia.salam.umrah.homepage.presentation.adapter.factory.UmrahHome
 
 abstract class  UmrahHomepageModel(var isLoaded: Boolean = false,
                                    var isSuccess: Boolean = true,
+                                   var isRequested: Boolean = false,
                                    var isLoadFromCloud: Boolean = false) : Visitable<UmrahHomepageFactory>

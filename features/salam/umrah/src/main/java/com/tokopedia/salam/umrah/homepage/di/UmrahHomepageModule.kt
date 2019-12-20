@@ -1,6 +1,8 @@
 package com.tokopedia.salam.umrah.homepage.di
 
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.salam.umrah.common.di.UmrahScope
 import com.tokopedia.salam.umrah.homepage.presentation.usecase.UmrahHomepageCategoryFeaturedUseCase
 import com.tokopedia.salam.umrah.homepage.presentation.usecase.UmrahHomepageCategoryUseCase
 import com.tokopedia.salam.umrah.homepage.presentation.usecase.UmrahHomepageEmptyDataUseCase
@@ -32,6 +34,4 @@ class UmrahHomepageModule {
     @Provides
     fun provideMyUmrahUseCase(graphqlRepository: GraphqlRepository): UmrahHomepageMyUmrahUseCase =
             UmrahHomepageMyUmrahUseCase(graphqlRepository)
-
-
 }

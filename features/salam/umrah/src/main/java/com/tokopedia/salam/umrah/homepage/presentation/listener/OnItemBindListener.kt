@@ -25,6 +25,6 @@ interface onItemBindListener{
 
     fun onSearchProduct(period: String, location: String, price: String)
 
-    fun onImpressionFeaturedCategory(headerTitle: String, element: UmrahCategoriesFeatured)
+    fun onImpressionFeaturedCategory(headerTitle: String,  products: Products, position: Int,positionDC: Int)
     fun onClickFeaturedCategory(headerTitle: String, positionDC: Int, products: Products, position: Int)
 }

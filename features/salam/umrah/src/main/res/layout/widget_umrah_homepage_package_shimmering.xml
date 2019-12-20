@@ -11,12 +11,17 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_20"
-        android:layout_marginLeft="@dimen/dp_12" />
+        android:layout_marginLeft="@dimen/dp_12"
+        app:use_gradient="true"
+        android:background="@drawable/umrah_bg_homepage_gray_rounded"
+        />
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_mulai_dari_loading"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
+        app:use_gradient="true"
+        android:background="@drawable/umrah_bg_homepage_gray_rounded"
         app:layout_constraintStart_toStartOf="@+id/tg_umrah_package_name_loading"
         app:layout_constraintTop_toBottomOf="@+id/tg_umrah_package_name_loading" />
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -24,6 +29,8 @@
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_6"
+        app:use_gradient="true"
+        android:background="@drawable/umrah_bg_homepage_gray_rounded"
         app:layout_constraintStart_toStartOf="@+id/tg_umrah_mulai_dari_loading"
         app:layout_constraintTop_toBottomOf="@+id/tg_umrah_mulai_dari_loading" />
 </androidx.constraintlayout.widget.ConstraintLayout>

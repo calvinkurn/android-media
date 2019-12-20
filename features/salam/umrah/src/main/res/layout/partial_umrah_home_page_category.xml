@@ -19,15 +19,17 @@
             android:text="@string/umrah_home_page_choose_packet_label"
             android:textColor="@color/Neutral_N700_96"
             app:typographyType="heading_3"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            android:layout_marginStart="@dimen/dp_20" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_umrah_home_page_choose_packet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_12"
-            android:clipToPadding="true" />
+            android:clipToPadding="false"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12"/>
     </LinearLayout>
 
     <include

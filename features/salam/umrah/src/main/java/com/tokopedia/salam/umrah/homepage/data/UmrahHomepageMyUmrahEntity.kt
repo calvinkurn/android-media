@@ -13,7 +13,6 @@ class UmrahHomepageMyUmrahEntity(
 ): UmrahHomepageModel(){
 
     companion object{
-        val LAYOUT = R.layout.partial_umrah_home_page_dream_fund
     }
 
     override fun type(typeFactory: UmrahHomepageFactory): Int {

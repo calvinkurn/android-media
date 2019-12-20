@@ -11,7 +11,6 @@ data class UmrahHomepageCategoryFeaturedEntity (
         val umrahCategoriesFeatured:List<UmrahCategoriesFeatured> = emptyList()
 ):UmrahHomepageModel() {
         companion object{
-           val LAYOUT = R.layout.partial_umrah_home_page_category_featured
         }
 
         override fun type(typeFactory: UmrahHomepageFactory): Int {

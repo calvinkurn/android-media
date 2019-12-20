@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    android:clickable="true"
+    android:focusable="true"
     android:id="@+id/rl_umrah_checkout_order_pilgrims"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,7 +10,9 @@
     android:background="@drawable/umrah_bg_fill_data_pilgrims"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:targetApi="m"
+    tools:ignore="UnusedAttribute">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_checkout_pilgrims_name"

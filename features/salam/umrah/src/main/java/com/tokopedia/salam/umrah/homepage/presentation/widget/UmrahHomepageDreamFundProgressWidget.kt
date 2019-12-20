@@ -31,13 +31,13 @@ class UmrahHomepageDreamFundProgressWidget @JvmOverloads constructor(context: Co
             tg_widget_umrah_dream_fund_progress_reach_est.text = umrahHomepageDreamFundProgressWidgetModel.textReachEst
             pb_widget_umrah_dream_fund_progress.progress = umrahHomepageDreamFundProgressWidgetModel.progress
             tg_widget_umrah_dream_fund_progress_percentage.text = resources.getString(R.string.umrah_dream_fund_progress_percentage,umrahHomepageDreamFundProgressWidgetModel.progress)
-            if(umrahHomepageDreamFundProgressWidgetModel.progress==100){
+            if(umrahHomepageDreamFundProgressWidgetModel.progress==MAX_PROGRESS){
                 tg_widget_umrah_dream_fund_progress_percentage.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500))
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     tg_widget_umrah_dream_fund_progress_percentage.background.setTint(resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G200))
                 }
             }
-            else if(umrahHomepageDreamFundProgressWidgetModel.progress==0){
+            else if(umrahHomepageDreamFundProgressWidgetModel.progress==MIN_PROGRESS){
                 tg_widget_umrah_dream_fund_progress_percentage.text = resources.getString(R.string.umrah_dream_fund_progress_not_started_yet)
                 tg_widget_umrah_dream_fund_progress_percentage.setTextColor(resources.getColor(com.tokopedia.design.R.color.unify_N700_44))
             }
@@ -58,5 +58,10 @@ class UmrahHomepageDreamFundProgressWidget @JvmOverloads constructor(context: Co
     private fun hideLoading(){
         container_widget_umrah_dream_fund_progress.visibility = View.VISIBLE
         container_widget_umrah_dream_fund_progress_shimmering.visibility = View.GONE
+    }
+
+    companion object{
+        const val MAX_PROGRESS = 100
+        const val MIN_PROGRESS = 0
     }
 }

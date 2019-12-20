@@ -41,6 +41,9 @@
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
         android:id="@+id/container_widget_umrah_checkout_rect"
         android:background="@drawable/umrah_bg_order_checkout"
         android:visibility="visible"

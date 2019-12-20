@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/umrah_snow">
+    android:layout_height="match_parent">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/umrah_search_swipe_refresh_layout"
@@ -18,7 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="@dimen/dp_16"
-            android:scrollbars="vertical"
+            android:paddingBottom="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12"
             android:clipToPadding="false"/>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
@@ -36,7 +37,6 @@
         app:bav_label_2="@string/label_filter"
         app:bav_2_display="true"
         app:layout_anchor="@+id/umrah_search_recycler_view"
-        app:layout_anchorGravity="bottom|center_horizontal"
-        app:layout_behavior="com.tokopedia.design.behavior.QuickReturnFooterBehavior" />
+        app:layout_anchorGravity="bottom|center_horizontal" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

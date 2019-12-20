@@ -1,60 +1,41 @@
 query UmrahProduct($slugName: String!){
   umrahProduct(slugName: $slugName ){
     id
-    slugName
-    title
     availableSeat
+    title
     banner
+    slugName
+    originalPrice
+    slashPrice
+    downPaymentPrice
     travelAgent{
-      id
       name
       logoUrl
       permissionOfUmrah
-      permissionOfHajj
     }
     durationDays
-    productVariant:variant {
-      id
-      name
-      description
-      price
-    }
-    hotels{
-      id
-      name
-      checkIn   # rcf339
-      checkOut  # rcf339
-      imageUrl
-      rating
-      poiDistances
-    }
     departureDate
     returningDate
-    departureCity {
-      id
-        name
-      countryCode
-    }
-    transitCity{
-      id
+    hotels{
       name
-      countryCode
+      checkIn
+      checkOut
+      imageUrl
+      rating
+      ui{
+        distance
+      }
     }
     airlines{
-      id
       name
+      date
       departureCity{
         name
-        countryCode
       }
       arrivalCity{
         name
-        countryCode
       }
-      date
-      details
       logoUrl
-      type
     }
     itineraries{
       day
@@ -66,15 +47,23 @@ query UmrahProduct($slugName: String!){
     }
     facilities
     nonFacilities
-    terms
-    faq {
+    transitCity{
+      name
+    }
+    variant{
+        id
+        name
+        description
+        price
+    }
+    faq{
       allContentsLink
-      contents {
+      contents{
         header
         snippet
         link
       }
     }
-    additionalInformation
+    terms
   }
 }

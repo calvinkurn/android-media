@@ -14,11 +14,15 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
+import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getYearNow
 import com.tokopedia.salam.umrah.homepage.data.*
 import com.tokopedia.salam.umrah.homepage.di.UmrahHomepageComponent
+import com.tokopedia.salam.umrah.homepage.presentation.activity.UmrahHomepageActivity
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.factory.UmrahHomepageFactoryImpl
+import com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder.UmrahHomepageCategoryViewHolder
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import com.tokopedia.salam.umrah.homepage.presentation.viewmodel.UmrahHomepageViewModel
+import kotlinx.android.synthetic.main.fragment_umrah_home_page.*
 import javax.inject.Inject
 
 /**
@@ -34,19 +38,20 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     @Inject
     lateinit var trackingUmrahUtil: UmrahTrackingAnalytics
 
+    override fun getAdapterTypeFactory(): UmrahHomepageFactoryImpl =  UmrahHomepageFactoryImpl(this)
 
-
-    private val adapterFactory by lazy {
-        UmrahHomepageFactoryImpl(this)
-    }
-
-    override fun getAdapterTypeFactory(): UmrahHomepageFactoryImpl = adapterFactory
-
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = getString(R.string.umrah_home_page_activity_label, getYearNow())
 
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_umrah_home_page
+
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        isRequestedMyUmrah = false
+        DREAM_FUND_VIEWED = false
+        isRequestedCategory = false
+    }
 
     override fun initInjector() = getComponent(UmrahHomepageComponent::class.java)
             .inject(this)
@@ -59,12 +64,25 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as UmrahHomepageActivity).updateTitle(screenName)
+        rv_umrah_home_page.setItemViewCacheSize(20)
+        rv_umrah_home_page.setHasFixedSize(true)
+        rv_umrah_home_page.setDrawingCacheEnabled(true)
+        rv_umrah_home_page.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH)
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isRequestedMyUmrah = false
+        isRequestedCategory = false
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             umrahHomepageViewModel = viewModelProvider.get(UmrahHomepageViewModel::class.java)
         }
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -77,11 +95,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         umrahHomepageViewModel.isAllError.observe(this, Observer {
             it?.let {
                 if (it) {
-                    NetworkErrorHelper.showEmptyState(context, view?.rootView, object : NetworkErrorHelper.RetryClickedListener {
-                        override fun onRetryClicked() {
-                            loadDataAll()
-                        }
-                    })
+                    NetworkErrorHelper.showEmptyState(context, view?.rootView) { loadDataAll() }
                 }
             }
         })
@@ -91,7 +105,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         isLoadingInitialData = true
         adapter.clearAllElements()
         showLoading()
-        umrahHomepageViewModel.getIntialList(false)
+        umrahHomepageViewModel.getIntialList(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -103,22 +117,22 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     }
 
     override fun onBindParameterVH(isLoadedFromCloud: Boolean) {
-        umrahHomepageViewModel.getSearchParamUseCase(GraphqlHelper.loadRawString(resources,
+        umrahHomepageViewModel.getSearchParamData(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_umrah_home_page_search_parameter), isLoadedFromCloud)
     }
 
     override fun onBindMyUmrahVH(isLoadFromCloud: Boolean) {
-        umrahHomepageViewModel.getUmrahSayaUseCase(GraphqlHelper.loadRawString(resources,
+        umrahHomepageViewModel.getUmrahSayaData(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_umrah_saya_list), isLoadFromCloud)
     }
 
     override fun onBindCategoryVH(isLoadedFromCloud: Boolean) {
-        umrahHomepageViewModel.getCategoryUseCase(GraphqlHelper.loadRawString(resources,
+        umrahHomepageViewModel.getCategoryData(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_umrah_home_page_category), isLoadedFromCloud)
     }
 
     override fun onBindCategoryFeaturedVH(isLoadedFromCloud: Boolean) {
-        umrahHomepageViewModel.getCategoryFeaturedUseCase(GraphqlHelper.loadRawString(resources,
+        umrahHomepageViewModel.getCategoryFeaturedData(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_umrah_home_page_featured), isLoadedFromCloud)
     }
 
@@ -154,11 +168,14 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         trackingUmrahUtil.umrahClickFeaturedCategoryTracker(headerTitle,positionDC,products,position)
     }
 
-    override fun onImpressionFeaturedCategory(headerTitle: String, categories: UmrahCategoriesFeatured) {
-        trackingUmrahUtil.umrahImpressionFeaturedCategoryTracker(headerTitle,categories)
+    override fun onImpressionFeaturedCategory(headerTitle: String, product: Products, position: Int, positionDC: Int) {
+        trackingUmrahUtil.umrahImpressionFeaturedCategoryTracker(headerTitle,product, position, positionDC)
     }
     companion object {
         fun getInstance(): UmrahHomepageFragment = UmrahHomepageFragment()
+        var isRequestedMyUmrah = false
+        var DREAM_FUND_VIEWED = false
+        var isRequestedCategory = false
     }
 }
 

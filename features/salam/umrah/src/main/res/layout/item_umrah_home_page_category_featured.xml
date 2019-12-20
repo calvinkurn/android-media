@@ -1,26 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_umrah_home_page_category_featured"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:visibility="gone">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_umrah_home_page_category_featured_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_umrah_home_page_category_featured_item"
-        android:textColor="@color/Neutral_N700_96"
-        android:text="@string/umrah_home_page_best_deals_label"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_12"
         android:layout_marginBottom="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_24"
+        android:textColor="@color/Neutral_N700_96"
         app:typographyType="heading_3"
         app:typographyWeight="bold"
-        />
+        tools:text="@string/umrah_home_page_best_deals_label" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_umrah_home_page_category_featured_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rv_umrah_home_page_category_featured_item"
-        />
+        android:clipToPadding="false"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12" />
 
 </LinearLayout>

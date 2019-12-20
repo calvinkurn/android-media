@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/dp_8"
+    android:visibility="gone"
     android:orientation="horizontal">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -16,6 +17,7 @@
         tools:text="1"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
+        android:gravity="left"
         android:textColor="@color/Neutral_N700"
         />
 
@@ -26,6 +28,7 @@
         android:layout_weight="1"
         tools:text="25 Agustus 2019"
         app:typographyWeight="reguler"
+        android:gravity="start"
         app:typographyType="body_3"
         android:textColor="@color/Neutral_N700"
         />
@@ -38,7 +41,9 @@
         tools:text="Rp25.000.000"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
+        android:gravity="start"
         android:textColor="@color/Neutral_N700"
+        android:layout_marginLeft="@dimen/dp_4"
         />
 
 </LinearLayout>

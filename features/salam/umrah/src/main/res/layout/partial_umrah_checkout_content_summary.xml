@@ -67,11 +67,14 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <com.tokopedia.unifycomponents.CardUnify
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
         android:padding="@dimen/dp_12"
+        app:cardElevation="@dimen/dp_2"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="@dimen/dp_8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container_umrah_checkout_summary">
@@ -79,6 +82,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/dp_12"
             android:orientation="vertical">
 
             <com.tokopedia.unifyprinciples.Typography
@@ -89,16 +93,22 @@
                 app:typographyType="heading_6" />
 
             <RelativeLayout
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
                 android:id="@+id/rl_umrah_checkout_full_paid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12">
+                android:layout_marginTop="@dimen/dp_12"
+                tools:targetApi="m"
+                tools:ignore="UnusedAttribute">
 
                 <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
                     android:id="@+id/rb_umrah_checkout_full_paid"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
+                    android:clickable="false"
                     android:layout_centerVertical="true" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -131,15 +141,21 @@
                 android:background="@color/Neutral_N100" />
 
             <RelativeLayout
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
                 android:id="@+id/rl_umrah_checkout_down_payment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12">
+                android:layout_marginTop="@dimen/dp_12"
+                tools:targetApi="m"
+                tools:ignore="UnusedAttribute">
 
                 <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
                     android:id="@+id/rb_umrah_checkout_down_payment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:clickable="false"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true" />
 
@@ -181,5 +197,5 @@
                 />
 
         </LinearLayout>
-    </com.tokopedia.unifycomponents.CardUnify>
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

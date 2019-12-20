@@ -10,9 +10,6 @@ import com.tokopedia.salam.umrah.homepage.presentation.adapter.factory.UmrahHome
 data class UmrahHomepageCategoryEntity(
         val umrahCategories: List<UmrahCategories> = arrayListOf()
 ):UmrahHomepageModel(){
-        companion object{
-                val LAYOUT = R.layout.partial_umrah_home_page_category
-        }
 
         override fun type(typeFactory: UmrahHomepageFactory): Int {
            return typeFactory.type(this)
@@ -29,7 +26,7 @@ data class UmrahCategories(
         @SerializedName("description")
         @Expose
         val description: String = "",
-        @SerializedName("coverImageUrl")
+        @SerializedName("coverImageURL")
         @Expose
         val coverImageURL: String = "",
         @SerializedName("slugName")
@@ -40,7 +37,8 @@ data class UmrahCategories(
         val startingPrice: String = "",
         @SerializedName("product")
         @Expose
-        val product: List<Products> = arrayListOf()
+        val product: List<Products> = arrayListOf(),
+        var isViewed : Boolean = false
 )
 
 data class Products(
@@ -115,7 +113,8 @@ data class Products(
         val itineraries: List<Itinerari> = arrayListOf(),
         @SerializedName("variant")
         @Expose
-        val variant: List<UmrahVariant> = arrayListOf()
+        val variant: List<UmrahVariant> = arrayListOf(),
+        var isViewed: Boolean = false
 )
 
 data class TravelAgent(

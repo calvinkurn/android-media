@@ -10,14 +10,15 @@
         android:visibility="visible">
 
         <com.tokopedia.salam.umrah.common.presentation.widget.UmrahDreamFundWidget
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:id="@+id/dream_fund_umrah_home_page"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginRight="@dimen/dp_16"
-            android:clickable="true"
-            />
+            android:layout_marginRight="@dimen/dp_16" />
     </LinearLayout>
 
     <include
@@ -35,9 +36,7 @@
         layout="@layout/partial_umrah_home_page_my_umrah"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_16"
         android:visibility="gone" />
 
 </FrameLayout>

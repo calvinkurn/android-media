@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -13,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/umrah_bg_home_page_search" />
+            app:srcCompat="@drawable/umrah_bg_homepage_search" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,11 +32,14 @@
                 app:typographyType="heading_2"
                 app:typographyWeight="bold" />
 
-            <com.tokopedia.unifycomponents.CardUnify
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_160"
+                app:cardElevation="@dimen/dp_2"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_16">
 
                 <LinearLayout
@@ -46,14 +50,19 @@
                     <include layout="@layout/partial_umrah_home_page_search_spinner" />
 
                     <com.tokopedia.unifycomponents.UnifyButton
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:id="@+id/btn_umrah_home_page_search"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dp_16"
                         android:text="@string/umrah_home_page_search_label"
-                        app:unifyButtonSize="large" />
+                        app:unifyButtonSize="large"
+                        tools:targetApi="m"
+                        tools:ignore="UnusedAttribute" />
                 </LinearLayout>
-            </com.tokopedia.unifycomponents.CardUnify>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
     </FrameLayout>

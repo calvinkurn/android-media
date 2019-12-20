@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.hide
@@ -52,59 +53,62 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
 
     override fun bind(element: UmrahSearchParameterEntity) {
         if (element.isLoaded) {
+            if(!element.isRequested) {
+                with(itemView) {
+                    shimmering.hide()
+                    section_layout.show()
 
-            with(itemView) {
-                shimmering.hide()
-                section_layout.show()
+                    defaultIndexCities = element.umrahSearchParameter.depatureCities.defaultOption
+                    defaultIndexPeriods = element.umrahSearchParameter.departurePeriods.defaultOption
+                    defaultIndexPrice = element.umrahSearchParameter.priceRangeOptions.defaultOption
 
-                defaultIndexCities = element.umrahSearchParameter.depatureCities.defaultOption
-                defaultIndexPeriods = element.umrahSearchParameter.departurePeriods.defaultOption
-                defaultIndexPrice = element.umrahSearchParameter.priceRangeOptions.defaultOption
+                    renderDefaultData(element)
 
-                renderDefaultData(element)
+                    rl_umrah_home_page_location_parent.setOnClickListener {
+                        val listBottomSheet = UmrahHomepageBottomSheetMapper.citiesMapper(element)
+                        showBottomSheet(context,
+                                getString(R.string.umrah_home_page_search_depart_city_label), listBottomSheet, defaultIndexCities, adapterCity)
+                    }
 
-                rl_umrah_home_page_location_parent.setOnClickListener {
-                    val listBottomSheet = UmrahHomepageBottomSheetMapper.citiesMapper(element)
-                    showBottomSheet(context,
-                            getString(R.string.umrah_home_page_search_depart_city_label), listBottomSheet,defaultIndexCities, adapterCity)
-                }
+                    rl_umrah_home_page_calendar_parent.setOnClickListener {
+                        val listBottomSheet = UmrahHomepageBottomSheetMapper.periodsMapper(element)
+                        showBottomSheet(context,
+                                getString(R.string.umrah_home_page_search_depart_month_label), listBottomSheet, defaultIndexPeriods, adapterPeriod)
+                    }
 
-                rl_umrah_home_page_calendar_parent.setOnClickListener {
-                    val listBottomSheet = UmrahHomepageBottomSheetMapper.periodsMapper(element)
-                    showBottomSheet(context,
-                            getString(R.string.umrah_home_page_search_depart_month_label), listBottomSheet,defaultIndexPeriods, adapterPeriod)
-                }
+                    rl_umrah_home_page_price_parent.setOnClickListener {
+                        val listBottomSheet = UmrahHomepageBottomSheetMapper.priceRangerMapper(element)
+                        showBottomSheet(context,
+                                getString(R.string.umrah_home_page_search_price_label), listBottomSheet, defaultIndexPrice, adapterPrice)
+                    }
 
-                rl_umrah_home_page_price_parent.setOnClickListener {
-                    val listBottomSheet = UmrahHomepageBottomSheetMapper.priceRangerMapper(element)
-                    showBottomSheet(context,
-                            getString(R.string.umrah_home_page_search_price_label), listBottomSheet,defaultIndexPrice, adapterPrice)
-                }
+                    btn_umrah_home_page_search.setOnClickListener {
+                        onBindListener.onSearchProduct(tvPeriod.text.toString(),
+                                tvLocation.text.toString(),
+                                tvPrice.text.toString())
 
-                btn_umrah_home_page_search.setOnClickListener {
-                    onBindListener.onSearchProduct(tvPeriod.text.toString(),
-                            tvLocation.text.toString(),
-                            tvPrice.text.toString())
-
-                    val umrahSearchDataParam = UmrahSearchProductDataParam(
-                            departureCityId = departureCityId,
-                            departurePeriod = departurePeriod,
-                            priceMin = priceMin,
-                            priceMax = priceMax
-                    )
-                    context?.let {
-                        context.startActivity(
-                                UmrahSearchActivity.createIntent(it,
-                                        umrahSearchDataParam.departureCityId,
-                                        umrahSearchDataParam.departurePeriod,
-                                        umrahSearchDataParam.priceMin,
-                                        umrahSearchDataParam.priceMax,
-                                        element.umrahSearchParameter.durationDaysRangeLimit.minimum,
-                                        element.umrahSearchParameter.durationDaysRangeLimit.maximum,
-                                        element.umrahSearchParameter.sortMethods.options[element
-                                                .umrahSearchParameter.sortMethods.defaultOption].query))
+                        val umrahSearchDataParam = UmrahSearchProductDataParam(
+                                departureCityId = departureCityId,
+                                departurePeriod = departurePeriod,
+                                priceMin = priceMin,
+                                priceMax = priceMax
+                        )
+                        context?.let {
+                            context.startActivity(
+                                    UmrahSearchActivity.createIntent(it,
+                                            umrahSearchDataParam.departureCityId,
+                                            umrahSearchDataParam.departurePeriod,
+                                            umrahSearchDataParam.priceMin,
+                                            umrahSearchDataParam.priceMax,
+                                            element.umrahSearchParameter.durationDaysRangeLimit.minimum,
+                                            element.umrahSearchParameter.durationDaysRangeLimit.maximum,
+                                            element.umrahSearchParameter.sortMethods.options[element
+                                                    .umrahSearchParameter.sortMethods.defaultOption].query))
+                        }
                     }
                 }
+                element.isRequested = true
+
             }
         }else{
             itemView.section_layout.hide()
@@ -169,17 +173,18 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
             rv_umrah_home_page_bottom_sheet.adapter = adapter
             rv_umrah_home_page_bottom_sheet.layoutManager = LinearLayoutManager(
                     context,
-                    LinearLayoutManager.VERTICAL, false
+                    RecyclerView.VERTICAL, false
             )
         }
         return view
     }
 
 
-
     companion object {
         const val DEPARTURE_CITIES = "departureCities"
         const val DEPARTURE_PERIODS = "departurePeriods"
         const val PRICE_RANGE = "priceRangeOptions"
+        val LAYOUT = R.layout.partial_umrah_home_page_main
+
     }
 }

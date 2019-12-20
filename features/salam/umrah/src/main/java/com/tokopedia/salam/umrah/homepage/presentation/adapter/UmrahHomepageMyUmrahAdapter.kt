@@ -10,13 +10,13 @@ import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import kotlinx.android.synthetic.main.widget_umrah_my_umrah.view.*
 
-class UmrahHomepageMyUmrahAdapter(val onItemBindListener: onItemBindListener): RecyclerView.Adapter<UmrahHomepageMyUmrahAdapter.UmrahHomepageUmrahSayaViewHolder>(){
+class UmrahHomepageMyUmrahAdapter(val onItemBindListener: onItemBindListener) : RecyclerView.Adapter<UmrahHomepageMyUmrahAdapter.UmrahHomepageUmrahSayaViewHolder>() {
     private var listCategories = emptyList<MyUmrahEntity>()
 
 
-    inner class UmrahHomepageUmrahSayaViewHolder (view: View): RecyclerView.ViewHolder(view){
+    inner class UmrahHomepageUmrahSayaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(element:MyUmrahEntity) {
+        fun bind(element: MyUmrahEntity) {
             with(itemView) {
                 iv_my_umrah_loading.visibility = View.GONE
                 tg_umrah_package_loading.visibility = View.GONE
@@ -29,8 +29,8 @@ class UmrahHomepageMyUmrahAdapter(val onItemBindListener: onItemBindListener): R
                 tg_umrah_departure.text = element.header
                 tg_umrah_next.text = element.nextActionText
                 btn_my_umrah_detail.text = element.mainButton.text
-                btn_my_umrah_detail.setOnClickListener {
-                    onItemBindListener.onClickUmrahMyUmrah(element.header,element,position)
+                container_umrah_widget_my_umrah.setOnClickListener {
+                    onItemBindListener.onClickUmrahMyUmrah(element.nextActionText, element, position)
                     RouteManager.route(context, element.mainButton.link)
                 }
             }
@@ -44,10 +44,13 @@ class UmrahHomepageMyUmrahAdapter(val onItemBindListener: onItemBindListener): R
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): UmrahHomepageUmrahSayaViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.widget_umrah_my_umrah, parent, false)
+        if (listCategories.size == 1) {
+            itemView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
         return UmrahHomepageUmrahSayaViewHolder(itemView)
     }
 
-    fun setList(list: List<MyUmrahEntity>){
+    fun setList(list: List<MyUmrahEntity>) {
         listCategories = list
         notifyDataSetChanged()
     }

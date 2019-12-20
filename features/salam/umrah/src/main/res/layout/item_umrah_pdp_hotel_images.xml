@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify
-    android:id="@+id/cv_umrah_pdp_hotel_image_container"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cv_umrah_pdp_hotel_image_container"
     android:layout_width="@dimen/dp_200"
     android:layout_height="@dimen/dp_100"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
     app:cardCornerRadius="@dimen/dp_8"
-    app:layout_constraintCircleRadius="8dp"
-    android:elevation="@dimen/dp_2"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:cardUseCompatPadding="true"
     tools:targetApi="lollipop">
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_umrah_pdp_hotel_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@color/light_blue_300" />
-</com.tokopedia.unifycomponents.CardUnify>
+</androidx.cardview.widget.CardView>

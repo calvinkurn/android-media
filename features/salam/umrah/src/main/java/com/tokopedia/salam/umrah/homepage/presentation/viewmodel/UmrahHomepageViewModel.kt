@@ -44,9 +44,9 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
 
     }
 
-    fun getSearchParamUseCase(rawQuery: String, isLoadFromCloud: Boolean) {
+    fun getSearchParamData(rawQuery: String, isLoadFromCloud: Boolean) {
         launch {
-            val result = umrahSearchParamUseCase.execute(rawQuery, isLoadFromCloud)
+            val result = umrahSearchParamUseCase.executeUseCase(rawQuery, isLoadFromCloud)
             when (result) {
                 is Success -> {
                     homePageModel.value?.let {
@@ -71,7 +71,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
         }
     }
 
-    fun getUmrahSayaUseCase(rawQuery: String, isLoadFromCloud: Boolean) {
+    fun getUmrahSayaData(rawQuery: String, isLoadFromCloud: Boolean) {
         launch {
             when (val result = umrahHomepageMyUmrahUseCase.executeMyUmrah(rawQuery, isLoadFromCloud)) {
                 is Success -> {
@@ -98,7 +98,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
     }
 
 
-    fun getCategoryUseCase(rawQuery: String, isLoadFromCloud: Boolean) {
+    fun getCategoryData(rawQuery: String, isLoadFromCloud: Boolean) {
         launch {
             val result = umrahCategoriesUseCase.executeCategory(rawQuery, isLoadFromCloud)
             when (result) {
@@ -124,7 +124,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
         }
     }
 
-    fun getCategoryFeaturedUseCase(rawQuery: String, isLoadFromCloud: Boolean) {
+    fun getCategoryFeaturedData(rawQuery: String, isLoadFromCloud: Boolean) {
         launch {
             val result = umrahCategoriesFeaturedUseCase.executeCategoryFeatured(rawQuery, isLoadFromCloud)
             when (result) {
@@ -164,9 +164,9 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
     }
 
     companion object {
-        val SEARCH_PARAM_ORDER = 0
-        val DREAM_FUND_ORDER = 1
-        val CATEGORY_ORDER = 2
-        val CATEGORY_FEATURED_ORDER = 3
+        const val SEARCH_PARAM_ORDER = 0
+        const val DREAM_FUND_ORDER = 1
+        const val CATEGORY_ORDER = 2
+        const val CATEGORY_FEATURED_ORDER = 3
     }
 }

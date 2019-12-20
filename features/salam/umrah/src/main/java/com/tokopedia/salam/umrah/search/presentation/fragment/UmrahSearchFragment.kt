@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -40,6 +42,7 @@ import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchActivit
 import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchActivity.Companion.EXTRA_PRICE_MIN
 import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchActivity.Companion.EXTRA_SORT
 import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchActivity.Companion.REQUEST_FILTER
+import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchActivity.Companion.REQUEST_PDP
 import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchFilterActivity
 import com.tokopedia.salam.umrah.search.presentation.adapter.UmrahSearchAdapter
 import com.tokopedia.salam.umrah.search.presentation.adapter.UmrahSearchAdapterTypeFactory
@@ -65,16 +68,15 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         BaseEmptyViewHolder.Callback, UmrahSearchAdapter.OnClickListener, UmrahSearchActivity.OnBackListener {
 
     private val umrahSearchSortAdapter: UmrahSearchSortAdapter by lazy { UmrahSearchSortAdapter() }
-    private var isSortLoaded = false
     private var sort = DefaultOption()
     private lateinit var sortBottomSheets: BottomSheetUnify
     private lateinit var sortView: View
     private var searchOrCategory: SearchOrCategory = SearchOrCategory.SEARCH
     private val searchParam = UmrahSearchProductDataParam()
     private val selectedFilter = ParamFilter()
+    private var isRVInited = false
 
-    override fun onEmptyContentItemTextClicked() {
-    }
+    override fun onEmptyContentItemTextClicked() {}
 
     @Inject
     lateinit var umrahSearchViewModel: UmrahSearchViewModel
@@ -83,7 +85,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     lateinit var umrahSearchFilterSortViewModel: UmrahSearchFilterSortViewModel
 
     @Inject
-    lateinit var umrahTrackingUtil: UmrahTrackingAnalytics
+    lateinit var umrahTrackingAnalytics: UmrahTrackingAnalytics
 
     override fun getScreenName(): String = ""
 
@@ -91,22 +93,26 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_FILTER && data != null) {
-                data.let {
-                    selectedFilter.apply {
-                        departureCity = it.getStringExtra(EXTRA_DEPARTURE_CITY_ID)
-                        departurePeriod = it.getStringExtra(EXTRA_DEPARTURE_PERIOD)
-                        priceMinimum = it.getIntExtra(EXTRA_PRICE_MIN, 0)
-                        priceMaximum = it.getIntExtra(EXTRA_PRICE_MAX, 0)
-                        durationDaysMinimum = it.getIntExtra(EXTRA_DURATION_DAYS_MIN, 0)
-                        durationDaysMaximum = it.getIntExtra(EXTRA_DURATION_DAYS_MAX, 0)
+            when (requestCode) {
+                REQUEST_FILTER -> {
+                    data?.let {
+                        selectedFilter.apply {
+                            departureCity = it.getStringExtra(EXTRA_DEPARTURE_CITY_ID)
+                            departurePeriod = it.getStringExtra(EXTRA_DEPARTURE_PERIOD)
+                            priceMinimum = it.getIntExtra(EXTRA_PRICE_MIN, 0)
+                            priceMaximum = it.getIntExtra(EXTRA_PRICE_MAX, 0)
+                            durationDaysMinimum = it.getIntExtra(EXTRA_DURATION_DAYS_MIN, 0)
+                            durationDaysMaximum = it.getIntExtra(EXTRA_DURATION_DAYS_MAX, 0)
+                        }
+                        umrahSearchViewModel.setFilter(selectedFilter)
+                        umrahTrackingAnalytics.umrahSearchNCategoryFilterClick(selectedFilter, searchOrCategory)
+                        loadInitialData()
+                        isFilter = true
                     }
                 }
-                umrahSearchViewModel.setFilter(selectedFilter)
-                umrahTrackingUtil.umrahSearchNCategoryFilterClick(selectedFilter, searchOrCategory)
-                loadInitialData()
-                isFilter = true
+                REQUEST_PDP -> loadInitialData()
             }
+
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -117,7 +123,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
             getSearchParamFromBundle()
             setSelectedFilterFromBundle()
         }
-        if (umrahSearchViewModel.getSlugName() != "") searchOrCategory = SearchOrCategory.CATEGORY
+        searchOrCategory = umrahSearchViewModel.getSearchOrCategory()
         initSortBottomSheets()
     }
 
@@ -176,8 +182,8 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun onItemClicked(product: UmrahSearchProduct?) {}
     override fun onItemClicked(product: UmrahSearchProduct, position: Int) {
-        umrahTrackingUtil.umrahSearchNCategoryProductClick(product, position, umrahSearchViewModel.getSortValue(), selectedFilter, searchOrCategory)
-        startActivity(context?.let { UmrahPdpActivity.createIntent(it, product.slugName) })
+        umrahTrackingAnalytics.umrahSearchNCategoryProductClick(product, position, umrahSearchViewModel.getSortValue(), selectedFilter, searchOrCategory)
+        startActivityForResult(context?.let { UmrahPdpActivity.createIntent(it, product.slugName) }, REQUEST_PDP)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<UmrahSearchProduct, UmrahSearchAdapterTypeFactory> {
@@ -190,9 +196,49 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     }
 
     private fun onSuccessGetResult(data: List<UmrahSearchProduct>) {
-        umrahTrackingUtil.umrahSearchNCategoryProductListImpression(data, umrahSearchViewModel.getSortValue(), selectedFilter, searchOrCategory)
+        if (!isRVInited) umrah_search_recycler_view.apply {
+            setHasFixedSize(true)
+            setItemViewCacheSize(searchParam.limit * 2)
+            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4), LinearLayoutManager.VERTICAL))
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (!isRVInited) {
+                        val firstVisibleItem = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                        val lastVisibleItem = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                        val dataList = (adapter as BaseListAdapter<*, *>).data
+                        trackImpression(firstVisibleItem, lastVisibleItem, dataList)
+                        isRVInited = true
+                    }
+                }
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (newState == SCROLL_STATE_IDLE) {
+                        val firstVisibleItem = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                        val lastVisibleItem = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                        val dataList = (adapter as BaseListAdapter<*, *>).data
+                        trackImpression(firstVisibleItem, lastVisibleItem, dataList)
+                    }
+                }
+            })
+        }
         umrah_search_bottom_action_view.visible()
         renderList(data, data.size >= searchParam.limit)
+    }
+
+    private fun trackImpression(startIndex: Int, lastIndex: Int, data: MutableList<out Any>) {
+        for (i in startIndex..lastIndex) {
+            if (i < data.size) {
+                if (data[i] is UmrahSearchProduct) {
+                    val product = data[i] as UmrahSearchProduct
+                    if (!product.isViewed) {
+                        umrahTrackingAnalytics.umrahSearchNCategoryProductListImpression(product, i, umrahSearchViewModel.getSortValue(), selectedFilter, searchOrCategory)
+                        product.isViewed = true
+                    }
+                }
+            }
+        }
     }
 
     private fun openFilterFragment() {
@@ -204,7 +250,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         val emptyModel = EmptyModel()
         val imageUri = Uri.Builder()
                 .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-                .authority(resources.getResourcePackageName(R.drawable.umrah_img_empty_search_png))
+                .authority(getString(R.string.umrah_search_empty_state_package_name))
                 .appendPath(resources.getResourceTypeName(R.drawable.umrah_img_empty_search_png))
                 .appendPath(resources.getResourceEntryName(R.drawable.umrah_img_empty_search_png))
                 .build()
@@ -213,7 +259,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
         if (!isFilter) {
             emptyModel.content = getString(R.string.umrah_search_empty_subtitle)
-            emptyModel.buttonTitle = getString(R.string.umrah_search_empty_button)
+            emptyModel.buttonTitle = getString(R.string.umrah_empty_button)
         } else {
             emptyModel.content = getString(R.string.umrah_search_filter_empty_subtitle)
             emptyModel.buttonTitle = getString(R.string.umrah_search_filter_empty_button)
@@ -228,29 +274,42 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     @SuppressLint("InflateParams")
     private fun initSortBottomSheets() {
-        sortView = LayoutInflater.from(context).inflate(R.layout.bottom_sheets_umrah_search_sort, null)
-        sortBottomSheets = BottomSheetUnify()
-        sortBottomSheets.setChild(sortView)
-        sortBottomSheets.setTitle(getString(R.string.umrah_search_sort_by))
-        sortBottomSheets.setCloseClickListener { sortBottomSheets.dismiss() }
+        sortView = LayoutInflater.from(context).inflate(R.layout.bottom_sheets_umrah_search_sort, null).also { sortView ->
+            sortView.rv_umrah_search_sort.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                adapter = umrahSearchSortAdapter.also {
+                    it.listener = object : UmrahSearchSortAdapter.OnSortMenuSelected {
+                        override fun onSelect(option: UmrahOption) {
+                            umrahTrackingAnalytics.umrahSearchNCategorySortClick(option.query, searchOrCategory)
+                            umrahSearchViewModel.setSortValue(option.query)
+                            arguments?.putString("EXTRA_SORT", option.query)
+                            GlobalScope.launch(Dispatchers.Main) {
+                                delay(250)
+                                sortBottomSheets.dismiss()
+                                loadInitialData()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        sortBottomSheets = BottomSheetUnify().also {
+            it.setChild(sortView)
+            it.setTitle(getString(R.string.umrah_search_sort_by))
+            it.setCloseClickListener { sortBottomSheets.dismiss() }
+        }
+        loadSortData()
+        observeSortData()
     }
 
     private fun openSortBottomSheets() {
-        if (isSortLoaded) populateSortOptions()
-        else {
-            observeSortData()
-            loadSortData()
-        }
+        umrahSearchSortAdapter.setSelectedOption(umrahSearchViewModel.getSortValue())
         sortBottomSheets.show(fragmentManager, "TEST")
     }
 
-    private fun initRVSort(options: List<UmrahOption>) {
-        umrahSearchSortAdapter.addOptions(options)
-        sortView.rv_umrah_search_sort.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_18), LinearLayoutManager.VERTICAL))
-            adapter = umrahSearchSortAdapter
-        }
+    private fun loadSortData() {
+        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_home_page_search_parameter)
+        umrahSearchFilterSortViewModel.getUmrahSearchParameter(searchQuery)
     }
 
     private fun observeSortData() {
@@ -264,47 +323,22 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     private fun onSuccessGetSort(data: UmrahSearchParameterEntity) {
         sort = data.umrahSearchParameter.sortMethods
-        initRVSort(sort.options)
-        if (umrahSearchViewModel.getSortValue() == "") umrahSearchViewModel.setSortValue(sort.options[sort.defaultOption].query)
-        populateSortOptions()
-        isSortLoaded = true
-    }
-
-    private fun loadSortData() {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_home_page_search_parameter)
-        umrahSearchFilterSortViewModel.getUmrahSearchParameter(searchQuery)
-    }
-
-    private fun populateSortOptions() {
-        umrahSearchSortAdapter.apply {
-            setSelectedOption(umrahSearchViewModel.getSortValue())
-            listener = object : UmrahSearchSortAdapter.OnSortMenuSelected {
-                override fun onSelect(option: UmrahOption) {
-                    umrahTrackingUtil.umrahSearchNCategorySortClick(option.query, searchOrCategory)
-                    umrahSearchViewModel.setSortValue(option.query)
-                    arguments?.putString("EXTRA_SORT", option.query)
-                    GlobalScope.launch(Dispatchers.Main) {
-                        delay(250)
-                        sortBottomSheets.dismiss()
-                        loadInitialData()
-                    }
-                }
-            }
-        }
+        umrahSearchSortAdapter.addOptions(sort.options)
+        umrahSearchViewModel.initSortValue(sort.options[sort.defaultOption].query)
     }
 
     companion object {
         var isFilter = false
-        fun getInstance(categorySlugName: String, departureCityId: String, departurePeriod: String,
-                        priceMin: Int, priceMax: Int, durationMin: Int,
+        fun getInstance(categorySlugName: String?, departureCityId: String?, departurePeriod: String?,
+                        priceMin: Int?, priceMax: Int?, durationMin: Int,
                         durationMax: Int, defaultSort: String) =
                 UmrahSearchFragment().also {
                     it.arguments = Bundle().apply {
                         putString(EXTRA_CATEGORY_SLUG_NAME, categorySlugName)
                         putString(EXTRA_DEPARTURE_CITY_ID, departureCityId)
                         putString(EXTRA_DEPARTURE_PERIOD, departurePeriod)
-                        putInt(EXTRA_PRICE_MIN, priceMin)
-                        putInt(EXTRA_PRICE_MAX, priceMax)
+                        if (priceMin != null) putInt(EXTRA_PRICE_MIN, priceMin)
+                        if (priceMax != null) putInt(EXTRA_PRICE_MAX, priceMax)
                         putInt(EXTRA_DURATION_DAYS_MIN, durationMin)
                         putInt(EXTRA_DURATION_DAYS_MAX, durationMax)
                         putString(EXTRA_SORT, defaultSort)
@@ -315,8 +349,8 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     override fun onBackPressed() {
         if (!isDetached) {
             isFilter = false
-            if (umrahSearchViewModel.getSlugName() != "") umrahTrackingUtil.umrahSearchNCategoryBackClick(SearchOrCategory.CATEGORY)
-            else umrahTrackingUtil.umrahSearchNCategoryBackClick(SearchOrCategory.SEARCH)
+            umrahTrackingAnalytics.umrahSearchNCategoryBackClick(searchOrCategory)
         }
     }
+
 }

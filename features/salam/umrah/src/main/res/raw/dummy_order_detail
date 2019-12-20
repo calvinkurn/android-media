@@ -1,0 +1,188 @@
+{
+    "orderDetails": {
+        "__typename": "OrderDetails",
+        "invoice": {
+            "invoiceRefNum": "UMR/12345/12345/12345",
+            "__typename": "ODInvoice",
+            "invoiceUrl": "www.tokopedia.com/invoice123123123/ini/harusnya/evoucher"
+        },
+        "beforeOrderId": 0,
+        "title": [
+            {
+                "imageUrl": "",
+                "__typename": "ODMetadata",
+                "value": "08 Oct 2019 08:55 WIB",
+                "label": "Tanggal Transaksi",
+                "backgroundColor": "",
+                "textColor": ""
+            },
+            {
+                "imageUrl": "",
+                "__typename": "ODMetadata",
+                "value": "Paket Umroh",
+                "label": "Kategori Produk",
+                "backgroundColor": "",
+                "textColor": ""
+            }
+        ],
+        "actionButtons": [
+            {
+                "control": "",
+                "body": {
+                    "body": "",
+                    "appURL": "dmmd.djnfj.com",
+                    "webURL": "http:''test.com",
+                    "method": "",
+                    "__typename": "ActionBody"
+                },
+                "name": "",
+                "weight": 0,
+                "uri": "",
+                "buttonType": "primary",
+                "label": "Batalkan Paket",
+                "header": "",
+                "uriWeb": "",
+                "value": "",
+                "key": "buy_again",
+                "__typename": "ActionButton",
+                "mappingUri": "",
+                "method": ""
+            }
+        ],
+        "detail": [
+            {
+                "imageUrl": "https://ecs7.tokopedia.net/img/salam/umroh/date.png",
+                "__typename": "ODMetadata",
+                "value": "9 hari (8 malam)",
+                "label": "20 Nov - 29 Nov 2019",
+                "textColor": "#ff5722"
+            },
+            {
+                "imageUrl": "https://ecs7.tokopedia.net/img/salam/umroh/hotel.png",
+                "__typename": "ODMetadata",
+                "value": "Kamar (Double)",
+                "label": "Bintang 4",
+                "textColor": "#ff5722"
+            },
+            {
+                "imageUrl": "https://ecs7.tokopedia.net/img/salam/umroh/airline.png",
+                "__typename": "ODMetadata",
+                "value": "Direct",
+                "label": "Garuda",
+                "textColor": "#ff5722"
+            }
+        ],
+        "payMethod": [
+            {
+                "__typename": "ODMetadata",
+                "value": "Bank BCA Transfer",
+                "label": "Metode Pembayaran"
+            },
+            {
+                "__typename": "ODMetadata",
+                "value": "Rp 1000",
+                "label": "Gateway Fee"
+            },
+            {
+                "__typename": "ODMetadata",
+                "value": "Rp 2000",
+                "label": "Extra Fee"
+            },
+            {
+                "__typename": "ODMetadata",
+                "value": "Rp 2000000",
+                "label": "Amount"
+            },
+            {
+                "__typename": "ODMetadata",
+                "value": "Bank XYZ Transfer",
+                "label": "Metode Pembayaran"
+            },
+            {
+                "__typename": "ODMetadata",
+                "value": "Rp 1000",
+                "label": "Gateway Fee"
+            },
+            {
+                "__typename": "ODMetadata",
+                "value": "Rp 2000",
+                "label": "Extra Fee"
+            },
+            {
+                "__typename": "ODMetadata",
+                "value": "Rp 3000000",
+                "label": "Amount"
+            }
+        ],
+        "pricing": [
+            {
+                "imageUrl": "",
+                "__typename": "ODMetadata",
+                "value": "Rp 10000000",
+                "label": "Uang Muka",
+                "backgroundColor": "",
+                "textColor": ""
+            },
+            {
+                "imageUrl": "",
+                "__typename": "ODMetadata",
+                "value": "",
+                "label": "2 Paket Umroh",
+                "backgroundColor": "",
+                "textColor": "#ff5722"
+            },
+            {
+                "imageUrl": "",
+                "__typename": "ODMetadata",
+                "value": "",
+                "label": "(Cicilan 3x)",
+                "backgroundColor": "",
+                "textColor": ""
+            }
+        ],
+        "paymentsData": [
+            {
+                "imageUrl": "",
+                "__typename": "ODMetadata",
+                "value": "Rp 30000000",
+                "label": "Total Pembayaran",
+                "backgroundColor": "",
+                "textColor": "#EF144A"
+            }
+        ],
+        "status": {
+            "status": 0,
+            "statusText": "Transaksi Tidak Berhasil",
+            "__typename": "ODOrderStatus",
+            "iconUrl": "",
+            "statusLabel": "Status",
+            "fontSize": "16sp",
+            "backgroundColor": "",
+            "textColor": "#EF144A"
+        },
+        "contactUs": {
+            "helpUrl": "http://sndjhdjh.com",
+            "helpText": "Butuh info lebih lanjut? Kunjungi Pusat Bantuan",
+            "__typename": "OHelpText"
+        },
+        "items": [
+            {
+                "title": "Umroh VIP Direct Madinah 9 Hari",
+                "imageUrl": "https://www.tokopedia.com/image.png",
+                "productUrl": "https://www.tokopedia.com/gauuuuung/spiderman",
+                "metadata": "{\"travel_agent\":\"Partuna Tour\", \"booking_code\":\"ABC123\" }"
+            }
+        ],
+        "passenger": [
+            {
+                "id": 1,
+                "name": "Tn. Dadi Pribadi"
+            },
+            {
+                "id": 2,
+                "name": "Ny. Candice Swanepoel"
+            }
+        ],
+        "promoCode": "BABA123213"
+    }
+}

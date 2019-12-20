@@ -23,8 +23,8 @@ import kotlinx.android.synthetic.main.widget_umrah_homepage_deals.view.*
 
 class UmrahHomepageCategoryFeaturedItemAdapter(val onItemBindListener: onItemBindListener): RecyclerView.Adapter<UmrahHomepageCategoryFeaturedItemAdapter.UmrahHomepageCategoryFeaturedItemViewHolder>(){
     private var listCategories = emptyList<Products>()
-    var headerTitle = ""
-    var positionDC = 0
+    private var headerTitle = ""
+    private var positionDC = 0
 
     inner class UmrahHomepageCategoryFeaturedItemViewHolder (view: View): RecyclerView.ViewHolder(view){
 
@@ -41,8 +41,8 @@ class UmrahHomepageCategoryFeaturedItemAdapter(val onItemBindListener: onItemBin
                 tg_umrah_mulai_dari.text = getSlashedPrice(resources,products.slashPrice)
                 tg_umrah_price.text = getRupiahFormat(products.originalPrice)
                 tg_umrah_calendar.text = resources.getString(R.string.umrah_home_page_departure_back_date,
-                        UmrahDateUtil.getDate(UmrahDateUtil.DATE_WITHOUT_YEAR_FORMAT, products.departureDate),
-                        UmrahDateUtil.getDate(UmrahDateUtil.DATE_WITH_YEAR_FORMAT,products.returningDate))
+                        UmrahDateUtil.getTime(UmrahDateUtil.DATE_WITHOUT_YEAR_FORMAT, products.departureDate),
+                        UmrahDateUtil.getTime(UmrahDateUtil.DATE_WITH_YEAR_FORMAT,products.returningDate))
                 tg_umrah_hotel.text = resources.getString(R.string.umrah_home_page_hotel_stars,
                         UmrahHotelRating.getAllHotelRatings(products.hotels))
                 tg_umrah_plane.text = products.airlines[0].name
@@ -70,8 +70,10 @@ class UmrahHomepageCategoryFeaturedItemAdapter(val onItemBindListener: onItemBin
         return UmrahHomepageCategoryFeaturedItemViewHolder(itemView)
     }
 
-    fun setList(list: List<Products>){
+    fun setList(list: List<Products>, header: String, position:Int){
         listCategories = list
-        notifyDataSetChanged()
+        headerTitle = header
+        positionDC = position
     }
+
 }
