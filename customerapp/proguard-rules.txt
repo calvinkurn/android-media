@@ -16,7 +16,6 @@
 -dontwarn com.facebook.**
 -dontwarn com.tokopedia.tkpd.analytics.**
 -dontwarn okio.**
--dontwarn com.drew.metadata.xmp.**
 -dontwarn com.viewpagerindicator.LinePageIndicator
 -dontwarn butterknife.internal.**
 -dontwarn com.raizlabs.**
@@ -230,10 +229,6 @@
 
 # Application classes that will be serialized/deserialized over Gson
 -keep class com.google.gson.examples.android.model.** { *; }
-
--keep class com.drew.** {*;}
--keep interface com.drew.** {*;}
--keep enum com.drew.** {*;}
 
 -keepattributes *Annotation*
 

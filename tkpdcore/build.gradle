@@ -30,7 +30,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: '*.jar', dir: 'libs')
 
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -123,13 +122,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation  rootProject.ext.testDependencies.assertJ
-}
-
-project.ext {
-    artifactId = 'core'
-    groupId = 'com.tokopedia.core'
-    versionName = "0.0.1"
-    artifactName ="tkpdcore-release"
 }
 
 project.ext {
