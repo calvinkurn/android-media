@@ -622,16 +622,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void setPromoPushPreference(Boolean newValue) {
-        TrackApp.getInstance().getMoEngage().setPushPreference(newValue);
-    }
-
-    @Override
-    public void setNewsletterEmailPref(Boolean newValue) {
-        TrackApp.getInstance().getMoEngage().setNewsletterEmailPref(newValue);
-    }
-
-    @Override
     public Interceptor getAuthInterceptor() {
         return new TkpdAuthInterceptor();
     }

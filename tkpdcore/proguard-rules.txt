@@ -16,7 +16,6 @@
 -dontwarn com.tokopedia.tkpd.analytics.**
 -dontwarn okio.**
 -dontwarn com.viewpagerindicator.LinePageIndicator
--dontwarn com.raizlabs.**
 
 -keep class com.android.support.** { *; }
 -keepclasseswithmembers class * {
