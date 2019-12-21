@@ -29,7 +29,7 @@ ext {
     reactNativeVersion = '0.60.4'
     alibabaCoreLibVersion = '3.2.8'
     powerMockVersion = '1.6.2'
-    roomVersion = '2.1.0'
+    roomVersion = '2.2.0'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
     guavaVersion = '20.0'

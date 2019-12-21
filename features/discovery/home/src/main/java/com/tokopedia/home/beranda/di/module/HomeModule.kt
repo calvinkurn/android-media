@@ -9,6 +9,7 @@ import com.tokopedia.dynamicbanner.di.PlayCardModule
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.home.beranda.data.datasource.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
@@ -81,6 +82,10 @@ class HomeModule {
 
     @HomeScope
     @Provides
+    fun provideHomeCachedDataSource(homeDao: HomeDao) = HomeCachedDataSource(homeDao)
+
+    @HomeScope
+    @Provides
     fun provideHomeDataSource(homeAceApi: HomeAceApi?): HomeDataSource {
         return HomeDataSource(homeAceApi)
     }
@@ -93,14 +98,18 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun homeRepository(homeDataSource: HomeDataSource, homeDao: HomeDao, homeRemoteDataSource: HomeRemoteDataSource): HomeRepository {
-        return HomeRepositoryImpl(homeDataSource, homeDao, homeRemoteDataSource)
+    fun homeRepository(homeDataSource: HomeDataSource,
+                       homeRemoteDataSource: HomeRemoteDataSource,
+                       homeCachedDataSource: HomeCachedDataSource): HomeRepository {
+        return HomeRepositoryImpl(homeDataSource, homeCachedDataSource, homeRemoteDataSource)
     }
 
     @HomeScope
     @Provides
-    fun homeUsecase(homeRepository: HomeRepository) = HomeUseCase(homeRepository)
-
+    fun homeUsecase(homeRepository: HomeRepository,
+                    @ApplicationContext context: Context, homeVisitableFactory: HomeVisitableFactory) = HomeUseCase(homeRepository, HomeDataMapper(
+            context, homeVisitableFactory
+    ))
 
     @Provides
     fun provideSendGeolocationInfoUseCase(homeRepository: HomeRepository?): SendGeolocationInfoUseCase {

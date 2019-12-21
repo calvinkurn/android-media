@@ -29,8 +29,8 @@ class HomeDataMapper(
         private val context: Context,
         private val homeVisitableFactory: HomeVisitableFactory
 ) {
-    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeViewModel?{
-        if (homeData == null) return null
+    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeViewModel{
+        if (homeData == null) return HomeViewModel()
         val list: MutableList<Visitable<*>> = mutableListOf()
         list.add(mappingBanner(homeVisitableFactory, homeData.banner, isCache))
         if (homeData.ticker != null && homeData.ticker.tickers != null && homeData.ticker.tickers.isNotEmpty()

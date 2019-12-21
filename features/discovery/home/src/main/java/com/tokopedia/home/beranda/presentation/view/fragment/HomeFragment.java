@@ -518,7 +518,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.post(() -> {
             if (presenter != null) {
                 presenter.searchHint();
-                presenter.getHomeData();
             }
             /**
              * set notification gimmick
@@ -534,7 +533,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (data.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                     configureHomeFlag(data.getHomeFlag());
                     setData(new ArrayList(data.getList()), data.isCache() ? HomePresenter.FLAG_FROM_CACHE : HomePresenter.FLAG_FROM_NETWORK);
-                    presenter.setCache(true);
                 } else {
                     showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(new Throwable()));
                 }
@@ -884,7 +882,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         removeNetworkError();
         if (presenter != null) {
             presenter.searchHint();
-            presenter.getHomeData();
+            presenter.refreshHomeData();
             presenter.getStickyContent();
         }
 
@@ -902,7 +900,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onCountDownFinished() {
         if (presenter != null) {
-            presenter.updateHomeData();
+            presenter.refreshHomeData();
         }
     }
 

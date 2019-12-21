@@ -15,7 +15,6 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Resource
-import com.tokopedia.home.beranda.helper.map
 import com.tokopedia.home.beranda.presentation.view.HomeContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
@@ -32,10 +31,9 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import retrofit2.Response
 import rx.Observable
 import rx.Subscriber
@@ -49,6 +47,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+@ExperimentalCoroutinesApi
 class HomePresenter(private val userSession: UserSessionInterface,
                     private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
                     private val coroutineDispatcher: CoroutineDispatcher,
@@ -90,13 +89,14 @@ class HomePresenter(private val userSession: UserSessionInterface,
     @Inject
     lateinit var playCardHomeUseCase: PlayCardHomeUseCase
 
+    @ExperimentalCoroutinesApi
+    val homeFlowData: Flow<HomeViewModel?> = homeUseCase.getHomeData()
 
-    private var isCache = true
+    @ExperimentalCoroutinesApi
+    val homeLiveData: LiveData<HomeViewModel>
+    get() = _homeLiveData
 
-    val homeLiveData: LiveData<HomeViewModel> = homeUseCase.getHomeData().map {
-        if(fetchFirstData) fetchFirstData = false
-        homeDataMapper.mapToHomeViewModel(it, isCache)
-    }
+    val _homeLiveData: MutableLiveData<HomeViewModel> = MutableLiveData()
 
     private val _updateNetworkLiveData = MutableLiveData<Resource<Any>>()
     val updateNetworkLiveData: LiveData<Resource<Any>> get() = _updateNetworkLiveData
@@ -104,7 +104,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     private var currentCursor = ""
     private lateinit var headerViewModel: HeaderViewModel
     private var fetchFirstData = false
-    private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(3) // 3 minutes
+    private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(10) // 10 minutes
     private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
 
     override val coroutineContext: CoroutineContext
@@ -125,7 +125,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         val needRefresh = lastRequestTimeHomeData + REQUEST_DELAY_HOME_DATA < System.currentTimeMillis()
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
         if (isViewAttached && !fetchFirstData && needRefresh) {
-            updateHomeData()
+            refreshHomeData()
         }
         if (needSendGeolocationRequest && view?.hasGeolocationPermission() == true) {
             view?.detectAndSendLocation()
@@ -181,25 +181,12 @@ class HomePresenter(private val userSession: UserSessionInterface,
         })
     }
 
-    override fun getHomeData() {
+    override fun refreshHomeData() {
         initHeaderViewModelData()
-        _updateNetworkLiveData.value = Resource.loading(null)
-        lastRequestTimeSendGeolocation = System.currentTimeMillis()
-        launchCatchError(coroutineContext, block = {
-            val resource = homeUseCase.updateHomeData()
-            isCache = false
-            _updateNetworkLiveData.value = resource
-        }){
-            Timber.tag(HomePresenter::class.java.name).e(it)
-            _updateNetworkLiveData.value = Resource.error(Throwable(), null)
-        }
-    }
 
-    override fun updateHomeData() {
         lastRequestTimeHomeData = System.currentTimeMillis()
         launchCatchError(coroutineContext, block = {
             val resource = homeUseCase.updateHomeData()
-            isCache = false
             _updateNetworkLiveData.value = resource
         }){
             Timber.tag(HomePresenter::class.java.name).e(it)
@@ -211,10 +198,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
         if (userSession.isLoggedIn) {
             getHeaderViewModel().isPendingTokocashChecked = false
         }
-    }
-
-    fun setCache(isCache: Boolean){
-        this.isCache = isCache
     }
 
     override fun updateHeaderTokoCashData(homeHeaderWalletAction: HomeHeaderWalletAction) {
@@ -482,5 +465,15 @@ class HomePresenter(private val userSession: UserSessionInterface,
     init {
         compositeSubscription = CompositeSubscription()
         subscription = Subscriptions.empty()
+        launchCatchError(coroutineContext,  block = {
+            homeFlowData.collect {
+                _homeLiveData.value = it
+            }
+        }) {
+            Timber.tag(HomePresenter::class.java.name).e(it)
+            _updateNetworkLiveData.value = Resource.error(Throwable(), null)
+        }
+        initHeaderViewModelData()
+        refreshHomeData()
     }
 }

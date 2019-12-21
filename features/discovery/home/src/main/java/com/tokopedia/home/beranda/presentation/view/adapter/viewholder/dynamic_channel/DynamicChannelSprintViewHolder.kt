@@ -98,7 +98,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 channel,
                 getLayoutType(channel),
                 countDownView,
-                channel.showPromoBadge,
+                channel.showPromoBadge?:false,
                 getMaxProductCardContentHeight(getLayoutType(channel), channel.grids))
     }
 
