@@ -172,7 +172,6 @@ ext {
             moengage   : "com.moengage:moe-android-sdk:9.7.02",
             moengageAmp: "com.moengage:push-amp-plus:0.3.00",
             branch     : "io.branch.sdk.android:library:4.1.1",
-            rapid7     : "com.rapid7:r7insight_java:1.1.39"
     ]
 
     deeplinkDispatchDependencies = [

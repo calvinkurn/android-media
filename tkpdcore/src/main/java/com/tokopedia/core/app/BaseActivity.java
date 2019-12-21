@@ -7,12 +7,12 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
-import com.tkpd.library.utils.LocalCacheHandler;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -26,7 +26,6 @@ import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.posapp.PosAppRouter;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppWidgetUtil;
@@ -163,10 +162,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             Intent intent;
             if (GlobalConfig.isSellerApp()) {
                 intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent(this);
-            } else if (GlobalConfig.isPosApp()) {
-                intent = ((TkpdCoreRouter) getApplication()).getLoginIntent(this);
             } else {
-                invalidateCategoryCache();
                 intent = HomeRouter.getHomeActivity(this);
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -243,10 +239,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                             Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
-                        } else if (GlobalConfig.isPosApp()) {
-                            Intent intent = PosAppRouter.getSplashScreenIntent(getBaseContext(), true);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
                         } else {
                             invalidateCategoryCache();
                             Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
@@ -258,7 +250,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     }
 
     private void invalidateCategoryCache() {
-        ((TkpdCoreRouter) getApplication()).invalidateCategoryMenuData();
+
     }
 
     public void checkIfForceLogoutMustShow() {

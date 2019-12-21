@@ -11,8 +11,6 @@ import com.tokopedia.core.util.RouterUtils;
 
 @Deprecated
 public class TransactionCartRouter {
-    private final static String CART_ACTIVITY_OLD
-            = "com.tokopedia.transaction.cart.activity.CartActivity";
 
     private final static String CART_ACTIVITY_NEW
             = "com.tokopedia.purchase_platform.features.cart.view.CartActivity";
