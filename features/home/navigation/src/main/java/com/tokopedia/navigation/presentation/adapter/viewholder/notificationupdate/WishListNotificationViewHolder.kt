@@ -48,7 +48,6 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
     private fun assignClickListenerAtc(element: NotificationUpdateItemViewModel) {
         val product = element.getAtcProduct() ?: return
         btnCart.setOnClickListener {
-            listener.getAnalytic().trackAtcOnClick(product)
             listener.addProductToCart(product, onSuccessAddToCart())
             listener.itemClicked(element, adapterPosition)
             element.isRead = true

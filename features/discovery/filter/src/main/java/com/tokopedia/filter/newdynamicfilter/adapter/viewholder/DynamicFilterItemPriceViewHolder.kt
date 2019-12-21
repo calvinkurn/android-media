@@ -16,6 +16,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.NumberParseHelper
 import com.tokopedia.filter.newdynamicfilter.adapter.PricePillsAdapter
 import com.tokopedia.filter.newdynamicfilter.adapter.viewholder.decoration.LinearHorizontalSpacingDecoration
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterView
 
 import java.util.ArrayList
@@ -143,13 +144,15 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
             override val currentPriceMax: Int
                 get() = NumberParseHelper.safeParseInt(dynamicFilterView.getFilterValue(Option.KEY_PRICE_MAX))
 
-            override fun onPriceRangeSelected(minValue: Int, maxValue: Int) {
+            override fun onPriceRangeSelected(minValue: Int, maxValue: Int, position: Int) {
+                FilterTracking.eventClickPricePills(minValue, maxValue, position, true)
                 priceRangeInputView?.setData(minBound, maxBound, minValue, maxValue)
                 refreshPricePills()
                 dynamicFilterView.onPriceRangeClicked()
             }
 
-            override fun onPriceRangeRemoved() {
+            override fun onPriceRangeRemoved(minValue: Int, maxValue: Int, position: Int) {
+                FilterTracking.eventClickPricePills(minValue, maxValue, position, false)
                 priceRangeInputView?.setData(minBound, maxBound, minBound, maxBound)
                 refreshPricePills()
                 dynamicFilterView.onPriceRangeClicked()
