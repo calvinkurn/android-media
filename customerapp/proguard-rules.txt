@@ -17,7 +17,6 @@
 -dontwarn com.tokopedia.tkpd.analytics.**
 -dontwarn okio.**
 -dontwarn com.viewpagerindicator.LinePageIndicator
--dontwarn butterknife.internal.**
 -dontwarn com.raizlabs.**
 
 -keep class com.android.support.** { *; }
@@ -173,19 +172,6 @@
     @twitter4j.** *;
 }
 
-# this is butterknife 
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
-
--keepclasseswithmembernames class * {
-    @butterknife.* <fields>;
-}
-
--keepclasseswithmembernames class * {
-    @butterknife.* <methods>;
-}
-
 #recharge
 -keep class com.tokopedia.core.recharge.model.** { *; }
 
@@ -193,7 +179,6 @@
 -keepattributes *Annotation*,EnclosingMethod,Signature
 
 -dontwarn com.squareup.okhttp.**
-# this is butterknife
 
 # this is retrofit 
 -dontwarn retrofit2.**
@@ -235,18 +220,6 @@
 -keepattributes Signature
 
 -keepattributes InnerClasses
-
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
-
--keepclasseswithmembernames class * {
-  @butterknife.* <fields>;
-}
-
--keepclasseswithmembernames class * {
-  @butterknife.* <methods>;
-}
 
 -keep class com.activeandroid.**{ *; }
 
