@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/list"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8"
-    android:paddingRight="@dimen/dp_10"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:overScrollMode="never"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:background="@drawable/bg_os_gradient"/>
+    android:layout_height="136dp"
+    android:background="@drawable/bg_os_gradient">
+
+    <include
+        android:id="@+id/back_view"
+        layout="@layout/layout_ads_banner_shop_b" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingLeft="10dp"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_8"
+        tools:visibility="visible" />
+
+
+</FrameLayout>

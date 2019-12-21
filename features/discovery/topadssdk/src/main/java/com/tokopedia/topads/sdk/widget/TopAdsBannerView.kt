@@ -10,12 +10,14 @@ import android.text.Spannable
 import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -29,10 +31,12 @@ import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.listener.CustomScrollListner
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter
+import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.view.BannerAdsContract
 import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter
@@ -42,6 +46,10 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHol
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
+import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.description
+import kotlinx.android.synthetic.main.layout_ads_banner_shop_b.view.*
+import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
+import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_product.view.*
 import org.apache.commons.text.StringEscapeUtils
 import java.util.*
 import javax.inject.Inject
@@ -97,8 +105,13 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData.cpm.name)
             bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener))
             var list = findViewById<RecyclerView>(R.id.list)
+            var container = findViewById<View>(R.id.container)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
+            list.addOnScrollListener(CustomScrollListner(back_view))
+            val snapHelper = GravitySnapHelper(Gravity.START)
+            snapHelper.attachToRecyclerView(list)
+
             var shop_image = findViewById<ImageView>(R.id.shop_image)
             shop_image?.let {
                 Glide.with(context).load(cpmData.cpm.cpmShop.imageShop.getsEcs()).into(shop_image)
@@ -110,11 +123,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 }
             }
             if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
-                list.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
+                container?.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
             } else if (cpmData.cpm.cpmShop.isOfficial) {
-                list.background = ContextCompat.getDrawable(context, R.drawable.bg_os_gradient)
+                container?.background = ContextCompat.getDrawable(context, R.drawable.bg_os_gradient)
             } else {
-                list.background = ContextCompat.getDrawable(context, R.drawable.bg_rm_gradient)
+                container?.background = ContextCompat.getDrawable(context, R.drawable.bg_rm_gradient)
             }
             template = SHOP_TEMPLATE
         }
@@ -130,6 +143,14 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     Glide.with(shop_badge).load(cpmData.cpm.badges[0].imageUrl).into(shop_badge)
                 } else {
                     shop_badge.visibility = View.GONE
+                }
+            }
+            shop_name?.text = cpmData.cpm.cpmShop.name
+            description?.text = cpmData.cpm.cpmShop.tagline
+            kunjungi_toko?.setOnClickListener {
+                if (topAdsBannerClickListener != null) {
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
+                    ImpresionTask().execute(cpmData.adClickUrl)
                 }
             }
             val items = ArrayList<Item<*>>()
