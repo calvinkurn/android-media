@@ -19,7 +19,6 @@ import com.facebook.react.ReactNativeHost;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -68,7 +67,6 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -143,7 +141,6 @@ import com.tokopedia.loyalty.di.component.DaggerTokopointComponent;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.di.module.ServiceApiModule;
 import com.tokopedia.loyalty.domain.usecase.GetTokopointUseCase;
-import com.tokopedia.loyalty.router.ITkpdLoyaltyModuleRouter;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.PromoData;
@@ -249,7 +246,6 @@ import javax.inject.Inject;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
-import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
 import tradein_common.TradeInUtils;
@@ -284,7 +280,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ApplinkRouter,
         ShopModuleRouter,
         LoyaltyModuleRouter,
-        ITkpdLoyaltyModuleRouter,
         GamificationRouter,
         ReactNativeRouter,
         ImageUploaderRouter,
@@ -1051,19 +1046,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
-            Context context, String platform, String category, String defaultSelectedTab
-    ) {
+            Context context, String platform, String category, String defaultSelectedTab) {
         return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
-    }
-
-    @Override
-    public ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor() {
-        return getAppComponent().chuckInterceptor();
-    }
-
-    @Override
-    public Converter.Factory loyaltyModuleRouterGetStringResponseConverter() {
-        return new StringResponseConverter();
     }
 
     @Override

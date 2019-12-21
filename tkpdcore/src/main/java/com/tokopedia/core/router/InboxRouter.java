@@ -48,17 +48,6 @@ public class InboxRouter {
         return RouterUtils.getActivityIntent(context, INBOX_TICKET_ACTIVITY);
     }
 
-    /////////// Class
-    public static Class<?> getInboxticketActivityClass() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = RouterUtils.getActivityClass(INBOX_TICKET_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
-
     public static Class<?> getInboxMessageActivityClass() {
         Class<?> parentIndexHomeClass = null;
         try {
