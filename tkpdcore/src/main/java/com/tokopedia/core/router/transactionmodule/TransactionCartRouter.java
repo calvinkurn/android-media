@@ -20,8 +20,4 @@ public class TransactionCartRouter {
     public static Intent createInstanceCartActivity(Context context) {
         return RouterUtils.getActivityIntent(context, CART_ACTIVITY_NEW);
     }
-
-    public static Class<?> createInstanceCartClass() throws ClassNotFoundException {
-        return RouterUtils.getActivityClass(CART_ACTIVITY_NEW);
-    }
 }

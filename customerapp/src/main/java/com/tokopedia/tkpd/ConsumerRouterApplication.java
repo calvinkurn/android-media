@@ -56,7 +56,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -71,7 +70,6 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -91,7 +89,6 @@ import com.tokopedia.core.util.DataMapper;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
@@ -175,8 +172,6 @@ import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
@@ -915,23 +910,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     }
 
-
-    @Override
-    public Intent getAskUserIntent(Context context, String userId, String userName, String source,
-                                   String avatar) {
-
-        return TopChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
-
-
-    }
-
-    @Override
-    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
-                                     String customSubject, String source) {
-        return TopChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, customSubject,
-                source, "");
-    }
-
     @Override
     public void goToGMSubscribe(Activity activity) {
         Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
@@ -1215,11 +1193,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getContactUsIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
-    }
-
-    @Override
     public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(LinkerData.SHOP_TYPE)
@@ -1469,19 +1442,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return RouteManager.getIntent(context, ApplinkConst.PROFILE, userId);
     }
 
-    @Override
-    public Intent getChatBotIntent(Context context, String messageId) {
-        return RouteManager.getIntent(context, ApplinkConst.CHATBOT
-                .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));
-    }
-
     public UseCase<String> setCreditCardSingleAuthentication() {
         return new CreditCardFingerPrintUseCase();
-    }
-
-    @Override
-    public Intent getHelpUsIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
     }
 
     @Override
