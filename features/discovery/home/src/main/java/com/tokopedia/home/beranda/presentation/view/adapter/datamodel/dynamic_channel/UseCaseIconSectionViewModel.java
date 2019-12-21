@@ -18,7 +18,7 @@ import java.util.Map;
  */
 
 @Deprecated
-public class UseCaseIconSectionViewModel implements HomeVisitable<HomeTypeFactory> {
+public class UseCaseIconSectionViewModel implements HomeVisitable {
 
     private List<HomeIconItem> itemList;
     private boolean isCache;
@@ -29,6 +29,11 @@ public class UseCaseIconSectionViewModel implements HomeVisitable<HomeTypeFactor
     @Override
     public boolean isCache() {
         return isCache;
+    }
+
+    @Override
+    public String visitableId() {
+        return "";
     }
 
     public void setCache(boolean cache) {

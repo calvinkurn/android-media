@@ -5,7 +5,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 import com.tokopedia.kotlin.model.ImpressHolder
 
 class SpotlightViewModel(val spotlightItems: List<SpotlightItemViewModel>,
-                         var channelId: String?) : ImpressHolder(), HomeVisitable<HomeTypeFactory> {
+                         var channelId: String?) : ImpressHolder(), HomeVisitable {
+    override fun visitableId(): String {
+        return channelId?:""
+    }
+
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false

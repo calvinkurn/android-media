@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.recyclerview.widget.DiffUtil;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -24,7 +26,7 @@ import java.util.List;
  * @author by errysuprayogi on 11/27/17.
  */
 
-public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
+public class HomeRecycleAdapter extends HomeBaseAdapter<HomeAdapterFactory> {
     //without ticker
     static public final int POSITION_GEOLOCATION_WITHOUT_TICKER = 3;
     static public final int POSITION_HEADER_WITHOUT_TICKER = 1;
@@ -38,10 +40,11 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     protected HomeAdapterFactory typeFactory;
     private RetryModel retryModel;
 
-    public HomeRecycleAdapter(HomeAdapterFactory adapterTypeFactory, List<Visitable> visitables) {
-        super(adapterTypeFactory, visitables);
-        this.typeFactory = adapterTypeFactory;
-        this.retryModel = new RetryModel();
+    public HomeRecycleAdapter(DiffUtil.ItemCallback<HomeVisitable> diffUtilCallback, HomeAdapterFactory adapterTypeFactory,
+                              List<Visitable> visitables) {
+        super(diffUtilCallback, adapterTypeFactory, visitables);
+        typeFactory = adapterTypeFactory;
+        this.visitables = visitables;
     }
 
     @Override
@@ -51,28 +54,19 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     }
 
     @Override
-    public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.bind(visitables.get(position));
-        //check if visitable is homerecommendation, we will set newData = false after bind
-        //because newData = true will force viewholder to recreate tab and viewpager
-        if (visitables.get(position) instanceof HomeRecommendationFeedViewModel) {
-            ((HomeRecommendationFeedViewModel) visitables.get(position)).setNewData(false);
-        }
-    }
-
-    @Override
     public int getItemViewType(int position) {
-        return visitables.get(position).type(typeFactory);
+        return getItem(position).type(typeFactory);
     }
 
-    @Override
-    public int getItemCount() {
-        return visitables.size();
-    }
-
-    public Visitable getItem(int pos) {
-        return visitables.get(pos);
-    }
+    //    @Override
+//    public void onBindViewHolder(AbstractViewHolder holder, int position) {
+//        holder.bind(visitables.get(position));
+//        //check if visitable is homerecommendation, we will set newData = false after bind
+//        //because newData = true will force viewholder to recreate tab and viewpager
+//        if (visitables.get(position) instanceof HomeRecommendationFeedViewModel) {
+//            ((HomeRecommendationFeedViewModel) visitables.get(position)).setNewData(false);
+//        }
+//    }
 
     public List<Visitable> getItems() {
         return visitables;
@@ -83,25 +77,25 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     }
 
     public void showRetry() {
-        if (this.visitables.contains(retryModel)) {
-            return;
-        }
-        int positionStart = getItemCount();
-        this.visitables.add(retryModel);
-        notifyItemRangeInserted(positionStart, 1);
+//        if (this.visitables.contains(retryModel)) {
+//            return;
+//        }
+//        int positionStart = getItemCount();
+//        this.visitables.add(retryModel);
+//        notifyItemRangeInserted(positionStart, 1);
     }
 
     public void removeRetry() {
-        int index = this.visitables.indexOf(retryModel);
-        this.visitables.remove(retryModel);
-        notifyItemRemoved(index);
+//        int index = this.visitables.indexOf(retryModel);
+//        this.visitables.remove(retryModel);
+//        notifyItemRemoved(index);
     }
 
     //mapping another visitable to visitables from home_query
-    public void setItems(List<Visitable> visitables) {
-        this.visitables = visitables;
-        notifyDataSetChanged();
-    }
+//    public void setItems(List<Visitable> visitables) {
+//        this.visitables = visitables;
+//        notifyDataSetChanged();
+//    }
 
     public int hasReview() {
         for (int i = 0; i < visitables.size(); i++) {

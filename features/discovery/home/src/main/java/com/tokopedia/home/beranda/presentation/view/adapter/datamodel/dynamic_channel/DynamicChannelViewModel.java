@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by henrypriyono on 31/01/18.
  */
 
-public class DynamicChannelViewModel implements HomeVisitable<HomeTypeFactory> {
+public class DynamicChannelViewModel implements HomeVisitable {
 
     private DynamicHomeChannel.Channels channel;
 
@@ -24,6 +24,11 @@ public class DynamicChannelViewModel implements HomeVisitable<HomeTypeFactory> {
     @Override
     public boolean isCache() {
         return isCache;
+    }
+
+    @Override
+    public String visitableId() {
+        return channel.getId();
     }
 
     public void setCache(boolean cache) {

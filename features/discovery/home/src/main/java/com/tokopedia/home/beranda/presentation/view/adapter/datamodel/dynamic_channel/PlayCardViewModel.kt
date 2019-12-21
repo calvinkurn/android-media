@@ -5,7 +5,11 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
-class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
+class PlayCardViewModel: HomeVisitable {
+    override fun visitableId(): String {
+        return channel?.id?:""
+    }
+
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false

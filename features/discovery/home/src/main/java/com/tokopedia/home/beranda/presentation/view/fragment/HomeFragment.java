@@ -84,8 +84,10 @@ import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeBaseAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
@@ -554,7 +556,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
     }
 
-    private void setData(List<Visitable> data, int flag){
+    private void setData(List<HomeVisitable> data, int flag){
         if(!data.isEmpty()) {
             if (adapter.getItemCount() != 0) {
                 updateListOnResume(data);
@@ -569,7 +571,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private boolean isDataValid(List<Visitable> visitables) {
+    private boolean isDataValid(List<HomeVisitable> visitables) {
         return containsInstance(visitables, BannerViewModel.class);
     }
 
@@ -674,7 +676,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 this,
                 this
         );
-        adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
+        adapter = new HomeRecycleAdapter(new HomeVisitableDiffUtil(), adapterFactory, new ArrayList<Visitable>());
         homeRecyclerView.setAdapter(adapter);
     }
 
@@ -920,14 +922,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setItems(List<Visitable> items, int repositoryFlag) {
+    public void setItems(List<HomeVisitable> items, int repositoryFlag) {
         if (needToPerformanceMonitoring()) setOnRecyclerViewLayoutReady();
-        List<Visitable> list = new ArrayList<>(items);
+        List<HomeVisitable> list = new ArrayList<>(items);
         if (repositoryFlag == HomePresenter.FLAG_FROM_NETWORK) {
-            adapter.setItems( needToShowGeolocationComponent() ? removeReviewComponent(list) : removeGeolocationComponent(items));
+
+            adapter.submitList( needToShowGeolocationComponent() ? removeReviewComponent(list) : removeGeolocationComponent(items));
             presenter.getHeaderData(false);
             presenter.getFeedTabData();
-            adapter.showLoading();
+//            adapter.showLoading();
 
             if (adapter.hasReview() != -1 && shouldDisplayReview && !needToShowGeolocationComponent()) {
                 shouldDisplayReview = false;
@@ -935,7 +938,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
 
         } else {
-            adapter.setItems(needToShowGeolocationComponent() ? list : removeGeolocationComponent(items));
+            adapter.submitList(needToShowGeolocationComponent() ? list : removeGeolocationComponent(items));
         }
     }
 
@@ -980,8 +983,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return needToShowGeolocationComponent;
     }
 
-    private List<Visitable> removeReviewComponent(List<Visitable> items) {
-        List<Visitable> local = new ArrayList<>(items);
+    private List<HomeVisitable> removeReviewComponent(List<HomeVisitable> items) {
+        List<HomeVisitable> local = new ArrayList<>(items);
         for (Visitable visitable : local){
             if(visitable instanceof ReviewViewModel){
                 local.remove(visitable);
@@ -991,9 +994,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return local;
     }
 
-    private List<Visitable> removeGeolocationComponent(List<Visitable> items){
-        List<Visitable> local = new ArrayList<>(items);
-        for (Visitable visitable : local){
+    private List<HomeVisitable> removeGeolocationComponent(List<HomeVisitable> items){
+        List<HomeVisitable> local = new ArrayList<>(items);
+        for (HomeVisitable visitable : local){
             if(visitable instanceof GeolocationPromptViewModel){
                 local.remove(visitable);
                 break;
@@ -1088,7 +1091,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         for (int i = 0; i < currentVisitables.size(); i++) {
             if (currentVisitables.get(i) instanceof HomeRecommendationFeedViewModel) {
                 currentVisitables.set(i, feedRecommendationVisitable);
-                adapter.setElement(i, feedRecommendationVisitable);
+//                adapter.setElement(i, feedRecommendationVisitable);
                 //set new data to false because visitable already passed to adapter
                 ((HomeRecommendationFeedViewModel) feedTabVisitable).setNewData(false);
                 return;
@@ -1097,30 +1100,28 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         //if looping not returning any home recommendation feed view model
         //then add one
-        adapter.addElement(feedRecommendationVisitable);
+//        adapter.addElement(feedRecommendationVisitable);
     }
 
     @Override
-    public void updateListOnResume(List<Visitable> visitables) {
-        if (feedTabVisitable != null) {
-            visitables.add(feedTabVisitable);
-        }
+    public void updateListOnResume(List<HomeVisitable> visitables) {
+
         presenter.getHeaderData(false);
 
         if (!visitables.isEmpty()) {
             presenter.getFeedTabData();
         }
 
-        List<Visitable> itemAfterGeoloc;
+//        List<Visitable> itemAfterGeoloc;
 
         // Remove review component if Geolocation showing
-        if (needToShowGeolocationComponent()) {
-            itemAfterGeoloc = removeReviewComponent(new ArrayList<>(visitables));
-        } else {
-            itemAfterGeoloc = removeGeolocationComponent(visitables);
-        }
+//        if (needToShowGeolocationComponent()) {
+//            itemAfterGeoloc = removeReviewComponent(new ArrayList<>(visitables));
+//        } else {
+//            itemAfterGeoloc = removeGeolocationComponent(visitables);
+//        }
 
-        adapter.updateHomeQueryItems(itemAfterGeoloc);
+//        adapter.updateHomeQueryItems(itemAfterGeoloc);
 
         if (adapter.hasReview() != -1 && shouldDisplayReview && !needToShowGeolocationComponent()) {
             shouldDisplayReview = false;
@@ -1430,19 +1431,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onRetryLoadFeeds() {
         adapter.removeRetry();
-        adapter.showLoading();
+//        adapter.showLoading();
         presenter.getFeedTabData();
     }
 
     @Override
     public void onTabFeedLoadError(Throwable e) {
-        adapter.hideLoading();
+//        adapter.hideLoading();
         adapter.showRetry();
     }
 
     @Override
     public void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList) {
-        adapter.hideLoading();
+//        adapter.hideLoading();
         updateFeedRecommendationVisitable(mappingHomeFeedModel(feedTabModelList));
     }
 

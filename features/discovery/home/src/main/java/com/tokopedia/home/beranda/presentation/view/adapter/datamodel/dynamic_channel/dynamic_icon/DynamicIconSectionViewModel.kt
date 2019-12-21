@@ -5,7 +5,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 
 import java.util.ArrayList
 
-class DynamicIconSectionViewModel : HomeVisitable<HomeTypeFactory> {
+class DynamicIconSectionViewModel : HomeVisitable {
+    override fun visitableId(): String {
+        return "dynamicIcon"
+    }
+
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false
     private var trackingDataForCombination: List<Any> = emptyList()

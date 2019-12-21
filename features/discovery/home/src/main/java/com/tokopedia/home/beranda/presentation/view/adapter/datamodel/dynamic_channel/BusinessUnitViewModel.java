@@ -6,7 +6,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 import java.util.List;
 import java.util.Map;
 
-public class BusinessUnitViewModel implements HomeVisitable<HomeTypeFactory> {
+public class BusinessUnitViewModel implements HomeVisitable {
 
     private String title;
     private int position;
@@ -18,6 +18,11 @@ public class BusinessUnitViewModel implements HomeVisitable<HomeTypeFactory> {
     @Override
     public boolean isCache() {
         return isCache;
+    }
+
+    @Override
+    public String visitableId() {
+        return title;
     }
 
     public void setCache(boolean cache) {

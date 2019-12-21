@@ -3,7 +3,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
-class GeolocationPromptViewModel : HomeVisitable<HomeTypeFactory> {
+class GeolocationPromptViewModel : HomeVisitable {
+    override fun visitableId(): String {
+        return "geolocation"
+    }
+
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false

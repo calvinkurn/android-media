@@ -7,7 +7,10 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ReviewViewModel(
         var suggestedProductReview: SuggestedProductReview = SuggestedProductReview()
-) : ImpressHolder(), HomeVisitable<HomeTypeFactory> {
+) : ImpressHolder(), HomeVisitable {
+    override fun visitableId(): String {
+        return suggestedProductReview.suggestedProductReview.title
+    }
 
     override fun setTrackingData(trackingData: MutableMap<String, Any>?) {
     }

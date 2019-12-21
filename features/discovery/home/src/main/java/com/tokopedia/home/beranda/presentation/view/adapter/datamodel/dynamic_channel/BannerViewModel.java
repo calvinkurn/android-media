@@ -12,7 +12,7 @@ import java.util.Map;
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class BannerViewModel extends ImpressHolder implements HomeVisitable<HomeTypeFactory> {
+public class BannerViewModel extends ImpressHolder implements HomeVisitable {
 
     private List<BannerSlidesModel> slides;
     private boolean isCache;
@@ -23,6 +23,11 @@ public class BannerViewModel extends ImpressHolder implements HomeVisitable<Home
     @Override
     public boolean isCache() {
         return isCache;
+    }
+
+    @Override
+    public String visitableId() {
+        return "bannerSlider";
     }
 
     public void setCache(boolean cache) {

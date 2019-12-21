@@ -10,7 +10,7 @@ import java.util.Map;
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class DigitalsViewModel implements HomeVisitable<HomeTypeFactory> {
+public class DigitalsViewModel implements HomeVisitable {
 
     private String title;
     private int sectionId;
@@ -22,6 +22,11 @@ public class DigitalsViewModel implements HomeVisitable<HomeTypeFactory> {
     @Override
     public boolean isCache() {
         return isCache;
+    }
+
+    @Override
+    public String visitableId() {
+        return String.valueOf(sectionId);
     }
 
     public void setCache(boolean cache) {

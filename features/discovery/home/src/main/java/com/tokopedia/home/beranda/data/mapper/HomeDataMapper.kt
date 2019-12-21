@@ -219,7 +219,7 @@ class HomeDataMapper(
         return visitable
     }
 
-    private fun mappingTicker(tickers: ArrayList<Ticker.Tickers>): HomeVisitable<*>? {
+    private fun mappingTicker(tickers: ArrayList<Ticker.Tickers>): Visitable<*>? {
         val tmpTickers = ArrayList<Ticker.Tickers>()
         for (tmpTicker in tickers) {
             if (tmpTicker.layout != StickyLoginConstant.LAYOUT_FLOATING) {

@@ -19,7 +19,7 @@ import java.util.Map;
  * @author anggaprasetiyo on 11/12/17.
  */
 
-public class HeaderViewModel implements Parcelable, HomeVisitable<HomeTypeFactory> {
+public class HeaderViewModel implements Parcelable, HomeVisitable {
 
     public static final Creator<HeaderViewModel> CREATOR = new Creator<HeaderViewModel>() {
         @Override
@@ -185,5 +185,10 @@ public class HeaderViewModel implements Parcelable, HomeVisitable<HomeTypeFactor
     @Override
     public boolean isCache() {
         return false;
+    }
+
+    @Override
+    public String visitableId() {
+        return "ovodeh";
     }
 }

@@ -16,7 +16,7 @@ import java.util.Map;
  */
 
 @Deprecated
-public class TopAdsDynamicChannelModel implements HomeVisitable<HomeTypeFactory> {
+public class TopAdsDynamicChannelModel implements HomeVisitable {
     private String title;
     private List<Item> items;
     private boolean isCache;
@@ -27,6 +27,11 @@ public class TopAdsDynamicChannelModel implements HomeVisitable<HomeTypeFactory>
     @Override
     public boolean isCache() {
         return isCache;
+    }
+
+    @Override
+    public String visitableId() {
+        return title;
     }
 
     public void setCache(boolean cache) {

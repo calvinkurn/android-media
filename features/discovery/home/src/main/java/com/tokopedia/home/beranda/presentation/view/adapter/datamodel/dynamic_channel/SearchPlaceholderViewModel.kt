@@ -4,7 +4,11 @@ import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
-class SearchPlaceholderViewModel : HomeVisitable<HomeTypeFactory> {
+class SearchPlaceholderViewModel : HomeVisitable {
+    override fun visitableId(): String {
+        return "search"
+    }
+
     override fun isCache(): Boolean {
         return cache
     }

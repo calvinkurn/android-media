@@ -12,7 +12,7 @@ import java.util.Map;
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class TickerViewModel implements HomeVisitable<HomeTypeFactory> {
+public class TickerViewModel implements HomeVisitable {
 
     private ArrayList<Ticker.Tickers> tickers;
     private boolean isCache;
@@ -23,6 +23,11 @@ public class TickerViewModel implements HomeVisitable<HomeTypeFactory> {
     @Override
     public boolean isCache() {
         return isCache;
+    }
+
+    @Override
+    public String visitableId() {
+        return "hometicker";
     }
 
     public void setCache(boolean cache) {
