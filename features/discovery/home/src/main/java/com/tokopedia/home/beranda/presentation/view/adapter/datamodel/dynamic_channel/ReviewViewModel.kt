@@ -8,6 +8,12 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class ReviewViewModel(
         var suggestedProductReview: SuggestedProductReview = SuggestedProductReview()
 ) : ImpressHolder(), HomeVisitable {
+    override fun equalsWith(b: Any?): Boolean {
+        if (b is ReviewViewModel) {
+            return suggestedProductReview == b.suggestedProductReview
+        }
+        return false
+    }
     override fun visitableId(): String {
         return suggestedProductReview.suggestedProductReview.title
     }

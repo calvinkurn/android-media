@@ -927,7 +927,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
             adapter.submitList( needToShowGeolocationComponent() ? removeReviewComponent(list) : removeGeolocationComponent(items));
             presenter.getHeaderData(false);
-            presenter.getFeedTabData();
+//            presenter.getFeedTabData();
 //            adapter.showLoading();
 
             if (adapter.hasReview() != -1 && shouldDisplayReview && !needToShowGeolocationComponent()) {
@@ -1107,7 +1107,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         presenter.getHeaderData(false);
 
         if (!visitables.isEmpty()) {
-            presenter.getFeedTabData();
+            adapter.submitList(visitables);
+//            presenter.getFeedTabData();
         }
 
 //        List<Visitable> itemAfterGeoloc;

@@ -108,7 +108,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
     }
 
     override fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int {
-        val layout = dynamicChannelViewModel.channel.layout
+        val layout = dynamicChannelViewModel.channel?.layout?:""
         return getDynamicChannelLayoutFromType(layout)
     }
 

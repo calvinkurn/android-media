@@ -10,6 +10,13 @@ class PlayCardViewModel: HomeVisitable {
         return channel?.id?:""
     }
 
+    override fun equalsWith(b: Any?): Boolean {
+        if (b is DynamicChannelViewModel) {
+            return channel == b.channel
+        }
+        return false
+    }
+
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false

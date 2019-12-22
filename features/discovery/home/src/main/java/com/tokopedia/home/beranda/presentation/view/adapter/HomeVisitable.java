@@ -15,4 +15,5 @@ public interface HomeVisitable extends Visitable<HomeTypeFactory> {
     void setTrackingCombined(boolean isCombined);
     boolean isCache();
     String visitableId();
+    boolean equalsWith(Object b);
 }

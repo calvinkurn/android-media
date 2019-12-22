@@ -187,7 +187,7 @@ class HomeDataMapper(
         val digitalsViewModel = DigitalsViewModel(context.getString(R.string.digital_widget_title), 0)
         if (!isCache) {
             digitalsViewModel.isTrackingCombined = true
-            digitalsViewModel.trackingDataForCombination = trackingDataForCombination
+            digitalsViewModel.setTrackingDataForCombination(trackingDataForCombination)
         }
         return digitalsViewModel
     }
@@ -213,7 +213,7 @@ class HomeDataMapper(
         visitable.title = channel.header.name
         visitable.items = items
         if (!isCache) {
-            visitable.trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination()
+            visitable.setTrackingDataForCombination(channel.convertPromoEnhanceDynamicChannelDataLayerForCombination())
             visitable.isTrackingCombined = true
         }
         return visitable
@@ -269,7 +269,7 @@ class HomeDataMapper(
         val viewModel = DynamicChannelViewModel()
         viewModel.channel = channel
         if (!isCache) {
-            viewModel.trackingData = trackingData
+            viewModel.setTrackingData(trackingData)
             viewModel.trackingDataForCombination = trackingDataForCombination
             viewModel.isTrackingCombined = isCombined
         }

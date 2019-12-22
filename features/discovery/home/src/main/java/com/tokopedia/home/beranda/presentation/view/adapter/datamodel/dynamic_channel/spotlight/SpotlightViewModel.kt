@@ -6,6 +6,12 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 class SpotlightViewModel(val spotlightItems: List<SpotlightItemViewModel>,
                          var channelId: String?) : ImpressHolder(), HomeVisitable {
+    override fun equalsWith(b: Any?): Boolean {
+        if (b is SpotlightViewModel) {
+            return spotlightItems == b.spotlightItems
+        }
+        return false
+    }
     override fun visitableId(): String {
         return channelId?:""
     }

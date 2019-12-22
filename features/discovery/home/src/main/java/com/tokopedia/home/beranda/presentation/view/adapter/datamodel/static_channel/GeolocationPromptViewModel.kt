@@ -8,6 +8,13 @@ class GeolocationPromptViewModel : HomeVisitable {
         return "geolocation"
     }
 
+    override fun equalsWith(b: Any?): Boolean {
+        if (b is GeolocationPromptViewModel) {
+            return visitableId() == b.visitableId()
+        }
+        return false
+    }
+
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false

@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
@@ -12,6 +13,7 @@ import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Resource
@@ -19,8 +21,10 @@ import com.tokopedia.home.beranda.presentation.view.HomeContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel
 import com.tokopedia.home.beranda.presentation.view.subscriber.*
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
@@ -424,7 +428,31 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun getFeedTabData() {
-        getFeedTabUseCase?.execute(GetFeedTabsSubscriber(view))
+//        getFeedTabUseCase?.execute(GetFeedTabsSubscriber(view))
+        getFeedTabUseCase.execute(object: Subscriber<List<FeedTabModel>>() {
+            override fun onNext(t: List<FeedTabModel>?) {
+                val currentData = _homeLiveData.value
+                val visitableMutableList: MutableList<Visitable<*>> = currentData?.list?.toMutableList()?: mutableListOf()
+                val homeRecommendationFeedViewModel = HomeRecommendationFeedViewModel()
+                homeRecommendationFeedViewModel.feedTabModel = t
+                homeRecommendationFeedViewModel.isNewData = true
+                visitableMutableList.add(homeRecommendationFeedViewModel)
+
+                val newHomeViewModel = currentData?.copy(
+                        list = visitableMutableList)
+
+                _homeLiveData.value = newHomeViewModel
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+
+            }
+
+        })
     }
 
     override fun getStickyContent() {
@@ -468,6 +496,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         launchCatchError(coroutineContext,  block = {
             homeFlowData.collect {
                 _homeLiveData.value = it
+                if (it?.isCache == false) getFeedTabData()
             }
         }) {
             Timber.tag(HomePresenter::class.java.name).e(it)

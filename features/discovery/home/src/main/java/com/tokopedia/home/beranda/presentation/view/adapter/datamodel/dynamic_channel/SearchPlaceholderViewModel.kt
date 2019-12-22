@@ -9,6 +9,13 @@ class SearchPlaceholderViewModel : HomeVisitable {
         return "search"
     }
 
+    override fun equalsWith(b: Any?): Boolean {
+        if (b is SearchPlaceholderViewModel) {
+            return searchPlaceholder == b.searchPlaceholder
+        }
+        return false
+    }
+
     override fun isCache(): Boolean {
         return cache
     }

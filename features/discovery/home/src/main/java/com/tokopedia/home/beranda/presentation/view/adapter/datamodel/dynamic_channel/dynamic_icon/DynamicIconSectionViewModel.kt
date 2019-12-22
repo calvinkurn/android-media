@@ -6,6 +6,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 import java.util.ArrayList
 
 class DynamicIconSectionViewModel : HomeVisitable {
+    override fun equalsWith(b: Any?): Boolean {
+        if (b is DynamicIconSectionViewModel) {
+            return itemList == b.itemList
+        }
+        return false
+    }
+
     override fun visitableId(): String {
         return "dynamicIcon"
     }
