@@ -19,7 +19,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ValidationTextUtil;
-import com.tokopedia.core2.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.seller.selling.SellingService;

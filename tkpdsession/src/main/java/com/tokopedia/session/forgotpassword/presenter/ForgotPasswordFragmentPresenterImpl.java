@@ -1,17 +1,14 @@
 package com.tokopedia.session.forgotpassword.presenter;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.forgotpassword.interactor.ForgotPasswordRetrofitInteractor;
 import com.tokopedia.session.forgotpassword.listener.ForgotPasswordFragmentView;
@@ -160,11 +157,11 @@ public class ForgotPasswordFragmentPresenterImpl implements ForgotPasswordFragme
         Boolean isValid = true;
 
         if (viewListener.getEmail().getText().toString().length() == 0) {
-            viewListener.setEmailError(viewListener.getString(com.tokopedia.core2.R.string.error_field_required));
+            viewListener.setEmailError(viewListener.getString(R.string.error_field_required));
             isValid = false;
 
         } else if (!CommonUtils.EmailValidation(viewListener.getEmail().getText().toString())) {
-            viewListener.setEmailError(viewListener.getString(com.tokopedia.core2.R.string.error_invalid_email));
+            viewListener.setEmailError(viewListener.getString(R.string.error_invalid_email));
             isValid = false;
         }
 

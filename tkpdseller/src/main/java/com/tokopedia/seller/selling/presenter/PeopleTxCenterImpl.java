@@ -22,7 +22,7 @@ import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core2.R;
+import com.tokopedia.seller.R;
 
 import rx.Subscriber;
 
