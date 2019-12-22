@@ -96,10 +96,6 @@
             android:label="@string/title_activity_manage_notification"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.seller.OrderHistoryView"
-            android:label="@string/title_activity_order_history_view"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.PreviewProductImage"
             android:label="@string/title_activity_preview_product_image"
             android:screenOrientation="portrait"
@@ -117,10 +113,6 @@
         <activity
             android:name="com.tokopedia.core.ManageGeneral"
             android:label="@string/title_activity_manage_general"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.ForceUpdate"
-            android:label="@string/title_activity_force_update"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.ReviewForm"
@@ -146,10 +138,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.core.ShopStatisticDetail"
-            android:label="@string/title_activity_shop_statistic_detail"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.home.TopPicksWebView"
             android:label="@string/title_activity_top_picks"
             android:screenOrientation="portrait" />
@@ -157,10 +145,6 @@
             android:name="com.tokopedia.core.geolocation.activity.GeolocationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/choose_location"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.shopinfo.ShopInfoMore"
-            android:label="Informasi Toko"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.share.ShareActivity"
@@ -176,15 +160,7 @@
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->
         <activity
-            android:name="com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity"
-            android:label="@string/title_activity_manage_people_profile"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.manage.general.ManageWebViewActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.seller.opportunity.snapshot.SnapShotProduct"
-            android:label="@string/title_activity_snapshot"
             android:screenOrientation="portrait" />
 
         <!-- ======================================================= -->
