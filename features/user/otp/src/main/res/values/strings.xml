@@ -74,4 +74,6 @@
     <string name="change_email_error_condition">change email</string>
     <string name="success_resend_activation">Kode aktivasi telah dikirim ulang</string>
     <string name="cancel_dialog_change_email">Batal</string>
+    <string name="job_was_cancelled">Job was cancelled</string>
+    <string name="no_network_connection">Tidak ada koneksi, periksa koneksi internet anda</string>
 </resources>

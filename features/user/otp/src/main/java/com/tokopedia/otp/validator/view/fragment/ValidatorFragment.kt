@@ -39,9 +39,11 @@ import com.tokopedia.otp.validator.di.ValidatorComponent
 import com.tokopedia.otp.validator.viewmodel.ValidatorViewModel
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_cotp_miscall_verification.*
 import kotlinx.android.synthetic.main.fragment_validator.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -62,7 +64,7 @@ class ValidatorFragment: BaseDaggerFragment(){
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val validatorViewModel by lazy { viewModelProvider.get(ValidatorViewModel::class.java) }
 
-    private lateinit var verifyButton: ButtonCompat
+    private lateinit var verifyButton: UnifyButton
     private lateinit var inputVerifyCode: PinInputEditText
     private lateinit var footer: TextView
     private lateinit var errorImage: ImageView
@@ -137,11 +139,11 @@ class ValidatorFragment: BaseDaggerFragment(){
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s?.length == 6) {
+                if (s?.length == modeListData.otpDigit) {
                     validateCode()
-                    verifyButton.buttonCompatType = ButtonCompat.PRIMARY
+                    verifyButton.isEnabled = true
                 }else{
-                    verifyButton.buttonCompatType = ButtonCompat.PRIMARY_DISABLED
+                    verifyButton.isEnabled = false
                 }
             }
 
@@ -225,7 +227,14 @@ class ValidatorFragment: BaseDaggerFragment(){
         validatorViewModel.otpValidateResponse.observe(this, Observer {
             when(it){
                 is Success -> onSuccessOtpValidate(it.data)
-                is Fail -> onErrorOtpValidate(it.throwable)
+                is Fail -> {
+                    val message = it.throwable.message as String
+                    if (message.contains(getString(R.string.job_was_cancelled))) {
+                        onErrorOtpValidate(Throwable(getString(R.string.no_network_connection)))
+                    } else {
+                        onErrorOtpValidate(it.throwable)
+                    }
+                }
             }
         })
     }
@@ -260,7 +269,7 @@ class ValidatorFragment: BaseDaggerFragment(){
     }
 
     private fun validateCode() {
-        showLoading()
+        verifyButton.isLoading = true
         validatorViewModel.otpValidateEmail(otpParams.otpType.toString(), inputVerifyCode.text.toString(), otpParams.email)
     }
 
@@ -315,6 +324,7 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun onSuccessOtpValidate(otpValidateData: OtpValidateData){
         dismissLoading()
+        verifyButton.isLoading = false
         analytics.trackSuccessClickActivationButton()
         activity?.let {
             if(otpValidateData.validateToken.isEmpty()){
@@ -333,6 +343,7 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun onErrorOtpValidate(throwable: Throwable){
         dismissLoading()
+        verifyButton.isLoading = false
         inputVerifyCode.requestFocus()
         inputVerifyCode.requestFocusFromTouch()
         activity?.let {

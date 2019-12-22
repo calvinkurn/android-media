@@ -115,7 +115,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/llotp"/>
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/verify_button"
             android:layout_width="@dimen/dp_250"
             android:layout_height="@dimen/dp_44"
@@ -124,8 +124,6 @@
             android:enabled="false"
             android:gravity="center"
             android:text="@string/title_validation_otp"
-            app:buttonCompatSize="big"
-            app:buttonCompatType="primary_disabled"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/llotp" />
