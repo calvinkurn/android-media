@@ -265,7 +265,7 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun requestCode(isResend: Boolean) {
         showLoading()
-        validatorViewModel.otpRequestEmail(otpParams.otpType.toString(), otpParams.email, isResend)
+        validatorViewModel.otpRequestEmail(otpParams.otpType.toString(), otpParams.email, isResend, modeListData.otpDigit)
     }
 
     private fun validateCode() {
