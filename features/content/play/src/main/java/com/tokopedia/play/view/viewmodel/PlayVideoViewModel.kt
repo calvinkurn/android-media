@@ -15,12 +15,17 @@ class PlayVideoViewModel @Inject constructor(
         dispatchers: CoroutineDispatcherProvider
 ) : BaseViewModel(dispatchers.main) {
 
+    companion object {
+
+        private const val ONE_TAP_ONBOARDING_DELAY = 5000L
+    }
+
     private val _observableOneTapOnboarding = MutableLiveData<Event<Unit>>()
     val observableOneTapOnboarding = _observableOneTapOnboarding
 
     init {
         launch {
-            delay(5000)
+            delay(ONE_TAP_ONBOARDING_DELAY)
             _observableOneTapOnboarding.value = Event(Unit)
         }
     }
