@@ -4,8 +4,15 @@ import androidx.annotation.DimenRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.productcard.R
 
 internal val View.isVisible: Boolean
     get() = visibility == View.VISIBLE
@@ -70,5 +77,32 @@ internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) 
         action(this)
     } else {
         this.visibility = View.GONE
+    }
+}
+
+internal fun ImageView.loadProductImage(url: String?) {
+    if (url != null && url.isNotEmpty()) {
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.ic_loading_toped_new)
+                .error(R.drawable.ic_loading_toped_new)
+                .into(this)
+    }
+}
+
+internal fun ImageView.loadProductImageRounded(url: String?) {
+    if (url != null && url.isNotEmpty()) {
+        Glide.with(context)
+                .load(url)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .transform(RoundedCorners(5))
+                .dontAnimate()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.ic_loading_toped_new)
+                .error(R.drawable.error_drawable)
+                .into(this)
     }
 }

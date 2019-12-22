@@ -59,7 +59,8 @@ class HomeRecommendationFeedViewHolder(itemView: View,
                 this,
                 listener.childFragmentManager,
                 feedTabModelList,
-                listener.trackingQueue)
+                listener.trackingQueue,
+                listener.parentPool)
 
         homeFeedsViewPager.offscreenPageLimit = DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT
         homeFeedsViewPager.adapter = homeFeedPagerAdapter

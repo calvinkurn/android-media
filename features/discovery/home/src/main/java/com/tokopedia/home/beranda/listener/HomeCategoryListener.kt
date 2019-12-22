@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.listener
 
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
 
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
@@ -13,6 +14,8 @@ import java.util.HashMap
  */
 
 interface HomeCategoryListener {
+
+    val parentPool: RecyclerView.RecycledViewPool
 
     val isMainViewVisible: Boolean
 

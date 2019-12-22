@@ -1322,6 +1322,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return getUserVisibleHint();
     }
 
+    @NotNull
+    @Override
+    public RecyclerView.RecycledViewPool getParentPool() {
+        return homeRecyclerView.getRecycledViewPool();
+    }
+
     @Override
     public boolean isHomeFragment() {
         if (getActivity() == null) {
