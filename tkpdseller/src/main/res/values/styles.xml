@@ -225,4 +225,13 @@
         <item name="android:textColorSecondary">#bfbfbf</item>
     </style>
 
+    <style name="ToolbarText.SansSerifMedium" parent="ToolbarText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="ToolbarSubtitleText.SansSerifMedium" parent="ToolbarSubtitleText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
+    </style>
 </resources>
