@@ -28,9 +28,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
-import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
-import com.tokopedia.core.product.listener.FragmentDetailParent;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -46,7 +43,6 @@ import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
  */
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
         DeepLinkView,
-        ProductInfoResultReceiver.Receiver,
         ICatalogActionFragment {
 
     private TkpdProgressDialog progressDialog;
@@ -312,28 +308,4 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     public void deliverCatalogShareData(LinkerData shareData) {
 
     }
-
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.main_view);
-        if (fragment != null && fragment instanceof FragmentDetailParent) {
-            switch (resultCode) {
-                case ProductInfoIntentService.STATUS_SUCCESS_REPORT_PRODUCT:
-                    onReceiveResultSuccess(fragment, resultData, resultCode);
-                    break;
-                case ProductInfoIntentService.STATUS_ERROR_REPORT_PRODUCT:
-                    onReceiveResultError(fragment, resultData, resultCode);
-                    break;
-            }
-        }
-    }
-
-    private void onReceiveResultError(Fragment fragment, Bundle resultData, int resultCode) {
-        ((FragmentDetailParent) fragment).onErrorAction(resultData, resultCode);
-    }
-
-    private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
-        ((FragmentDetailParent) fragment).onSuccessAction(resultData, resultCode);
-    }
-
 }

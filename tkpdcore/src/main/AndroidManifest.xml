@@ -101,10 +101,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen" />
         <activity
-            android:name="com.tokopedia.core.SettingsNotification"
-            android:label="@string/title_activity_settings_notification"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity" />
         <activity
             android:name="com.tokopedia.core.MaintenancePage"
@@ -113,10 +109,6 @@
         <activity
             android:name="com.tokopedia.core.ManageGeneral"
             android:label="@string/title_activity_manage_general"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.ReviewForm"
-            android:label="Ulasan anda"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.invoice.activity.InvoiceRendererActivity"
@@ -177,14 +169,6 @@
                 android:name="forward.Kochava"
                 android:value="com.kochava.android.tracker.ReferralCapture" />
         </receiver>
-
-        <!-- ======================================================= -->
-        <!-- SERVICES REGISTRY -->
-        <!-- ======================================================= -->
-        <service android:name="com.tokopedia.core.service.HUDIntent" />
-        <service
-            android:name="com.tokopedia.core.product.intentservice.ProductInfoIntentService"
-            android:exported="false" > </service>
 
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->

@@ -7,25 +7,26 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.view.ActionMode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.view.ActionMode;
+
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.selling.SellingService;
-import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.model.ModelParamSelling;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
-import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.view.listener.SellingTransaction;
 import com.tokopedia.transaction.common.TransactionRouter;
 
@@ -70,11 +71,6 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public String getMessageTAG() {
-        return null;
-    }
-
-    @Override
-    public String getMessageTAG(Class<?> className) {
         return null;
     }
 

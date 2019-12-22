@@ -4,11 +4,12 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+
+import androidx.annotation.NonNull;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.PreviewProductImage;
@@ -18,10 +19,10 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
 import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
 import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.opportunity.snapshot.customview.DescriptionView;
 import com.tokopedia.seller.opportunity.snapshot.customview.DetailInfoView;
 import com.tokopedia.seller.opportunity.snapshot.customview.FreeReturnView;
@@ -29,7 +30,6 @@ import com.tokopedia.seller.opportunity.snapshot.customview.HeaderInfoView;
 import com.tokopedia.seller.opportunity.snapshot.customview.PictureView;
 import com.tokopedia.seller.opportunity.snapshot.customview.ShopInfoView;
 import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
-import com.tokopedia.seller.opportunity.snapshot.presenter.SnapShotFragmentImpl;
 import com.tokopedia.seller.opportunity.snapshot.presenter.SnapShotFragmentPresenter;
 
 import javax.inject.Inject;

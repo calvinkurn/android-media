@@ -334,15 +334,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         }
     }
 
-    private void goToHome() {
-        Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
-        homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
-        if (getIntent() != null && getIntent().getExtras() != null)
-            homeIntent.putExtras(getIntent().getExtras());
-        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(homeIntent);
-    }
-
     public void eventPersonalizedClicked(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
