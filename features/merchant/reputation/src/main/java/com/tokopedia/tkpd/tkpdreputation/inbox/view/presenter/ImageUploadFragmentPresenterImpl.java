@@ -7,9 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
@@ -21,7 +18,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageU
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
 import com.tokopedia.usecase.RequestParams;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

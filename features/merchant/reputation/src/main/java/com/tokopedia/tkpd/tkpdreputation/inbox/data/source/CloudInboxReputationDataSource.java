@@ -1,14 +1,17 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
+import android.util.Log;
+
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -27,18 +30,18 @@ import rx.functions.Action1;
 public class CloudInboxReputationDataSource {
     public static final String IS_SAVE_TO_CACHE = "IS_SAVE_TO_CACHE";
     private final InboxReputationMapper inboxReputationMapper;
-    private final GlobalCacheManager globalCacheManager;
+    private final PersistentCacheManager persistentCacheManager;
     private final ReputationService reputationService;
     private final UserSessionInterface userSessionInterface;
 
     public CloudInboxReputationDataSource(ReputationService reputationService,
                                           InboxReputationMapper inboxReputationMapper,
-                                          GlobalCacheManager globalCacheManager,
+                                          PersistentCacheManager persistentCacheManager,
                                           UserSessionInterface userSessionInterface) {
         this.userSessionInterface = userSessionInterface;
         this.reputationService = reputationService;
         this.inboxReputationMapper = inboxReputationMapper;
-        this.globalCacheManager = globalCacheManager;
+        this.persistentCacheManager = persistentCacheManager;
     }
 
 
@@ -56,13 +59,17 @@ public class CloudInboxReputationDataSource {
         return inboxReputationDomain -> {
             if (!inboxReputationDomain.getInboxReputation().isEmpty()
                     && isRequestNotFiltered(requestParams)) {
-                globalCacheManager.setKey(GetFirstTimeInboxReputationUseCase.CACHE_REPUTATION +
-                        requestParams.getParameters().get(GetInboxReputationUseCase.PARAM_TAB))
-                        .setCacheDuration(GetFirstTimeInboxReputationUseCase.DURATION_CACHE)
-                        .setValue(CacheUtil.convertModelToString(inboxReputationDomain,
-                                new TypeToken<InboxReputationDomain>() {
-                                }.getType()))
-                        .store();
+
+                String key = GetFirstTimeInboxReputationUseCase.CACHE_REPUTATION + requestParams.getParameters().get(GetInboxReputationUseCase.PARAM_TAB);
+                String value = CacheUtil.convertModelToString(inboxReputationDomain,
+                        new TypeToken<InboxReputationDomain>() {
+                        }.getType());
+                int cacheDuration = GetFirstTimeInboxReputationUseCase.DURATION_CACHE;
+                persistentCacheManager.put(
+                        key,
+                        value,
+                        cacheDuration
+                );
             }
         };
     }

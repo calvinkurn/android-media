@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.factory;
 
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
@@ -48,7 +48,7 @@ public class ReputationFactory {
     private final TomeService tomeService;
     private final FaveShopActService faveShopActService;
     private final InboxReputationMapper inboxReputationMapper;
-    private final GlobalCacheManager globalCacheManager;
+    private final PersistentCacheManager persistentCacheManager;
     private final InboxReputationDetailMapper inboxReputationDetailMapper;
     private final SendSmileyReputationMapper sendSmileyReputationMapper;
     private final SendReviewValidateMapper sendReviewValidateMapper;
@@ -74,7 +74,7 @@ public class ReputationFactory {
                              SkipReviewMapper skipReviewMapper,
                              ReportReviewMapper reportReviewMapper,
                              ShopFavoritedMapper shopFavoritedMapper,
-                             GlobalCacheManager globalCacheManager,
+                             PersistentCacheManager persistentCacheManager,
                              FaveShopActService faveShopActService,
                              FaveShopMapper faveShopMapper,
                              DeleteReviewResponseMapper deleteReviewResponseMapper,
@@ -83,7 +83,7 @@ public class ReputationFactory {
                              LikeDislikeMapper likeDislikeMapper, ReviewProductApi reputationReviewApi,
                              UserSessionInterface userSession) {
         this.reputationService = reputationService;
-        this.globalCacheManager = globalCacheManager;
+        this.persistentCacheManager = persistentCacheManager;
         this.inboxReputationMapper = inboxReputationMapper;
         this.inboxReputationDetailMapper = inboxReputationDetailMapper;
         this.sendSmileyReputationMapper = sendSmileyReputationMapper;
@@ -104,11 +104,11 @@ public class ReputationFactory {
     }
 
     public CloudInboxReputationDataSource createCloudInboxReputationDataSource() {
-        return new CloudInboxReputationDataSource(reputationService, inboxReputationMapper, globalCacheManager, userSession);
+        return new CloudInboxReputationDataSource(reputationService, inboxReputationMapper, persistentCacheManager, userSession);
     }
 
     public LocalInboxReputationDataSource createLocalInboxReputationDataSource() {
-        return new LocalInboxReputationDataSource(globalCacheManager);
+        return new LocalInboxReputationDataSource(persistentCacheManager);
     }
 
     public CloudInboxReputationDetailDataSource createCloudInboxReputationDetailDataSource() {

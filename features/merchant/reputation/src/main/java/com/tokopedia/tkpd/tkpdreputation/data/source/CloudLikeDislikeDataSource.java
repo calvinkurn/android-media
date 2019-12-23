@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.tkpdreputation.data.source;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil;

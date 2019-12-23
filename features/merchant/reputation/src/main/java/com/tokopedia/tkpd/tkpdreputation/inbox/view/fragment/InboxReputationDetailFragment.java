@@ -28,12 +28,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -91,7 +91,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     InboxReputationDetailPresenter presenter;
 
     @Inject
-    GlobalCacheManager cacheManager;
+    PersistentCacheManager persistentCacheManager;
 
     @Inject
     UserSessionInterface userSession;
@@ -136,13 +136,12 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     private void initVar() {
         if (getArguments().getBoolean(InboxReputationDetailActivity.ARGS_IS_FROM_APPLINK, false)) {
             reputationId = getArguments().getString(InboxReputationDetailActivity.REPUTATION_ID, "0");
-        } else if (cacheManager != null) {
+        } else if (persistentCacheManager != null) {
             try {
-                InboxReputationDetailPassModel passModel =
-                        cacheManager.getConvertObjData(
-                                InboxReputationDetailActivity.CACHE_PASS_DATA,
-                                InboxReputationDetailPassModel.class
-                        );
+                InboxReputationDetailPassModel passModel = persistentCacheManager.get(
+                    InboxReputationDetailActivity.CACHE_PASS_DATA,
+                    InboxReputationDetailPassModel.class
+                );
                 reputationId = passModel.getReputationId();
                 role = passModel.getRole();
                 setToolbar(passModel.getInvoice(), passModel.getCreateTime());

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
 import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
@@ -97,12 +96,6 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    GlobalCacheManager provideGlobalCacheManager() {
-        return new GlobalCacheManager();
-    }
-
-    @ReputationScope
-    @Provides
     PersistentCacheManager providePersistentCacheManager(@ApplicationContext Context context) {
         return new PersistentCacheManager(context);
     }
@@ -146,7 +139,7 @@ public class ReputationModule {
             SkipReviewMapper skipReviewMapper,
             ShopFavoritedMapper shopFavoritedMapper,
             ReportReviewMapper reportReviewMapper,
-            GlobalCacheManager globalCacheManager,
+            PersistentCacheManager persistentCacheManager,
             FaveShopActService faveShopActService,
             FaveShopMapper faveShopMapper,
             DeleteReviewResponseMapper deleteReviewResponseMapper,
@@ -160,7 +153,7 @@ public class ReputationModule {
                 sendReviewValidateMapper, sendReviewSubmitMapper,
                 skipReviewMapper, reportReviewMapper,
                 shopFavoritedMapper,
-                globalCacheManager,
+                persistentCacheManager,
                 faveShopActService,
                 faveShopMapper,
                 deleteReviewResponseMapper,

@@ -14,14 +14,14 @@ import android.view.ViewGroup;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.design.text.SearchInputView;
@@ -72,7 +72,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     InboxReputationPresenter presenter;
 
     @Inject
-    GlobalCacheManager cacheManager;
+    PersistentCacheManager persistentCacheManager;
 
     public static Fragment createInstance(int tab) {
         InboxReputationFragment fragment = new InboxReputationFragment();
@@ -324,18 +324,21 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     private void savePassModelToDB(InboxReputationDetailPassModel inboxReputationDetailPassModel) {
-        if (cacheManager != null) {
-            cacheManager.setKey(InboxReputationDetailActivity.CACHE_PASS_DATA);
-            cacheManager.setValue(CacheUtil.convertModelToString(inboxReputationDetailPassModel,
-                    new TypeToken<InboxReputationDetailPassModel>() {
-                    }.getType()));
-            cacheManager.store();
+        if (persistentCacheManager != null) {
+            persistentCacheManager.put(
+                    InboxReputationDetailActivity.CACHE_PASS_DATA,
+                    CacheUtil.convertModelToString(inboxReputationDetailPassModel,
+                            new TypeToken<InboxReputationDetailPassModel>() {
+                            }.getType())
+
+            );
+
         }
     }
 
     private void removeCachePassData() {
-        if (cacheManager != null) {
-            cacheManager.delete(InboxReputationDetailActivity.CACHE_PASS_DATA);
+        if (persistentCacheManager != null) {
+            persistentCacheManager.delete(InboxReputationDetailActivity.CACHE_PASS_DATA);
         }
     }
 

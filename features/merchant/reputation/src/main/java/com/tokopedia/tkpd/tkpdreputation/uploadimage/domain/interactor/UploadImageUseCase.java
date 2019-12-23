@@ -1,8 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor;
 
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewRequestModel;
@@ -67,7 +67,7 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
     }
 
     private Map<String, RequestBody> generateRequestBody(RequestParams requestParams) {
-        Map<String, String> paramsMap = AuthUtil.generateParams(
+        Map<String, String> paramsMap = AuthHelper.generateParamsNetwork(
                 requestParams.getString(PARAM_USER_ID, userSession.getUserId()),
                 requestParams.getString(PARAM_DEVICE_ID,
                         GCMHandler.getRegistrationId(MainApplication.getAppContext())),
