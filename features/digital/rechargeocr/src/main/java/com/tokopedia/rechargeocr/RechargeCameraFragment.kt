@@ -39,7 +39,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     private lateinit var subtitle: TextView
     private lateinit var shutterBtn: FrameLayout
     private lateinit var loading: ProgressBar
-    private lateinit var container: ConstraintLayout
+    private lateinit var containerCamera: ConstraintLayout
     private lateinit var cameraListener: CameraListener
     private lateinit var recaptureBtn: RelativeLayout
     private lateinit var uploadImageviewModel: RechargeUploadImageViewModel
@@ -62,6 +62,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         shutterBtn = view.findViewById(R.id.image_button_shutter)
         loading = view.findViewById(R.id.progress_bar)
         recaptureBtn = view.findViewById(R.id.recapture_button)
+        containerCamera = view.findViewById(R.id.layout_container)
         return view
     }
 
@@ -88,7 +89,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             if (it.isNotEmpty()) {
                 uploadImageviewModel.getResultOcr(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_ocr), it)
             } else {
-                Toaster.make(container, "Kartu tidak terbaca, silakan coba lagi", Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                Toaster.make(containerCamera, "Kartu tidak terbaca, silakan coba lagi", Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
             }
         })
 
@@ -104,7 +105,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         })
 
         uploadImageviewModel.errorActionOcr.observe(this, Observer {
-            Toaster.make(container, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            Toaster.make(containerCamera, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
         })
     }
 
