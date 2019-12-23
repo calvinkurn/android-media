@@ -531,7 +531,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
                 activity?.let {
                     //TOGGLE_MVC_OFF
-                    productDetailTracking.eventClickMerchantVoucherUse(merchantVoucherViewModel, position)
+                    productDetailTracking.eventClickMerchantVoucherUse(merchantVoucherViewModel, productInfo?.basic?.shopID.orZero().toString(), productId.orEmpty(), position)
                     showSnackbarClose(getString(R.string.title_voucher_code_copied))
                 }
             }
@@ -539,7 +539,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
                 activity?.let {
                     productInfo?.run {
-                        productDetailTracking.eventClickMerchantVoucherSeeDetail(basic.id)
+                        productDetailTracking.eventClickMerchantVoucherSeeDetail(merchantVoucherViewModel.voucherId, productId.orEmpty())
                         val intent = MerchantVoucherDetailActivity.createIntent(it, merchantVoucherViewModel.voucherId,
                                 merchantVoucherViewModel, basic.shopID.toString())
                         startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL)
@@ -550,7 +550,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             override fun onSeeAllClicked() {
                 activity?.let {
                     productInfo?.run {
-                        productDetailTracking.eventClickMerchantVoucherSeeAll(basic.id)
+                        productDetailTracking.eventClickMerchantVoucherSeeAll(productId.orEmpty())
                         if (shopInfo == null) return@let
 
                         val intent = MerchantVoucherListActivity.createIntent(it, basic.shopID.toString(),
@@ -1478,9 +1478,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (productInfoP2.vouchers.isNotEmpty()) {
             merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
             merchantVoucherListWidget.visible()
-            if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isShopOwner(productInfo?.basic?.shopID
-                            ?: 0)) {
-                productDetailTracking.eventImpressionMerchantVoucherUse(productInfoP2.vouchers)
+            if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isShopOwner(productInfo?.basic?.shopID.orZero())) {
+                productDetailTracking.eventImpressionMerchantVoucherUse(
+                        productInfo?.basic?.shopID.orZero(),
+                        productId ?: return,
+                        productInfoP2.vouchers)
             }
         } else {
             merchantVoucherListWidget.gone()
@@ -1862,7 +1864,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun onReviewClicked() {
         productInfo?.run {
-            productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name ?: "")
+            productDetailTracking.eventReviewClickedIris(this, deeplinkUrl, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
+                    ?: "")
             productDetailTracking.sendMoEngageClickReview(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")
             context?.let {

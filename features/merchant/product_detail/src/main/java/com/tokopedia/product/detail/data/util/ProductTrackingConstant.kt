@@ -14,6 +14,7 @@ object ProductTrackingConstant {
 
     object Action {
         const val CLICK = "click"
+        const val IMPRESSION = "impression"
         const val CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header"
         const val PRODUCT_CLICK = "productClick"
         const val PRODUCT_VIEW = "productView"
@@ -82,9 +83,11 @@ object ProductTrackingConstant {
     }
 
     object MerchantVoucher {
-        const val EVENT = "promoClick"
+        const val PROMO_CLICK = "promoClick"
+        const val PROMO_VIEW = "promoView"
         const val ACTION = "promo banner"
         const val MERCHANT_VOUCHER = "merchant voucher"
+        const val USE_VOUCHER = "use voucher"
         const val DETAIL = "mvc detail"
         const val SEE_ALL = "see all"
     }
