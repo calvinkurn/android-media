@@ -35,7 +35,6 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.tkpd.utils.StethoUtil;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -143,7 +142,7 @@ public abstract class MainApplication extends MainRouterApplication {
         instance = this;
         init();
         initCrashlytics();
-        StethoUtil.initStetho(this);
+        //StethoUtil.initStetho(this);
         //initStetho();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;

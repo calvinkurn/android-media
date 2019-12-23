@@ -56,6 +56,7 @@ import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
 import com.tokopedia.tkpd.utils.DeviceUtil;
+import com.tokopedia.tkpd.utils.StethoUtil;
 import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
@@ -138,6 +139,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initReact();
 
         super.onCreate();
+
+        StethoUtil.initStetho(this);
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
