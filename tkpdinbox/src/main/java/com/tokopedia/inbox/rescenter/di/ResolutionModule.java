@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -36,8 +36,8 @@ public class ResolutionModule {
 
     @ResolutionScope
     @Provides
-    public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
+    public ChuckInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+        return new ChuckerInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
     }
 
     @ResolutionScope

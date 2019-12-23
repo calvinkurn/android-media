@@ -107,7 +107,7 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    public ChuckerInterceptor provideChuckInterceptor(@ApplicationContext Context context,
+    public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context,
                                                                   @Named(ConstantCoreNetwork.CHUCK_ENABLED) LocalCacheHandler localCacheHandler) {
         return new ChuckerInterceptor(context);
     }

@@ -865,8 +865,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Interceptor getChuckInterceptor() {
-        return getAppComponent().chuckInterceptor();
+    public Interceptor getChuckerInterceptor() {
+        return getAppComponent().ChuckerInterceptor();
     }
 
     @Override

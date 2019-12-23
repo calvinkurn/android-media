@@ -30,7 +30,7 @@ public class AutoCompleteInterceptorModule {
 
     @AutoCompleteScope
     @Provides
-    ChuckerInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
+    ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
         return new ChuckerInterceptor(context);
     }
 

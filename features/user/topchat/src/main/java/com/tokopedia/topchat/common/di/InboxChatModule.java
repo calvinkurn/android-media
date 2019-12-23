@@ -4,7 +4,7 @@ package com.tokopedia.topchat.common.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
@@ -68,8 +68,8 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context);
+    ChuckInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+        return new ChuckerInterceptor(context);
     }
 
     @InboxChatScope

@@ -2,7 +2,7 @@ package com.tokopedia.vote.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -41,13 +41,13 @@ public class VoteModule {
 
     @VoteQualifier
     @Provides
-    public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
+    public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+        return new ChuckerInterceptor(context);
     }
 
     @VoteQualifier
     @Provides
-    public OkHttpClient provideOkHttpClient(@VoteQualifier ChuckInterceptor chuckInterceptor,
+    public OkHttpClient provideOkHttpClient(@VoteQualifier ChuckerInterceptor chuckInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor,
                                             @VoteQualifier AccountsAuthorizationInterceptor accountsAuthorizationInterceptor) {

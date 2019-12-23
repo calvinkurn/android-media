@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.list.di
 
 import android.content.Context
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
@@ -22,8 +22,8 @@ class ProductManageNetworkModule {
 
     @Provides
     @ProductManageScope
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
-        return ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools())
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor(context)
     }
 
     @GMProductManageQualifier
@@ -44,7 +44,7 @@ class ProductManageNetworkModule {
     @GMProductManageQualifier
     @Provides
     fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
-                              chuckInterceptor: ChuckInterceptor,
+                              chuckInterceptor: ChuckerInterceptor,
                               httpLoggingInterceptor: HttpLoggingInterceptor,
                               cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()

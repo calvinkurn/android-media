@@ -3,7 +3,7 @@ package com.tokopedia.changephonenumber.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
@@ -169,6 +169,6 @@ public class ChangePhoneNumberModule {
     @Provides
     @ChangePhoneNumberScope
     public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
+        return new ChuckerInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
     }
 }

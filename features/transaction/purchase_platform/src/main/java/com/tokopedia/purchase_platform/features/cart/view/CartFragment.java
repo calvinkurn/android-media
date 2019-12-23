@@ -28,9 +28,9 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import com.chuckerteam.chucker.api.Chucker;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.reflect.TypeToken;
-import com.readystatesoftware.chuck.Chuck;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
@@ -542,7 +542,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onGoToChuck() {
-        startActivity(Chuck.getLaunchIntent(getActivity()));
+        startActivity(Chucker.getLaunchIntent(getActivity(), Chucker.SCREEN_HTTP));
     }
 
     @Override

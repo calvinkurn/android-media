@@ -12,7 +12,7 @@ public interface ContactUsModuleRouter {
 
     Intent getChatBotIntent(Context context, String messageId);
 
-    Interceptor getChuckInterceptor();
+    Interceptor getChuckerInterceptor();
 
     Intent getHomeIntent(Context context);
 

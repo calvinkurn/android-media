@@ -2,7 +2,7 @@ package com.tokopedia.groupchat.common.di.module;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -48,8 +48,8 @@ public class GroupChatNetModule {
 
     @GroupChatScope
     @Provides
-    public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
+    public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+        return new ChuckerInterceptor(context);
     }
 
     @GroupChatScope
@@ -62,7 +62,7 @@ public class GroupChatNetModule {
 
     @GroupChatScope
     @Provides
-    public OkHttpClient provideOkHttpClient(ChuckInterceptor chuckInterceptor,
+    public OkHttpClient provideOkHttpClient(ChuckerInterceptor chuckInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor,
                                             PlayInterceptor playInterceptor) {

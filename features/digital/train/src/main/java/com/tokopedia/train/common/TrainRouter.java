@@ -21,7 +21,7 @@ public interface TrainRouter {
 
     Observable<ProfileBuyerInfo> getProfileInfo();
 
-    Interceptor getChuckInterceptor();
+    Interceptor getChuckerInterceptor();
 
     Intent getIntentOfLoyaltyActivityWithCoupon(Activity activity, String platform, String reservationId, String reservationCode);
 

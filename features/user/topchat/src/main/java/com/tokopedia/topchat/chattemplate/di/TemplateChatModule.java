@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chattemplate.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -72,9 +72,9 @@ public class TemplateChatModule {
 
     @TemplateChatScope
     @Provides
-    ChuckInterceptor provideChuckInterceptor(
+    ChuckInterceptor provideChuckerInterceptor(
             @ApplicationContext Context context) {
-        return new ChuckInterceptor(context);
+        return new ChuckerInterceptor(context);
     }
 
 

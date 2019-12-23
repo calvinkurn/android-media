@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -112,8 +112,8 @@ public class UserModule {
 
     @UserScope
     @Provides
-    public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
+    public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+        return new ChuckerInterceptor(context);
     }
 
 
@@ -125,7 +125,7 @@ public class UserModule {
 
     @UserScope
     @Provides
-    public OkHttpClient provideOkHttpClient(ChuckInterceptor chuckInterceptor,
+    public OkHttpClient provideOkHttpClient(ChuckerInterceptor chuckInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor) {
 

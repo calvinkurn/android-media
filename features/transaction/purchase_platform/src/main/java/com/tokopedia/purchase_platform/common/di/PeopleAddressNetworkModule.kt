@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.common.di
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
-import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
@@ -44,7 +44,7 @@ class PeopleAddressNetworkModule {
                                      tkpdAuthInterceptor: TkpdAuthInterceptor,
                                      okHttpRetryPolicy: OkHttpRetryPolicy,
                                      fingerprintInterceptor: FingerprintInterceptor,
-                                     chuckInterceptor: ChuckInterceptor): OkHttpClient {
+                                     chuckInterceptor: ChuckerInterceptor): OkHttpClient {
 
         val builder = OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)

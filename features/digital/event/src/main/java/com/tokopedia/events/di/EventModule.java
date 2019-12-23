@@ -125,7 +125,7 @@ public class EventModule {
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(new TkpdAuthInterceptor(context, (NetworkRouter) context, userSession))
                 .addInterceptor(new FingerprintInterceptor((NetworkRouter) context, userSession))
-                .addInterceptor(((EventModuleRouter) context).getChuckInterceptor())
+                .addInterceptor(((EventModuleRouter) context).getChuckerInterceptor())
                 .build();
     }
 

@@ -46,7 +46,7 @@ public interface FlightModuleRouter {
 
     Observable<ProfileInfo> getProfile();
 
-    Interceptor getChuckInterceptor();
+    Interceptor getChuckerInterceptor();
 
     Intent getLoyaltyWithCoupon(Activity activity, String platform, String categoryId, String cartId);
 

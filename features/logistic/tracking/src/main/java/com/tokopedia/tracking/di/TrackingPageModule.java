@@ -2,8 +2,8 @@ package com.tokopedia.tracking.di;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
@@ -89,7 +89,7 @@ public class TrackingPageModule {
                         userSession));
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(new HttpLoggingInterceptor())
-                    .addInterceptor(new ChuckInterceptor(context));
+                    .addInterceptor(new ChuckerInterceptor(context));
         }
         return builder.build();
     }

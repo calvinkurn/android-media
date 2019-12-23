@@ -1,7 +1,7 @@
 package com.tokopedia.settingbank.banklist.di
 
 import android.content.Context
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -69,8 +69,8 @@ class SettingBankModule{
 
     @SettingBankScope
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor
-            = ChuckInterceptor(context)
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckInterceptor
+            = ChuckerInterceptor(context)
 
     @SettingBankScope
     @Provides

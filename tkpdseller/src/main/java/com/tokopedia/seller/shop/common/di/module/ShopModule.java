@@ -2,7 +2,7 @@ package com.tokopedia.seller.shop.common.di.module;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;

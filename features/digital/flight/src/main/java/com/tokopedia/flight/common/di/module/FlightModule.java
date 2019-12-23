@@ -3,9 +3,9 @@ package com.tokopedia.flight.common.di.module;
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -77,7 +77,7 @@ public class FlightModule {
     @Provides
     @FlightChuckQualifier
     public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context);
+        return new ChuckerInterceptor(context);
     }
 
     @FlightScope

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
@@ -117,8 +117,8 @@ class VideoUploaderModule constructor() {
 
     @VideoUploaderQualifier
     @Provides
-    fun provideChuckInterceptor(@VideoUploaderQualifier context: Context): ChuckInterceptor {
-        return ChuckInterceptor(context)
+    fun provideChuckerInterceptor(@VideoUploaderQualifier context: Context): ChuckInterceptor {
+        return ChuckerInterceptor(context)
     }
 
     @VideoUploaderQualifier

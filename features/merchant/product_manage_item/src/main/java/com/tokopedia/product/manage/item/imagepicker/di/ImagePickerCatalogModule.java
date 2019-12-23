@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.item.imagepicker.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
@@ -64,7 +64,7 @@ public class ImagePickerCatalogModule {
         builder.addInterceptor(new CacheApiInterceptor(context, new CacheApiTKPDResponseValidator<>(HeaderErrorListResponse.class)));
         if(GlobalConfig.isAllowDebuggingTools()){
             builder.addInterceptor(new HttpLoggingInterceptor());
-            builder.addInterceptor(new ChuckInterceptor(context));
+            builder.addInterceptor(new ChuckerInterceptor(context));
         }
         return builder.build();
     }

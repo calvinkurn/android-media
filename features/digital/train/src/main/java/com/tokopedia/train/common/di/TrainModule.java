@@ -80,7 +80,7 @@ public class TrainModule {
         builder.addInterceptor(new ErrorResponseInterceptor(TrainErrorResponse.class));
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(trainRouter.getChuckInterceptor());
+                    .addInterceptor(trainRouter.getChuckerInterceptor());
         }
 
         return builder.build();

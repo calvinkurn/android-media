@@ -2,7 +2,7 @@ package com.tokopedia.iris.data.network
 
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.*
 import com.tokopedia.network.NetworkRouter
@@ -55,7 +55,7 @@ class ApiService(private val context: Context) {
                 .readTimeout(10000, TimeUnit.MILLISECONDS)
         addFringerInterceptor(builder)
         if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(ChuckInterceptor(context))
+            builder.addInterceptor(ChuckerInterceptor(context))
         }
         return builder.build()
     }

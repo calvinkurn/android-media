@@ -157,7 +157,7 @@ public class ImageUploaderModule {
     @Provides
     public Interceptor provideInterceptor(@ImageUploaderQualifier Context context) {
         if (context instanceof ImageUploaderRouter) {
-            return ((ImageUploaderRouter) context).getChuckInterceptor();
+            return ((ImageUploaderRouter) context).getChuckerInterceptor();
         }
         throw new RuntimeException("App should implement " + ImageUploaderRouter.class.getSimpleName());
     }

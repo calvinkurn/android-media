@@ -118,7 +118,7 @@ public interface AppComponent {
 
     OkHttpRetryPolicy okHttpRetryPolicy();
 
-    ChuckerInterceptor chuckInterceptor();
+    ChuckerInterceptor ChuckerInterceptor();
 
     DebugInterceptor debugInterceptor();
 

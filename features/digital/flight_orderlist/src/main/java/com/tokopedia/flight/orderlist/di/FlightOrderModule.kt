@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
@@ -46,7 +46,7 @@ class FlightOrderModule {
     @Provides
     @FlightOrderChuckQualifier
     fun provideChuckInterceptory(@ApplicationContext context: Context): Interceptor {
-        return ChuckInterceptor(context)
+        return ChuckerInterceptor(context)
     }
 
     @FlightOrderScope

@@ -35,7 +35,7 @@ public class RecentViewModule {
 
     @Provides
     @RecentViewQualifier
-    ChuckerInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
+    ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
         return new ChuckerInterceptor(context);
     }
 

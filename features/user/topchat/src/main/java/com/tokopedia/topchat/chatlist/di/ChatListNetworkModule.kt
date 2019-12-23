@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatlist.di
 
 import android.content.Context
 import android.content.res.Resources
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
@@ -101,8 +101,8 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
-        return ChuckInterceptor(context)
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
+        return ChuckerInterceptor(context)
     }
 
     @ChatListScope

@@ -23,7 +23,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.readystatesoftware.chuck.Chuck;
+import com.chuckerteam.chucker.api.Chucker;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analytics.debugger.GtmLogger;
@@ -218,7 +218,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoTochuck.setOnClickListener(new OneOnClick() {
             @Override
             public void oneOnClick(View view) {
-                startActivity(Chuck.getLaunchIntent(getApplicationContext()));
+                startActivity(Chucker.getLaunchIntent(getApplicationContext(), Chucker.SCREEN_HTTP));
             }
         });
 

@@ -11,7 +11,7 @@ import okhttp3.Interceptor;
 
 public interface GamificationRouter {
 
-    Interceptor getChuckInterceptor();
+    Interceptor getChuckerInterceptor();
 
     Intent getWebviewActivityWithIntent(Context context, String url, String title);
 

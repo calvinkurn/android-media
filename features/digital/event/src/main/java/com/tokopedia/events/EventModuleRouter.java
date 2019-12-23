@@ -8,7 +8,7 @@ import okhttp3.Interceptor;
 
 public interface EventModuleRouter {
 
-    Interceptor getChuckInterceptor();
+    Interceptor getChuckerInterceptor();
 
     Intent getLoginIntent(Context context);
 

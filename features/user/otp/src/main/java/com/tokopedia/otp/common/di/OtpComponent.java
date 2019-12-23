@@ -2,7 +2,7 @@ package com.tokopedia.otp.common.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -32,7 +32,7 @@ public interface OtpComponent {
 
     UserSessionInterface provideUserSessionInterface();
 
-    ChuckInterceptor provideChuckInterceptor();
+    ChuckInterceptor provideChuckerInterceptor();
 
     AbstractionRouter provideAbstractionRouter();
 
