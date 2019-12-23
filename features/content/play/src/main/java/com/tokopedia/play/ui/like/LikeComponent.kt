@@ -28,11 +28,11 @@ class LikeComponent(
         return bus.getSafeManagedFlow(LikeInteractionEvent::class.java)
     }
 
-    override fun onLikeClicked(view: LikeView) {
+    override fun onLikeClicked(view: LikeView, shouldLike: Boolean) {
         launch {
             bus.emit(
                     LikeInteractionEvent::class.java,
-                    LikeInteractionEvent.LikeClicked
+                    LikeInteractionEvent.LikeClicked(shouldLike)
             )
         }
     }

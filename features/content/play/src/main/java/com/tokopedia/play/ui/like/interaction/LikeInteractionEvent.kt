@@ -7,5 +7,5 @@ import com.tokopedia.play.component.ComponentEvent
  */
 sealed class LikeInteractionEvent : ComponentEvent {
 
-    object LikeClicked : LikeInteractionEvent()
+    data class LikeClicked(val shouldLike: Boolean) : LikeInteractionEvent()
 }

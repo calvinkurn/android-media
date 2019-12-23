@@ -1,18 +1,14 @@
 package com.tokopedia.play.view.wrapper
 
-import java.util.*
-
 /**
  * Created by jegul on 18/12/19
  */
-enum class InteractionEvent(val needLogin: Boolean) {
+sealed class InteractionEvent {
 
-    SendChat(true),
-    Like(true);
+    abstract val needLogin: Boolean
 
-    companion object {
-        private val values = values()
-
-        val needLoginEvents = EnumSet.copyOf(values.filter(InteractionEvent::needLogin))
+    object SendChat : InteractionEvent() {
+        override val needLogin: Boolean = true
     }
+    data class Like(val shouldLike: Boolean, override val needLogin: Boolean = true) : InteractionEvent()
 }
