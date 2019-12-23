@@ -20,6 +20,7 @@ import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
@@ -102,6 +103,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
+        if (adapter.data[0] is AttachInvoiceSelectionViewModel)
+            getAdapter().removeElement(adapter.data[0])
         super.onReceiveMessageEvent(generatedInvoice)
     }
 

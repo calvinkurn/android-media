@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="read_more_color">#42b549</color>
+    <color name="black_color_opacity_lvl_40">#66141414</color>
+    <color name="chatbot_color_pink">#f05f68</color>
+    <color name="chatbot_color_pink_bg">#fdebec</color>
 </resources>
