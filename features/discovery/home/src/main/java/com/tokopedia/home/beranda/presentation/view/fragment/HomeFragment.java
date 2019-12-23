@@ -1048,6 +1048,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateListOnResume(List<HomeVisitable> visitables) {
+        if (needToPerformanceMonitoring()) setOnRecyclerViewLayoutReady();
         adapter.submitList(visitables);
     }
 
