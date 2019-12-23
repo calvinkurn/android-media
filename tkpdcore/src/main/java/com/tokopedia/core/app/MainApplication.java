@@ -13,7 +13,6 @@ import android.util.Log;
 import androidx.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.stetho.Stetho;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
@@ -36,10 +35,11 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.tkpd.utils.StethoUtil;
 
 import io.fabric.sdk.android.Fabric;
 
-public abstract class MainApplication extends MainRouterApplication{
+public abstract class MainApplication extends MainRouterApplication {
 
     public static final int DATABASE_VERSION = 7;
     private static final String TAG = "MainApplication";
@@ -143,7 +143,8 @@ public abstract class MainApplication extends MainRouterApplication{
         instance = this;
         init();
         initCrashlytics();
-        initStetho();
+        StethoUtil.initStetho(this);
+        //initStetho();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -207,14 +208,14 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     public void initStetho() {
-        if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
+        //if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
     }
 
     private void initBranch() {
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         UserSession userSession = new UserSession(this);
 
-        if(userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()) {
             UserData userData = new UserData();
             userData.setUserId(userSession.getUserId());
 
@@ -259,10 +260,9 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     @Override
-    public Intent getInboxTalkCallingIntent(Context mContext){
+    public Intent getInboxTalkCallingIntent(Context mContext) {
         return null;
     }
-
 
 
 }
