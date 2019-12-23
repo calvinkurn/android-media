@@ -109,6 +109,7 @@ public class SearchActivity extends BaseActivity
     private ImageView buttonChangeGrid;
     private ImageView buttonCart;
     private ImageView buttonHome;
+    private ImageView buttonImageSearch;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
@@ -204,6 +205,7 @@ public class SearchActivity extends BaseActivity
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
         buttonCart = findViewById(R.id.search_cart_button);
         buttonHome = findViewById(R.id.search_home_button);
+        buttonImageSearch = findViewById(R.id.search_image_search_button);
     }
 
     protected void prepareView() {
@@ -245,6 +247,8 @@ public class SearchActivity extends BaseActivity
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
         buttonCart.setOnClickListener(v -> onCartButtonClicked());
         buttonHome.setOnClickListener(v -> moveToHomeActivity());
+        buttonImageSearch.setOnClickListener(v -> onImageSearchButtonClicked());
+
     }
 
     private void onSearchBarClicked() {
@@ -276,6 +280,10 @@ public class SearchActivity extends BaseActivity
     private void moveToHomeActivity() {
         searchTracking.eventActionClickHomeButton(searchParameter.getSearchQuery());
         RouteManager.route(this, ApplinkConst.HOME);
+    }
+
+    private void onImageSearchButtonClicked(){
+            RouteManager.route(this, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT);
     }
 
     private void initViewPager() {
