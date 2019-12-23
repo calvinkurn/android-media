@@ -2,7 +2,7 @@ package com.tokopedia.autocomplete.di.net;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdBaseInterceptor;
@@ -30,8 +30,8 @@ public class AutoCompleteInterceptorModule {
 
     @AutoCompleteScope
     @Provides
-    ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
+    ChuckerInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
+        return new ChuckerInterceptor(context);
     }
 
     @AutoCompleteScope

@@ -20,7 +20,6 @@ import com.facebook.react.ReactNativeHost;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -1202,11 +1201,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             Context context, String platform, String category, String defaultSelectedTab
     ) {
         return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
-    }
-
-    @Override
-    public ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor() {
-        return getAppComponent().chuckInterceptor();
     }
 
     @Override
