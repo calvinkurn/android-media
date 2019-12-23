@@ -1,5 +1,5 @@
-query travelCollectiveBanner() {
-  travelCollectiveBanner(product: ALL, countryID: "ID") {
+query travelCollectiveBanner($product: TravelColletiveCategory!) {
+  travelCollectiveBanner(product: $product, countryID: "ID") {
     banners{
       id
       product
