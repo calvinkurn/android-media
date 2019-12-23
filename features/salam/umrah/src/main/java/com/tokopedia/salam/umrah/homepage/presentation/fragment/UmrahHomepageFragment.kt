@@ -48,9 +48,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        isRequestedMyUmrah = false
-        DREAM_FUND_VIEWED = false
-        isRequestedCategory = false
+        resetIsRequested()
     }
 
     override fun initInjector() = getComponent(UmrahHomepageComponent::class.java)
@@ -76,8 +74,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isRequestedMyUmrah = false
-        isRequestedCategory = false
+        resetIsRequested()
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             umrahHomepageViewModel = viewModelProvider.get(UmrahHomepageViewModel::class.java)
@@ -101,7 +98,14 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         })
     }
 
+    private fun resetIsRequested(){
+        isRequestedMyUmrah = false
+        isRequestedCategory = false
+        DREAM_FUND_VIEWED = false
+    }
+
     private fun loadDataAll() {
+        resetIsRequested()
         isLoadingInitialData = true
         adapter.clearAllElements()
         showLoading()

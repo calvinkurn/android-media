@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.applink.internal.ApplinkConstInternalSalam
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -145,7 +146,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     } else {
                         context?.run {
                             val taskStackBuilder = TaskStackBuilder.create(this)
-                            val intentHotelHome = RouteManager.getIntent(this, ApplinkConstInternalTravel.DASHBOARD_HOTEL)
+                            val intentHotelHome = RouteManager.getIntent(this, ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE)
                             taskStackBuilder.addNextIntent(intentHotelHome)
 
                             val checkoutResultData = PaymentPassData()
@@ -156,6 +157,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
                             val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
                             val intent = RouteManager.getIntent(context, paymentCheckoutString)
+                            resetVariable()
                             progressDialog.dismiss()
                             intent?.run {
                                 putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
@@ -773,7 +775,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         }
     }
 
-    override fun onBackPress() {
+    private fun resetVariable(){
         pilgrimCount = 0
         price = 0
         totalPrice = 0
@@ -785,6 +787,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         productModel = UmrahProductModel.UmrahProduct()
         listPaymentOptions = UmrahPaymentOptions()
         trackingUmrahUtil.getClickBackCheckoutTracker()
+    }
+
+    override fun onBackPress() {
+        resetVariable()
     }
 
 

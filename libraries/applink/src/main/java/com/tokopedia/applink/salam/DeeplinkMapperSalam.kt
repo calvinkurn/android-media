@@ -7,4 +7,8 @@ object DeeplinkMapperSalam{
     fun getRegisteredNavigationSalamUmrah(deeplink: String): String {
         return deeplink.replace(ApplinkConst.SALAM_UMRAH, ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE)
     }
+
+    fun getRegisteredNavigationSalamUmrahOrderDetail(deeplink: String): String {
+        return deeplink.replace(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL, ApplinkConstInternalSalam.SALAM_ORDER_DETAIL)
+    }
 }

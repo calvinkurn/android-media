@@ -20,6 +20,7 @@ import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigation
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah
+import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -73,6 +74,8 @@ object DeeplinkMapper {
                         getRegisteredNavigationForFintech(deeplink)
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH,true) ->
                         getRegisteredNavigationSalamUmrah(deeplink)
+                    deeplink.startsWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL,true) ->
+                        getRegisteredNavigationSalamUmrahOrderDetail(deeplink)
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){

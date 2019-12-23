@@ -1,15 +1,5 @@
 <resources>
     <string name="app_name">Umrah</string>
-    <string name="umrah_host_umrah">umrah</string>
-    <string name="umrah_host_s">s</string>
-    <string name="umrah_path_search">/umroh/search</string>
-    <string name="umrah_path_category">/umroh/paket/.*\</string>
-    <string name="umrah_path_pdp">/umroh/produk/.*\</string>
-    <string name="umrah_home_page_path">/umroh</string>
-    <string name="umrah_checkout_path">/umroh/checkout</string>
-    <string name="umrah_host_order_detail">/order-details</string>
-    <string name="umrah_path_order_detail">/umroh</string>
-
 
     <string name="umrah_order_detail_status_label">Status</string>
     <string name="umrah_order_detail_detail_title">Detail Umroh</string>
