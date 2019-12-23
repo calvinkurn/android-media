@@ -313,6 +313,7 @@ dependencies {
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.digitalEmoney)
+    implementation project(rootProject.ext.features.rechargeOcr)
     implementation project(rootProject.ext.features.commonTopupBills)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
