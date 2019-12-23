@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
+import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.PartnerInfoUiModel
 import com.tokopedia.unifyprinciples.Typography
@@ -73,10 +74,13 @@ class ToolbarView(
         } else {
             tvFollow.setOnClickListener {
                 if (partnerInfo.isFollowed) {
-                    listener.onUnFollowButtonClicked(this)
+                    listener.onFollowButtonClicked(this, partnerInfo.id, PartnerFollowAction.UnFollow)
+                    tvFollow.text = view.context.getString(R.string.play_follow)
                 } else {
-                    listener.onFollowButtonClicked(this)
+                    listener.onFollowButtonClicked(this, partnerInfo.id, PartnerFollowAction.Follow)
+                    tvFollow.text = view.context.getString(R.string.play_following)
                 }
+                partnerInfo.isFollowed = !partnerInfo.isFollowed
             }
         }
 
@@ -88,8 +92,7 @@ class ToolbarView(
     interface Listener {
         fun onBackButtonClicked(view: ToolbarView)
         fun onMoreButtonClicked(view: ToolbarView)
-        fun onFollowButtonClicked(view: ToolbarView)
-        fun onUnFollowButtonClicked(view: ToolbarView)
+        fun onFollowButtonClicked(view: ToolbarView, partnerId: Long, action: PartnerFollowAction)
         fun onPartnerNameClicked(view: ToolbarView, partnerId: Long, type: PartnerType)
     }
 }
