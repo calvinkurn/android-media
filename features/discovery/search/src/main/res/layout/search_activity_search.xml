@@ -38,7 +38,7 @@
                     android:layout_marginStart="@dimen/dp_12"
                     app:srcCompat="@drawable/search_ic_back" />
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_search"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
@@ -50,11 +50,10 @@
                     android:paddingBottom="@dimen/dp_6"
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingStart="@dimen/dp_4"
-                    android:paddingRight="@dimen/dp_10"
-                    android:paddingEnd="@dimen/dp_10"
+                    android:paddingRight="@dimen/dp_4"
+                    android:paddingEnd="@dimen/dp_4"
                     android:background="@drawable/search_bg_autocomplete_input"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/dp_4">
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/searchTextView"
@@ -81,8 +80,11 @@
                         android:layout_marginRight="@dimen/dp_4"
                         android:layout_marginEnd="@dimen/dp_4"
                         android:layout_gravity="center"
-                        app:srcCompat="@drawable/ic_product_discovery_imagesearch_normal_24" />
-                </LinearLayout>
+                        app:srcCompat="@drawable/ic_product_discovery_imagesearch_normal_24"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <ImageView
                     android:id="@+id/search_home_button"
