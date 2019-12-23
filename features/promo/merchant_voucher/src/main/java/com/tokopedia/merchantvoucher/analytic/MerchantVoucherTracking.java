@@ -1,11 +1,8 @@
 package com.tokopedia.merchantvoucher.analytic;
 
-import com.google.gson.Gson;
 import com.tokopedia.track.TrackApp;
 
 import java.util.HashMap;
-
-import timber.log.Timber;
 
 public class MerchantVoucherTracking {
     private static final String EVENT = "event";
@@ -22,11 +19,6 @@ public class MerchantVoucherTracking {
     private static final String PROMO_ID = "promoId";
 
     public MerchantVoucherTracking() {
-    }
-
-    protected void sendEvent(String event, String category, String action, String label) {
-        HashMap<String, Object> eventMap = createMap(event, category, action, label);
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
     protected HashMap<String, Object> createMap(String event, String category, String action, String label) {
@@ -62,7 +54,7 @@ public class MerchantVoucherTracking {
 
     public void clickShare() {
         HashMap<String, Object> eventMap = createMap(CLICK_PDP, PDP, CLICK_MVC_SHARE, "");
-        Timber.d("clickShare: %s", new Gson().toJsonTree(eventMap));
+
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 }
