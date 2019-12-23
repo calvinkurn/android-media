@@ -80,8 +80,6 @@ import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModule;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModuleLoader;
-import com.tokopedia.notifcenter.applink.NotifCenterApplinkModule;
-import com.tokopedia.notifcenter.applink.NotifCenterApplinkModuleLoader;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModule;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
@@ -158,7 +156,6 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         TrackingAppLinkModule.class,
         HowtopayApplinkModule.class,
         TopChatAppLinkModule.class,
-        NotifCenterApplinkModule.class,
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
         RecentViewApplinkModule.class,
@@ -209,7 +206,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new TrackingAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
                     new TopChatAppLinkModuleLoader(),
-                    new NotifCenterApplinkModuleLoader(),
                     new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),
                     new RecentViewApplinkModuleLoader(),
