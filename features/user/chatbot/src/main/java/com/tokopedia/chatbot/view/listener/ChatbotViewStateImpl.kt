@@ -204,7 +204,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun hideEmptyMessage(visitable: Visitable<*>) {
-        if (visitable is FallbackAttachmentViewModel && visitable.message == "") {
+        if (visitable is FallbackAttachmentViewModel && visitable.message.isEmpty()) {
             getAdapter().removeElement(visitable)
         }
     }
