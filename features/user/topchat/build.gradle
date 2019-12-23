@@ -37,7 +37,6 @@ dependencies {
     implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.attachproduct)
-    implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.merchantVoucher)
