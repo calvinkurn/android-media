@@ -20,6 +20,11 @@
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
+
+        <activity android:name="com.tokopedia.travel.destination.presentation.activity.TravelHomepageDestinationActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.NoActionBar"/>
     </application>
 
 </manifest>

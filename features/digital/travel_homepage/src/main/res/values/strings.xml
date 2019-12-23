@@ -1,7 +1,7 @@
 <resources>
     <string name="travel_title_subhomepage">Travel &amp; Entertainment</string>
     <string name="travel_homepage_section_see_all">Lihat semua</string>
-    
+
     <string name="travel_prefix_strikethrough"><![CDATA[<strike>%1$s</strike> <strong>%2$s</strong>]]></string>
     <string name="travel_prefix_normal"><![CDATA[%1$s <strong>%2$s</strong>]]></string>
     <string name="travel_prefix_nostyle">%1$s %2$s</string>
