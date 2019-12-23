@@ -9,8 +9,7 @@ class RechargeOcrResponse(
         val rechargeOcr: ResultOcr = ResultOcr()
 )
 
-class ResultOcr {
+class ResultOcr(
     @SerializedName("result")
     @Expose
-    val result: String = ""
-}
+    val result: String = "")

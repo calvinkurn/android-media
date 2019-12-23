@@ -7,9 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -22,6 +25,7 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.rechargeocr.di.RechargeCameraInstance
 import com.tokopedia.rechargeocr.viewmodel.RechargeUploadImageViewModel
 import com.tokopedia.rechargeocr.widget.FocusCameraView
+import com.tokopedia.unifycomponents.Toaster
 import java.io.File
 import javax.inject.Inject
 
@@ -35,6 +39,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     private lateinit var subtitle: TextView
     private lateinit var shutterBtn: FrameLayout
     private lateinit var loading: ProgressBar
+    private lateinit var container: ConstraintLayout
     private lateinit var cameraListener: CameraListener
     private lateinit var recaptureBtn: RelativeLayout
     private lateinit var uploadImageviewModel: RechargeUploadImageViewModel
@@ -74,6 +79,33 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         setupInfoCamera()
         populateView()
         showCameraView()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        uploadImageviewModel.urlImage.observe(this, Observer {
+            if (it.isNotEmpty()) {
+                uploadImageviewModel.getResultOcr(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_ocr), it)
+            } else {
+                Toaster.make(container, "Kartu tidak terbaca, silakan coba lagi", Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            }
+        })
+
+        uploadImageviewModel.resultDataOcr.observe(this, Observer { ocrData ->
+            hideLoading()
+            Toast.makeText(activity, "success get data", Toast.LENGTH_SHORT).show()
+            activity?.let {
+                val intentReturn = Intent()
+                intentReturn.putExtra(EXTRA_NUMBER_FROM_CAMERA_OCR, ocrData)
+                it.setResult(Activity.RESULT_OK, intentReturn)
+                it.finish()
+            }
+        })
+
+        uploadImageviewModel.errorActionOcr.observe(this, Observer {
+            Toaster.make(container, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        })
     }
 
     private fun setupInfoCamera() {
@@ -165,33 +197,10 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             imagePath = cameraResultFile.absolutePath
             showImagePreview()
             uploadImageviewModel.uploadImageRecharge(imagePath)
-//                    , this::onSuccessUploadImage,
-//                    this::onError)
         } else {
             Toast.makeText(context, "Terjadi kesalahan, silahkan coba lagi", Toast
                     .LENGTH_LONG).show()
         }
-    }
-
-    private fun onSuccessUploadImage(imageUrl: String) {
-        uploadImageviewModel.getResultOcr(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_ocr),
-                imageUrl, this::onSuccessResultOcr, this::onError)
-    }
-
-    private fun onSuccessResultOcr(resultImageOcr: String) {
-        hideLoading()
-        Toast.makeText(activity, "success get data", Toast.LENGTH_SHORT).show()
-        activity?.let {
-            val intentReturn = Intent()
-            intentReturn.putExtra(EXTRA_NUMBER_FROM_CAMERA_OCR, resultImageOcr)
-            it.setResult(Activity.RESULT_OK, intentReturn)
-            it.finish()
-        }
-    }
-
-    private fun onError(throwable: Throwable) {
-        hideLoading()
-        Toast.makeText(activity, throwable.message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onResume() {
@@ -268,7 +277,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     companion object {
 
         //TODO get this data from DigitalExtraParam
-        val EXTRA_NUMBER_FROM_CAMERA_OCR = "EXTRA_NUMBER_FROM_CAMERA_OCR"
+        private const val EXTRA_NUMBER_FROM_CAMERA_OCR = "EXTRA_NUMBER_FROM_CAMERA_OCR"
 
         fun newInstance(): Fragment {
             return RechargeCameraFragment()
