@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.travel.homepage">
+    package="com.tokopedia.travelhomepage">
 
     <application>
         <activity
-            android:name=".presentation.activity.TravelHomepageActivity"
+            android:name=".homepage.presentation.activity.TravelHomepageActivity"
             android:label="@string/travel_title_subhomepage"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.StatusBarTransparent">
@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.tokopedia.travel.destination.presentation.activity.TravelHomepageDestinationActivity"
+        <activity android:name=".destination.presentation.activity.TravelHomepageDestinationActivity"
             android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.NoActionBar"/>

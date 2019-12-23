@@ -52,7 +52,7 @@ dependencies {
 
 project.ext {
     artifactId = 'homepage'
-    groupId = 'com.tokopedia.travel'
+    groupId = 'com.tokopedia.travelhomepage'
     versionName = "0.0.1"
     artifactName = "travel_homepage-release"
 }

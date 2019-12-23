@@ -19,7 +19,7 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-        <com.tokopedia.travel.homepage.presentation.customview.TravelHomepageToolbar
+        <com.tokopedia.travelhomepage.homepage.presentation.customview.TravelHomepageToolbar
             android:id="@+id/travel_homepage_toolbar"
             style="@style/Toolbar.White"
             android:layout_width="match_parent"
