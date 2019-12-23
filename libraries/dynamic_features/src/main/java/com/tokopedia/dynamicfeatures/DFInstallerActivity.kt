@@ -69,6 +69,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         private const val SETTING_REQUEST_CODE = 2
         private const val ONE_KB = 1024
         const val TAG_LOG= "DFM"
+        const val PLAY_SRV_OOD= "play_ood" //tag for play service ouf of date
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -271,13 +272,16 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
             if (isPlayServiceUptoDate) {
                 showGeneralError()
             } else {
+                // show log play service is not up-to-date
+                val lastIndex = errorList.size - 1
+                val lastItem = errorList[lastIndex]
+                errorList[lastIndex] = "$lastItem $PLAY_SRV_OOD"
                 image.setImageResource(R.drawable.ic_ill_general_error)
                 title_txt.setText(getString(R.string.download_error_playservice_title))
                 subtitle_txt.setText(getString(R.string.download_error_playservice_subtitle))
                 button_download.setOnClickListener {
                     val hasBeenUpdated = checkPlayServiceUptoDate()
                     if (hasBeenUpdated) {
-                        showGeneralError()
                         downloadFeature()
                     }
                 }
