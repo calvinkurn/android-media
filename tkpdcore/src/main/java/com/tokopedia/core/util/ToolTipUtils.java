@@ -51,22 +51,7 @@ public class ToolTipUtils {
 
     }
 
-    public static void injectToolTip(Context activity, View view) {
-        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(activity.LAYOUT_INFLATER_SERVICE);
-        final PopupWindow pw = new PopupWindow(inflater.inflate(R.layout.default_tooltip, null), ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        pw.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        pw.setOutsideTouchable(true);
-        pw.setFocusable(false);
-        pw.showAsDropDown(view);
-        pw.setTouchInterceptor(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                pw.dismiss();
-                return true;
-            }
-        });
 
-    }
 
     public interface ToolTipListener {
         void setView(View view);

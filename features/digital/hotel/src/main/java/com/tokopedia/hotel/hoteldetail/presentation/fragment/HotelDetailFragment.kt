@@ -66,6 +66,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var hotelId: Int = 0
     private var roomPrice: String = "0"
     private var roomPriceAmount: String = ""
+    private var isDirectPayment: Boolean = true
 
     private val thumbnailImageList = mutableListOf<String>()
     private val imageList = mutableListOf<String>()
@@ -96,6 +97,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 hotelHomepageModel.locName = it.getString(HotelDetailActivity.EXTRA_DESTINATION_NAME, "")
                 hotelHomepageModel.locType = it.getString(HotelDetailActivity.EXTRA_DESTINATION_TYPE,
                         HotelHomepageActivity.TYPE_PROPERTY)
+                isDirectPayment = it.getBoolean(HotelDetailActivity.EXTRA_IS_DIRECT_PAYMENT, true)
             }
             isButtonEnabled = hotelHomepageModel.checkInDate.isNotEmpty()
         }
@@ -459,15 +461,16 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private fun setupPriceButton(data: List<HotelRoom>) {
         hideLoadingContainerBottom()
 
+        var isAvailable = false
         if (data.isNotEmpty()) {
             showRoomAvailableContainerBottom()
             roomPrice = data.first().roomPrice.roomPrice
             roomPriceAmount = round(data.first().roomPrice.priceAmount).toLong().toString()
-            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
-
             tv_hotel_price.text = roomPrice
 
             if (data[0].additionalPropertyInfo.isEnabled) {
+                isAvailable = true
+
                 btn_see_room.text = getString(R.string.hotel_detail_show_room_text)
                 btn_see_room.buttonCompatType = ButtonCompat.TRANSACTION
                 btn_see_room.setOnClickListener {
@@ -483,9 +486,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 btn_see_room.isEnabled = false
                 btn_see_room.buttonCompatType = ButtonCompat.DISABLE
             }
+            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, isAvailable, "0", data.first().additionalPropertyInfo.isDirectPayment)
         } else {
-            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, false, "0", false)
             showRoomNotAvailableContainerBottom()
+            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, isAvailable, "0", isDirectPayment)
         }
 
         if (!isButtonEnabled) {
@@ -568,7 +572,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         const val RESULT_REVIEW = 102
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
-                        adultCount: Int, destinationType: String, destinationName: String): HotelDetailFragment =
+                        adultCount: Int, destinationType: String, destinationName: String, isDirectPayment: Boolean): HotelDetailFragment =
                 HotelDetailFragment().also {
                     it.arguments = Bundle().apply {
                         putString(HotelDetailActivity.EXTRA_CHECK_IN_DATE, checkInDate)
@@ -578,6 +582,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                         putInt(HotelDetailActivity.EXTRA_ADULT_COUNT, adultCount)
                         putString(HotelDetailActivity.EXTRA_DESTINATION_TYPE, destinationType)
                         putString(HotelDetailActivity.EXTRA_DESTINATION_NAME, destinationName)
+                        putBoolean(HotelDetailActivity.EXTRA_IS_DIRECT_PAYMENT, isDirectPayment)
                     }
                 }
 

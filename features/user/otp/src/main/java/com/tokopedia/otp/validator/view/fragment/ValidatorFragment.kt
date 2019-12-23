@@ -35,6 +35,10 @@ import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Screen.SCREE
 import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
 import com.tokopedia.otp.common.design.PinInputEditText
 import com.tokopedia.otp.validator.data.*
+import com.tokopedia.otp.validator.data.ModeListData
+import com.tokopedia.otp.validator.data.OtpRequestData
+import com.tokopedia.otp.validator.data.OtpValidateData
+
 import com.tokopedia.otp.validator.di.ValidatorComponent
 import com.tokopedia.otp.validator.viewmodel.ValidatorViewModel
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -133,6 +137,7 @@ class ValidatorFragment: BaseDaggerFragment(){
             resendDialog(otpParams.email)
         }
 
+        inputVerifyCode.requestFocus()
         inputVerifyCode.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) { }
 
@@ -381,6 +386,24 @@ class ValidatorFragment: BaseDaggerFragment(){
         }
     }
 
+    private fun setActivateText(email: String){
+        activity?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                activationText.text = Html.fromHtml(getString(R.string.validation_text).replace(
+                        getString(R.string.param_email_validation_text),
+                        email, false
+                ), Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                activationText.text = Html.fromHtml(getString(R.string.validation_text).replace(
+                        getString(R.string.param_email_validation_text),
+                        email, false
+                ))
+            }
+
+            inputVerifyCode.requestFocus()
+        }
+    }
+
     private fun setActivateTextFull(text: String){
         activity?.let {
             if(text.isNotEmpty()){
@@ -390,6 +413,7 @@ class ValidatorFragment: BaseDaggerFragment(){
                     activationText.text = Html.fromHtml(text)
                 }
             }
+            inputVerifyCode.requestFocus()
         }
     }
 
