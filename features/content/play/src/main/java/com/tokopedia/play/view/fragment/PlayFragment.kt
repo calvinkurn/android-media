@@ -108,6 +108,16 @@ class PlayFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun observeBannedUserInfo() {
+        playViewModel.observableBannedFreezeSocket.observe(viewLifecycleOwner, Observer {
+            if (it.isBanned) {
+
+            } else if (it.isFreeze) {
+
+            }
+        })
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         playViewModel.destroy()
