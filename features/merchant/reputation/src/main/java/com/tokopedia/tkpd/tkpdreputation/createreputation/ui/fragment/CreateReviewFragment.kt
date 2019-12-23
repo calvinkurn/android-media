@@ -507,7 +507,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         stopLoading()
         showLayout()
         Handler(Looper.getMainLooper()).postDelayed({
-            finishIfRoot()
+            finishIfRoot(true)
         }, 800)
     }
 
@@ -565,16 +565,20 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     }
 
-    private fun finishIfRoot() {
+    private fun finishIfRoot(success: Boolean = false) {
         activity?.run {
             if (isTaskRoot) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
-                setResult(Activity.RESULT_OK, intent)
+                if (success) {
+                    setResult(Activity.RESULT_OK, intent)
+                }
                 startActivity(intent)
             } else {
                 val intent = Intent()
                 intent.putExtra(ARGS_RATING, reviewClickAt.toFloat())
-                setResult(Activity.RESULT_OK, intent)
+                if (success) {
+                    setResult(Activity.RESULT_OK, intent)
+                }
             }
             finish()
         }
