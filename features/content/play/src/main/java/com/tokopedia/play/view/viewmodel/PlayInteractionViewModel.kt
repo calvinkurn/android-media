@@ -59,10 +59,13 @@ class PlayInteractionViewModel @Inject constructor(
 
     fun doInteractionEvent(event: InteractionEvent) {
         _observableLoggedInInteractionEvent.value = Event(
-                if (event in InteractionEvent.needLoginEvents &&
-                        !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn
+                if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn
                 else LoginStateEvent.InteractionAllowed(event)
         )
+    }
+
+    fun doLikeUnlike(shouldLike: Boolean) {
+        //TODO("Call Like Unlike Use case")
     }
 
     fun doFollow(shopId: Long, action: PartnerFollowAction) {
