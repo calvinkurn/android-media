@@ -10,15 +10,15 @@ import android.view.MenuItem;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core2.R;
 
 /**
  * Created by meta on 23/07/18.
  */
-public class BaseTemporaryDrawerActivity<T> extends DrawerPresenterActivity<T> {
+public abstract class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
 
     private BroadcastReceiver drawerGetNotificationReceiver = new BroadcastReceiver() {
         @Override
@@ -30,6 +30,10 @@ public class BaseTemporaryDrawerActivity<T> extends DrawerPresenterActivity<T> {
             if (intent.getAction().equals(DrawerGetNotificationService.BROADCAST_GET_NOTIFICATION)
                     && intent.getBooleanExtra(DrawerGetNotificationService.GET_NOTIFICATION_SUCCESS, false)){
                 updateDrawerData();
+            }
+
+            if (intent.getAction().equals(DrawerGetNotificationService.UPDATE_NOTIFICATION_DATA)){
+                DrawerGetNotificationService.startService(BaseTemporaryDrawerActivity.this, true, false);
             }
         }
     };
@@ -62,6 +66,7 @@ public class BaseTemporaryDrawerActivity<T> extends DrawerPresenterActivity<T> {
     private void registerBroadcastReceiver() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(DrawerGetNotificationService.BROADCAST_GET_NOTIFICATION);
+        intentFilter.addAction(DrawerGetNotificationService.UPDATE_NOTIFICATION_DATA);
         LocalBroadcastManager.getInstance(this).registerReceiver(drawerGetNotificationReceiver, intentFilter);
     }
 
@@ -87,8 +92,9 @@ public class BaseTemporaryDrawerActivity<T> extends DrawerPresenterActivity<T> {
 
     @Override
     protected void updateDrawerData() {
-        if (GlobalConfig.isSellerApp())
+        if (GlobalConfig.isSellerApp()) {
             super.updateDrawerData();
+        }
     }
 
     @Override

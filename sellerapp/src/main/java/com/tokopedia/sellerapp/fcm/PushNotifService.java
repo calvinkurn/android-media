@@ -16,13 +16,13 @@ import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
+import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.seller.fcm.constant.PushNotificationConstant;
 
 import java.util.Map;
 
@@ -82,7 +82,7 @@ public class PushNotifService extends BaseNotificationMessagingService {
      * Send dataless intent for each incoming push notification
      */
     private void sendPushNotificationIntent() {
-        Intent intent = new Intent(PushNotificationConstant.ACTION_PUSH_NOTIFICATION);
+        Intent intent = new Intent(DrawerGetNotificationService.UPDATE_NOTIFICATION_DATA);
         if (localBroadcastManager != null)
             localBroadcastManager.sendBroadcast(intent);
     }

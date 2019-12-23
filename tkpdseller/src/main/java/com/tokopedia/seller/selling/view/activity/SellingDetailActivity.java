@@ -3,29 +3,29 @@ package com.tokopedia.seller.selling.view.activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.widget.Toolbar;
 import android.view.WindowManager;
 
-import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tokopedia.core2.R;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
-import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.fragment.FragmentShopNewOrderDetailV2;
-import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
+import com.tokopedia.seller.fragment.FragmentShopNewOrderDetailV2;
+import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
 import com.tokopedia.seller.orderstatus.fragment.FragmentShopTxStatusDetailV2;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.constant.SellingServiceConstant;
-import com.tokopedia.seller.selling.presenter.listener.SellingView;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
+import com.tokopedia.seller.selling.presenter.listener.SellingView;
 
 import org.parceler.Parcels;
 
@@ -202,4 +202,5 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
                 throw new UnsupportedOperationException("please pass type when want to process it !!!");
         }
     }
+
 }

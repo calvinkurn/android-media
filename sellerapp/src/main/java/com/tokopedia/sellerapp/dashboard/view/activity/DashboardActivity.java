@@ -1,21 +1,18 @@
 package com.tokopedia.sellerapp.dashboard.view.activity;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.core.ManageGeneral;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -26,11 +23,9 @@ import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
-import com.tokopedia.sellerapp.dashboard.view.listener.OnNotificationDataUpdatedListener;
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
 import com.tokopedia.sellerapp.drawer.SellerDrawerAdapter;
 import com.tokopedia.sellerapp.fcm.appupdate.FirebaseRemoteAppUpdate;
-import com.tokopedia.seller.fcm.constant.PushNotificationConstant;
 
 import javax.inject.Inject;
 
@@ -38,14 +33,11 @@ import javax.inject.Inject;
  * Created by nathan on 9/5/17.
  */
 
-public class DashboardActivity extends DrawerPresenterActivity implements
+public class DashboardActivity extends BaseTemporaryDrawerActivity implements
         GCMHandlerListener,
-        SellerDashboardDrawerPresenter.SellerDashboardView,
-        OnNotificationDataUpdatedListener {
+        SellerDashboardDrawerPresenter.SellerDashboardView {
 
     public static final String TAG = DashboardActivity.class.getSimpleName();
-
-    private BroadcastReceiver pushNotificationBroadcastReceiver;
 
     private DashboardFragment dashboardFragment;
 
@@ -117,7 +109,6 @@ public class DashboardActivity extends DrawerPresenterActivity implements
     protected void onResume() {
         presenter.attachView(this);
         super.onResume();
-        registerPushNotificationBroadcastReceiver();
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         NotificationModHandler.showDialogNotificationIfNotShowing(this,
                 ManageGeneral.getCallingIntent(this, ManageGeneral.TAB_POSITION_MANAGE_APP)
@@ -141,7 +132,6 @@ public class DashboardActivity extends DrawerPresenterActivity implements
     protected void onPause() {
         super.onPause();
         presenter.unsubscribe();
-        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(pushNotificationBroadcastReceiver);
     }
 
     @Override
@@ -219,29 +209,4 @@ public class DashboardActivity extends DrawerPresenterActivity implements
         return this;
     }
 
-    @Override
-    public void notificationDataUpdated() {
-        //Update drawer data after cache has been deleted
-        updateDrawerData();
-    }
-
-    protected void registerPushNotificationBroadcastReceiver() {
-        pushNotificationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction() != null) {
-                    if (intent.getAction().equals(PushNotificationConstant.ACTION_PUSH_NOTIFICATION)) {
-                        //Update drawer data
-                        if (dashboardFragment != null) {
-                            dashboardFragment.onPushNotificationReceived();
-                            updateDrawerData();
-                        }
-                    }
-                }
-            }
-        };
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(
-                pushNotificationBroadcastReceiver,
-                new IntentFilter(PushNotificationConstant.ACTION_PUSH_NOTIFICATION));
-    }
 }

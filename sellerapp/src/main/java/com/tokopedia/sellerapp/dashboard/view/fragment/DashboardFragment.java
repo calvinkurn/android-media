@@ -20,8 +20,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,8 +34,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
-import com.tokopedia.sellerapp.shopstatisticdetail.ShopStatisticDetail;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -53,7 +50,6 @@ import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.widget.WarningTickerView;
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
@@ -64,19 +60,19 @@ import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.seller.shopsettings.ManageShopActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
+import com.tokopedia.sellerapp.dashboard.model.ShopInfoDashboardModel;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
-import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
-import com.tokopedia.sellerapp.dashboard.view.listener.OnNotificationDataUpdatedListener;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.dashboard.view.preference.PowerMerchantPopUpManager;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopScorePMWidget;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
-import com.tokopedia.sellerapp.dashboard.model.ShopInfoDashboardModel;
+import com.tokopedia.sellerapp.shopstatisticdetail.ShopStatisticDetail;
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge;
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -156,14 +152,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private View tickerContainer;
     private View buttonActivatePowerMerchant;
-    private OnNotificationDataUpdatedListener onNotificationDataUpdatedListener;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof OnNotificationDataUpdatedListener){
-            onNotificationDataUpdatedListener = (OnNotificationDataUpdatedListener)context;
-        }
     }
 
     @Override
@@ -679,9 +671,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         setCounterIfNotEmpty(discussionLabelView, discussCount);
         setCounterIfNotEmpty(reviewLabelView, reviewCount);
-
-        //Notify DashboardActivity to update its drawer count
-        onNotificationDataUpdatedListener.notificationDataUpdated();
     }
 
     private void showSnackBarRetry(String message) {

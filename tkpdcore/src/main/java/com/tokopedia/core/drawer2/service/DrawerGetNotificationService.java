@@ -6,7 +6,6 @@ import android.content.Intent;
 import androidx.core.app.JobIntentService;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.drawer2.di.DaggerDrawerComponent;
@@ -22,10 +21,12 @@ import rx.Subscriber;
 public class DrawerGetNotificationService extends JobIntentService {
 
     private static final int JOB_ID = 12383213;
+    public static final String UPDATE_NOTIFICATION_DATA = "update_notification_data";
     public static final String BROADCAST_GET_NOTIFICATION = "broadcast_get_notification";
     public static final String GET_NOTIFICATION_SUCCESS = "get_notification_success";
     private static final String KEY_IS_SELLER = "is_seller";
     private static final String KEY_IS_REFRESH = "is_refresh";
+
     @Inject
     NewNotificationUseCase newNotificationUseCase;
 
@@ -53,6 +54,7 @@ public class DrawerGetNotificationService extends JobIntentService {
     protected void onHandleWork(@NotNull Intent intent) {
         boolean isSeller = intent.getBooleanExtra(KEY_IS_SELLER, false);
         boolean isRefresh = intent.getBooleanExtra(KEY_IS_REFRESH, false);
+
         newNotificationUseCase.setRefresh(isRefresh);
         newNotificationUseCase.execute(NotificationUseCase.getRequestParam(isSeller), new Subscriber<NotificationModel>() {
             @Override
