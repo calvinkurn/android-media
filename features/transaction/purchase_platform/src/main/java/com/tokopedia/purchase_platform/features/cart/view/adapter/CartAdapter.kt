@@ -25,6 +25,7 @@ import com.tokopedia.purchase_platform.features.cart.view.viewmodel.*
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.min
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -48,6 +49,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     private var cartWishlistAdapter: CartWishlistAdapter? = null
     private var cartRecentViewAdapter: CartRecentViewAdapter? = null
     private var sendInsuranceImpressionEvent = false
+
+    var firstCartSectionHeaderPosition: Int = -1
 
     var isInsuranceSelected: Boolean = false
         private set
@@ -701,6 +704,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun resetData() {
         cartDataList.clear()
+        firstCartSectionHeaderPosition = -1
         notifyDataSetChanged()
         checkForShipmentForm()
     }
@@ -757,6 +761,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
         }
         cartDataList.add(++recentViewIndex, cartSectionHeaderHolderData)
+        firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
+            -1 -> recentViewIndex
+            else -> min(firstCartSectionHeaderPosition, recentViewIndex)
+        }
         cartDataList.add(++recentViewIndex, cartRecentViewHolderData)
         notifyDataSetChanged()
     }
@@ -776,6 +784,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
         }
         cartDataList.add(++wishlistIndex, cartSectionHeaderHolderData)
+        firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
+            -1 -> wishlistIndex
+            else -> min(firstCartSectionHeaderPosition, wishlistIndex)
+        }
         cartDataList.add(++wishlistIndex, cartWishlistHolderData)
         notifyDataSetChanged()
     }
@@ -798,6 +810,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
         cartSectionHeaderHolderData?.let {
             cartDataList.add(++recommendationIndex, cartSectionHeaderHolderData)
+            firstCartSectionHeaderPosition = when (firstCartSectionHeaderPosition) {
+                -1 -> recommendationIndex
+                else -> min(firstCartSectionHeaderPosition, recommendationIndex)
+            }
         }
 
         cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
@@ -1080,5 +1096,21 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun addCartTicker(tickerAnnouncementHolderData: TickerAnnouncementHolderData) {
         cartDataList.add(0, tickerAnnouncementHolderData)
+    }
+
+    fun addCartSelectAll(isSelectAll: Boolean) {
+        if (cartDataList.size > 0 && cartDataList[0] !is Boolean) {
+            cartDataList.add(0, isSelectAll)
+            notifyItemInserted(0)
+        }
+    }
+
+    fun removeCartSelectAll() {
+        if (cartDataList.size > 0) {
+            if (cartDataList[0] is Boolean) {
+                cartDataList.removeAt(0)
+                notifyItemRemoved(0)
+            }
+        }
     }
 }

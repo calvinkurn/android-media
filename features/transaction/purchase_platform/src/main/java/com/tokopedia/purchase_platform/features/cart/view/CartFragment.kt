@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.view
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Canvas
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -169,6 +170,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var hasTriedToLoadRecommendation: Boolean = false
     private var isInsuranceEnabled = false
     private var isToolbarWithBackButton = true
+    private var noAvailableItems = false
 
     companion object {
 
@@ -423,6 +425,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             layoutManager = gridLayoutManager
             adapter = cartAdapter
             addItemDecoration(cartItemDecoration)
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                    super.onDrawOver(c, parent, state)
+                    val firstCartSectionHeaderPosition = cartAdapter.firstCartSectionHeaderPosition
+                    if (firstCartSectionHeaderPosition > -1 && parent.layoutManager is GridLayoutManager) {
+                        if ((parent.layoutManager as GridLayoutManager).findFirstVisibleItemPosition() >= firstCartSectionHeaderPosition) {
+                            if (cardHeader.visibility != View.GONE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
+                                cardHeader.gone()
+                            }
+                        } else if (cardHeader.visibility != View.VISIBLE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
+                            cardHeader.show()
+                        }
+                    }
+                }
+            })
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 
@@ -1534,13 +1551,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return cartAdapter.allShopGroupDataList
     }
 
-    override fun renderDetailInfoSubTotal(qty: String, subtotalPrice: String, selectAllItem: Boolean, unselectAllItem: Boolean, hasAvailableItems: Boolean) {
+    override fun renderDetailInfoSubTotal(qty: String, subtotalPrice: String, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean) {
         dPresenter.getCartListData()?.isAllSelected = selectAllItem
         if (cbSelectAll.isChecked != selectAllItem) {
             cbSelectAll.isChecked = selectAllItem
         }
         btnRemove.visibility = if (unselectAllItem) View.INVISIBLE else View.VISIBLE
-        cardHeader.visibility = if (hasAvailableItems) View.GONE else View.VISIBLE
+        this.noAvailableItems = noAvailableItems
+        if (noAvailableItems) {
+            cardHeader.visibility = View.GONE
+            cartAdapter.removeCartSelectAll()
+        } else {
+            cardHeader.visibility = View.VISIBLE
+            cartAdapter.addCartSelectAll(true)
+        }
         tvTotalPrice.text = subtotalPrice
         btnToShipment.text = String.format(getString(R.string.cart_item_button_checkout_count_format), qty)
     }
