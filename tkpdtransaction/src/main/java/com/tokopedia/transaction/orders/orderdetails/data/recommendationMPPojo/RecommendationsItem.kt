@@ -7,56 +7,56 @@ import com.google.gson.annotations.SerializedName
 data class RecommendationsItem(
 
 	@field:SerializedName("productId")
-	val productId: Int? = null,
+	val productId: Int?,
 
 	@field:SerializedName("webLink")
-	val webLink: String? = null,
+	val webLink: String?,
 
 	@field:SerializedName("description")
-	val description: String? = null,
+	val description: String?,
 
 	@field:SerializedName("clientNumber")
-	val clientNumber: String? = null,
+	val clientNumber: String?,
 
 	@field:SerializedName("title")
-	val title: String? = null,
+	val title: String?,
 
 	@field:SerializedName("type")
-	val type: String? = null,
+	val type: String?,
 
 	@field:SerializedName("categoryName")
-	val categoryName: String? = null,
+	val categoryName: String?,
 
 	@field:SerializedName("operatorName")
-	val operatorName: String? = null,
+	val operatorName: String?,
 
 	@field:SerializedName("productName")
-	val productName: String? = null,
+	val productName: String?,
 
 	@field:SerializedName("appLink")
-	val appLink: String? = null,
+	val appLink: String?,
 
 	@field:SerializedName("tagType")
-	val tagType: Int? = null,
+	val tagType: Int?,
 
 	@field:SerializedName("isATC")
-	val isATC: Boolean? = null,
+	val isATC: Boolean?,
 
 	@field:SerializedName("iconUrl")
-	val iconUrl: String? = null,
+	val iconUrl: String?,
 
 	@field:SerializedName("position")
-	val position: Int? = null,
+	val position: Int?,
 
 	@field:SerializedName("tag")
-	val tag: String? = null,
+	val tag: String?,
 
 	@field:SerializedName("operatorID")
-	val operatorID: Int? = null,
+	val operatorID: Int?,
 
 	@field:SerializedName("categoryId")
-	val categoryId: Int? = null,
+	val categoryId: Int?,
 
 	@field:SerializedName("productPrice")
-	val productPrice: Int? = null
+	val productPrice: Int?
 )
