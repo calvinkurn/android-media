@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
@@ -232,7 +231,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun observeFollowShop() {
         viewModel.observableFollowShop.observe(this, Observer {
             if (it is Fail) {
-                showToast(it.throwable.message.toEmptyStringIfNull())
+                showToast(it.throwable.message.orEmpty())
             }
         })
     }
