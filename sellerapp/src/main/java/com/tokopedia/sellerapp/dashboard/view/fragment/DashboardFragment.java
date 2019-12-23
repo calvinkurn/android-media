@@ -335,10 +335,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         sellerDashboardPresenter.refreshShopInfo();
     }
 
-    public void onPushNotificationReceived() {
-        sellerDashboardPresenter.refreshNotificationOnly();
-    }
-
     @Override
     protected String getScreenName() {
         return SCREEN_NAME;

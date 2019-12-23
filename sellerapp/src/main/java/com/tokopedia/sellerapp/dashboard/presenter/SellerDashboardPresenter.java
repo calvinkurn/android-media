@@ -106,25 +106,6 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         });
     }
 
-    public void refreshNotificationOnly() {
-        cacheApiClearAllUseCase.execute(new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                getNotification(false);
-            }
-        });
-    }
-
     public void getTicker() {
         getTickerUseCase.execute(RequestParams.EMPTY, getTickerSubscriber());
     }

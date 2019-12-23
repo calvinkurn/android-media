@@ -18,7 +18,7 @@ import com.tokopedia.core2.R;
 /**
  * Created by meta on 23/07/18.
  */
-public abstract class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
+public class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
 
     private BroadcastReceiver drawerGetNotificationReceiver = new BroadcastReceiver() {
         @Override
