@@ -2,6 +2,7 @@ package com.tokopedia.attachinvoice.view.viewmodel
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.applink.ApplinkConst
@@ -21,7 +22,7 @@ class AttachInvoiceViewModel @Inject constructor(
     var opponentName: String = ""
 
     private var _invoices = MutableLiveData<Result<List<Invoice>>>()
-    val invoices get() = _invoices
+    val invoices: LiveData<Result<List<Invoice>>> get() = _invoices
 
     fun loadInvoices(page: Int) {
         if (messageId.isEmpty()) return
