@@ -375,6 +375,7 @@ public interface ApplinkConst {
 
     interface AttachInvoice {
         String PARAM_MESSAGE_ID = "msgId";
+        String PARAM_OPPONENT_NAME = "opponentName";
     }
 
     interface Play {

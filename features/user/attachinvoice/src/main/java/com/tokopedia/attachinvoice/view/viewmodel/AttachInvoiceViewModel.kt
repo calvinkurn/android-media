@@ -18,6 +18,7 @@ class AttachInvoiceViewModel @Inject constructor(
 ) : ViewModel() {
 
     var messageId: String = ""
+    var opponentName: String = ""
 
     private var _invoices = MutableLiveData<Result<List<Invoice>>>()
     val invoices get() = _invoices
@@ -43,6 +44,7 @@ class AttachInvoiceViewModel @Inject constructor(
     fun initializeArguments(arguments: Bundle?) {
         if (arguments == null) return
         messageId = arguments.getString(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, "")
+        opponentName = arguments.getString(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, "")
     }
 
     fun getInvoicePreviewIntent(invoice: Invoice): Intent {

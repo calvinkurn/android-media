@@ -142,6 +142,10 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
         attachShadow?.hide()
     }
 
+    override fun getOpponentName(): String {
+        return viewModel.opponentName
+    }
+
     companion object {
         fun createInstance(extra: Bundle?): AttachInvoiceFragment {
             return AttachInvoiceFragment().apply {

@@ -861,6 +861,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickAttachInvoice(menu: AttachmentMenu) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_INVOICE).apply {
             putExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID, messageId)
+            putExtra(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, opponentName)
         }
         startActivityForResult(intent, REQUEST_ATTACH_INVOICE)
     }
