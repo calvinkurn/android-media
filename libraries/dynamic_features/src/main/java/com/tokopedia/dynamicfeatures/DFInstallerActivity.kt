@@ -1,5 +1,6 @@
 package com.tokopedia.dynamicfeatures
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -18,6 +19,7 @@ import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
@@ -333,12 +335,13 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     }
 
     /** Display a loading state to the user. */
+    @SuppressLint("LogNotTimber")
     private fun displayLoadingState(state: SplitInstallSessionState, message: String) {
         val totalBytesToDowload = state.totalBytesToDownload().toInt()
         val bytesDownloaded = state.bytesDownloaded().toInt()
         val progressText = String.format("%.2f KB / %.2f KB",
             (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
-        Log.i(TAG_LOG,  progressText)
+        Log.i(TAG_LOG, progressText)
         button_download.visibility = View.INVISIBLE
     }
 

@@ -24,13 +24,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.DeeplinkDFMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.AppWidgetUtil;
@@ -433,7 +433,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
         trackingOpenShop.eventShopCreatedSuccessfully(setUserData(shopId));
         if (getActivity() != null) {
-            if (!com.tokopedia.config.GlobalConfig.isSellerApp()) {
+            if (!GlobalConfig.isSellerApp()) {
                 List<String> listToInstall = new ArrayList<>();
                 listToInstall.add(DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP);
                 new DFInstaller().installOnBackground(getActivity().getApplication(), listToInstall, null, null);
