@@ -1,21 +1,25 @@
 package com.tokopedia.merchantvoucher.analytic;
 
+import com.google.gson.Gson;
 import com.tokopedia.track.TrackApp;
 
 import java.util.HashMap;
 
-public class MerchantVoucherTracking {
-    public static final String EVENT = "event";
-    public static final String EVENT_CATEGORY = "eventCategory";
-    public static final String EVENT_ACTION = "eventAction";
-    public static final String EVENT_LABEL = "eventLabel";
+import timber.log.Timber;
 
-    public static final String CLICK_SHOP_PAGE = "clickShopPage";
-    public static final String MVC_LIST = "mvc list";
-    public static final String MVC_DETAIL = "mvc detail";
-    public static final String CLICK_MVC_DETAIL = "click mvc detail";
-    public static final String CLICK_USE_VOUCHER = "click use voucher";
-    public static final String CLICK_SHARE = "click share";
+public class MerchantVoucherTracking {
+    private static final String EVENT = "event";
+    private static final String EVENT_CATEGORY = "eventCategory";
+    private static final String EVENT_ACTION = "eventAction";
+    private static final String EVENT_LABEL = "eventLabel";
+
+    private static final String CLICK_PDP = "clickPDP";
+    private static final String PDP = "product detail page";
+    private static final String CLICK_MVC_DETAIL = "click - mvc list - mvc detail";
+    private static final String CLICK_MVC_USE_VOUCHER = "click - mvc list - use voucher";
+    private static final String CLICK_MVC_SHARE = "click - mvc list - share - facebook";
+    private static final String CLICK_USE_VOUCHER = "click - mvc list - mvc detail - use voucher";
+    private static final String PROMO_ID = "promoId";
 
     public MerchantVoucherTracking() {
     }
@@ -34,34 +38,31 @@ public class MerchantVoucherTracking {
         return eventMap;
     }
 
-    public void clickMvcDetailFromList() {
-        sendEvent(CLICK_SHOP_PAGE,
-                MVC_LIST,
-                CLICK_MVC_DETAIL,
-                "");
+    public void clickMvcDetailFromList(String voucherId) {
+        HashMap<String, Object> eventMap = createMap(CLICK_PDP, PDP, CLICK_MVC_DETAIL, "");
+        eventMap.put(PROMO_ID, voucherId);
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
-    public void clickUseVoucherFromList() {
-        sendEvent(CLICK_SHOP_PAGE,
-                MVC_LIST,
-                CLICK_USE_VOUCHER,
-                "");
+    public void clickUseVoucherFromList(String voucherId) {
+        HashMap<String, Object> eventMap = createMap(CLICK_PDP, PDP, CLICK_MVC_USE_VOUCHER, "");
+        eventMap.put(PROMO_ID, voucherId);
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
 
-    public void clickUseVoucherFromDetail() {
-        sendEvent(CLICK_SHOP_PAGE,
-                MVC_DETAIL,
-                CLICK_USE_VOUCHER,
-                "");
+    public void clickUseVoucherFromDetail(String voucherId) {
+        HashMap<String, Object> eventMap = createMap(CLICK_PDP, PDP, CLICK_USE_VOUCHER, "");
+        eventMap.put(PROMO_ID, voucherId);
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
     public void clickShare() {
-        sendEvent(CLICK_SHOP_PAGE,
-                MVC_LIST,
-                CLICK_SHARE,
-                "");
+        HashMap<String, Object> eventMap = createMap(CLICK_PDP, PDP, CLICK_MVC_SHARE, "");
+        Timber.d("clickShare: %s", new Gson().toJsonTree(eventMap));
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
-
-
 }

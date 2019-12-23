@@ -3,10 +3,9 @@ package com.tokopedia.merchantvoucher.voucherList
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.Menu
 import android.view.MenuItem
-import com.tokopedia.abstraction.AbstractionRouter
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.GraphqlClient
@@ -73,19 +72,19 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
     override fun enableShare(shopInfo: ShopInfo) {
         this.shopInfo = shopInfo
         this.shopName = shopInfo.info.shopName
-        title = MethodChecker.fromHtml( getString(R.string.merchant_voucher_x, shopName))
+        title = MethodChecker.fromHtml(getString(R.string.merchant_voucher_x, shopName))
         supportActionBar?.title = title
         invalidateOptionsMenu()
     }
 
-    fun onShareShop() {
-        if (fragment!= null && fragment is MerchantVoucherListFragment){
+    private fun onShareShop() {
+        if (fragment != null && fragment is MerchantVoucherListFragment) {
             val shopInfo: ShopInfo? = (fragment as MerchantVoucherListFragment).shopInfo
-            if (shopInfo!= null) {
+            shopInfo?.let {
                 merchantVoucherTracking.clickShare()
                 (application as MerchantVoucherModuleRouter).goToShareShop(this@MerchantVoucherListActivity,
-                shopId, shopInfo.info.shopUrl, getString(R.string.shop_label_share_formatted,
-                MethodChecker.fromHtml(shopInfo.info.shopName).toString(), shopInfo.info.shopLocation))
+                        shopId, it.info.shopUrl, getString(R.string.shop_label_share_formatted,
+                        MethodChecker.fromHtml(it.info.shopName).toString(), it.info.shopLocation))
             }
         }
     }
