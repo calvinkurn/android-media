@@ -276,7 +276,7 @@ public interface ApplinkConst {
     String DEALS_ALL_BRANDS = "tokopedia://deals/allbrands/{isVoucher}";
     String DEALS_CATEGORY = "tokopedia://deals/category/page";
 
-    String SALAM_UMRAH_ORDER_DETAIL = "tokopedia://order-details/umroh/{order_id}";
+    String SALAM_UMRAH_ORDER_DETAIL = "tokopedia://order-details/umroh";
     String SALAM_UMRAH = "tokopedia://s/umroh";
     String SALAM_UMRAH_SEARCH = "tokopedia://s/umroh/search";
     String SALAM_UMRAH_PACKET = "tokopedia://s/umroh/paket/{category_id}";
