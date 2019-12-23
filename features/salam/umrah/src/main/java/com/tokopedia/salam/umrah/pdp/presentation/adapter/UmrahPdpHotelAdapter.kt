@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.UmrahHotel
-import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
-import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getTime
 import kotlinx.android.synthetic.main.item_umrah_pdp_hotel.view.*
 
 /**
@@ -38,7 +36,7 @@ class UmrahPdpHotelAdapter : RecyclerView.Adapter<UmrahPdpHotelAdapter.UmrahPdpH
         fun bind(umrahHotel: UmrahHotel) {
             with(itemView) {
                 tg_umrah_pdp_rv_hotel_name.text = umrahHotel.name
-                tg_umrah_pdp_hotel_check_in.text = resources.getString(R.string.umrah_pdp_hotel_check_in, getTime(UmrahDateUtil.DATE_ONLY_DATE_FORMAT, umrahHotel.checkIn), getTime(UmrahDateUtil.DATE_WITH_YEAR_FORMAT, umrahHotel.checkOut))
+                tg_umrah_pdp_hotel_check_in.text = resources.getString(R.string.umrah_pdp_hotel_stay_dates, umrahHotel.ui.stayDates)
                 tg_umrah_pdp_hotel_distance.text = umrahHotel.ui.distance
                 rb_umrah_pdp_hotel_rating.apply {
                     numStars = umrahHotel.rating

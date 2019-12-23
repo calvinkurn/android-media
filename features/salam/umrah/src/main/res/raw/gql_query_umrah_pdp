@@ -1,5 +1,12 @@
 query UmrahProduct($slugName: String!){
   umrahProduct(slugName: $slugName ){
+    ui{
+      travelDates
+      travelDurations
+      hotelStars
+      variant
+      transitCity
+    }
     id
     availableSeat
     title
@@ -24,6 +31,7 @@ query UmrahProduct($slugName: String!){
       rating
       ui{
         distance
+        stayDates
       }
     }
     airlines{

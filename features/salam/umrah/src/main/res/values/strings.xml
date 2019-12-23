@@ -235,5 +235,6 @@
     <string name="umrah_pdp_additional_information_bullet">\u2022\t%s\n</string>
     <string name="umrah_pdp_empty_state_title">Paket Umroh Habis</string>
     <string name="umrah_search_empty_state_package_name">com.tokopedia.tkpd</string>
+    <string name="umrah_pdp_hotel_stay_dates">Menginap %s</string>
 
 </resources>

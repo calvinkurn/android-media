@@ -12,8 +12,6 @@ object UmrahDateUtil {
     const val DATE_WITH_YEAR_FORMAT = "dd MMM yyyy"
     const val DATE_WITH_YEAR_FULL_MONTH_FORMAT = "dd MMMM yyyy"
     const val DATE_WITHOUT_YEAR_FORMAT = "dd MMM"
-    const val DATE_WITHOUT_YEAR_FULL_MONTH_FORMAT = "dd MMMM"
-    const val DATE_ONLY_DATE_FORMAT = "dd"
     private const val YEAR_ONLY_DATE_FORMAT = "yyyy"
     private const val YYYY_MM_DD = "yyyy-MM-dd"
     const val DAY = "EEEE"

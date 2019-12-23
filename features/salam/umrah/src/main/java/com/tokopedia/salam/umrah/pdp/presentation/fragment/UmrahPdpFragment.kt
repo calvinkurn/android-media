@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -30,10 +31,6 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
-import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
-import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getTime
-import com.tokopedia.salam.umrah.common.util.UmrahHotelRating.getAllHotelRatings
-import com.tokopedia.salam.umrah.common.util.UmrahHotelVariant.getAllHotelVariants
 import com.tokopedia.salam.umrah.common.util.UmrahPriceUtil.getSlashedPrice
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpFeaturedFacilityModel
@@ -304,45 +301,34 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     }
 
     private fun setupCalendarItem() {
-        val departureDate = getTime(UmrahDateUtil.DATE_WITHOUT_YEAR_FORMAT, umrahProduct.departureDate)
-        val returningDate = getTime(UmrahDateUtil.DATE_WITH_YEAR_FORMAT, umrahProduct.returningDate)
-        val umrahPdpItemWidgetModel = UmrahItemWidgetModel()
-        umrahPdpItemWidgetModel.apply {
-            imageDrawable = R.drawable.umrah_ic_calendar
-            title = getString(R.string.umrah_pdp_calendar, departureDate, returningDate)
-            desc = getString(R.string.umrah_pdp_duration, umrahProduct.durationDays, umrahProduct.durationDays - 1)
+        iw_umrah_pdp_calendar.apply {
+            umrahItemWidgetModel = UmrahItemWidgetModel(
+                    imageDrawable = R.drawable.umrah_ic_calendar,
+                    title = umrahProduct.ui.travelDates,
+                    desc = umrahProduct.ui.travelDurations)
+            buildView()
         }
-        iw_umrah_pdp_calendar.umrahItemWidgetModel = umrahPdpItemWidgetModel
-        iw_umrah_pdp_calendar.buildView()
     }
 
     private fun setupHotelItem() {
-        val hotelsRating = getAllHotelRatings(umrahProduct.hotels)
-        val hotelsVariant = getAllHotelVariants(umrahProduct.variants)
-        val umrahPdpItemWidgetModel = UmrahItemWidgetModel()
-        umrahPdpItemWidgetModel.apply {
-            imageDrawable = R.drawable.umrah_ic_hotel
-            title = getString(R.string.umrah_search_hotel_rating_x, hotelsRating)
-            desc = hotelsVariant
+        iw_umrah_pdp_hotel.apply {
+            umrahItemWidgetModel = UmrahItemWidgetModel(
+                    imageDrawable = R.drawable.umrah_ic_hotel,
+                    title = umrahProduct.ui.hotelStars,
+                    desc = umrahProduct.ui.variant)
+            buildView()
         }
-        iw_umrah_pdp_hotel.umrahItemWidgetModel = umrahPdpItemWidgetModel
-        iw_umrah_pdp_hotel.buildView()
-
     }
 
     private fun setupPlaneItem() {
-        val umrahPdpItemWidgetModel = UmrahItemWidgetModel()
-        umrahPdpItemWidgetModel.apply {
-            imageDrawable = R.drawable.umrah_ic_plane
-            title = umrahProduct.airlines[0].name
-            desc = try {
-                umrahProduct.transitCity.name
-            } catch (e: NullPointerException) {
-                getString(R.string.umrah_pdp_direct_flight)
-            }
+        iw_umrah_pdp_plane.apply {
+            umrahItemWidgetModel = UmrahItemWidgetModel(
+                    imageDrawable = R.drawable.umrah_ic_plane,
+                    title = umrahProduct.airlines[0].name,
+                    desc = umrahProduct.ui.transitCity
+            )
+            buildView()
         }
-        iw_umrah_pdp_plane.umrahItemWidgetModel = umrahPdpItemWidgetModel
-        iw_umrah_pdp_plane.buildView()
     }
 
     private fun setupRVHotels() {
@@ -487,6 +473,8 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4), LinearLayoutManager.HORIZONTAL))
             addItemDecoration(UmrahPdpFaqIndicator())
+            onFlingListener = null
+            PagerSnapHelper().attachToRecyclerView(this)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)

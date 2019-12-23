@@ -17,6 +17,9 @@ data class UmrahSearchProductEntity(
 )
 
 data class UmrahSearchProduct(
+        @SerializedName("ui")
+        @Expose
+        val ui: UmrahSearchProductUI = UmrahSearchProductUI(),
         var isViewed: Boolean = false,
         var isSetOnClicked: Boolean = false,
         @SerializedName("id")
@@ -92,8 +95,17 @@ data class UmrahSearchProduct(
         @Expose
         val variant: List<UmrahVariant> = arrayListOf()
 ) : Visitable<UmrahSearchAdapterTypeFactory> {
-    override fun type(typeFactory: UmrahSearchAdapterTypeFactory?): Int =
-            typeFactory?.type() ?: 0
+        override fun type(typeFactory: UmrahSearchAdapterTypeFactory?): Int =
+                typeFactory?.type() ?: 0
+        data class UmrahSearchProductUI(
+                @SerializedName("hotelStars")
+                @Expose
+                val hotelStars: String = "",
+
+                @SerializedName("travelDates")
+                @Expose
+                val travelDates: String = ""
+        )
 }
 
 data class TravelAgent(

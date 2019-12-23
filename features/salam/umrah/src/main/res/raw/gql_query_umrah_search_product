@@ -1,5 +1,9 @@
 query UmrahSearchProducts($params: UmrahSearchProductInput!){
   umrahSearchProducts(params:$params) {
+    ui{
+      travelDates
+      hotelStars
+    }
     id
     banner
     slugName

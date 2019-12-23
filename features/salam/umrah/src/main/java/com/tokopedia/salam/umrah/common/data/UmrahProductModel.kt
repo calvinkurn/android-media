@@ -16,6 +16,9 @@ data class UmrahProductModel(
         val umrahProduct: UmrahProduct
 ) {
     data class UmrahProduct(
+            @SerializedName("ui")
+            val ui: UmrahProductUI = UmrahProductUI(),
+
             @SerializedName("id")
             @Expose
             var id: String = "",
@@ -88,6 +91,29 @@ data class UmrahProductModel(
             @SerializedName("faq")
             val faqs: UmrahFAQ = UmrahFAQ()
     ) {
+        data class UmrahProductUI(
+                @SerializedName("travelDates")
+                val travelDates: String = "",
+
+                @SerializedName("travelDurations")
+                val travelDurations: String = "",
+
+                @SerializedName("hotelStars")
+                val hotelStars: String = "",
+
+                @SerializedName("variant")
+                val variant: String = "",
+
+                @SerializedName("transitCity")
+                val transitCity: String = "",
+
+                @SerializedName("departureDate")
+                val departureDate: String = "",
+
+                @SerializedName("returningDate")
+                val returningDate: String = ""
+        )
+
         data class TravelAgent(
                 @SerializedName("id")
                 @Expose

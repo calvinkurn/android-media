@@ -29,6 +29,9 @@ data class UmrahHotel(
 ) {
     data class UI(
             @SerializedName("distance")
-            var distance: String = ""
+            var distance: String = "",
+
+            @SerializedName("stayDates")
+            var stayDates: String = ""
     )
 }
