@@ -299,7 +299,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             likeComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            LikeInteractionEvent.LikeClicked -> doLike()
+                            is LikeInteractionEvent.LikeClicked -> doClickLike(it.shouldLike)
                         }
                     }
         }
@@ -666,12 +666,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         )
     }
 
-    private fun doLike() {
-        viewModel.doInteractionEvent(InteractionEvent.Like)
-    }
-
     private fun doClickChatBox() {
         viewModel.doInteractionEvent(InteractionEvent.SendChat)
+    }
+
+    private fun doClickLike(shouldLike: Boolean) {
+        viewModel.doInteractionEvent(InteractionEvent.Like(shouldLike))
     }
 
     private fun doSendChat(message: String) {
@@ -688,7 +688,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
             InteractionEvent.SendChat -> sendEventComposeChat()
-            InteractionEvent.Like -> showToast("Like Clicked") //do like post
+            is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
         }
     }
 
@@ -700,6 +700,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                             ScreenStateEvent.ComposeChat
                     )
         }
+    }
+
+    private fun doLikeUnlike(shouldLike: Boolean) {
+        viewModel.doLikeUnlike(shouldLike)
     }
 
     private fun openLoginPage() {
