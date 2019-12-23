@@ -1098,9 +1098,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         cartDataList.add(0, tickerAnnouncementHolderData)
     }
 
-    fun addCartSelectAll(isSelectAll: Boolean) {
+    fun addCartSelectAll() {
         if (cartDataList.size > 0 && cartDataList[0] !is Boolean) {
-            cartDataList.add(0, isSelectAll)
+            cartDataList.add(0, true)
             notifyItemInserted(0)
         }
     }

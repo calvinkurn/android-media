@@ -11,10 +11,6 @@ class CartSelectAllViewHolder(itemView: View, val actionListener: ActionListener
 
     fun bind(isAllSelected: Boolean) {
         itemView.ll_header.invisible()
-
-//        itemView.cb_select_all.setOnClickListener {
-//            actionListener?.onSelectAllClicked()
-//        }
     }
 
     companion object {

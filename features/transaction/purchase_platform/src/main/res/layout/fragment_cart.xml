@@ -51,21 +51,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_above="@+id/bottom_layout"-->
-<!--                    android:layout_alignParentTop="true"-->
-<!--                    android:orientation="vertical">-->
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_cart"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentTop="true"
-                        android:layout_above="@+id/bottom_layout" />
-
-<!--                </LinearLayout>-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_cart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/bottom_layout"
+                    android:layout_alignParentTop="true" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_header"

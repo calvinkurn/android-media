@@ -1563,7 +1563,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartAdapter.removeCartSelectAll()
         } else {
             cardHeader.visibility = View.VISIBLE
-            cartAdapter.addCartSelectAll(true)
+            cartAdapter.addCartSelectAll()
         }
         tvTotalPrice.text = subtotalPrice
         btnToShipment.text = String.format(getString(R.string.cart_item_button_checkout_count_format), qty)
