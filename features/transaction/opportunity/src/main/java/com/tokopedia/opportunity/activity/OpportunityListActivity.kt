@@ -1,7 +1,9 @@
 package com.tokopedia.opportunity.activity
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.core.app.BasePresenterActivity
 import com.tokopedia.opportunity.R
 import com.tokopedia.opportunity.fragment.OpportunityListFragment
@@ -38,4 +40,9 @@ class OpportunityListActivity: BasePresenterActivity<OpportunityListPresenter>()
     override fun initVar() {}
 
     override fun setActionVar() {}
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
+    }
 }
