@@ -4,6 +4,9 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.rechargeocr.data.RechargeUploadImageResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.util.*
@@ -13,12 +16,14 @@ import kotlin.collections.HashMap
 class RechargeUploadImageUseCase @Inject constructor(private val uploadImageUseCase: UploadImageUseCase<RechargeUploadImageResponse>,
                                                      private val userSession: UserSessionInterface) {
 
-    fun execute(fileLocation: String?): RechargeUploadImageResponse {
-        return try {
-            return uploadImageUseCase.createObservable(createUploadParams(fileLocation))
-                    .toBlocking().first().dataResultImageUpload
-        } catch (throwable: Throwable) {
-            throw Throwable(throwable)
+    suspend fun execute(fileLocation: String?, dispatcher: CoroutineDispatcher = Dispatchers.IO): RechargeUploadImageResponse {
+        return withContext(dispatcher) {
+            try {
+                uploadImageUseCase.createObservable(createUploadParams(fileLocation))
+                        .toBlocking().first().dataResultImageUpload
+            } catch (throwable: Throwable) {
+                throw Throwable(throwable)
+            }
         }
     }
 

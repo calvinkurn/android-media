@@ -89,6 +89,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             if (it.isNotEmpty()) {
                 uploadImageviewModel.getResultOcr(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_ocr), it)
             } else {
+                hideLoading()
                 Toaster.make(containerCamera, "Kartu tidak terbaca, silakan coba lagi", Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
             }
         })
@@ -105,6 +106,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         })
 
         uploadImageviewModel.errorActionOcr.observe(this, Observer {
+            hideLoading()
             Toaster.make(containerCamera, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
         })
     }
@@ -115,7 +117,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     }
 
     private fun populateView() {
-        shutterBtn.setOnClickListener(View.OnClickListener {
+        shutterBtn.setOnClickListener{
             activity?.let {
                 permissionCheckerHelper.checkPermission(it,
                         PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
@@ -129,17 +131,15 @@ class RechargeCameraFragment : BaseDaggerFragment() {
                             }
 
                             override fun onPermissionGranted() {
-                                hideCameraButtonAndShowLoading()
                                 cameraView.takePicture()
                             }
                         }, "")
             }
-        })
+        }
 
         cameraListener = object : CameraListener() {
 
             override fun onPictureTaken(result: PictureResult) {
-                showLoading()
                 activity?.let {
                     permissionCheckerHelper.checkPermission(it,
                             PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
@@ -153,6 +153,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
                                 }
 
                                 override fun onPermissionGranted() {
+                                    hideCameraButtonAndShowLoading()
                                     saveToFile(result.data)
                                 }
                             }, "")
@@ -209,10 +210,6 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         showCameraView()
     }
 
-    private fun showLoading() {
-        loading.visibility = View.VISIBLE
-    }
-
     private fun hideLoading() {
         loading.visibility = View.GONE
         recaptureBtn.visibility = View.VISIBLE
@@ -227,6 +224,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     }
 
     private fun hideCameraButtonAndShowLoading() {
+        loading.visibility = View.VISIBLE
         shutterBtn.visibility = View.GONE
         fullImagePreview.visibility = View.GONE
         recaptureBtn.visibility = View.GONE
