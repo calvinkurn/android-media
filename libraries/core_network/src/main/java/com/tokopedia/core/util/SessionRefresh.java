@@ -4,14 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
@@ -37,29 +37,6 @@ public class SessionRefresh {
 
     public SessionRefresh(String accessToken) {
         this.accessToken = accessToken;
-    }
-
-    public String refreshLogin() throws IOException {
-        Context context = CoreNetworkApplication.getAppContext();
-        UserSession userSession = new UserSession(context);
-        SharedPreferences sharedPrefs = context.getSharedPreferences("LOGIN_SESSION", Context.MODE_PRIVATE);
-        String tokenType = sharedPrefs.getString("TOKEN_TYPE", "");
-        String authKey;
-        if (TextUtils.isEmpty(accessToken)) {
-            authKey = tokenType + " " + userSession.getAccessToken();
-        } else {
-            authKey = accessToken;
-        }
-        sharedPrefs = context.getSharedPreferences("LOGIN_UUID_KEY", Context.MODE_PRIVATE);
-        String uuid = sharedPrefs.getString("uuid", "");
-        RequestParams params = RequestParams.create();
-        params.putString(UUID_KEY, uuid);
-        params.putString(USER_ID, userSession.getUserId());
-        Call<String> responseCall = getRetrofit(authKey)
-                .create(AccountsApi.class).makeLoginsynchronous(
-                        AuthUtil.generateParamsNetwork2(
-                                CoreNetworkApplication.getAppContext(), params.getParameters()));
-        return responseCall.execute().body();
     }
 
     public String gcmUpdate() throws IOException {

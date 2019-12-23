@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.FavShopsItem;
-import com.tokopedia.core.var.ShopItem;
 
 import java.util.List;
 
