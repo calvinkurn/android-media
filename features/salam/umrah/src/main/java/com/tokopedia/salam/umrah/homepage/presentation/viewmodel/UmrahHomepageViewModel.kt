@@ -88,7 +88,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
                     homePageModel.value?.let {
                         val updatedList = it.toMutableList()
                         updatedList[DREAM_FUND_ORDER].isLoaded = true
-                        updatedList[DREAM_FUND_ORDER].isSuccess = false
+                        updatedList[DREAM_FUND_ORDER].isSuccess = true
                         _homePageModel.value = updatedList
                         checkIfAllError()
                     }
