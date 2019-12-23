@@ -34,6 +34,7 @@ import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import com.tokopedia.play.ui.stats.StatsComponent
 import com.tokopedia.play.ui.toolbar.ToolbarComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
+import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.util.event.EventObserver
@@ -162,6 +163,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeTotalViews()
         observeChatList()
         observePinnedMessage()
+        observeFollowShop()
 
         observeLoggedInInteractionEvent()
     }
@@ -224,6 +226,14 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeLoggedInInteractionEvent() {
         viewModel.observableLoggedInInteractionEvent.observe(this, EventObserver(::handleLoginInteractionEvent))
+    }
+
+    private fun observeFollowShop() {
+        viewModel.observableFollowShop.observe(this, Observer {
+            if (it is Fail) {
+                showToast(it.throwable.message.orEmpty())
+            }
+        })
     }
     //endregion
 
@@ -332,9 +342,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             PlayToolbarInteractionEvent.BackButtonClicked -> activity?.onBackPressed()
-                            PlayToolbarInteractionEvent.FollowButtonClicked -> showToast("Follow Button Clicked")
+                            is PlayToolbarInteractionEvent.FollowButtonClicked -> doActionFollowShop(it.partnerId, it.action)
                             PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
-                            PlayToolbarInteractionEvent.UnFollowButtonClicked -> showToast("UnFollow Button Clicked")
                             is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
                         }
                     }
@@ -559,6 +568,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun showToast(text: String) {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun doActionFollowShop(partnerId: Long, action: PartnerFollowAction) {
+        viewModel.doFollow(partnerId, action)
     }
 
     //region set data
