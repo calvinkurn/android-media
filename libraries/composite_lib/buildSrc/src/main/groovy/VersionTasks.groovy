@@ -21,7 +21,7 @@ class VersionTasks extends DefaultTask {
     }
 
     @TaskAction
-    void versionProcessTask(){
+    void versionProcessTask() {
         def dot = new File(rootProjectTask.buildDir, 'reports/dependency-graph/project.dot')
         dot.parentFile.mkdirs()
         dot.delete()
