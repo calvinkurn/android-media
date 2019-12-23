@@ -3,6 +3,7 @@ package com.tokopedia.salam.umrah.common.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
@@ -47,6 +48,11 @@ class UmrahMyUmrahWidget @JvmOverloads constructor(context: Context, attrs: Attr
         } else {
             showLoadingState()
         }
+    }
+
+    fun setWidthMatchParent(){
+        container_umrah_widget_my_umrah.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        container_inner_umrah_widget_my_umrah.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
     }
 
     fun showLoadingState() {

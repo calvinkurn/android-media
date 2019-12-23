@@ -10,6 +10,7 @@
     app:cardUseCompatPadding="true">
 
     <com.tokopedia.unifycomponents.ContainerUnify
+        android:id="@+id/container_inner_umrah_widget_my_umrah"
         android:layout_width="270dp"
         android:layout_height="126dp"
         app:container_color="BLUE">

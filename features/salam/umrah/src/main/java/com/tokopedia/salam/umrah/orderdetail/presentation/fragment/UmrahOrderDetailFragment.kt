@@ -235,6 +235,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         if (data.header.isNotEmpty()) {
             my_umrah_widget.myUmrahModel = data
             my_umrah_widget.buildView(trackingUmrahUtil)
+            my_umrah_widget.setWidthMatchParent()
         } else {
             my_umrah_widget.visibility = View.GONE
         }

@@ -36,7 +36,7 @@ object ApplinkConstInternalSalam{
     // UmrahOrderDetailActivity
     // tokopedia-android-internal://order-details/umroh/.*\\
     @JvmField
-    val SALAM_ORDER_DETAIL = "$INTERNAL_SALAM_ORDER_DETAIL/$PARAM_UMROH/.*\\"
+    val SALAM_ORDER_DETAIL = "$INTERNAL_SALAM_ORDER_DETAIL/$PARAM_UMROH"
 
     // UmrahHomepageActivity
     // tokopedia-android-internal://s/umroh
