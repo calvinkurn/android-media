@@ -16,14 +16,11 @@ class BusinessUnitViewHolder(
         AbstractViewHolder<BusinessUnitViewModel>(view)
 {
 
-    private lateinit var adapter: DigitalsHomePagerAdapter
-
     override fun bind(element: BusinessUnitViewModel) {
-        adapter = DigitalsHomePagerAdapter(fm, TabBusinessFragment.newInstance(element.position))
+        val adapter = DigitalsHomePagerAdapter(fm, TabBusinessFragment.newInstance(element.position))
         itemView.viewPager.adapter = adapter
         itemView.viewPager.offscreenPageLimit = 1
         itemView.viewPager.currentItem = 0
-        adapter.notifyDataSetChanged()
     }
 
     companion object {

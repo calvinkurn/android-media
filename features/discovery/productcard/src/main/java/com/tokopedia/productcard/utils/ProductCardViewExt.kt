@@ -84,8 +84,7 @@ internal fun ImageView.loadProductImage(url: String?) {
     if (url != null && url.isNotEmpty()) {
         Glide.with(context)
                 .load(url)
-                .dontAnimate()
-                .skipMemoryCache(true)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_loading_toped_new)
                 .error(R.drawable.ic_loading_toped_new)
@@ -99,7 +98,6 @@ internal fun ImageView.loadProductImageRounded(url: String?) {
                 .load(url)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .transform(RoundedCorners(5))
-                .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_loading_toped_new)
                 .error(R.drawable.error_drawable)

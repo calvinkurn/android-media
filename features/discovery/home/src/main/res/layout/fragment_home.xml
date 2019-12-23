@@ -11,6 +11,13 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@android:color/white">
+
+    <include
+        android:id="@+id/shimmering_home"
+        android:visibility="visible"
+        layout="@layout/home_loading_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     
     <com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
       android:id="@+id/list"

@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_c
 
 import com.google.android.gms.tagmanager.DataLayer
 
-class SpotlightItemViewModel(val id: Int, val title: String, val description: String,
+data class SpotlightItemViewModel(val id: Int, val title: String, val description: String,
                              val backgroundImageUrl: String, val tagName: String,
                              val tagNameHexcolor: String, val tagHexcolor: String,
                              val ctaText: String, val ctaTextHexcolor: String,

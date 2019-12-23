@@ -17,26 +17,21 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
  * @author anggaprasetiyo on 11/12/17.
  */
 
-class HeaderViewModel : Parcelable, HomeVisitable {
-    var homeHeaderWalletActionData: HomeHeaderWalletAction? = null
-    var tokoPointDrawerData: TokopointHomeDrawerData? = null
-    var tokopointsDrawerHomeData: TokopointsDrawer? = null
-    var cashBackData: CashBackData? = null
-    var isPendingTokocashChecked: Boolean = false
-    var isWalletDataError: Boolean = false
-        private set
-    var isTokoPointDataError: Boolean = false
-        private set
-    var isUserLogin: Boolean = false
-    private var isCache: Boolean = false
+data class HeaderViewModel(
+                      var homeHeaderWalletActionData: HomeHeaderWalletAction? = null,
+                      var tokoPointDrawerData: TokopointHomeDrawerData? = null,
+                      var tokopointsDrawerHomeData: TokopointsDrawer? = null,
+                      var cashBackData: CashBackData? = null,
+                      var isPendingTokocashChecked: Boolean = false,
+                      var isWalletDataError: Boolean = false,
+                      var isTokoPointDataError: Boolean = false,
+                      var isUserLogin: Boolean = false) : Parcelable, HomeVisitable {
 
     fun setCache(cache: Boolean) {
         isCache = cache
     }
 
-    constructor() {}
-
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel) : this() {
         homeHeaderWalletActionData = `in`.readParcelable(HomeHeaderWalletAction::class.java.classLoader)
         tokoPointDrawerData = `in`.readParcelable(TokopointsDrawer::class.java.classLoader)
         tokopointsDrawerHomeData = `in`.readParcelable(TokopointsDrawerHomeData::class.java.classLoader)
@@ -48,22 +43,6 @@ class HeaderViewModel : Parcelable, HomeVisitable {
 
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)
-    }
-
-    fun setWalletDataSuccess() {
-        this.isWalletDataError = false
-    }
-
-    fun setWalletDataError() {
-        this.isWalletDataError = true
-    }
-
-    fun setTokoPointDataSuccess() {
-        this.isTokoPointDataError = false
-    }
-
-    fun setTokoPointDataError() {
-        this.isTokoPointDataError = true
     }
 
     override fun describeContents(): Int {

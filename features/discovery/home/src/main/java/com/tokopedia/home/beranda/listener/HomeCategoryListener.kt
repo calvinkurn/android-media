@@ -35,7 +35,7 @@ interface HomeCategoryListener {
 
     fun onDigitalMoreClicked(pos: Int)
 
-    fun onCloseTicker(pos: Int)
+    fun onCloseTicker()
 
     fun onPromoClick(position: Int, slidesModel: BannerSlidesModel)
 
@@ -80,8 +80,6 @@ interface HomeCategoryListener {
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
 
     fun putEEToIris(data: HashMap<String, Any>)
-
-    fun onGetPlayBanner(adapterPosition: Int)
 
     fun getWindowWidth(): Int
 }

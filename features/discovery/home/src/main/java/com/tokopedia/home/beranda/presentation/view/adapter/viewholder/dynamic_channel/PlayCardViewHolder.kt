@@ -52,10 +52,6 @@ class PlayCardViewHolder(
                 }
             }
         }
-
-        if (playCardHome == null) {
-            listener.onGetPlayBanner(adapterPosition)
-        }
     }
 
     private fun bindCard(card: PlayCard) {

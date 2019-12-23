@@ -58,16 +58,6 @@ public class HomeRecycleAdapter extends HomeBaseAdapter<HomeAdapterFactory> {
         return getItem(position).type(typeFactory);
     }
 
-    //    @Override
-//    public void onBindViewHolder(AbstractViewHolder holder, int position) {
-//        holder.bind(visitables.get(position));
-//        //check if visitable is homerecommendation, we will set newData = false after bind
-//        //because newData = true will force viewholder to recreate tab and viewpager
-//        if (visitables.get(position) instanceof HomeRecommendationFeedViewModel) {
-//            ((HomeRecommendationFeedViewModel) visitables.get(position)).setNewData(false);
-//        }
-//    }
-
     public List<Visitable> getItems() {
         return visitables;
     }
@@ -75,27 +65,6 @@ public class HomeRecycleAdapter extends HomeBaseAdapter<HomeAdapterFactory> {
     public void clearItems() {
         visitables.clear();
     }
-
-    public void showRetry() {
-//        if (this.visitables.contains(retryModel)) {
-//            return;
-//        }
-//        int positionStart = getItemCount();
-//        this.visitables.add(retryModel);
-//        notifyItemRangeInserted(positionStart, 1);
-    }
-
-    public void removeRetry() {
-//        int index = this.visitables.indexOf(retryModel);
-//        this.visitables.remove(retryModel);
-//        notifyItemRemoved(index);
-    }
-
-    //mapping another visitable to visitables from home_query
-//    public void setItems(List<Visitable> visitables) {
-//        this.visitables = visitables;
-//        notifyDataSetChanged();
-//    }
 
     public int hasReview() {
         for (int i = 0; i < visitables.size(); i++) {
@@ -113,12 +82,6 @@ public class HomeRecycleAdapter extends HomeBaseAdapter<HomeAdapterFactory> {
         }
     }
 
-    public void updateHomeQueryItems(List<Visitable> newVisitable) {
-        clearItems();
-        this.visitables = newVisitable;
-        notifyDataSetChanged();
-    }
-
     public void removeGeolocationViewModel() {
         int removedPosition = removeGeolocation();
         if (removedPosition != -1) {
@@ -131,25 +94,6 @@ public class HomeRecycleAdapter extends HomeBaseAdapter<HomeAdapterFactory> {
         if (reviewPosition != -1) {
             notifyItemRemoved(reviewPosition);
         }
-    }
-
-    public void setHomeHeaderViewModel(HeaderViewModel homeHeaderViewModel) {
-        int changedPosition = setHomeHeader(homeHeaderViewModel);
-        if (changedPosition != POSITION_UNDEFINED) {
-            notifyItemChanged(changedPosition);
-        }
-    }
-
-    public void addHomeHeaderViewModel(HeaderViewModel homeHeaderViewModel) {
-        int addedPosition = addHomeHeader(homeHeaderViewModel);
-        if (addedPosition != POSITION_UNDEFINED) {
-            notifyItemInserted(addedPosition);
-        }
-    }
-
-    public void setGeolocationViewModel(GeolocationPromptViewModel geolocationViewModel) {
-        int addedPosition = setGeolocation(geolocationViewModel);
-        notifyItemInserted(addedPosition);
     }
 
     private boolean hasTicker() {
@@ -261,16 +205,13 @@ public class HomeRecycleAdapter extends HomeBaseAdapter<HomeAdapterFactory> {
     }
 
     public int getRecommendationFeedSectionPosition() {
-        return visitables.size()-1;
-    }
-
-    public boolean isRetryShown() {
-        return visitables.contains(retryModel);
+        return getItems().size()-1;
     }
 
     public void setPlayData(PlayCardHome playContentBanner, int adapterPosition) {
-        if (visitables.get(adapterPosition) instanceof PlayCardViewModel) {
-            ((PlayCardViewModel) visitables.get(adapterPosition)).setPlayCardHome(playContentBanner);
+        HomeVisitable homeVisitable = getItem(adapterPosition);
+        if (homeVisitable instanceof PlayCardViewModel) {
+            ((PlayCardViewModel) homeVisitable).setPlayCardHome(playContentBanner);
         }
         notifyItemChanged(adapterPosition);
     }

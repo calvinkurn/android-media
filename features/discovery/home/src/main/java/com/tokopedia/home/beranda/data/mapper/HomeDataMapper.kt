@@ -30,7 +30,7 @@ class HomeDataMapper(
         private val homeVisitableFactory: HomeVisitableFactory
 ) {
     fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeViewModel{
-        if (homeData == null) return HomeViewModel()
+        if (homeData == null) return HomeViewModel(isCache = isCache)
         val list: MutableList<Visitable<*>> = mutableListOf()
         list.add(mappingBanner(homeVisitableFactory, homeData.banner, isCache))
         if (homeData.ticker != null && homeData.ticker.tickers != null && homeData.ticker.tickers.isNotEmpty()
@@ -91,7 +91,8 @@ class HomeDataMapper(
                         DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> list.add(mappingSpotlight(homeData.spotlight, isCache))
                         DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> if (!isCache) {
                             list.add(
-                                    BusinessUnitViewModel(context.getString(R.string.digital_widget_title), position)
+                                    BusinessUnitViewModel(context.getString(R.string.digital_widget_title),
+                                            position, System.currentTimeMillis())
                             )
                         }
                         DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO -> {

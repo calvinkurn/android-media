@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
@@ -23,7 +24,15 @@ class TabBusinessViewModel @Inject constructor(
 ) : ViewModel(), CoroutineScope {
 
     private val job = Job()
-    val homeWidget = MutableLiveData<Result<HomeWidget>>()
+    val homeWidget : LiveData<HomeWidget>
+    get() = _homeWidget
+
+    private val _homeWidget = MutableLiveData<HomeWidget>()
+
+    val homeWidgetErrorAction : LiveData<Fail>
+        get() = _homeWidgetErrorAction
+
+    private val _homeWidgetErrorAction = MutableLiveData<Fail>()
 
     companion object {
         private const val PARAM_TAB_ID = "tabId"
@@ -33,6 +42,7 @@ class TabBusinessViewModel @Inject constructor(
         get() = baseDispatcher + job
 
     fun getTabList(rawQuery: String) {
+        _homeWidget.value = HomeWidget()
         job.children.map { it.cancel() }
 
         launchCatchError(block = {
@@ -49,26 +59,26 @@ class TabBusinessViewModel @Inject constructor(
                 if (data.getData<HomeWidget.Data>(HomeWidget.Data::class.java) != null) {
                     val temp = data.getData<HomeWidget.Data>(HomeWidget.Data::class.java).homeWidget
                     if (temp.tabBusinessList.isEmpty().not()) {
-                        homeWidget.value = Success(temp)
+                        _homeWidget.value = Success(temp).data
                     } else {
-                        homeWidget.value = Fail(ResponseErrorException("empty"))
+                        _homeWidgetErrorAction.value = Fail(ResponseErrorException("empty"))
                     }
                 } else {
-                    homeWidget.value = Fail(ResponseErrorException("local handling error"))
+                    _homeWidgetErrorAction.value = Fail(ResponseErrorException("local handling error"))
                 }
             } else {
                 val message = data.getError(HomeWidget.Data::class.java)[0].message
-                homeWidget.value = Fail(ResponseErrorException(message))
+                _homeWidgetErrorAction.value = Fail(ResponseErrorException(message))
             }
 
         }){
             it.printStackTrace()
-            homeWidget.value = Fail(it)
+            _homeWidgetErrorAction.value = Fail(it)
         }
 
     }
 
-    fun clearJob() {
-//        if (isActive) job.cancel()
+    fun getTabList(position: Int): HomeWidget.TabItem? {
+        return homeWidget.value?.tabBusinessList?.get(position)
     }
 }

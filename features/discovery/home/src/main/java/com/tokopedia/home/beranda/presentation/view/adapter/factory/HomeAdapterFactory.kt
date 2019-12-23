@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentManager
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -129,6 +130,14 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return PlayCardViewHolder.LAYOUT
     }
 
+    override fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int {
+        return HomeLoadingMoreViewHolder.LAYOUT
+    }
+
+    override fun type(homeRetryModel: HomeRetryModel): Int {
+        return RetryViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -210,6 +219,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener, countDownListener)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
+            HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

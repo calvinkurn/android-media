@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_120"
         android:orientation="vertical"
-        tools:visibility="gone"
+        tools:visibility="visible"
         android:padding="@dimen/dp_10">
 
         <TextView

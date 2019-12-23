@@ -115,7 +115,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
                     context,
                     tickerId
             );
-            listener.onCloseTicker(getAdapterPosition());
+            listener.onCloseTicker();
         }
     }
 

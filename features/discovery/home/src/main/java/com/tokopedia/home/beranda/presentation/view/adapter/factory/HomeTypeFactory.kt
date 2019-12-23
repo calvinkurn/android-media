@@ -49,6 +49,10 @@ interface HomeTypeFactory {
     fun type(geolocationPromptViewModel: GeolocationPromptViewModel): Int
 
     fun type(reviewViewModel: ReviewViewModel): Int
+
     fun type(playCard: PlayCardViewModel): Int
 
+    fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int
+
+    fun type(homeRetryModel: HomeRetryModel): Int
 }

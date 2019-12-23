@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
-class BusinessUnitViewModel(var title: String?, var position: Int) : HomeVisitable {
+class BusinessUnitViewModel(var title: String?, var position: Int, val updatedTime: Long) : HomeVisitable {
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var trackingDataForCombination: List<Any>? = null
@@ -11,7 +11,7 @@ class BusinessUnitViewModel(var title: String?, var position: Int) : HomeVisitab
 
     override fun equalsWith(b: Any?): Boolean {
         if (b is BusinessUnitViewModel) {
-            return title == b.title
+            return updatedTime == b.updatedTime
         }
         return false
     }
@@ -21,7 +21,7 @@ class BusinessUnitViewModel(var title: String?, var position: Int) : HomeVisitab
     }
 
     override fun visitableId(): String? {
-        return title
+        return "buSection"
     }
 
     fun setCache(cache: Boolean) {
