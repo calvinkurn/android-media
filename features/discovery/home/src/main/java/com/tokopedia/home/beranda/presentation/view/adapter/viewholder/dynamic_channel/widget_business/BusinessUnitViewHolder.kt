@@ -17,10 +17,12 @@ class BusinessUnitViewHolder(
 {
 
     override fun bind(element: BusinessUnitViewModel) {
-        val adapter = DigitalsHomePagerAdapter(fm, TabBusinessFragment.newInstance(element.position))
-        itemView.viewPager.adapter = adapter
-        itemView.viewPager.offscreenPageLimit = 1
-        itemView.viewPager.currentItem = 0
+        itemView.viewPager?.let { viewPager ->
+            val adapter = DigitalsHomePagerAdapter(fm, TabBusinessFragment.newInstance(element.position))
+            viewPager.adapter = adapter
+            viewPager.offscreenPageLimit = 1
+            viewPager.currentItem = 0
+        }
     }
 
     companion object {
