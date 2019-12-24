@@ -27,7 +27,6 @@ import retrofit2.Retrofit;
 public class SessionRefresh {
 
     private static final String USER_ID = "user_id";
-    private static final String UUID_KEY = "uuid";
 
     private static final String DEVICE_ID_NEW = "device_id_new";
     private static final String OS_TYPE = "os_type";

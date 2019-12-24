@@ -10,11 +10,8 @@ import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.DynamicTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.ReactNativeBearerInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.ReactNativeInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
@@ -24,8 +21,6 @@ import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.util.GlobalConfig;
-
-import java.util.HashMap;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -55,10 +50,6 @@ public class OkHttpFactory {
                 .build();
     }
 
-    private TkpdOkHttpBuilder getDefaultClientConfig() {
-        return getDefaultClientConfig(builder);
-    }
-
     private TkpdOkHttpBuilder getDefaultClientConfig(OkHttpClient.Builder builder) {
         return new TkpdOkHttpBuilder(builder).addInterceptor(getHttpLoggingInterceptor());
     }
@@ -67,14 +58,6 @@ public class OkHttpFactory {
         HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingLevel = HttpLoggingInterceptor.Level.BODY;
-        }
-        return new HttpLoggingInterceptor().setLevel(loggingLevel);
-    }
-
-    private Interceptor getHeaderHttpLoggingInterceptor() {
-        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            loggingLevel = HttpLoggingInterceptor.Level.HEADERS;
         }
         return new HttpLoggingInterceptor().setLevel(loggingLevel);
     }
@@ -98,59 +81,6 @@ public class OkHttpFactory {
                 .addInterceptor(new GlobalTkpdAuthInterceptor(authKey))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
-                .build();
-    }
-
-    public OkHttpClient buildClientDynamicAuth() {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new DynamicTkpdAuthInterceptor())
-                .addInterceptor(getHttpLoggingInterceptor())
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
-    }
-
-    public OkHttpClient buildClientReactNativeNoAuth(HashMap<String, String> headers) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new ReactNativeInterceptor(headers))
-                .addInterceptor(new TkpdBaseInterceptor())
-                .addInterceptor(getHttpLoggingInterceptor())
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
-    }
-
-    public OkHttpClient buildClientReactNativeAuth(HashMap<String, String> headers) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new ReactNativeInterceptor(headers))
-                .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new DynamicTkpdAuthInterceptor())
-                .addInterceptor(getHttpLoggingInterceptor())
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
-    }
-
-    public OkHttpClient buildClientReactNativeBearer(HashMap<String, String> headers, String token) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new ReactNativeBearerInterceptor(headers, token))
-                .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new DynamicTkpdAuthInterceptor())
-                .addInterceptor(getHttpLoggingInterceptor())
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
-    }
-
-    public OkHttpClient buildClientDefaultCacheAuth() {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new CacheApiInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new TkpdAuthInterceptor())
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
     }
 
@@ -436,9 +366,5 @@ public class OkHttpFactory {
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
-    }
-
-    public OkHttpClient.Builder getClientBuilder() {
-        return builder == null ? client.newBuilder() : builder;
     }
 }
