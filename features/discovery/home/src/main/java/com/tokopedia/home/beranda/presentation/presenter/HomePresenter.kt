@@ -55,7 +55,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-@ExperimentalCoroutinesApi
 class HomePresenter(private val userSession: UserSessionInterface,
                     private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
                     private val coroutineDispatcher: CoroutineDispatcher,
@@ -97,10 +96,8 @@ class HomePresenter(private val userSession: UserSessionInterface,
     @Inject
     lateinit var playCardHomeUseCase: PlayCardHomeUseCase
 
-    @ExperimentalCoroutinesApi
     val homeFlowData: Flow<HomeViewModel?> = homeUseCase.getHomeData()
 
-    @ExperimentalCoroutinesApi
     val homeLiveData: LiveData<HomeViewModel>
     get() = _homeLiveData
 

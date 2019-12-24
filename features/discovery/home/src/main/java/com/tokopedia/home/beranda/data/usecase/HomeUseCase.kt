@@ -11,7 +11,6 @@ class HomeUseCase @Inject constructor(
         private val homeRepository: HomeRepository,
         private val homeDataMapper: HomeDataMapper
 ) {
-    @ExperimentalCoroutinesApi
     fun getHomeData(): Flow<HomeViewModel> = flow {
         var firstTimeDataHasBeenConsumed = false
         homeRepository.getHomeData().collect { data->
