@@ -2,7 +2,6 @@ package com.tokopedia.core.network.apiservices.shop.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.shopinfo.models.shopnotes.GetShopNotes;
 
 import java.util.Map;
 
@@ -25,14 +24,6 @@ public interface ShopApi {
     Observable<Response<TkpdResponse>> getLikeReview(@QueryMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_GET_PEOPLE_FAV_MY_SHOP)
-    Observable<Response<TkpdResponse>> getWhoFave(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_ETALASE)
-    Observable<Response<TkpdResponse>> getEtalase(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
     @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_INFO)
     Observable<Response<TkpdResponse>> getInfo(@FieldMap Map<String, String> params);
 
@@ -40,19 +31,6 @@ public interface ShopApi {
     @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_LOCATION)
     Observable<Response<TkpdResponse>> getLocation(@FieldMap Map<String, String> params);
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_NOTES)
-    Observable<Response<TkpdResponse>> getNotes(@FieldMap Map<String, String> params);
-
     @GET(TkpdBaseURL.Shop.PATH_GET_SHOP_PRODUCT)
     Observable<Response<TkpdResponse>> getProduct(@QueryMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_REVIEW)
-    Observable<Response<TkpdResponse>> getReview(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_NOTES)
-    Observable<GetShopNotes> getNotes2(@FieldMap Map<String, String> params);
-
 }
