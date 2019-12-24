@@ -17,19 +17,11 @@ public interface PdpRouter {
 
     void openImagePreview(Context context, ArrayList<String> images, int position);
 
-    Intent getProductReputationIntent(Context context, String productId, String productName);
-
     Intent getCartIntent(Activity activity);
 
     Intent getLoginIntent(Context context);
 
     Intent getShopPageIntent(Context context, String shopId);
-
-    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
-
-    void goToCreateTopadsPromo(Context context, String productId, String shopId, String sourceCreateTopadsManageProduct);
-
-    Intent getProductTalk(Context context, String productId);
 
     void eventClickFilterReview(Context context,
                                 String filterName,
