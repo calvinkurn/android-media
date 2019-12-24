@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.usecase
 
+import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -8,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
+import com.tokopedia.product.detail.data.model.TradeinResponse
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCodStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -19,12 +21,14 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
                                                       private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2ShopData>() {
 
     companion object {
-        fun createParams(shopId: Int, productId: String, warehouseId: String, forceRefresh: Boolean): RequestParams {
+        fun createParams(shopId: Int, productId: String, warehouseId: String, forceRefresh: Boolean,
+                         tradeinParams: TradeInParams): RequestParams {
             val requestParams = RequestParams()
             requestParams.putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
             requestParams.putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
             requestParams.putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, warehouseId)
             requestParams.putBoolean(ProductDetailCommonConstant.FORCE_REFRESH, forceRefresh)
+            requestParams.putObject(ProductDetailCommonConstant.PARAM_TRADE_IN, tradeinParams)
 
             return requestParams
         }
@@ -38,6 +42,7 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
         val warehouseId = requestParams.getString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, "")
         val forceRefresh = requestParams.getBoolean(ProductDetailCommonConstant.FORCE_REFRESH, false)
+        val tradeInParams: TradeInParams = requestParams.getObject(ProductDetailCommonConstant.PARAM_TRADE_IN) as TradeInParams
 
         val shopParams = mapOf(ProductDetailCommonConstant.PARAM_SHOP_IDS to listOf(shopId),
                 ProductDetailCommonConstant.PARAM_SHOP_FIELDS to ProductDetailCommonConstant.DEFAULT_SHOP_FIELDS)
@@ -54,9 +59,13 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         val shopCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COD_STATUS],
                 ShopCodStatus.Response::class.java, shopCodParam)
 
-        val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
-        val requests = mutableListOf(shopRequest, shopCodRequest, nearestWarehouseRequest)
 
+        val pdpTradeinParam = mapOf(ProductDetailCommonConstant.PARAMS to tradeInParams)
+        val pdpTradeinRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TRADE_IN],
+                TradeinResponse::class.java, pdpTradeinParam)
+
+        val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
+        val requests = mutableListOf(shopRequest, shopCodRequest, nearestWarehouseRequest, pdpTradeinRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
@@ -76,6 +85,12 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
                 gqlResponse.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
                         .result.data.firstOrNull()?.let { p2Shop.nearestWarehouse = it }
             }
+
+            if (gqlResponse.getError(TradeinResponse::class.java)?.isNotEmpty() != true) {
+                val tradeinResponse: TradeinResponse = gqlResponse.getData(TradeinResponse::class.java)
+                p2Shop.tradeinResponse = tradeinResponse
+            }
+
         } catch (t: Throwable) {
             t.debugTrace()
         }

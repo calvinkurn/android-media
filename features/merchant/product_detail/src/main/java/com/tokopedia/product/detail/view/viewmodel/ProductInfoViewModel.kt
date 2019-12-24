@@ -12,9 +12,9 @@ import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffilia
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -60,7 +60,6 @@ import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
-import com.tokopedia.product.detail.usecase.GetTradeinInfoUseCase
 import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
@@ -101,7 +100,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                                                private val getRecommendationUseCase: GetRecommendationUseCase,
                                                private val stickyLoginUseCase: StickyLoginUseCase,
                                                private val updateCartCounterUseCase: UpdateCartCounterUseCase,
-                                               private val getTradeinInfoUseCase: GetTradeinInfoUseCase,
                                                @Named("Main")
                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -110,8 +108,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val p2General = MutableLiveData<ProductInfoP2General>()
     val p2Login = MutableLiveData<ProductInfoP2Login>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
-    val stickyLoginResp = MutableLiveData<StickyLoginTickerPojo>()
-    val tradeinResult = MutableLiveData<TradeinResponse>()
     val loadTopAdsProduct = MutableLiveData<RequestDataState<List<RecommendationWidget>>>()
     var tradeInParams: TradeInParams = TradeInParams()
 
@@ -155,13 +151,10 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 needRequestCod = it.shouldShowCod
             }
 
-            renderTradein(productInfoP1, productParams.deviceId)
-            getTradein(tradeInParams)
-
             val p2ShopDeferred = getProductInfoP2ShopAsync(
                     productInfoP1.productInfo.basic.shopID,
                     productInfoP1.productInfo.basic.id.toString(),
-                    warehouseId,
+                    warehouseId, renderTradein(productInfoP1),
                     forceRefresh
             )
 
@@ -176,7 +169,13 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                         productInfoP1.productInfo.basic.shopID, forceRefresh)
             } else null
 
-            p2ShopDataResp.value = p2ShopDeferred.await()
+            p2ShopDataResp.value = p2ShopDeferred.await().also {
+                val tradeInResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
+                tradeInParams.isEligible = if (tradeInResponse.isEligible) 1 else 0
+                tradeInParams.usedPrice = tradeInResponse.usedPrice
+                tradeInParams.remainingPrice = tradeInResponse.remainingPrice
+                tradeInParams.isUseKyc = if (tradeInResponse.useKyc) 1 else 0
+            }
             p2General.value = p2GeneralDeferred.await()
             p2LoginDeferred?.let { p2Login.value = it.await() }
 
@@ -196,17 +195,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getTradein(tradeinParams: TradeInParams) {
-        getTradeinInfoUseCase.params = GetTradeinInfoUseCase.createParams(tradeinParams)
-        tradeinResult.value = getTradeinInfoUseCase.executeOnBackground()
-    }
-
-
-    private fun renderTradein(data: ProductInfoP1?, deviceId: String?): TradeInParams {
+    private fun renderTradein(data: ProductInfoP1?): TradeInParams {
         tradeInParams = TradeInParams()
         data?.let { productInfoP1 ->
             tradeInParams.categoryId = productInfoP1.productInfo.category.id.toIntOrZero()
-            tradeInParams.deviceId = deviceId ?: ""
+            tradeInParams.deviceId = deviceId
             tradeInParams.userId = if (userId.isNotEmpty())
                 userId.toIntOrZero()
             else
@@ -228,6 +221,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     private fun getProductInfoP2ShopAsync(shopId: Int, productId: String,
                                           warehouseId: String,
+                                          tradeinParam :TradeInParams,
                                           forceRefresh: Boolean = false)
             : Deferred<ProductInfoP2ShopData> {
         return async {
@@ -246,11 +240,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val shopCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COD_STATUS],
                     ShopCodStatus.Response::class.java, shopCodParam)
 
+            val pdpTradeinParam = mapOf(ProductDetailCommonConstant.PARAMS to tradeinParam)
+            val pdpTradeinRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TRADE_IN],
+                    TradeinResponse::class.java, pdpTradeinParam)
+
             val p2Shop = ProductInfoP2ShopData()
 
             val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
-
-            val requests = mutableListOf(shopRequest, shopCodRequest, nearestWarehouseRequest)
+            val requests = mutableListOf(shopRequest, shopCodRequest, nearestWarehouseRequest, pdpTradeinRequest)
 
             try {
                 val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
@@ -269,6 +266,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 if (gqlResponse.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true) {
                     gqlResponse.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
                             .result.data.firstOrNull()?.let { p2Shop.nearestWarehouse = it }
+                }
+
+                if (gqlResponse.getError(TradeinResponse::class.java)?.isNotEmpty() != true) {
+                    val tradeinResponse: TradeinResponse = gqlResponse.getData(TradeinResponse::class.java)
+                    p2Shop.tradeinResponse = tradeinResponse
                 }
             } catch (t: Throwable) {
                 t.debugTrace()

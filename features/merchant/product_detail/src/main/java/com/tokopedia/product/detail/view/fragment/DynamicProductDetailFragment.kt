@@ -65,7 +65,6 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -75,6 +74,7 @@ import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.data.model.ValidateTradeInPDP
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
@@ -93,6 +93,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
+import com.tokopedia.product.detail.view.util.ErrorHelper
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
@@ -197,7 +198,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private var trackerListName: String? = ""
     private var warehouseId: String? = null
     private var isTopdasLoaded: Boolean = false
-    private var deviceId: String = ""
+    private var shouldRenderSticky = true
 
     //View
     private lateinit var bottomSheet: ValuePropositionBottomSheet
@@ -245,14 +246,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun onSwipeRefresh() {
-        hideSnackBarRetry()
         isLoadingInitialData = true
-        adapter.clearAllElements()
-        showLoading()
-        loadProductData(true)
         isTopdasLoaded = false
         actionButtonView.visibility = false
+        adapter.clearAllElements()
+        showLoading()
         updateStickyContent()
+        loadProductData(true)
         carouselProductPool.release()
     }
 
@@ -274,7 +274,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             isAffiliate = it.getBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, false)
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
         }
-        deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
         activity?.run {
             remoteConfig = FirebaseRemoteConfigImpl(this)
         }
@@ -402,29 +401,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     renderList(it.data)
                 }
                 is Fail -> {
-                    actionButtonView.visibility = false
-                    onGetListErrorWithEmptyData(it.throwable)
-                    showToasterError(it.throwable.message ?: "")
+                    renderPageError(it.throwable)
                 }
             }
-        })
-
-        viewModel.tradeinResult.observe(this, Observer {
-            val tradeinResponse = it.validateTradeInPDP
-            if (!tradeinResponse.isEligible) {
-                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productTradeinMap)
-            } else {
-                pdpHashMapUtil.productTradeinMap?.run {
-                    pdpHashMapUtil.snapShotMap.shouldShowTradein = true
-                    data.first().subtitle = if (tradeinResponse.usedPrice > 0) {
-                        getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
-                    } else {
-                        getString(R.string.trade_in_exchange)
-                    }
-                }
-            }
-
-            trackProductView(tradeinResponse.isEligible)
         })
 
         viewModel.loadTopAdsProduct.observe(this, Observer {
@@ -457,10 +436,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
             shouldShowCodP2Shop = it.shopCod
 
-            if (!it.nearestWarehouse.warehouseInfo.isFulfillment) {
-                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productFullfilmentMap)
-            }
-
             viewModel.getDynamicProductInfoP1?.let { p1 ->
                 actionButtonView.renderData(!p1.basic.isActive(),
                         (viewModel.isShopOwner(p1.basic.getShopId())
@@ -481,10 +456,26 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 }
             }
 
-            if (delegateTradeInTracking) {
-                trackProductView(viewModel.tradeInParams.isEligible == 1)
-                delegateTradeInTracking = false
+            if (!it.nearestWarehouse.warehouseInfo.isFulfillment) {
+                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productFullfilmentMap)
             }
+
+            val tradeinResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
+
+            if (!tradeinResponse.isEligible) {
+                dynamicAdapter.removeGeneralInfo(pdpHashMapUtil.productTradeinMap)
+            } else {
+                pdpHashMapUtil.productTradeinMap?.run {
+                    pdpHashMapUtil.snapShotMap.shouldShowTradein = true
+                    data.first().subtitle = if (tradeinResponse.usedPrice > 0) {
+                        getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+                    } else {
+                        getString(R.string.trade_in_exchange)
+                    }
+                }
+            }
+
+            trackProductView(viewModel.tradeInParams.isEligible == 1)
 
             pdpHashMapUtil.updateDataP2Shop(it)
             adapter.notifyDataSetChanged()
@@ -549,6 +540,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             pdpHashMapUtil.snapShotMap.shouldShowCod =
                     shouldShowCodP1 && shouldShowCodP2Shop && shouldShowCodP3
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_COD)
+        })
+
+        viewModel.toggleFavoriteResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessFavoriteShop(it.data)
+                is Fail -> onFailFavoriteShop(it.throwable)
+            }
         })
 
         viewModel.moveToWarehouseResult.observe(this, Observer {
@@ -687,6 +685,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                 doBuy()
             }
             ProductDetailConstant.REQUEST_CODE_LOGIN -> {
+                shouldRenderSticky = true
                 updateStickyContent()
             }
             ProductDetailConstant.REQUEST_CODE_REPORT -> {
@@ -698,6 +697,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     val isWishlisted = data.getBooleanExtra(ImagePreviewPdpActivity.RESPONSE_CODE_IMAGE_RPEVIEW, false)
                     pdpHashMapUtil.snapShotMap.isWishlisted = isWishlisted
                     dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+                }
+            }
+            ProductDetailConstant.REQUEST_CODE_SHOP_INFO -> {
+                if (data != null) {
+                    val isFavorite = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
+                    val isSticky = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
+                    val favorite = pdpHashMapUtil.getShopInfo.shopInfo?.favoriteData?.alreadyFavorited == 1
+
+                    shouldRenderSticky = true
+                    if (isSticky) updateStickyContent()
+
+                    if (isFavorite != favorite) {
+                        onSuccessFavoriteShop(true)
+                    }
                 }
             }
             else ->
@@ -788,7 +801,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     /**
      * ProductGeneralInfoViewHolder Listener
      */
-
     override fun onInfoClicked(name: String) {
         when (name) {
             ProductDetailConstant.PRODUCT_SHIPPING_INFO -> {
@@ -843,6 +855,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             isTopdasLoaded = true
             viewModel.loadRecommendation()
         }
+    }
+
+    /**
+     * PageErrorViewHolder
+     */
+    override fun onRetryClicked(forceRefresh: Boolean) {
+        onSwipeRefresh()
     }
 
     /**
@@ -1084,6 +1103,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
         bottomSheet = ValuePropositionBottomSheet.newInstance(title, desc, url)
         bottomSheet.show(fragmentManager, "pdp_bs")
+    }
+
+    private fun renderPageError(t: Throwable) {
+        context?.let { ctx ->
+            dynamicAdapter.clearAllElements()
+            dynamicAdapter.addElement(ErrorHelper.getErrorType(ctx, t))
+            if (swipeToRefresh != null) {
+                swipeToRefresh.isEnabled = false
+            }
+            actionButtonView.visibility = false
+        }
     }
 
     private fun showSnackbarClose(string: String) {
@@ -1349,8 +1379,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     private fun loadProductData(forceRefresh: Boolean = false) {
         if (productId != null || (productKey != null && shopDomain != null)) {
-            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId,
-                    deviceId = deviceId), forceRefresh)
+            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh)
         }
     }
 
@@ -1716,12 +1745,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
     private fun updateStickyContent() {
-        if (!viewModel.isUserSessionActive) {
+        if (shouldRenderSticky) {
             viewModel.getStickyLoginContent(
                     onSuccess = {
                         this.tickerDetail = it
                         updateStickyState()
                         updateActionButtonShadow()
+                        shouldRenderSticky = false
                     },
                     onError = {
                         stickyLoginView.visibility = View.GONE
@@ -1790,8 +1820,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             if (viewModel.isUserSessionActive) {
                 pdpHashMapUtil.getShopInfo.toogleFavorite = false
                 dynamicAdapter.notifyShopInfo(pdpHashMapUtil.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
-                viewModel.toggleFavorite(shop.shopCore.shopID,
-                        this::onSuccessFavoriteShop, this::onFailFavoriteShop)
+                viewModel.toggleFavorite(shop.shopCore.shopID)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                         ProductDetailConstant.REQUEST_CODE_LOGIN)
@@ -1803,6 +1832,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         val favorite = pdpHashMapUtil.getShopInfo.shopInfo?.favoriteData ?: return
         if (isSuccess) {
             val newFavorite =
+                    // If was favorited then change to un-favorited
                     if (favorite.alreadyFavorited == 1)
                         ShopInfo.FavoriteData(0, favorite.totalFavorite - 1)
                     else
@@ -1814,7 +1844,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         }
     }
 
-
     private fun onFailFavoriteShop(t: Throwable) {
         context?.let {
             ToasterError.make(view, ProductDetailErrorHandler.getErrorMessage(it, t))
@@ -1823,7 +1852,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         pdpHashMapUtil.getShopInfo.toogleFavorite = true
         dynamicAdapter.notifyShopInfo(pdpHashMapUtil.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
     }
-
 
     private fun onShopChatClicked() {
         val shop = viewModel.shopInfo ?: return

@@ -17,7 +17,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
-import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
 
 
 /**
@@ -164,10 +163,10 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         super.onCreate(savedInstanceState)
     }
 
-    private fun generateApplink(applink:String) : String{
-        return if(applink.contains(getString(R.string.internal_scheme))){
+    private fun generateApplink(applink: String): String {
+        return if (applink.contains(getString(R.string.internal_scheme))) {
             applink.replace(getString(R.string.internal_scheme), "tokopedia")
-        }else {
+        } else {
             ""
         }
     }

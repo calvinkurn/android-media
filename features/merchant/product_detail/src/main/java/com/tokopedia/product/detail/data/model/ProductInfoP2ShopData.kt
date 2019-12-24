@@ -8,5 +8,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 data class ProductInfoP2ShopData(
         var shopInfo: ShopInfo? = null,
         var shopCod: Boolean = false,
-        var nearestWarehouse: MultiOriginWarehouse = MultiOriginWarehouse()
+        var nearestWarehouse: MultiOriginWarehouse = MultiOriginWarehouse(),
+        var tradeinResponse: TradeinResponse? = null
 )

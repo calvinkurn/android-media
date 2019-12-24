@@ -1,26 +1,25 @@
 package com.tokopedia.shop.page.view.activity
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
@@ -32,7 +31,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -41,7 +39,6 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -66,11 +63,10 @@ import com.tokopedia.shop.page.di.module.ShopPageModule
 import com.tokopedia.shop.page.view.ShopPageViewModel
 import com.tokopedia.shop.page.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.track.TrackApp
@@ -110,6 +106,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
 
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
+    private val intentData = Intent()
 
     private val errorTextView by lazy {
         findViewById<TextView>(R.id.message_retry)
@@ -131,6 +128,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val TAB_POSITION_FEED = 1
         const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
+        const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SHOP_TRACE = "mp_shop"
         const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
@@ -252,6 +250,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         })
 
         shopViewModel.shopFavouriteResp.observe(this, Observer {
+            updateFavouriteResult(it.alreadyFavorited == 1)
             shopPageViewHolder.updateFavoriteData(it ?: ShopInfo.FavoriteData())
         })
 
@@ -584,14 +583,20 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private fun onSuccessToggleFavourite(successValue: Boolean) {
         if (successValue) {
             shopPageViewHolder.toggleFavourite()
-            updateFavouriteResult()
+            updateFavouriteResult(shopPageViewHolder.isShopFavourited())
         }
         shopPageViewHolder.updateFavoriteButton()
     }
 
-    private fun updateFavouriteResult() {
-        setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(SHOP_STATUS_FAVOURITE, shopPageViewHolder.isShopFavourited())
+    private fun updateFavouriteResult(isFavorite: Boolean) {
+        setResult(Activity.RESULT_OK, intentData.apply {
+            putExtra(SHOP_STATUS_FAVOURITE, isFavorite )
+        })
+    }
+
+    private fun updateStickyResult() {
+        setResult(Activity.RESULT_OK, intentData.apply {
+            putExtra(SHOP_STICKY_LOGIN, true)
         })
     }
 
@@ -771,6 +776,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             onSuccess = {
                 this.tickerDetail = it
                 updateStickyState()
+                updateStickyResult()
             },
             onError = {
                 stickyLoginView.hide()

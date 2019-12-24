@@ -243,7 +243,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
 
     private var isWishlisted = false
-    private var deviceId: String = ""
 
     override val isUserSessionActive: Boolean
         get() = if (!::productInfoViewModel.isInitialized) false else productInfoViewModel.isUserSessionActive()
@@ -352,7 +351,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
             deeplinkUrl = it.getString(ARG_DEEPLINK_URL, "")
         }
-        deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -379,34 +377,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 is Success -> onSuccessGetProductInfo(it.data)
                 is Fail -> onErrorGetProductInfo(it.throwable)
             }
-        })
-
-        productInfoViewModel.tradeinResult.observe(this, Observer {
-
-            val tradeInResponse = it.validateTradeInPDP
-            tradeInParams.isEligible = if (tradeInResponse.isEligible) 1 else 0
-            tradeInParams.usedPrice = tradeInResponse.usedPrice
-            tradeInParams.remainingPrice = tradeInResponse.remainingPrice
-            tradeInParams.isUseKyc = if (tradeInResponse.useKyc) 1 else 0
-
-            if (tradeInResponse.isEligible) {
-                if (tv_trade_in_promo != null) {
-                    tv_trade_in_promo.visible()
-                    tv_available_at?.visible()
-                }
-
-                tv_text_price.text = if (tradeInResponse.usedPrice > 0) {
-                    getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInResponse.usedPrice, true))
-                } else {
-                    getString(R.string.trade_in_exchange)
-                }
-
-                baseTradein.show()
-            } else {
-                baseTradein.hide()
-            }
-
-            trackProductView(tradeInResponse.isEligible)
         })
 
         productInfoViewModel.p2ShopDataResp.observe(this, Observer {
@@ -1105,7 +1075,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             hideRecommendationView()
         }
         if (productId != null || (productKey != null && shopDomain != null)) {
-            productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey, deviceId = deviceId), forceRefresh)
+            productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), forceRefresh)
             // Add new Impression after refresh for lazy load
             addLoadMoreImpression()
         }
@@ -1470,11 +1440,31 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     shopInfo.goldOS.shopTypeString,
                     productId ?: "")
 
+            val tradeinResponse = p2ShopData.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
+            tradeInParams.isEligible = if (tradeinResponse.isEligible) 1 else 0
+            tradeInParams.usedPrice = tradeinResponse.usedPrice
+            tradeInParams.remainingPrice = tradeinResponse.remainingPrice
+            tradeInParams.isUseKyc = if (tradeinResponse.useKyc) 1 else 0
 
-            if (delegateTradeInTracking) {
-                trackProductView(tradeInParams.isEligible == 1)
-                delegateTradeInTracking = false
+            if (tradeinResponse.isEligible) {
+                if (tv_trade_in_promo != null) {
+                    tv_trade_in_promo.visible()
+                    tv_available_at?.visible()
+                }
+
+                tv_text_price.text = if (tradeinResponse.usedPrice > 0) {
+                    getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+                } else {
+                    getString(R.string.trade_in_exchange)
+                }
+
+                baseTradein.show()
+            } else {
+                baseTradein.hide()
             }
+
+
+            trackProductView(tradeInParams.isEligible == 1)
 
             productDetailTracking.sendMoEngageOpenProduct(data,
                     shopInfo.goldOS.isOfficial == 1, shopInfo.shopCore.name)

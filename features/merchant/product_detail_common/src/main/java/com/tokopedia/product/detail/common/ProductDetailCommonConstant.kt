@@ -17,6 +17,7 @@ object ProductDetailCommonConstant{
     const val PARAM_USER_ID = "userId"
     const val PARAM_MIN_ORDER = "minOrder"
     const val PARAM_WAREHOUSE_ID = "wareHouseId"
+    const val PARAM_TRADE_IN = "tradeIn"
     const val FORCE_REFRESH = "forceRefresh"
 
     const val PARAM_SHOP_IDS = "shopIds"

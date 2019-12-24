@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewmodel
 
 import android.content.Intent
 import androidx.collection.ArrayMap
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -54,25 +55,24 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
-class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
-                                                        private val dispatcher: CoroutineDispatcher,
-                                                        private val stickyLoginUseCase: StickyLoginUseCase,
-                                                        private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
-                                                        private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
-                                                        private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
-                                                        private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
-                                                        private val getProductInfoP3UseCase: GetProductInfoP3UseCase,
-                                                        private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-                                                        private val removeWishlistUseCase: RemoveWishListUseCase,
-                                                        private val addWishListUseCase: AddWishListUseCase,
-                                                        private val getRecommendationUseCase: GetRecommendationUseCase,
-                                                        private val moveProductToWarehouseUseCase: MoveProductToWarehouseUseCase,
-                                                        private val moveProductToEtalaseUseCase: MoveProductToEtalaseUseCase,
-                                                        private val trackAffiliateUseCase: TrackAffiliateUseCase,
-                                                        private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
-                                                        private val updateCartCounterUseCase: UpdateCartCounterUseCase,
-                                                        private val getTradeinInfoUseCase: GetTradeinInfoUseCase,
-                                                        private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher) {
+open class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
+                                                             private val dispatcher: CoroutineDispatcher,
+                                                             private val stickyLoginUseCase: StickyLoginUseCase,
+                                                             private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
+                                                             private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
+                                                             private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
+                                                             private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
+                                                             private val getProductInfoP3UseCase: GetProductInfoP3UseCase,
+                                                             private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+                                                             private val removeWishlistUseCase: RemoveWishListUseCase,
+                                                             private val addWishListUseCase: AddWishListUseCase,
+                                                             private val getRecommendationUseCase: GetRecommendationUseCase,
+                                                             private val moveProductToWarehouseUseCase: MoveProductToWarehouseUseCase,
+                                                             private val moveProductToEtalaseUseCase: MoveProductToEtalaseUseCase,
+                                                             private val trackAffiliateUseCase: TrackAffiliateUseCase,
+                                                             private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
+                                                             private val updateCartCounterUseCase: UpdateCartCounterUseCase,
+                                                             private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher) {
 
     val productInfoP1 = MutableLiveData<Result<ProductInfoP1>>()
     val productLayout = MutableLiveData<Result<List<DynamicPDPDataModel>>>()
@@ -83,7 +83,10 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     val loadTopAdsProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
     val moveToWarehouseResult = MutableLiveData<Result<Boolean>>()
     val moveToEtalaseResult = MutableLiveData<Result<Boolean>>()
-    val tradeinResult = MutableLiveData<TradeinResponse>()
+
+    private val _toggleFavoriteResult = MutableLiveData<Result<Boolean>>()
+    val toggleFavoriteResult: LiveData<Result<Boolean>>
+        get() = _toggleFavoriteResult
 
     var multiOrigin: WarehouseInfo = WarehouseInfo()
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
@@ -111,7 +114,6 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         getProductInfoP2LoginUseCase.cancelJobs()
         getProductInfoP2GeneralUseCase.cancelJobs()
         getProductInfoP3UseCase.cancelJobs()
-        toggleFavoriteUseCase.cancelJobs()
         toggleFavoriteUseCase.cancelJobs()
         trackAffiliateUseCase.cancelJobs()
         moveProductToWarehouseUseCase.cancelJobs()
@@ -158,30 +160,11 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             //Render initial data first
             productLayout.value = Success(initialLayoutData)
 
-            // Render tradein based on P1
-            val tradeinParams = renderTradein(getDynamicProductInfoP1, deviceId)
-            if (shouldShowTradein) {
-                getTradein(tradeinParams)
-            }
-
             // Then update the following, it will not throw anything when error
             getProductP2(forceRefresh, productParams.warehouseId)
             getProductP3(productParams.shopDomain, forceRefresh)
         }) {
             productLayout.value = Fail(it)
-        }
-    }
-
-    private suspend fun getTradein(tradeinParams: TradeInParams) {
-        getTradeinInfoUseCase.params = GetTradeinInfoUseCase.createParams(tradeinParams)
-        getTradeinInfoUseCase.executeOnBackground().let {
-            val tradeInResponse = it.validateTradeInPDP
-            tradeInParams.isEligible = if (tradeInResponse.isEligible) 1 else 0
-            tradeInParams.usedPrice = tradeInResponse.usedPrice
-            tradeInParams.remainingPrice = tradeInResponse.remainingPrice
-            tradeInParams.isUseKyc = if (tradeInResponse.useKyc) 1 else 0
-
-            tradeinResult.value = getTradeinInfoUseCase.executeOnBackground()
         }
     }
 
@@ -201,7 +184,6 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()
             tradeInParams.isOnCampaign = it.data.campaign.isActive
         }
-
         return tradeInParams
     }
 
@@ -225,8 +207,15 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                     it.getProductName,
                     categoryId, it.basic.catalogID, userIdInt, it.basic.minOrder, forceRefresh)
 
-            shopInfo = p2ShopDeferred.await().shopInfo
-            p2ShopDataResp.value = p2ShopDeferred.await()
+            p2ShopDataResp.value = p2ShopDeferred.await().also {
+                shopInfo = it.shopInfo
+                val tradeInResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
+                tradeInParams.isEligible = if (tradeInResponse.isEligible) 1 else 0
+                tradeInParams.usedPrice = tradeInResponse.usedPrice
+                tradeInParams.remainingPrice = tradeInResponse.remainingPrice
+                tradeInParams.isUseKyc = if (tradeInResponse.useKyc) 1 else 0
+            }
+
             p2General.value = p2GeneralAsync.await()
             p2LoginDeferred?.let {
                 p2Login.value = it.await()
@@ -274,13 +263,13 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             initialLayoutData.removeAll(removedData)
     }
 
-    fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
+    fun toggleFavorite(shopID: String) {
         launchCatchError(block = {
             toggleFavoriteUseCase.createRequestParam(shopID)
-            val result = toggleFavoriteUseCase.executeOnBackground()
-
-            onSuccess(result.followShop.isSuccess)
-        }) { onError(it) }
+            _toggleFavoriteResult.value = Success(toggleFavoriteUseCase.executeOnBackground().followShop.isSuccess)
+        }) {
+            _toggleFavoriteResult.value = Fail(it)
+        }
     }
 
     fun removeWishList(productId: String,
@@ -494,7 +483,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                                           warehouseId: String,
                                           forceRefresh: Boolean = false): Deferred<ProductInfoP2ShopData> {
         return async {
-            getProductInfoP2ShopUseCase.requestParams = GetProductInfoP2ShopUseCase.createParams(shopId, productId, warehouseId, forceRefresh)
+            getProductInfoP2ShopUseCase.requestParams = GetProductInfoP2ShopUseCase.createParams(shopId, productId, warehouseId, forceRefresh, renderTradein(getDynamicProductInfoP1, deviceId))
             getProductInfoP2ShopUseCase.executeOnBackground()
         }
     }

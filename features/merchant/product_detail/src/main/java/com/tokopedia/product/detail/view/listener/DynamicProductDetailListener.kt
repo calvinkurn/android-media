@@ -81,4 +81,10 @@ interface DynamicProductDetailListener {
      * ProductRecom
      */
     fun loadTopads()
+
+    /**
+     * ProductDefaultErrorViewHolder
+     */
+    fun onRetryClicked(forceRefresh:Boolean)
+
 }

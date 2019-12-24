@@ -11,6 +11,9 @@ public class GraphqlError {
     @SerializedName("path")
     private List<String> path;
 
+    @SerializedName("extensions")
+    private Extensions extensions;
+
     public String getMessage() {
         return message;
     }
@@ -25,6 +28,60 @@ public class GraphqlError {
 
     public void setPath(List<String> path) {
         this.path = path;
+    }
+
+    public Extensions getExtensions() {
+        return extensions;
+    }
+
+    public void setExtensions(Extensions extensions) {
+        this.extensions = extensions;
+    }
+
+    public class Extensions {
+        @SerializedName("code")
+        private int code;
+
+        @SerializedName("developerMessage")
+        private String developerMessage;
+
+        @SerializedName("moreInfo")
+        private String moreInfo;
+
+        @SerializedName("timestamp")
+        private String timeStamp;
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getDeveloperMessage() {
+            return developerMessage;
+        }
+
+        public void setDeveloperMessage(String developerMessage) {
+            this.developerMessage = developerMessage;
+        }
+
+        public String getMoreInfo() {
+            return moreInfo;
+        }
+
+        public void setMoreInfo(String moreInfo) {
+            this.moreInfo = moreInfo;
+        }
+
+        public String getTimeStamp() {
+            return timeStamp;
+        }
+
+        public void setTimeStamp(String timeStamp) {
+            this.timeStamp = timeStamp;
+        }
     }
 
     @Override

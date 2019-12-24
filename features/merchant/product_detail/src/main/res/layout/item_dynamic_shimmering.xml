@@ -10,7 +10,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/loader_img_main"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_300"
+        android:layout_height="@dimen/dp_350"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

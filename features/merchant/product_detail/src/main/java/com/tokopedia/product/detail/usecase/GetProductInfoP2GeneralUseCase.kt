@@ -40,8 +40,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
     companion object {
         fun createParams(shopId: Int, productId: Int, productPrice: Int,
                          condition: String, productTitle: String, categoryId: Int, catalogId: String,
-                         userId: Int,
-                         forceRefresh: Boolean, minOrder: Int): RequestParams =
+                         userId: Int, forceRefresh: Boolean, minOrder: Int): RequestParams =
                 RequestParams.create().apply {
                     putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
                     putInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
@@ -71,8 +70,6 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         val userId = requestParams.getInt(ProductDetailCommonConstant.PARAM_USER_ID, 0)
         val forceRefresh = requestParams.getBoolean(ProductDetailCommonConstant.FORCE_REFRESH, false)
         val minOrder = requestParams.getInt(ProductDetailCommonConstant.PARAM_MIN_ORDER, 0)
-
-        requestParams.parameters.clear()
 
         val paramsVariant = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString())
         val variantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT],
@@ -138,7 +135,6 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
                 ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minOrder)
         val pdpFinancingCalculationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION],
                 FinancingDataResponse::class.java, pdpFinancingCalculationParam)
-
 
         val requests = mutableListOf(variantRequest, ratingRequest, wishlistCountRequest, voucherRequest,
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,

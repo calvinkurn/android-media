@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_GET_PDP_LAYOUT
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -45,10 +46,14 @@ class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
         val data = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java)
+        val blacklistMessage = data.data.basicInfo.blacklistMessage
+
         if (data == null) {
             throw RuntimeException()
         } else if (error != null && error.isNotEmpty()) {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
+            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
+        } else if (data.data.basicInfo.isBlacklisted) {
+            throw TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)
         }
 
         return mapIntoModel(data)
