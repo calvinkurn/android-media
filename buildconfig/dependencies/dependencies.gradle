@@ -87,7 +87,7 @@ ext {
     unifyDialogVersion = '1.0.0'
     unifyDatePickerVersion = '0.0.1'
     unifyEmptyStateVersion = '1.0.2'
-    unifyGlobalErrorVersion = '1.0.1'
+    unifyGlobalErrorVersion = '1.0.4'
 
     gradlePlugin = [
         crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
