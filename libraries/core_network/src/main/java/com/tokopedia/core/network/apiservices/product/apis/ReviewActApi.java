@@ -25,9 +25,4 @@ public interface ReviewActApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Product.PATH_REPORT_REVIEW)
     Observable<Response<TkpdResponse>> reportReview(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Product.PATH_SKIP_REVIEW)
-    Observable<Response<TkpdResponse>> skipProductReview(@FieldMap Map<String, String> params);
-
 }

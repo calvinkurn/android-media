@@ -34,7 +34,6 @@ public interface BrowseApi {
     String ROWS = "rows";
     String SC = "sc"; //  (category id)
     String DEFAULT_SC = "default_sc"; //  (category id)
-    String FLOC = "floc"; // (location id)
     String SOURCE = "source"; // Source
     String OB = "ob"; // order by value, could be found at wiki
     String PMIN = "pmin";
@@ -44,15 +43,10 @@ public interface BrowseApi {
     String H = "hc"; // hotlist id
     String ID = "id";
     String NEGATIVE = "negative";
-    String HIGHLIGHT = "highlight";
     String TERMS = "terms";
-    String FQ = "fq";
-    String ID1 = "-id";
     String SHOP_ID = "shop_id";
-    String BREADCRUMB = "breadcrumb";
     String IMAGE_SIZE = "image_size";
     String IMAGE_SQUARE = "image_square";
-    String HASHTAG = "hashtag";
     String USER_ID = "user_id";
     String UNIQUE_ID = "unique_id";
     String HOT_ID = "hot_id";

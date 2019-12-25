@@ -10,6 +10,4 @@ public class TkpdUrl {
     public static final String TRANSACTION = "http://www.tokopedia.com/ws-new/tx.pl";
     public static final String SHOP = "http://www.tokopedia.com/ws-new/shop.pl";
     public static final String MY_SHOP_ORDER = "http://www.tokopedia.com/ws-new/myshop_order.pl";
-
 }
-

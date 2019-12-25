@@ -29,7 +29,6 @@ import rx.Observable;
 public interface ResolutionApi {
 
     String PATH_RESOLUTION_ID = "resolution_id";
-    String PATH_ORDER_ID = "order_id";
     String PATH_TROUBLE_ID = "trouble_id";
     String PATH_CONVERSATION_ID = "conversation_id";
     //Version 2
