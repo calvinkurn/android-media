@@ -1012,10 +1012,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             when (obj) {
                 is CartShopHolderData -> {
                     val toBeRemovedCartItemHolderData = ArrayList<CartItemHolderData>()
-                    obj.shopGroupAvailableData.cartItemDataList?.toMutableList()?.let {
+                    obj.shopGroupAvailableData.cartItemDataList?.let {
                         for (cartItemHolderData in it) {
-                            cartItemHolderData.cartItemData?.originData?.let {
-                                if (cartIds.contains(it.cartId.toString())) {
+                            cartItemHolderData.cartItemData?.originData?.let { data ->
+                                if (cartIds.contains(data.cartId.toString())) {
                                     toBeRemovedCartItemHolderData.add(cartItemHolderData)
                                 }
                             }

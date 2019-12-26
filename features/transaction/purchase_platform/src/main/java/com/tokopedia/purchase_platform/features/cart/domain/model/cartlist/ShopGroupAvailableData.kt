@@ -40,7 +40,7 @@ data class ShopGroupAvailableData(
 
 ) : Parcelable {
 
-    val cartItemDataList: List<CartItemHolderData>?
+    val cartItemDataList: MutableList<CartItemHolderData>?
         get() = cartItemHolderDataList
 
     fun setCartItemDataList(cartItemDataList: List<CartItemData>) {
