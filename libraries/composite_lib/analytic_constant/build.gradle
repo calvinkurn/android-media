@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 dependencies {
-    //implementation rootProject.ext.playServicesDependencies.measurementApi
 }
 
 project.ext {
