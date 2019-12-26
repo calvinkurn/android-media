@@ -5,15 +5,12 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest
-import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroupSimplifiedGqlResponse
-import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartDataResponse
 import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartGqlResponse
-import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteCartResponseData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -27,10 +24,23 @@ class DeleteCartItemUseCase @Inject constructor(private val clearCacheAutoApplyS
         const val PARAM_TO_BE_REMOVED_PROMO_CODES = "PARAM_TO_BE_REMOVED_PROMO_CODES"
         const val PARAM_REMOVE_CART_REQUEST = "PARAM_REMOVE_CART_REQUEST"
 
-        const val PARAM_KEY_LANG = "lang"
-        const val PARAM_VALUE_ID = "id"
-        const val PARAM_KEY_ADD_TO_WISHLIST = "addWishlist"
-        const val PARAM_KEY_CART_IDS = "cartIds"
+        private const val PARAM_KEY_LANG = "lang"
+        private const val PARAM_VALUE_ID = "id"
+        private const val PARAM_KEY_ADD_TO_WISHLIST = "addWishlist"
+        private const val PARAM_KEY_CART_IDS = "cartIds"
+
+        private val QUERY = """
+        mutation remove_from_cart(${'$'}addWishlist: Int, ${'$'}cartIds: [String], ${'$'}lang: String){
+            remove_from_cart(addWishlist: ${'$'}addWishlist, cartIds:${'$'}cartIds, lang: ${'$'}lang){
+            error_message
+            status
+            data {
+                message
+                success
+            }
+          }
+        }
+        """.trimIndent()
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<DeleteCartData> {
@@ -52,13 +62,21 @@ class DeleteCartItemUseCase @Inject constructor(private val clearCacheAutoApplyS
                 .flatMap {
                     graphqlUseCase.createObservable(RequestParams.EMPTY)
                             .map {
-                                val deleteCartGqlResponse = it.getData<DeleteCartDataResponse>(DeleteCartGqlResponse::class.java)
+                                val deleteCartGqlResponse = it.getData<DeleteCartGqlResponse>(DeleteCartGqlResponse::class.java)
                                 val deleteCartData = DeleteCartData()
-                                deleteCartData.isSuccess = deleteCartGqlResponse.data.success == 1
-                                deleteCartData.message = if (deleteCartGqlResponse.errorMessage.isNotEmpty()) {
-                                    deleteCartGqlResponse.errorMessage[0]
+                                deleteCartData.isSuccess = deleteCartGqlResponse.deleteCartDataResponse.data?.success == 1
+                                deleteCartData.message = if (deleteCartGqlResponse.deleteCartDataResponse.data?.success == 1) {
+                                    if (deleteCartGqlResponse.deleteCartDataResponse.data.message.isNotEmpty()) {
+                                        deleteCartGqlResponse.deleteCartDataResponse.data.message[0]
+                                    } else {
+                                        ""
+                                    }
                                 } else {
-                                    ""
+                                    if (deleteCartGqlResponse.deleteCartDataResponse.errorMessage.isNotEmpty()) {
+                                        deleteCartGqlResponse.deleteCartDataResponse.errorMessage[0]
+                                    } else {
+                                        ""
+                                    }
                                 }
                                 deleteCartData
                             }
@@ -74,51 +92,6 @@ class DeleteCartItemUseCase @Inject constructor(private val clearCacheAutoApplyS
                 }
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
-
-//        return graphqlUseCase.createObservable(RequestParams.EMPTY)
-//                .map {
-//                    val deleteCartGqlResponse = it.getData<DeleteCartDataResponse>(DeleteCartGqlResponse::class.java)
-//                    val deleteCartData = DeleteCartData()
-//                    deleteCartData.isSuccess = deleteCartGqlResponse.data.success == 1
-//                    deleteCartData.message = if (deleteCartGqlResponse.errorMessage.isNotEmpty()) {
-//                        deleteCartGqlResponse.errorMessage[0]
-//                    } else {
-//                        ""
-//                    }
-//                    deleteCartData
-//                }
-
-
-//        return Observable.just(DeleteCartResponseData())
-//                .flatMap { deleteAndRefreshCartListData ->
-//                    cartRepository.deleteCartData(paramDelete).map { deleteCartDataResponse ->
-//                        deleteAndRefreshCartListData.deleteCartData = cartMapper.convertToDeleteCartData(deleteCartDataResponse)
-//                        deleteAndRefreshCartListData
-//                    }
-//                }
-//                .flatMap { deleteAndRefreshCartListData ->
-//                    if (toBeDeletedPromoCode.isEmpty()) {
-//                        Observable.just(deleteAndRefreshCartListData)
-//                    } else {
-//                        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, toBeDeletedPromoCode)
-//                        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-//                                .map { deleteAndRefreshCartListData }
-//                    }
-//                }
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-
     }
 
-    private val QUERY = """
-        mutation remove_from_cart(${'$'}addWishlist: Int, ${'$'}cartIds: [Int], ${'$'}lang: String){
-            remove_from_cart(addWishlist: ${'$'}addWishlist, cartIds:${'$'}cartIds, lang: ${'$'}lang){
-            error_message
-            status
-            data {
-              success
-            }
-          }
-        }
-        """.trimIndent()
 }

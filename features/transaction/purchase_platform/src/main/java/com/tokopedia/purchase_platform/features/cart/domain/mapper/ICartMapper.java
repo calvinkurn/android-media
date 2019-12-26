@@ -19,8 +19,6 @@ public interface ICartMapper {
 
     CartListData convertToCartItemDataList(Context context, CartMultipleAddressDataListResponse cartDataListResponse);
 
-    DeleteCartData convertToDeleteCartData(DeleteCartDataResponse deleteCartDataResponse);
-
     UpdateCartData convertToUpdateCartData(UpdateCartDataResponse updateCartDataResponse);
 
     MessageData convertToMessageData(Message message);

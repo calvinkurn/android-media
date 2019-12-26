@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.data.repository
 
 import com.tokopedia.purchase_platform.features.cart.data.api.CartApi
-import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartDataResponse
 import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.UpdateCartDataResponse
 import rx.Observable
 import javax.inject.Inject
@@ -11,12 +10,6 @@ import javax.inject.Inject
  */
 
 class CartRepository @Inject constructor(private val cartApi: CartApi) : ICartRepository {
-
-    override fun deleteCartData(param: Map<String, String>): Observable<DeleteCartDataResponse> {
-        return cartApi.postDeleteCart(param).map { cartResponseResponse ->
-            cartResponseResponse.body()?.convertDataObj(DeleteCartDataResponse::class.java)
-        }
-    }
 
     override fun updateCartData(param: Map<String, String>): Observable<UpdateCartDataResponse> {
         return cartApi.postUpdateCart(param).map { cartResponseResponse ->

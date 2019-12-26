@@ -1255,7 +1255,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cbSelectAll.isChecked = cartListData.isAllSelected
 
         cartAdapter.checkForShipmentForm()
-        if (cartRecyclerView.itemDecorationCount == 0) {
+        if (cartRecyclerView.itemDecorationCount == 1) {
             cartRecyclerView.addItemDecoration(cartItemDecoration)
         }
 

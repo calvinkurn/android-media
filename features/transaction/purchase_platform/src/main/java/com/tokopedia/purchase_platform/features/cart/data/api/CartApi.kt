@@ -2,7 +2,9 @@ package com.tokopedia.purchase_platform.features.cart.data.api
 
 import com.tokopedia.purchase_platform.common.data.api.CartResponse
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.FieldMap
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.POST
 import rx.Observable
 
 /**
@@ -10,10 +12,6 @@ import rx.Observable
  */
 
 interface CartApi {
-
-    @FormUrlEncoded
-    @POST(CartApiUrl.PATH_REMOVE_FROM_CART)
-    fun postDeleteCart(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
 
     @FormUrlEncoded
     @POST(CartApiUrl.PATH_UPDATE_CART)

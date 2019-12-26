@@ -264,7 +264,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             requestParams.putObject(DeleteCartItemUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, tmpAppliedPromoCodeList)
 
             compositeSubscription.add(deleteCartItemUseCase?.createObservable(requestParams)
-                    ?.subscribe(DeleteAndRefreshCartSubscriber(view, this, toBeDeletedCartIds, removeAllItem, removeInsurance)))
+                    ?.subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds, removeAllItem, removeInsurance)))
         }
     }
 
