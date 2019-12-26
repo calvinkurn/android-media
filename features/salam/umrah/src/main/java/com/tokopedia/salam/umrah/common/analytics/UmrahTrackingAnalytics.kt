@@ -382,7 +382,7 @@ class UmrahTrackingAnalytics {
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CHECKOUT, DataLayer.mapOf(
                 ACTION_FIELD, DataLayer.mapOf(
-                STEP, position + 1,
+                STEP, position,
                 OPTION, UMRAH_CLICK_CHECKOUT_CHOOSE_PAYMENT),
                 PRODUCTS, getListCheckoutProduct(product, quantity)
         )
