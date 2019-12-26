@@ -598,21 +598,14 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
             getPhoneCodeUseCase.createObservable(GraphqlHelper.loadRawString(view.getViewContext().resources, com.tokopedia.travel.country_code.R.raw.query_travel_get_all_country))
                     .flatMap(Func1 { graphqlResponse ->
                         val data = graphqlResponse.getData<TravelPhoneCodeEntity.Response>(TravelPhoneCodeEntity.Response::class.java)
-                        var observableData: Observable<TravelCountryPhoneCode>? = null
+                        var observableData: Observable<TravelCountryPhoneCode> = Observable.just(TravelCountryPhoneCode())
                         if (data != null) {
-                            for (item in data.travelGetAllCountries.countries) {
-                                if (item.id == "ID" || item.attributes.name == "Indonesia") {
-                                    observableData = Observable.just(TravelCountryPhoneCode(item.id, item.attributes.name, item.attributes.phoneCode))
-                                    break
-                                }
+                            val phoneData = data.travelGetAllCountries.countries.find { it.id == "ID" || it.attributes.name == "Indonesia" }
+                            phoneData?.let {
+                                observableData = Observable.just(TravelCountryPhoneCode(phoneData.id, phoneData.attributes.name, phoneData.attributes.phoneCode))
                             }
-
-                            if (observableData == null) {
-                                observableData = Observable.just(TravelCountryPhoneCode())
-                            }
-                        } else {
-                            observableData = Observable.just(TravelCountryPhoneCode())
                         }
+
                         observableData
                     })
 

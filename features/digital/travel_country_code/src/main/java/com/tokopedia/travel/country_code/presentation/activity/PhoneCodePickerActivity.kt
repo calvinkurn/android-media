@@ -18,7 +18,7 @@ class PhoneCodePickerActivity : BaseSimpleActivity(), HasComponent<TravelCountry
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (intent.hasExtra(EXTRA_TITLE)) {
+        if (intent.hasExtra(EXTRA_TITLE) && intent.getStringExtra(EXTRA_TITLE).isNotEmpty()) {
             updateTitle(intent.getStringExtra(EXTRA_TITLE))
         }
     }
@@ -31,10 +31,7 @@ class PhoneCodePickerActivity : BaseSimpleActivity(), HasComponent<TravelCountry
     companion object {
         const val EXTRA_TITLE = "EXTRA_TITLE"
 
-        fun getCallingIntent(context: Context): Intent =
-                Intent(context, PhoneCodePickerActivity::class.java)
-
-        fun getCallingIntent(context: Context, title: String): Intent =
+        fun getCallingIntent(context: Context, title: String = ""): Intent =
                 Intent(context, PhoneCodePickerActivity::class.java).putExtra(EXTRA_TITLE, title)
     }
 }
