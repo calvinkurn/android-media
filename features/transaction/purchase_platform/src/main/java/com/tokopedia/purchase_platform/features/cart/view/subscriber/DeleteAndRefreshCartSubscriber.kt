@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
-import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import rx.Subscriber
@@ -13,9 +13,9 @@ import rx.Subscriber
 
 class DeleteAndRefreshCartSubscriber(private val view: ICartListView?,
                                      private val presenter: ICartListPresenter,
-                                     private val toBeDeletedCartIds: List<Int>,
+                                     private val toBeDeletedCartIds: List<String>,
                                      private val removeAllItems: Boolean,
-                                     private val removeInsurance: Boolean) : Subscriber<DeleteAndRefreshCartListData>() {
+                                     private val removeInsurance: Boolean) : Subscriber<DeleteCartData>() {
     override fun onCompleted() {
 
     }
@@ -32,12 +32,12 @@ class DeleteAndRefreshCartSubscriber(private val view: ICartListView?,
         }
     }
 
-    override fun onNext(deleteAndRefreshCartListData: DeleteAndRefreshCartListData) {
+    override fun onNext(deleteCartData: DeleteCartData) {
         view?.let { view ->
             view.hideProgressLoading()
             view.renderLoadGetCartDataFinish()
 
-            if (deleteAndRefreshCartListData.deleteCartData?.isSuccess  == true) {
+            if (deleteCartData.isSuccess) {
                 if (removeInsurance) {
                     view.getInsuranceCartShopData()?.let {
                         presenter.processDeleteCartInsurance(it, false)
@@ -50,9 +50,7 @@ class DeleteAndRefreshCartSubscriber(private val view: ICartListView?,
                     view.onDeleteCartDataSuccess(toBeDeletedCartIds)
                 }
             } else {
-                view.showToastMessageRed(
-                        deleteAndRefreshCartListData.deleteCartData?.message ?: ""
-                )
+                view.showToastMessageRed(deleteCartData.message ?: "")
             }
         }
     }

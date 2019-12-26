@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
 data class RemoveCartRequest(
     @SerializedName("cart_ids")
     @Expose
-    var cartIds: List<Int>? = null,
+    var cartIds: List<String>? = null,
     @SerializedName("add_wishlist")
     @Expose
     var addWishlist: Int = 0

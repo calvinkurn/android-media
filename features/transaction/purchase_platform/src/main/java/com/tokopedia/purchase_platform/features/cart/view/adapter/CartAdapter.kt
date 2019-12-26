@@ -1002,7 +1002,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
-    fun removeCartItemById(cartIds: List<Int>, context: Context?) {
+    fun removeCartItemById(cartIds: List<String>, context: Context?) {
         // Store item first before remove item to prevent ConcurrentModificationException
         val toBeRemovedData = ArrayList<Any>()
         var disabledItemHeaderHolderData: DisabledItemHeaderHolderData? = null
@@ -1015,7 +1015,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     obj.shopGroupAvailableData.cartItemDataList?.toMutableList()?.let {
                         for (cartItemHolderData in it) {
                             cartItemHolderData.cartItemData?.originData?.let {
-                                if (cartIds.contains(it.cartId)) {
+                                if (cartIds.contains(it.cartId.toString())) {
                                     toBeRemovedCartItemHolderData.add(cartItemHolderData)
                                 }
                             }
@@ -1028,7 +1028,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         }
                     }
                 }
-                is DisabledCartItemHolderData -> if (cartIds.contains(obj.cartId)) {
+                is DisabledCartItemHolderData -> if (cartIds.contains(obj.cartId.toString())) {
                     val before = cartDataList[i - 1]
                     var after: Any? = null
                     if (i + 1 < cartDataList.size) {

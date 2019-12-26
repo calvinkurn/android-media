@@ -186,7 +186,7 @@ class CartModule {
     @Provides
     @CartScope
     fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
-                                  deleteCartListUseCase: DeleteCartListUseCase,
+                                  deleteCartItemUseCase: DeleteCartItemUseCase,
                                   updateCartUseCase: UpdateCartUseCase,
                                   checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
                                   checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
@@ -204,7 +204,7 @@ class CartModule {
                                   removeInsuranceProductUsecase: RemoveInsuranceProductUsecase,
                                   updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase,
                                   seamlessLoginUsecase: SeamlessLoginUsecase): ICartListPresenter {
-        return CartListPresenter(getCartListSimplifiedUseCase, deleteCartListUseCase,
+        return CartListPresenter(getCartListSimplifiedUseCase, deleteCartItemUseCase,
                 updateCartUseCase, checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper,
                 compositeSubscription, addWishListUseCase, removeWishListUseCase,
                 updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,

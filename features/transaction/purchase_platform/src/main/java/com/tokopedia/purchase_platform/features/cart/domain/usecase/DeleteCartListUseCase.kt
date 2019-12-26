@@ -5,7 +5,7 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper
-import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData
+import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteCartResponseData
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
 import java.util.*
@@ -19,12 +19,12 @@ class DeleteCartListUseCase @Inject constructor(private val cartRepository: ICar
                                                 private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                                 private val schedulers: ExecutorSchedulers) {
 
-    fun createObservable(requestParams: RequestParams?): Observable<DeleteAndRefreshCartListData> {
+    fun createObservable(requestParams: RequestParams?): Observable<DeleteCartResponseData> {
 
         val paramDelete = requestParams?.getObject(PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART) as TKPDMapParam<String, String>
         val toBeDeletedPromoCode = requestParams.getObject(PARAM_TO_BE_REMOVED_PROMO_CODES) as ArrayList<String>
 
-        return Observable.just(DeleteAndRefreshCartListData())
+        return Observable.just(DeleteCartResponseData())
                 .flatMap { deleteAndRefreshCartListData ->
                     cartRepository.deleteCartData(paramDelete).map { deleteCartDataResponse ->
                         deleteAndRefreshCartListData.deleteCartData = cartMapper.convertToDeleteCartData(deleteCartDataResponse)
@@ -47,7 +47,7 @@ class DeleteCartListUseCase @Inject constructor(private val cartRepository: ICar
     companion object {
         const val PARAM_PARAMS = "params"
         const val PARAM_IS_DELETE_ALL_DATA = "PARAM_IS_DELETE_ALL_DATA"
-        const val PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART = "PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART"
+        const val PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART = "PARAM_REMOVE_CART_REQUEST"
         const val PARAM_TO_BE_REMOVED_PROMO_CODES = "PARAM_TO_BE_REMOVED_PROMO_CODES"
     }
 }

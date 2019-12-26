@@ -7,7 +7,6 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.Delet
  * @author anggaprasetiyo on 02/03/18.
  */
 
-data class DeleteAndRefreshCartListData(
-        var deleteCartData: DeleteCartData? = null,
-        var cartListData: CartListData? = null
+data class DeleteCartResponseData(
+        var deleteCartData: DeleteCartData? = null
 )

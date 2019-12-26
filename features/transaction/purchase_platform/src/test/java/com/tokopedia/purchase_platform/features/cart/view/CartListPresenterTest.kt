@@ -13,14 +13,13 @@ import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProd
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
-import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData
+import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteCartResponseData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.*
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -254,7 +253,7 @@ class CartListPresenterTest : Spek({
             val emptyCartListData = CartListData()
 
             Given("success delete") {
-                val deleteAndRefreshCartListData = DeleteAndRefreshCartListData()
+                val deleteAndRefreshCartListData = DeleteCartResponseData()
                 deleteAndRefreshCartListData.deleteCartData = DeleteCartData.Builder().success(true).build()
                 every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteAndRefreshCartListData)
             }
@@ -284,7 +283,7 @@ class CartListPresenterTest : Spek({
         Scenario("remove some cart data") {
 
             Given("success delete") {
-                val deleteAndRefreshCartListData = DeleteAndRefreshCartListData()
+                val deleteAndRefreshCartListData = DeleteCartResponseData()
                 deleteAndRefreshCartListData.deleteCartData = DeleteCartData.Builder().success(true).build()
                 every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteAndRefreshCartListData)
             }
@@ -317,7 +316,7 @@ class CartListPresenterTest : Spek({
             val errorMessage = "fail testing delete"
 
             Given("fail delete") {
-                val deleteAndRefreshCartListData = DeleteAndRefreshCartListData()
+                val deleteAndRefreshCartListData = DeleteCartResponseData()
                 deleteAndRefreshCartListData.deleteCartData = DeleteCartData.Builder().success(false).message(errorMessage).build()
                 every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteAndRefreshCartListData)
             }

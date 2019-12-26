@@ -1656,7 +1656,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         onContentAvailabilityChanged(true)
     }
 
-    override fun onDeleteCartDataSuccess(deletedCartIds: List<Int>) {
+    override fun onDeleteCartDataSuccess(deletedCartIds: List<String>) {
         cartAdapter.removeCartItemById(deletedCartIds, context)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
         notifyBottomCartParent()

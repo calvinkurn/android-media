@@ -246,8 +246,8 @@ public class CartMapper implements ICartMapper {
     @Override
     public DeleteCartData convertToDeleteCartData(DeleteCartDataResponse deleteCartDataResponse) {
         DeleteCartData deleteCartData = new DeleteCartData();
-        deleteCartData.setMessage(deleteCartDataResponse.getMessage());
-        deleteCartData.setSuccess(deleteCartDataResponse.getSuccess() == 1);
+//        deleteCartData.setMessage(deleteCartDataResponse.getMessage());
+//        deleteCartData.setSuccess(deleteCartDataResponse.getSuccess() == 1);
 
         return deleteCartData;
     }

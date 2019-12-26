@@ -60,7 +60,7 @@ import javax.inject.Inject
  */
 
 class CartListPresenter @Inject constructor(private val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase?,
-                                            private val deleteCartListUseCase: DeleteCartListUseCase?,
+                                            private val deleteCartItemUseCase: DeleteCartItemUseCase?,
                                             private val updateCartUseCase: UpdateCartUseCase?,
                                             private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase?,
                                             private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
@@ -241,30 +241,29 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                        addWishList: Boolean,
                                        removeInsurance: Boolean) {
         view?.let {
-            var tmpAppliedPromoCodeList = appliedPromoCodeList
             it.showProgressLoading()
+
             val removeAllItem = allCartItemData.size == removedCartItems.size
+
+            var tmpAppliedPromoCodeList = appliedPromoCodeList
             if (tmpAppliedPromoCodeList == null) {
                 tmpAppliedPromoCodeList = ArrayList()
             }
 
-            val toBeDeletedCartIds = ArrayList<Int>()
+            val toBeDeletedCartIds = ArrayList<String>()
             for (cartItemData in removedCartItems) {
-                toBeDeletedCartIds.add(cartItemData.originData?.cartId ?: 0)
+                toBeDeletedCartIds.add(cartItemData.originData?.cartId?.toString() ?: "0")
             }
+
             val removeCartRequest = RemoveCartRequest()
             removeCartRequest.addWishlist = if (addWishList) 1 else 0
             removeCartRequest.cartIds = toBeDeletedCartIds
-            val paramDelete = TKPDMapParam<String, String>()
-            paramDelete[DeleteCartListUseCase.PARAM_PARAMS] = Gson().toJson(removeCartRequest)
 
             val requestParams = RequestParams.create()
-            requestParams.putObject(DeleteCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
-                    AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, paramDelete))
-            requestParams.putBoolean(DeleteCartListUseCase.PARAM_IS_DELETE_ALL_DATA, removeAllItem)
-            requestParams.putObject(DeleteCartListUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, tmpAppliedPromoCodeList)
+            requestParams.putObject(DeleteCartItemUseCase.PARAM_REMOVE_CART_REQUEST, removeCartRequest)
+            requestParams.putObject(DeleteCartItemUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, tmpAppliedPromoCodeList)
 
-            compositeSubscription.add(deleteCartListUseCase?.createObservable(requestParams)
+            compositeSubscription.add(deleteCartItemUseCase?.createObservable(requestParams)
                     ?.subscribe(DeleteAndRefreshCartSubscriber(view, this, toBeDeletedCartIds, removeAllItem, removeInsurance)))
         }
     }

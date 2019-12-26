@@ -62,7 +62,7 @@ interface ICartListView : CustomerView {
 
     fun renderLoadGetCartDataFinish()
 
-    fun onDeleteCartDataSuccess(deletedCartIds: List<Int>)
+    fun onDeleteCartDataSuccess(deletedCartIds: List<String>)
 
     fun goToCouponList()
 
