@@ -33,7 +33,7 @@ public class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
             }
 
             if (intent.getAction().equals(DrawerGetNotificationService.UPDATE_NOTIFICATION_DATA)){
-                DrawerGetNotificationService.startService(BaseTemporaryDrawerActivity.this, true, false);
+                DrawerGetNotificationService.startService(BaseTemporaryDrawerActivity.this, true, true);
             }
         }
     };
