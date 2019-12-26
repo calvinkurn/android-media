@@ -1,15 +1,13 @@
 package com.tokopedia.opportunity.domain.interactor;
 
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
+import androidx.annotation.Nullable;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.opportunity.data.OpportunityModel;
 import com.tokopedia.opportunity.domain.repository.ReplacementRepository;
 import com.tokopedia.opportunity.viewmodel.opportunitylist.FilterPass;

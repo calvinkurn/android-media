@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.opportunity.data.AcceptReplacementModel;
 import com.tokopedia.opportunity.data.mapper.AcceptOpportunityMapper;
 import com.tokopedia.opportunity.data.source.api.ReplacementActApi;

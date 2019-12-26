@@ -4,18 +4,15 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.opportunity.data.mapper.OpportunityProductMapper;
-import com.tokopedia.opportunity.domain.entity.OpportunityDetail;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.opportunity.data.mapper.OpportunityProductMapper;
 import com.tokopedia.opportunity.domain.repository.ProductRepository;
 import com.tokopedia.opportunity.domain.repository.ReplacementRepository;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func2;
 
 /**
  * Created by nakama on 30/03/18.

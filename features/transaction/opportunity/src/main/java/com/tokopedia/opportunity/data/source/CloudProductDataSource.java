@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.apiservices.product.apis.ProductApi;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;

@@ -1,6 +1,5 @@
 package com.tokopedia.opportunity.data.source.api;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.opportunity.data.constant.OpportunityConstant;
 
