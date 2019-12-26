@@ -15,7 +15,7 @@ data class ProductsItem(
         @field:SerializedName("imageURL700")
         var imageURL700: String = "",
 
-        @field:SerializedName("shop")
+        @SerializedName("shop")
         val shop: Shop = Shop(),
 
         @field:SerializedName("originalPrice")
@@ -106,7 +106,14 @@ data class ProductsItem(
         var productClickTrackingUrl: String = "",
 
         @field:SerializedName("productWishlistTrackingUrl")
-        var productWishlistTrackingUrl: String = ""
+        var productWishlistTrackingUrl: String = "",
+
+        @field:SerializedName("adapterPosition")
+        var adapter_position: Int = 0,
+
+        @field:SerializedName("free_ongkir")
+        var freeOngkir: FreeOngkir? = null
+
 
 ) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
 
@@ -148,7 +155,8 @@ data class ProductsItem(
             parcel.readValue(Boolean::class.java.classLoader) as Boolean,
             parcel.readString(),
             parcel.readString(),
-            parcel.readString())
+            parcel.readString(),
+            parcel.readInt())
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.writeString(this.imageURL500)
@@ -185,6 +193,7 @@ data class ProductsItem(
         dest?.writeValue(this.productImpTrackingUrl)
         dest?.writeValue(this.productClickTrackingUrl)
         dest?.writeValue(this.productWishlistTrackingUrl)
+        dest?.writeInt(this.adapter_position)
     }
 
     override fun describeContents(): Int {
@@ -201,3 +210,10 @@ data class ProductsItem(
         }
     }
 }
+
+data class FreeOngkir(
+        @SerializedName("is_active")
+        val isActive: Boolean,
+        @SerializedName("img_url")
+        val imageUrl: String
+)

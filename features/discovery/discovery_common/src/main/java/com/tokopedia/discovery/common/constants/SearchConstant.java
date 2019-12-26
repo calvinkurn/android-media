@@ -32,7 +32,7 @@ public interface SearchConstant {
 
     interface Wishlist {
         String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
-        String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
+        String WISHLIST_STATUS_IS_WISHLIST = "isWishlist";
         String PRODUCT_WISHLIST_URL = "product_wishlist_url";
         String PRODUCT_WISHLIST_URL_USE_CASE = "product_wishlist_url_use_case";
     }
@@ -137,5 +137,12 @@ public interface SearchConstant {
 
     interface SimilarSearch {
         String QUERY = "SIMILAR_SEARCH_QUERY";
+    }
+
+    interface Advertising {
+        String ADVERTISING_ID = "ADVERTISINGID";
+        String KEY_ADVERTISING_ID = "KEY_ADVERTISINGID";
+        String ADVERTISING_LOCAL_CACHE = "ADVERTISING_LOCAL_CACHE";
+        String APP_CLIENT_ID = "appClientId";
     }
 }

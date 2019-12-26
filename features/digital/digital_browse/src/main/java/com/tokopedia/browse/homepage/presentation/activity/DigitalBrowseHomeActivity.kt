@@ -65,7 +65,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun getNewFragment(): Fragment? {
-        val type = if (intent.getStringExtra(EXTRA_TYPE).isNotEmpty()) intent.getStringExtra(EXTRA_TYPE) else "1"
+        val type = if (intent.hasExtra(EXTRA_TYPE) && intent.getStringExtra(EXTRA_TYPE)?.isNotEmpty() == true ) intent.getStringExtra(EXTRA_TYPE) else "1"
         if (Integer.parseInt(type) == TYPE_BELANJA) {
             autocompleteParam = AUTOCOMPLETE_BELANJA
             fragmentDigital = DigitalBrowseMarketplaceFragment.fragmentInstance
@@ -141,7 +141,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun getScreenName(): String =
-            if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
+            if (intent.hasExtra(EXTRA_TYPE) && Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
                 LAYANAN_SCREEN
             } else {
                 DEFAULT_SCREEN

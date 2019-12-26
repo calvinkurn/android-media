@@ -329,15 +329,16 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_customer_enable_cashshield</key>
-        <value>false</value>
-    </entry>
-    <entry>
         <key>android_customer_travel_enable_cross_sell</key>
         <value>false</value>
     </entry>
     <entry>
         <key>app_enable_category_revamp</key>
+        <value>true</value>
+    </entry>
+
+    <entry>
+        <key>app_enable_banned_navigation</key>
         <value>true</value>
     </entry>
     <entry>

@@ -17,6 +17,7 @@
     <string name="path_setting_profile">/setting-profile</string>
     <string name="path_user_identification_info">/user-identification-info</string>
     <string name="path_user_identification_form">/user-identification-form</string>
+    <string name="path_change_name">/change-name</string>
     <string name="path_change_gender">/change-gender</string>
     <string name="path_change_phone_number">/change-phone-number</string>
     <string name="path_change_pin">/change-pin</string>
@@ -40,5 +41,6 @@
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
     <string name="path_change_email_register">/change-email-register</string>
     <string name="path_email_register">/email-register</string>
-
+    <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
+    <string name="path_oqr_pin_url_response">/ovoqrthanks/.*\\/</string>
 </resources>

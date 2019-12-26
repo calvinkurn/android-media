@@ -15,8 +15,8 @@ import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
-import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
@@ -36,10 +36,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            @NonNull private val userSession: UserSessionInterface,
                            private val quickReplyListener: QuickReplyListener,
                            typingListener: TypingListener,
-                           chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener,
+                           attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
                            override val toolbar: Toolbar,
                            private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
-) : BaseChatViewStateImpl(view, toolbar, typingListener, chatMenuListener), ChatbotViewState {
+) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener), ChatbotViewState {
 
     private lateinit var quickReplyAdapter: QuickReplyAdapter
     private lateinit var rvQuickReply: RecyclerView
@@ -47,7 +47,14 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     private lateinit var chatMenuBtn: ImageView
 
     override fun initView() {
-        super.initView()
+        recyclerView = view.findViewById(getRecyclerViewId())
+        mainLoading = view.findViewById(getProgressId())
+        replyEditText = view.findViewById(getNewCommentId())
+        replyBox = view.findViewById(getReplyBoxId())
+        actionBox = view.findViewById(getActionBoxId())
+        sendButton = view.findViewById(getSendButtonId())
+        notifier = view.findViewById(getNotifierId())
+        chatMenuButton = view.findViewById(getChatMenuId())
 
         chatMenuBtn = view.findViewById(R.id.iv_chat_menu)
         rvQuickReply = view.findViewById(R.id.list_quick_reply)
@@ -56,7 +63,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         rvQuickReply.layoutManager = LinearLayoutManager(rvQuickReply.context,
                 LinearLayoutManager.HORIZONTAL, false)
         rvQuickReply.adapter = quickReplyAdapter
+
+        super.initView()
     }
+
 
     override fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel) {
         scrollToBottom()
@@ -172,4 +182,39 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
+    override fun getRecyclerViewId(): Int {
+        return R.id.recycler_view
+    }
+
+    override fun getProgressId(): Int {
+        return R.id.progress
+    }
+
+    override fun getNewCommentId(): Int {
+        return R.id.new_comment
+    }
+
+    override fun getReplyBoxId(): Int {
+        return R.id.reply_box
+    }
+
+    override fun getActionBoxId(): Int {
+        return R.id.add_comment_area
+    }
+
+    override fun getSendButtonId(): Int {
+        return R.id.send_but
+    }
+
+    override fun getNotifierId(): Int {
+        return R.id.notifier
+    }
+
+    override fun getChatMenuId(): Int {
+        return R.id.iv_chat_menu
+    }
+
+    override fun getAttachmentMenuId() = R.id.rv_attachment_menu
+    override fun getRootViewId() = R.id.main
+    override fun getAttachmentMenuContainer(): Int = R.id.rv_attachment_menu_container
 }

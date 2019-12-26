@@ -108,18 +108,6 @@ public protected *;
 } 
 -keepattributes SourceFile,LineNumberTable
 
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
-
--keepclasseswithmembernames class * {
-   @butterknife.* <fields>;
-}
-
--keepclasseswithmembernames class * {
-   @butterknife.* <methods>;
-}
-
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
 -keepattributes Signature
@@ -189,7 +177,6 @@ public protected *;
 -keep class com.tokopedia.core.util.GlobalConfig
 -keep class com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity
 -keep class com.tokopedia.common.payment.model.PaymentPassData
--keep class com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData
 
 # -- Feeds --
 -keep class com.tkpdfeed.feeds.** { *; }
@@ -216,3 +203,5 @@ public protected *;
 -assumenosideeffects class com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity {
     public void initTranslator();
 }
+
+-keep class com.google.firebase.perf.FirebasePerformance

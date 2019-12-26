@@ -22,6 +22,8 @@ object ProductTrackingConstant {
         const val TOPADS_IMPRESSION = "impression - product recommendation"
         const val CLICK_BY_ME = "click - by.me"
         const val CLICK_SHIPPING = "click - shipping"
+        const val CLICK_PRODUCT_PICTURE = "click - product picture"
+        const val SWIPE_PRODUCT_PICTURE = "click - swipe product picture"
         const val CLICK_SHIPPING_RATE_ESTIMATION = "click - shipping rate estimation"
         const val ACTION_WISHLIST_ON_PRODUCT_RECOMMENDATION = " - wishlist on product recommendation"
         const val CLICK_APPLY_LEASING = "click - ajukan kredit"
@@ -35,6 +37,7 @@ object ProductTrackingConstant {
         const val CLICK_READ_MORE = "click - baca selengkapnya"
         const val CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION = "click - tab deskripsi on description area"
         const val CLICK_TAB_SPECIFICATION_ON_PRODUCT_DESCRIPTION = "click - tab spesifikasi on description area"
+        const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - lihat semua metode on simulasi cicilan widget"
 
 
 
@@ -43,6 +46,7 @@ object ProductTrackingConstant {
     object Label {
         const val EMPTY_LABEL = ""
         const val CLICK = "click"
+        const val PDP = "pdp"
     }
 
     object Report {

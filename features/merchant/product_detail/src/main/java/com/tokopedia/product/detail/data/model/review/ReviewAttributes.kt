@@ -32,7 +32,11 @@ data class LikeDislike(
 
         @SerializedName("totalLike")
         @Expose
-        val totalLike: Int = 0
+        val totalLike: Int = 0,
+
+        @SerializedName("isShowable")
+        @Expose
+        val isShowable: Boolean = false
 )
 
 data class User(

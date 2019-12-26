@@ -58,5 +58,6 @@
     <dimen name="text_toolbar_height_collapsed">58dp</dimen>
     <dimen name="text_toolbar_height_expanded">142dp</dimen>
     <dimen name="help_rate_height">124dp</dimen>
-
+    
+    <dimen name="screen_per_4_pad">80dp</dimen>
 </resources>

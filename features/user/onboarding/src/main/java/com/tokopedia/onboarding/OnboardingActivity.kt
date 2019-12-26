@@ -3,19 +3,21 @@ package com.tokopedia.onboarding
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.app.TaskStackBuilder
-import androidx.viewpager.widget.ViewPager
 import android.text.TextUtils
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.app.TaskStackBuilder
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.ButtonCompat
+import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.onboarding.adapter.OnboardingPagerAdapter
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
@@ -24,6 +26,7 @@ import com.tokopedia.onboarding.listener.OnboardingVideoListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -155,18 +158,30 @@ class OnboardingActivity : BaseActivity() {
 
         loginButton.setOnClickListener {
             analytics.trackClickLogin(currentPosition)
-            startActivityWithBackTask(ApplinkConst.LOGIN)
+            if(TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)){
+                startActivityWithBackTask(ApplinkConst.LOGIN)
+            }else{
+                RouteManager.route(this, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+            }
         }
 
         registerButton.setOnClickListener {
             analytics.trackClickRegister(currentPosition)
-            startActivityWithBackTask(ApplinkConst.REGISTER)
+            if(TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)){
+                startActivityWithBackTask(ApplinkConst.REGISTER)
+            }else{
+                RouteManager.route(this, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+            }
         }
 
         skipButton.setOnClickListener {
             analytics.eventOnboardingSkip(applicationContext, currentPosition)
             finishOnBoarding()
-            RouteManager.route(this, ApplinkConst.HOME)
+            if(TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)){
+                RouteManager.route(this, ApplinkConst.HOME)
+            }else{
+                RouteManager.route(this, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+            }
         }
     }
 
@@ -182,6 +197,7 @@ class OnboardingActivity : BaseActivity() {
 
     private fun finishOnBoarding() {
         userSession.setFirstTimeUserOnboarding(false)
+        DFInstaller().uninstallOnBackground(this.application, listOf(DeeplinkDFMapper.DFM_ONBOARDING))
         finish()
     }
 

@@ -86,6 +86,23 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
+    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName) {
+        if (!dataLayerList.isEmpty()) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "productView",
+                    "eventCategory", "search result",
+                    "eventAction", "impression - product - topads",
+                    "eventLabel", keyword,
+                    "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
+                            "impressions", DataLayer.listOf(
+                                    dataLayerList.toArray(new Object[dataLayerList.size()])
+                            )
+                    ));
+            trackingQueue.putEETracking((HashMap<String, Object>) map);
+            clearDataLayerList();
+        }
+    }
+
     public void addSearchResultProductViewImpressions(Product item, int position) {
         this.dataLayerList.add(DataLayer.mapOf("name", item.getName(),
                 "id", item.getId(),

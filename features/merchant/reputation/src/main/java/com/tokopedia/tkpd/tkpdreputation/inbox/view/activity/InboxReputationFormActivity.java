@@ -41,6 +41,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
     public static final String ARGS_PRODUCT_NAME = "ARGS_PRODUCT_NAME";
     public static final String ARGS_PRODUCT_STATUS = "ARGS_PRODUCT_STATUS";
     public static final String ARGS_PRODUCT_URL = "ARGS_PRODUCT_URL";
+    public static final String ARGS_ORDER_ID = "ARGS_ORDER_ID";
 
     public static final String ARGS_IS_EDIT = "ARGS_IS_EDIT";
     public static final String ARGS_RATING = "ARGS_RATING";
@@ -146,34 +147,13 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         return getApplicationComponent();
     }
 
-    public static Intent getGiveReviewIntent(Context context, String reviewId,
-                                             String reputationId, String productId,
-                                             String shopId, boolean reviewIsSkippable,
-                                             String productAvatar, String productName,
-                                             String productUrl, String revieweeName,
-                                             int productStatus) {
-        Intent intent = new Intent(context, InboxReputationFormActivity.class);
-        intent.putExtra(ARGS_PRODUCT_ID, productId);
-        intent.putExtra(ARGS_REPUTATION_ID, reputationId);
-        intent.putExtra(ARGS_REVIEW_ID, reviewId);
-        intent.putExtra(ARGS_SHOP_ID, shopId);
-        intent.putExtra(ARGS_IS_SKIPPABLE, reviewIsSkippable);
-        intent.putExtra(ARGS_IS_EDIT, false);
-        intent.putExtra(ARGS_PRODUCT_AVATAR, productAvatar);
-        intent.putExtra(ARGS_PRODUCT_NAME, productName);
-        intent.putExtra(ARGS_PRODUCT_URL, productUrl);
-        intent.putExtra(ARGS_REVIEWEE_NAME, revieweeName);
-        intent.putExtra(ARGS_PRODUCT_STATUS, productStatus);
-        return intent;
-    }
-
     public static Intent getEditReviewIntent(Context context, String reviewId,
                                              String reputationId, String productId,
                                              String shopId, int reviewStar, String review,
                                              ArrayList<ImageAttachmentViewModel> reviewAttachment,
                                              String productAvatar, String productName,
                                              String productUrl, boolean isAnonymous,
-                                             String revieweeName, int productStatus) {
+                                             String revieweeName, int productStatus, String orderId) {
         Intent intent = new Intent(context, InboxReputationFormActivity.class);
         intent.putExtra(ARGS_PRODUCT_ID, productId);
         intent.putExtra(ARGS_REPUTATION_ID, reputationId);
@@ -190,6 +170,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         intent.putExtra(ARGS_ANONYMOUS, isAnonymous);
         intent.putExtra(ARGS_REVIEWEE_NAME, revieweeName);
         intent.putExtra(ARGS_PRODUCT_STATUS, productStatus);
+        intent.putExtra(ARGS_ORDER_ID, orderId);
         return intent;
     }
 

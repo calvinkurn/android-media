@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.imagepreviewslider.R
-import com.tokopedia.imagepreviewslider.presentation.fragment.ImagePreviewSliderFragment
+import com.tokopedia.imagepreviewslider.presentation.listener.ImageSliderListener
 
 /**
  * @author by resakemal on 03/05/19
@@ -16,7 +16,7 @@ import com.tokopedia.imagepreviewslider.presentation.fragment.ImagePreviewSlider
 
 class ImagePreviewSliderAdapter(val images: MutableList<String>,
                                 imagePosition: Int,
-                                val clickListener: ImagePreviewSliderFragment.ImagePreviewListener): RecyclerView.Adapter<ImagePreviewSliderAdapter.ViewHolder>() {
+                                val clickListener: ImageSliderListener): RecyclerView.Adapter<ImagePreviewSliderAdapter.ViewHolder>() {
 
     var selectedPos = imagePosition
 
@@ -26,15 +26,16 @@ class ImagePreviewSliderAdapter(val images: MutableList<String>,
     override fun getItemCount(): Int = images.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (!images[position].isNullOrEmpty()) {
-            if (clickListener != null) holder.bannerImage.setOnClickListener{ clickListener.onImageClicked(position) }
+        holder.bannerImage.setOnClickListener {
+            clickListener.onImageClicked(position)
+            selectedPos = position
         }
 
         try {
             Glide.with(holder.itemView.context)
                     .load(images[position])
                     .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(com.tokopedia.design.R.drawable.ic_loading_image)
                     .error(com.tokopedia.design.R.drawable.ic_loading_image)
                     .centerCrop()
@@ -43,7 +44,13 @@ class ImagePreviewSliderAdapter(val images: MutableList<String>,
             e.printStackTrace()
         }
 
-        holder.view.setSelected(selectedPos == position)
+        holder.view.isSelected = selectedPos == position
+
+        if (selectedPos == position) {
+            holder.bannerImage.setBackgroundResource(R.drawable.bg_highlight_border)
+        } else {
+            holder.bannerImage.background = null
+        }
     }
 
     fun setSelectedImage(position: Int) {

@@ -38,6 +38,8 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity;
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
@@ -73,6 +75,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     private static final int REQUEST_EDIT_REVIEW = 102;
     private static final int REQUEST_REPORT_REVIEW = 103;
 
+    public static final int REQUEST_CODE_ON_SUCCESS_REVIEW = 104;
     public static final int PUAS_SCORE = 2; // FROM API
 
     private RecyclerView listProduct;
@@ -168,8 +171,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         View parentView = inflater.inflate(R.layout.fragment_inbox_reputation_detail, container,
                 false);
         mainView = parentView.findViewById(R.id.main);
-        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
-        listProduct = (RecyclerView) parentView.findViewById(R.id.product_list);
+        swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
+        listProduct = parentView.findViewById(R.id.product_list);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -261,25 +264,25 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                         element.getProductUrl(),
                         element.isReviewIsAnonymous(),
                         element.getRevieweeName(),
-                        element.getproductStatus()),
+                        element.getproductStatus(),
+                        element.getOrderId()),
                 REQUEST_EDIT_REVIEW
         );
     }
 
     @Override
-    public void onGoToGiveReview(String reviewId, String productId,
-                                 int shopId, boolean reviewIsSkippable, String productAvatar,
-                                 String productName, String productUrl, String revieweeName, int
-                                         productStatus) {
-        startActivityForResult(
-                InboxReputationFormActivity.getGiveReviewIntent(
-                        getActivity(),
-                        reviewId,
-                        reputationId, productId,
-                        String.valueOf(shopId), reviewIsSkippable,
-                        productAvatar, productName, productUrl,
-                        revieweeName, productStatus),
-                REQUEST_GIVE_REVIEW);
+    public void onGoToGiveReview(String productId, int shopId, String orderId) {
+        if (getContext() != null) {
+            startActivityForResult(
+                    CreateReviewActivity.Companion.newInstance(getContext())
+                        .putExtra(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId)
+                        .putExtra(InboxReputationFormActivity.ARGS_SHOP_ID, Integer.toString(shopId, 10))
+                        .putExtra(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId)
+                        .putExtra(CreateReviewFragment.REVIEW_CLICK_AT, 5)
+                        .putExtra(CreateReviewFragment.REVIEW_ORDER_ID, orderId),
+                    REQUEST_GIVE_REVIEW
+            );
+        }
     }
 
     @Override
@@ -557,10 +560,10 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if(callbackManager!= null) {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
+
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
-            showRatingDialog(data.getExtras());
             NetworkErrorHelper.showSnackbar(getActivity(),
                     getString(R.string.review_for) + " " + data.getExtras().getString
                             (InboxReputationFormActivity.ARGS_REVIEWEE_NAME, "")
@@ -596,15 +599,5 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (presenter != null)
             presenter.detachView();
         callbackManager = null;
-    }
-
-    public void showRatingDialog(Bundle bundle) {
-        if (bundle != null && bundle.getFloat(InboxReputationFormActivity.ARGS_RATING) >= 3.0) {
-            if (getActivity() != null &&
-                    getActivity().getApplicationContext() instanceof ReputationRouter) {
-                ((ReputationRouter)getActivity().getApplicationContext())
-                        .showSimpleAppRatingDialog(getActivity());
-            }
-        }
     }
 }

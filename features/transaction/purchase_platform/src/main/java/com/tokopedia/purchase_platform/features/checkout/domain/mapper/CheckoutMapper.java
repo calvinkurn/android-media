@@ -1,13 +1,20 @@
 package com.tokopedia.purchase_platform.features.checkout.domain.mapper;
 
 import com.google.gson.Gson;
-import com.tokopedia.purchase_platform.common.base.IMapperUtil;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.model.ErrorReporter;
 import com.tokopedia.purchase_platform.common.domain.model.ErrorReporterText;
+import com.tokopedia.purchase_platform.common.domain.model.MessageData;
+import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
+import com.tokopedia.purchase_platform.common.domain.model.TrackerData;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.CheckoutDataResponse;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.CheckoutResponse;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.ErrorReporterResponse;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.Message;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.Tracker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -17,11 +24,8 @@ import javax.inject.Inject;
 
 public class CheckoutMapper implements ICheckoutMapper {
 
-    private final IMapperUtil mapperUtil;
-
     @Inject
-    public CheckoutMapper(IMapperUtil mapperUtil) {
-        this.mapperUtil = mapperUtil;
+    public CheckoutMapper() {
     }
 
     @Override
@@ -31,6 +35,37 @@ public class CheckoutMapper implements ICheckoutMapper {
         checkoutData.setJsonResponse(new Gson().toJson(checkoutResponse));
         checkoutData.setError(checkoutDataResponse.getSuccess() != 1);
         checkoutData.setErrorMessage(checkoutDataResponse.getError());
+
+        if (checkoutDataResponse.getData() != null &&
+                checkoutDataResponse.getData().getPriceValidation() != null &&
+                checkoutDataResponse.getData().getPriceValidation().isUpdated() &&
+                checkoutDataResponse.getData().getPriceValidation().getMessage() != null) {
+            Message message = checkoutDataResponse.getData().getPriceValidation().getMessage();
+            MessageData messageData = new MessageData();
+            messageData.setTitle(message.getTitle());
+            messageData.setDesc(message.getDesc());
+            messageData.setAction(message.getAction());
+
+            PriceValidationData priceValidationData = new PriceValidationData();
+            priceValidationData.setUpdated(true);
+            priceValidationData.setMessage(messageData);
+
+            Tracker tracker = checkoutDataResponse.getData().getPriceValidation().getTrackerData();
+            if (tracker != null) {
+                TrackerData trackerData = new TrackerData();
+                trackerData.setCampaignType(tracker.getCampaignType());
+                trackerData.setProductChangesType(tracker.getProductChangesType());
+                List<String> productIds = new ArrayList<>();
+                for (Long aLong : tracker.getProductIds()) {
+                    productIds.add(String.valueOf(aLong));
+                }
+                trackerData.setProductIds(productIds);
+                priceValidationData.setTrackerData(trackerData);
+            }
+
+            checkoutData.setPriceValidationData(priceValidationData);
+        }
+
         ErrorReporterResponse errorReporterResponse = checkoutResponse.getErrorReporter();
         ErrorReporter errorReporter = new ErrorReporter();
         errorReporter.setEligible(errorReporterResponse.getEligible());
@@ -40,10 +75,11 @@ public class CheckoutMapper implements ICheckoutMapper {
         errorReporterText.setSubmitButton(errorReporterResponse.getTexts().getSubmitButton());
         errorReporterText.setCancelButton(errorReporterResponse.getTexts().getCancelButton());
         errorReporter.setTexts(errorReporterText);
+
         checkoutData.setErrorReporter(errorReporter);
         if (!checkoutData.isError()
-                && !mapperUtil.isEmpty(checkoutDataResponse.getData())
-                && !mapperUtil.isEmpty(checkoutDataResponse.getData().getParameter())) {
+                && checkoutDataResponse.getData() != null
+                && checkoutDataResponse.getData().getParameter() != null) {
             checkoutData.setTransactionId(checkoutDataResponse.getData().getParameter().getTransactionId());
             checkoutData.setPaymentId(checkoutDataResponse.getData().getParameter().getTransactionId());
             checkoutData.setQueryString(checkoutDataResponse.getData().getQueryString());

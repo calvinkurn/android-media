@@ -34,7 +34,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation (rootProject.ext.miscDependencies.ucrop) {
         exclude group: 'com.android.support'
     }
@@ -47,7 +47,7 @@ dependencies {
 project.ext {
     artifactId = 'update-inactive-phone'
     groupId = 'com.tokopedia.user'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="updateinactivephone-release"
 }
 

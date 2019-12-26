@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.common.base.IMapperUtil;
 import com.tokopedia.purchase_platform.common.data.model.response.TrackingDetail;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message;
@@ -16,6 +15,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProductData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDataListResponse;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDetail;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartList;
@@ -52,17 +52,14 @@ public class CartMapper implements ICartMapper {
     private static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
     private static final String SHOP_TYPE_REGULER = "reguler";
     private static final String MERCHANT_VOUCHER_TYPE = "merchant";
-    private final IMapperUtil mapperUtil;
 
     @Inject
-    public CartMapper(IMapperUtil mapperUtil) {
-        this.mapperUtil = mapperUtil;
-    }
+    public CartMapper() {}
 
     @Override
     public CartListData convertToCartItemDataList(Context context, CartDataListResponse cartDataListResponse) {
         CartListData cartListData = new CartListData();
-        String errorMessage = mapperUtil.convertToString(cartDataListResponse.getErrors());
+        String errorMessage = UtilsKt.convertToString(cartDataListResponse.getErrors());
         boolean hasError = false;
         int errorItemCount = 0;
         for (ShopGroupAvailable shopGroupAvailable : cartDataListResponse.getShopGroupAvailables()) {
@@ -72,7 +69,7 @@ public class CartMapper implements ICartMapper {
                     errorItemCount += shopGroupAvailable.getCartDetails().size();
                 }
                 if (TextUtils.isEmpty(errorMessage)) {
-                    errorMessage = mapperUtil.convertToString(shopGroupAvailable.getErrors());
+                    errorMessage = UtilsKt.convertToString(shopGroupAvailable.getErrors());
                 }
             } else if (shopGroupAvailable.getCartDetails().size() > 0) {
                 for (CartDetail cartDetail : shopGroupAvailable.getCartDetails()) {
@@ -80,7 +77,7 @@ public class CartMapper implements ICartMapper {
                         hasError = true;
                         errorItemCount++;
                         if (TextUtils.isEmpty(errorMessage)) {
-                            errorMessage = mapperUtil.convertToString(cartDetail.getErrors());
+                            errorMessage = UtilsKt.convertToString(cartDetail.getErrors());
                         }
                     }
                 }
@@ -108,7 +105,7 @@ public class CartMapper implements ICartMapper {
         for (ShopGroupAvailable shopGroupAvailable : cartDataListResponse.getShopGroupAvailables()) {
             ShopGroupAvailableData shopGroupData = new ShopGroupAvailableData();
 
-            shopGroupData.setError(!mapperUtil.isEmpty(shopGroupAvailable.getErrors()));
+            shopGroupData.setError(!UtilsKt.isNullOrEmpty(shopGroupAvailable.getErrors()));
             isDisableAllProducts = true;
 
             if (!shopGroupData.isError()) {
@@ -200,8 +197,14 @@ public class CartMapper implements ICartMapper {
                 }
                 cartItemDataOrigin.setCod(data.getProduct().isCod());
                 cartItemDataOrigin.setFavorite(false);
-                cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
-                cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());
+                cartItemDataOrigin.setMinOrder(data.getProduct().getProductMinOrder());
+                if (data.getProduct().getProductSwitchInvenage() == 0) {
+                    cartItemDataOrigin.setMaxOrder(data.getProduct().getProductMaxOrder());
+                } else if (data.getProduct().getProductMaxOrder() <= data.getProduct().getProductInvenageValue()) {
+                    cartItemDataOrigin.setMaxOrder(data.getProduct().getProductMaxOrder());
+                } else {
+                    cartItemDataOrigin.setMaxOrder(data.getProduct().getProductInvenageValue());
+                }
                 cartItemDataOrigin.setPriceChangesState(data.getProduct().getPriceChanges().getChangesState());
                 cartItemDataOrigin.setPriceChangesDesc(data.getProduct().getPriceChanges().getDescription());
                 cartItemDataOrigin.setProductInvenageByUserText(data.getProduct().getProductInvenageTotal().getByUserText().getComplete());
@@ -210,10 +213,10 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setFreeReturn(data.getProduct().getIsFreereturns() == 1);
                 cartItemDataOrigin.setTrackerAttribution(data.getProduct().getProductTrackerData().getAttribution());
                 cartItemDataOrigin.setTrackerListName(data.getProduct().getProductTrackerData().getTrackerListName());
-                if (!mapperUtil.isEmpty(data.getProduct().getFreeReturns())) {
+                if (data.getProduct().getFreeReturns() != null) {
                     cartItemDataOrigin.setFreeReturnLogo(data.getProduct().getFreeReturns().getFreeReturnsLogo());
                 }
-                cartItemDataOrigin.setCashBack(!mapperUtil.isEmpty(data.getProduct().getProductCashback()));
+                cartItemDataOrigin.setCashBack(!UtilsKt.isNullOrEmpty(data.getProduct().getProductCashback()));
                 cartItemDataOrigin.setProductCashBack(data.getProduct().getProductCashback());
                 cartItemDataOrigin.setCashBackInfo("Cashback " + data.getProduct().getProductCashback());
                 cartItemDataOrigin.setProductImage(data.getProduct().getProductImage().getImageSrc200Square());
@@ -255,7 +258,6 @@ public class CartMapper implements ICartMapper {
                 cartItemDataUpdated.setRemark(cartItemDataOrigin.getProductVarianRemark());
                 cartItemDataUpdated.setQuantity(data.getProduct().getProductQuantity());
                 cartItemDataUpdated.setMaxCharRemark(cartDataListResponse.getMaxCharNote());
-                cartItemDataUpdated.setMaxQuantity(cartDataListResponse.getMaxQuantity());
 
                 CartItemData.MessageErrorData cartItemMessageErrorData = new CartItemData.MessageErrorData();
                 cartItemMessageErrorData.setErrorCheckoutPriceLimit(cartDataListResponse.getMessages().getErrorCheckoutPriceLimit());
@@ -283,7 +285,7 @@ public class CartMapper implements ICartMapper {
                     }
 
                     if (data.getErrors().size() > 1) {
-                        cartItemData.setErrorMessageDescription(mapperUtil.convertToString(
+                        cartItemData.setErrorMessageDescription(UtilsKt.convertToString(
                                 data.getErrors().subList(1, data.getErrors().size() - 1)));
                     }
                 }
@@ -293,7 +295,7 @@ public class CartMapper implements ICartMapper {
                     cartItemData.setWarningMessageTitle(data.getMessages().get(0));
 
                     if (data.getMessages().size() > 1) {
-                        cartItemData.setWarningMessageDescription(mapperUtil.convertToString(
+                        cartItemData.setWarningMessageDescription(UtilsKt.convertToString(
                                 data.getMessages().subList(1, data.getMessages().size() - 1)));
                     }
                 }
@@ -312,7 +314,7 @@ public class CartMapper implements ICartMapper {
                 cartItemDataList.add(cartItemData);
             }
             if (shopGroupData.isError() && TextUtils.isEmpty(shopGroupData.getErrorTitle())) {
-                shopGroupData.setErrorTitle(mapperUtil.convertToString(shopGroupAvailable.getErrors()));
+                shopGroupData.setErrorTitle(UtilsKt.convertToString(shopGroupAvailable.getErrors()));
             }
             shopGroupData.setCartItemDataList(cartItemDataList);
             shopGroupData.setChecked(shopGroupAvailable.getCheckboxState());
@@ -402,13 +404,13 @@ public class CartMapper implements ICartMapper {
     @Override
     public CartListData convertToCartItemDataList(Context context, CartMultipleAddressDataListResponse cartDataListResponse) {
         CartListData cartListData = new CartListData();
-        String errorMessage = mapperUtil.convertToString(cartDataListResponse.getErrors());
+        String errorMessage = UtilsKt.convertToString(cartDataListResponse.getErrors());
         boolean hasError = false;
         for (CartList cartList : cartDataListResponse.getCartList()) {
             if (cartList.getErrors() != null && cartList.getErrors().size() > 0) {
                 hasError = true;
                 if (TextUtils.isEmpty(errorMessage)) {
-                    errorMessage = mapperUtil.convertToString(cartList.getErrors());
+                    errorMessage = UtilsKt.convertToString(cartList.getErrors());
                 }
                 break;
             }
@@ -454,15 +456,21 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setPreOrderInfo("PO " + data.getProduct().getProductPreorder().getDurationText());
             }
             cartItemDataOrigin.setFavorite(false);
-            cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
-            cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());
+            cartItemDataOrigin.setMinOrder(data.getProduct().getProductMinOrder());
+            if (data.getProduct().getProductSwitchInvenage() == 0) {
+                cartItemDataOrigin.setMaxOrder(data.getProduct().getProductMaxOrder());
+            } else if (data.getProduct().getProductMaxOrder() <= data.getProduct().getProductInvenageValue()) {
+                cartItemDataOrigin.setMaxOrder(data.getProduct().getProductMaxOrder());
+            } else {
+                cartItemDataOrigin.setMaxOrder(data.getProduct().getProductInvenageValue());
+            }
             cartItemDataOrigin.setFreeReturn(data.getProduct().getIsFreereturns() == 1);
             cartItemDataOrigin.setTrackerAttribution(data.getProduct().getProductTrackerData().getAttribution());
             cartItemDataOrigin.setTrackerListName(data.getProduct().getProductTrackerData().getTrackerListName());
-            if (!mapperUtil.isEmpty(data.getProduct().getFreeReturns())) {
+            if (data.getProduct().getFreeReturns() != null) {
                 cartItemDataOrigin.setFreeReturnLogo(data.getProduct().getFreeReturns().getFreeReturnsLogo());
             }
-            cartItemDataOrigin.setCashBack(!mapperUtil.isEmpty(data.getProduct().getProductCashback()));
+            cartItemDataOrigin.setCashBack(!UtilsKt.isNullOrEmpty(data.getProduct().getProductCashback()));
             cartItemDataOrigin.setCashBackInfo("Cashback " + data.getProduct().getProductCashback());
             cartItemDataOrigin.setProductImage(data.getProduct().getProductImage().getImageSrc200Square());
             cartItemDataOrigin.setCategory(data.getProduct().getCategory());
@@ -492,7 +500,6 @@ public class CartMapper implements ICartMapper {
             cartItemDataUpdated.setRemark(cartItemDataOrigin.getProductVarianRemark());
             cartItemDataUpdated.setQuantity(data.getProduct().getProductQuantity());
             cartItemDataUpdated.setMaxCharRemark(cartDataListResponse.getMaxCharNote());
-            cartItemDataUpdated.setMaxQuantity(cartDataListResponse.getMaxQuantity());
 
             CartItemData.MessageErrorData cartItemMessageErrorData = new CartItemData.MessageErrorData();
             cartItemMessageErrorData.setErrorCheckoutPriceLimit(cartDataListResponse.getMessages().getErrorCheckoutPriceLimit());
@@ -514,7 +521,7 @@ public class CartMapper implements ICartMapper {
                 cartItemData.setErrorMessageTitle(data.getErrors().get(0));
 
                 if (data.getErrors().size() > 1) {
-                    cartItemData.setErrorMessageDescription(mapperUtil.convertToString(
+                    cartItemData.setErrorMessageDescription(UtilsKt.convertToString(
                             data.getErrors().subList(1, data.getErrors().size() - 1)));
                 }
             }
@@ -524,7 +531,7 @@ public class CartMapper implements ICartMapper {
                 cartItemData.setWarningMessageTitle(data.getMessages().get(0));
 
                 if (data.getMessages().size() > 1) {
-                    cartItemData.setWarningMessageDescription(mapperUtil.convertToString(
+                    cartItemData.setWarningMessageDescription(UtilsKt.convertToString(
                             data.getMessages().subList(1, data.getMessages().size() - 1)));
                 }
             }

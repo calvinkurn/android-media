@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.fragment
 
+import android.content.Context
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -40,6 +41,7 @@ import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
+import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -70,6 +72,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @Inject
     internal lateinit var affiliatePreference: AffiliatePreference
 
+    val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
+    private var mainParentStatusBarListener: MainParentStatusBarListener? = null
+
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[FeedPlusContainerViewModel::class.java]
     }
@@ -90,11 +95,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var toolbarType = TOOLBAR_GRADIENT
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
-
+    private var isLightThemeStatusBar = false
 
 
     private lateinit var coachMarkItem:  CoachMarkItem
     private lateinit var feedBackgroundCrossfader: TransitionDrawable
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        mainParentStatusBarListener = context as MainParentStatusBarListener
+        requestStatusBarDark()
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -114,8 +125,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_feed_plus_container, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_feed_plus_container, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -144,7 +154,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun initInjector() {
         DaggerFeedContainerComponent.builder()
-                .baseAppComponent((context?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+                .baseAppComponent(
+                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                )
                 .build().inject(this)
     }
 
@@ -159,6 +171,20 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         } catch (e: IllegalStateException) {
             //no op
         }
+    }
+
+    private fun requestStatusBarDark() {
+        isLightThemeStatusBar = false
+        mainParentStatusBarListener?.requestStatusBarDark()
+    }
+
+    private fun requestStatusBarLight() {
+        isLightThemeStatusBar = true
+        mainParentStatusBarListener?.requestStatusBarLight()
+    }
+
+    override fun isLightThemeStatusBar(): Boolean {
+        return isLightThemeStatusBar
     }
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
@@ -214,7 +240,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
         feed_appbar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                if (verticalOffset + toolbar.height < 0) {
+                if (verticalOffset + (toolbar?.height ?: 0) < 0) {
                     showNormalTextWhiteToolbar()
                 } else {
                     showWhiteTextTransparentToolbar()
@@ -308,6 +334,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.tkpd_main_green))
                 tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.font_black_disabled_38), MethodChecker.getColor(activity, R.color.tkpd_main_green))
             }
+            requestStatusBarDark()
         }
     }
 
@@ -323,6 +350,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.white))
                 tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.white), MethodChecker.getColor(activity, R.color.white))
             }
+            requestStatusBarLight()
         }
     }
 
@@ -447,5 +475,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR, isLightThemeStatusBar)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        isLightThemeStatusBar = savedInstanceState?.getBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR)?:false
     }
 }

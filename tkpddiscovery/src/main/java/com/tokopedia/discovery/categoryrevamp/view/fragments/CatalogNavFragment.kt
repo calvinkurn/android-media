@@ -1,15 +1,15 @@
 package com.tokopedia.discovery.categoryrevamp.view.fragments
 
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -27,6 +27,8 @@ import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CatalogCardListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CatalogNavViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -61,7 +63,6 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
     lateinit var catalogNavViewModel: CatalogNavViewModel
 
 
@@ -193,10 +194,12 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
             layout_no_data.visibility = View.VISIBLE
+            txt_catalog_count.hide()
             txt_no_data_header.text = resources.getText(R.string.category_nav_catalog_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_catalog_no_data_description)
         } else {
             layout_no_data.visibility = View.GONE
+            txt_catalog_count.show()
         }
 
     }
@@ -241,11 +244,9 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun initView() {
-        activity?.let { observer ->
-            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
-            catalogNavViewModel = viewModelProvider.get(CatalogNavViewModel::class.java)
-            fetchCatalogData(getCatalogListParams(0))
-        }
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        catalogNavViewModel = viewModelProvider.get(CatalogNavViewModel::class.java)
+        fetchCatalogData(getCatalogListParams(0))
     }
 
     private fun getCatalogListParams(page: Int): RequestParams {
@@ -311,12 +312,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     }
 
 
-    override fun onDetach() {
-        super.onDetach()
-        catalogNavViewModel.onDetach()
-    }
-
-    override fun onListItemImpressionEvent(item: Visitable<Any>, position: Int) {
+    override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
 
     }
 
@@ -327,6 +323,17 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
 
     override fun wishListEnabledTracker(wishListTrackerUrl: String) {
     }
+
     override fun onShareButtonClicked() {
+    }
+
+    override fun topAdsTrackerUrlTrigger(url: String) {
+    }
+
+    override fun onDestroyView() {
+        catalog_recyclerview.layoutManager = null
+        catalog_recyclerview.adapter = null
+        catalogNavListAdapter = null
+        super.onDestroyView()
     }
 }

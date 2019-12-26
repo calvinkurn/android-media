@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'com.jakewharton.butterknife'
 
 buildscript {
     repositories {
@@ -12,9 +11,6 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
-            exclude group: 'com.android.tools.build', module: 'gradle'
-        }
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -30,7 +26,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: '*.jar', dir: 'libs')
 
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -85,21 +80,14 @@ dependencies {
     }
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
-    implementation (rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-firebase'
-    }
-    implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
-        exclude group: 'com.android.support'
-    }
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    implementation rootProject.ext.viewDependencies.appIntro
+    implementation(rootProject.ext.analyticsDependencies.moengage)
+    implementation rootProject.ext.analyticsDependencies.moengageAmp
+
     implementation (rootProject.ext.viewDependencies.ahBottomNavigation) {
         exclude group: 'com.android.support', module: 'design'
     }
@@ -131,14 +119,7 @@ dependencies {
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.core'
-    versionName = "1.0.0"
-    artifactName ="tkpdcore-release"
-}
-
-project.ext {
-    artifactId = 'core'
-    groupId = 'com.tokopedia.core'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="tkpdcore-release"
 }
 

@@ -17,6 +17,7 @@ public interface ApplinkConst {
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
     String HOME_CATEGORY = "tokopedia://home/category";
     String HOME_HOTLIST = "tokopedia://hot";
+    String HOST_CATEGORY_P = "p";
     String MESSAGE = "tokopedia://message";
     String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
     String TALK = "tokopedia://talk";
@@ -46,6 +47,7 @@ public interface ApplinkConst {
     String SELLER_HISTORY = "tokopedia://seller/history";
     String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
     String REPUTATION = "tokopedia://review";
+    String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String REPUTATION_DETAIL = "tokopedia://review/{reputation_id}";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String WEBVIEW = "tokopedia://webview";
@@ -72,17 +74,20 @@ public interface ApplinkConst {
     String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
     String WISHLIST = "tokopedia://wishlist";
+    String NEW_WISHLIST = "tokopedia://new-wishlist";
+    String WISHLIST_HOME = "tokopedia://wishlisthome";
     String RECENT_VIEW = "tokopedia://recentlyviewed";
     String TOPPICKS = "tokopedia://toppicks";
     String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String OFFICIAL_STORE = "tokopedia://official-store";
-    String OFFICIAL_STORES_CATEGORY = "tokopedia://official-stores/{key_category}";
+    String OFFICIAL_STORE_CATEGORY = "tokopedia://official-store/{key_category}";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
+    String TOP_CHAT = "tokopedia://topchat";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
     String TOPCHAT_OLD = "tokopedia://topchatold";
     String TOPCHAT_ASKSELLER = "tokopedia://topchat/askseller/{toShopId}?customMessage" +
@@ -90,8 +95,10 @@ public interface ApplinkConst {
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
+    String CHAT_BOT = "tokopedia://chatbot";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
     String GROUPCHAT_DETAIL = "tokopedia://groupchat/{channel_id}";
+    String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
     String REFERRAL = "tokopedia://referral";
     String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
     String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
@@ -196,6 +203,7 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
+    String SELLER_ORDER_DETAIL = "tokopedia://seller/order/{order_id}";
 
     String SALDO = "tokopedia://saldo";
     String SALDO_INTRO = "tokopedia://saldo-intro";
@@ -234,7 +242,7 @@ public interface ApplinkConst {
 
     String KYC_NO_PARAM = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
-    String KYC = "tokopedia://kyc?projectId={projectId}";
+    String KYC = "tokopedia://kyc?projectId=1";
 
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
@@ -290,6 +298,10 @@ public interface ApplinkConst {
         String COUPON_DETAIL3 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}";
         String COUPON_DETAIL4 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}/";
     }
+    String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
+
+    String MONEYIN = "tokopedia://money_in/device_validation";
+
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
@@ -349,16 +361,7 @@ public interface ApplinkConst {
         String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
 
-        String PRODUCT_PREVIEW_ID = "product_preview_id";
-        String PRODUCT_PREVIEW_IMAGE_URL = "product_preview_image_url";
-        String PRODUCT_PREVIEW_NAME = "product_preview_name";
-        String PRODUCT_PREVIEW_PRICE = "product_preview_price";
-        String PRODUCT_PREVIEW_URL = "product_preview_url";
-        String PRODUCT_PREVIEW_COLOR_VARIANT = "product_preview_color";
-        String PRODUCT_PREVIEW_HEX_COLOR_VARIANT = "product_preview_hex_color";
-        String PRODUCT_PREVIEW_SIZE_VARIANT = "product_preview_size";
-        String PRODUCT_PREVIEW_FS_IS_ACTIVE = "product_preview_fs_is_active";
-        String PRODUCT_PREVIEW_FS_IMAGE_URL = "product_preview_fs_is_image_url";
+        String PRODUCT_PREVIEWS = "product_previews";
 
         String INVOICE_ID = "invoice_id";
         String INVOICE_CODE = "invoice_code";

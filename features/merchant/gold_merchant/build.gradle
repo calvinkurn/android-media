@@ -56,18 +56,15 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
-    implementation rootProject.ext.viewDependencies.appIntro
+    
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
 }
 
 project.ext {
     artifactId = 'gold_merchant'
     groupId = 'com.tokopedia.gm'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="gold_merchant-release"
 }
 

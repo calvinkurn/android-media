@@ -1,8 +1,7 @@
 package com.tokopedia.flight.common.domain;
 
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
-import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
-import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.bookingV2.data.cloud.entity.CartEntity;
+import com.tokopedia.flight.bookingV2.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity;
 import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
@@ -11,13 +10,9 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
-import com.tokopedia.flight.country.database.FlightAirportCountryTable;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.domain.FlightOrderRepository;
-import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
-import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
-import com.tokopedia.flight.passenger.data.db.FlightPassengerTable;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
@@ -35,8 +30,6 @@ import rx.Observable;
  */
 
 public interface FlightRepository extends FlightOrderRepository {
-
-    Observable<FlightAirportCountryTable> getAirportByCountryId(String id);
 
     Observable<List<FlightClassEntity>> getFlightClasses();
 
@@ -56,21 +49,7 @@ public interface FlightRepository extends FlightOrderRepository {
 
     Observable<OrderEntity> getOrderEntity(String id);
 
-    Observable<List<BannerDetail>> getBanners(Map<String, String> params);
-
-    Observable<List<FlightAirportCountryTable>> getPhoneCodeList(String string);
-
-    Observable<List<FlightPassengerTable>> getPassengerList(String passengerId);
-
-    Observable<Boolean> updateIsSelected(String passengerId, int isSelected);
-
-    Observable<Boolean> deleteAllListPassenger();
-
-    Observable<Boolean> deletePassenger(DeletePassengerRequest request, String idempotencyKey);
-
-    Observable<Boolean> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey);
-
-    Observable<List<Passenger>> getCancelablePassenger(String invoiceId);
+    Observable<Map<String, List<Passenger>>> getCancelablePassenger(String invoiceId);
 
     Observable<List<Reason>> getCancellationReasons();
 

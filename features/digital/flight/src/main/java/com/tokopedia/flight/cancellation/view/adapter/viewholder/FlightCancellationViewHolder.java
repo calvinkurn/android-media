@@ -1,9 +1,6 @@
 package com.tokopedia.flight.cancellation.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +8,23 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.ADULT;
-import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.CHILDREN;
-import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.INFANT;
+import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.ADULT;
+import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.CHILDREN;
+import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.INFANT;
 
 /**
  * @author by furqan on 21/03/18.
@@ -82,11 +84,11 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
     @Override
     public void bind(FlightCancellationViewModel element) {
 
-        String departureCityAirportCode = (element.getFlightCancellationJourney().getDepartureCityCode().isEmpty() ||
+        String departureCityAirportCode = (element.getFlightCancellationJourney().getDepartureCityCode() == null ||
                 element.getFlightCancellationJourney().getDepartureCityCode().length() == 0) ?
                 element.getFlightCancellationJourney().getDepartureAiportId() :
                 element.getFlightCancellationJourney().getDepartureCityCode();
-        String arrivalCityAirportCode = (element.getFlightCancellationJourney().getArrivalCityCode().isEmpty() ||
+        String arrivalCityAirportCode = (element.getFlightCancellationJourney().getArrivalCityCode() == null ||
                 element.getFlightCancellationJourney().getArrivalCityCode().length() == 0) ?
                 element.getFlightCancellationJourney().getArrivalAirportId() :
                 element.getFlightCancellationJourney().getArrivalCityCode();
@@ -199,13 +201,17 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
 
         public void checkAllData() {
             for (int index = 0; index < passengerViewHolderList.size(); index++) {
-                passengerViewHolderList.get(index).onCheck(true);
+                if (passengerViewHolderList.get(index).passengerViewModel.getStatusString() == null) {
+                    passengerViewHolderList.get(index).onCheck(true);
+                }
             }
         }
 
         public void uncheckAllData() {
             for (int index = 0; index < passengerViewHolderList.size(); index++) {
-                passengerViewHolderList.get(index).onCheck(false);
+                if (passengerViewHolderList.get(index).passengerViewModel.getStatusString() == null) {
+                    passengerViewHolderList.get(index).onCheck(false);
+                }
             }
         }
 
@@ -213,7 +219,9 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         public void checkIfAllPassengerIsChecked() {
             boolean allChecked = true;
             for (int index = 0; index < passengerViewHolderList.size(); index++) {
-                if (!passengerViewHolderList.get(index).isPassengerChecked()) {
+                if (!passengerViewHolderList.get(index).isPassengerChecked() &&
+                        !(passengerViewHolderList.get(index).passengerViewModel.getStatusString() != null &&
+                                passengerViewHolderList.get(index).passengerViewModel.getStatusString().length() > 0)) {
                     allChecked = false;
                 }
             }
@@ -232,6 +240,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         private TextView txtPassengerName;
         private TextView txtPassengerType;
         private CheckBox checkBoxPassenger;
+        private Typography tgPassengerStatus;
         private boolean isPassengerChecked = false;
         private FlightCancellationPassengerViewModel passengerViewModel;
         private int adapterPosition = -1;
@@ -245,6 +254,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
             txtPassengerName = itemView.findViewById(com.tokopedia.flight.R.id.tv_passenger_name);
             txtPassengerType = itemView.findViewById(com.tokopedia.flight.R.id.tv_passenger_type);
             checkBoxPassenger = itemView.findViewById(com.tokopedia.flight.R.id.checkbox);
+            tgPassengerStatus = itemView.findViewById(com.tokopedia.flight.R.id.tg_passenger_status);
 
             checkBoxPassenger.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -264,6 +274,18 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         public void bindData(FlightCancellationPassengerViewModel passengerViewModel, int adapterPosition) {
             this.passengerViewModel = passengerViewModel;
             this.adapterPosition = adapterPosition;
+
+            if (passengerViewModel.getStatusString() != null && passengerViewModel.getStatusString().length() > 0) {
+                tgPassengerStatus.setText(passengerViewModel.getStatusString());
+                tgPassengerStatus.setVisibility(View.VISIBLE);
+                checkBoxPassenger.setEnabled(false);
+                itemView.setEnabled(false);
+            } else {
+                tgPassengerStatus.setText("");
+                tgPassengerStatus.setVisibility(View.GONE);
+                checkBoxPassenger.setEnabled(true);
+                itemView.setEnabled(true);
+            }
 
             txtPassengerName.setText(String.format("%s %s %s", passengerViewModel.getTitleString(),
                     passengerViewModel.getFirstName(), passengerViewModel.getLastName()));

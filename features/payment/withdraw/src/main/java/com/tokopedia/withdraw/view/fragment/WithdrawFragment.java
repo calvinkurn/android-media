@@ -5,9 +5,8 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -21,7 +20,6 @@ import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -37,10 +35,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -48,7 +49,6 @@ import com.tokopedia.abstraction.common.utils.view.PropertiesEventsWatcher;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
@@ -81,7 +81,6 @@ import com.tokopedia.withdraw.view.presenter.WithdrawPresenter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -103,6 +102,17 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private static final int DEFAULT_MIN_FOR_SELECTED_BANK = 10000;
     private static final int DEFAULT_SALDO_MIN = 50000;
     private static final long SHOW_CASE_DELAY = 500;
+
+
+    private static final int REKENING_ACCOUNT_APPROVED_IN = 4;
+    private static final int REKENING_ACCOUNT_NOT_JOINED = -1;
+    private static final int REKENING_ACCOUNT_PendingOut = 1;
+    private static final int REKENING_ACCOUNT_InProgressOut = 3;
+    private static final int REKENING_ACCOUNT_ApprovedOut = 5;
+    private static final int REKENING_ACCOUNT_Rejected = 6;
+
+    private static final int REKENING_ACCOUNT_PENDINGIN = 0;
+    private static final int REKENING_ACCOUNT_INPROGRESSIN = 2;
 
 
     private int SELLER_STATE = 2;
@@ -159,6 +169,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private Group emptyScreenGroup;
     private CheckEligible checkEligible;
     private final String PARAM_HEADER_GC_TOKEN = "X-User-Token";
+
+    private int rekeningAccountStatus;
 
 
     private TextView tvEmptySaldo;
@@ -273,7 +285,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             showTicker();
         }
 
-        saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
 
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.dp_16)
                 , MethodChecker.getDrawable(getActivity(), R.drawable.swd_divider));
@@ -297,13 +308,18 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         });
 
 
+        float displayBalance;
         if (buyerSaldoBalance == 0 || buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
+            displayBalance = sellerSaldoBalance;
+            saldoTitleTV.setText(getString(R.string.saldo_seller));
             currentState = SELLER_STATE;
             sellerWithdrawal = true;
             tabLayout.getTabAt(1).select();
             bankAdapter.setCurrentTab(1);
             checkForEmptyView(1);
         } else {
+            displayBalance = buyerSaldoBalance;
+            saldoTitleTV.setText(getString(R.string.saldo_refund));
             currentState = BUYER_STATE;
             sellerWithdrawal = false;
             tabLayout.getTabAt(0).select();
@@ -311,6 +327,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             checkForEmptyView(0);
         }
 
+        saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(displayBalance, false));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -403,7 +420,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             tvEmptySaldo.setText(R.string.swd_refund_empty_msg);
             editableGroup.setVisibility(View.GONE);
             emptyScreenGroup.setVisibility(View.VISIBLE);
-        }else if(currentTab == 1 && sellerSaldoBalance == 0){
+        } else if (currentTab == 1 && sellerSaldoBalance == 0) {
             tvEmptySaldo.setText(R.string.swd_penghasilan_empty_msg);
             editableGroup.setVisibility(View.GONE);
             emptyScreenGroup.setVisibility(View.VISIBLE);
@@ -704,16 +721,18 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         Data data = checkEligible.getData();
         this.checkEligible = checkEligible;
         this.isRegisterForProgram = data.isIsPowerWD();
-        boolean isShown = PersistentCacheManager.instance
-                .get(WithdrawConstant.KEY_PREMIUM_ACCOUNT_NEW_TAG, boolean.class, false);
+        boolean isClicked = WithdrawConstant.isRekeningPremiumWidgetClicked(getContext());
         if (data != null && data.isIsPowerMerchant()) {
-            if (!isShown) {
+            rekeningAccountStatus = data.getStatusInt();
+            if (!isClicked) {
                 premiumAccountView.findViewById(R.id.tv_baru_tag).setVisibility(View.VISIBLE);
             } else
                 premiumAccountView.findViewById(R.id.tv_baru_tag).setVisibility(View.GONE);
-
             premiumAccountView.setVisibility(View.VISIBLE);
-            if (data.isIsPowerWD()) {
+
+            if (isRegisterForProgram) {
+                ((TextView) premiumAccountView.findViewById(R.id.tv_rekeningTitle))
+                        .setText(getString(R.string.swd_rekening_premium));
                 if (data.getWdPoints() == 0) {
                     setProgramStatus(getString(R.string.active_bri_Account, data.getProgram()),
                             getString(R.string.withdrawal_info));
@@ -723,12 +742,20 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                             getString(R.string.withdraw_help));
                 }
             } else {
-                if (data.getStatusInt() == 0)
-                    setProgramStatus(getString(R.string.withdraw_with_more),
+                ((TextView) premiumAccountView.findViewById(R.id.tv_rekeningTitle))
+                        .setText(getString(R.string.swd_program_tarik_saldo));
+
+                if (rekeningAccountStatus == REKENING_ACCOUNT_NOT_JOINED || rekeningAccountStatus == REKENING_ACCOUNT_PendingOut
+                        || rekeningAccountStatus == REKENING_ACCOUNT_InProgressOut || rekeningAccountStatus == REKENING_ACCOUNT_ApprovedOut
+                        || rekeningAccountStatus == REKENING_ACCOUNT_Rejected) {
+                    setProgramStatus(getString(R.string.swd_earn_point_on_withdraw),
                             getString(R.string.bri_cek));
-                else
+                } else if (rekeningAccountStatus == REKENING_ACCOUNT_INPROGRESSIN || rekeningAccountStatus == REKENING_ACCOUNT_PENDINGIN) {
                     setProgramStatus(getString(R.string.account_in_progress, data.getProgram()),
                             getString(R.string.bri_cek));
+                } else {
+                    premiumAccountView.setVisibility(View.GONE);
+                }
             }
             premiumAccountView.findViewById(R.id.tv_briProgramButton)
                     .setOnClickListener(new View.OnClickListener() {
@@ -751,37 +778,49 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     private void handleProgramWidgetClick() {
-        briProgramBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        View view = getLayoutInflater().inflate(R.layout.swd_program_tarik_saldo, null, true);
-        if (isRegisterForProgram) {
-            ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
-                    .setText(getString(R.string.swd_program_tarik_saldo));
-            ((TextView) view.findViewById(R.id.tv_wdProgramDescription))
-                    .setText(getString(R.string.swd_program_tarik_saldo_description));
-            ((TextView) view.findViewById(R.id.wdProgramContinue))
-                    .setText(getString(R.string.swd_program_tarik_btn));
-            analytics.eventClickInfo();
-        } else {
-            ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
-                    .setText(getString(R.string.swd_rekening_premium));
-            ((TextView) view.findViewById(R.id.tv_wdProgramDescription))
-                    .setText(getString(R.string.swd_rekening_premium_description));
-            ((TextView) view.findViewById(R.id.wdProgramContinue))
-                    .setText(getString(R.string.swd_rekening_premium_btn));
-            analytics.eventClickJoinNow();
-        }
+        analytics.eventOnPremiumProgramWidgetClick();
+        if (rekeningAccountStatus == REKENING_ACCOUNT_APPROVED_IN) {
+            briProgramBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+            View view = getLayoutInflater().inflate(R.layout.swd_program_tarik_saldo, null, true);
+            if (isRegisterForProgram) {
+                ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
+                        .setText(getString(R.string.swd_rekening_premium));
+                ((TextView) view.findViewById(R.id.tv_wdProgramDescription))
+                        .setText(getString(R.string.swd_rekening_premium_description));
+                ((TextView) view.findViewById(R.id.wdProgramContinue))
+                        .setText(getString(R.string.swd_rekening_premium_btn));
 
-        view.findViewById(R.id.wdProgramContinue).setOnClickListener(v -> {
-            briProgramBottomSheet.dismiss();
-            RouteManager.route(getContext(), String.format("%s?url=%s",
-                    ApplinkConst.WEBVIEW, WEB_REKENING_PREMIUM_URL));
-            analytics.eventClickGotoDashboard();
-        });
-        briProgramBottomSheet.setContentView(view);
-        briProgramBottomSheet.show();
+                analytics.eventClickInfo();
+            } else {
+
+                ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
+                        .setText(getString(R.string.swd_program_tarik_saldo));
+                ((TextView) view.findViewById(R.id.tv_wdProgramDescription))
+                        .setText(getString(R.string.swd_program_tarik_saldo_description));
+                ((TextView) view.findViewById(R.id.wdProgramContinue))
+                        .setText(getString(R.string.swd_program_tarik_btn));
+                analytics.eventClickJoinNow();
+            }
+            view.findViewById(R.id.wdProgramContinue).setOnClickListener(v -> {
+                WithdrawConstant.saveRekeningPremiumWidgetClicked(getContext());
+                briProgramBottomSheet.dismiss();
+                openRekeningAccountWebLink();
+            });
+            briProgramBottomSheet.setContentView(view);
+            briProgramBottomSheet.show();
+        } else {
+            openRekeningAccountWebLink();
+        }
     }
 
-    public AlertDialog.Builder getConfirmationDialog(String heading, String description, View.OnClickListener onClickListener) {
+    private void openRekeningAccountWebLink() {
+        String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
+                Uri.encode(WEB_REKENING_PREMIUM_URL), userSession.getDeviceId(), userSession.getUserId());
+        RouteManager.route(getContext(), resultGenerateUrl);
+        analytics.eventClickGotoDashboard();
+    }
+
+    private AlertDialog.Builder getConfirmationDialog(String heading, String description, View.OnClickListener onClickListener) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.confirmation_dialog, null);
@@ -861,11 +900,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.tkpd_main_green));
                     }
 
-                }
-                else if (resultCode == WithdrawConstant.ResultCode.GOTO_SALDO_DETAIL_PAGE){
+                } else if (resultCode == WithdrawConstant.ResultCode.GOTO_SALDO_DETAIL_PAGE) {
                     getActivity().finish();
-                }
-                else if(resultCode == WithdrawConstant.ResultCode.GOTO_TOKOPEDIA_HOME_PAGE){
+                } else if (resultCode == WithdrawConstant.ResultCode.GOTO_TOKOPEDIA_HOME_PAGE) {
                     getActivity().finish();
                     RouteManager.route(getContext(), ApplinkConst.HOME, "");
                 }
@@ -913,5 +950,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bottomSheet.setCustomContentView(view, getString(R.string.saldo_withdraw_tnc_title), false);
         bottomSheet.show();
     }
+
 
 }

@@ -8,19 +8,18 @@ import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
-import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
-import com.tokopedia.flight.R
-import com.tokopedia.flight.booking.constant.FlightBookingPassenger
-import com.tokopedia.flight.booking.view.viewmodel.*
+import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity
 import com.tokopedia.flight.bookingV2.domain.FlightAddToCartV11UseCase
 import com.tokopedia.flight.bookingV2.domain.FlightGetCartDataUseCase
 import com.tokopedia.flight.bookingV2.presentation.contract.FlightBookingContract
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.*
 import com.tokopedia.flight.bookingV2.presentation.viewmodel.mapper.FlightBookingCartDataMapper
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.data.model.FlightException
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel
@@ -124,6 +123,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 val data = graphqlResponse.getData<ProfilePojo>(ProfilePojo::class.java)
                 val profileInfo = data.profileInfo
                 if (isViewAttached) {
+                    view.hideContactDataProgressBar()
                     if (view.getContactName().isEmpty()) {
                         view.setContactName(profileInfo.fullName)
                     }
@@ -145,7 +145,6 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                         view.setContactGender(profileInfo.gender.toInt())
                     }
                 }
-                view.hideContactDataProgressBar()
             }
 
             override fun onCompleted() {

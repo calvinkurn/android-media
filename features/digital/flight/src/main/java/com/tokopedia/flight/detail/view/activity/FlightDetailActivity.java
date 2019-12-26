@@ -34,6 +34,7 @@ public class FlightDetailActivity extends BaseTabActivity {
 
     public static final String EXTRA_FLIGHT_SEARCH_MODEL = "EXTRA_FLIGHT_DETAIL_MODEL";
     public static final String EXTRA_FLIGHT_SELECTED = "EXTRA_FLIGHT_SELECTED";
+    public static final String EXTRA_FLIGHT_SELECTED_TERM = "EXTRA_FLIGHT_SELECTED_TERM";
     private static final String EXTRA_FLIGHT_DISPLAY_SUBMIT = "EXTRA_FLIGHT_DISPLAY_SUBMIT";
     @Inject
     FlightAnalytics flightAnalytics;
@@ -57,7 +58,7 @@ public class FlightDetailActivity extends BaseTabActivity {
 
     @Override
     protected int getLayoutRes() {
-        return com.tokopedia.flight.R.layout.activity_flight_detail;
+        return R.layout.activity_flight_detail;
     }
 
     @Override
@@ -65,14 +66,14 @@ public class FlightDetailActivity extends BaseTabActivity {
         flightDetailViewModel = getIntent().getParcelableExtra(EXTRA_FLIGHT_SEARCH_MODEL);
         isSubmitDisplayed = getIntent().getBooleanExtra(EXTRA_FLIGHT_DISPLAY_SUBMIT, true);
         super.setupLayout(savedInstanceState);
-        buttonSubmit = (Button) findViewById(com.tokopedia.flight.R.id.button_submit);
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(com.tokopedia.flight.R.id.collapsing_toolbar);
+        buttonSubmit = (Button) findViewById(R.id.button_submit);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(" ");
-        appBarLayout = (AppBarLayout) findViewById(com.tokopedia.flight.R.id.app_bar_layout);
-        departureAirportCode = (TextView) findViewById(com.tokopedia.flight.R.id.departure_airport_code);
-        departureAirportName = (TextView) findViewById(com.tokopedia.flight.R.id.departure_airport_name);
-        arrivalAirportCode = (TextView) findViewById(com.tokopedia.flight.R.id.arrival_airport_code);
-        arrivalAirportName = (TextView) findViewById(com.tokopedia.flight.R.id.arrival_airport_name);
+        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+        departureAirportCode = (TextView) findViewById(R.id.departure_airport_code);
+        departureAirportName = (TextView) findViewById(R.id.departure_airport_name);
+        arrivalAirportCode = (TextView) findViewById(R.id.arrival_airport_code);
+        arrivalAirportName = (TextView) findViewById(R.id.arrival_airport_name);
 
         departureAirportCode.setText(flightDetailViewModel.getDepartureAirport());
         departureAirportName.setText(flightDetailViewModel.getDepartureAirportCity());
@@ -146,6 +147,7 @@ public class FlightDetailActivity extends BaseTabActivity {
     private void setResultAndFinish() {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_FLIGHT_SELECTED, flightDetailViewModel.getId());
+        intent.putExtra(EXTRA_FLIGHT_SELECTED_TERM, flightDetailViewModel.getTerm());
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -228,6 +230,11 @@ public class FlightDetailActivity extends BaseTabActivity {
     @Override
     protected int getViewPagerResourceId() {
         return R.id.pager;
+    }
+
+    @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
     }
 
     @Override

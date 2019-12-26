@@ -1,15 +1,10 @@
 package com.tokopedia.hotel.orderdetail.presentation.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.Intent.ACTION_DIAL
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import androidx.annotation.StringRes
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
@@ -22,7 +17,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -160,7 +159,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) {
                 orderDetailViewModel.getOrderDetail(
                         GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                        GraphqlHelper.loadRawString(resources, R.raw.query_travel_cross_selling),
+                        GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_cross_selling),
                         orderId, orderCategory)
             } else {
                 orderDetailViewModel.getOrderDetail(
@@ -341,7 +340,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             payment_info_recycler_view.visibility = View.GONE
             payment_seperator_1.visibility = View.GONE
         } else {
-            var paymentAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
+            var paymentAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LEFT_LAYOUT)
             payment_info_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             payment_info_recycler_view.adapter = paymentAdapter
             for (item in payMethod) {

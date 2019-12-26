@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.product.detail.R
-import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -179,8 +179,24 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PDP_FINANCING_RECOMMENDATION)
+    fun providePDPFinancingRecommendation(@ApplicationContext context: Context) :String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment_recommendation)
+    }
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION)
+    fun providePDPFinancingCalculation(@ApplicationContext context: Context) :String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment_calculations)
+    }
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
-    fun proviceRecommendationProduct(@ApplicationContext context: Context): String =
+    fun provideRecommendationProduct(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
 
     @ProductDetailScope
@@ -208,7 +224,7 @@ class GqlRawQueryModule {
     @Provides
     @Named(SubmitHelpTicketUseCase.QUERY_NAME)
     fun provideSubmitHelpTicket(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.transaction.common.R.raw.submit_help_ticket)
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
 
     @ProductDetailScope
     @Provides

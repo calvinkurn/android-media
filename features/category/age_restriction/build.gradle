@@ -39,14 +39,12 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
 project.ext {
     artifactId = 'age-restriction'
     groupId = 'com.tokopedia.category'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="age_restriction-release"
 }
 

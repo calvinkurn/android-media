@@ -15,10 +15,7 @@
 -dontwarn com.facebook.**
 -dontwarn com.tokopedia.tkpd.analytics.**
 -dontwarn okio.**
--dontwarn com.drew.metadata.xmp.**
 -dontwarn com.viewpagerindicator.LinePageIndicator
--dontwarn butterknife.internal.**
--dontwarn com.raizlabs.**
 
 -keep class com.android.support.** { *; }
 -keepclasseswithmembers class * {
@@ -173,19 +170,6 @@
     @twitter4j.** *;
 }
 
-# this is butterknife
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
-
--keepclasseswithmembernames class * {
-    @butterknife.* <fields>;
-}
-
--keepclasseswithmembernames class * {
-    @butterknife.* <methods>;
-}
-
 #recharge
 -keep class com.tokopedia.core.recharge.model.** { *; }
 
@@ -193,7 +177,6 @@
 -keepattributes *Annotation*,EnclosingMethod,Signature
 
 -dontwarn com.squareup.okhttp.**
-# this is butterknife
 
 # this is retrofit
 -dontwarn retrofit2.**
@@ -230,27 +213,11 @@
 # Application classes that will be serialized/deserialized over Gson
 -keep class com.google.gson.examples.android.model.** { *; }
 
--keep class com.drew.** {*;}
--keep interface com.drew.** {*;}
--keep enum com.drew.** {*;}
-
 -keepattributes *Annotation*
 
 -keepattributes Signature
 
 -keepattributes InnerClasses
-
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
-
--keepclasseswithmembernames class * {
-  @butterknife.* <fields>;
-}
-
--keepclasseswithmembernames class * {
-  @butterknife.* <methods>;
-}
 
 -keep class com.activeandroid.**{ *; }
 
@@ -265,9 +232,6 @@
 -keep class com.tokopedia.core.discovery.model.**{ *; }
 -keep class com.tokopedia.core.dynamicfilter.model.** { *; }
 -keep class com.tokopedia.core.dynamicfilter.adapter.** { *; }
-
-# add exception for dbflow
--keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -keep class com.tokopedia.core.database.model.** { *; }
 -keep class com.tokopedia.core.database.recharge.** { *; }
 
@@ -370,6 +334,7 @@
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;
 }
+-dontwarn kotlinx.coroutines.flow.**inlined**
 
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}

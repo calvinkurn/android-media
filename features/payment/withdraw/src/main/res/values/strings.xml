@@ -111,6 +111,7 @@
 
 
     <string name="swd_admin_fee">Dikenai biaya admin %s</string>
+    <string name="clickableTextWithdraw">Bayar Sekarang</string>
 
     <string name="swd_program_tarik_saldo">Program Tarik Saldo</string>
     <string name="swd_program_tarik_saldo_description">Gabung program dan nikmati berbagai macam keuntungan setiap penarikan</string>
@@ -123,5 +124,6 @@
     <string name="swd_refund_empty_msg">Kamu tidak punya Saldo Refund untuk ditarik</string>
     <string name="admin_fee_msg">Dikenai biaya admin %s</string>
     <string name="swd_penghasilan_empty_msg">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
+    <string name="swd_earn_point_on_withdraw">Dapatkan poin setiap penarikan</string>
 
 </resources>

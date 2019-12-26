@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import android.view.View
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.R
@@ -27,6 +27,7 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.newdynamicfilter.helper.SortHelper
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import java.util.*
@@ -57,6 +58,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     private var filterTrackingData: FilterTrackingData? = null;
 
     var totalCount = ""
+    var totalCountInt = 0
 
 
     private var bottomSheetListener: BottomSheetListener? = null
@@ -97,6 +99,9 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
         if (context is CategoryNavigationListener) {
             categoryNavigationListener = context
+        }
+        if (context != null) {
+            setSortListener(context)
         }
         if (context is BottomSheetListener) {
             this.bottomSheetListener = context
@@ -218,7 +223,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
         if (activity == null) return
 
-        if(!FilterSortManager.openSortActivity(this, sort, selectedSort)) {
+        if (!FilterSortManager.openSortActivity(this, sort, selectedSort)) {
             NetworkErrorHelper.showSnackbar(activity, activity!!.getString(R.string.error_sort_data_not_ready))
         }
     }
@@ -233,6 +238,18 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         val initializedFilterList = FilterHelper.initializeFilterList(getFilters())
         filterController?.initFilterController(searchParameter?.getSearchParameterHashMap(), initializedFilterList)
         initSelectedSort()
+    }
+
+    private fun showSortTickIfSelected(): Boolean {
+        var toShow = false
+        if (selectedSort.size == 1 && DEFAULT_SORT != selectedSort["ob"]?.toInt())
+            for (items in sort) {
+                if (items.key == selectedSort.keys.elementAt(0) && items.value == selectedSort.getValue(items.key)) {
+                    toShow = true
+                    break
+                }
+            }
+        return toShow
     }
 
     private fun setSortData(sorts: List<Sort>) {
@@ -346,27 +363,27 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, object:FilterSortManager.Callback {
-            override fun onFilterResult(queryParams: MutableMap<String, String>?, selectedFilters: MutableMap<String, String>?, selectedOptions: MutableList<Option>?) {
+        FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, object : FilterSortManager.Callback {
+            override fun onFilterResult(queryParams: Map<String, String>?, selectedFilters: Map<String, String>?, selectedOptions: List<Option>?) {
 
             }
 
-            override fun onSortResult(selectedSort: MutableMap<String, String>, selectedSortName: String?, autoApplyFilter: String?) {
-                setSelectedSort(HashMap(selectedSort))
-                selectedSort.let {
+            override fun onSortResult(selectedSort: Map<String, String>?, selectedSortName: String?, autoApplyFilter: String?) {
+                setSelectedSort(HashMap(selectedSort?.toMutableMap() ?: mutableMapOf()))
+                selectedSort?.let {
                     searchParameter.getSearchParameterHashMap().putAll(it)
                 }
 
                 clearDataFilterSort()
                 reloadData()
-                sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort["ob"]?.toInt())
+                sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort?.get("ob")?.toInt())
                 onSortAppliedEvent(selectedSortName ?: "",
-                        selectedSort["ob"]?.toInt() ?: 0)
+                        selectedSort?.get("ob")?.toInt() ?: 0)
             }
         })
     }
 
-    abstract fun onSortAppliedEvent(selectedSortName:String, sortValue:Int)
+    abstract fun onSortAppliedEvent(selectedSortName: String, sortValue: Int)
 
     fun clearDataFilterSort() {
         if (filters != null) {
@@ -397,6 +414,11 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         }
     }
 
+    fun setTotalSearchResultCountInteger(count: Int?) {
+        if(count!=null)
+            totalCountInt = count
+    }
+
     fun onBottomSheetHide() {
         FilterTracking.eventApplyFilter(getFilterTrackingData(), screenName, getSelectedFilter())
     }
@@ -413,11 +435,66 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
 
-    fun setSortListener(sortAppliedListener:SortAppliedListener){
-        this.sortAppliedListener = sortAppliedListener
+    fun setSortListener(context: Context?) {
+        this.sortAppliedListener = context as SortAppliedListener
     }
 
     interface SortAppliedListener {
         fun onSortApplied(showTick: Boolean)
+    }
+
+    fun resetSortTick() {
+        sortAppliedListener?.onSortApplied(showSortTickIfSelected())
+    }
+
+    protected fun removeSelectedFilter(uniqueId: String) {
+        if (filterController == null) return
+
+        val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
+
+        removeFilterFromFilterController(option)
+        refreshSearchParameter(filterController.getParameter())
+        refreshFilterController(HashMap(filterController.getParameter()))
+        clearDataFilterSort()
+        reloadData()
+    }
+
+    fun removeFilterFromFilterController(option: Option) {
+        if (filterController == null) return
+
+        val optionKey = option.key
+
+        if (Option.KEY_CATEGORY == optionKey) {
+            filterController.setFilter(option, false, true)
+        } else if (Option.KEY_PRICE_MIN == optionKey || Option.KEY_PRICE_MAX == optionKey) {
+            filterController.setFilter(generatePriceOption(Option.KEY_PRICE_MIN), false, true)
+            filterController.setFilter(generatePriceOption(Option.KEY_PRICE_MAX), false, true)
+        } else {
+            filterController.setFilter(option, false)
+        }
+    }
+
+    private fun generatePriceOption(priceOptionKey: String): Option {
+        val option = Option()
+        option.key = priceOptionKey
+        return option
+    }
+
+    fun refreshSearchParameter(queryParams: Map<String, String>) {
+        if (searchParameter == null) return
+
+        this.searchParameter.getSearchParameterHashMap().clear()
+        this.searchParameter.getSearchParameterHashMap().putAll(queryParams)
+        this.searchParameter.getSearchParameterHashMap()[SearchApiConst.ORIGIN_FILTER] = SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+    }
+
+    fun refreshFilterController(queryParams: java.util.HashMap<String, String>) {
+        if (filterController == null || getFilters() == null) return
+
+        val params = java.util.HashMap(queryParams)
+        params[SearchApiConst.ORIGIN_FILTER] = SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+
+        val initializedFilterList = FilterHelper.initializeFilterList(getFilters())
+        filterController.initFilterController(params, initializedFilterList)
     }
 }

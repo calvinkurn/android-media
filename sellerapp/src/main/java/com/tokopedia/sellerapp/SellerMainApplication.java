@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -15,8 +16,6 @@ import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
@@ -30,12 +29,17 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -146,6 +150,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initCacheApi();
         GraphqlClient.init(this);
         NetworkClient.init(this);
+        initializeAbTestVariant();
     }
 
     @Override
@@ -153,6 +158,19 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         super.attachBaseContext(base);
         SplitCompat.install(this);
     }
+
+    private void initializeAbTestVariant() {
+        SharedPreferences sharedPreferences = getSharedPreferences(AbTestPlatform.Companion.getSHARED_PREFERENCE_AB_TEST_PLATFORM(), Context.MODE_PRIVATE);
+        Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
+        RemoteConfigInstance.initAbTestPlatform(this);
+        Long current = new Date().getTime();
+
+        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
+            RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
+        }
+    }
+
+    protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
 
     private void setVersionCode() {
         try {
@@ -169,14 +187,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     private void generateSellerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = SellerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
-    }
-
-    public void initDbFlow() {
-        try {
-            FlowManager.getConfig();
-        } catch (IllegalStateException e) {
-            FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
-        }
     }
 
     private void initCacheApi() {
@@ -197,11 +207,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     @Override
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
         return null;
-    }
-
-    @Override
-    public Intent getInboxTicketCallingIntent(Context context) {
-        return new Intent(context, InboxListActivity.class);
     }
 
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.base.IMapperUtil
 import com.tokopedia.purchase_platform.common.data.model.response.Messages
 import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack
@@ -21,12 +20,13 @@ import com.tokopedia.purchase_platform.features.cart.data.model.response.*
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.*
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
 import javax.inject.Inject
+import kotlin.math.min
 
 /**
  * Created by Irfan Khoirul on 2019-10-17.
  */
 
-class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context, val iMapperUtil: IMapperUtil) {
+class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context) {
 
     companion object {
         const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
@@ -233,11 +233,6 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
         }
     }
 
-    private fun mapCartItemDatErrorState(cartItemData: CartItemData, isDisabledAllProduct: Boolean, shopData: Any) {
-        cartItemData.let {
-        }
-    }
-
     private fun mapCartItemDataError(cartDetail: CartDetail, it: CartItemData) {
         if (cartDetail.errors != null && cartDetail.errors.size > 0) {
             it.isError = true
@@ -246,10 +241,13 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
             if (similarProduct != null && !TextUtils.isEmpty(similarProduct.text) && !TextUtils.isEmpty(similarProduct.url)) {
                 it.similarProductData = SimilarProductData(similarProduct.text, similarProduct.url)
             }
+            val nicotineLiteMessage = cartDetail.nicotineLiteMessage
+            if (nicotineLiteMessage != null && !TextUtils.isEmpty(nicotineLiteMessage.text) && !TextUtils.isEmpty(nicotineLiteMessage.url)) {
+                it.nicotineLiteMessageData = NicotineLiteMessageData(nicotineLiteMessage.text, nicotineLiteMessage.url)
+            }
 
             if (cartDetail.errors.size > 1) {
-                it.errorMessageDescription = iMapperUtil.convertToString(
-                        cartDetail.errors.subList(1, cartDetail.errors.size - 1))
+                it.errorMessageDescription = cartDetail.errors.subList(1, cartDetail.errors.size - 1).joinToString()
             }
         }
     }
@@ -260,8 +258,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
             it.warningMessageTitle = cartDetail.messages[0]
 
             if (cartDetail.messages.size > 1) {
-                it.warningMessageDescription = iMapperUtil.convertToString(
-                        cartDetail.messages.subList(1, cartDetail.messages.size - 1))
+                it.warningMessageDescription = cartDetail.messages.subList(1, cartDetail.messages.size - 1).joinToString()
             }
         }
     }
@@ -272,8 +269,12 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
             it.parentId = cartDetail.product.parentId.toString()
             it.productId = cartDetail.product.productId.toString()
             it.productName = cartDetail.product.productName
-            it.minimalQtyOrder = cartDetail.product.productMinOrder
-            it.invenageValue = cartDetail.product.productInvenageValue
+            it.minOrder = cartDetail.product.productMinOrder
+            it.maxOrder = if (cartDetail.product.productSwitchInvenage == 0) {
+                cartDetail.product.productMaxOrder
+            } else {
+                min(cartDetail.product.productMaxOrder, cartDetail.product.productInvenageValue)
+            }
             it.priceChangesState = cartDetail.product.priceChanges.changesState
             it.priceChangesDesc = cartDetail.product.priceChanges.description
             it.productInvenageByUserInCart = cartDetail.product.productInvenageTotal.byUser.inCart
@@ -291,12 +292,12 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
             it.isPreOrder = cartDetail.product.isPreorder == 1
             it.isCod = cartDetail.product.isCod
             it.isFreeReturn = cartDetail.product.isFreereturns == 1
-            it.isCashBack = !iMapperUtil.isEmpty(cartDetail.product.productCashback)
+            it.isCashBack = !cartDetail.product.productCashback.isNullOrEmpty()
             it.isFavorite = false
             it.productCashBack = cartDetail.product.productCashback
             it.cashBackInfo = "Cashback ${cartDetail.product.productCashback}"
             it.freeReturnLogo =
-                    if (!iMapperUtil.isEmpty(cartDetail.product.freeReturns)) cartDetail.product.freeReturns.freeReturnsLogo
+                    if (cartDetail.product.freeReturns != null) cartDetail.product.freeReturns.freeReturnsLogo
                     else ""
             it.category = cartDetail.product.category
             it.categoryId = cartDetail.product.categoryId.toString()
@@ -401,7 +402,6 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
         return CartItemData.UpdatedData().let {
             it.quantity = cartDetail.product.productQuantity
             it.remark = cartDetail.product.productNotes
-            it.maxQuantity = cartDataListResponse.maxQuantity
             it.maxCharRemark = cartDataListResponse.maxCharNote
             it
         }
@@ -434,7 +434,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
     private fun mapShopGroupWithErrorData(shopGroupWithError: ShopGroupWithError,
                                           cartDataListResponse: CartDataListResponse): ShopGroupWithErrorData {
         return ShopGroupWithErrorData().let {
-            it.isError = !iMapperUtil.isEmpty(shopGroupWithError.errors)
+            it.isError = !shopGroupWithError.errors.isNullOrEmpty()
             it.errorLabel = shopGroupWithError.errors.firstOrNull() ?: ""
             it.shopName = shopGroupWithError.shop.shopName
             it.shopId = shopGroupWithError.shop.shopId.toString()
