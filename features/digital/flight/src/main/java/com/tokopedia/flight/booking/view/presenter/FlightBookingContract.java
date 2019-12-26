@@ -1,8 +1,9 @@
 package com.tokopedia.flight.booking.view.presenter;
 
+import android.content.Context;
+
 import androidx.annotation.StringRes;
 
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
@@ -13,6 +14,7 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 
 import java.util.Date;
 import java.util.List;
@@ -23,6 +25,8 @@ import java.util.List;
 
 public interface FlightBookingContract {
     interface View extends FlightBaseBookingContact.View {
+
+        Context getContext();
 
         String getContactName();
 
@@ -136,7 +140,7 @@ public interface FlightBookingContract {
 
         void onButtonSubmitClicked();
 
-        void onPhoneCodeResultReceived(CountryPhoneCode phoneCode);
+        void onPhoneCodeResultReceived(TravelCountryPhoneCode phoneCode);
 
         void onPassengerResultReceived(FlightBookingPassengerViewModel passengerViewModel);
 

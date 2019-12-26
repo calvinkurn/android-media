@@ -5,18 +5,23 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.travel.country_code.data.TravelPhoneCodeEntity
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import rx.Observable
+import rx.Subscriber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * @author by furqan on 23/12/2019
  */
-class TravelCountryCodeUseCase @Inject constructor(private val useCase: MultiRequestGraphqlUseCase) {
+class TravelCountryCodeUseCase @Inject constructor(private val useCase: MultiRequestGraphqlUseCase, private val graphqlUseCase: GraphqlUseCase) {
 
     suspend fun execute(rawQuery: String): Result<List<TravelCountryPhoneCode>> {
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).setExpiryTime(TimeUnit.DAYS.toMillis(EXPIRED_CACHE_DAYS)).build())
@@ -32,6 +37,20 @@ class TravelCountryCodeUseCase @Inject constructor(private val useCase: MultiReq
         } catch (throwable: Throwable) {
             Fail(throwable)
         }
+    }
+
+    fun createObservable(query: String): Observable<GraphqlResponse> {
+        val graphqlRequest = GraphqlRequest(query, TravelPhoneCodeEntity.Response::class.java)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        return graphqlUseCase.createObservable(RequestParams.EMPTY)
+    }
+
+    fun executeRx(query: String, subscriber: Subscriber<GraphqlResponse>?) {
+        val graphqlRequest = GraphqlRequest(query, TravelPhoneCodeEntity.Response::class.java)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(RequestParams.EMPTY, subscriber)
     }
 
     companion object {

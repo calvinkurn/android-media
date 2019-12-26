@@ -1,11 +1,11 @@
 
 package com.tokopedia.flight.booking.view.presenter;
 
-import androidx.annotation.NonNull;
 import android.util.Patterns;
 
-import com.tokopedia.common.travel.domain.GetPhoneCodeUseCase;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
+import androidx.annotation.NonNull;
+
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
@@ -41,6 +41,10 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo;
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase;
+import com.tokopedia.travel.country_code.data.TravelPhoneCodeCountry;
+import com.tokopedia.travel.country_code.data.TravelPhoneCodeEntity;
+import com.tokopedia.travel.country_code.domain.TravelCountryCodeUseCase;
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -72,7 +76,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private static final int MAX_CONTACT_NAME_LENGTH = 20;
     private FlightAddToCartUseCase flightAddToCartUseCase;
     private FlightBookingCartDataMapper flightBookingCartDataMapper;
-    private GetPhoneCodeUseCase getPhoneCodeUseCase;
+    private TravelCountryCodeUseCase getPhoneCodeUseCase;
     private FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase;
     private CompositeSubscription compositeSubscription;
     private FlightAnalytics flightAnalytics;
@@ -88,7 +92,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Inject
     public FlightBookingPresenter(FlightAddToCartUseCase flightAddToCartUseCase,
                                   FlightBookingCartDataMapper flightBookingCartDataMapper,
-                                  GetPhoneCodeUseCase getPhoneCodeUseCase,
+                                  TravelCountryCodeUseCase getPhoneCodeUseCase,
                                   FlightAnalytics flightAnalytics,
                                   UserSessionInterface userSession,
                                   FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase,
@@ -307,7 +311,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @Override
-    public void onPhoneCodeResultReceived(CountryPhoneCode phoneCode) {
+    public void onPhoneCodeResultReceived(TravelCountryPhoneCode phoneCode) {
         getView().getCurrentBookingParamViewModel().setPhoneCode(phoneCode);
         getView().renderPhoneCodeView(String.format("+%s", phoneCode.getCountryPhoneCode()));
     }
@@ -436,9 +440,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                             }
                         })
                         .zipWith(getDefaultPhoneDataObservable(),
-                                new Func2<FlightBookingCartData, CountryPhoneCode, FlightBookingCartData>() {
+                                new Func2<FlightBookingCartData, TravelCountryPhoneCode, FlightBookingCartData>() {
                                     @Override
-                                    public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, CountryPhoneCode flightBookingPhoneCode) {
+                                    public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, TravelCountryPhoneCode flightBookingPhoneCode) {
                                         flightBookingCartData.setDefaultPhoneCode(flightBookingPhoneCode);
                                         return flightBookingCartData;
                                     }
@@ -521,14 +525,22 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @NonNull
-    private Observable<CountryPhoneCode> getDefaultPhoneDataObservable() {
-        return getPhoneCodeUseCase.createObservable(getPhoneCodeUseCase.createRequest("Indonesia"))
-                .flatMap(new Func1<List<CountryPhoneCode>, Observable<CountryPhoneCode>>() {
+    private Observable<TravelCountryPhoneCode> getDefaultPhoneDataObservable() {
+        return getPhoneCodeUseCase.createObservable(GraphqlHelper.loadRawString(getView().getContext().getResources(), com.tokopedia.travel.country_code.R.raw.query_travel_get_all_country))
+                .flatMap(new Func1<GraphqlResponse, Observable<TravelCountryPhoneCode>>() {
                     @Override
-                    public Observable<CountryPhoneCode> call(List<CountryPhoneCode> flightBookingPhoneCodes) {
-                        return Observable.from(flightBookingPhoneCodes);
+                    public Observable<TravelCountryPhoneCode> call(GraphqlResponse graphqlResponse) {
+                        TravelPhoneCodeEntity.Response data = graphqlResponse.getData(TravelPhoneCodeEntity.Response.class);
+                        if (data != null) {
+                            for (TravelPhoneCodeCountry item : data.getTravelGetAllCountries().getCountries()) {
+                                if (item.getId().equals("ID") || item.getAttributes().getName().equals("Indonesia")) {
+                                    return Observable.just(new TravelCountryPhoneCode(item.getId(), item.getAttributes().getName(), item.getAttributes().getPhoneCode()));
+                                }
+                            }
+                        }
+                        return Observable.just(new TravelCountryPhoneCode());
                     }
-                }).first();
+                });
     }
 
     @NonNull
@@ -662,7 +674,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         }
         travelTickerUseCase.unsubscribe();
         flightAddToCartUseCase.unsubscribe();
-        getPhoneCodeUseCase.unsubscribe();
         flightSearchJourneyByIdUseCase.unsubscribe();
         getProfileUseCase.unsubscribe();
         detachView();

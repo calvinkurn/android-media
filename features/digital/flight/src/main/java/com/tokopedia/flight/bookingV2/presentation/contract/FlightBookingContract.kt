@@ -1,7 +1,7 @@
 package com.tokopedia.flight.bookingV2.presentation.contract
 
+import android.content.Context
 import androidx.annotation.StringRes
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.flight.booking.view.viewmodel.*
@@ -17,6 +17,8 @@ import java.util.*
 interface FlightBookingContract {
 
     interface View : FlightBaseBookingContract.View {
+
+        fun getViewContext(): Context
 
         fun getContactName(): String
 

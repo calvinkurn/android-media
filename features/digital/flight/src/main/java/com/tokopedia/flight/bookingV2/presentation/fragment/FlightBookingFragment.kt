@@ -3,19 +3,21 @@ package com.tokopedia.flight.bookingV2.presentation.fragment
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
 import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
 import com.tokopedia.common.travel.presentation.model.TravelContactData
@@ -205,6 +207,8 @@ class FlightBookingFragment : BaseDaggerFragment(),
             flightBookingPresenter.onChangePassengerButtonClicked(viewModel, departureDate)
         }
     }
+
+    override fun getViewContext(): Context = requireContext()
 
     override fun getContactName(): String = widget_partial_traveller_info.getContactName()
 
@@ -584,7 +588,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     private fun initializePassengerInfo() {
         val adapterTypeFactory = FlightBookingPassengerAdapterTypeFactory(this)
         passengerAdapter = FlightBookingPassengerAdapter(adapterTypeFactory, arrayListOf())
-        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         rv_passengers.layoutManager = layoutManager
         rv_passengers.setHasFixedSize(true)
         rv_passengers.isNestedScrollingEnabled = false
@@ -594,7 +598,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     private fun initializePriceList() {
         priceListAdapter = FlightSimpleAdapter()
         priceListAdapter.setDescriptionTextColor(resources.getColor(com.tokopedia.design.R.color.font_black_secondary_54))
-        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         rv_price_lists.layoutManager = layoutManager
         rv_price_lists.setHasFixedSize(true)
         rv_price_lists.isNestedScrollingEnabled = false
