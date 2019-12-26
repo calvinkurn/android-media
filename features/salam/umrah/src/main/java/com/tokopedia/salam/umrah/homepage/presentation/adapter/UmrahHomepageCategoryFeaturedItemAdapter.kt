@@ -36,7 +36,7 @@ class UmrahHomepageCategoryFeaturedItemAdapter(val onItemBindListener: onItemBin
                 container_umrah_homepage_deals_shimmering.visibility = View.GONE
                 iv_umrah_image.loadImage(products.banner[0])
                 labelUmrahDuration.text = resources.getString(R.string.umrah_home_page_days_duration,products.durationDays.toString())
-                ImageHandler.LoadImage(iv_umrah_provider_logo, products.travelAgent.logoUrl)
+                iv_umrah_provider_logo.loadImage(products.travelAgent.logoUrl)
                 tg_umrah_title.text = products.title
                 tg_umrah_mulai_dari.text = getSlashedPrice(resources,products.slashPrice)
                 tg_umrah_price.text = getRupiahFormat(products.originalPrice)
