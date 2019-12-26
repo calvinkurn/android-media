@@ -12,6 +12,7 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics
 import com.tokopedia.rechargeocr.data.RechargeUploadImageResponse
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -54,4 +55,8 @@ class RechargeCameraModule {
     @RechargeCameraScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+
+    @RechargeCameraScope
+    @Provides
+    fun provideRechargeCameraAnalytics(): RechargeCameraAnalytics = RechargeCameraAnalytics()
 }

@@ -22,6 +22,7 @@ import com.tokopedia.cameraview.CameraView
 import com.tokopedia.cameraview.PictureResult
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics
 import com.tokopedia.rechargeocr.di.RechargeCameraInstance
 import com.tokopedia.rechargeocr.viewmodel.RechargeUploadImageViewModel
 import com.tokopedia.rechargeocr.widget.FocusCameraView
@@ -50,6 +51,8 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var rechargeCameraAnalytics: RechargeCameraAnalytics
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_recharge_camera, container, false)
@@ -96,7 +99,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
         uploadImageviewModel.resultDataOcr.observe(this, Observer { ocrData ->
             hideLoading()
-            Toast.makeText(activity, "success get data", Toast.LENGTH_SHORT).show()
+            rechargeCameraAnalytics.scanIdCard("")
             activity?.let {
                 val intentReturn = Intent()
                 intentReturn.putExtra(EXTRA_NUMBER_FROM_CAMERA_OCR, ocrData)
@@ -107,6 +110,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
         uploadImageviewModel.errorActionOcr.observe(this, Observer {
             hideLoading()
+            rechargeCameraAnalytics.scanIdCard(it)
             Toaster.make(containerCamera, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
         })
     }

@@ -150,6 +150,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private static final String CLICK_PDP = "clickPDP";
     private static final String DIGITAL_HOMEPAGE = "digital - homepage";
     private static final String CLICK_UPDATE_SALDO = "click update saldo ";
+    private static final String CLICK_HOMEPAGE_OCR = "clickHomepage";
+    private static final String CATEGORY_OCR = "digital - native";
+    private static final String ACTION_OCR = "click camera icon";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int PANDUAN_TAB_POSITION = 1;
@@ -824,6 +827,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void onButtonCameraPickerClicked() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                CLICK_HOMEPAGE_OCR, CATEGORY_OCR, ACTION_OCR, ""));
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConsInternalDigital.CAMERA_OCR);
         startActivityForResult(intent, REQUEST_CODE_CAMERA_OCR);
     }
