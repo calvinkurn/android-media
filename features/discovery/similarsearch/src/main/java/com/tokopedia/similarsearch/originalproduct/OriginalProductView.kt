@@ -1,10 +1,7 @@
 package com.tokopedia.similarsearch.originalproduct
 
-import android.util.Log
-import android.util.TypedValue
 import android.view.View
 import androidx.annotation.DrawableRes
-import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
@@ -20,6 +17,7 @@ internal class OriginalProductView(
 
     private val fragmentView = originalProductViewListener.getFragmentView()
     private val context = fragmentView.context
+    private var originalProductCardViewAnimator: OriginalProductViewAnimator? = null
 
     fun bindOriginalProductView(similarSearchOriginalProduct: Product) {
         initCardViewOriginalProduct()
@@ -32,7 +30,8 @@ internal class OriginalProductView(
         initReview(similarSearchOriginalProduct)
         initOnButtonBuyClicked()
         initOnButtonAddToCartClicked()
-//        initOriginalProductHeights()
+
+        originalProductCardViewAnimator = OriginalProductViewAnimator(fragmentView)
     }
 
     private fun initCardViewOriginalProduct() {
@@ -66,6 +65,7 @@ internal class OriginalProductView(
 
     private fun initProductName(similarSearchOriginalProduct: Product) {
         fragmentView.textViewProductName?.text = similarSearchOriginalProduct.name
+        fragmentView.textViewProductNameCollapsed?.text = similarSearchOriginalProduct.name
     }
 
     private fun initProductPrice(similarSearchOriginalProduct: Product) {
@@ -127,105 +127,7 @@ internal class OriginalProductView(
         }
     }
 
-//    private var hasFullyCollapsed = false
-//    fun collapse(verticalOffset: Int) {
-//        if (verticalOffset > 800 && hasFullyCollapsed) return
-//
-//        TransitionManager.beginDelayedTransition(fragmentView.constraintLayoutOriginalProduct)
-//
-//        val constraintSet = ConstraintSet()
-//        constraintSet.clone(fragmentView.constraintLayoutOriginalProduct)
-//
-//        val alpha = ((800.toFloat() - verticalOffset) / 800)
-//        val scaleInto = 1f - (verticalOffset.toFloat() / 800f * 0.25f)
-//
-//        constraintSet.setAlpha(R.id.buttonAddToCart, alpha)
-//        constraintSet.setAlpha(R.id.buttonBuy, alpha)
-//        constraintSet.setAlpha(R.id.buttonAddToCartCollapsed, verticalOffset.toFloat() / 800)
-//        constraintSet.setScaleX(R.id.imageProduct, scaleInto)
-//        constraintSet.setScaleY(R.id.imageProduct, scaleInto)
-////        constraintSet.constrainHeight(R.id.constraintLayoutOriginalProduct, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100f, fragmentView.resources.displayMetrics).toInt())
-//
-//
-//        constraintSet.applyTo(fragmentView.constraintLayoutOriginalProduct)
-//
-//        if (verticalOffset >= 800) hasFullyCollapsed = true
-//    }
-//
-//    fun expand(verticalOffset: Int) {
-//        if (verticalOffset > 800) return
-//
-//        TransitionManager.beginDelayedTransition(fragmentView.constraintLayoutOriginalProduct)
-//
-//        val constraintSet = ConstraintSet()
-//        constraintSet.clone(fragmentView.constraintLayoutOriginalProduct)
-//
-//        val alpha = ((800.toFloat() - verticalOffset) / 800)
-//        val scaleInto = 1f - (verticalOffset.toFloat() / 800f * 0.25f)
-//
-//        constraintSet.setAlpha(R.id.buttonAddToCart, alpha)
-//        constraintSet.setAlpha(R.id.buttonBuy, alpha)
-//        constraintSet.setAlpha(R.id.buttonAddToCartCollapsed, verticalOffset.toFloat() / 800)
-//        constraintSet.setScaleX(R.id.imageProduct, scaleInto)
-//        constraintSet.setScaleY(R.id.imageProduct, scaleInto)
-////        constraintSet.constrainHeight(R.id.constraintLayoutOriginalProduct, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300f, fragmentView.resources.displayMetrics).toInt())
-//
-//
-//        constraintSet.applyTo(fragmentView.constraintLayoutOriginalProduct)
-//
-//        hasFullyCollapsed = false
-//    }
-
-    private var maxHeight = 0
-    private var minHeight = 0
-    private var heightDistance = 0
-    private var currentHeight = 0
-    private var hasBeenMeasured = false
-
-    private fun initOriginalProductHeights() {
-        fragmentView.cardViewOriginalProductSimilarSearch?.post {
-            maxHeight = fragmentView.cardViewOriginalProductSimilarSearch?.measuredHeight ?: 0
-            minHeight = maxHeight - (fragmentView.buttonAddToCart?.measuredHeight ?: 0)
-            heightDistance = maxHeight - minHeight
-            currentHeight = maxHeight
-
-            hasBeenMeasured = true
-
-            fragmentView.cardViewOriginalProductSimilarSearch?.layoutParams?.height = currentHeight
-
-            fragmentView.recyclerViewSimilarSearch?.setPadding(0, currentHeight, 0, 0)
-            fragmentView.recyclerViewSimilarSearch?.requestLayout()
-        }
-    }
-
-    private var currentOffset = 0
-
-    fun resize(verticalScrollOffset: Int) {
-        if (!hasBeenMeasured) return
-
-        val dy = verticalScrollOffset - currentOffset
-        currentOffset = verticalScrollOffset
-
-        currentHeight -= dy
-        currentHeight = currentHeight.coerceAtLeast(minHeight)
-        currentHeight = currentHeight.coerceAtMost(maxHeight)
-
-        fragmentView.cardViewOriginalProductSimilarSearch?.layoutParams?.height = currentHeight
-        fragmentView.cardViewOriginalProductSimilarSearch?.requestLayout()
-
-        Log.v("ori prod view", "max height: $maxHeight, min height: $minHeight, current height: $currentHeight, dy: $dy")
-    }
-
-    private fun applyConstraintSet(apply: (constraintSet: ConstraintSet) -> Unit) {
-//        fragmentView.constraintLayoutOriginalProduct?.post {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(fragmentView.constraintLayoutOriginalProduct)
-            apply(constraintSet)
-            constraintSet.applyTo(fragmentView.constraintLayoutOriginalProduct)
-//        }
-    }
-
-    private fun Float.toDp(): Int {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, fragmentView.resources.displayMetrics).toInt()
+    fun animateBasedOnScroll(dy: Int) {
+        originalProductCardViewAnimator?.animateBasedOnScroll(dy)
     }
 }

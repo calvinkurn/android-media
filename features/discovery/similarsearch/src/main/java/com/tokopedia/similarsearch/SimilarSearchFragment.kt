@@ -82,15 +82,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         initRecyclerViewLayoutManager()
         initRecyclerViewEndlessScrollListener()
         initRecyclerViewItemDecoration()
-
-
-
-//        recyclerViewSimilarSearch?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                Log.v("RecyclerView Scroll", "OnScroll dx: $dx, dy: $dy, vertical scroll offset: ${recyclerView.computeVerticalScrollOffset()}")
-//                originalProductView?.resize(recyclerView.computeVerticalScrollOffset())
-//            }
-//        })
+        initRecyclerViewAnimateOriginalProductViewListener()
     }
 
     private fun initRecyclerViewAdapter() {
@@ -127,6 +119,19 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun initRecyclerViewItemDecoration() {
         activity?.let { activity ->
             recyclerViewSimilarSearch?.addItemDecoration(createSimilarSearchItemDecoration(activity))
+        }
+    }
+
+    private fun initRecyclerViewAnimateOriginalProductViewListener() {
+        val animateOriginalProductViewListener = createAnimateOriginalProductViewListener()
+        recyclerViewSimilarSearch?.addOnScrollListener(animateOriginalProductViewListener)
+    }
+
+    private fun createAnimateOriginalProductViewListener(): RecyclerView.OnScrollListener {
+        return object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                originalProductView?.animateBasedOnScroll(dy)
+            }
         }
     }
 

@@ -68,6 +68,24 @@
             tools:text="Product Name"/>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewProductNameCollapsed"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/similar_search_selected_product_title_color"
+            android:alpha="0.0"
+            app:layout_constraintEnd_toStartOf="@id/buttonWishlist"
+            app:layout_constraintStart_toEndOf="@id/imageProduct"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5"
+            tools:text="Product Name"/>
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewPrice"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -211,11 +229,10 @@
             android:layout_width="@dimen/dp_100"
             android:layout_height="wrap_content"
             android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
+            android:clickable="false"
             android:focusable="true"
             android:text="@string/similar_search_original_product_add_to_cart_collapsed"
             android:alpha="0.0"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:unifyButtonSize="small"

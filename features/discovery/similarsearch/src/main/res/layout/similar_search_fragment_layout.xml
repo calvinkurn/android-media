@@ -27,6 +27,7 @@
         android:id="@+id/recyclerViewSimilarSearch"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
+        android:layout_marginTop="@dimen/dp_16"
         android:clipToPadding="false"
         android:layout_gravity="bottom"
         android:descendantFocusability="blocksDescendants"
