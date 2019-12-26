@@ -1,18 +1,15 @@
 package com.tokopedia.core.app;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Configuration;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.stetho.Stetho;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
@@ -26,7 +23,6 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
@@ -38,12 +34,10 @@ import com.tokopedia.user.session.UserSession;
 
 import io.fabric.sdk.android.Fabric;
 
-public abstract class MainApplication extends MainRouterApplication {
+public abstract class MainApplication extends MainRouterApplication{
 
     public static final int DATABASE_VERSION = 7;
     private static final String TAG = "MainApplication";
-    public static HUDIntent hudIntent;
-    public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
     private static Boolean isResetNotification = false;
@@ -63,29 +57,8 @@ public abstract class MainApplication extends MainRouterApplication {
         MultiDex.install(MainApplication.this);
     }
 
-    public static Boolean resetNotificationStatus(Boolean status) {
-        isResetNotification = status;
-        return isResetNotification;
-    }
-
     public static Boolean resetCartStatus(Boolean status) {
         isResetCart = status;
-        return isResetCart;
-    }
-
-    public static Boolean getIsResetTickerState() {
-        return isResetTickerState;
-    }
-
-    public static void setIsResetTickerState(Boolean isResetTickerState) {
-        MainApplication.isResetTickerState = isResetTickerState;
-    }
-
-    public static Boolean getNotificationStatus() {
-        return isResetNotification;
-    }
-
-    public static Boolean getCartStatus() {
         return isResetCart;
     }
 
@@ -100,40 +73,8 @@ public abstract class MainApplication extends MainRouterApplication {
         return 0;
     }
 
-    public static int getOrientation(Activity context) {
-        return context.getResources().getConfiguration().orientation;
-    }
-
-    public static boolean isLandscape(Activity context) {
-        return getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE;
-    }
-
-    public static int getOrientation(Context context) {
-        return context.getResources().getConfiguration().orientation;
-    }
-
-    public static boolean isLandscape(Context context) {
-        return getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE;
-    }
-
     public static boolean isDebug() {
         return BuildConfig.DEBUG;
-    }
-
-    public static void bindHudService() {
-        HUDIntent.bindService(context, new HUDIntent.HUDInterface() {
-            @Override
-            public void onServiceConnected(HUDIntent service, ServiceConnection connection) {
-                hudIntent = service;
-                hudConnection = connection;
-                hudIntent.printMessage("Binded on MainApplication");
-            }
-
-            @Override
-            public void onServiceDisconnected() {
-
-            }
-        });
     }
 
     @Override
@@ -142,8 +83,7 @@ public abstract class MainApplication extends MainRouterApplication {
         instance = this;
         init();
         initCrashlytics();
-        //StethoUtil.initStetho(this);
-        //initStetho();
+        initStetho();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -207,14 +147,14 @@ public abstract class MainApplication extends MainRouterApplication {
     }
 
     public void initStetho() {
-        //if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
+        if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
     }
 
     private void initBranch() {
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         UserSession userSession = new UserSession(this);
 
-        if (userSession.isLoggedIn()) {
+        if(userSession.isLoggedIn()) {
             UserData userData = new UserData();
             userData.setUserId(userSession.getUserId());
 
@@ -259,9 +199,7 @@ public abstract class MainApplication extends MainRouterApplication {
     }
 
     @Override
-    public Intent getInboxTalkCallingIntent(Context mContext) {
+    public Intent getInboxTalkCallingIntent(Context mContext){
         return null;
     }
-
-
 }

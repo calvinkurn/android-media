@@ -393,13 +393,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 md = MessageDigest.getInstance("MD5");
                 md.update(bytes);
                 byte[] byteArray = md.digest();
-                //String hash_key = new String(Base64.encode(md.digest(), 0));
                 sb.append("MD5: ").append(bytesToString(byteArray)).append("\n");
                 md.reset();
                 md = MessageDigest.getInstance("SHA");
                 md.update(bytes);
                 byteArray = md.digest();
-                //String hash_key = new String(Base64.encode(md.digest(), 0));
                 sb.append("SHA1: ").append(bytesToString(byteArray)).append("\n");
                 md.reset();
                 md = MessageDigest.getInstance("SHA256");
