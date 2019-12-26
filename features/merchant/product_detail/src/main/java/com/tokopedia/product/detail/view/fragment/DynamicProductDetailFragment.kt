@@ -719,7 +719,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
     override fun onDestroy() {
-        viewModel.productInfoP1.removeObservers(this)
         viewModel.p2ShopDataResp.removeObservers(this)
         viewModel.p2General.removeObservers(this)
         viewModel.p2Login.removeObservers(this)

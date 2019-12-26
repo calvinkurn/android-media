@@ -16,7 +16,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
@@ -29,6 +28,7 @@ import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
 import com.tokopedia.product.detail.usecase.*
+import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
@@ -46,17 +46,18 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.Observer
 import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Named
 
-open class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
-                                                             private val dispatcher: CoroutineDispatcher,
+open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: DynamicProductDetailDispatcherProvider,
                                                              private val stickyLoginUseCase: StickyLoginUseCase,
                                                              private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
                                                              private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
@@ -72,9 +73,8 @@ open class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                                                              private val trackAffiliateUseCase: TrackAffiliateUseCase,
                                                              private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                                              private val updateCartCounterUseCase: UpdateCartCounterUseCase,
-                                                             private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher) {
+                                                             private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
-    val productInfoP1 = MutableLiveData<Result<ProductInfoP1>>()
     val productLayout = MutableLiveData<Result<List<DynamicPDPDataModel>>>()
     val p2ShopDataResp = MutableLiveData<ProductInfoP2ShopData>()
     val p2Login = MutableLiveData<ProductInfoP2Login>()
@@ -96,6 +96,7 @@ open class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     var tradeInParams: TradeInParams = TradeInParams()
 
     private var submitTicketSubscription: Subscription? = null
+    private var updateCartCounterSubscription: Subscription? = null
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
@@ -121,7 +122,7 @@ open class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         getRecommendationUseCase.unsubscribe()
         removeWishlistUseCase.unsubscribe()
         submitTicketSubscription?.unsubscribe()
-        updateCartCounterUseCase.unsubscribe()
+        updateCartCounterSubscription?.unsubscribe()
     }
 
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
@@ -362,7 +363,7 @@ open class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         launch {
             if (GlobalConfig.isCustomerApp()) {
                 try {
-                    withContext(Dispatchers.IO) {
+                    withContext(dispatcher.io()) {
                         val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
                                 pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                                 pageName = ProductDetailConstant.DEFAULT_PAGE_NAME,
@@ -429,13 +430,13 @@ open class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             }
 
             override fun onCompleted() {
-                submitTicketSubscription = null
+
             }
         })
     }
 
     fun updateCartCounerUseCase(onSuccessRequest: (count: Int) -> Unit) {
-        updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
+        updateCartCounterSubscription = updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
