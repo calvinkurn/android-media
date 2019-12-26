@@ -117,7 +117,7 @@ class VideoUploaderModule constructor() {
 
     @VideoUploaderQualifier
     @Provides
-    fun provideChuckerInterceptor(@VideoUploaderQualifier context: Context): ChuckInterceptor {
+    fun provideChuckerInterceptor(@VideoUploaderQualifier context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
     }
 
