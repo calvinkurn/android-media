@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.utils;
+package com.tokopedia.developer_options.remote_config;
 
 import android.content.Context;
 

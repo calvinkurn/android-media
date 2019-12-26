@@ -56,10 +56,10 @@ import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
 import com.tokopedia.tkpd.utils.DeviceUtil;
-import com.tokopedia.tkpd.utils.StethoUtil;
 import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.developer_options.remote_config.StethoUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

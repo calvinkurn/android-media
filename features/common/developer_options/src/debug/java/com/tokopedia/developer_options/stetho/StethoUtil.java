@@ -1,7 +1,6 @@
-package com.tokopedia.tkpd.utils;
+package com.tokopedia.developer_options.remote_config;
 
 import android.content.Context;
-import android.provider.Settings;
 import com.facebook.stetho.Stetho;
 
 /**
@@ -10,6 +9,5 @@ import com.facebook.stetho.Stetho;
 public class StethoUtil {
     public static void initStetho(Context context) {
         Stetho.initializeWithDefaults(context);
-        //return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 }
