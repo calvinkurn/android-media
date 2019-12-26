@@ -21,7 +21,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -55,7 +54,6 @@ import com.tokopedia.home.account.applink.AccountHomeApplinkModule;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModuleLoader;
 import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
-import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home_recom.deeplink.RecommendationDeeplinkModule;
 import com.tokopedia.home_recom.deeplink.RecommendationDeeplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
@@ -128,8 +126,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
@@ -274,6 +270,13 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         finish();
     }
 
+    public static void createApplinkDelegateInBackground(){
+        Observable.fromCallable(() -> {
+            getApplinkDelegateInstance();
+            return true;
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -321,7 +324,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     private void routeApplink(ApplinkDelegate deepLinkDelegate, String applinkString, Bundle defaultBundle) {
         if (deepLinkDelegate.supportsUri(applinkString)) {
-            routeFromApplink(Uri.parse(applinkString), defaultBundle);
+            routeFromApplink(deepLinkDelegate, Uri.parse(applinkString), defaultBundle);
         } else {
             Intent intent = RouteManager.getIntent(this, applinkString);
             if (defaultBundle != null) {
@@ -329,15 +332,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             }
             startActivity(intent);
         }
-    }
-
-    private void goToHome() {
-        Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
-        homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
-        if (getIntent() != null && getIntent().getExtras() != null)
-            homeIntent.putExtras(getIntent().getExtras());
-        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(homeIntent);
     }
 
     public void eventPersonalizedClicked(String label) {
@@ -348,11 +342,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 label);
     }
 
-    private void routeFromApplink(Uri applink, Bundle defaultBudle) {
+    private void routeFromApplink(ApplinkDelegate applinkDelegate, Uri applink, Bundle defaultBudle) {
         if (applink != null) {
             try {
 
-                Intent nextIntent = ((ApplinkRouter) getApplicationContext()).applinkDelegate().getIntent(this, applink.toString());
+                Intent nextIntent = applinkDelegate.getIntent(this, applink.toString());
                 if (defaultBudle != null) {
                     nextIntent.putExtras(defaultBudle);
                 }
@@ -406,17 +400,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
             return launchIntent;
         }
-    }
-
-    @DeepLink({ApplinkConst.PROMO})
-    public static Intent getPromoIntent(Context context, Bundle bundle) {
-        String promoId = bundle.getString("promo_id", "");
-        String url = BerandaUrl.PROMO_URL;
-        if (!TextUtils.isEmpty(promoId)) {
-            url += promoId;
-        }
-        url += FLAG_APP;
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
     @DeepLink(ApplinkConst.BROWSER)

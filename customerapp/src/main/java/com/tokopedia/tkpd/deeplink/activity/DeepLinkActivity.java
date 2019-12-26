@@ -8,21 +8,19 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.core.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.core.app.TaskStackBuilder;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -30,37 +28,21 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
-import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
-import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
-import com.tokopedia.core.product.listener.FragmentDetailParent;
-import com.tokopedia.core.product.listener.ReportFragmentListener;
-import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.share.fragment.ProductShareFragment;
-import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
-import com.tokopedia.webview.BaseSessionWebViewFragment;
-
-import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
  * modified Alvarisi
  */
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
-        DeepLinkView, DeepLinkWebViewHandleListener,
-        DetailFragmentInteractionListener,
-        ReportFragmentListener,
-        ProductInfoResultReceiver.Receiver,
+        DeepLinkView,
         ICatalogActionFragment {
 
     private TkpdProgressDialog progressDialog;
@@ -137,16 +119,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    public void shareProductInfo(@NonNull LinkerData shareData) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_view,
-                        ProductShareFragment.newInstance(shareData, false),
-                        ProductShareFragment.class.getSimpleName())
-                .addToBackStack(null)
-                .commit();
     }
 
     @Override
@@ -230,23 +202,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void onProductDetailLoaded(@NonNull ProductDetailData productData) {
-
-    }
-
-    @Override
-    public void onNullResponseData(ProductPass productPass) {
-
-    }
-
-    @Override
-    public void jumpOtherProductDetail(ProductPass productPass) {
-        if (getApplication() instanceof PdpRouter) {
-            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productPass.getProductId());
-        }
-    }
-
-    @Override
     public void inflateFragment(Fragment fragment, String tag) {
         getFragmentManager().beginTransaction().add(R.id.main_view, fragment, tag).commit();
     }
@@ -278,14 +233,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void catchToWebView(String url) {
-        actionChangeToolbarWithBackToNative();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_view, BaseSessionWebViewFragment.newInstance(url))
-                .commit();
     }
 
     @Override
@@ -361,35 +308,4 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     public void deliverCatalogShareData(LinkerData shareData) {
 
     }
-
-    @Override
-    public void onReportProductSubmited(Bundle bundle) {
-        ProductInfoResultReceiver mReceiver = new ProductInfoResultReceiver(new Handler());
-        mReceiver.setReceiver(this);
-        ProductInfoIntentService.startAction(this, bundle, mReceiver);
-    }
-
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.main_view);
-        if (fragment != null && fragment instanceof FragmentDetailParent) {
-            switch (resultCode) {
-                case ProductInfoIntentService.STATUS_SUCCESS_REPORT_PRODUCT:
-                    onReceiveResultSuccess(fragment, resultData, resultCode);
-                    break;
-                case ProductInfoIntentService.STATUS_ERROR_REPORT_PRODUCT:
-                    onReceiveResultError(fragment, resultData, resultCode);
-                    break;
-            }
-        }
-    }
-
-    private void onReceiveResultError(Fragment fragment, Bundle resultData, int resultCode) {
-        ((FragmentDetailParent) fragment).onErrorAction(resultData, resultCode);
-    }
-
-    private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
-        ((FragmentDetailParent) fragment).onSuccessAction(resultData, resultCode);
-    }
-
 }

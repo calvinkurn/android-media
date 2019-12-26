@@ -9,8 +9,5 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
                  alreadyFavorited
              }
          }
-         error {
-             message
-         }
      }
  }

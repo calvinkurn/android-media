@@ -44,7 +44,6 @@ public class CommonTravelModule {
     MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(GraphqlRepository graphqlRepository)
     { return new MultiRequestGraphqlUseCase(graphqlRepository); }
 
-    @CommonTravelScope
     @Provides
     CoroutineDispatcher provideMainDispatcher() { return Dispatchers.getMain(); }
 

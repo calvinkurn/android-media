@@ -35,11 +35,6 @@ public class FlightFilterRefundableFragment extends BaseFlightFilterFragment<Ref
     }
 
     @Override
-    public int getRecyclerViewResourceId() {
-        return R.id.recycler_view;
-    }
-
-    @Override
     public void renderList(@NonNull List<RefundableStat> list) {
         super.renderList(list);
         FlightFilterModel flightFilterModel = listener.getFlightFilterModel();

@@ -93,9 +93,11 @@ public class CMInApp {
     public boolean isShown = false;
     @ColumnInfo(name = "last_shown")
     public long lastShownTime;
+/*
 
     @Ignore
     public View cmInAppView;
+*/
 
 
 
@@ -142,14 +144,14 @@ public class CMInApp {
     public void setCmLayout(CMLayout cmLayout) {
         this.cmLayout = cmLayout;
     }
-
+/*
     public View getCmInAppView() {
         return cmInAppView;
     }
 
     public void setCmInAppView(View cmInAppView) {
         this.cmInAppView = cmInAppView;
-    }
+    }*/
 
     public long getId() {
         return id;
