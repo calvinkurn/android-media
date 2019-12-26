@@ -30,6 +30,10 @@ import com.tokopedia.salam.umrah.common.util.UmrahPhoneTransform
 import kotlinx.android.synthetic.main.fragment_umrah_checkout_contact_data.*
 import javax.inject.Inject
 
+/**
+ * @author by firman on 27/11/2019
+ */
+
 class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
 
     @Inject

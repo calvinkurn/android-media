@@ -6,6 +6,10 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutPilgrims
 import kotlinx.android.synthetic.main.item_umrah_checkout_pilgrims.view.*
 
+/**
+ * @author by firman on 27/11/2019
+ */
+
 class UmrahPilgrimsEmptyViewHolder(view: View, val umrahCheckoutPilgrimsListListener: UmrahCheckoutPilgrimsListListener)
     : RecyclerView.ViewHolder(view) {
 

@@ -11,6 +11,9 @@ import com.tokopedia.salam.umrah.checkout.di.DaggerUmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.fragment.UmrahCheckoutContactDataFragment
 import com.tokopedia.salam.umrah.common.di.UmrahComponentInstance
+/**
+ * @author by firman on 27/11/2019
+ */
 
 class UmrahCheckoutContactDataActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutComponent> {
 

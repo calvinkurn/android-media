@@ -8,6 +8,10 @@ import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getTime
 import kotlinx.android.synthetic.main.item_umrah_checkout_pilgrims_filled.view.*
 
+/**
+ * @author by firman on 27/11/2019
+ */
+
 class UmrahPilgrimsFilledViewHolder(view: View, private val umrahCheckoutPilgrimsListListener: UmrahCheckoutPilgrimsListListener ) : RecyclerView.ViewHolder(view) {
 
 

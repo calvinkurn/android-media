@@ -12,9 +12,12 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 
+/**
+ * @author by firman on 27/11/2019
+ */
+
 class UmrahCheckoutGetDataUseCase @Inject constructor(private val useCase: MultiRequestGraphqlUseCase,
                                                       private val userSession: UserSessionInterface) {
-
 
     var pdpData = UmrahProductModel(
             UmrahProductModel.UmrahProduct())

@@ -3,6 +3,11 @@ package com.tokopedia.salam.umrah.checkout.data
 import android.os.Parcel
 import android.os.Parcelable
 
+
+/**
+ * @author by firman on 27/11/2019
+ */
+
 class UmrahCheckoutPilgrims (
         var pilgrimsNumber: Int = 0,
         var title: String = "",

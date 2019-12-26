@@ -1,5 +1,10 @@
 package com.tokopedia.salam.umrah.checkout.data
 
+
+/**
+ * @author by firman on 27/11/2019
+ */
+
 class UmrahCheckoutMetaDataParams(
         val user_id: Int = 0,
         val product_id: Int = 0,

@@ -11,6 +11,10 @@ import com.tokopedia.salam.umrah.common.util.CurrencyFormatter
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
 import kotlinx.android.synthetic.main.item_umrah_checkout_payment_option_due_date.view.*
 
+/**
+ * @author by firman on 27/11/2019
+ */
+
 class UmrahCheckoutDueDateAdapter : RecyclerView.Adapter<UmrahCheckoutDueDateAdapter.UmrahCheckoutDueDateAdapterViewHolder>() {
 
     private var listCategories = emptyList<Term>()

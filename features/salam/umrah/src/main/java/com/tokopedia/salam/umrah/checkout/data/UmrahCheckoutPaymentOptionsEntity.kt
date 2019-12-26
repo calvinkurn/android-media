@@ -5,6 +5,10 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+/**
+ * @author by firman on 27/11/2019
+ */
+
 class UmrahCheckoutPaymentOptionsEntity(
         @SerializedName("umrahPaymentOptions")
         @Expose

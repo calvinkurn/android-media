@@ -5,6 +5,10 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 
+/**
+ * @author by firman on 27/11/2019
+ */
+
 class UmrahCheckoutMapperEntity(
     val checkoutPDP : UmrahProductModel.UmrahProduct = UmrahProductModel.UmrahProduct(),
     val user: ContactUser = ContactUser(),

@@ -9,6 +9,11 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
+
+/**
+ * @author by firman on 27/11/2019
+ */
+
 class UmrahCheckoutResultUseCase @Inject constructor(graphqlRepository: GraphqlRepository): GraphqlUseCase<UmrahCheckoutResultEntity>(graphqlRepository) {
 
     suspend fun execute(rawQuery: String, umrahCheckoutResultParam: UmrahCheckoutResultParams): Result<UmrahCheckoutResultEntity> {

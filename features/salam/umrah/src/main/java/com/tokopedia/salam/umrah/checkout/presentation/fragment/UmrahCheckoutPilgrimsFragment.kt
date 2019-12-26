@@ -42,6 +42,10 @@ import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * @author by firman on 27/11/2019
+ */
+
 
 class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
 

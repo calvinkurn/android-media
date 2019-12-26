@@ -9,6 +9,10 @@ import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * @author by firman on 20/12/2019
+ */
+
 class UmrahCheckoutPilgrimsViewModel @Inject constructor(val getContactListUseCase: GetContactListUseCase, coroutineDispatcher: UmrahDispatchersProvider)
     : BaseViewModel(coroutineDispatcher.Main) {
     private val _contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()

@@ -19,6 +19,10 @@ import com.tokopedia.salam.umrah.common.util.CommonParam
 import kotlinx.android.synthetic.main.fragment_umrah_checkout_installment.*
 import javax.inject.Inject
 
+/**
+ * @author by firman on 27/11/2019
+ */
+
 class UmrahCheckoutInstallmentFragment : BaseDaggerFragment(), UmrahCheckoutInstallmentAdapter.UmrahInstallmentListener {
 
     lateinit var schemes : ArrayList<Schemes>
