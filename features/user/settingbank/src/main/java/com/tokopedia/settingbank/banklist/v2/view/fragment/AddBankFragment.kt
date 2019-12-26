@@ -328,7 +328,14 @@ class AddBankFragment : BaseDaggerFragment() {
     fun onBankSelected(selectedBank: Bank) {
         bank = selectedBank
         textWatcherViewModel.onBankSelected(bank)
+        hideAccountHolderName()
         setBankName()
+    }
+
+    private fun hideAccountHolderName(){
+        etManualAccountHolderName.setText("")
+        wrapperManualAccountHolderName.gone()
+        groupAccountNameAuto.gone()
     }
 
     private fun setBankName() {
