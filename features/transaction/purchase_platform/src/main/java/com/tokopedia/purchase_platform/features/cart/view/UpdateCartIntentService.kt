@@ -10,7 +10,7 @@ import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCa
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase
-import com.tokopedia.purchase_platform.features.cart.view.di.DaggerNewCartComponent
+import com.tokopedia.purchase_platform.features.cart.view.di.DaggerCartComponent
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -70,7 +70,7 @@ class UpdateCartIntentService : JobIntentService() {
 
     private fun initInjector() {
         val baseMainApplication = application as BaseMainApplication
-        DaggerNewCartComponent.builder()
+        DaggerCartComponent.builder()
                 .baseAppComponent(baseMainApplication.baseAppComponent)
                 .build()
                 .inject(this)

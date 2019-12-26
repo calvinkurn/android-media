@@ -180,8 +180,8 @@ class CartModule {
     @Named("UpdateReloadUseCase")
     fun provideGetCartListSimplifiedUseCase(@Named("shopGroupSimplifiedQuery") queryString: String,
                                             graphqlUseCase: GraphqlUseCase,
-                                            cartMapperV3: CartMapperV3): GetCartListSimplifiedUseCase =
-            GetCartListSimplifiedUseCase(queryString, graphqlUseCase, cartMapperV3, IOSchedulers)
+                                            cartSimplifiedMapper: CartSimplifiedMapper): GetCartListSimplifiedUseCase =
+            GetCartListSimplifiedUseCase(queryString, graphqlUseCase, cartSimplifiedMapper, IOSchedulers)
 
     @Provides
     @CartScope

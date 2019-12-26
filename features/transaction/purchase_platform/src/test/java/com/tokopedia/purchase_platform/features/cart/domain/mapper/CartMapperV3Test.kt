@@ -20,7 +20,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 class CartMapperV3Test : Spek({
 
     val context = mockk<Context>(relaxed = true)
-    val cartMapperV3 by memoized { CartMapperV3(context) }
+    val cartMapperV3 by memoized { CartSimplifiedMapper(context) }
 
     every { context.getString(R.string.cart_error_message) } returns "Ada %d barang yang tidak dapat dibeli"
     every { context.getString(R.string.cart_error_action) } returns "Hapus Produk Bermasalah"

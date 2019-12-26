@@ -11,7 +11,7 @@ import dagger.Component
 
 @CartScope
 @Component(modules = [CartModule::class], dependencies = [BaseAppComponent::class])
-interface NewCartComponent {
+interface CartComponent {
     fun inject(cartFragment: CartFragment)
 
     fun inject(updateCartIntentService: UpdateCartIntentService)

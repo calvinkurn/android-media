@@ -83,7 +83,7 @@ import com.tokopedia.purchase_platform.features.cart.view.adapter.CartAdapter
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapter
 import com.tokopedia.purchase_platform.features.cart.view.compoundview.ToolbarRemoveView
 import com.tokopedia.purchase_platform.features.cart.view.compoundview.ToolbarRemoveWithBackView
-import com.tokopedia.purchase_platform.features.cart.view.di.DaggerNewCartComponent
+import com.tokopedia.purchase_platform.features.cart.view.di.DaggerCartComponent
 import com.tokopedia.purchase_platform.features.cart.view.mapper.PromoMapper
 import com.tokopedia.purchase_platform.features.cart.view.mapper.RecentViewMapper
 import com.tokopedia.purchase_platform.features.cart.view.mapper.WishlistMapper
@@ -349,7 +349,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun initInjector() {
         activity?.let {
             val baseMainApplication = it.application as BaseMainApplication
-            DaggerNewCartComponent.builder()
+            DaggerCartComponent.builder()
                     .baseAppComponent(baseMainApplication.baseAppComponent)
                     .build()
                     .inject(this)

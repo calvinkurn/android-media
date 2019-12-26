@@ -26,7 +26,7 @@ import kotlin.math.min
  * Created by Irfan Khoirul on 2019-10-17.
  */
 
-class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context) {
+class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: Context) {
 
     companion object {
         const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
@@ -293,13 +293,11 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context)
             it.isPreOrder = cartDetail.product.isPreorder == 1
             it.isCod = cartDetail.product.isCod
             it.isFreeReturn = cartDetail.product.isFreereturns == 1
-            it.isCashBack = !cartDetail.product.productCashback.isNullOrEmpty()
+            it.isCashBack = !cartDetail.product.productCashback.isEmpty()
             it.isFavorite = false
             it.productCashBack = cartDetail.product.productCashback
             it.cashBackInfo = "Cashback ${cartDetail.product.productCashback}"
-            it.freeReturnLogo =
-                    if (cartDetail.product.freeReturns.freeReturnsLogo.isNotBlank()) cartDetail.product.freeReturns.freeReturnsLogo
-                    else ""
+            it.freeReturnLogo = cartDetail.product.freeReturns.freeReturnsLogo
             it.category = cartDetail.product.category
             it.categoryId = cartDetail.product.categoryId.toString()
             it.wholesalePriceData = mapWholeSalePriceDataList(cartDetail.product.wholesalePrice)
