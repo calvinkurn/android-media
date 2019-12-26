@@ -56,8 +56,8 @@ abstract class BaseToolbarActivity extends BaseActivity {
          */
         if (isToolbarWhite()) {
             setToolbarColorWhite();
-            toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.ToolbarText_SansSerifMedium);
-            toolbar.setSubtitleTextAppearance(this, com.tokopedia.core2.R.style.ToolbarSubtitleText_SansSerifMedium);
+            toolbar.setTitleTextAppearance(this, R.style.ToolbarTextOpportunity_SansSerifMedium);
+            toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleTextOpportunity_SansSerifMedium);
         } else {
             toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.ToolbarText);
             toolbar.setSubtitleTextAppearance(this, com.tokopedia.core2.R.style.ToolbarSubtitleText);

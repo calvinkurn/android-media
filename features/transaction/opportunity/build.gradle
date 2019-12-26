@@ -3,21 +3,6 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: "de.mannodermaus.android-junit5"
 
-android {
-    testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
-        }
-    }
-}
-
 repositories {
     maven { url 'https://hansel.io/maven' }
 }

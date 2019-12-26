@@ -8,8 +8,8 @@ public class ShowCaseDialogFactory {
     public static ShowCaseDialog createTkpdShowCase (){
         return new ShowCaseBuilder()
                 .titleTextColorRes(com.tokopedia.design.R.color.white)
-                .spacingRes(com.tokopedia.core2.R.dimen.spacing_show_case)
-                .arrowWidth(com.tokopedia.core2.R.dimen.arrow_width_show_case)
+                .spacingRes(R.dimen.spacing_show_case_opportunity)
+                .arrowWidth(R.dimen.arrow_width_show_case_opportunity)
                 .textColorRes(com.tokopedia.design.R.color.grey_400)
                 .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
                 .backgroundContentColorRes(com.tokopedia.design.R.color.black)
