@@ -51,6 +51,7 @@
                     android:layout_marginTop="@dimen/dp_4"
                     android:layout_height="wrap_content"
                     tools:text="vhvvhjvjkvkkvk"
+                    android:fontFamily="OpenSans"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="bold" />
             </LinearLayout>
