@@ -67,10 +67,6 @@ class UmrahHomepageMyUmrahViewHolder(view: View, private val onBindListener: onI
                         element.listMyUmrahEntity.getOrNull(0)?.isViewed = true
                     }
                     addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                            super.onScrollStateChanged(recyclerView, newState)
-                        }
-
                         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                             super.onScrolled(recyclerView, dx, dy)
 

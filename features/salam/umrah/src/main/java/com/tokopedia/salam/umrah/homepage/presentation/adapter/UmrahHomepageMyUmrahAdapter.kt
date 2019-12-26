@@ -1,5 +1,6 @@
 package com.tokopedia.salam.umrah.homepage.presentation.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,9 +30,11 @@ class UmrahHomepageMyUmrahAdapter(val onItemBindListener: onItemBindListener) : 
                 tg_umrah_departure.text = element.header
                 tg_umrah_next.text = element.nextActionText
                 btn_my_umrah_detail.text = element.mainButton.text
-                container_umrah_widget_my_umrah.setOnClickListener {
-                    onItemBindListener.onClickUmrahMyUmrah(element.nextActionText, element, position)
-                    RouteManager.route(context, element.mainButton.link)
+                container_inner_umrah_widget_my_umrah.setOnClickListener {
+                    clickMyUmrah(element,context, position)
+                }
+                btn_my_umrah_detail.setOnClickListener {
+                    clickMyUmrah(element,context, position)
                 }
             }
         }
@@ -53,6 +56,11 @@ class UmrahHomepageMyUmrahAdapter(val onItemBindListener: onItemBindListener) : 
     fun setList(list: List<MyUmrahEntity>) {
         listCategories = list
         notifyDataSetChanged()
+    }
+
+    private fun clickMyUmrah(element:MyUmrahEntity, context:Context, position:Int){
+        onItemBindListener.onClickUmrahMyUmrah(element.nextActionText, element, position)
+        RouteManager.route(context, element.mainButton.link)
     }
 
 }

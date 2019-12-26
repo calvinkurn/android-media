@@ -4,6 +4,7 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
           invoiceRefNum
           invoiceUrl
       }
+      helpLink
       beforeOrderId
       title {
           imageUrl
