@@ -71,7 +71,7 @@ class AddEditAccountModule{
 
     @AddEditAccountScope
     @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckInterceptor
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor
             = ChuckerInterceptor(context)
 
     @AddEditAccountScope
@@ -83,7 +83,7 @@ class AddEditAccountModule{
     fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                             tkpdAuthInterceptor: TkpdAuthInterceptor,
                             headerErrorResponseInterceptor: HeaderErrorResponseInterceptor,
-                            chuckInterceptor: ChuckInterceptor,
+                            chuckInterceptor: ChuckerInterceptor,
                             debugInterceptor: DebugInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient{
         val builder = OkHttpClient.Builder()
