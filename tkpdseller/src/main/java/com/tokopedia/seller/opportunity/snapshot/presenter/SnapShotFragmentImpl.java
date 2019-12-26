@@ -1,11 +1,5 @@
 package com.tokopedia.seller.opportunity.snapshot.presenter;
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-
-import com.tokopedia.core.product.facade.NetworkParam;
-import com.tokopedia.core.product.interactor.RetrofitInteractor;
-import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.seller.opportunity.domain.interactor.GetSnapShotProductUseCase;

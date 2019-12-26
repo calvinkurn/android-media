@@ -1,12 +1,12 @@
 package com.tokopedia.product.manage.list.view.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
@@ -14,7 +14,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.user.session.UserSession;
