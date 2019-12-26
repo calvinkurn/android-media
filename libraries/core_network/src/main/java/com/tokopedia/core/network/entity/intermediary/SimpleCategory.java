@@ -20,11 +20,6 @@ public class SimpleCategory implements Parcelable {
     @Expose
     private String name;
 
-    public SimpleCategory(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public String getId() {
         return id;
     }
