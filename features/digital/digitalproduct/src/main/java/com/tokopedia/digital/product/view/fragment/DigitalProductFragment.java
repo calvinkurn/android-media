@@ -997,6 +997,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             case REQUEST_CODE_CAMERA_OCR:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     String clientNumber = data.getStringExtra(DigitalExtraParam.EXTRA_NUMBER_FROM_CAMERA_OCR);
+                    showToastMessage(getString(R.string.digital_success_message_scan_ocr));
                     digitalProductView.renderClientNumber(clientNumber);
                 }
                 break;

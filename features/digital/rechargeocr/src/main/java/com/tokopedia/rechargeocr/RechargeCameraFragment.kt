@@ -42,7 +42,6 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     private lateinit var loading: ProgressBar
     private lateinit var containerCamera: ConstraintLayout
     private lateinit var cameraListener: CameraListener
-    private lateinit var recaptureBtn: RelativeLayout
     private lateinit var uploadImageviewModel: RechargeUploadImageViewModel
 
     private var imagePath: String = ""
@@ -64,7 +63,6 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         subtitle = view.findViewById(R.id.ocr_subtitle)
         shutterBtn = view.findViewById(R.id.image_button_shutter)
         loading = view.findViewById(R.id.progress_bar)
-        recaptureBtn = view.findViewById(R.id.recapture_button)
         containerCamera = view.findViewById(R.id.layout_container)
         return view
     }
@@ -93,7 +91,8 @@ class RechargeCameraFragment : BaseDaggerFragment() {
                 uploadImageviewModel.getResultOcr(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_ocr), it)
             } else {
                 hideLoading()
-                Toaster.make(containerCamera, "Kartu tidak terbaca, silakan coba lagi", Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                showCameraView()
+                Toaster.make(containerCamera, getString(R.string.ocr_error_card_unreadable), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
             }
         })
 
@@ -110,6 +109,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
         uploadImageviewModel.errorActionOcr.observe(this, Observer {
             hideLoading()
+            showCameraView()
             rechargeCameraAnalytics.scanIdCard(it)
             Toaster.make(containerCamera, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
         })
@@ -122,60 +122,63 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     private fun populateView() {
         shutterBtn.setOnClickListener{
-            activity?.let {
-                permissionCheckerHelper.checkPermission(it,
-                        PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
-                        object : PermissionCheckerHelper.PermissionCheckListener {
-                            override fun onPermissionDenied(permissionText: String) {
-
-                            }
-
-                            override fun onNeverAskAgain(permissionText: String) {
-
-                            }
-
-                            override fun onPermissionGranted() {
-                                cameraView.takePicture()
-                            }
-                        }, "")
-            }
+            getPermissionCamera()
         }
 
         cameraListener = object : CameraListener() {
-
             override fun onPictureTaken(result: PictureResult) {
-                activity?.let {
-                    permissionCheckerHelper.checkPermission(it,
-                            PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                            object : PermissionCheckerHelper.PermissionCheckListener {
-                                override fun onPermissionDenied(permissionText: String) {
-
-                                }
-
-                                override fun onNeverAskAgain(permissionText: String) {
-
-                                }
-
-                                override fun onPermissionGranted() {
-                                    hideCameraButtonAndShowLoading()
-                                    saveToFile(result.data)
-                                }
-                            }, "")
-                }
+                hideCameraButtonAndShowLoading()
+                saveToFile(result.data)
             }
         }
 
         cameraView.addCameraListener(cameraListener)
-
-        recaptureBtn.setOnClickListener {
-            showCameraView()
-        }
 
         closeBtn.setOnClickListener {
             activity?.let {
                 it.setResult(Activity.RESULT_CANCELED)
                 it.finish()
             }
+        }
+    }
+
+    private fun getPermissionCamera() {
+        activity?.let {
+            permissionCheckerHelper.checkPermission(it,
+                    PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+
+                        }
+
+                        override fun onPermissionGranted() {
+                            getPermissionExternalStorage()
+                        }
+                    }, "")
+        }
+    }
+
+    private fun getPermissionExternalStorage() {
+        activity?.let {
+            permissionCheckerHelper.checkPermission(it,
+                    PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+
+                        }
+
+                        override fun onPermissionGranted() {
+                            cameraView.takePicture()
+                        }
+                    }, "")
         }
     }
 
@@ -204,7 +207,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             showImagePreview()
             uploadImageviewModel.uploadImageRecharge(imagePath)
         } else {
-            Toast.makeText(context, "Terjadi kesalahan, silahkan coba lagi", Toast
+            Toast.makeText(context, getString(R.string.ocr_default_error_message), Toast
                     .LENGTH_LONG).show()
         }
     }
@@ -216,7 +219,6 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     private fun hideLoading() {
         loading.visibility = View.GONE
-        recaptureBtn.visibility = View.VISIBLE
     }
 
     private fun showCameraView() {
@@ -224,14 +226,12 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         shutterBtn.visibility = View.VISIBLE
         startCamera()
         fullImagePreview.visibility = View.GONE
-        recaptureBtn.visibility = View.GONE
     }
 
     private fun hideCameraButtonAndShowLoading() {
         loading.visibility = View.VISIBLE
         shutterBtn.visibility = View.GONE
         fullImagePreview.visibility = View.GONE
-        recaptureBtn.visibility = View.GONE
     }
 
     private fun showImagePreview() {
