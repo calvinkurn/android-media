@@ -2,7 +2,9 @@ package com.tokopedia.core.network.di.module;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
@@ -109,7 +111,13 @@ public class InterceptorModule {
     @Provides
     public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context,
                                                                   @Named(ConstantCoreNetwork.CHUCK_ENABLED) LocalCacheHandler localCacheHandler) {
-        return new ChuckerInterceptor(context);
+        ChuckerCollector collector = new ChuckerCollector(
+                context,
+                localCacheHandler.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false),
+                RetentionManager.Period.ONE_HOUR);
+
+        return new ChuckerInterceptor(
+                context, collector, 120000L);
     }
 
     @ApplicationScope

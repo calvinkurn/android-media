@@ -2,6 +2,8 @@ package com.tokopedia.logisticaddaddress.di;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.google.gson.Gson;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -111,8 +113,10 @@ public class DistrictRecommendationModule {
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdAuthInterceptor);
         if (GlobalConfig.isAllowDebuggingTools()) {
-            Interceptor chuckInterceptor = new ChuckerInterceptor(context)
-                    .showNotification(abstractionRouter.isAllowLogOnChuckInterceptorNotification());
+            ChuckerCollector collector = new ChuckerCollector(
+                    context, abstractionRouter.isAllowLogOnChuckInterceptorNotification(), RetentionManager.Period.ONE_HOUR);
+
+            Interceptor chuckInterceptor = new ChuckerInterceptor(context, collector, 120000L);
             builder.addInterceptor(chuckInterceptor);
         }
         return builder.build();

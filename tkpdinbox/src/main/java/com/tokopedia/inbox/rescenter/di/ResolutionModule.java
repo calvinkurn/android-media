@@ -2,6 +2,8 @@ package com.tokopedia.inbox.rescenter.di;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.google.gson.Gson;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -36,8 +38,12 @@ public class ResolutionModule {
 
     @ResolutionScope
     @Provides
-    public ChuckInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
-        return new ChuckerInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
+    public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+        ChuckerCollector collector = new ChuckerCollector(
+                context, GlobalConfig.isAllowDebuggingTools(), RetentionManager.Period.ONE_HOUR);
+
+        return new ChuckerInterceptor(
+                context, collector, 120000L);
     }
 
     @ResolutionScope
@@ -69,7 +75,7 @@ public class ResolutionModule {
 
     @ResolutionScope
     @Provides
-    public OkHttpClient provideOkHttpClient(ChuckInterceptor chuckInterceptor,
+    public OkHttpClient provideOkHttpClient(ChuckerInterceptor chuckInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor,
                                             @ApplicationContext Context context) {

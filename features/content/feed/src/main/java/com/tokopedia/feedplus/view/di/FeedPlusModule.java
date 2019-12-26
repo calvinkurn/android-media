@@ -2,7 +2,9 @@ package com.tokopedia.feedplus.view.di;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -97,7 +99,11 @@ public class FeedPlusModule {
     @FeedPlusChuckQualifier
     @Provides
     Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        return new ChuckerInterceptor(context);
+        ChuckerCollector collector = new ChuckerCollector(
+                context, GlobalConfig.isAllowDebuggingTools(), RetentionManager.Period.ONE_HOUR);
+
+        return new ChuckerInterceptor(
+                context, collector, 120000L);
     }
 
     @FeedPlusScope

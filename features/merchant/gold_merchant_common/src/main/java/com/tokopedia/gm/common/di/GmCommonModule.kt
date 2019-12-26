@@ -22,6 +22,8 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Named
+import com.chuckerteam.chucker.api.RetentionManager
+import com.chuckerteam.chucker.api.ChuckerCollector
 
 /**
  * @author by milhamj on 12/06/19.
@@ -31,8 +33,18 @@ class GmCommonModule {
 
     @GmCommonQualifier
     @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
-        return ChuckerInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools())
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        val collector = ChuckerCollector(
+                context = context,
+                showNotification = GlobalConfig.isAllowDebuggingTools(),
+                retentionPeriod = RetentionManager.Period.ONE_HOUR
+        )
+
+        return ChuckerInterceptor(
+                context = context,
+                collector = collector,
+                maxContentLength = 120000L
+        )
     }
 
     @GmCommonQualifier
@@ -59,7 +71,7 @@ class GmCommonModule {
 
     @GmCommonQualifier
     @Provides
-    fun provideOkHttpClient(@GmCommonQualifier chuckInterceptor: ChuckInterceptor,
+    fun provideOkHttpClient(@GmCommonQualifier chuckInterceptor: ChuckerInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             @GmCommonQualifier tkpdAuthInterceptor: TkpdAuthInterceptor,
                             powerMerchantSubscribeInterceptor: PowerMerchantSubscribeInterceptor): OkHttpClient {

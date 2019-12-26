@@ -1,7 +1,9 @@
 package com.tokopedia.groupchat.room.di
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.chuckerteam.chucker.api.RetentionManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
@@ -99,7 +101,17 @@ class PlayModule {
                 .addInterceptor(playInterceptor)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(ChuckerInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools()))
+            val collector = ChuckerCollector(
+                    context = context,
+                    showNotification = GlobalConfig.isAllowDebuggingTools(),
+                    retentionPeriod = RetentionManager.Period.ONE_HOUR
+            )
+
+            builder.addInterceptor(ChuckerInterceptor(
+                    context = context,
+                    collector = collector,
+                    maxContentLength = 120000L
+            ))
                     .addInterceptor(httpLoggingInterceptor)
         }
         return builder.build()

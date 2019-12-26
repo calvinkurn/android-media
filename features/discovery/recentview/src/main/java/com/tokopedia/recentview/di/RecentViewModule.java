@@ -2,7 +2,9 @@ package com.tokopedia.recentview.di;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
@@ -36,7 +38,11 @@ public class RecentViewModule {
     @Provides
     @RecentViewQualifier
     ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
-        return new ChuckerInterceptor(context);
+        ChuckerCollector collector = new ChuckerCollector(
+                context, GlobalConfig.isAllowDebuggingTools(), RetentionManager.Period.ONE_HOUR);
+
+        return new ChuckerInterceptor(
+                context, collector, 120000L);
     }
 
     @RecentViewScope
@@ -65,7 +71,7 @@ public class RecentViewModule {
     @RecentViewQualifier
     OkHttpClient provideMojitoOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                            @RecentViewQualifier OkHttpRetryPolicy retryPolicy,
-                                           @RecentViewQualifier ChuckInterceptor chuckInterceptor,
+                                           @RecentViewQualifier ChuckerInterceptor chuckInterceptor,
                                            HeaderErrorResponseInterceptor errorResponseInterceptor,
                                            MojitoInterceptor mojitoInterceptor) {
 

@@ -2,7 +2,9 @@ package com.tokopedia.otp.common.di;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -50,8 +52,12 @@ public class OtpNetModule {
 
     @OtpScope
     @Provides
-    public ChuckInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
-        return new ChuckerInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
+    public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+        ChuckerCollector collector = new ChuckerCollector(
+                context, GlobalConfig.isAllowDebuggingTools(), RetentionManager.Period.ONE_HOUR);
+
+        return new ChuckerInterceptor(
+                context, collector, 120000L);
     }
 
     @OtpScope
@@ -73,7 +79,7 @@ public class OtpNetModule {
     public OkHttpClient provideOkHttpClient(FingerprintInterceptor fingerprintInterceptor,
                                             AuthorizationBearerInterceptor
                                                     authorizationBearerInterceptor,
-                                            ChuckInterceptor chuckInterceptor,
+                                            ChuckerInterceptor chuckInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor) {
 
@@ -94,7 +100,7 @@ public class OtpNetModule {
     @Provides
     @MethodListQualifier
     public OkHttpClient provideMethodListOkHttpClient(FingerprintInterceptor fingerprintInterceptor,
-                                                      ChuckInterceptor chuckInterceptor,
+                                                      ChuckerInterceptor chuckInterceptor,
                                                       HttpLoggingInterceptor httpLoggingInterceptor,
                                                       TkpdAuthInterceptor tkpdAuthInterceptor) {
 

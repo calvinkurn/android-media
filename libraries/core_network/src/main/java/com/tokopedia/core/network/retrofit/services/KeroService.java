@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 
+import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -89,7 +91,11 @@ public abstract class KeroService<T> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             LocalCacheHandler cache = new LocalCacheHandler(CoreNetworkApplication.getAppContext(), ConstantCoreNetwork.CHUCK_ENABLED);
             Boolean allowLogOnNotification = cache.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false);
-            client.addInterceptor(new ChuckerInterceptor(CoreNetworkApplication.getAppContext()));
+            ChuckerCollector collector = new ChuckerCollector(
+                    CoreNetworkApplication.getAppContext(), allowLogOnNotification, RetentionManager.Period.ONE_HOUR);
+
+            client.addInterceptor(new ChuckerInterceptor(
+                    CoreNetworkApplication.getAppContext(), collector, 120000L));
         }
     }
 

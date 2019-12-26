@@ -2,6 +2,8 @@ package com.tokopedia.logisticdata.data.module;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
@@ -150,10 +152,11 @@ public class LogisticNetworkModule {
     @LogisticChuckInterceptorQualifier
     Interceptor provideChuckerInterceptor(@LogisticContextQualifier Context context,
                                         @LogisticAbstractionRouterQualifier AbstractionRouter abstractionRouter) {
-        ChuckInterceptor chuckInterceptor = new ChuckerInterceptor(context);
 
-        chuckInterceptor.showNotification(abstractionRouter.isAllowLogOnChuckInterceptorNotification());
-        return chuckInterceptor;
+        ChuckerCollector collector = new ChuckerCollector(
+                context, abstractionRouter.isAllowLogOnChuckInterceptorNotification(), RetentionManager.Period.ONE_HOUR);
+
+        return new ChuckerInterceptor(context, collector, 120000L);
     }
 
     @Provides

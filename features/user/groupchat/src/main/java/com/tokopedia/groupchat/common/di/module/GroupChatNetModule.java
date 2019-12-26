@@ -2,7 +2,9 @@ package com.tokopedia.groupchat.common.di.module;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -49,7 +51,11 @@ public class GroupChatNetModule {
     @GroupChatScope
     @Provides
     public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
-        return new ChuckerInterceptor(context);
+        ChuckerCollector collector = new ChuckerCollector(
+                context, GlobalConfig.isAllowDebuggingTools(), RetentionManager.Period.ONE_HOUR);
+
+        return new ChuckerInterceptor(
+                context, collector, 120000L);
     }
 
     @GroupChatScope

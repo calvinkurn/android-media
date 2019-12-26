@@ -1,7 +1,9 @@
 package com.tokopedia.product.manage.list.di
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.chuckerteam.chucker.api.RetentionManager
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
@@ -23,7 +25,17 @@ class ProductManageNetworkModule {
     @Provides
     @ProductManageScope
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
-        return ChuckerInterceptor(context)
+        val collector = ChuckerCollector(
+                context = context,
+                showNotification = GlobalConfig.isAllowDebuggingTools(),
+                retentionPeriod = RetentionManager.Period.ONE_HOUR
+        )
+
+        return ChuckerInterceptor(
+                context = context,
+                collector = collector,
+                maxContentLength = 120000L
+        )
     }
 
     @GMProductManageQualifier
