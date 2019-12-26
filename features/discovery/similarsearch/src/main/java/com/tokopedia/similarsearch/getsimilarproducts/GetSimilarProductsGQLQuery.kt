@@ -23,6 +23,11 @@ private fun getProductInfoGQLQuery() = """
     badges {
       image_url
     }
+    label_groups {
+      title
+      position
+      type
+    }
     category_id
     category_name
     rating
@@ -33,6 +38,10 @@ private fun getProductInfoGQLQuery() = """
     discount_percentage
     wishlist
     min_order
+    free_ongkir {
+      is_active
+      img_url
+    }
 """.trimIndent().replace("\n", " ")
 
 internal fun getSimilarProductsGQLQuery() = """

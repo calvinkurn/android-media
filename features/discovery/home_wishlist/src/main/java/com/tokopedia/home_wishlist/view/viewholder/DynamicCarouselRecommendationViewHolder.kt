@@ -21,12 +21,10 @@ import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 
 class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractViewHolder<RecommendationCarouselDataModel>(view)  {
-    private val viewPool = RecyclerView.RecycledViewPool()
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val carouselProductCardView: CarouselProductCardView by lazy { view.findViewById<CarouselProductCardView>(R.id.list) }
     private val disabledView: View by lazy { view.findViewById<View>(R.id.disabled_view) }
-    private val itemDecoration by lazy { SpaceItemDecoration() }
 
     override fun bind(element: RecommendationCarouselDataModel, listener: SmartListener) {
         title.text = element.title
@@ -34,7 +32,7 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
         seeMore.setOnClickListener{
             RouteManager.route(it.context, element.seeMoreAppLink)
         }
-        carouselProductCardView.initCarouselProductCardView(
+        carouselProductCardView.bindCarouselProductCardView(
                 parentView = view,
                 productCardModelList = convertIntoProductDataModel(element.list),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener{
@@ -63,7 +61,6 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                 }
             }
         )
-        carouselProductCardView.setItemDecoration(itemDecoration)
         carouselProductCardView.setSnapHelper(GravitySnapHelper(Gravity.START))
     }
 

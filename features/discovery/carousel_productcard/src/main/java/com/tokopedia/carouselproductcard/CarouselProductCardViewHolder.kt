@@ -3,13 +3,13 @@ package com.tokopedia.carouselproductcard
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.carouselproductcard.model.CarouselProductCardModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardModel
 import kotlinx.android.synthetic.main.carousel_product_card_item_layout.view.*
 
 internal class CarouselProductCardViewHolder(
-        itemView: View,
-        carouselProductCardListenerInfo: CarouselProductCardListenerInfo
+        itemView: View
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -17,13 +17,13 @@ internal class CarouselProductCardViewHolder(
         val LAYOUT = R.layout.carousel_product_card_item_layout
     }
 
-    private val onItemClickListener = carouselProductCardListenerInfo.onItemClickListener
-    private val onItemLongClickListener = carouselProductCardListenerInfo.onItemLongClickListener
-    private val onItemImpressedListener = carouselProductCardListenerInfo.onItemImpressedListener
-    private val onItemAddToCartListener = carouselProductCardListenerInfo.onItemAddToCartListener
-    private val onWishlistClickListener = carouselProductCardListenerInfo.onWishlistItemClickListener
-
-    fun bind(productCardModel: ProductCardModel) {
+    fun bind(carouselProductCardModel: CarouselProductCardModel) {
+        val productCardModel = carouselProductCardModel.productCardModel
+        val onItemClickListener = carouselProductCardModel.getOnItemClickListener()
+        val onItemLongClickListener = carouselProductCardModel.getOnItemLongClickListener()
+        val onItemImpressedListener = carouselProductCardModel.getOnItemImpressedListener()
+        val onItemAddToCartListener = carouselProductCardModel.getOnItemAddToCartListener()
+        val onWishlistClickListener = carouselProductCardModel.getOnWishlistItemClickListener()
 
         itemView.carouselProductCardItem?.setProductModel(productCardModel)
 

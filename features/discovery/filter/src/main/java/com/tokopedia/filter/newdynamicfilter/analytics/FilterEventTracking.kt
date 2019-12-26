@@ -4,6 +4,7 @@ interface FilterEventTracking {
 
     interface Event {
         companion object {
+            const val CLICK_FILTER = "clickFilter"
             const val CLICK_SEARCH_RESULT = "clickSearchResult"
             const val CLICK_CATEGORY = "clickCategory"
             const val CLICK_CATALOG_DETAIL = "clickCatalogDetail"

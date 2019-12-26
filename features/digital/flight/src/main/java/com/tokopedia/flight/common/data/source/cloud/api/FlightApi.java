@@ -3,7 +3,6 @@ package com.tokopedia.flight.common.data.source.cloud.api;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.bookingV2.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
@@ -91,9 +90,6 @@ public interface FlightApi {
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CHECKOUT_BOOKING)
     Observable<Response<DataResponse<FlightCheckoutEntity>>> checkout(@Body FlightCheckoutRequest checkoutRequest, @Header("x-tkpd-userid") String userId);
-
-    @GET
-    Observable<Response<DataResponse<List<BannerDetail>>>> getBanners(@Url String url, @QueryMap Map<String, String> params);
 
     @GET(FlightUrl.FLIGHT_EMAIL)
     Observable<Response<SendEmailEntity>> sendEmail(@QueryMap Map<String, Object> param);

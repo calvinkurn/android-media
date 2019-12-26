@@ -21,7 +21,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -55,7 +54,6 @@ import com.tokopedia.home.account.applink.AccountHomeApplinkModule;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModuleLoader;
 import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
-import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home_recom.deeplink.RecommendationDeeplinkModule;
 import com.tokopedia.home_recom.deeplink.RecommendationDeeplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
@@ -128,8 +126,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
@@ -336,15 +332,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             }
             startActivity(intent);
         }
-    }
-
-    private void goToHome() {
-        Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
-        homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
-        if (getIntent() != null && getIntent().getExtras() != null)
-            homeIntent.putExtras(getIntent().getExtras());
-        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(homeIntent);
     }
 
     public void eventPersonalizedClicked(String label) {
