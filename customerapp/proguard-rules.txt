@@ -358,6 +358,9 @@
 #image search
 -keep class com.tokopedia.discovery.imagesearch.domain.model.** { *; }
 
+#home
+-dontwarn com.tokopedia.home.beranda.data.datasource.**inlined**
+
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**
 -keep class kotlinx.coroutines.android.AndroidExceptionPreHandler { *; }
