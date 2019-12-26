@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -24,12 +23,16 @@ class DiscoveryViewModel(application: Application) : BaseViewModel(application),
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
+    fun viewCreated() {
+        getDiscoveryData()
+    }
+
     fun getDiscoveryData() {
         progBarVisibility.value = true
         launchCatchError(
                 block = {
                     withContext(Dispatchers.IO){
-                        val data = DiscoveryDataUseCase().getDiscoveryData(repository, GenerateUrl.getUrl(pageIdentifier))
+                        val data = DiscoveryDataUseCase().getDiscoveryData(repository, pageIdentifier)
                         data?.let {
                             discoveryResponse.postValue(Success(it))
                         }

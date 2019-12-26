@@ -52,7 +52,7 @@ class DiscoveryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        discoveryViewModel.getDiscoveryData()
+        discoveryViewModel.viewCreated()
         setUpObserver()
     }
 
