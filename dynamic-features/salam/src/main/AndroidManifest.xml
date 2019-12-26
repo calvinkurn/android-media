@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.salam.umrah.customerapp">
+    package="com.tokopedia.salam.customerapp">
 
     <dist:module
         dist:instant="false"
         dist:onDemand="true"
-        dist:title="@string/umrah_title_df">
+        dist:title="@string/salam_title_df">
         <dist:fusing dist:include="true" />
     </dist:module>
 

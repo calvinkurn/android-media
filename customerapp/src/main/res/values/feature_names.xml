@@ -177,6 +177,7 @@
     <string name="title_product_manage">Daftar Produk</string>
 
     <!-- Dynamic feature for Umrah-->
+    <string name="salam_title_df">Salam</string>
     <string name="umrah_title_df">Umrah</string>
     <string name="umrah_search_title">Cari Paket Umrah</string>
     <string name="umrah_label_filter">Filter</string>
