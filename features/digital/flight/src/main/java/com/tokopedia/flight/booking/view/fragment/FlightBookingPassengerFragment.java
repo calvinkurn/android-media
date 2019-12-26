@@ -7,14 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,18 +15,25 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.common.travel.data.entity.TravelContactListModel;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.common.travel.widget.TravelContactArrayAdapter;
 import com.tokopedia.common.travel.widget.filterchips.FilterChipRecyclerView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity;
-import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
@@ -45,6 +44,9 @@ import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightPassengerTitle;
 import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
 import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment;
+import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity;
+import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment;
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -358,7 +360,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             }
         });
         LinearLayoutManager flightSimpleAdapterLayoutManager
-                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         rvMeals.setLayoutManager(flightSimpleAdapterLayoutManager);
         rvMeals.setHasFixedSize(true);
         rvMeals.setNestedScrollingEnabled(false);
@@ -404,7 +406,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             }
         });
         LinearLayoutManager flightSimpleAdapterLayoutManager
-                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         rvLuggages.setLayoutManager(flightSimpleAdapterLayoutManager);
         rvLuggages.setHasFixedSize(true);
         rvLuggages.setNestedScrollingEnabled(false);
@@ -684,9 +686,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public void renderPassengerTitle(String passengerTitle) {
         rvPassengerTitle.onResetChip();
         switch (passengerTitle) {
-            case FlightPassengerTitle.TUAN: rvPassengerTitle.selectChipByPosition(0);
-            case FlightPassengerTitle.NYONYA: rvPassengerTitle.selectChipByPosition(1);
-            case FlightPassengerTitle.NONA: rvPassengerTitle.selectChipByPosition(2);
+            case FlightPassengerTitle.TUAN:
+                rvPassengerTitle.selectChipByPosition(0);
+            case FlightPassengerTitle.NYONYA:
+                rvPassengerTitle.selectChipByPosition(1);
+            case FlightPassengerTitle.NONA:
+                rvPassengerTitle.selectChipByPosition(2);
         }
     }
 
@@ -761,13 +766,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     break;
                 case REQUEST_CODE_PICK_NATIONALITY:
                     if (data != null) {
-                        CountryPhoneCode flightPassportNationalityViewModel = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        TravelCountryPhoneCode flightPassportNationalityViewModel = data.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE);
                         presenter.onNationalityChanged(flightPassportNationalityViewModel);
                     }
                     break;
                 case REQUEST_CODE_PICK_ISSUER_COUNTRY:
                     if (data != null) {
-                        CountryPhoneCode flightPassportIssuerCountry = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        TravelCountryPhoneCode flightPassportIssuerCountry = data.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE);
                         presenter.onIssuerCountryChanged(flightPassportIssuerCountry);
                     }
             }
@@ -779,12 +784,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     private void navigateToChooseNationality() {
-        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(),
+        startActivityForResult(PhoneCodePickerActivity.Companion.getCallingIntent(getContext(),
                 getString(com.tokopedia.flight.R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY);
     }
 
     private void navigateToChooseIssuerCountry() {
-        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(),
+        startActivityForResult(PhoneCodePickerActivity.Companion.getCallingIntent(getContext(),
                 getString(com.tokopedia.flight.R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY);
     }
 

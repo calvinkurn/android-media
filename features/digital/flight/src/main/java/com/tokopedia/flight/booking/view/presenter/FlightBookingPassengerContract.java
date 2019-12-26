@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 
 import java.util.Date;
 import java.util.List;
@@ -179,9 +179,9 @@ public interface FlightBookingPassengerContract {
 
         void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate, Date maxxDate);
 
-        void onNationalityChanged(CountryPhoneCode flightPassportNationalityViewModel);
+        void onNationalityChanged(TravelCountryPhoneCode flightPassportNationalityViewModel);
 
-        void onIssuerCountryChanged(CountryPhoneCode flightPassportIssuerCountry);
+        void onIssuerCountryChanged(TravelCountryPhoneCode flightPassportIssuerCountry);
 
         void getTravelContactList(String query);
     }

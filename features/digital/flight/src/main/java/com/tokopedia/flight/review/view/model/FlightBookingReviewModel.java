@@ -9,13 +9,13 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,7 +36,7 @@ public class FlightBookingReviewModel implements Parcelable {
     private String dateFinishTime;
     private String totalPrice;
     private int totalPriceNumeric;
-    private CountryPhoneCode phoneCode;
+    private TravelCountryPhoneCode phoneCode;
     private String contactName;
     private String contactEmail;
     private String contactPhone;
@@ -104,7 +104,7 @@ public class FlightBookingReviewModel implements Parcelable {
         dateFinishTime = in.readString();
         totalPrice = in.readString();
         totalPriceNumeric = in.readInt();
-        phoneCode = in.readParcelable(CountryPhoneCode.class.getClassLoader());
+        phoneCode = in.readParcelable(TravelCountryPhoneCode.class.getClassLoader());
         contactName = in.readString();
         contactEmail = in.readString();
         contactPhone = in.readString();
@@ -174,11 +174,11 @@ public class FlightBookingReviewModel implements Parcelable {
         return insuranceIds;
     }
 
-    public CountryPhoneCode getPhoneCode() {
+    public TravelCountryPhoneCode getPhoneCode() {
         return phoneCode;
     }
 
-    public void setPhoneCode(CountryPhoneCode phoneCode) {
+    public void setPhoneCode(TravelCountryPhoneCode phoneCode) {
         this.phoneCode = phoneCode;
     }
 

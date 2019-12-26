@@ -4,7 +4,6 @@ import com.tokopedia.common.travel.di.CommonTravelModule;
 import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingFragment;
-import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
@@ -21,8 +20,6 @@ import dagger.Component;
 public interface FlightBookingComponent {
 
     void inject(FlightBookingFragment flightBookingFragment);
-
-    void inject(FlightBookingNationalityFragment flightBookingNationalityFragment);
 
     void inject(FlightBookingReviewFragment flightBookingReviewFragment);
 

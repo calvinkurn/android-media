@@ -100,18 +100,8 @@
             android:theme="@style/Theme.White.Flight"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".booking.view.activity.FlightBookingNationalityActivity"
-            android:label="@string/activity_label_flight_nationality"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
             android:name=".passenger.view.activity.FlightPassengerListActivity"
             android:label="@string/flight_booking_list_passenger_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".booking.view.activity.FlightBookingIssuingCountryActivity"
-            android:label="@string/activity_label_flight_issuing_country"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity

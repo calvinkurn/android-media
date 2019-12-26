@@ -28,10 +28,8 @@ import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity
-import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter
 import com.tokopedia.flight.booking.view.fragment.FlightBookingAmenityFragment
-import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
@@ -52,6 +50,8 @@ import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivi
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_REQUEST_ID
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_RETURN
 import com.tokopedia.flight.passenger.viewmodel.FlightPassengerViewModel
+import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
+import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
@@ -153,11 +153,11 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             et_birth_date.setOnClickListener { onBirthdateClicked() }
             et_passport_expiration_date.setOnClickListener { onPassportExpiredClicked() }
             et_nationality.setOnClickListener {
-                startActivityForResult(FlightBookingNationalityActivity.createIntent(context,
+                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext(),
                         getString(com.tokopedia.flight.R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY)
             }
             et_passport_issuer_country.setOnClickListener {
-                startActivityForResult(FlightBookingNationalityActivity.createIntent(context,
+                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext(),
                         getString(com.tokopedia.flight.R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY)
             }
 
@@ -805,14 +805,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
                 REQUEST_CODE_PICK_NATIONALITY -> {
                     if (data != null) {
-                        val flightPassportNationalityViewModel = data.getParcelableExtra<TravelCountryPhoneCode>(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY)
+                        val flightPassportNationalityViewModel = data.getParcelableExtra<TravelCountryPhoneCode>(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
                         onNationalityChanged(flightPassportNationalityViewModel)
                     }
                 }
 
                 REQUEST_CODE_PICK_ISSUER_COUNTRY -> {
                     if (data != null) {
-                        val flightPassportIssuerCountry = data.getParcelableExtra<TravelCountryPhoneCode>(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY)
+                        val flightPassportIssuerCountry = data.getParcelableExtra<TravelCountryPhoneCode>(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
                         onIssuerCountryChanged(flightPassportIssuerCountry)
                     }
                 }

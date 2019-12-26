@@ -4,27 +4,28 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity;
-import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent;
 import com.tokopedia.flight.passenger.view.presenter.FlightPassengerUpdateContract;
 import com.tokopedia.flight.passenger.view.presenter.FlightPassengerUpdatePresenter;
+import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity;
+import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment;
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -441,13 +442,13 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
             switch (requestCode) {
                 case REQUEST_CODE_PICK_NATIONALITY:
                     if (data != null) {
-                        CountryPhoneCode flightPassportNationalityViewModel = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        TravelCountryPhoneCode flightPassportNationalityViewModel = data.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE);
                         presenter.onNationalityChanged(flightPassportNationalityViewModel);
                     }
                     break;
                 case REQUEST_CODE_PICK_ISSUER_COUNTRY:
                     if (data != null) {
-                        CountryPhoneCode flightPassportIssuerCountry = data.getParcelableExtra(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY);
+                        TravelCountryPhoneCode flightPassportIssuerCountry = data.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE);
                         presenter.onIssuerCountryChanged(flightPassportIssuerCountry);
                     }
             }
@@ -459,11 +460,11 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     }
 
     private void navigateToChooseNationality() {
-        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(), getString(com.tokopedia.flight.R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY);
+        startActivityForResult(PhoneCodePickerActivity.Companion.getCallingIntent(getContext(), getString(com.tokopedia.flight.R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY);
     }
 
     private void navigateToChooseIssuerCountry() {
-        startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(), getString(com.tokopedia.flight.R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY);
+        startActivityForResult(PhoneCodePickerActivity.Companion.getCallingIntent(getContext(), getString(com.tokopedia.flight.R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY);
     }
 
     private void showMessageErrorInSnackbar(int resId) {

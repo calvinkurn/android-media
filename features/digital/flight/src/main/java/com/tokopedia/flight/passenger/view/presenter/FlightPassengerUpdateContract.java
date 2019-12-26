@@ -4,7 +4,7 @@ import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 
 import java.util.Date;
 
@@ -127,9 +127,9 @@ public interface FlightPassengerUpdateContract {
 
         void onBirthdateChanged(int year, int month, int date, Date maxDate);
 
-        void onNationalityChanged(CountryPhoneCode flightPassportNationalityViewModel);
+        void onNationalityChanged(TravelCountryPhoneCode flightPassportNationalityViewModel);
 
-        void onIssuerCountryChanged(CountryPhoneCode flightPassportIssuerCountry);
+        void onIssuerCountryChanged(TravelCountryPhoneCode flightPassportIssuerCountry);
 
         void onPassportExpiredClicked();
 

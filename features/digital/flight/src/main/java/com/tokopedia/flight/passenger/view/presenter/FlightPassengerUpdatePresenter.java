@@ -1,11 +1,11 @@
 package com.tokopedia.flight.passenger.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator;
 import com.tokopedia.flight.passenger.domain.FlightPassengerUpdateDataUseCase;
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -136,13 +136,13 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
     }
 
     @Override
-    public void onNationalityChanged(CountryPhoneCode flightPassportNationalityViewModel) {
+    public void onNationalityChanged(TravelCountryPhoneCode flightPassportNationalityViewModel) {
         getView().getCurrentPassengerViewModel().setPassportNationality(flightPassportNationalityViewModel);
         getView().renderPassportNationality(flightPassportNationalityViewModel.getCountryName());
     }
 
     @Override
-    public void onIssuerCountryChanged(CountryPhoneCode flightPassportIssuerCountry) {
+    public void onIssuerCountryChanged(TravelCountryPhoneCode flightPassportIssuerCountry) {
         getView().getCurrentPassengerViewModel().setPassportIssuerCountry(flightPassportIssuerCountry);
         getView().renderPassportIssuerCountry(flightPassportIssuerCountry.getCountryName());
     }

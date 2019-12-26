@@ -3,8 +3,8 @@ package com.tokopedia.flight.booking.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class FlightBookingParamViewModel implements Parcelable{
     private String id;
     private String orderDueTimestamp;
     private FlightSearchPassDataViewModel searchParam;
-    private CountryPhoneCode phoneCode;
+    private TravelCountryPhoneCode phoneCode;
     private List<FlightBookingPassengerViewModel> passengerViewModels;
     private String contactName;
     private String contactEmail;
@@ -35,7 +35,7 @@ public class FlightBookingParamViewModel implements Parcelable{
         id = in.readString();
         orderDueTimestamp = in.readString();
         searchParam = in.readParcelable(FlightSearchPassDataViewModel.class.getClassLoader());
-        phoneCode = in.readParcelable(CountryPhoneCode.class.getClassLoader());
+        phoneCode = in.readParcelable(TravelCountryPhoneCode.class.getClassLoader());
         passengerViewModels = in.createTypedArrayList(FlightBookingPassengerViewModel.CREATOR);
         contactName = in.readString();
         contactEmail = in.readString();
@@ -58,11 +58,11 @@ public class FlightBookingParamViewModel implements Parcelable{
         }
     };
 
-    public CountryPhoneCode getPhoneCode() {
+    public TravelCountryPhoneCode getPhoneCode() {
         return phoneCode;
     }
 
-    public void setPhoneCode(CountryPhoneCode phoneCode) {
+    public void setPhoneCode(TravelCountryPhoneCode phoneCode) {
         this.phoneCode = phoneCode;
     }
 

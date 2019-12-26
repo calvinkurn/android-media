@@ -2,7 +2,6 @@ package com.tokopedia.flight.booking.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.common.travel.domain.GetContactListUseCase;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
@@ -11,6 +10,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator;
 import com.tokopedia.flight.common.util.FlightPassengerTitle;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -447,13 +447,13 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onNationalityChanged(CountryPhoneCode flightPassportNationalityViewModel) {
+    public void onNationalityChanged(TravelCountryPhoneCode flightPassportNationalityViewModel) {
         getView().getCurrentPassengerViewModel().setPassportNationality(flightPassportNationalityViewModel);
         getView().renderPassportNationality(flightPassportNationalityViewModel.getCountryName());
     }
 
     @Override
-    public void onIssuerCountryChanged(CountryPhoneCode flightPassportIssuerCountry) {
+    public void onIssuerCountryChanged(TravelCountryPhoneCode flightPassportIssuerCountry) {
         getView().getCurrentPassengerViewModel().setPassportIssuerCountry(flightPassportIssuerCountry);
         getView().renderPassportIssuerCountry(flightPassportIssuerCountry.getCountryName());
     }
@@ -509,7 +509,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             isValid = false;
             getView().showPassengerBirthdateEmptyError(com.tokopedia.flight.R.string.flight_booking_passenger_birthdate_empty_error);
         } else if (isAdultPassenger() && flightPassengerInfoValidator.validateBirthdateNotEmpty(
-                getView().getPassengerBirthDate()) &&  (getView().isMandatoryDoB() || !getView().isDomestic()) &&
+                getView().getPassengerBirthDate()) && (getView().isMandatoryDoB() || !getView().isDomestic()) &&
                 flightPassengerInfoValidator.validateDateMoreThan(getView().getPassengerBirthDate(), twelveYearsAgo)) {
             isValid = false;
             getView().showPassengerAdultBirthdateShouldMoreThan12Years(com.tokopedia.flight.R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
@@ -579,7 +579,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                 } else {
                     return FlightPassengerTitleType.NYONYA;
                 }
-            case  FlightPassengerTitle.NONA:
+            case FlightPassengerTitle.NONA:
                 return FlightPassengerTitleType.NONA;
             default:
                 return 0;
