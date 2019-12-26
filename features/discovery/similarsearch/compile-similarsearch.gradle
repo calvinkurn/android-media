@@ -18,6 +18,7 @@ include 'libraries:core_legacy'
 include 'libraries:core_network'
 include "libraries:cpm"
 include "libraries:iris"
+include "libraries:instrumentation_test"
 include 'libraries:kotlin_extensions'
 include 'libraries:promotions_target'
 include 'libraries:remote_config'

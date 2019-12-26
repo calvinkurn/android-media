@@ -24,7 +24,7 @@ buildscript {
 android {
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.similarsearch.SimilarSearchTestRunner"
+        testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
     }
 }
 
@@ -76,6 +76,8 @@ dependencies {
     androidTestImplementation project(rootProject.ext.libraries.commonNetwork)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
 }
 
 project.ext {

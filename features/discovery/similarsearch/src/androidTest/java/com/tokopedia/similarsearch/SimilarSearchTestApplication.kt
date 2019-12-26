@@ -137,7 +137,7 @@ class SimilarSearchTestApplication : BaseMainApplication(), NetworkRouter, TkpdC
             }
 
             override fun isV4Login(): Boolean {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                return false
             }
 
             override fun isMsisdnVerified(): Boolean {
