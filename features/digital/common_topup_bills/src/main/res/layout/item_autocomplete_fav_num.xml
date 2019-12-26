@@ -24,4 +24,11 @@
         app:typographyType="body_3"
         tools:text="Rizky Fadillah" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_below="@+id/text_number"
+        android:layout_marginTop="@dimen/dp_15"
+        android:background="@color/separator_voucher" />
+
 </RelativeLayout>
