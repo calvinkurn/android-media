@@ -33,6 +33,7 @@
         </activity>
         <activity
             android:name=".pdp.presentation.activity.UmrahPdpActivity"
+            android:label=""
             android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
