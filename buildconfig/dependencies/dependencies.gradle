@@ -135,7 +135,6 @@ ext {
             tagManagerImpl   : "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
             tagManager       : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}",
             safetyNet        : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}",
-            //measurementApi   : "com.google.android.gms:play-services-measurement-api:${playServiceMeasurementApi}",
     ]
 
     firebase = [
