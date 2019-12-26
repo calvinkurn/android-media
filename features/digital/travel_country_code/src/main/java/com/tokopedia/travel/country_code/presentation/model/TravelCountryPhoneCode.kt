@@ -9,9 +9,9 @@ import com.tokopedia.travel.country_code.presentation.adapter.PhoneCodePickerAda
  * @author by furqan on 23/12/2019
  */
 data class TravelCountryPhoneCode(
-        val countryId: String = "",
-        val countryName: String = "",
-        val countryPhoneCode: Int = 0
+        var countryId: String = "",
+        var countryName: String = "",
+        var countryPhoneCode: Int = 0
 ) : Parcelable, Visitable<PhoneCodePickerAdapterTypeFactory> {
 
     constructor(parcel: Parcel) : this(

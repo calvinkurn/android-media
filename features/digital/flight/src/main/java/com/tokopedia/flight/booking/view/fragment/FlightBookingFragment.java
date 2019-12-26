@@ -6,17 +6,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.widget.NestedScrollView;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,15 +13,24 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity;
-import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
@@ -69,6 +67,9 @@ import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity;
+import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment;
+import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -212,7 +213,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         tvPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(getActivity()), REQUEST_CODEP_PHONE_CODE);
+                startActivityForResult(PhoneCodePickerActivity.Companion.getCallingIntent(getActivity()), REQUEST_CODEP_PHONE_CODE);
             }
         });
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -249,7 +250,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         FlightBookingPassengerAdapterTypeFactory adapterTypeFactory = new FlightBookingPassengerAdapterTypeFactory(this);
         adapter = new FlightBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
         LinearLayoutManager layoutManager
-                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         passengerRecyclerView.setLayoutManager(layoutManager);
         passengerRecyclerView.setHasFixedSize(true);
         passengerRecyclerView.setNestedScrollingEnabled(false);
@@ -260,7 +261,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         priceListAdapter = new FlightSimpleAdapter();
         priceListAdapter.setDescriptionTextColor(getResources().getColor(com.tokopedia.design.R.color.font_black_secondary_54));
         LinearLayoutManager flightSimpleAdapterLayoutManager
-                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         pricelistsRecyclerView.setLayoutManager(flightSimpleAdapterLayoutManager);
         pricelistsRecyclerView.setHasFixedSize(true);
         pricelistsRecyclerView.setNestedScrollingEnabled(false);
@@ -321,7 +322,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 break;
             case REQUEST_CODEP_PHONE_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    CountryPhoneCode phoneCode = data.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE);
+                    TravelCountryPhoneCode phoneCode = data.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE);
                     presenter.onPhoneCodeResultReceived(phoneCode);
                 }
                 break;
