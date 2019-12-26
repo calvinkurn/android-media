@@ -377,4 +377,10 @@
     <string name="request_pickup_info_icon">Icon info confirm request pickup</string>
     <string name="request_pickup_info_button">Request Pick-Up</string>
 
+    <string name="transaction_buy_page">Transaction - Buy page</string>
+    <string name="transaction_sell_page">Transaction - Sell page</string>
+
+    <string name="error_field_required">Harus diisi</string>
+    <string name="action_sign_in_short">Masuk</string>
+
 </resources>
