@@ -15,6 +15,7 @@ import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageBottomSheetData
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageBottomSheetMapper
 import com.tokopedia.salam.umrah.homepage.data.UmrohHomepageBottomSheetwithType
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.UmrahHomepageBottomSheetAdapter
+import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
 import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchActivity
@@ -53,7 +54,7 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
 
     override fun bind(element: UmrahSearchParameterEntity) {
         if (element.isLoaded) {
-            if(!element.isRequested) {
+            if(!UmrahHomepageFragment.isRequestedSpinnerLike) {
                 with(itemView) {
                     shimmering.hide()
                     section_layout.show()
@@ -107,8 +108,7 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
                         }
                     }
                 }
-                element.isRequested = true
-
+                UmrahHomepageFragment.isRequestedSpinnerLike = true
             }
         }else{
             itemView.section_layout.hide()

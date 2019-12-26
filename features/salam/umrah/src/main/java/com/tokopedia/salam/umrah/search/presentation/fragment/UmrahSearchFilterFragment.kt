@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.design.intdef.CurrencyEnum
@@ -141,9 +142,9 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
 
     private fun setupFilterDeparturePeriod(departurePeriodOptions: List<UmrahOption>) {
         rv_umrah_search_filter_departure_period.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                    LinearLayoutManager.HORIZONTAL))
+                    RecyclerView.HORIZONTAL))
             adapter = departurePeriodAdapter
         }
         departurePeriodAdapter.apply {
@@ -166,9 +167,9 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
 
     private fun setupFilterDepartureCity(departureCityOptions: List<UmrahOption>) {
         rv_umrah_search_filter_departure_city.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                    LinearLayoutManager.HORIZONTAL))
+                    RecyclerView.HORIZONTAL))
             adapter = departureCityAdapter
         }
         departureCityAdapter.apply {
@@ -243,7 +244,7 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
             setCloseClickListener { bottomSheets.dismiss() }
         }
         view.rv_umrah_search_sort.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             this.adapter = bottomSheetAdapter
         }
         bottomSheetAdapter.apply {

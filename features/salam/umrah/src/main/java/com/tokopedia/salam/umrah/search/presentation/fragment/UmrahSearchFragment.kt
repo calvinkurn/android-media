@@ -199,7 +199,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         if (!isRVInited) umrah_search_recycler_view.apply {
             setHasFixedSize(true)
             setItemViewCacheSize(searchParam.limit * 2)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4), LinearLayoutManager.VERTICAL))
+            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4), RecyclerView.VERTICAL))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -270,7 +270,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     private fun initSortBottomSheets() {
         sortView = LayoutInflater.from(context).inflate(R.layout.bottom_sheets_umrah_search_sort, null).also { sortView ->
             sortView.rv_umrah_search_sort.apply {
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                 adapter = umrahSearchSortAdapter.also {
                     it.listener = object : UmrahSearchSortAdapter.OnSortMenuSelected {
                         override fun onSelect(option: UmrahOption) {

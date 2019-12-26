@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.PriceRangeLimit
 import com.tokopedia.salam.umrah.search.presentation.adapter.UmrahSeekbarRangeWidgetAdapter
@@ -83,7 +84,7 @@ class UmrahSeekbarRangeWidget @JvmOverloads constructor(
 
     private fun initSeekbarNumbersAdapter() {
         filterSeekbarRangeWidgetAdapter.items = seekbarNumbers
-        val spanningLinearLayoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16))
+        val spanningLinearLayoutManager = SpanningLinearLayoutManager(context, RecyclerView.HORIZONTAL, false, resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16))
         rv_umrah_seekbar_range.layoutManager = spanningLinearLayoutManager
     }
 

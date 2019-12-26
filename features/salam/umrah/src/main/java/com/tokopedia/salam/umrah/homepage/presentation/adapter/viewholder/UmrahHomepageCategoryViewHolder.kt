@@ -35,7 +35,7 @@ class UmrahHomepageCategoryViewHolder(view: View, val onBindListener: onItemBind
                     )
                     while (itemDecorationCount > 0) removeItemDecorationAt(0)
                     addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4),
-                            LinearLayoutManager.HORIZONTAL))
+                            RecyclerView.HORIZONTAL))
 
                     if (element.umrahCategories.isNotEmpty() && element.umrahCategories.getOrNull(0)?.isViewed == false) {
                         onBindListener.onImpressionCategory(element.umrahCategories.getOrNull(0)
@@ -44,11 +44,6 @@ class UmrahHomepageCategoryViewHolder(view: View, val onBindListener: onItemBind
                     }
 
                     addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-                        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                            super.onScrollStateChanged(recyclerView, newState)
-                        }
-
                         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                             super.onScrolled(recyclerView, dx, dy)
                             var position = (layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()

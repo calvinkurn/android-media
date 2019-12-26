@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpItineraryModel
 import com.tokopedia.salam.umrah.pdp.presentation.adapter.UmrahPdpItineraryAdapter
@@ -49,7 +50,7 @@ class UmrahPdpItineraryWidget @JvmOverloads constructor(context: Context, attrs:
             umrahItineraryItems = items
         }
         rv_widget_umrah_pdp_itinerary.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = umrahPdpItineraryAdapter
         }
         umrahPdpItineraryAdapter.updateItems(umrahItineraryItems)

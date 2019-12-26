@@ -33,9 +33,9 @@ class UmrahHomepageMyUmrahViewHolder(view: View, private val onBindListener: onI
                 shimmering.hide()
                 section_my_umrah.hide()
                 section_layout.show()
-                if (!UmrahHomepageFragment.DREAM_FUND_VIEWED) {
+                if (!UmrahHomepageFragment.isDreamFundViewed) {
                     onBindListener.onImpressionDanaImpian()
-                    UmrahHomepageFragment.DREAM_FUND_VIEWED = true
+                    UmrahHomepageFragment.isDreamFundViewed = true
                 }
                 dream_fund_umrah_home_page.setOnClickListener {
                     onBindListener.onClickDanaImpian()
@@ -52,12 +52,12 @@ class UmrahHomepageMyUmrahViewHolder(view: View, private val onBindListener: onI
                     adapter = adapterMyUmrah
                     layoutManager = LinearLayoutManager(
                             context,
-                            LinearLayoutManager.HORIZONTAL, false
+                            RecyclerView.HORIZONTAL, false
                     )
 
                     while (itemDecorationCount > 0) removeItemDecorationAt(0)
                     addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4),
-                            LinearLayoutManager.HORIZONTAL))
+                            RecyclerView.HORIZONTAL))
 
 
                     if (element.listMyUmrahEntity.isNotEmpty() && element.listMyUmrahEntity.getOrNull(0)?.isViewed == false) {

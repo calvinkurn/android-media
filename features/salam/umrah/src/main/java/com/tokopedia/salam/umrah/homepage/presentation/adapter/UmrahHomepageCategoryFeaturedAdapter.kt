@@ -42,12 +42,12 @@ class UmrahHomepageCategoryFeaturedAdapter(val onItemBindListener: onItemBindLis
                         adapter = adapterFeaturedCategory
                         layoutManager = LinearLayoutManager(
                                 this@with.context,
-                                LinearLayoutManager.HORIZONTAL, false
+                                RecyclerView.HORIZONTAL, false
                         )
 
                         while (itemDecorationCount > 0) removeItemDecorationAt(0)
                         addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4),
-                                LinearLayoutManager.HORIZONTAL))
+                                RecyclerView.HORIZONTAL))
                         if (categories.products.isNotEmpty() && categories.products.getOrNull(0)?.isViewed == false)
 
                             onItemBindListener.onImpressionFeaturedCategory(categories.title, categories.products.getOrNull(0)

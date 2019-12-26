@@ -101,7 +101,8 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     private fun resetIsRequested(){
         isRequestedMyUmrah = false
         isRequestedCategory = false
-        DREAM_FUND_VIEWED = false
+        isDreamFundViewed = false
+        isRequestedSpinnerLike = false
     }
 
     private fun loadDataAll() {
@@ -178,8 +179,9 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     companion object {
         fun getInstance(): UmrahHomepageFragment = UmrahHomepageFragment()
         var isRequestedMyUmrah = false
-        var DREAM_FUND_VIEWED = false
+        var isDreamFundViewed = false
         var isRequestedCategory = false
+        var isRequestedSpinnerLike = false
     }
 }
 

@@ -358,7 +358,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                    LinearLayoutManager.VERTICAL))
+                    RecyclerView.VERTICAL))
         }
     }
 
@@ -369,7 +369,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4),
-                    LinearLayoutManager.HORIZONTAL))
+                    RecyclerView.HORIZONTAL))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
@@ -415,7 +415,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                    LinearLayoutManager.HORIZONTAL))
+                    RecyclerView.HORIZONTAL))
         }
         tg_umrah_pdp_featured_facilities_see_all.setOnClickListener {
             umrahTrackingUtil.umrahPdpAllClick(UmrahPdpTrackingUserAction.LIHAT_SEMUA_FASILITAS)
@@ -449,7 +449,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         facilitiesBottomSheet.setTitle(resources.getString(R.string.umrah_pdp_facilities_title))
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheets_umrah_pdp_facilities, null)
         view.bs_rv_umrah_pdp_facilities.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = umrahPdpFacilityAdapter
         }
         umrahPdpFacilityAdapter.facilities = umrahProduct.facilities
@@ -471,7 +471,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             adapter = umrahPdpFaqAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4), LinearLayoutManager.HORIZONTAL))
+            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4), RecyclerView.HORIZONTAL))
             addItemDecoration(UmrahPdpFaqIndicator())
             onFlingListener = null
             PagerSnapHelper().attachToRecyclerView(this)
