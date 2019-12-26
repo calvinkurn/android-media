@@ -4,6 +4,11 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
           invoiceRefNum
           invoiceUrl
       }
+      conditionalInfo {
+                   text
+                   url
+                   title
+      }
       helpLink
       beforeOrderId
       title {
