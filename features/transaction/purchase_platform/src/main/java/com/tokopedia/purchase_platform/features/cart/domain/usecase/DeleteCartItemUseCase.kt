@@ -64,9 +64,9 @@ class DeleteCartItemUseCase @Inject constructor(private val clearCacheAutoApplyS
                             .map {
                                 val deleteCartGqlResponse = it.getData<DeleteCartGqlResponse>(DeleteCartGqlResponse::class.java)
                                 val deleteCartData = DeleteCartData()
-                                deleteCartData.isSuccess = deleteCartGqlResponse.deleteCartDataResponse.data?.success == 1
-                                deleteCartData.message = if (deleteCartGqlResponse.deleteCartDataResponse.data?.success == 1) {
-                                    if (deleteCartGqlResponse.deleteCartDataResponse.data.message.isNotEmpty()) {
+                                deleteCartData.isSuccess = deleteCartGqlResponse.deleteCartDataResponse.status == "OK"
+                                deleteCartData.message = if (deleteCartGqlResponse.deleteCartDataResponse.status == "OK") {
+                                    if (deleteCartGqlResponse.deleteCartDataResponse.data?.message?.isNotEmpty() == true) {
                                         deleteCartGqlResponse.deleteCartDataResponse.data.message[0]
                                     } else {
                                         ""

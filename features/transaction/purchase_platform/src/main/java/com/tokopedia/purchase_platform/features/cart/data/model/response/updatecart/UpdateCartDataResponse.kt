@@ -8,13 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class UpdateCartDataResponse(
-    @SerializedName("error")
-    @Expose
-    val error: String = "",
+    @SerializedName("error_message")
+    val error: List<String> = emptyList(),
     @SerializedName("status")
-    @Expose
-    val isStatus: Boolean = false,
-    @SerializedName("goto")
-    @Expose
-    val goto: Int = 0
+    val status: String = "",
+    @SerializedName("data")
+    val data: Data?
 )

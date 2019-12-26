@@ -9,19 +9,15 @@ import android.os.Parcelable
 
 data class UpdateCartData(
         var isSuccess: Boolean = false,
-        var message: String? = null,
-        var goTo: Int = 0
+        var message: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),
-            parcel.readString(),
-            parcel.readInt()) {
-    }
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeByte(if (isSuccess) 1 else 0)
         parcel.writeString(message)
-        parcel.writeInt(goTo)
     }
 
     override fun describeContents(): Int {

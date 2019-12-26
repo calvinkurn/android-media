@@ -246,9 +246,9 @@ public class CartMapper implements ICartMapper {
     @Override
     public UpdateCartData convertToUpdateCartData(UpdateCartDataResponse updateCartDataResponse) {
         UpdateCartData updateCartData = new UpdateCartData();
-        updateCartData.setGoTo(updateCartDataResponse.getGoto());
-        updateCartData.setMessage(updateCartDataResponse.getError());
-        updateCartData.setSuccess(updateCartDataResponse.isStatus());
+//        updateCartData.setGoTo(updateCartDataResponse.getGoto());
+//        updateCartData.setMessage(updateCartDataResponse.getError());
+//        updateCartData.setSuccess(updateCartDataResponse.isStatus());
 
         return updateCartData;
     }

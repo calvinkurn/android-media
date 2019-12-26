@@ -5,11 +5,10 @@ import androidx.core.app.JobIntentService
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.TKPDMapParam
-import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartGqlUseCase
 import com.tokopedia.purchase_platform.features.cart.view.di.DaggerCartComponent
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -24,7 +23,7 @@ import javax.inject.Inject
 class UpdateCartIntentService : JobIntentService() {
 
     @Inject
-    lateinit var updateCartUseCase: UpdateCartUseCase
+    lateinit var updateCartUseCase: UpdateCartGqlUseCase
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -39,17 +38,16 @@ class UpdateCartIntentService : JobIntentService() {
             val updateCartRequestList = ArrayList<UpdateCartRequest>()
             for ((originData, updatedData) in cartItemDataList) {
                 val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = originData?.cartId ?: 0
+                updateCartRequest.cartId = originData?.cartId?.toString() ?: "0"
                 updateCartRequest.notes = updatedData?.remark
                 updateCartRequest.quantity = updatedData?.quantity ?: 0
                 updateCartRequestList.add(updateCartRequest)
             }
             val paramUpdate = TKPDMapParam<String, String>()
-            paramUpdate[UpdateCartUseCase.PARAM_CARTS] = Gson().toJson(updateCartRequestList)
+            paramUpdate[UpdateCartGqlUseCase.PARAM_CARTS] = Gson().toJson(updateCartRequestList)
 
             val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
-                    AuthHelper.generateParamsNetwork(userSession.userId, userSession.deviceId, paramUpdate))
+            requestParams.putObject(UpdateCartGqlUseCase.PARAM_UPDATE_CART_REQUEST, paramUpdate)
 
             updateCartUseCase.createObservable(requestParams)
                     .subscribe(object : Subscriber<UpdateCartData>() {

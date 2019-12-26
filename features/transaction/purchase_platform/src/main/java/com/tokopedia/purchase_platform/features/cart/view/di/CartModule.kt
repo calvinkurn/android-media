@@ -187,7 +187,7 @@ class CartModule {
     @CartScope
     fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
                                   deleteCartItemUseCase: DeleteCartItemUseCase,
-                                  updateCartUseCase: UpdateCartUseCase,
+                                  updateCartUseCase: UpdateCartGqlUseCase,
                                   checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
                                   checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                   compositeSubscription: CompositeSubscription,

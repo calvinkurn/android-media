@@ -61,7 +61,7 @@ import javax.inject.Inject
 
 class CartListPresenter @Inject constructor(private val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase?,
                                             private val deleteCartItemUseCase: DeleteCartItemUseCase?,
-                                            private val updateCartUseCase: UpdateCartUseCase?,
+                                            private val updateCartUseCase: UpdateCartGqlUseCase?,
                                             private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase?,
                                             private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                             private val compositeSubscription: CompositeSubscription,
@@ -274,17 +274,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val updateCartRequestList = ArrayList<UpdateCartRequest>()
             for (cartItemData in cartItemDataList) {
                 val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = cartItemData.originData?.cartId ?: 0
+                updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
                 updateCartRequest.notes = cartItemData.updatedData?.remark
                 updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
                 updateCartRequestList.add(updateCartRequest)
             }
-            val paramUpdate = TKPDMapParam<String, String>()
-            paramUpdate[UpdateCartUseCase.PARAM_CARTS] = Gson().toJson(updateCartRequestList)
 
             val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
-                    AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, paramUpdate))
+            requestParams.putObject(UpdateCartGqlUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
             compositeSubscription.add(
                     updateCartUseCase?.createObservable(requestParams)
@@ -300,17 +297,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val updateCartRequestList = ArrayList<UpdateCartRequest>()
             for (cartItemData in cartItemDataList) {
                 val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = cartItemData.originData?.cartId ?: 0
+                updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
                 updateCartRequest.notes = cartItemData.updatedData?.remark
                 updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
                 updateCartRequestList.add(updateCartRequest)
             }
-            val paramUpdate = TKPDMapParam<String, String>()
-            paramUpdate[UpdateCartUseCase.PARAM_CARTS] = Gson().toJson(updateCartRequestList)
 
             val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
-                    AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, paramUpdate))
+            requestParams.putObject(UpdateCartGqlUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
             compositeSubscription.add(
                     updateCartUseCase?.createObservable(requestParams)
@@ -327,17 +321,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val updateCartRequestList = ArrayList<UpdateCartRequest>()
             for (cartItemData in cartItemDataList) {
                 val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = cartItemData.originData?.cartId ?: 0
+                updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
                 updateCartRequest.notes = cartItemData.updatedData?.remark
                 updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
                 updateCartRequestList.add(updateCartRequest)
             }
-            val paramUpdate = TKPDMapParam<String, String>()
-            paramUpdate[UpdateCartUseCase.PARAM_CARTS] = Gson().toJson(updateCartRequestList)
 
             val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
-                    AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, paramUpdate))
+            requestParams.putObject(UpdateCartGqlUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
             compositeSubscription.add(
                     updateCartUseCase?.createObservable(requestParams)
@@ -357,17 +348,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val updateCartRequestList = ArrayList<UpdateCartRequest>()
             for (cartItemData in cartItemDataList) {
                 val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = cartItemData.originData?.cartId ?: 0
+                updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
                 updateCartRequest.notes = cartItemData.updatedData?.remark
                 updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
                 updateCartRequestList.add(updateCartRequest)
             }
-            val paramUpdate = TKPDMapParam<String, String>()
-            paramUpdate[UpdateAndReloadCartUseCase.PARAM_CARTS] = Gson().toJson(updateCartRequestList)
 
             val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateAndReloadCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
-                    AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, paramUpdate))
+            requestParams.putObject(UpdateAndReloadCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART, cartItemDataList)
 
             compositeSubscription.add(
                     updateAndReloadCartUseCase?.createObservable(requestParams)

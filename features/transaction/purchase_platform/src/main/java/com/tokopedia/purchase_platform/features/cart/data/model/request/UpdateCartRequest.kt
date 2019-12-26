@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
 data class UpdateCartRequest(
     @SerializedName("cart_id")
     @Expose
-    var cartId: Int = 0,
+    var cartId: String = "",
     @SerializedName("quantity")
     @Expose
     var quantity: Int = 0,
