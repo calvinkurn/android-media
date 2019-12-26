@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Travel Country Code</string>
+    <string name="activity_label_travel_country_code">Kode Telepon Negara</string>
+    <string name="travel_phone_code_label_search_hint">Ketik kota atau bandara</string>
+    <string name="travel_phone_code_picker_label">(+%1$s)</string>
 </resources>

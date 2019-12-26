@@ -1,2 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.travel.country_code" />
+    package="com.tokopedia.travel.country_code">
+
+    <application>
+        <activity
+            android:name="com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity"
+            android:label="@string/activity_label_travel_country_code"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+    </application>
+
+</manifest>
