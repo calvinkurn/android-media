@@ -225,9 +225,7 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
     private void startActivityFromAutoComplete(String applink) {
         if(getActivity() == null) return;
 
-        Intent intent = RouteManager.getIntent(getActivity(), applink);
-
-        getActivity().startActivity(intent);
+        RouteManager.route(getActivity(), applink);
         getActivity().finish();
     }
 

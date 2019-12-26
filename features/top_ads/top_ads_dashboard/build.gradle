@@ -57,8 +57,6 @@ dependencies {
     
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
