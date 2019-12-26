@@ -32,7 +32,7 @@ public interface OtpComponent {
 
     UserSessionInterface provideUserSessionInterface();
 
-    ChuckInterceptor provideChuckerInterceptor();
+    ChuckerInterceptor provideChuckerInterceptor();
 
     AbstractionRouter provideAbstractionRouter();
 
