@@ -67,3 +67,12 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
 }
+
+project.ext {
+    artifactId = 'attachinvoice'
+    groupId = 'com.tokopedia.user'
+    versionName = "0.0.1"
+    artifactName = "attachinvoice-release"
+}
+
+apply from: '../../../publish_local.gradle'

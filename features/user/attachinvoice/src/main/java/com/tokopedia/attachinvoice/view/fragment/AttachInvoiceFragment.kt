@@ -146,6 +146,8 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
         return viewModel.opponentName
     }
 
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
     companion object {
         fun createInstance(extra: Bundle?): AttachInvoiceFragment {
             return AttachInvoiceFragment().apply {

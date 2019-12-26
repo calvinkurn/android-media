@@ -7,7 +7,7 @@ import com.tokopedia.attachinvoice.R
 class AttachInvoiceItemDecoration(context: Context?) : DividerItemDecoration(context) {
 
     override fun getDimenPaddingLeft(): Int {
-        return R.dimen.dp_50
+        return R.dimen.dp_51_attachinvoice
     }
 
     override fun shouldDrawOnLastItem(): Boolean {
