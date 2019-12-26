@@ -37,6 +37,7 @@
 
     <string name="umrah_common_booking_code_label">Kode Booking</string>
     <string name="umrah_common_start_from">Mulai dari %s</string>
+    <string name="umrah_common_start_from_non_currency">Mulai dari</string>
 
 
     <string name="umrah_order_detail_jamaah_info_label">Informasi Jemaah</string>

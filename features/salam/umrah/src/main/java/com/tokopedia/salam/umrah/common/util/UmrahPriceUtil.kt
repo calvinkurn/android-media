@@ -11,6 +11,7 @@ object UmrahPriceUtil {
         val formattedSlashPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(slashPrice, false)
         val text = SpannableString(resources.getString(R.string.umrah_common_start_from, formattedSlashPrice))
         text.setSpan(StrikethroughSpan(), 11, formattedSlashPrice.length + 11, 0)
-        return text
+
+        return if(slashPrice>0) text else resources.getString(R.string.umrah_common_start_from_non_currency)
     }
 }
