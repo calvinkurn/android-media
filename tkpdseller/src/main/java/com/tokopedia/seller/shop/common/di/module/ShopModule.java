@@ -84,7 +84,7 @@ public class ShopModule {
                                                           BearerInterceptor bearerInterceptor,
                                                           @ShopQualifier ErrorResponseInterceptor errorResponseInterceptor,
                                                           FingerprintInterceptor fingerprintInterceptor,
-                                                          ChuckInterceptor chuckInterceptor
+                                                          ChuckerInterceptor chuckInterceptor
     ) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()

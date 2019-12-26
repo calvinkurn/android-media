@@ -47,7 +47,7 @@ class TalkModule {
 
     @TalkScope
     @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
     }
 
@@ -75,7 +75,7 @@ class TalkModule {
 
     @TalkScope
     @Provides
-    fun provideOkHttpClient(chuckInterceptor: ChuckInterceptor,
+    fun provideOkHttpClient(chuckInterceptor: ChuckerInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             debugInterceptor: DebugInterceptor,
                             fingerprintInterceptor: FingerprintInterceptor,

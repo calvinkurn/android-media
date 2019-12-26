@@ -57,7 +57,7 @@ public class LoginRegisterModule {
     @Provides
     OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
                                      TkpdOldAuthInterceptor tkpdAuthInterceptor,
-                                     ChuckInterceptor chuckInterceptor,
+                                     ChuckerInterceptor chuckInterceptor,
                                      DebugInterceptor debugInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      FingerprintInterceptor fingerprintInterceptor) {
