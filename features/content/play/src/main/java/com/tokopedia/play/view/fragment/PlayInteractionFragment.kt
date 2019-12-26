@@ -178,7 +178,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     //region observe
     private fun observeQuickReply() {
-        playViewModel.observableQuickReplySocket.observe(viewLifecycleOwner, Observer(::setQuickReply))
+        playViewModel.observableQuickReply.observe(viewLifecycleOwner, Observer(::setQuickReply))
     }
 
     private fun observeVideoStream() {
@@ -203,11 +203,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeTotalViews() {
-        playViewModel.observableTotalViewsSocket.observe(viewLifecycleOwner, Observer(::setTotalView))
+        playViewModel.observableTotalViews.observe(viewLifecycleOwner, Observer(::setTotalView))
     }
 
     private fun observeChatList() {
-        playViewModel.observableChatListSocket.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableChatList.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -219,7 +219,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observePinnedMessage() {
-        playViewModel.observablePinnedMessageSocket.observe(this, Observer(::setPinnedMessage))
+        playViewModel.observablePinnedMessage.observe(this, Observer(::setPinnedMessage))
     }
 
     private fun observeLoggedInInteractionEvent() {

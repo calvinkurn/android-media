@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.data.websocket.PlaySocketInfo
@@ -78,6 +80,7 @@ class PlayFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         playViewModel.getChannelInfo(channelId)
         observeSocketInfo()
+        observeEventUserInfo()
     }
 
     private fun setupScreen(view: View) {
@@ -108,14 +111,29 @@ class PlayFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun observeBannedUserInfo() {
-        playViewModel.observableBannedFreezeSocket.observe(viewLifecycleOwner, Observer {
+    private fun observeEventUserInfo() {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
             if (it.isBanned) {
-
+                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle, it.bannedButtonUrl)
             } else if (it.isFreeze) {
-
+                showEventDialog(it.freezeTitle, it.freezeMessage, it.freezeButtonTitle, it.freezeButtonUrl)
             }
         })
+    }
+
+    private fun showEventDialog(title: String, message: String, buttonTitle: String, buttonUrl: String) {
+        activity?.let {
+            val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(title)
+            dialog.setDescription(message)
+            dialog.setPrimaryCTAText(buttonTitle)
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+                it.finish()
+                RouteManager.route(it, buttonUrl)
+            }
+            dialog.show()
+        }
     }
 
     override fun onDestroy() {

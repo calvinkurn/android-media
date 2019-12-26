@@ -55,22 +55,22 @@ class PlayViewModel @Inject constructor(
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     val observableSocketInfo: LiveData<PlaySocketInfo> = _observableSocketInfo
 
-    private val _observableChatListSocket = MutableLiveData<PlayChat>()
-    val observableChatListSocket: LiveData<PlayChat> = _observableChatListSocket
+    private val _observableChatList = MutableLiveData<PlayChat>()
+    val observableChatList: LiveData<PlayChat> = _observableChatList
 
-    private val _observableTotalViewsSocket = MutableLiveData<TotalViewUiModel>()
-    val observableTotalViewsSocket: LiveData<TotalViewUiModel> = _observableTotalViewsSocket
+    private val _observableTotalViews = MutableLiveData<TotalViewUiModel>()
+    val observableTotalViews: LiveData<TotalViewUiModel> = _observableTotalViews
 
     private val _observablePartnerInfo: MutableLiveData<PartnerInfoUiModel> = MutableLiveData()
     val observablePartnerInfo: LiveData<PartnerInfoUiModel> = _observablePartnerInfo
 
-    private val _observableQuickReplySocket = MutableLiveData<QuickReplyUiModel>()
-    val observableQuickReplySocket: LiveData<QuickReplyUiModel> = _observableQuickReplySocket
+    private val _observableQuickReply = MutableLiveData<QuickReplyUiModel>()
+    val observableQuickReply: LiveData<QuickReplyUiModel> = _observableQuickReply
 
-    private val _observableBannedFreezeSocket = MutableLiveData<BannedFreeze>()
-    val observableBannedFreezeSocket: LiveData<BannedFreeze> = _observableBannedFreezeSocket
+    private val _observableEvent = MutableLiveData<EventUiModel>()
+    val observableEvent: LiveData<EventUiModel> = _observableEvent
 
-    private val _observablePinnedMessageSocket = MediatorLiveData<PinnedMessageUiModel>().apply {
+    private val _observablePinnedMessage = MediatorLiveData<PinnedMessageUiModel>().apply {
         addSource(observablePartnerInfo) {
             val currentValue = value
             if (currentValue != null) value = currentValue.copy(
@@ -78,7 +78,7 @@ class PlayViewModel @Inject constructor(
             )
         }
     }
-    val observablePinnedMessageSocket: LiveData<PinnedMessageUiModel> = _observablePinnedMessageSocket
+    val observablePinnedMessage: LiveData<PinnedMessageUiModel> = _observablePinnedMessage
 
     val observableVideoProperty: LiveData<VideoPropertyUiModel> = MediatorLiveData<VideoPropertyUiModel>().apply {
         addSource(observableVideoStream) {
@@ -115,10 +115,11 @@ class PlayViewModel @Inject constructor(
             val completeInfoUiModel = createCompleteInfoModel(channel, videoStream)
 
             _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
-            _observableTotalViewsSocket.value = completeInfoUiModel.totalView
-            _observablePinnedMessageSocket.value = completeInfoUiModel.pinnedMessage
-            _observableQuickReplySocket.value = completeInfoUiModel.quickReply
+            _observableTotalViews.value = completeInfoUiModel.totalView
+            _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
+            _observableQuickReply.value = completeInfoUiModel.quickReply
             _observableVideoStream.value = completeInfoUiModel.videoStream
+            _observableEvent.value = mapEvent(channel)
         }) {
             //TODO("Change it later")
             _observableGetChannelInfo.value = Fail(it)
@@ -134,7 +135,7 @@ class PlayViewModel @Inject constructor(
             return
 
         playSocket.send(message, onSuccess = {
-            _observableChatListSocket.value = PlayChat("", "", message,
+            _observableChatList.value = PlayChat("", "", message,
                     PlayChat.UserData(userSessionInterface.userId, userSessionInterface.name, userSessionInterface.profilePicture))
         })
     }
@@ -189,20 +190,25 @@ class PlayViewModel @Inject constructor(
 
                     }
                     is TotalView -> {
-                        _observableTotalViewsSocket.value = mapTotalViews(result)
+                        _observableTotalViews.value = mapTotalViews(result)
                     }
                     is PlayChat -> {
-                        _observableChatListSocket.value = result
+                        _observableChatList.value = result
                     }
                     is PinnedMessage -> {
                         val partnerName = _observablePartnerInfo.value?.name.orEmpty()
-                        _observablePinnedMessageSocket.value = mapPinnedMessage(partnerName, result)
+                        _observablePinnedMessage.value = mapPinnedMessage(partnerName, result)
                     }
                     is QuickReply -> {
-                        _observableQuickReplySocket.value = mapQuickReply(result)
+                        _observableQuickReply.value = mapQuickReply(result)
                     }
                     is BannedFreeze -> {
-                        _observableBannedFreezeSocket.value = result
+                        if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
+                            _observableEvent.value = _observableEvent.value?.copy(
+                                    isFreeze = result.isFreeze,
+                                    isBanned = result.isBanned && result.userId.isNotEmpty()
+                                            && result.userId.equals(userSessionInterface.userId, true))
+                        }
                     }
                     is VideoStream -> {
                         val videoStreamUiModel = mapVideoStream(result)
@@ -271,4 +277,17 @@ class PlayViewModel @Inject constructor(
             type = PartnerType.SHOP,
             isFollowed = shopInfo.favoriteData.alreadyFavorited == 1
     )
+
+    private fun mapEvent(channel: Channel) = EventUiModel(
+                isBanned = false,
+                isFreeze = false,
+                bannedMessage = channel.bannedMsg,
+                bannedTitle = channel.bannedTitle,
+                bannedButtonTitle = channel.bannedButtonTitle,
+                bannedButtonUrl = channel.bannedButtonUrl,
+                freezeMessage = channel.freezeChannelState.desc,
+                freezeTitle = channel.freezeChannelState.title,
+                freezeButtonTitle = channel.freezeChannelState.btnTitle,
+                freezeButtonUrl = channel.freezeChannelState.btnAppLink
+        )
 }
