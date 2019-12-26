@@ -140,7 +140,6 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
         user_address_id
         cart_string
         total_cart_details_error
-        total_cart_price
         sort_key
         is_fulfillment_service
         has_promo_list
