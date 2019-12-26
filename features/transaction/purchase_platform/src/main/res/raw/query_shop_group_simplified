@@ -131,7 +131,6 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
         page
       }
       default_promo_dialog_tab
-      total_product_price
       total_product_count
       total_product_error
       global_checkbox_state
