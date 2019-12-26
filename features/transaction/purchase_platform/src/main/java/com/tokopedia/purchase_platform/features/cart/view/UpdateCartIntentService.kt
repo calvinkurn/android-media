@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartGqlUseCase
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase
 import com.tokopedia.purchase_platform.features.cart.view.di.DaggerCartComponent
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class UpdateCartIntentService : JobIntentService() {
 
     @Inject
-    lateinit var updateCartUseCase: UpdateCartGqlUseCase
+    lateinit var updateCartUseCase: UpdateCartUseCase
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -44,10 +44,10 @@ class UpdateCartIntentService : JobIntentService() {
                 updateCartRequestList.add(updateCartRequest)
             }
             val paramUpdate = TKPDMapParam<String, String>()
-            paramUpdate[UpdateCartGqlUseCase.PARAM_CARTS] = Gson().toJson(updateCartRequestList)
+            paramUpdate[UpdateCartUseCase.PARAM_CARTS] = Gson().toJson(updateCartRequestList)
 
             val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateCartGqlUseCase.PARAM_UPDATE_CART_REQUEST, paramUpdate)
+            requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, paramUpdate)
 
             updateCartUseCase.createObservable(requestParams)
                     .subscribe(object : Subscriber<UpdateCartData>() {

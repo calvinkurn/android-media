@@ -178,7 +178,7 @@ class CartListPresenterTest : Spek({
 
         Scenario("success update and reload empty") {
 
-            val emptyCartListData = UpdateAndRefreshCartListData()
+            val emptyCartListData = UpdateAndReloadCartListData()
 
             Given("empty data") {
                 every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
@@ -203,7 +203,7 @@ class CartListPresenterTest : Spek({
 
         Scenario("success update and reload") {
 
-            val cartListData = UpdateAndRefreshCartListData()
+            val cartListData = UpdateAndReloadCartListData()
 
             Given("cart data") {
                 cartListData.cartListData = CartListData()

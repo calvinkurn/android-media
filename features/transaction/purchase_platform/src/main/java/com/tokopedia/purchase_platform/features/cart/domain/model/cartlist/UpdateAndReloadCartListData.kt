@@ -7,7 +7,7 @@ import android.os.Parcelable
  * @author Irfan Khoirul on 09/09/18.
  */
 
-data class UpdateAndRefreshCartListData(
+data class UpdateAndReloadCartListData(
         var updateCartData: UpdateCartData? = null,
         var cartListData: CartListData? = null
 ) : Parcelable {
@@ -25,12 +25,12 @@ data class UpdateAndRefreshCartListData(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<UpdateAndRefreshCartListData> {
-        override fun createFromParcel(parcel: Parcel): UpdateAndRefreshCartListData {
-            return UpdateAndRefreshCartListData(parcel)
+    companion object CREATOR : Parcelable.Creator<UpdateAndReloadCartListData> {
+        override fun createFromParcel(parcel: Parcel): UpdateAndReloadCartListData {
+            return UpdateAndReloadCartListData(parcel)
         }
 
-        override fun newArray(size: Int): Array<UpdateAndRefreshCartListData?> {
+        override fun newArray(size: Int): Array<UpdateAndReloadCartListData?> {
             return arrayOfNulls(size)
         }
     }

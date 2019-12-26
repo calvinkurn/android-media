@@ -29,8 +29,8 @@ import com.tokopedia.purchase_platform.features.cart.data.api.CartApi
 import com.tokopedia.purchase_platform.features.cart.data.repository.CartRepository
 import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartMapper
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.*
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartItemDecoration
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
@@ -186,8 +186,8 @@ class CartModule {
     @Provides
     @CartScope
     fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
-                                  deleteCartItemUseCase: DeleteCartItemUseCase,
-                                  updateCartUseCase: UpdateCartGqlUseCase,
+                                  deleteCartUseCase: DeleteCartUseCase,
+                                  updateCartUseCase: UpdateCartUseCase,
                                   checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
                                   checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                   compositeSubscription: CompositeSubscription,
@@ -204,7 +204,7 @@ class CartModule {
                                   removeInsuranceProductUsecase: RemoveInsuranceProductUsecase,
                                   updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase,
                                   seamlessLoginUsecase: SeamlessLoginUsecase): ICartListPresenter {
-        return CartListPresenter(getCartListSimplifiedUseCase, deleteCartItemUseCase,
+        return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
                 updateCartUseCase, checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper,
                 compositeSubscription, addWishListUseCase, removeWishListUseCase,
                 updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,

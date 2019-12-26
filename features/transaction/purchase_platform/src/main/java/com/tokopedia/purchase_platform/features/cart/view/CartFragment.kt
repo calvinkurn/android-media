@@ -1523,7 +1523,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 dPresenter.processInitialGetCartData(getCartId(), true, false)
             } else {
                 if (dPresenter.dataHasChanged()) {
-                    dPresenter.processToUpdateAndReloadCartData()
+                    dPresenter.processToUpdateAndReloadCartData(getCartId())
                 } else {
                     dPresenter.processInitialGetCartData(getCartId(), false, true)
                 }
@@ -1665,7 +1665,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onRefresh(view: View?) {
         if (dPresenter.dataHasChanged()) {
             showMainContainer()
-            dPresenter.processToUpdateAndReloadCartData()
+            dPresenter.processToUpdateAndReloadCartData(getCartId())
         } else {
             if (dPresenter.getCartListData()?.shopGroupAvailableDataList?.isNotEmpty() == true) {
                 showMainContainer()

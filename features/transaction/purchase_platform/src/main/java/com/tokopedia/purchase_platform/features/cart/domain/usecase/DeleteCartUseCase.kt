@@ -17,8 +17,8 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 2019-12-26.
  */
 
-class DeleteCartItemUseCase @Inject constructor(private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-                                                private val schedulers: ExecutorSchedulers) : UseCase<DeleteCartData>() {
+class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                            private val schedulers: ExecutorSchedulers) : UseCase<DeleteCartData>() {
 
     companion object {
         const val PARAM_TO_BE_REMOVED_PROMO_CODES = "PARAM_TO_BE_REMOVED_PROMO_CODES"

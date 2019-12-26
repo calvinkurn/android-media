@@ -42,7 +42,7 @@ interface ICartListPresenter {
 
     fun processUpdateCartDataPromoStacking(cartItemDataList: List<CartItemData>, promoStackingData: PromoStackingData, goToDetail: Int)
 
-    fun processToUpdateAndReloadCartData()
+    fun processToUpdateAndReloadCartData(cartId: String)
 
     fun reCalculateSubTotal(dataList: List<CartShopHolderData>, insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>)
 

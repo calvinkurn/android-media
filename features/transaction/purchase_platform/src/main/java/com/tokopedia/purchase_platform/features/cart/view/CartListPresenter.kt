@@ -2,13 +2,10 @@ package com.tokopedia.purchase_platform.features.cart.view
 
 import android.os.Build
 import android.text.TextUtils
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.TKPDMapParam
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
@@ -60,8 +57,8 @@ import javax.inject.Inject
  */
 
 class CartListPresenter @Inject constructor(private val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase?,
-                                            private val deleteCartItemUseCase: DeleteCartItemUseCase?,
-                                            private val updateCartUseCase: UpdateCartGqlUseCase?,
+                                            private val deleteCartUseCase: DeleteCartUseCase?,
+                                            private val updateCartUseCase: UpdateCartUseCase?,
                                             private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase?,
                                             private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                             private val compositeSubscription: CompositeSubscription,
@@ -260,10 +257,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             removeCartRequest.cartIds = toBeDeletedCartIds
 
             val requestParams = RequestParams.create()
-            requestParams.putObject(DeleteCartItemUseCase.PARAM_REMOVE_CART_REQUEST, removeCartRequest)
-            requestParams.putObject(DeleteCartItemUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, tmpAppliedPromoCodeList)
+            requestParams.putObject(DeleteCartUseCase.PARAM_REMOVE_CART_REQUEST, removeCartRequest)
+            requestParams.putObject(DeleteCartUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, tmpAppliedPromoCodeList)
 
-            compositeSubscription.add(deleteCartItemUseCase?.createObservable(requestParams)
+            compositeSubscription.add(deleteCartUseCase?.createObservable(requestParams)
                     ?.subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds, removeAllItem, removeInsurance)))
         }
     }
@@ -281,7 +278,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
 
             val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateCartGqlUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
+            requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
             compositeSubscription.add(
                     updateCartUseCase?.createObservable(requestParams)
@@ -304,7 +301,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
 
             val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateCartGqlUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
+            requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
             compositeSubscription.add(
                     updateCartUseCase?.createObservable(requestParams)
@@ -328,7 +325,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
 
             val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateCartGqlUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
+            requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
             compositeSubscription.add(
                     updateCartUseCase?.createObservable(requestParams)
@@ -337,7 +334,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
-    override fun processToUpdateAndReloadCartData() {
+    override fun processToUpdateAndReloadCartData(cartId: String) {
         view?.let {
             val cartItemDataList = ArrayList<CartItemData>()
             for (data in it.getAllAvailableCartDataList()) {
@@ -355,7 +352,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
 
             val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateAndReloadCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART, cartItemDataList)
+            requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
+            requestParams.putString(GetCartListSimplifiedUseCase.PARAM_SELECTED_CART_ID, cartId)
 
             compositeSubscription.add(
                     updateAndReloadCartUseCase?.createObservable(requestParams)

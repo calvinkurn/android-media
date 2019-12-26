@@ -14,14 +14,10 @@ import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromo
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartList;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Shop;
-import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartDataResponse;
-import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartTickerErrorData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.WholesalePriceData;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.model.response.CartMultipleAddressDataListResponse;
 
@@ -243,18 +239,7 @@ public class CartMapper implements ICartMapper {
         else return SHOP_TYPE_REGULER;
     }
 
-    @Override
-    public UpdateCartData convertToUpdateCartData(UpdateCartDataResponse updateCartDataResponse) {
-        UpdateCartData updateCartData = new UpdateCartData();
-//        updateCartData.setGoTo(updateCartDataResponse.getGoto());
-//        updateCartData.setMessage(updateCartDataResponse.getError());
-//        updateCartData.setSuccess(updateCartDataResponse.isStatus());
-
-        return updateCartData;
-    }
-
-    @Override
-    public MessageData convertToMessageData(Message message) {
+    private MessageData convertToMessageData(Message message) {
         MessageData messageData = new MessageData();
         messageData.setColor(message.getColor());
         messageData.setState(message.getState());

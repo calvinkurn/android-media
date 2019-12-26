@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.view.subscriber
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndRefreshCartListData
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndReloadCartListData
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import rx.Subscriber
@@ -14,7 +14,7 @@ import rx.Subscriber
 
 class UpdateAndReloadCartSubscriber(private val view: ICartListView?,
                                     private val presenter: ICartListPresenter?,
-                                    private val cartListData: CartListData?) : Subscriber<UpdateAndRefreshCartListData>() {
+                                    private val cartListData: CartListData?) : Subscriber<UpdateAndReloadCartListData>() {
     override fun onCompleted() {
 
     }
@@ -30,10 +30,10 @@ class UpdateAndReloadCartSubscriber(private val view: ICartListView?,
         }
     }
 
-    override fun onNext(updateAndRefreshCartListData: UpdateAndRefreshCartListData) {
+    override fun onNext(updateAndReloadCartListData: UpdateAndReloadCartListData) {
         view?.let {
             it.hideProgressLoading()
-            updateAndRefreshCartListData.cartListData?.let {
+            updateAndReloadCartListData.cartListData?.let {
                 presenter?.setCartListData(it)
                 view.renderLoadGetCartDataFinish()
                 view.renderInitialGetCartListDataSuccess(cartListData)
