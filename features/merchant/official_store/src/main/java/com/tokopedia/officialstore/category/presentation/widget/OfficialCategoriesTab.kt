@@ -132,7 +132,7 @@ class OfficialCategoriesTab(context: Context,
             val textCategory = findViewByIdFromTab(getTabAt(i), R.id.text_view_category_title)
             if (icon is ImageView) {
                 // icon.animate().scaleX(1.0f).scaleY(1.0f).duration = 200
-                icon.animate().alpha(1f).duration = 150
+                icon.animate().alpha(1f).duration = 50
                 textCategory?.animate()?.translationY(0.0f)?.duration = 200
                 // icon.visibility = View.VISIBLE
             }
@@ -145,7 +145,7 @@ class OfficialCategoriesTab(context: Context,
             val textCategory = findViewByIdFromTab(getTabAt(i), R.id.text_view_category_title)
             if (icon is ImageView) {
                 // icon.animate().scaleX(0.0f).scaleY(0.0f).duration = 200
-                icon.animate().alpha(0f).duration = 200
+                icon.animate().alpha(0.1f).duration = 200
                 textCategory?.animate()?.translationY(-14.0f)?.duration = 200
                 // icon.visibility = View.GONE
             }
