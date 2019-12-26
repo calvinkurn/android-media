@@ -414,6 +414,8 @@ public class Utils {
         public static final int REVIEW_REQUEST = 1901;
         public static final int SELECT_TICKET_REQUEST = 1902;
         public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
+        public static String SEAT_SELECT_ID = "setaselectionactivity";
+        public static String REVIEW_ACTIVITY_ID = "reviewticketactivity";
         public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
         public static String EXTRA_SEATSELECTEDMODEL = "selectedseatviewmodel";
         public static String EXTRA_VERIFY_RESPONSE = "verifyresponse";

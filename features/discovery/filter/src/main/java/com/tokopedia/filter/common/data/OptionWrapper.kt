@@ -1,6 +1,7 @@
 package com.tokopedia.filter.common.data
 
-import com.tokopedia.design.list.item.SectionDividedItem
+import com.tokopedia.filter.newdynamicfilter.adapter.SectionDividedItem
+
 
 class OptionWrapper(var option: Option) : SectionDividedItem {
     override fun getSectionId(): Int {

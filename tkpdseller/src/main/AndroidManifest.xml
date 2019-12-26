@@ -127,6 +127,10 @@
             android:label="@string/title_sort_but"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.tokopedia.seller.opportunity.snapshot.SnapShotProduct"
+            android:label="@string/title_activity_snapshot"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".opportunity.activity.OpportunityFilterActivity"
             android:label="@string/title_filter_but"
             android:screenOrientation="portrait"

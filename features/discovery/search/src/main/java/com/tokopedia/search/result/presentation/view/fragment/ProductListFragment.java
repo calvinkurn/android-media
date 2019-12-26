@@ -651,6 +651,7 @@ public class ProductListFragment
 
     @Override
     public void onTickerClicked(String queryParams) {
+        SearchTracking.trackEventClickSortPriceMinTicker(getQueryKey());
         applyParamsFromTicker(UrlParamUtils.getParamMap(queryParams));
     }
 
@@ -883,6 +884,11 @@ public class ProductListFragment
         else {
             SearchTracking.trackEventImpressionBannedProductsWithResult(getQueryKey());
         }
+    }
+
+    @Override
+    public void trackEventImpressionSortPriceMinTicker() {
+        SearchTracking.trackEventImpressionSortPriceMinTicker(getQueryKey());
     }
 
     @Override
