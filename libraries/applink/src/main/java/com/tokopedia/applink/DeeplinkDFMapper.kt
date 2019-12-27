@@ -120,7 +120,7 @@ object DeeplinkDFMapper {
     private val DFM_PAYMENT_SETTING_SELLERAPP = "payment_setting_sellerapp"
     private val DFM_PRODUCT_MANAGE_CUSTOMER = "product_manage_customer"
     private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
-    private val DFM_SALAM = "salam"
+    val DFM_SALAM = "salam"
 
     @JvmField
     val DFM_ONBOARDING = "onboarding"
