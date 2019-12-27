@@ -1,11 +1,14 @@
 package com.tokopedia.loginphone.common.analytics;
 
 import android.app.Activity;
+import android.os.Build;
 
 import javax.inject.Inject;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+
+import timber.log.Timber;
 
 /**
  * @author by nisie on 1/5/18.
@@ -52,6 +55,9 @@ public class LoginPhoneNumberAnalytics {
     }
 
     public void sendScreen(Activity activity, String screenName) {
+        Timber.w("P2screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
+                + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
+                + " | " + Build.TAGS);
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 

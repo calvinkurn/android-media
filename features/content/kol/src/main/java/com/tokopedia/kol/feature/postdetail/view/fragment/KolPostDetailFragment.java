@@ -52,10 +52,13 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel;
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedcomponent.view.widget.CreatePostFabView;
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
+import com.tokopedia.feedcomponent.view.widget.PostStatisticBottomSheet;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
@@ -88,6 +91,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import kotlin.NotImplementedError;
+import kotlin.StandardKt;
 import kotlin.Unit;
 
 import static com.tokopedia.kolcommon.util.PostMenuUtilKt.createBottomMenu;
@@ -127,8 +132,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private SwipeToRefresh swipeToRefresh;
     private RecyclerView recyclerView;
     private CreatePostFabView createPostFab;
-    private View footer;
     private PerformanceMonitoring performanceMonitoring;
+
+    private PostStatisticBottomSheet postStatisticBottomSheet;
 
     private DynamicPostViewModel dynamicPostViewModel;
     private boolean isTraceStopped;
@@ -187,7 +193,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_view);
         createPostFab = view.findViewById(R.id.create_post_fab);
-        footer = view.findViewById(R.id.footer);
         return view;
     }
 
@@ -320,7 +325,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetKolPostDetail(String message) {
-        footer.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(
                 getContext(),
                 getView(),
@@ -648,7 +652,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl) {
+    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl, @NotNull int activityId,
+                              @NotNull String activityName, @NonNull FollowCta followCta) {
         onGoToLink(redirectUrl);
     }
 
@@ -771,6 +776,23 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
                     });
         }
+    }
+
+    @Override
+    public void onStatsClick(@NotNull String title, @NotNull String activityId, @NotNull List<String> productIds, int likeCount, int commentCount) {
+        showPostStatistic(title, activityId, productIds, likeCount, commentCount);
+    }
+
+    @Override
+    public void onSuccessGetPostStatistic(@NotNull PostStatisticCommissionUiModel statisticCommissionModel) {
+        getPostStatisticBottomSheet()
+                .setPostStatisticCommissionModel(statisticCommissionModel);
+    }
+
+    @Override
+    public void onErrorGetPostStatistic(@NotNull Throwable error, @NotNull String activityId, @NotNull List<String> productIds) {
+        getPostStatisticBottomSheet()
+                .setError(error, activityId, productIds);
     }
 
     private void doShare(String body, String title) {
@@ -990,6 +1012,41 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             intent.putExtras(new Bundle());
             startActivity(intent);
         }
+    }
+
+    private PostStatisticBottomSheet getPostStatisticBottomSheet() {
+        if (postStatisticBottomSheet == null) {
+            postStatisticBottomSheet = PostStatisticBottomSheet.newInstance(requireContext());
+        }
+        return postStatisticBottomSheet;
+    }
+
+    private void showPostStatistic(String title, String activityId, List<String> productIds, int likeCount, int commentCount) {
+        getPostStatisticBottomSheet()
+                .show(
+                        requireFragmentManager(),
+                        activityId,
+                        title,
+                        productIds,
+                        new PostStatisticBottomSheet.Listener() {
+                            @Override
+                            public void onGetPostStatisticModelList(@NotNull PostStatisticBottomSheet bottomSheet, @NotNull String activityId, @NotNull List<String> productIds) {
+                                presenter.getPostStatistic(activityId, productIds, likeCount, commentCount);
+                            }
+
+                            @Override
+                            public void onSeeMoreDetailClicked(@NotNull PostStatisticBottomSheet bottomSheet, @NotNull PostStatisticDetailType type) {
+                                if (type == PostStatisticDetailType.Comment) {
+                                    RouteManager.route(
+                                            requireContext(),
+                                            ApplinkConst.KOL_COMMENT,
+                                            activityId
+                                    );
+                                    bottomSheet.dismiss();
+                                }
+                            }
+                        }
+                );
     }
 
 }

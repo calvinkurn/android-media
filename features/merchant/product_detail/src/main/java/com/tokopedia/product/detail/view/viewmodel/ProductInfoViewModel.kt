@@ -12,6 +12,8 @@ import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffilia
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -56,6 +58,9 @@ import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
+import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
+import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
@@ -66,9 +71,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
-import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketRequest
-import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
-import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -769,29 +771,39 @@ fun updateCartCounerUseCase(onSuccessRequest: (count: Int) -> Unit) {
             productInfo: ProductInfo?,
             userInputVariant: String?
     ) {
-        if (intent == null) return
+        if (intent == null || productId == null) return
         val variants = mapSelectedProductVariants(userInputVariant)
-        val productImageUrl = productInfo?.getProductImageUrl()
-        val productName = productInfo?.getProductName()
-        val productPrice = productInfo?.getProductPrice()?.getCurrencyFormatted()
-        val productUrl = productInfo?.getProductUrl()
-        val productFsIsActive = productInfo?.getFsProductIsActive()
-        val productFsImageUrl = productInfo?.getFsProductImageUrl()
-        val productColorVariant = variants?.get("colour")?.get("value")
-        val productColorHexVariant = variants?.get("colour")?.get("hex")
-        val productSizeVariant = variants?.get("size")?.get("value")
-        with(intent) {
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, productId)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, productUrl)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, productColorVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, productColorHexVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, productSizeVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IS_ACTIVE, productFsIsActive)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IMAGE_URL, productFsImageUrl)
-        }
+
+        val productImageUrl = productInfo?.getProductImageUrl() ?: ""
+        val productName = productInfo?.getProductName() ?: ""
+        val productPrice = productInfo?.getProductPrice()?.getCurrencyFormatted() ?: ""
+        val productUrl = productInfo?.getProductUrl() ?: ""
+        val productFsIsActive = productInfo?.getFsProductIsActive() ?: false
+        val productFsImageUrl = productInfo?.getFsProductImageUrl() ?: ""
+        val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
+        val productColorVariant = variants?.get("colour")?.get("value") ?: ""
+        val productColorHexVariant = variants?.get("colour")?.get("hex") ?: ""
+        val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
+        val productSizeVariant = variants?.get("size")?.get("value") ?: ""
+
+        val productPreviews = listOf(
+                ProductPreview(
+                        productId,
+                        productImageUrl,
+                        productName,
+                        productPrice,
+                        productColorVariantId,
+                        productColorVariant,
+                        productColorHexVariant,
+                        productSizeVariantId,
+                        productSizeVariant,
+                        productUrl,
+                        productFsIsActive,
+                        productFsImageUrl
+                )
+        )
+        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
     private fun mapSelectedProductVariants(userInputVariant: String?): ArrayMap<String, ArrayMap<String, String>>? {

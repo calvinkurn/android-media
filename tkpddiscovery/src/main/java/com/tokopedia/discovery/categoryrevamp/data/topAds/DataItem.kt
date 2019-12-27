@@ -14,7 +14,7 @@ data class DataItem(
         val product: Product? = null,
 
         @field:SerializedName("shop")
-        val shop: Shop? = null,
+        val shop: Shop = Shop(),
 
         @field:SerializedName("sticker_image")
         val stickerImage: String? = null,

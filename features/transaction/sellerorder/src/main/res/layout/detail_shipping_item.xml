@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/dp_0"
+    app:cardElevation="@dimen/dp_3">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_20">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shipping_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_16"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyWeight="bold"
+            app:typographyType="heading_5"
+            tools:text="Detail Pengiriman"
+            android:text="@string/detail_pengiriman"
+            android:textColor="@color/Neutral_N700_96"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/kurir_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/shipping_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            android:textColor="@color/Neutral_N700_44"
+            android:layout_marginTop="@dimen/dp_16"
+            tools:text="@string/kurir_pengiriman"
+            android:text="@string/kurir_pengiriman"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_shipping_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/shipping_title"
+            app:layout_constraintStart_toEndOf="@+id/kurir_label"
+            android:layout_marginStart="@dimen/dp_36"
+            android:layout_marginLeft="@dimen/dp_36"
+            android:layout_marginTop="@dimen/dp_16"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_96"
+            tools:text="GO-JEK Same Day"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_shipping_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_name"
+            app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            android:textColor="@color/Neutral_N700_44"
+            tools:text="Rp15.000"/>
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_harus_sesuai"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:labelType="general_light_orange"
+            app:labelTitle="@string/harus_sesuai"
+            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_price"
+            app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
+            android:layout_marginTop="@dimen/dp_2"/>
+        
+        <ImageView
+            android:id="@+id/ic_harus_sesuai"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_5"
+            app:layout_constraintStart_toEndOf="@+id/label_harus_sesuai"
+            app:layout_constraintTop_toTopOf="@+id/label_harus_sesuai"
+            app:layout_constraintBottom_toBottomOf="@+id/label_harus_sesuai"
+            android:contentDescription="@string/icon_harus_sesuai"
+            app:srcCompat="@drawable/ic_som_info"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_driver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/alamat_label"
+            app:layout_constraintTop_toBottomOf="@+id/label_harus_sesuai"
+            app:cardCornerRadius="@dimen/dp_8"
+            app:cardElevation="@dimen/dp_3"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_driver"
+                    android:layout_width="@dimen/dp_48"
+                    android:layout_height="@dimen/dp_48"
+                    tools:ignore="ContentDescription"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:srcCompat="@drawable/ic_driver_default"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_driver_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/iv_driver"
+                    android:layout_toEndOf="@+id/iv_driver"
+                    android:layout_alignTop="@+id/iv_driver"
+                    tools:text="@string/tv_driver_name_example"
+                    android:textSize="@dimen/sp_12"
+                    app:typographyWeight="bold"
+                    app:typographyType="body_3"
+                    android:layout_toLeftOf="@+id/driver_call_btn"
+                    android:layout_toStartOf="@+id/driver_call_btn"
+                    android:textIsSelectable="true"
+                    android:inputType="none"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_driver_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_driver_name"
+                    android:layout_toRightOf="@+id/iv_driver"
+                    android:layout_toEndOf="@+id/iv_driver"
+                    app:typographyWeight="reguler"
+                    app:typographyType="body_3"
+                    tools:text="@string/tv_driver_phone_example"
+                    android:layout_toLeftOf="@+id/driver_call_btn"
+                    android:layout_toStartOf="@+id/driver_call_btn"
+                    android:textIsSelectable="true"
+                    android:inputType="none"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_driver_license"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_driver_phone"
+                    android:layout_toRightOf="@+id/iv_driver"
+                    android:layout_toEndOf="@+id/iv_driver"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    android:textColor="@color/Neutral_N700_44"
+                    tools:text="@string/tv_driver_license_example"
+                    android:layout_toLeftOf="@+id/driver_call_btn"
+                    android:layout_toStartOf="@+id/driver_call_btn"/>
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/driver_call_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:unifyButtonType="alternate"
+                    app:unifyButtonSize="medium"
+                    app:unifyButtonVariant="ghost"
+                    android:text="@string/tv_driver_call_btn"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"/>
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/alamat_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/card_driver"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            android:text="@string/alamat_pengiriman"
+            android:textColor="@color/Neutral_N700_44"
+            android:layout_marginTop="@dimen/dp_16"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_receiver_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/label_harus_sesuai"
+            app:layout_constraintTop_toBottomOf="@+id/card_driver"
+            android:layout_marginTop="@dimen/dp_16"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_96"
+            tools:text="AS Misbeh"
+            app:layout_constrainedWidth="true"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:textIsSelectable="true"
+            android:inputType="none"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_receiver_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/tv_receiver_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_receiver_name"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_96"
+            tools:text="08113400775"
+            app:layout_constrainedWidth="true"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:textIsSelectable="true"
+            android:inputType="none"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_receiver_street"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/tv_receiver_phone"
+            app:layout_constraintTop_toBottomOf="@+id/tv_receiver_phone"
+            app:layout_constrainedWidth="true"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_96"
+            tools:text="Wisma 77 Tower 2"
+            android:lineSpacingMultiplier="0.8"
+            android:scrollHorizontally="false"
+            android:textIsSelectable="true"
+            android:inputType="none"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_receiver_district"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/tv_receiver_street"
+            app:layout_constraintTop_toBottomOf="@+id/tv_receiver_street"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_96"
+            tools:text="Slipi, Jakarta Barat 14410"
+            android:lineSpacingMultiplier="0.8"
+            android:scrollHorizontally="false"
+            app:layout_constrainedWidth="true"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textIsSelectable="true"
+            android:inputType="none"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_receiver_notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/tv_receiver_district"
+            app:layout_constraintStart_toStartOf="@+id/tv_receiver_district"
+            android:layout_marginTop="@dimen/dp_8"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_96"
+            tools:text="Lantai 52"
+            app:layout_constrainedWidth="true"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:textIsSelectable="true"
+            android:inputType="none"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_notes_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/catatan"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_receiver_district"
+            android:layout_marginTop="@dimen/dp_8"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            android:textColor="@color/Neutral_N700_44" />
+
+        <RelativeLayout
+            android:id="@+id/rl_booking_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@id/tv_notes_label"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/booking_code_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyWeight="bold"
+                app:typographyType="heading_5"
+                tools:text="@string/kode_booking"
+                android:text="@string/kode_booking"
+                android:textColor="@color/Neutral_N700_96"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_wajib_dicantumkan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/booking_code_title"
+                android:layout_toEndOf="@id/booking_code_title"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_2">
+
+                <com.tokopedia.unifycomponents.Label
+                    android:id="@+id/label_wajib_dicantumkan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:labelType="general_light_orange"
+                    app:labelTitle="@string/wajib_dicantumkan" />
+
+                <ImageView
+                    android:id="@+id/ic_wajib_dicantumkan"
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="@dimen/dp_18"
+                    android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_toRightOf="@id/label_wajib_dicantumkan"
+                    android:layout_toEndOf="@id/label_wajib_dicantumkan"
+                    android:contentDescription="@string/icon_wajib_dicantumkan"
+                    app:srcCompat="@drawable/ic_som_info"/>
+
+            </RelativeLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/booking_code_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/booking_code_title"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                tools:text="ABCDEFHIJK"
+                android:textIsSelectable="true"
+                android:inputType="none"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/booking_code_see_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="@string/lihat_caps"
+                android:text="@string/lihat_caps"
+                android:textColor="@color/g_500"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@id/booking_code_value"
+                android:layout_alignBottom="@id/booking_code_value"/>
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

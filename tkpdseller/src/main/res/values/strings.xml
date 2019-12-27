@@ -225,7 +225,7 @@
     <string name="sticker_cashback">Cashback %1$d%%</string>
     <string name="catalog">Katalog</string>
     <string name="primary">Utama</string>
-    <string name="title_activity_seller_center">Seller Center</string>
+    <string name="title_activity_seller_center">Pusat Seller</string>
     <string name="title_seller_tx_ready_to_ship">Siap Dikirim</string>
     <string name="title_seller_tx_shipped">Sedang Dikirim</string>
     <string name="title_seller_tx_delivered">Sampai Tujuan</string>
@@ -374,5 +374,11 @@
     <string name="request_pickup_info_label_3">Tidak perlu memberikan ongkir ke kurir</string>
     <string name="request_pickup_info_icon">Icon info confirm request pickup</string>
     <string name="request_pickup_info_button">Request Pick-Up</string>
+
+    <string name="transaction_buy_page">Transaction - Buy page</string>
+    <string name="transaction_sell_page">Transaction - Sell page</string>
+
+    <string name="error_field_required">Harus diisi</string>
+    <string name="action_sign_in_short">Masuk</string>
 
 </resources>

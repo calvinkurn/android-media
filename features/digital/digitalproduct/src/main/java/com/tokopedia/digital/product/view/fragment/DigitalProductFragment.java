@@ -230,7 +230,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
             boolean isFromWidget, boolean isCouponApplied, String additionalETollBalance,
-            String additionalETollLastUpdatedDate) {
+            String additionalETollLastUpdatedDate, String additionalETollOperatorName) {
         Fragment fragment = new DigitalProductFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
@@ -241,6 +241,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         bundle.putBoolean(ARG_PARAM_EXTRA_IS_COUPON_APPLIED, isCouponApplied);
         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE, additionalETollBalance);
         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE, additionalETollLastUpdatedDate);
+        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME, additionalETollOperatorName);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -475,6 +476,12 @@ public class DigitalProductFragment extends BaseDaggerFragment
             performanceMonitoring.stopTrace();
             traceStop = true;
         }
+    }
+
+    @Override
+    public void sendOpenScreenEventTracking(CategoryData categoryData) {
+        rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn(), categoryData.getName(),
+                categoryData.getCategoryId());
     }
 
     @Override
@@ -966,6 +973,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                         bundle.putBoolean(ARG_PARAM_EXTRA_IS_COUPON_APPLIED, passData.isCouponApplied());
                         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE, passData.getAdditionalETollBalance());
                         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE, passData.getAdditionalETollLastUpdatedDate());
+                        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME, passData.getAdditionalETollOperatorName());
                         setupArguments(bundle);
                         setHasOptionsMenu(true);
                         //clear cache

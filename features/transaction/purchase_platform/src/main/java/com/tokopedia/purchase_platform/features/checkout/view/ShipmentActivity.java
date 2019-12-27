@@ -6,13 +6,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
+import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest;
+
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -25,7 +26,6 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT = 3;
     public static final int RESULT_CODE_COUPON_STATE_CHANGED = 735;
 
-    public static final String EXTRA_IS_ONE_CLICK_SHIPMENT = "EXTRA_IS_ONE_CLICK_SHIPMENT";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";

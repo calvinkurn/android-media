@@ -215,8 +215,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         addressData.setProductQty(String.valueOf(updatedData.getQuantity()));
         addressData.setProductWeightFmt(String.valueOf(originData.getWeightFormatted()));
         addressData.setProductNotes(updatedData.getRemark());
-        addressData.setMaxQuantity(originData.getInvenageValue() != 0 ? originData.getInvenageValue() : updatedData.getMaxQuantity());
-        addressData.setMinQuantity(originData.getMinimalQtyOrder());
+        addressData.setMaxQuantity(originData.getMaxOrder());
+        addressData.setMinQuantity(originData.getMinOrder());
         addressData.setErrorCheckoutPriceLimit(messageErrorData.getErrorCheckoutPriceLimit());
         addressData.setErrorFieldBetween(messageErrorData.getErrorFieldBetween());
         addressData.setErrorFieldMaxChar(messageErrorData.getErrorFieldMaxChar());
