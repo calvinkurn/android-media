@@ -17,8 +17,6 @@ constructor(private val mGetFilterDataUseCase: GetFilterDataUseCase) :
 
     override fun attachView(view: OnlineLoanContractor.View) {
         super.attachView(view)
-        subscriber = GetFilterDataSubscriber(this.view)
-        mGetFilterDataUseCase.setQuery(view.getFilterDataQuery())
         getFilterData()
     }
 
@@ -28,6 +26,8 @@ constructor(private val mGetFilterDataUseCase: GetFilterDataUseCase) :
     }
 
     private fun getFilterData() {
+        subscriber = GetFilterDataSubscriber(this.view)
+        mGetFilterDataUseCase.setQuery(view.getFilterDataQuery())
         mGetFilterDataUseCase.execute(subscriber)
     }
 }
