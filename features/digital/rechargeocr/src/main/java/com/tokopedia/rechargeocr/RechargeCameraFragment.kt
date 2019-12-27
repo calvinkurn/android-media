@@ -241,6 +241,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     private fun destroyCamera() {
         try {
             cameraView.close()
+            cameraView.destroy()
         } catch (e: Throwable) {
             // no-op
         }
