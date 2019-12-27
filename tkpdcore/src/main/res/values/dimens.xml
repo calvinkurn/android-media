@@ -126,6 +126,6 @@
     <dimen name="verified_icon_size">12dp</dimen>
     <dimen name="product_item_title_min_height">38dp</dimen>
     <dimen name="keyboard_min_height">200dp</dimen>
-
-
+    <dimen name="item_revamp_category">175dp</dimen>
+    <dimen name="text_item_revamp_category">28sp</dimen>
 </resources>
