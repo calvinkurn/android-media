@@ -9,6 +9,8 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductStatusType
 import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.Menu
+import com.tokopedia.product.detail.common.data.model.product.Stats
+import com.tokopedia.product.detail.common.data.model.product.TxStatsDynamicPdp
 
 data class BasicInfo(
         @SerializedName("alias")
@@ -52,7 +54,11 @@ data class BasicInfo(
         @SerializedName("weightUnit")
         val weightUnit: String = WeightTypeDef.UNKNOWN,
         @SerializedName("weight")
-        val weight: Int = 0
+        val weight: Int = 0,
+        @SerializedName("stats")
+        val stats: Stats = Stats(),
+        @SerializedName("txStats")
+        val txStats: TxStatsDynamicPdp = TxStatsDynamicPdp()
 ) {
 
     companion object {

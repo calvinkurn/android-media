@@ -94,8 +94,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
             productDiscussionMap?.run {
                 shopId = it.basic.shopID
-                // Should be in p2
-//                talkCount = it.productInfo.stats.countTalk
+                talkCount = it.basic.stats.countTalk
+            }
+
+            socialProofMap?.run {
+                txStats = it.basic.txStats
+                stats = it.basic.stats
             }
 
             productInfoMap?.run {

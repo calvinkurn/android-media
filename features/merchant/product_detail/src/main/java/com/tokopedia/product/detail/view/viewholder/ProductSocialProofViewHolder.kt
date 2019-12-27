@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.product.Stats
+import com.tokopedia.product.detail.common.data.model.product.TxStatsDynamicPdp
 import com.tokopedia.product.detail.data.model.datamodel.ProductSocialProofDataModel
 import com.tokopedia.product.detail.view.fragment.partialview.PartialAttributeInfoView
 import com.tokopedia.product.detail.view.fragment.partialview.PartialProductStatisticView
@@ -21,6 +23,8 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
     private lateinit var attributeInfoView: PartialAttributeInfoView
 
     override fun bind(element: ProductSocialProofDataModel) {
+        val stats = element.stats ?: Stats()
+        val txStats = element.txStats ?: TxStatsDynamicPdp()
         if (!::productStatsView.isInitialized) {
             productStatsView = PartialProductStatisticView.build(view.base_rating_talk_courier)
         }
@@ -35,9 +39,9 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
         attributeInfoView.renderWishlistCount(element.wishListCount)
 
         //TO-DO RENDER FROM STATS MODEL
-        productStatsView.renderData(0, 0, listener::onReviewClick, listener::onDiscussionClicked)
+        productStatsView.renderData(stats.countReview, stats.countTalk, listener::onReviewClick, listener::onDiscussionClicked)
         //TO-DO RENDER FROM STATS MODEL
-        attributeInfoView.renderData(0)
+        attributeInfoView.renderDataDynamicPdp(stats.countView, txStats)
 
 
         productStatsView.renderClickShipping {

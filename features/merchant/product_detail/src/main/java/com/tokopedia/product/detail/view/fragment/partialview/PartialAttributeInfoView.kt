@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.TxStats
+import com.tokopedia.product.detail.common.data.model.product.TxStatsDynamicPdp
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.data.util.successRate
 import com.tokopedia.product.detail.data.util.thousandFormatted
@@ -19,6 +20,15 @@ class PartialAttributeInfoView private constructor(private val view: View) {
             txt_seen.text = countView.thousandFormatted()
             txt_tx_success.text = context.getString(R.string.template_success_rate,
                     txStats?.successRate?.numberFormatted(), txStats?.sold?.thousandFormatted())
+            visible()
+        }
+    }
+
+    fun renderDataDynamicPdp(countView: Int, txStats: TxStatsDynamicPdp? = null) {
+        with(view) {
+            txt_seen.text = countView.thousandFormatted()
+            txt_tx_success.text = context.getString(R.string.template_success_rate,
+                    txStats?.txSuccess?.toIntOrNull()?.numberFormatted(), txStats?.countSold?.toIntOrNull()?.thousandFormatted())
             visible()
         }
     }

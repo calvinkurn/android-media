@@ -92,11 +92,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var shopInfo: ShopInfo? = null
     var installmentData: FinancingDataResponse? = null
-    private var shouldShowTradein = true
     var tradeInParams: TradeInParams = TradeInParams()
 
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
+
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
@@ -149,7 +149,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getProductP1(productParams: ProductParams, forceRefresh: Boolean = false) {
         launchCatchError(block = {
-            shouldShowTradein = true
             val productData = getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "", forceRefresh)
             val initialLayoutData = productData.listOfLayout
@@ -247,7 +246,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
         val removedData = initialLayoutData.map {
             if (!isTradein && it.name() == ProductDetailConstant.TRADE_IN) {
-                shouldShowTradein = false
                 it
             } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
                 it
