@@ -159,7 +159,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
                 if (source.equals(CART, true)) {
                     cartPageAnalytics.eventClickUseMerchantVoucherFailed(textInputLayoutCoupon.error?.toString(), "", false)
                 } else {
-                    shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(textInputLayoutCoupon.error?.toString())
+                    shipmentPageAnalytics.eventClickUseMerchantVoucherError(textInputLayoutCoupon.error?.toString(), "", false)
                 }
                 updateHeight()
             } else {
@@ -232,33 +232,19 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
                         this, shopId.toString())
                 startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
 
-                if (source.equals(CART, true)) {
-                    sendClickDetailMerchantVoucher(merchantVoucherViewModel)
-                } else {
-                    shipmentPageAnalytics.eventClickDetailMerchantVoucher(merchantVoucherViewModel.voucherCode)
-                }
+                sendClickDetailMerchantVoucher(merchantVoucherViewModel)
             }
         }
     }
 
     private fun sendClickDetailMerchantVoucher(merchantVoucherViewModel: MerchantVoucherViewModel) {
         val position = merchantVoucherViewModelList.indexOf(merchantVoucherViewModel)
-        val page = "Cart"
-        val ecommerceMap = mapOf<String, Any>(
-                "promoClick" to mapOf(
-                        "promotions" to listOf(merchantVoucherViewModel).map { mvc ->
-                            return@map mapOf(
-                                    "id" to shopId.toString(),
-                                    "name" to "$page - ${position.plus(1)} - ${mvc.voucherName}",
-                                    "creative" to "",
-                                    "position" to position.plus(1),
-                                    "promo_id" to mvc.voucherId,
-                                    "promo_code" to mvc.voucherCode
-                            )
-                        }
-                )
-        )
-        cartPageAnalytics.eventClickDetailMerchantVoucher(ecommerceMap, merchantVoucherViewModel.voucherId.toString(), merchantVoucherViewModel.voucherCode)
+        val ecommerceMap = createEcommerceMap(listOf(merchantVoucherViewModel), "promoClick", position)
+
+        if (source.equals(CART, true))
+            cartPageAnalytics.eventClickDetailMerchantVoucher(ecommerceMap, merchantVoucherViewModel.voucherId.toString(), merchantVoucherViewModel.voucherCode)
+        else
+            shipmentPageAnalytics.eventClickDetailMerchantVoucher(ecommerceMap, merchantVoucherViewModel.voucherId.toString(), merchantVoucherViewModel.voucherCode)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -302,24 +288,35 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         updateHeight()
     }
 
-    private fun sendMvcImpressionEventTracking(merchantVoucherViewModelList: java.util.ArrayList<MerchantVoucherViewModel>) {
+    private fun sendMvcImpressionEventTracking(merchantVoucherViewModelList: List<MerchantVoucherViewModel>) {
         if (merchantVoucherViewModelList.isEmpty()) return
-        val page = "Cart"
-        val ecommerceMap = mapOf<String, Any>(
-                "promoView" to mapOf(
-                        "promotions" to merchantVoucherViewModelList.mapIndexed { i, mvc ->
+        val ecommerceMap = createEcommerceMap(merchantVoucherViewModelList, "promoView", 0)
+
+        if (source.equals(CART, true))
+            cartPageAnalytics.eventImpressionUseMerchantVoucher(merchantVoucherViewModelList[0].voucherId.toString(), ecommerceMap)
+        else
+            shipmentPageAnalytics.eventImpressionUseMerchantVoucher(merchantVoucherViewModelList[0].voucherId.toString(), ecommerceMap)
+    }
+
+    private fun createEcommerceMap(mvcList: List<MerchantVoucherViewModel>, eventType: String, startPosition: Int): Map<String, Any> {
+        if (mvcList.isEmpty()) return mapOf()
+
+        val isFromCart = source.equals(CART, true)
+        val page = if (isFromCart) "Cart" else "Checkout"
+        return mapOf<String, Any>(
+                eventType to mapOf(
+                        "promotions" to mvcList.mapIndexed { i, mvc ->
                             return@mapIndexed mapOf(
                                     "id" to shopId.toString(),
-                                    "name" to "$page - ${i.plus(1)} - ${mvc.voucherName}",
+                                    "name" to "$page - ${startPosition.plus(i).plus(1)} - ${mvc.voucherName}",
                                     "creative" to "",
-                                    "position" to i.plus(1),
-                                    "promo_id" to mvc.voucherId,
+                                    "position" to startPosition.plus(i).plus(1),
+                                    "promo_id" to mvc.voucherId.toString(),
                                     "promo_code" to mvc.voucherCode
                             )
                         }
                 )
         )
-        cartPageAnalytics.eventImpressionUseMerchantVoucher(merchantVoucherViewModelList[0].voucherId.toString(), ecommerceMap)
     }
 
     override fun onErrorGetMerchantVoucherList(e: Throwable) {
@@ -344,25 +341,19 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         if (source.equals(CART, true)) {
             cartPageAnalytics.eventClickUseMerchantVoucherFailed(messageInfo, promoId, isFromList)
         } else {
-            shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(messageInfo)
+            shipmentPageAnalytics.eventClickUseMerchantVoucherError(messageInfo, promoId, isFromList)
         }
     }
 
     //on success use merchant voucher
     override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel, promoCode: String, isFromList: Boolean, promoId: String) {
-        if (isFromList) {
-            if (source.equals(CART, true)) {
-                cartPageAnalytics.eventClickUseMerchantVoucherSuccess(promoCode, promoId)
-            } else {
-                shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputSuccess(promoCode)
-            }
+
+        if (source.equals(CART, true)) {
+            cartPageAnalytics.eventClickUseMerchantVoucherSuccess(promoCode, promoId, isFromList)
         } else {
-            if (source.equals(CART, true)) {
-                cartPageAnalytics.eventClickUseMerchantVoucherManualInputSuccess(promoCode, promoId)
-            } else {
-                shipmentPageAnalytics.eventClickPakaiMerchantVoucherSuccess(promoCode)
-            }
+            shipmentPageAnalytics.eventClickUseMerchantVoucherSuccess(promoCode, promoId, isFromList)
         }
+
         hideKeyboard()
         dismiss()
         actionListener.onSuccessCheckPromoMerchantFirstStep(model, promoCode)

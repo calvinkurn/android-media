@@ -98,8 +98,6 @@ class MerchantVoucherListBottomsheetPresenter @Inject constructor(
                         view.hideLoadingDialog()
                         val responseGetPromoStack = checkPromoStackingCodeMapper.call(response)
 
-                        Timber.d("checkPromoFirstStep : %s", Gson().toJsonTree(responseGetPromoStack))
-
                         if (responseGetPromoStack.status.equals(statusOK, true)) {
                             if (responseGetPromoStack.data.clashings.isClashedPromos) {
                                 view.onClashCheckPromoFirstStep(responseGetPromoStack.data.clashings, paramMerchant)
