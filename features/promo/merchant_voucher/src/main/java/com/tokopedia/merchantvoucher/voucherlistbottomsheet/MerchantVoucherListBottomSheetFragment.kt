@@ -5,9 +5,6 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -17,6 +14,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -56,6 +56,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     private lateinit var errorContainer: LinearLayout
     private lateinit var pbLoading: ProgressBar
     private lateinit var textInputLayoutCoupon: TkpdHintTextInputLayout
+    private var merchantVoucherViewModelList: List<MerchantVoucherViewModel> = emptyList()
 
     private var promo: Promo? = null
     private var shopId: Int = 0
@@ -74,7 +75,6 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     lateinit var shipmentPageAnalytics: CheckoutAnalyticsCourierSelection
 
     lateinit var actionListener: ActionListener
-
 
     interface ActionListener {
         fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel, type: String)
@@ -157,13 +157,13 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             if (textInputCoupon.text.toString().isEmpty()) {
                 textInputLayoutCoupon.error = getString(R.string.code_voucher_blank_warning)
                 if (source.equals(CART, true)) {
-                    cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(textInputLayoutCoupon.error?.toString())
+                    cartPageAnalytics.eventClickUseMerchantVoucherFailed(textInputLayoutCoupon.error?.toString(), "", false)
                 } else {
                     shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(textInputLayoutCoupon.error?.toString())
                 }
                 updateHeight()
             } else {
-                presenter.checkPromoFirstStep(textInputCoupon.text.toString(), cartString, promo, false)
+                presenter.checkPromoFirstStep("", textInputCoupon.text.toString(), cartString, promo, false)
             }
         }
     }
@@ -173,7 +173,8 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         promo = arguments?.getParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM)
         cartString = arguments?.getString(ARGUMENT_CART_STRING) ?: ""
         source = arguments?.getString(ARGUMENT_SOURCE) ?: ""
-        cartItemDataVoucherList = arguments?.getParcelableArrayList(ARGUMENT_CART_ITEM_DATA) ?: arrayListOf()
+        cartItemDataVoucherList = arguments?.getParcelableArrayList(ARGUMENT_CART_ITEM_DATA)
+                ?: arrayListOf()
     }
 
     fun loadData() {
@@ -232,12 +233,32 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
                 startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
 
                 if (source.equals(CART, true)) {
-                    cartPageAnalytics.eventClickDetailMerchantVoucher(merchantVoucherViewModel.voucherCode)
+                    sendClickDetailMerchantVoucher(merchantVoucherViewModel)
                 } else {
                     shipmentPageAnalytics.eventClickDetailMerchantVoucher(merchantVoucherViewModel.voucherCode)
                 }
             }
         }
+    }
+
+    private fun sendClickDetailMerchantVoucher(merchantVoucherViewModel: MerchantVoucherViewModel) {
+        val position = merchantVoucherViewModelList.indexOf(merchantVoucherViewModel)
+        val page = "Cart"
+        val ecommerceMap = mapOf<String, Any>(
+                "promoClick" to mapOf(
+                        "promotions" to listOf(merchantVoucherViewModel).map { mvc ->
+                            return@map mapOf(
+                                    "id" to shopId.toString(),
+                                    "name" to "$page - ${position.plus(1)} - ${mvc.voucherName}",
+                                    "creative" to "",
+                                    "position" to position.plus(1),
+                                    "promo_id" to mvc.voucherId,
+                                    "promo_code" to mvc.voucherCode
+                            )
+                        }
+                )
+        )
+        cartPageAnalytics.eventClickDetailMerchantVoucher(ecommerceMap, merchantVoucherViewModel.voucherId.toString(), merchantVoucherViewModel.voucherCode)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -249,7 +270,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
             return
         }
 
-        presenter.checkPromoFirstStep(merchantVoucherViewModel.voucherCode, cartString, promo, true)
+        presenter.checkPromoFirstStep(merchantVoucherViewModel.voucherId.toString(), merchantVoucherViewModel.voucherCode, cartString, promo, true)
     }
 
     fun initInjector() {
@@ -268,14 +289,37 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         return context
     }
 
+    //impression
     override fun onSuccessGetMerchantVoucherList(merchantVoucherViewModelList: ArrayList<MerchantVoucherViewModel>) {
+        this.merchantVoucherViewModelList = merchantVoucherViewModelList
         merchantVoucherListBottomSheetAdapter.setViewModelList(merchantVoucherViewModelList)
+        sendMvcImpressionEventTracking(merchantVoucherViewModelList)
 
         val linearLayoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false)
         rvVoucherList.layoutManager = linearLayoutManager
         rvVoucherList.adapter = merchantVoucherListBottomSheetAdapter
         updateHeight()
+    }
+
+    private fun sendMvcImpressionEventTracking(merchantVoucherViewModelList: java.util.ArrayList<MerchantVoucherViewModel>) {
+        if (merchantVoucherViewModelList.isEmpty()) return
+        val page = "Cart"
+        val ecommerceMap = mapOf<String, Any>(
+                "promoView" to mapOf(
+                        "promotions" to merchantVoucherViewModelList.mapIndexed { i, mvc ->
+                            return@mapIndexed mapOf(
+                                    "id" to shopId.toString(),
+                                    "name" to "$page - ${i.plus(1)} - ${mvc.voucherName}",
+                                    "creative" to "",
+                                    "position" to i.plus(1),
+                                    "promo_id" to mvc.voucherId,
+                                    "promo_code" to mvc.voucherCode
+                            )
+                        }
+                )
+        )
+        cartPageAnalytics.eventImpressionUseMerchantVoucher(merchantVoucherViewModelList[0].voucherId.toString(), ecommerceMap)
     }
 
     override fun onErrorGetMerchantVoucherList(e: Throwable) {
@@ -289,7 +333,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
     }
 
-    override fun onErrorCheckPromoFirstStep(message: String) {
+    override fun onErrorCheckPromoFirstStep(message: String, promoId: String, isFromList: Boolean) {
         hideKeyboard()
         var messageInfo = message
         if (TextUtils.isEmpty(messageInfo)) {
@@ -298,23 +342,23 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         textInputLayoutCoupon.error = messageInfo
         updateHeight()
         if (source.equals(CART, true)) {
-            cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputFailed(messageInfo)
+            cartPageAnalytics.eventClickUseMerchantVoucherFailed(messageInfo, promoId, isFromList)
         } else {
             shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputError(messageInfo)
         }
     }
 
-    override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel, promoCode: String, isFromList: Boolean) {
+    //on success use merchant voucher
+    override fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel, promoCode: String, isFromList: Boolean, promoId: String) {
         if (isFromList) {
             if (source.equals(CART, true)) {
-                cartPageAnalytics.eventClickPakaiMerchantVoucherManualInputSuccess(promoCode)
+                cartPageAnalytics.eventClickUseMerchantVoucherSuccess(promoCode, promoId)
             } else {
                 shipmentPageAnalytics.eventClickPakaiMerchantVoucherManualInputSuccess(promoCode)
             }
-
         } else {
             if (source.equals(CART, true)) {
-                cartPageAnalytics.eventClickPakaiMerchantVoucherSuccess(promoCode)
+                cartPageAnalytics.eventClickUseMerchantVoucherManualInputSuccess(promoCode, promoId)
             } else {
                 shipmentPageAnalytics.eventClickPakaiMerchantVoucherSuccess(promoCode)
             }

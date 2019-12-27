@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.list.view.presenter
 
 import android.content.res.Resources
 import android.text.TextUtils
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -18,6 +19,7 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
 import com.tokopedia.promocheckout.list.model.listpromocatalog.ResponseExchangeCoupon
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
+import timber.log.Timber
 
 class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper, val getCatalogHighlightUseCase: GraphqlUseCase) : BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter {
 
@@ -57,6 +59,9 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
                 view.hideProgressLoading()
 
                 val responseGetPromoStack = checkPromoStackingCodeMapper.call(t)
+
+                Timber.d("checkPromoStackingCode : %s", Gson().toJsonTree(responseGetPromoStack))
+
                 if (responseGetPromoStack.status.equals(statusOK, true)) {
                     if (responseGetPromoStack.data.clashings.isClashedPromos) {
                         view?.onClashCheckPromo(responseGetPromoStack.data.clashings)

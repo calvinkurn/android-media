@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.list.view.presenter
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
@@ -8,6 +9,7 @@ import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMappe
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import rx.Subscriber
+import timber.log.Timber
 
 class PromoCheckoutListDigitalPresenter(private val checkVoucherUseCase: DigitalCheckVoucherUseCase,
                                         val checkVoucherMapper: DigitalCheckVoucherMapper) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListDigitalContract.Presenter {
@@ -19,6 +21,7 @@ class PromoCheckoutListDigitalPresenter(private val checkVoucherUseCase: Digital
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
                 val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
+                Timber.d("checkPromoCode : %s", Gson().toJsonTree(checkVoucherData))
                 if (checkVoucherData.voucherData.success) {
                     view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData.voucherData))
                 } else {

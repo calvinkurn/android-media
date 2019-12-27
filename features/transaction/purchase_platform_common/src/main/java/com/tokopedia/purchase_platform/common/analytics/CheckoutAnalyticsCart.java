@@ -3,9 +3,14 @@ package com.tokopedia.purchase_platform.common.analytics;
 import android.os.Bundle;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.gson.Gson;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import timber.log.Timber;
 
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction;
@@ -642,33 +647,6 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickPakaiMerchantVoucherManualInputSuccess(String promoCode) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
-                EventCategory.CART,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT,
-                "success - " + promoCode
-        );
-    }
-
-    public void eventClickPakaiMerchantVoucherManualInputFailed(String errorMessage) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
-                EventCategory.CART,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT,
-                "error - " + errorMessage
-        );
-    }
-
-    public void eventClickPakaiMerchantVoucherSuccess(String promoCode) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
-                EventCategory.CART,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER,
-                "success - " + promoCode
-        );
-    }
-
     public void eventClickPakaiMerchantVoucherFailed(String errorMessage) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
@@ -678,13 +656,77 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickDetailMerchantVoucher(String promoCode) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
-                EventCategory.CART,
-                EventAction.CLICK_DETAIL_MERCHANT_VOUCHER,
-                promoCode
-        );
+    //impression on user merchant voucher list
+    public void eventImpressionUseMerchantVoucher(String voucherId, Map<String, Object> ecommerceMap) {
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put(Key.EVENT, EventName.PROMO_VIEW);
+        eventMap.put(Key.EVENT_CATEGORY, EventCategory.CART);
+        eventMap.put(Key.EVENT_ACTION, EventAction.IMPRESSION_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER);
+        eventMap.put(Key.EVENT_LABEL, "");
+        eventMap.put(Key.PROMO_ID, voucherId);
+        eventMap.put(Key.E_COMMERCE, ecommerceMap);
+
+        Timber.d("eventImpressionUseMerchantVoucher : %s", new Gson().toJsonTree(eventMap));
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
+    }
+
+    //on success use merchant voucher manual input
+    public void eventClickUseMerchantVoucherManualInputSuccess(String promoCode, String promoId) {
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put(Key.EVENT, EventName.CLICK_ATC);
+        eventMap.put(Key.EVENT_CATEGORY, EventCategory.CART);
+        eventMap.put(Key.EVENT_ACTION, EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER);
+        eventMap.put(Key.EVENT_LABEL, EventLabel.SUCCESS + " - " + promoCode);
+        eventMap.put(Key.PROMO_ID, promoId);
+
+        Timber.d("eventClickUseMerchantVoucherManualInputSuccess : %s", new Gson().toJsonTree(eventMap));
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
+    }
+
+    //on success use merchant voucher from list
+    public void eventClickUseMerchantVoucherSuccess(String promoCode, String promoId) {
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put(Key.EVENT, EventName.CLICK_ATC);
+        eventMap.put(Key.EVENT_CATEGORY, EventCategory.CART);
+        eventMap.put(Key.EVENT_ACTION, EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER);
+        eventMap.put(Key.EVENT_LABEL, EventLabel.SUCCESS + " - " + promoCode);
+        eventMap.put(Key.PROMO_ID, promoId);
+
+        Timber.d("eventClickUseMerchantVoucherSuccess : %s", new Gson().toJsonTree(eventMap));
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
+    }
+
+    //on error use merchant voucher
+    public void eventClickUseMerchantVoucherFailed(String errorMessage, String promoId, Boolean isFromList) {
+        String eventAction = isFromList ? EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER : EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER;
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put(Key.EVENT, EventName.CLICK_ATC);
+        eventMap.put(Key.EVENT_CATEGORY, EventCategory.CART);
+        eventMap.put(Key.EVENT_ACTION, eventAction);
+        eventMap.put(Key.EVENT_LABEL, EventLabel.ERROR + " - " + errorMessage);
+        eventMap.put(Key.PROMO_ID, promoId);
+
+        Timber.d("eventClickUseMerchantVoucherFailed : %s", new Gson().toJsonTree(eventMap));
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
+    }
+
+    //on merchant voucher click detail
+    public void eventClickDetailMerchantVoucher(Map<String, Object> ecommerceMap, String voucherId, String promoCode) {
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put(Key.EVENT, EventName.PROMO_CLICK);
+        eventMap.put(Key.EVENT_CATEGORY, EventCategory.CART);
+        eventMap.put(Key.EVENT_ACTION, EventAction.CLICK_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER);
+        eventMap.put(Key.EVENT_LABEL, promoCode);
+        eventMap.put(Key.PROMO_ID, voucherId);
+        eventMap.put(Key.E_COMMERCE, ecommerceMap);
+
+        Timber.d("eventClickDetailMerchantVoucher : %s", new Gson().toJsonTree(eventMap));
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
     public void eventClickTickerMerchantVoucher(String promoCode) {
@@ -1004,6 +1046,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         mapEvent.put("productId", productId);
         sendGeneralEvent(mapEvent);
     }
+
     public void eventClickBrowseButtonOnTickerProductContainTobacco() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,

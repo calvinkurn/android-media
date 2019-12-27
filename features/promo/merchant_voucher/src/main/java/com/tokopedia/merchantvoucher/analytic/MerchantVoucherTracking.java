@@ -14,7 +14,7 @@ public class MerchantVoucherTracking {
     private static final String PDP = "product detail page";
     private static final String CLICK_MVC_DETAIL = "click - mvc list - mvc detail";
     private static final String CLICK_MVC_USE_VOUCHER = "click - mvc list - use voucher";
-    private static final String CLICK_MVC_SHARE = "click - mvc list - share - facebook";
+    private static final String CLICK_MVC_SHARE = "click - mvc list - share - whatsapp";
     private static final String CLICK_USE_VOUCHER = "click - mvc list - mvc detail - use voucher";
     private static final String PROMO_ID = "promoId";
 

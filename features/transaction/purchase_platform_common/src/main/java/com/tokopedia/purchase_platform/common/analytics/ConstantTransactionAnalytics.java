@@ -10,6 +10,7 @@ public interface ConstantTransactionAnalytics {
         String EVENT_CATEGORY = "eventCategory";
         String EVENT_ACTION = "eventAction";
         String EVENT_LABEL = "eventLabel";
+        String PROMO_ID = "promoId";
         String E_COMMERCE = "ecommerce";
         String PAYMENT_ID = "payment_id";
         String CURRENT_SITE = "currentSite";
@@ -36,6 +37,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ADDRESS = "clickAddress";
         String PRODUCT_CLICK = "productClick";
         String PRODUCT_VIEW = "productView";
+        String PROMO_VIEW = "promoView";
+        String PROMO_CLICK = "promoClick";
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
         String VIEW_CART = "viewCart";
@@ -76,6 +79,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ALL_COURIER_SELECTED = "click all courier selected";
         String CLICK_GUNAKAN_KODE_PROMO_ATAU_KUPON = "click gunakan kode promo atau kupon";
         String CLICK_GUNAKAN_KODE_PROMO = "click gunakan kode promo";
+        String CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER = "click gunakan from pilih merchant voucher";
+        String CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER = "click gunakan on merchant voucher from pilih merchant voucher";
         String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
         String CLICK_HAPUS_ON_TOP_RIGHT_CORNER = "click hapus on top right corner";
         String CLICK_SHOP = "click - shop - login";
@@ -137,6 +142,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PILIH_METODE_PEMBAYARAN = "click pilih metode pembayaran";
         String IMPRESSION_CART_EMPTY = "impression cart empty";
         String IMPRESSION_ATC_SUCCESS = "impression atc success";
+        String IMPRESSION_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER = "impression merchant voucher from pilih merchant voucher";
+        String CLICK_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER = "click merchant voucher from pilih merchant voucher";
         String IMPRESSION_COURIER_SELECTION = "impression courier selection";
         String IMPRESSION_ON_POP_UP_KUPON = "impression on pop up kupon";
         String CLICK_HAPUS_FROM_CLICK_HAPUS = "click hapus from click hapus";
