@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.rechargeocr.RechargeCameraUtil
 import com.tokopedia.rechargeocr.data.RechargeOcrResponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,7 @@ class RechargeUploadImageViewModel @Inject constructor(private val rechargeUploa
     val urlImage = MutableLiveData<String>()
     val resultDataOcr = MutableLiveData<String>()
     val errorActionOcr = MutableLiveData<String>()
+    val imagePathCropped = MutableLiveData<String>()
 
     fun uploadImageRecharge(fileLocation: String?) {
         launchCatchError(block = {
@@ -47,6 +49,15 @@ class RechargeUploadImageViewModel @Inject constructor(private val rechargeUploa
             resultDataOcr.postValue(dataOcr.rechargeOcr.result)
         }) {
             errorActionOcr.postValue(it.message)
+        }
+    }
+
+    fun cropImage(pathFile: String, directoryPath: String) {
+        launchCatchError(block = {
+            val imageFileCropped = RechargeCameraUtil.trimBitmap(pathFile, directoryPath)
+            imagePathCropped.postValue(imageFileCropped)
+        }) {
+            imagePathCropped.postValue(pathFile)
         }
     }
 

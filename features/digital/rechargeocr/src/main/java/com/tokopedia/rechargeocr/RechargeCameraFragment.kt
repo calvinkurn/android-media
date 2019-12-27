@@ -113,6 +113,10 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             rechargeCameraAnalytics.scanIdCard(it)
             Toaster.make(containerCamera, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
         })
+
+        uploadImageviewModel.imagePathCropped.observe(this, Observer {
+            uploadImageviewModel.uploadImageRecharge(it)
+        })
     }
 
     private fun setupInfoCamera() {
@@ -121,7 +125,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     }
 
     private fun populateView() {
-        shutterBtn.setOnClickListener{
+        shutterBtn.setOnClickListener {
             getPermissionCamera()
         }
 
@@ -205,7 +209,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             ImageHandler.loadImageFromFile(context, fullImagePreview, cameraResultFile)
             imagePath = cameraResultFile.absolutePath
             showImagePreview()
-            uploadImageviewModel.uploadImageRecharge(imagePath)
+            uploadImageviewModel.cropImage(imagePath, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA)
         } else {
             Toast.makeText(context, getString(R.string.ocr_default_error_message), Toast
                     .LENGTH_LONG).show()
