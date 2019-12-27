@@ -7,18 +7,12 @@ import androidx.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
-import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
-import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 
@@ -56,19 +50,11 @@ public interface HomeContract {
 
         void openWebViewURL(String url, Context context);
 
-        void openWebViewURL(String url);
-
         Activity getActivity();
-
-        void updateListOnResume(List<HomeVisitable> visitables);
 
         void addImpressionToTrackingQueue(List<Visitable> visitables);
 
         void configureHomeFlag(HomeFlag homeFlag);
-
-        void startShopInfo(String shopId);
-
-        void startDeeplinkShopInfo(String url);
 
         void showPopupIntroOvo(String applinkActivation);
 
@@ -128,5 +114,7 @@ public interface HomeContract {
         void onCloseGeolocation();
 
         void onCloseTicker();
+
+        int getRecommendationFeedSectionPosition();
     }
 }

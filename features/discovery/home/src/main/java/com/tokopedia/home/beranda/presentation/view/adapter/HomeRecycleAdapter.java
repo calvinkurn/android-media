@@ -7,18 +7,8 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
-import com.tokopedia.dynamicbanner.entity.PlayCardHome;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 
 import java.util.List;
 
@@ -27,18 +17,7 @@ import java.util.List;
  */
 
 public class HomeRecycleAdapter extends HomeBaseAdapter<HomeAdapterFactory> {
-    //without ticker
-    static public final int POSITION_GEOLOCATION_WITHOUT_TICKER = 3;
-    static public final int POSITION_HEADER_WITHOUT_TICKER = 1;
-
-    //with ticker
-    static public final int POSITION_GEOLOCATION_WITH_TICKER = 4;
-    static public final int POSITION_HEADER_WITH_TICKER = 2;
-
-    static public final int POSITION_UNDEFINED = -1;
-
     protected HomeAdapterFactory typeFactory;
-    private RetryModel retryModel;
 
     public HomeRecycleAdapter(DiffUtil.ItemCallback<HomeVisitable> diffUtilCallback, HomeAdapterFactory adapterTypeFactory,
                               List<Visitable> visitables) {
@@ -57,163 +36,4 @@ public class HomeRecycleAdapter extends HomeBaseAdapter<HomeAdapterFactory> {
     public int getItemViewType(int position) {
         return getItem(position).type(typeFactory);
     }
-
-    public List<Visitable> getItems() {
-        return visitables;
-    }
-
-    public void clearItems() {
-        visitables.clear();
-    }
-
-    public int hasReview() {
-        for (int i = 0; i < visitables.size(); i++) {
-            if (visitables.get(i) instanceof ReviewViewModel) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public void updateReviewItem(SuggestedProductReview suggestedProductReview) {
-        if (visitables.get(hasReview()) instanceof ReviewViewModel && hasReview() != -1) {
-            ((ReviewViewModel) visitables.get(hasReview())).setSuggestedProductReview(suggestedProductReview);
-            notifyItemChanged(hasReview());
-        }
-    }
-
-    public void removeGeolocationViewModel() {
-        int removedPosition = removeGeolocation();
-        if (removedPosition != -1) {
-            notifyItemRemoved(removedPosition);
-        }
-    }
-
-    public void removeReviewViewModel() {
-        int reviewPosition = removeReview();
-        if (reviewPosition != -1) {
-            notifyItemRemoved(reviewPosition);
-        }
-    }
-
-    private boolean hasTicker() {
-        return getItems().size() > 1 && getItems().get(1) instanceof TickerViewModel;
-    }
-
-    private int hasHomeHeaderViewModel() {
-        if (this.visitables != null && this.visitables.size() > 0) {
-            if (this.visitables.size() > POSITION_HEADER_WITHOUT_TICKER &&
-                    this.visitables.get(POSITION_HEADER_WITHOUT_TICKER) instanceof HeaderViewModel) {
-                return POSITION_HEADER_WITHOUT_TICKER;
-            } else if (this.visitables.size() > POSITION_HEADER_WITH_TICKER &&
-                    this.visitables.get(POSITION_HEADER_WITH_TICKER) instanceof HeaderViewModel) {
-                return POSITION_HEADER_WITH_TICKER;
-            } else {
-                return POSITION_UNDEFINED;
-            }
-        }
-        return POSITION_UNDEFINED;
-    }
-
-    private int hasGeolocationViewModel() {
-        if (this.visitables != null && this.visitables.size() > 0) {
-            if (this.visitables.size() > POSITION_GEOLOCATION_WITHOUT_TICKER &&
-                    this.visitables.get(POSITION_GEOLOCATION_WITHOUT_TICKER) instanceof GeolocationPromptViewModel) {
-                return POSITION_GEOLOCATION_WITHOUT_TICKER;
-            } else if (this.visitables.size() > POSITION_GEOLOCATION_WITH_TICKER &&
-                    this.visitables.get(POSITION_GEOLOCATION_WITH_TICKER) instanceof GeolocationPromptViewModel) {
-                return POSITION_GEOLOCATION_WITH_TICKER;
-            } else {
-                return POSITION_UNDEFINED;
-            }
-        }
-        return POSITION_UNDEFINED;
-    }
-
-    private int removeGeolocation() {
-        for(int i=0; i<visitables.size(); i++){
-            if(visitables.get(i) instanceof GeolocationPromptViewModel){
-                visitables.remove(i);
-                return i;
-            }
-        }
-        return POSITION_UNDEFINED;
-    }
-
-    private int removeReview() {
-        for(int i=0; i<visitables.size(); i++){
-            if(visitables.get(i) instanceof ReviewViewModel){
-                visitables.remove(i);
-                return i;
-            }
-        }
-        return POSITION_UNDEFINED;
-    }
-
-    private int setGeolocation(GeolocationPromptViewModel geolocationPromptViewModel) {
-        switch (hasGeolocationViewModel()) {
-            case POSITION_GEOLOCATION_WITH_TICKER: {
-                this.visitables.set(POSITION_GEOLOCATION_WITH_TICKER, geolocationPromptViewModel);
-                return POSITION_GEOLOCATION_WITH_TICKER;
-            }
-            case POSITION_GEOLOCATION_WITHOUT_TICKER: {
-                this.visitables.set(POSITION_GEOLOCATION_WITHOUT_TICKER, geolocationPromptViewModel);
-                return POSITION_GEOLOCATION_WITHOUT_TICKER;
-            }
-            case POSITION_UNDEFINED: {
-                if (hasTicker()) {
-                    this.visitables.add(
-                            POSITION_GEOLOCATION_WITH_TICKER,
-                            geolocationPromptViewModel
-                    );
-                    return POSITION_HEADER_WITH_TICKER;
-                } else {
-                    this.visitables.add(
-                            POSITION_GEOLOCATION_WITHOUT_TICKER,
-                            geolocationPromptViewModel
-                    );
-                    return POSITION_GEOLOCATION_WITHOUT_TICKER;
-                }
-            }
-        }
-        return POSITION_UNDEFINED;
-    }
-
-    //update and return updated position
-    private int setHomeHeader(HeaderViewModel homeHeaderViewModel) {
-        switch (hasHomeHeaderViewModel()) {
-            case POSITION_HEADER_WITH_TICKER: {
-                this.visitables.set(POSITION_HEADER_WITH_TICKER, homeHeaderViewModel);
-                return POSITION_HEADER_WITH_TICKER;
-            }
-            case POSITION_HEADER_WITHOUT_TICKER: {
-                this.visitables.set(POSITION_HEADER_WITHOUT_TICKER, homeHeaderViewModel);
-                return POSITION_HEADER_WITHOUT_TICKER;
-            }
-        }
-        return POSITION_UNDEFINED;
-    }
-
-    private int addHomeHeader(HeaderViewModel homeHeaderViewModel) {
-        if (hasTicker()) {
-            this.visitables.add(POSITION_HEADER_WITH_TICKER, homeHeaderViewModel);
-            return POSITION_HEADER_WITH_TICKER;
-        } else {
-            this.visitables.add(POSITION_HEADER_WITHOUT_TICKER, homeHeaderViewModel);
-            return POSITION_HEADER_WITHOUT_TICKER;
-        }
-    }
-
-    public int getRecommendationFeedSectionPosition() {
-        return getItems().size()-1;
-    }
-
-    public void setPlayData(PlayCardHome playContentBanner, int adapterPosition) {
-        HomeVisitable homeVisitable = getItem(adapterPosition);
-        if (homeVisitable instanceof PlayCardViewModel) {
-            ((PlayCardViewModel) homeVisitable).setPlayCardHome(playContentBanner);
-        }
-        notifyItemChanged(adapterPosition);
-    }
-
 }

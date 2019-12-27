@@ -34,7 +34,6 @@ import com.tokopedia.home.common.HomeAceApi
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -216,11 +215,9 @@ class HomeModule {
     @HomeScope
     @Provides
     fun homePresenter(userSession: UserSessionInterface,
-                      getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
                       @Named("Main") coroutineDispatcher: CoroutineDispatcher,
-                      homeUseCase: HomeUseCase,
-                      homeDataMapper: HomeDataMapper): HomePresenter {
-        return HomePresenter(userSession, getShopInfoByDomainUseCase, coroutineDispatcher, homeUseCase, homeDataMapper)
+                      homeUseCase: HomeUseCase): HomePresenter {
+        return HomePresenter(userSession, coroutineDispatcher, homeUseCase)
     }
 
     @Provides

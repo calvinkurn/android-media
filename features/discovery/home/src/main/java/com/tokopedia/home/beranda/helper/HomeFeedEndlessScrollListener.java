@@ -11,7 +11,7 @@ public abstract class HomeFeedEndlessScrollListener extends EndlessRecyclerViewS
         resetState();
         if (layoutManager instanceof StaggeredGridLayoutManager){
             visibleThreshold = visibleThreshold * ((StaggeredGridLayoutManager)layoutManager).getSpanCount();
-            visibleThreshold+=4;
+            visibleThreshold+=6;
         }
     }
 }

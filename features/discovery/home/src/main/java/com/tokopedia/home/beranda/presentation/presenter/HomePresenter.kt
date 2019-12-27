@@ -56,10 +56,8 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class HomePresenter(private val userSession: UserSessionInterface,
-                    private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
                     private val coroutineDispatcher: CoroutineDispatcher,
-                    private val homeUseCase: HomeUseCase,
-                    private val homeDataMapper: HomeDataMapper) :
+                    private val homeUseCase: HomeUseCase) :
         BaseDaggerPresenter<HomeContract.View?>(), HomeContract.Presenter, CoroutineScope {
 
     protected var compositeSubscription: CompositeSubscription
@@ -685,4 +683,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
             _homeLiveData.value = homeViewModel.copy(list = currentList)
         }
     }
+
+    override fun getRecommendationFeedSectionPosition() = _homeLiveData.value?.list?.size?:-1
 }
