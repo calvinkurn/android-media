@@ -1527,7 +1527,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getCartFragment(Bundle bundle) {
-        return CartFragment.Companion.newInstance(bundle, CartFragment.class.getSimpleName());
+        return CartFragment.newInstance(bundle, CartFragment.class.getSimpleName());
     }
 
     @Override

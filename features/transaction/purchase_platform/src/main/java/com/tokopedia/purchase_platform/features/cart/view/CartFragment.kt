@@ -189,6 +189,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         private val GO_TO_DETAIL = 2
         val GO_TO_LIST = 1
 
+        @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
             var tmpBundle = bundle
             if (tmpBundle == null) {
