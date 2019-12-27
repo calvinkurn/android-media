@@ -51,9 +51,6 @@ class DigitalBrowseServiceViewHolder(itemView: View, private val categoryListene
 
         itemView.setOnClickListener {
             if (!this@DigitalBrowseServiceViewHolder.item!!.isTitle) {
-                if(element.id == SALAM_APPLINK_ID) {
-                    this@DigitalBrowseServiceViewHolder.categoryListener.installDFSalam()
-                }
                 this@DigitalBrowseServiceViewHolder.categoryListener.onCategoryItemClicked(item, adapterPosition)
             }
         }
@@ -93,8 +90,6 @@ class DigitalBrowseServiceViewHolder(itemView: View, private val categoryListene
         fun onCategoryItemClicked(viewModel: DigitalBrowseServiceCategoryViewModel?, itemPosition: Int)
 
         fun sendImpressionAnalytics(viewModels: List<DigitalBrowseServiceCategoryViewModel>)
-
-        fun installDFSalam()
     }
 
     companion object {
@@ -103,6 +98,5 @@ class DigitalBrowseServiceViewHolder(itemView: View, private val categoryListene
         val LAYOUT = R.layout.item_digital_browse_image_with_title
 
         private val DEFAULT_LETTER_SPACING = 0.1f
-        private val SALAM_APPLINK_ID = 263
     }
 }

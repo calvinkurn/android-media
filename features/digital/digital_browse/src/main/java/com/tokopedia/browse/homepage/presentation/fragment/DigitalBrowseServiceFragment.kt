@@ -27,10 +27,8 @@ import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseServiceC
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceCategoryViewModel
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceViewModel
 import com.tokopedia.browse.homepage.presentation.presenter.DigitalBrowseServicePresenter
-import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
-import com.tokopedia.applink.DeeplinkDFMapper.DFM_SALAM
 
 /**
  * @author by furqan on 30/08/18.
@@ -315,10 +313,6 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         } else {
             RouteManager.route(context, viewModel.url)
         }
-    }
-
-    override fun installDFSalam() {
-        DFInstaller().installOnBackground(activity!!.application, listOf(DFM_SALAM))
     }
 
     override fun sendImpressionAnalytics(viewModels: List<DigitalBrowseServiceCategoryViewModel>) {

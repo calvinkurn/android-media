@@ -45,7 +45,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.supportV4
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
-    implementation project(rootProject.ext.libraries.dynamicFeatures)
 }
 
 project.ext {
