@@ -104,17 +104,13 @@ import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
