@@ -84,7 +84,6 @@
     <string name="message_dialog_accept_opportunity">Dengan klik tombol “Setuju” anda menyetujui bahwa barang yang akan anda kirim sesuai dengan pesanan pembeli.\n\nPembatalan akan dikenakan penalti reputasi -10</string>
     <string name="action_agree">Setuju</string>
     <string name="action_back">Kembali</string>
-    <string name="title_opportunity_detail">Peluang Baru</string>
     <string name="cashback">Cashback :</string>
     <string name="cashback_for_buyer">Cashback Untuk Pembeli:</string>
     <string name="respond_deadline">Batas Respon:</string>
