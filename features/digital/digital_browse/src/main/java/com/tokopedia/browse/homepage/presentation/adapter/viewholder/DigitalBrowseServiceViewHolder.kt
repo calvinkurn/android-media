@@ -51,6 +51,9 @@ class DigitalBrowseServiceViewHolder(itemView: View, private val categoryListene
 
         itemView.setOnClickListener {
             if (!this@DigitalBrowseServiceViewHolder.item!!.isTitle) {
+                if(item.appLinks.equals("tokopedia://discovery/salam")) {
+                    DFInstaller().installOnBackground(application, listOf(DeeplinkDFMapper.DFM_SALAM))
+                }
                 this@DigitalBrowseServiceViewHolder.categoryListener.onCategoryItemClicked(item, adapterPosition)
             }
         }

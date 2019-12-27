@@ -22,6 +22,13 @@ object ApplinkConstInternalSalam{
     val HOST_SALAM_ORDER_DETAIL = "order-details"
 
     /**
+     * Host Salam from Discovery
+     */
+
+    @JvmField
+    val HOST_SALAM_FROM_DISCOVERY = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://discovery/salam"
+
+    /**
      * INTERNAL PATH Salam
      */
     @JvmField
@@ -34,7 +41,7 @@ object ApplinkConstInternalSalam{
      * PATH Salam
      */
     // UmrahOrderDetailActivity
-    // tokopedia-android-internal://order-details/umroh/.*\\
+    // tokopedia-android-internal://order-details/umroh/\
     @JvmField
     val SALAM_ORDER_DETAIL = "$INTERNAL_SALAM_ORDER_DETAIL/$PARAM_UMROH"
 

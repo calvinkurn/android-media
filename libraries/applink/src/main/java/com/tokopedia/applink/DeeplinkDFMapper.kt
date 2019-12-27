@@ -50,6 +50,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
@@ -178,6 +179,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_PAYMENT_SETTING, R.string.payment_settings_title))
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DFM_SETTING_NOTIF, R.string.notif_settings_title))
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DFM_SALAM, R.string.title_salam))
+            add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DFM_SALAM, R.string.title_salam))
         }
     }
 
