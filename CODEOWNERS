@@ -45,21 +45,21 @@
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
-/features/digital/flight/               @tokopedia/minion-mark
-/features/digital/train/                @tokopedia/minion-mark
-/features/digital/hotel/                @tokopedia/minion-mark
-/features/digital/flight_no_op/         @tokopedia/minion-mark
-/features/digital/digitalproduct        @tokopedia/minion-mark
-/features/digital/common_travel         @tokopedia/minion-mark
-/features/digital/common_digital        @tokopedia/minion-mark
-/features/digital/common_topup_bills    @tokopedia/minion-mark
-/features/digital/digital_homepage      @tokopedia/minion-mark
-/libraries/travel_calendar              @tokopedia/minion-mark
-/features/digital/travel_homepage       @tokopedia/minion-mark
-/features/digital/voucher_game          @tokopedia/minion-mark
-/features/digital/digital_emoney        @tokopedia/minion-mark
-/features/digital/imagepreviewslider    @tokopedia/minion-mark
-/features/salam/umrah                   @tokopedia/minion-mark
+/features/digital/flight/                               @tokopedia/minion-mark
+/features/digital/train/                                @tokopedia/minion-mark
+/features/digital/hotel/                                @tokopedia/minion-mark
+/features/digital/flight_no_op/                         @tokopedia/minion-mark
+/features/digital/digitalproduct                        @tokopedia/minion-mark
+/features/digital/common_travel                         @tokopedia/minion-mark
+/features/digital/common_digital                        @tokopedia/minion-mark
+/features/digital/common_topup_bills                    @tokopedia/minion-mark
+/features/digital/digital_homepage                      @tokopedia/minion-mark
+/libraries/travel_calendar                              @tokopedia/minion-mark
+/features/digital/travel_homepage                       @tokopedia/minion-mark
+/features/digital/voucher_game                          @tokopedia/minion-mark
+/features/digital/digital_emoney                        @tokopedia/minion-mark
+/features/digital/imagepreviewslider                    @tokopedia/minion-mark
+/features/salam/umrah                                   @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
@@ -82,7 +82,7 @@
 /features/user/topchat/                         		@tokopedia/minion-kevin
 /features/user/topchat_no_op/                   		@tokopedia/minion-kevin
 /features/user/groupchat/                       		@tokopedia/minion-kevin
-/features/user/profilecompletion/                         		@tokopedia/minion-kevin
+/features/user/profilecompletion/                       @tokopedia/minion-kevin
 /features/user/vote/                            		@tokopedia/minion-kevin
 /features/user/otp/                             		@tokopedia/minion-kevin
 /features/user/settingbank/                     		@tokopedia/minion-kevin
@@ -134,7 +134,7 @@
 /features/im/challenges                 				@tokopedia/minion-yoda
 /features/im/referral                   				@tokopedia/minion-yoda
 
-/libraries/adapter_delegate/							@tokopedia/minion-stuart
+/libraries/adapter_delegate/							@tokopedia/core-team
 /libraries/analytics/							        @tokopedia/core-team
 /libraries/applink/										@tokopedia/core-team
 /libraries/banner_dynamic/								@tokopedia/core-team
@@ -147,7 +147,7 @@
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
 /libraries/common_network/								@tokopedia/core-team
 /libraries/composite_lib/								@tokopedia/core-team
-/libraries/core_legacy/									@tokopedia/core-team
+/libraries/core_legacy/									@ricoharisin @sonodabot
 /libraries/core_network/								@tokopedia/core-team
 /libraries/cpm/											@tokopedia/core-team
 /libraries/date_picker_range/							@tokopedia/core-team
@@ -170,8 +170,8 @@
 /libraries/react_native/								@tokopedia/core-team
 /libraries/remote_config/								@tokopedia/core-team
 /libraries/sharedata/									@tokopedia/core-team
-/libraries/track/										@tokopedia/core-team
-/libraries/tracking_optimizer/							@tokopedia/core-team
+/libraries/track/										@ricoharisin @sonodabot
+/libraries/tracking_optimizer/							@ricoharisin @sonodabot
 /libraries/translator/									@tokopedia/core-team
 /libraries/travel_calendar/								@tokopedia/core-team
 /libraries/twitter_share/								@tokopedia/core-team
@@ -183,16 +183,17 @@
 /libraries/williamchart/								@tokopedia/core-team
 /libraries/youtubeutil/									@tokopedia/core-team
 
+/tkpddiscovery/                                        	@tokopedia/core-team
 /tkpdsession/                                       	@tokopedia/core-team
-/tkpdloyalty/                                       	@tokopedia/core-team
 /tkpddigital/                                       	@tokopedia/core-team
 /tkpdinbox/                                         	@tokopedia/core-team
 /tkpdtransaction/                                   	@tokopedia/core-team
+/tkpdtransaction-common/                                @tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
-/tkpddesign/                                        	@nathaniel09 @hendrysetiadi89
-/tkpdcore/                                          	@nathaniel09 @hendrysetiadi89
-/tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89
+/tkpddesign/                                        	@nathaniel09 @hendrysetiadi89 @sonodabot
+/tkpdcore/                                          	@nathaniel09 @hendrysetiadi89 @sonodabot
+/tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89 @sonodabot
 
 /customerapp/                                       	@tokopedia/core-team
 /sellerapp/                                         	@tokopedia/core-team
