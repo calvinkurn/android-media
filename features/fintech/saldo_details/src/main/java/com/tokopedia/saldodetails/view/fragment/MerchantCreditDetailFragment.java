@@ -270,7 +270,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     @Override
     protected void initInjector() {
         SaldoDetailsComponent saldoDetailsComponent =
-                SaldoDetailsComponentInstance.getComponent(getActivity().getApplication());
+                SaldoDetailsComponentInstance.INSTANCE.getComponent(getActivity().getApplication());
         saldoDetailsComponent.inject(this);
     }
 

@@ -8,15 +8,14 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
+import com.tokopedia.date.util.SaldoDatePickerUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract;
 import com.tokopedia.saldodetails.response.model.GqlAllDepositSummaryResponse;
 import com.tokopedia.saldodetails.response.model.GqlCompleteTransactionResponse;
 import com.tokopedia.saldodetails.response.model.SummaryDepositParam;
 import com.tokopedia.saldodetails.usecase.GetAllTransactionUsecase;
 import com.tokopedia.saldodetails.usecase.GetDepositSummaryUseCase;
-import com.tokopedia.date.util.SaldoDatePickerUtil;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -26,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -162,7 +162,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
     }
 
     private String getDate(int year, int month, int day) {
-        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_VIEW);
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_VIEW, Locale.US);
         Date date = new Date();
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
@@ -189,8 +189,8 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
     private String dateFormatter(String date) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW);
-        SimpleDateFormat sdf_ws = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW, Locale.US);
+        SimpleDateFormat sdf_ws = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
         Date formattedStart = null;
         try {
             formattedStart = sdf.parse(date);
@@ -364,8 +364,8 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
     private Map<String, Object> getSummaryDepositParam() {
         SummaryDepositParam param = new SummaryDepositParam();
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW);
-        SimpleDateFormat sdf_ws = new SimpleDateFormat(DATE_FORMAT_WS);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW, Locale.US);
+        SimpleDateFormat sdf_ws = new SimpleDateFormat(DATE_FORMAT_WS, Locale.US);
         try {
             Date formattedStart = sdf.parse(paramStartDate);
             Date formattedEnd = sdf.parse(paramEndDate);
@@ -382,8 +382,8 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
 
     private Map<String, Object> getSummaryDepositParam(int page, int saldoType) {
         SummaryDepositParam param = new SummaryDepositParam();
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW);
-        SimpleDateFormat sdf_ws = new SimpleDateFormat(DATE_FORMAT_WS);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW, Locale.US);
+        SimpleDateFormat sdf_ws = new SimpleDateFormat(DATE_FORMAT_WS, Locale.US);
         try {
             Date formattedStart = sdf.parse(paramStartDate);
             Date formattedEnd = sdf.parse(paramEndDate);
@@ -402,7 +402,7 @@ public class SaldoHistoryPresenter extends BaseDaggerPresenter<SaldoHistoryContr
     private boolean isValid() {
         boolean isValid = true;
 
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW, Locale.US);
         try {
             Date endDate = sdf.parse(paramEndDate);
             Date startDate = sdf.parse(paramStartDate);

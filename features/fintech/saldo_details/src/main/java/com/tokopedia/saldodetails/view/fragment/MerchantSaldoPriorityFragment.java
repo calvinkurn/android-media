@@ -310,7 +310,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     @Override
     protected void initInjector() {
         SaldoDetailsComponent saldoDetailsComponent =
-                SaldoDetailsComponentInstance.getComponent(getActivity().getApplication());
+                SaldoDetailsComponentInstance.INSTANCE.getComponent(getActivity().getApplication());
         saldoDetailsComponent.inject(this);
         saldoDetailsPresenter.attachView(this);
     }

@@ -63,7 +63,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
     }
 
     private void initInjector() {
-        SaldoDetailsComponentInstance.getComponent(getApplication()).inject(this);
+        SaldoDetailsComponentInstance.INSTANCE.getComponent(getApplication()).inject(this);
     }
 
     public static Intent getIntent(Context context) {
@@ -72,7 +72,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     @Override
     public SaldoDetailsComponent getComponent() {
-        return SaldoDetailsComponentInstance.getComponent(getApplication());
+        return SaldoDetailsComponentInstance.INSTANCE.getComponent(getApplication());
     }
 
     @Override

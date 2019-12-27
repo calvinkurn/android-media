@@ -37,7 +37,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
@@ -490,7 +489,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     protected void initInjector() {
 
         SaldoDetailsComponent saldoDetailsComponent =
-                SaldoDetailsComponentInstance.getComponent(Objects.requireNonNull(getActivity()).getApplication());
+                SaldoDetailsComponentInstance.INSTANCE.getComponent(Objects.requireNonNull(getActivity()).getApplication());
         saldoDetailsComponent.inject(this);
         saldoDetailsPresenter.attachView(this);
     }

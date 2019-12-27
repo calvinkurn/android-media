@@ -444,7 +444,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     @Override
     protected void initInjector() {
         SaldoDetailsComponent saldoDetailsComponent =
-                SaldoDetailsComponentInstance.getComponent(getActivity().getApplication());
+                SaldoDetailsComponentInstance.INSTANCE.getComponent(getActivity().getApplication());
         saldoDetailsComponent.inject(this);
         saldoHistoryPresenter.attachView(this);
     }
