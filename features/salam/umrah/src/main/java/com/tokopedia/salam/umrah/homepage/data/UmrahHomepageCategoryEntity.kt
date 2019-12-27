@@ -8,6 +8,8 @@ import com.tokopedia.salam.umrah.common.data.UmrahVariant
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.factory.UmrahHomepageFactory
 
 data class UmrahHomepageCategoryEntity(
+        @SerializedName("umrahCategories")
+        @Expose
         val umrahCategories: List<UmrahCategories> = arrayListOf()
 ):UmrahHomepageModel(){
 

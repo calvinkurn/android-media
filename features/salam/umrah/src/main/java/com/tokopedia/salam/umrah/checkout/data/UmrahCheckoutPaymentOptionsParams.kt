@@ -1,12 +1,23 @@
 package com.tokopedia.salam.umrah.checkout.data
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
 /**
  * @author by firman on 27/11/2019
  */
 
 class UmrahCheckoutPaymentOptionsParams (
+        @SerializedName("price")
+        @Expose
         val price: Int = 0,
+        @SerializedName("pilgrims")
+        @Expose
         val pilgrims: Int = 1,
+        @SerializedName("departureDate")
+        @Expose
         val departureDate : String = "",
+        @SerializedName("downPayment")
+        @Expose
         val downPayment: Int = 0
 )

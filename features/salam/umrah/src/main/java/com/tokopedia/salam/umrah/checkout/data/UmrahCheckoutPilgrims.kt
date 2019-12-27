@@ -2,6 +2,8 @@ package com.tokopedia.salam.umrah.checkout.data
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
 
 /**
@@ -9,10 +11,20 @@ import android.os.Parcelable
  */
 
 class UmrahCheckoutPilgrims (
+        @SerializedName("pilgrimsNumber")
+        @Expose
         var pilgrimsNumber: Int = 0,
+        @SerializedName("title")
+        @Expose
         var title: String = "",
+        @SerializedName("firstName")
+        @Expose
         var firstName : String = "",
+        @SerializedName("lastName")
+        @Expose
         var lastName : String = "",
+        @SerializedName("dateBirth")
+        @Expose
         var dateBirth : String = ""
 
 ):Parcelable{
