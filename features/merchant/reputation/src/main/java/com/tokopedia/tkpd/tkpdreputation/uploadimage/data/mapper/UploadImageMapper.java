@@ -1,8 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper;
 
 import com.tkpd.library.utils.network.MessageErrorException;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.pojo.UploadImagePojo;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.model.UploadImageDomain;
@@ -14,9 +14,9 @@ import rx.functions.Func1;
  * @author by nisie on 9/5/17.
  */
 
-public class UploadImageMapper implements Func1<Response<TkpdResponse>, UploadImageDomain> {
+public class UploadImageMapper implements Func1<Response<TokopediaWsV4Response>, UploadImageDomain> {
     @Override
-    public UploadImageDomain call(Response<TkpdResponse> response) {
+    public UploadImageDomain call(Response<TokopediaWsV4Response> response) {
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
                 UploadImagePojo pojo = response.body().convertDataObj(UploadImagePojo.class);

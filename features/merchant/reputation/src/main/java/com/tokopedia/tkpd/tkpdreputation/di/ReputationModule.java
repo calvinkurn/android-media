@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
 import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
@@ -53,6 +52,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.Send
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SkipReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
+import com.tokopedia.tkpd.tkpdreputation.network.uploadimage.UploadImageService;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductApi;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase;
@@ -200,6 +200,16 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
+    UploadImageService provideUploadImageService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+        return new UploadImageService(
+                context,
+                networkRouter,
+                userSession
+        );
+    }
+
+    @ReputationScope
+    @Provides
     InboxReputationDetailMapper provideInboxReputationDetailMapper() {
         return new InboxReputationDetailMapper();
     }
@@ -323,13 +333,6 @@ public class ReputationModule {
     GenerateHostActService
     provideGenerateHostActService() {
         return new GenerateHostActService();
-    }
-
-    @ReputationScope
-    @Provides
-    UploadImageService
-    provideUploadImageService() {
-        return new UploadImageService();
     }
 
     @ReputationScope

@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.uploadimage.data.factory;
 
-import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
+import com.tokopedia.tkpd.tkpdreputation.network.uploadimage.UploadImageService;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.GenerateHostMapper;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.UploadImageMapper;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.repository.ImageUploadRepository;
