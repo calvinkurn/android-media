@@ -15,7 +15,6 @@
         android:paddingStart="@dimen/dp_4"
         android:paddingLeft="@dimen/dp_4"
         android:textColor="@color/Neutral_N700_96"
-        android:visibility="gone"
         app:typographyType="heading_5"
         tools:text="Transaksi Terakhir" />
 

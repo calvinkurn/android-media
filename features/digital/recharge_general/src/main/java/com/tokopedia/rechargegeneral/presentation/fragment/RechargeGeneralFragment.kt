@@ -291,7 +291,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
         val dataList: MutableList<Visitable<RechargeGeneralAdapterFactory>> = mutableListOf()
         if (productData.needEnquiry) {
-            val enquiryFields = productData.enquiryFields.filter { it.style != INPUT_TYPE_ENQUIRY_INFO }.toMutableList()
+            val enquiryFields = productData.enquiryFields.toMutableList()
+            val enquiryInfo = productData.enquiryFields.find { it.style == INPUT_TYPE_ENQUIRY_INFO }
+            if (enquiryInfo != null) {
+                enquiryFields.remove(enquiryInfo)
+                // Set enquiry button label
+                setEnquiryButtonLabel(enquiryInfo.text)
+            }
             // Set favorite number if available
             val itr = enquiryFields.listIterator()
             while (itr.hasNext()) {
@@ -312,6 +318,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 itr.set(item)
             }
             dataList.addAll(enquiryFields)
+
+            inputDataSize = enquiryFields.size
         }
 
         // Show product field if there is > 1 product
@@ -325,8 +333,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
         adapter.renderList(dataList)
 //        trackSearchResultCategories(it.data)
-
-        inputDataSize = productData.enquiryFields.size
     }
 
     // Reset product id & input data
@@ -433,11 +439,15 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         val recommendations = data.recommendations
 
         val listProductTab = mutableListOf<TopupBillsTabItem>()
+        var recentTransactionFragment: RechargeGeneralRecentTransactionFragment? = null
+        var promoListFragment: RechargeGeneralPromoListFragment? = null
         if (recommendations.isNotEmpty()) {
-            listProductTab.add(TopupBillsTabItem(RechargeGeneralRecentTransactionFragment.newInstance(recommendations), getString(R.string.recent_transaction_tab_title)))
+            recentTransactionFragment = RechargeGeneralRecentTransactionFragment.newInstance(recommendations)
+            listProductTab.add(TopupBillsTabItem(recentTransactionFragment, getString(R.string.recent_transaction_tab_title)))
         }
         if (promos.isNotEmpty()) {
-            listProductTab.add(TopupBillsTabItem(RechargeGeneralPromoListFragment.newInstance(promos), getString(R.string.promo_tab_title)))
+            promoListFragment = RechargeGeneralPromoListFragment.newInstance(promos)
+            listProductTab.add(TopupBillsTabItem(promoListFragment, getString(R.string.promo_tab_title)))
         }
 
         if (listProductTab.isNotEmpty()) {
@@ -463,13 +473,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 })
 
                 // Hide widget title
-                listProductTab.forEach {
-                    if (it.fragment is RechargeGeneralRecentTransactionFragment) {
-                        (it.fragment as RechargeGeneralRecentTransactionFragment).toggleTitleVisibility(false)
-                    } else if (it.fragment is RechargeGeneralPromoListFragment) {
-                        (it.fragment as RechargeGeneralPromoListFragment).toggleTitleVisibility(false)
-                    }
-                }
+                recentTransactionFragment?.run { toggleTitleVisibility(false) }
+                promoListFragment?.run { toggleTitleVisibility(false) }
             }
             product_view_pager.show()
         } else {
@@ -537,6 +542,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         enquiry_button.isEnabled = validateEnquiry()
     }
 
+    private fun setEnquiryButtonLabel(label: String) {
+        enquiry_button.text = label
+    }
+
     private fun validateEnquiry(): Boolean {
         return operatorId > 0 && productId.isNotEmpty() && inputData.size == inputDataSize
     }
@@ -544,8 +553,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun enquire() {
         if (validateEnquiry()) {
             getEnquiry(operatorId.toString(), productId, inputData)
-            // TODO: Remove temporary enquiry params
-//            val enquiryData = Gson().fromJson(GraphqlHelper.loadRawString(resources, R.raw.dummy_enquiry_data), TopupBillsEnquiryDataWidget::class.java)
         }
     }
 
