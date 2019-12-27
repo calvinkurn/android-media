@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name" tools:ignore="PrivateResource">Opportunity</string>
+    <string name="opportunity_name">Opportunity</string>
     <string name="title_opportunity_detail">Peluang</string>
-    <string name="take_opportunity">Ambil Peluang</string>
+    <string name="title_take_opportunity">Ambil Peluang</string>
 
     <string name="item_replacement_no_note"><![CDATA[<i>]]>Tidak ada catatan dari pengguna<![CDATA[</i>]]></string>
     <string name="item">barang</string>
@@ -43,5 +43,8 @@
 
     <string name="test_strike"><strike>TextView</strike></string>
 
-    <string name="title_activity_snapshot">Snapshot</string>
+    <string name="title_activity_snapshot_opportunity">Snapshot</string>
+
+    <string name="title_sort_opportunity">Urutkan</string>
+    <string name="title_filter_opportunity">Filter</string>
 </resources>

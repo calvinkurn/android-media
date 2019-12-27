@@ -3,14 +3,14 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name">
+        android:label="@string/opportunity_name">
         <activity
             android:name=".activity.OpportunitySortActivity"
-            android:label="@string/title_sort_but"
+            android:label="@string/title_sort_opportunity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.OpportunityFilterActivity"
-            android:label="@string/title_filter_but"
+            android:label="@string/title_filter_opportunity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
@@ -19,11 +19,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.OpportunityTncActivity"
-            android:label="@string/take_opportunity"
+            android:label="@string/title_take_opportunity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".snapshot.SnapShotProduct"
-            android:label="@string/title_activity_snapshot"
+            android:label="@string/title_activity_snapshot_opportunity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.OpportunityListActivity"
