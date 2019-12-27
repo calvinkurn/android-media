@@ -8,10 +8,10 @@ import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
 import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
-import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
@@ -52,6 +52,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.Send
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewValidateUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SkipReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductApi;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase;
@@ -93,6 +94,7 @@ public class ReputationModule {
     CoroutineDispatcher provideMainDispatcher() {
         return Dispatchers.getMain();
     }
+
 
     @ReputationScope
     @Provides
@@ -179,8 +181,21 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReputationService provideReputationService() {
-        return new ReputationService();
+    NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        if (context instanceof NetworkRouter) {
+            return (NetworkRouter) context;
+        }
+        throw new IllegalStateException("Application must implement NetworkRouter");
+    }
+
+    @ReputationScope
+    @Provides
+    ReputationService provideReputationService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
+        return new ReputationService(
+                context,
+                networkRouter,
+                userSession
+        );
     }
 
     @ReputationScope
@@ -504,6 +519,12 @@ public class ReputationModule {
     @ReputationScope
     @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @ReputationScope
+    @Provides
+    public UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 

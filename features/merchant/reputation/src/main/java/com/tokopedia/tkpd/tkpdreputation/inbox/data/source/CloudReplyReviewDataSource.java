@@ -2,9 +2,9 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.source;
 
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReplyReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
