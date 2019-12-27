@@ -27,11 +27,16 @@ class UmrahCheckoutPilgrims (
         @Expose
         var dateBirth : String = ""
 
-):Parcelable{
-    override fun describeContents(): Int {
-        return 0
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString()) {
     }
-    override fun writeToParcel(parcel: Parcel, flag: Int) {
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(pilgrimsNumber)
         parcel.writeString(title)
         parcel.writeString(firstName)
@@ -39,13 +44,9 @@ class UmrahCheckoutPilgrims (
         parcel.writeString(dateBirth)
     }
 
-    constructor(parcel: Parcel): this(
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString()
-    )
+    override fun describeContents(): Int {
+        return 0
+    }
 
     companion object CREATOR : Parcelable.Creator<UmrahCheckoutPilgrims> {
         override fun createFromParcel(parcel: Parcel): UmrahCheckoutPilgrims {
