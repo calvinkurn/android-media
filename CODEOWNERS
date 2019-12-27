@@ -60,6 +60,8 @@
 /features/digital/digital_emoney        @tokopedia/minion-mark
 /features/digital/imagepreviewslider    @tokopedia/minion-mark
 /features/salam/umrah                   @tokopedia/minion-mark
+/features/digital/digital_topup_bills                   @tokopedia/minion-mark
+/features/digital/flight_orderlist
 /features/digital/recharge_general      @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
