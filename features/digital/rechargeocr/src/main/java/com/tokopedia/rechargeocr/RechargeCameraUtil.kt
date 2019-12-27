@@ -7,10 +7,10 @@ import com.tokopedia.imagepicker.common.util.ImageUtils
 
 object RechargeCameraUtil {
 
-    private val LEFT_DIMEN_DIVIDER = 20
-    private val TOP_DIMEN_DIVIDER = 3.22
-    private val RIGHT_DIMEN_DIVIDER = 20
-    private val BOTTOM_DIMEN_DIVIDER = 2.96
+    private const val LEFT_DIMEN_DIVIDER = 20
+    private const val TOP_DIMEN_DIVIDER = 3.22
+    private const val RIGHT_DIMEN_DIVIDER = 20
+    private const val BOTTOM_DIMEN_DIVIDER = 2.96
 
     fun trimBitmap(imagePath: String, @ImageUtils.DirectoryDef targetDirectory: String): String {
         val bitmapToEdit = ImageUtils.getBitmapFromPath(imagePath, ImageUtils.DEF_WIDTH,

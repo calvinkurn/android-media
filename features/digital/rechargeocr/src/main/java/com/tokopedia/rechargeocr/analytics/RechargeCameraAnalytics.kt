@@ -5,11 +5,11 @@ import com.tokopedia.track.TrackAppUtils
 
 class RechargeCameraAnalytics {
 
-    fun scanIdCard(errorMessage: String) {
+    fun scanIdCard(message: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_HOMEPAGE, CATEGORY_DIGITAL,
                 ACTION_SCAN_CAMERA,
-                errorMessage
+                message
         ))
     }
 

@@ -98,7 +98,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
         uploadImageviewModel.resultDataOcr.observe(this, Observer { ocrData ->
             hideLoading()
-            rechargeCameraAnalytics.scanIdCard("")
+            rechargeCameraAnalytics.scanIdCard(VALUE_TRACKING_OCR_SUCCESS)
             activity?.let {
                 val intentReturn = Intent()
                 intentReturn.putExtra(EXTRA_NUMBER_FROM_CAMERA_OCR, ocrData)
@@ -285,6 +285,8 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
         //TODO get this data from DigitalExtraParam
         private const val EXTRA_NUMBER_FROM_CAMERA_OCR = "EXTRA_NUMBER_FROM_CAMERA_OCR"
+
+        private const val VALUE_TRACKING_OCR_SUCCESS = "success"
 
         fun newInstance(): Fragment {
             return RechargeCameraFragment()
