@@ -16,8 +16,8 @@ import com.tokopedia.search.R
 
 class CountDrawable(context: Context) : Drawable() {
 
-    private var badgePaint: Paint? = null
-    private var textPaint: Paint? = null
+    private var badgePaint = Paint()
+    private var textPaint = Paint()
     private val txtRect = Rect()
 
     private var count = ""
@@ -29,23 +29,21 @@ class CountDrawable(context: Context) : Drawable() {
     }
 
     private fun createTextPaint(context: Context) {
-        textPaint = Paint()
-        textPaint!!.color = Color.WHITE
-        textPaint!!.typeface = Typeface.DEFAULT
-        textPaint!!.textSize = context.resources.getDimension(R.dimen.sp_8)
-        textPaint!!.isAntiAlias = true
-        textPaint!!.textAlign = Paint.Align.CENTER
+        textPaint.color = Color.WHITE
+        textPaint.typeface = Typeface.DEFAULT
+        textPaint.textSize = context.resources.getDimension(R.dimen.sp_8)
+        textPaint.isAntiAlias = true
+        textPaint.textAlign = Paint.Align.CENTER
     }
 
     private fun createBadgePaint(context: Context) {
-        badgePaint = Paint()
-        badgePaint!!.color = ContextCompat.getColor(context.applicationContext, R.color.cart_count_color)
-        badgePaint!!.isAntiAlias = true
-        badgePaint!!.style = Paint.Style.FILL
+        badgePaint
+        badgePaint.color = ContextCompat.getColor(context.applicationContext, R.color.cart_count_color)
+        badgePaint.isAntiAlias = true
+        badgePaint.style = Paint.Style.FILL
     }
 
     override fun draw(canvas: Canvas) {
-
         if (!willDraw) {
             return
         }
@@ -62,18 +60,18 @@ class CountDrawable(context: Context) : Drawable() {
         val centerY = radius - 5
         if (count.length <= 2) {
             // Draw badge circle.
-            canvas.drawCircle(centerX, centerY, (radius + 5.5).toInt().toFloat(), badgePaint!!)
+            canvas.drawCircle(centerX, centerY, (radius + 5.5).toInt().toFloat(), badgePaint)
         } else {
-            canvas.drawCircle(centerX, centerY, (radius + 6.5).toInt().toFloat(), badgePaint!!)
+            canvas.drawCircle(centerX, centerY, (radius + 6.5).toInt().toFloat(), badgePaint)
         }
         // Draw badge count text inside the circle.
-        textPaint!!.getTextBounds(count, 0, count.length, txtRect)
+        textPaint.getTextBounds(count, 0, count.length, txtRect)
         val textHeight = (txtRect.bottom - txtRect.top).toFloat()
         val textY = centerY + textHeight / 2f
         if (count.length > 2)
-            canvas.drawText("99+", centerX, textY, textPaint!!)
+            canvas.drawText("99+", centerX, textY, textPaint)
         else
-            canvas.drawText(count, centerX, textY, textPaint!!)
+            canvas.drawText(count, centerX, textY, textPaint)
     }
 
     /*
