@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
