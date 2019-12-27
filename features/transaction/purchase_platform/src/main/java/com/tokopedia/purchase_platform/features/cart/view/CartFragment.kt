@@ -605,6 +605,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setActivityBackgroundColor()
         activity?.let {
             setHasOptionsMenu(true)
             it.title = it.getString(R.string.title_activity_cart)
@@ -1196,6 +1197,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    private fun setActivityBackgroundColor() {
+        activity?.let {
+            if (activity !is CartActivity) {
+                llCartContainer.setBackgroundColor(ContextCompat.getColor(it, R.color.checkout_module_color_background))
+            }
+
+            if (FLAG_IS_CART_EMPTY) {
+                it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
+            } else {
+                it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, R.color.checkout_module_color_background))
+            }
+        }
+    }
+
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
         cartListData?.let {
             sendAnalyticsScreenName(screenName)
@@ -1252,10 +1267,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartRecyclerView.addItemDecoration(cartItemDecoration)
         }
 
-        activity?.let {
-            llCartContainer.setBackgroundColor(ContextCompat.getColor(it, R.color.checkout_module_color_background))
-        }
-
         cartPageAnalytics.eventViewCartListFinishRender()
         val cartItemDataList = cartAdapter.allCartItemData
         cartPageAnalytics.enhancedECommerceCartLoadedStep0(
@@ -1281,10 +1292,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (cartRecyclerView.itemDecorationCount > 0) {
             cartRecyclerView.removeItemDecoration(cartItemDecoration)
-        }
-
-        activity?.let {
-            llCartContainer.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
         }
 
         cartAdapter.notifyDataSetChanged()
@@ -1510,6 +1517,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         super.onHiddenChanged(hidden)
 
         if (!hidden) {
+            setActivityBackgroundColor()
             refreshHandler.isRefreshing = true
             if (dPresenter.getCartListData() == null) {
                 dPresenter.processInitialGetCartData(getCartId(), true, false)
