@@ -513,7 +513,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let {
             return ToolbarRemoveWithBackView(it).apply {
                 navigateUp(it)
-                setOnClickGoToChuck(this@CartFragment)
                 setTitle(getString(R.string.cart))
             }
         }
