@@ -12,7 +12,6 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdUrl;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDestination;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
@@ -86,23 +85,16 @@ public class FacadeShopTransaction {
         void onNetworkTimeOut();
     }
 
-    private static final String ACT_GET_NEW_ORDER = "get_order";
     private static final String ACT_GET_STATUS = "get_status_order";
-    private static final String ACT_GET_TX = "get_list_order";
-    private static final String ACT_GET_SHIPPING = "get_process_order";
-
 
     private Context context;
-    private String URL;
     private MyShopOrderService service = new MyShopOrderService();
-    private GetNewOrderListener listener;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public static FacadeShopTransaction createInstance(Context context) {
         FacadeShopTransaction facade = new FacadeShopTransaction();
         facade.context = context;
-        facade.URL = TkpdUrl.MY_SHOP_ORDER;
         return facade;
     }
 
@@ -164,8 +156,6 @@ public class FacadeShopTransaction {
                             }
                         }
                 ));
-
-        this.listener = listener;
     }
 
     private HashMap<String, String> getNewOrderParam(int page, int deadline, String filter) {
@@ -184,11 +174,6 @@ public class FacadeShopTransaction {
 
     public void getNewOrder(PagingHandler page, String filter, int deadline, final GetNewOrderListener listener) {
         getNewOrderV4(page, filter, deadline, listener);
-    }
-
-
-    private boolean isNewOrderHasResult(JSONObject Result) {
-        return !Result.equals("null");
     }
 
     //================================================= GET STATUS ==========================================================================

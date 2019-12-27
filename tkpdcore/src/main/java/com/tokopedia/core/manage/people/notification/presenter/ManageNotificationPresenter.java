@@ -6,8 +6,6 @@ package com.tokopedia.core.manage.people.notification.presenter;
 public interface ManageNotificationPresenter {
     void onSaveSetting();
 
-    void onGoToSetRing();
-
     void checkCache();
 
     void onDestroyView();

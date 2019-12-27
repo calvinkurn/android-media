@@ -160,7 +160,12 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     override fun renderMyBillsEgoldView(data: FintechProduct?) {
         if (data != null) {
             with(data) {
-                mybillEgold.getSubscriptionCheckbox().visibility = if (checkBoxDisabled) View.GONE else View.VISIBLE
+                if (checkBoxDisabled) {
+                    mybillEgold.getSubscriptionCheckbox().visibility = View.GONE
+                } else {
+                    mybillEgold.getSubscriptionCheckbox().visibility = View.VISIBLE
+                    mybillEgold.setChecked(data.optIn)
+                }
                 mybillEgold.hasMoreInfo(true)
                 info?.title?.let { title -> mybillEgold.setHeaderTitle(title) }
                 info?.subtitle?.let { desc -> mybillEgold.setDescription(desc) }

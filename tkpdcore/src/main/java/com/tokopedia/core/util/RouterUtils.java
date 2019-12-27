@@ -47,15 +47,6 @@ public class RouterUtils {
         return Fragment.instantiate(context, className);
     }
 
-    public static ComponentName getActivityComponentName(Context context, String activityFullPath) {
-        ComponentName componentName = new ComponentName(context.getPackageName(), activityFullPath);
-        return componentName;
-    }
-
-    public static ComponentName getActivityComponentName(Context context, Class<?> clss){
-        return new ComponentName(context, clss);
-    }
-
     public static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
         return Class.forName(activityFullPath);
     }

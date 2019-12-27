@@ -15,8 +15,4 @@ public class Img {
         return _375x200;
     }
 
-    public void set375x200(String _375x200) {
-        this._375x200 = _375x200;
-    }
-
 }

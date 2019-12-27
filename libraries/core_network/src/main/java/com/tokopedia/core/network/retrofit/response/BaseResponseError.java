@@ -10,11 +10,6 @@ import java.io.IOException;
 public abstract class BaseResponseError {
 
     /**
-     * @return the String key if the json Response indicated that is an error response.
-     */
-    public abstract String getErrorKey();
-
-    /**
      * Check if this response error is valid
      */
     public boolean isResponseErrorValid() {
