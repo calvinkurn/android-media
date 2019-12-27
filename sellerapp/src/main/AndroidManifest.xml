@@ -256,12 +256,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.PopupTransparent"/>
 
-        <activity
-            android:name="com.tokopedia.saldodetails.view.activity.SaldoIntroActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_header_saldo_intro"
-            android:theme="@style/Theme.White.PopupTransparent"
-            android:launchMode="singleTask"/>
+<!--        <activity-->
+<!--            android:name="com.tokopedia.saldodetails.view.activity.SaldoIntroActivity"-->
+<!--            android:screenOrientation="portrait"-->
+<!--            android:label="@string/title_header_saldo_intro"-->
+<!--            android:theme="@style/Theme.White.PopupTransparent"-->
+<!--            android:launchMode="singleTask"/>-->
 
         <activity
             android:name="com.tokopedia.sellerapp.webview.SellerappWebViewActivity"

@@ -13,6 +13,7 @@ public class TkpdBaseURL {
     public static String BASE_DOMAIN = TokopediaUrl.Companion.getInstance().getWS();
     public static String MERLIN_DOMAIN = TokopediaUrl.Companion.getInstance().getMERLIN();
     public static String GOOGLE_APIS = "https://www.googleapis.com";
+    public static String TOPADS_DOMAIN = TokopediaUrl.Companion.getInstance().getTA();
     public static String ACCOUNTS_DOMAIN = TokopediaUrl.Companion.getInstance().getACCOUNTS();
     public static String INBOX_DOMAIN = TokopediaUrl.Companion.getInstance().getINBOX();
     public static String CHAT_DOMAIN = TokopediaUrl.Companion.getInstance().getCHAT();
