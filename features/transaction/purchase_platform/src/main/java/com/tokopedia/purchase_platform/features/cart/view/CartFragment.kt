@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Canvas
 import android.net.Uri
@@ -140,8 +139,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var promoMapper: PromoMapper
 
     lateinit var cartAdapter: CartAdapter
-    lateinit var refreshHandler: RefreshHandler
-    lateinit var progressDialog: ProgressDialog
+    private var refreshHandler: RefreshHandler? = null
+    private var progressDialog: AlertDialog? = null
 
     private var cartPerformanceMonitoring: PerformanceMonitoring? = null
     private var isTraceCartStopped: Boolean = false
@@ -391,10 +390,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         btnRemove = view.findViewById(R.id.btn_delete_all_cart)
         llCartContainer = view.findViewById(R.id.ll_cart_container)
 
-        refreshHandler = RefreshHandler(activity, view, this)
-        progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage(getString(R.string.title_loading))
-        progressDialog.setCancelable(false)
+        activity?.let {
+            refreshHandler = RefreshHandler(it, view, this)
+            progressDialog = AlertDialog.Builder(it)
+                    .setView(R.layout.purchase_platform_progress_dialog_view)
+                    .setCancelable(false)
+                    .create()
+        }
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
             // Remove default cardview margin on Kitkat or lower
@@ -610,7 +612,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             setHasOptionsMenu(true)
             it.title = it.getString(R.string.title_activity_cart)
             if (savedInstanceState == null) {
-                refreshHandler.startRefresh()
+                refreshHandler?.startRefresh()
             } else {
                 if (cartListData != null) {
                     dPresenter.setCartListData(cartListData!!)
@@ -618,7 +620,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     renderInitialGetCartListDataSuccess(cartListData)
                     stopCartPerformanceTrace()
                 } else {
-                    refreshHandler.startRefresh()
+                    refreshHandler?.startRefresh()
                 }
             }
         }
@@ -1187,13 +1189,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun showProgressLoading() {
-        if (!progressDialog.isShowing) progressDialog.show()
+        if (progressDialog?.isShowing == false) progressDialog?.show()
     }
 
     override fun hideProgressLoading() {
-        if (progressDialog.isShowing) progressDialog.dismiss()
-        if (refreshHandler.isRefreshing) {
-            refreshHandler.finishRefresh()
+        if (progressDialog?.isShowing == true) progressDialog?.dismiss()
+        if (refreshHandler?.isRefreshing == true) {
+            refreshHandler?.finishRefresh()
         }
     }
 
@@ -1216,7 +1218,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             sendAnalyticsScreenName(screenName)
 
             endlessRecyclerViewScrollListener.resetState()
-            refreshHandler.finishRefresh()
+            refreshHandler?.finishRefresh()
             this.cartListData = it
             cartAdapter.resetData()
 
@@ -1414,13 +1416,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let {
             enableSwipeRefresh()
             it.invalidateOptionsMenu()
-            refreshHandler.finishRefresh()
+            refreshHandler?.finishRefresh()
             showErrorContainer()
             onContentAvailabilityChanged(false)
             NetworkErrorHelper.showEmptyState(it, llNetworkErrorView, message) {
                 llNetworkErrorView.gone()
                 rlContent.show()
-                refreshHandler.isRefreshing = true
+                refreshHandler?.isRefreshing = true
                 cartAdapter.resetData()
                 dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
             }
@@ -1518,7 +1520,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (!hidden) {
             setActivityBackgroundColor()
-            refreshHandler.isRefreshing = true
+            refreshHandler?.isRefreshing = true
             if (dPresenter.getCartListData() == null) {
                 dPresenter.processInitialGetCartData(getCartId(), true, false)
             } else {
@@ -1532,11 +1534,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun disableSwipeRefresh() {
-        refreshHandler.setPullEnabled(false)
+        refreshHandler?.setPullEnabled(false)
     }
 
     private fun enableSwipeRefresh() {
-        refreshHandler.setPullEnabled(true)
+        refreshHandler?.setPullEnabled(true)
     }
 
     override fun getAllCartDataList(): List<CartItemData> {
@@ -1649,8 +1651,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderLoadGetCartDataFinish() {
-        if (refreshHandler.isRefreshing) {
-            refreshHandler.isRefreshing = false
+        if (refreshHandler?.isRefreshing == true) {
+            refreshHandler?.isRefreshing = false
         }
         showMainContainer()
         onContentAvailabilityChanged(true)
@@ -1685,7 +1687,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE -> onResultFromRequestCodeLoyalty(resultCode, data)
             ShipmentActivity.REQUEST_CODE -> onResultFromRequestCodeCartShipment(resultCode, data)
             NAVIGATION_PDP -> {
-                refreshHandler.isRefreshing = true
+                refreshHandler?.isRefreshing = true
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
             }
         }
@@ -1703,12 +1705,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         } else if (resultCode == PaymentConstant.PAYMENT_SUCCESS) {
             showToastMessageGreen(getString(R.string.message_payment_success))
-            refreshHandler.isRefreshing = true
+            refreshHandler?.isRefreshing = true
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         } else if (resultCode == PaymentConstant.PAYMENT_FAILED) {
             showToastMessageRed(getString(R.string.default_request_error_unknown))
             sendAnalyticsScreenName(screenName)
-            refreshHandler.isRefreshing = true
+            refreshHandler?.isRefreshing = true
             if (cartListData != null) {
                 renderInitialGetCartListDataSuccess(cartListData)
             } else {
@@ -1716,14 +1718,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             sendAnalyticsScreenName(screenName)
-            refreshHandler.isRefreshing = true
+            refreshHandler?.isRefreshing = true
             if (cartListData != null) {
                 renderInitialGetCartListDataSuccess(cartListData)
             } else {
                 dPresenter.processInitialGetCartData(getCartId(), false, false)
             }
         } else if (resultCode == ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED) {
-            refreshHandler.isRefreshing = true
+            refreshHandler?.isRefreshing = true
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         }
     }

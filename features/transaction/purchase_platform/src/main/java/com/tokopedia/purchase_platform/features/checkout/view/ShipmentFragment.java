@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.features.checkout.view;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
@@ -193,7 +193,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
     private LinearLayout llNetworkErrorView;
-    private ProgressDialog progressDialogNormal;
+    private AlertDialog progressDialogNormal;
     private ShippingDurationBottomsheet shippingDurationBottomsheet;
     private ShippingCourierBottomsheet shippingCourierBottomsheet;
     private Snackbar snackbarError;
@@ -340,9 +340,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         snackbarError = Snackbar.make(view, "", BaseToaster.LENGTH_SHORT);
 
-        progressDialogNormal = new ProgressDialog(getActivity());
-        progressDialogNormal.setMessage(getString(R.string.title_loading));
-        progressDialogNormal.setCancelable(false);
+        progressDialogNormal = new AlertDialog.Builder(getActivity())
+                .setView(R.layout.purchase_platform_progress_dialog_view)
+                .setCancelable(false)
+                .create();
 
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
         rvShipment.addItemDecoration(new ShipmentItemDecoration());
