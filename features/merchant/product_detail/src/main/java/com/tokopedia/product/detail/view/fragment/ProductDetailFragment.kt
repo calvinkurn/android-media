@@ -1852,9 +1852,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onDiscussionClicked() {
-
-        productDetailTracking.eventTalkClicked()
-
         activity?.let {
             val intent = RouteManager.getIntent(it,
                     ApplinkConst.PRODUCT_TALK, productInfo?.basic?.id.toString())
