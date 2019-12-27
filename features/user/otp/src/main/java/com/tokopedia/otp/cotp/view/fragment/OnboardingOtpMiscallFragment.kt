@@ -39,13 +39,14 @@ class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.
         passModel = arguments?.getParcelable(ARGS_PASS_DATA) as VerificationViewModel
         btnCallMe.setOnClickListener {
             fragmentManager?.popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            val fragmentTransaction = fragmentManager?.beginTransaction()
 
             val fragment = VerificationOtpMiscallFragment.createInstance(passModel)
-            fragmentTransaction?.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right)
-            fragmentTransaction?.add(R.id.parent_view, fragment, FIRST_FRAGMENT_TAG)
-            fragmentTransaction?.addToBackStack(FIRST_FRAGMENT_TAG)
-            fragmentTransaction?.commit()
+            val fragmentTransaction = fragmentManager?.beginTransaction()
+            fragmentTransaction?.run {
+                add(R.id.parent_view, fragment, FIRST_FRAGMENT_TAG)
+                setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right)
+                addToBackStack(FIRST_FRAGMENT_TAG)
+            }?.commit()
         }
 
         startAnimation()
