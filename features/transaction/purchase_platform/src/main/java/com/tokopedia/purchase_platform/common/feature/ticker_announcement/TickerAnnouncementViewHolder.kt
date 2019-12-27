@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.cart.view.viewholder
+package com.tokopedia.purchase_platform.common.feature.ticker_announcement
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View

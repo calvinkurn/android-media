@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view.viewmodel
 
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProductData
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.SimilarProductData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.NicotineLiteMessageData
 

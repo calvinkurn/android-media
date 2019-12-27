@@ -2,19 +2,17 @@ package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_ad
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
-import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
-import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.purchase_platform.R;
+import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,6 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     public static final int REQUEST_CODE = 982;
 
     public static final String EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA";
-    public static final String EXTRA_PROMO_SUGGESTION_DATA = "EXTRA_PROMO_SUGGESTION_DATA";
     public static final String EXTRA_RECIPIENT_ADDRESS_DATA = "EXTRA_RECIPIENT_ADDRESS_DATA";
     public static final String EXTRA_SHIPMENT_CART_TEM_LIST_DATA = "EXTRA_SHIPMENT_CART_TEM_LIST_DATA";
     public static final String EXTRA_SHIPMENT_COST_SATA = "EXTRA_SHIPMENT_COST_SATA";
@@ -45,7 +42,6 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
 
     public static Intent createInstance(Context context,
                                         PromoStackingData promoStackingData,
-                                        CartPromoSuggestionHolderData cartPromoSuggestionHolderData,
                                         RecipientAddressModel recipientAddressData,
                                         List<ShipmentCartItemModel> shipmentCartItemModels,
                                         ShipmentCostModel shipmentCostModel,
@@ -54,7 +50,6 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     ) {
         Intent intent = new Intent(context, MultipleAddressFormActivity.class);
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData);
-        intent.putExtra(EXTRA_PROMO_SUGGESTION_DATA, cartPromoSuggestionHolderData);
         intent.putExtra(EXTRA_RECIPIENT_ADDRESS_DATA, recipientAddressData);
         intent.putExtra(EXTRA_SHIPMENT_CART_TEM_LIST_DATA, new ArrayList<>(shipmentCartItemModels));
         intent.putExtra(EXTRA_SHIPMENT_COST_SATA, shipmentCostModel);
@@ -117,9 +112,6 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
         Intent resultIntent = new Intent();
         if (getIntent().hasExtra(EXTRA_PROMO_DATA)) {
             resultIntent.putExtra(EXTRA_PROMO_DATA, (PromoStackingData) getIntent().getParcelableExtra(EXTRA_PROMO_DATA));
-        }
-        if (getIntent().hasExtra(EXTRA_PROMO_SUGGESTION_DATA)) {
-            resultIntent.putExtra(EXTRA_PROMO_SUGGESTION_DATA, (CartPromoSuggestionHolderData) getIntent().getParcelableExtra(EXTRA_PROMO_SUGGESTION_DATA));
         }
         if (getIntent().hasExtra(EXTRA_RECIPIENT_ADDRESS_DATA)) {
             resultIntent.putExtra(EXTRA_RECIPIENT_ADDRESS_DATA, (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_RECIPIENT_ADDRESS_DATA));

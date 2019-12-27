@@ -2,12 +2,11 @@ package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_ad
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.purchase_platform.common.data.model.response.Messages;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApply;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyV2;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartList;
-import com.tokopedia.purchase_platform.common.data.model.response.Messages;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.PromoSuggestion;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Donation;
 
 import java.util.ArrayList;
@@ -34,9 +33,6 @@ public class CartMultipleAddressDataListResponse {
     @SerializedName("messages")
     @Expose
     private Messages messages;
-    @SerializedName("promo_suggestion")
-    @Expose
-    private PromoSuggestion promoSuggestion;
     @SerializedName("autoapply")
     @Expose
     private AutoApply autoApply;
@@ -89,10 +85,6 @@ public class CartMultipleAddressDataListResponse {
 
     public Messages getMessages() {
         return messages;
-    }
-
-    public PromoSuggestion getPromoSuggestion() {
-        return promoSuggestion;
     }
 
     public List<CartList> getCartList() {

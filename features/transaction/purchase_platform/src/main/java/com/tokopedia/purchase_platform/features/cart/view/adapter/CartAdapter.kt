@@ -15,6 +15,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionLi
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder
 import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSellerCashbackViewHolder
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementViewHolder
 import com.tokopedia.purchase_platform.common.insurance.utils.PAGE_TYPE_CART
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData

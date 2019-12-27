@@ -14,8 +14,8 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
 import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProductData
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.SimilarProductData
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData
 import com.tokopedia.purchase_platform.features.cart.data.model.response.*
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.*
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData

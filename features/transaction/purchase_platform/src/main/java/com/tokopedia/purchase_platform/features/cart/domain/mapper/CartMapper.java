@@ -10,7 +10,6 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.mode
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartList;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Shop;
@@ -173,13 +172,6 @@ public class CartMapper implements ICartMapper {
             cartItemDataList.add(cartItemData);
         }
 
-        CartPromoSuggestionHolderData cartPromoSuggestionHolderData = new CartPromoSuggestionHolderData();
-        cartPromoSuggestionHolderData.setCta(cartDataListResponse.getPromoSuggestion().getCta());
-        cartPromoSuggestionHolderData.setCtaColor(cartDataListResponse.getPromoSuggestion().getCtaColor());
-        cartPromoSuggestionHolderData.setPromoCode(cartDataListResponse.getPromoSuggestion().getPromoCode());
-        cartPromoSuggestionHolderData.setText(cartDataListResponse.getPromoSuggestion().getText());
-        cartPromoSuggestionHolderData.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
-
         List<ShopGroupAvailableData> shopGroupDataList = new ArrayList<>();
         for (CartItemData cartItemData : cartItemDataList) {
             ShopGroupAvailableData shopGroupData = new ShopGroupAvailableData();
@@ -190,7 +182,6 @@ public class CartMapper implements ICartMapper {
         }
         cartListData.setShopGroupAvailableDataList(shopGroupDataList);
         cartListData.setPromoCouponActive(cartDataListResponse.getIsCouponActive() == 1);
-        cartListData.setCartPromoSuggestionHolderData(cartPromoSuggestionHolderData);
 
         if (cartDataListResponse.getAutoapplyStack() != null) {
             AutoApplyStackData autoApplyStackData = new AutoApplyStackData();

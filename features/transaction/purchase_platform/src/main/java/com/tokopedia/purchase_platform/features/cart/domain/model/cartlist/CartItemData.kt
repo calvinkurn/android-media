@@ -3,8 +3,6 @@ package com.tokopedia.purchase_platform.features.cart.domain.model.cartlist
 import android.os.Parcel
 import android.os.Parcelable
 
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProductData
-
 /**
  * @author anggaprasetiyo on 18/01/18.
  */

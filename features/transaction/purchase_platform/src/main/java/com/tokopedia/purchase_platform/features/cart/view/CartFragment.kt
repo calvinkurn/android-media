@@ -73,7 +73,6 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
@@ -1070,12 +1069,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.checkForShipmentForm()
     }
 
-    override fun onCartPromoSuggestionButtonCloseClicked(cartPromoSuggestionHolderData: CartPromoSuggestionHolderData, position: Int) {
-        cartPromoSuggestionHolderData.isVisible = false
-        cartAdapter.notifyItemChanged(position)
-        cartAdapter.checkForShipmentForm()
-    }
-
     override fun onCartPromoUseVoucherGlobalPromoClicked(cartPromoGlobal: PromoStackingData, position: Int) {
         val cartItemData = selectedCartDataList
         if (cartItemData?.isNotEmpty() == true) {
@@ -1493,8 +1486,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 ?: false
         activity?.let {
             val intent = ShipmentActivity.createInstance(it, cartAdapter.promoStackingGlobalData,
-                    cartListData?.cartPromoSuggestionHolderData, cartListData?.defaultPromoDialogTab,
-                    isAutoApplyPromoStackCodeApplied
+                    cartListData?.defaultPromoDialogTab, isAutoApplyPromoStackCodeApplied
             )
             startActivityForResult(intent, ShipmentActivity.REQUEST_CODE)
         }

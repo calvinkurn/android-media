@@ -6,7 +6,7 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.apiResponseAllShopWithWholeSaleJson
 import com.tokopedia.purchase_platform.apiResponseAvailableShopJson
 import com.tokopedia.purchase_platform.apiResponseShopErrorJson
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDataListResponse
 import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData

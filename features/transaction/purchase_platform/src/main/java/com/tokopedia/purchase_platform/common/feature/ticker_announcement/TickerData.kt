@@ -1,9 +1,9 @@
-package com.tokopedia.purchase_platform.common.feature.promo_suggestion
+package com.tokopedia.purchase_platform.common.feature.ticker_announcement
 
 import android.os.Parcel
 import android.os.Parcelable
 
-data class CartTickerData(
+data class TickerData(
         var id: Int = 0,
         var message: String = "",
         var page: String = ""
@@ -24,12 +24,12 @@ data class CartTickerData(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CartTickerData> {
-        override fun createFromParcel(parcel: Parcel): CartTickerData {
-            return CartTickerData(parcel)
+    companion object CREATOR : Parcelable.Creator<TickerData> {
+        override fun createFromParcel(parcel: Parcel): TickerData {
+            return TickerData(parcel)
         }
 
-        override fun newArray(size: Int): Array<CartTickerData?> {
+        override fun newArray(size: Int): Array<TickerData?> {
             return arrayOfNulls(size)
         }
     }

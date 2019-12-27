@@ -5,10 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApply;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyV2;
+import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldAttributes;
-import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.PromoSuggestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +56,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_blackbox")
     @Expose
     private int isBlackbox;
-    @SerializedName("promo_suggestion")
-    @Expose
-    private PromoSuggestion promoSuggestion;
     @SerializedName("autoapply")
     @Expose
     private AutoApply autoApply;
@@ -152,10 +148,6 @@ public class ShipmentAddressFormDataResponse {
 
     public int getIsBlackbox() {
         return isBlackbox;
-    }
-
-    public PromoSuggestion getPromoSuggestion() {
-        return promoSuggestion;
     }
 
     @Deprecated

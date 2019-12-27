@@ -14,13 +14,12 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldTieringData;
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.Addresses;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -148,16 +147,6 @@ public class ShipmentMapper implements IShipmentMapper {
         if (shipmentAddressFormDataResponse.getTickers() != null && !shipmentAddressFormDataResponse.getTickers().isEmpty()) {
             Ticker ticker = shipmentAddressFormDataResponse.getTickers().get(0);
             dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
-        }
-
-        if (shipmentAddressFormDataResponse.getPromoSuggestion() != null) {
-            CartPromoSuggestionHolderData cartPromoSuggestionHolderData = new CartPromoSuggestionHolderData();
-            cartPromoSuggestionHolderData.setCta(shipmentAddressFormDataResponse.getPromoSuggestion().getCta());
-            cartPromoSuggestionHolderData.setCtaColor(shipmentAddressFormDataResponse.getPromoSuggestion().getCtaColor());
-            cartPromoSuggestionHolderData.setPromoCode(shipmentAddressFormDataResponse.getPromoSuggestion().getPromoCode());
-            cartPromoSuggestionHolderData.setText(shipmentAddressFormDataResponse.getPromoSuggestion().getText());
-            cartPromoSuggestionHolderData.setVisible(shipmentAddressFormDataResponse.getPromoSuggestion().getIsVisible() == 1);
-            dataResult.setCartPromoSuggestionHolderData(cartPromoSuggestionHolderData);
         }
 
         if (!isDisableEgold) {
