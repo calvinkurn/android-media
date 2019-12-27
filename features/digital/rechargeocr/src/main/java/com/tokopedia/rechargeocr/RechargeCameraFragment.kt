@@ -148,28 +148,9 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     private fun getPermissionCamera() {
         activity?.let {
-            permissionCheckerHelper.checkPermission(it,
+            permissionCheckerHelper.checkPermissions(it, arrayOf(
                     PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
-                    object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onPermissionDenied(permissionText: String) {
-
-                        }
-
-                        override fun onNeverAskAgain(permissionText: String) {
-
-                        }
-
-                        override fun onPermissionGranted() {
-                            getPermissionExternalStorage()
-                        }
-                    }, "")
-        }
-    }
-
-    private fun getPermissionExternalStorage() {
-        activity?.let {
-            permissionCheckerHelper.checkPermission(it,
-                    PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                    PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE),
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
 
