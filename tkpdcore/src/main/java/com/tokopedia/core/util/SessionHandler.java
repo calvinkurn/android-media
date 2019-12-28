@@ -52,22 +52,6 @@ public class SessionHandler {
 
     }
 
-    /**
-     * @param context Non Null context
-     * @param isLogin flag to determine user is login or not
-     * @param user_id valid user id
-     */
-    @SuppressWarnings("unused")
-    public static void setIsLogin(Context context, boolean isLogin, int user_id) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        editor.putString(LOGIN_ID, user_id + "");
-        editor.putBoolean(IS_LOGIN, isLogin);
-        editor.apply();
-        TrackApp.getInstance().getGTM()
-                .pushUserId(getGTMLoginID(context));
-    }
-
     private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
     private static final String USER_DATA = "USER_DATA";
     private static final String USER_SCOPE = "USER_SCOPE";
