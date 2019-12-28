@@ -142,6 +142,7 @@ include "features:transaction:atc_common"
 include "features:transaction:purchase_platform"
 include "features:transaction:purchase_platform_common"
 include "features:transaction:sellerorder"
+include "features:transaction:opportunity"
 
 include "features:user:attachproduct"
 include "features:user:chat_common"
