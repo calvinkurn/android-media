@@ -297,6 +297,7 @@ dependencies {
     implementation project(rootProject.ext.features.flightOrderList)
     implementation project(rootProject.ext.features.umrah)
     implementation project(rootProject.ext.features.imagePreviewSlider)
+    implementation project(rootProject.ext.features.travelCountryCode)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.tkpdtransaction)
     implementation project(rootProject.ext.features.tkpdseller)
