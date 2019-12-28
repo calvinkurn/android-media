@@ -27,10 +27,10 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class FCMCacheManager {
-    public static final String GCM_ID = "gcm_id";
+    public static final String GCM_ID = com.tokopedia.user.session.Constants.GCM_ID;
     public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
     private String NOTIFICATION_CODE = "tkp_code";
-    private static final String GCM_STORAGE = "GCM_STORAGE";
+    private static final String GCM_STORAGE = com.tokopedia.user.session.Constants.GCM_STORAGE;
     private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
     public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
     private LocalCacheHandler cache;
@@ -190,13 +190,13 @@ public class FCMCacheManager {
 
     public static String getRegistrationIdWithTemp(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        if (cache.getString("gcm_id", "").equals("")) {
+        if (cache.getString(GCM_ID, "").equals("")) {
             String tempID = getTempFcmId();
-            cache.putString("gcm_id", tempID);
+            cache.putString(GCM_ID, tempID);
             cache.applyEditor();
             return tempID;
         }
-        return cache.getString("gcm_id", "");
+        return cache.getString(GCM_ID, "");
     }
 
     public void saveIncomingNotification(NotificationEntity notificationEntity) {
